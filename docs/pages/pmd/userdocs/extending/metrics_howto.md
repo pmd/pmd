@@ -9,6 +9,12 @@ permalink: pmd_userdocs_extending_metrics_howto.html
 author: Clément Fournier <clement.fournier76@gmail.com>
 ---
 
+{% jdoc_nspace :coremx core::lang.metrics %}
+{% jdoc_nspace :coreast core::lang.ast %}
+{% jdoc_nspace :jmx java::lang.java.metrics %}
+{% jdoc_nspace :jast java::lang.java.ast %}
+
+
 ## Using the metrics framework
 
 {%include note.html content="The following explains how to use the Java metrics framework. The Apex framework 
@@ -19,9 +25,9 @@ a numeric result. In the Java framework, metrics can be computed on operation de
 method declaration), and type declaration nodes (class, interface, enum, and annotation declarations). A metric
 object in the framework can only handle either types or operations, but not both.
 
-PMD ships with a library of already implemented metrics. These metrics are referenced by `MetricKey` objects,
-which are listed in two public enums: `JavaClassMetricKey` and `JavaOperationMetricKey`. Metric keys wrap a metric, and
-know which type of node their metric can be computed on. That way, you cannot compute an operation metric on a class 
+PMD ships with a library of already implemented metrics. These metrics are referenced by {% jdoc coremx::MetricKey %} objects,
+which are listed in two public enums: {% jdoc jmx::api.JavaClassMetricKey %} and {% jdoc jmx::api.JavaOperationMetricKey %}.
+Metric keys wrap a metric, and know which type of node their metric can be computed on. That way, you cannot compute an operation metric on a class
 declaration node. Metrics that can be computed on both operation and type declarations (e.g. NCSS) have one metric key in
 each enum.
 
@@ -32,9 +38,10 @@ which is the name of the metric key as defined in  `JavaClassMetricKey` or `Java
  will be **computed on the context node**.
 
 The function will throw an exception in the following cases:
-* The context node is neither an instance of `ASTAnyTypeDeclaration` or `ASTMethodOrConstructorDeclaration`, that is,
-it's not one of `ClassOrInterfaceDeclaration`, `EnumDeclaration`, `AnnotationDeclaration`, `MethodDeclaration`,
-or `ConstructorDeclaration`.
+* The context node is neither an instance of {% jdoc jast::ASTAnyTypeDeclaration %} or {% jdoc jast::MethodLikeNode %}, that is,
+it's not one of {% jdoc jast::ASTClassOrInterfaceDeclaration %}, {% jdoc jast::ASTEnumDeclaration},
+{% jdoc jast::ASTAnnotationDeclaration %}, {% jdoc jast::ASTMethodDeclaration %},
+{% jdoc jast::ASTConstructorDeclaration %}, or {% jdoc jast::ASTLambdaExpression %}.
 * The metric key does not exist (the name is case insensitive) or is not defined for the type of the context node.
 
 {%include note.html
@@ -50,7 +57,7 @@ or `ConstructorDeclaration`.
 
 ## For Java Rules
 
-The static façade class `JavaMetrics` is the single entry point to compute metrics in the Java framework. 
+The static façade class {% jdoc jmx::JavaMetrics %} is the single entry point to compute metrics in the Java framework.
 
 This class provides the method `get` and its overloads. The following sections describes the interface of this class.
 
@@ -80,7 +87,8 @@ to `JavaMetrics.get`.
 ### Capability checking
 
 Metrics are not necessarily computable on any node of the type they handle. For example, Cyclo cannot be computed on
-abstract methods. Metric keys provides a `supports(Node)` boolean method to find out if the metric can be computed on
+abstract methods. Metric keys provides a {% jdoc !a!coremx::MetricKey#supports(coreast::Node) %} boolean method
+to find out if the metric can be computed on
 the specified node. **If the metric cannot be computed on the given node, `JavaMetrics.get` will return `Double.NaN` .**
 If you're concerned about that, you can condition your call on whether the node is supported or not:
 ```java
@@ -101,7 +109,7 @@ Some metrics define options that can be used to slightly modify the computation.
 gathered inside an enum in the implementation class of the metric, for example `CycloMetric.CycloOption`. They're
 also documented on the [index of metrics](pmd_java_metrics_index.html).
 
-To use options with a metric, you must first bundle them into a `MetricOptions` object. `MetricOptions` provides the
+To use options with a metric, you must first bundle them into a {% jdoc coremx::MetricOptions %} object. `MetricOptions` provides the
 utility method `ofOptions` to get a `MetricOptions` bundle from a collection or with varargs parameters. You can then
 pass this bundle as a parameter to `JavaMetrics.get`:
 ```java
@@ -238,12 +246,7 @@ the Java framework but it's symmetrical in the Apex framework.
     value. That's especially good to implement metrics that count some kind of node,
     e.g. [NPath complexity](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NpathMetric.java)
     or [NCSS](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NcssMetric.java).
-    Additionnally, it makes your metric more easily generalisable to other node types.
-
-    {%include tip.html
-              content="All visitor metrics shipped with PMD define their visitor
-              publicly, so that you may extend it to override its behaviour
-              easily. You can find them in the package `n.s.pmd.lang.<name>.metrics.impl.visitors`." %}
+    Additionally, it makes your metric more easily generalisable to other node types.
 
   * *Signature matching metrics:* That's even more straightforward when you want
     to count the number of methods or fields that match a specific signature, e.g.
@@ -295,3 +298,4 @@ Language   | Java | Apex |
 -----------|------|------|
 Operation metrics| supports constructors and non abstract methods| supports any non abstract method (including triggers), except `<init>`, `<clinit>`, and `clone`
 Type declaration|supports classes and enums|supports classes
+

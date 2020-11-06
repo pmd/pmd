@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
+// @Deprecated // will be replaced by another base class in the next PR
 /* default */ abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 
     private final String name;

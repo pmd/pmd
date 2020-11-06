@@ -18,11 +18,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class SourceFileScopeTest extends STBBaseTst {
+public class SourceFileScopeTest extends BaseNonParserTest {
 
     @Test
     public void testClassDeclAppears() {
-        parseCode(TEST1);
+        ASTCompilationUnit acu = parseCode(TEST1);
         Map<NameDeclaration, List<NameOccurrence>> m = acu.getScope().getDeclarations();
         ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration) m.keySet().iterator().next();
         assertEquals(classNameDeclaration.getImage(), "Foo");
@@ -30,21 +30,19 @@ public class SourceFileScopeTest extends STBBaseTst {
 
     @Test
     public void testPackageIsEmptyString() {
-        parseCode(TEST1);
-        ASTCompilationUnit decl = acu;
-        assertEquals(decl.getScope().getEnclosingScope(SourceFileScope.class).getPackageName(), "");
+        ASTCompilationUnit acu = parseCode(TEST1);
+        assertEquals(acu.getScope().getEnclosingScope(SourceFileScope.class).getPackageName(), "");
     }
 
     @Test
     public void testPackageNameFound() {
-        parseCode(TEST2);
-        ASTCompilationUnit decl = acu;
-        assertEquals(decl.getScope().getEnclosingScope(SourceFileScope.class).getPackageName(), "foo.bar");
+        ASTCompilationUnit acu = parseCode(TEST2);
+        assertEquals(acu.getScope().getEnclosingScope(SourceFileScope.class).getPackageName(), "foo.bar");
     }
 
     @Test
     public void testNestedClasses() {
-        parseCode(TEST3);
+        ASTCompilationUnit acu = parseCode(TEST3);
         Map<NameDeclaration, List<NameOccurrence>> m = acu.getScope().getDeclarations();
         Iterator<NameDeclaration> iterator = m.keySet().iterator();
         ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration) iterator.next();

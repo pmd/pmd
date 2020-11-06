@@ -1,17 +1,17 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
 public interface ApexParserVisitor {
+    /**
+     * @deprecated Use {@link #visit(ApexNode, Object)}. That method
+     *     also visits comments now.
+     */
+    @Deprecated
     Object visit(AbstractApexNodeBase node, Object data);
 
-    /**
-     * @deprecated This visit method will be removed with PMD 7.0.0. Use {@link #visit(AbstractApexNodeBase, Object)}
-     *             instead. This method would not visit all nodes, e.g. ASTFormalComment would not be covered.
-     */
-    @Deprecated // will be removed with PMD 7.0.0
     Object visit(ApexNode<?> node, Object data);
 
     Object visit(ASTAnnotation node, Object data);
@@ -87,6 +87,8 @@ public interface ApexParserVisitor {
     Object visit(ASTIllegalStoreExpression node, Object data);
 
     Object visit(ASTInstanceOfExpression node, Object data);
+
+    Object visit(ASTInvalidDependentCompilation node, Object data);
 
     Object visit(ASTJavaMethodCallExpression node, Object data);
 
@@ -191,4 +193,18 @@ public interface ApexParserVisitor {
     Object visit(ASTVariableExpression node, Object data);
 
     Object visit(ASTWhileLoopStatement node, Object data);
+
+    Object visit(ASTSwitchStatement node, Object data);
+
+    Object visit(ASTElseWhenBlock node, Object data);
+
+    Object visit(ASTTypeWhenBlock node, Object data);
+
+    Object visit(ASTValueWhenBlock node, Object data);
+
+    Object visit(ASTLiteralCase node, Object data);
+
+    Object visit(ASTIdentifierCase node, Object data);
+
+    Object visit(ASTEmptyReferenceExpression node, Object data);
 }

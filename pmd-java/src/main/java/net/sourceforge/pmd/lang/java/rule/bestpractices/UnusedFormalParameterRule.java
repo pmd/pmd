@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.util.List;
@@ -25,12 +27,12 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 public class UnusedFormalParameterRule extends AbstractJavaRule {
 
-    private static final BooleanProperty CHECKALL_DESCRIPTOR = new BooleanProperty("checkAll",
-            "Check all methods, including non-private ones", false, 1.0f);
+    private static final PropertyDescriptor<Boolean> CHECKALL_DESCRIPTOR = booleanProperty("checkAll").desc("Check all methods, including non-private ones").defaultValue(false).build();
 
     public UnusedFormalParameterRule() {
         definePropertyDescriptor(CHECKALL_DESCRIPTOR);
@@ -56,7 +58,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
     private boolean isSerializationMethod(ASTMethodDeclaration node) {
         ASTMethodDeclarator declarator = node.getFirstDescendantOfType(ASTMethodDeclarator.class);
         List<ASTFormalParameter> parameters = declarator.findDescendantsOfType(ASTFormalParameter.class);
-        if (node.isPrivate() && "readObject".equals(node.getMethodName()) && parameters.size() == 1
+        if (node.isPrivate() && "readObject".equals(node.getName()) && parameters.size() == 1
                 && throwsOneException(node, InvalidObjectException.class)) {
             ASTType type = parameters.get(0).getTypeNode();
             if (type.getType() == ObjectInputStream.class
@@ -70,8 +72,8 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
 
     private boolean throwsOneException(ASTMethodDeclaration node, Class<? extends Throwable> exception) {
         ASTNameList throwsList = node.getThrows();
-        if (throwsList != null && throwsList.jjtGetNumChildren() == 1) {
-            ASTName n = (ASTName) throwsList.jjtGetChild(0);
+        if (throwsList != null && throwsList.getNumChildren() == 1) {
+            ASTName n = (ASTName) throwsList.getChild(0);
             if (n.getType() == exception || exception.getSimpleName().equals(n.getImage())
                     || exception.getName().equals(n.getImage())) {
                 return true;
@@ -81,7 +83,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
     }
 
     private void check(Node node, Object data) {
-        Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
+        Node parent = node.getParent().getParent().getParent();
         if (parent instanceof ASTClassOrInterfaceDeclaration
                 && !((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
             Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((JavaNode) node).getScope()
@@ -107,7 +109,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
         for (NameOccurrence occ : usages) {
             JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
             if (jocc.isOnLeftHandSide()) {
-                if (nameDecl.isArray() && jocc.getLocation().jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
+                if (nameDecl.isArray() && jocc.getLocation().getParent().getParent().getNumChildren() > 1) {
                     // array element access
                     return true;
                 }
@@ -120,9 +122,9 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
     }
 
     private boolean hasOverrideAnnotation(ASTMethodDeclaration node) {
-        int childIndex = node.jjtGetChildIndex();
+        int childIndex = node.getIndexInParent();
         for (int i = 0; i < childIndex; i++) {
-            Node previousSibling = node.jjtGetParent().jjtGetChild(i);
+            Node previousSibling = node.getParent().getChild(i);
             List<ASTMarkerAnnotation> annotations = previousSibling.findDescendantsOfType(ASTMarkerAnnotation.class);
             for (ASTMarkerAnnotation annotation : annotations) {
                 ASTName name = annotation.getFirstChildOfType(ASTName.class);

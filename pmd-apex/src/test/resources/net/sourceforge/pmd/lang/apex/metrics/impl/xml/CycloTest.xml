@@ -13,7 +13,7 @@
               k++;
             } catch (IOException ioe) {
               ioe.printStackTrace();
-              throw new Exception("surprise", ioe);
+              throw new Exception('surprise', ioe);
             } catch (Exception e) {
               // do nothing
             }
@@ -22,7 +22,7 @@
             int x = 0, y = 1, z = 2, t = 2;
             boolean a = false, b = true, c = false, d = true;
 
-            for (String s : list) {
+            for (String s : lst) { // list is a kw
               x++;
             }
 
@@ -86,7 +86,7 @@
           public Test() {
             if (a == 1) {
               if (b == 2) {
-                System.out.println("b");
+                System.out.println('b');
               } else if (b == 1) {
               }
             } else {

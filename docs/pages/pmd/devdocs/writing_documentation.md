@@ -60,6 +60,32 @@ all formatting inside the delimiters, and allow to write code samples without
 </rule>
 ```
 
+## Custom Liquid Tags
+
+We have some additional custom liquid tags that help in writing the documentation.
+
+Here's a short overview:
+
+| Liquid | Rendered as |
+|:-------|:------------|
+| `{% raw %}{% rule "java/codestyle/LinguisticNaming" %}{% endraw %}`               | {% rule "java/codestyle/LinguisticNaming" %} |
+| `{% raw %}{% jdoc core::Rule %}{% endraw %}`                                      | {% jdoc core::Rule %} |
+| `{% raw %}{% jdoc !q!core::Rule %}{% endraw %}`                                   | {% jdoc !q!core::Rule %} |
+| `{% raw %}{% jdoc core::Rule#setName(java.lang.String) %}{% endraw %}`            | {% jdoc core::Rule#setName(java.lang.String) %} |
+| `{% raw %}{% jdoc !c!core::Rule#setName(java.lang.String) %}{% endraw %}`         | {% jdoc !c!core::Rule#setName(java.lang.String) %} |
+| `{% raw %}{% jdoc !a!core::Rule#setName(java.lang.String) %}{% endraw %}`         | {% jdoc !a!core::Rule#setName(java.lang.String) %} |
+| `{% raw %}{% jdoc !ac!core::Rule#setName(java.lang.String) %}{% endraw %}`        | {% jdoc !ac!core::Rule#setName(java.lang.String) %} |
+| `{% raw %}{% jdoc core::properties.PropertyDescriptor %}{% endraw %}`             | {% jdoc core::properties.PropertyDescriptor %} |
+| `{% raw %}{% jdoc_nspace :jast java::lang.java.ast %}{% jdoc jast::ASTAnyTypeDeclaration %}{% endraw %}`       | {% jdoc_nspace :jast java::lang.java.ast %}{% jdoc jast::ASTAnyTypeDeclaration %} |
+| `{% raw %}{% jdoc_nspace :jast java::lang.java.ast %}{% jdoc_package :jast %}{% endraw %}`                     | {% jdoc_nspace :jast java::lang.java.ast %}{% jdoc_package :jast %} |
+| `{% raw %}{% jdoc_nspace :PrD core::properties.PropertyDescriptor %}{% jdoc !ac!:PrD#uiOrder() %}{% endraw %}` | {% jdoc_nspace :PrD core::properties.PropertyDescriptor %}{% jdoc !ac!:PrD#uiOrder() %} |
+| `{% raw %}{% jdoc_old core::Rule %}{% endraw %}`                                  | {% jdoc_old core::Rule %}
+
+For the javadoc tags, the standard PMD maven modules are already defined as namespaces, e.g. `core`, `java`, `apex`, ....
+
+For the implementation of these tags, see the [_plugins](https://github.com/pmd/pmd/tree/master/docs/_plugins) folder.
+
+
 ## Building
 
 There are two ways, to execute jekyll:
@@ -177,3 +203,8 @@ public class Foo {
     public void bar() { System.out.println("x"); }
 }
 ```
+
+## Checking for dead links
+
+`mvn verify -pl pmd-doc`. This only checks links within the site. HTTP links can be checked
+by specifying `-Dpmd.doc.checkExternalLinks=true` on the command line.

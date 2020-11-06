@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -32,7 +34,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 public abstract class AbstractPMDProcessor {
 
     private static final Logger LOG = Logger.getLogger(AbstractPMDProcessor.class.getName());
-    
+
     protected final PMDConfiguration configuration;
 
     public AbstractPMDProcessor(PMDConfiguration configuration) {
@@ -50,6 +52,13 @@ public abstract class AbstractPMDProcessor {
         }
     }
 
+    /**
+     *
+     * @deprecated this method will be removed. It was once used to determine a short filename
+     * for the file being analyzed, so that shortnames can be reported. But the logic has
+     * been moved to the renderers.
+     */
+    @Deprecated
     protected String filenameFrom(DataSource dataSource) {
         return dataSource.getNiceFileName(configuration.isReportShortNames(), configuration.getInputPaths());
     }
@@ -66,15 +75,15 @@ public abstract class AbstractPMDProcessor {
      */
     protected RuleSets createRuleSets(RuleSetFactory factory, Report report) {
         final RuleSets rs = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
-        
+
         final Set<Rule> brokenRules = removeBrokenRules(rs);
         for (final Rule rule : brokenRules) {
             report.addConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
         }
-        
+
         return rs;
     }
-    
+
     /**
      * Remove and return the misconfigured rules from the rulesets and log them
      * for good measure.
@@ -96,23 +105,35 @@ public abstract class AbstractPMDProcessor {
         return brokenRules;
     }
 
+    @SuppressWarnings("PMD.CloseResource")
+    // the data sources must only be closed after the threads are finished
+    // this is done manually without a try-with-resources
     public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
             List<Renderer> renderers) {
-        RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
-        configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
-        SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
+        try {
+            final RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
+            configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
+            final SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
 
-        for (DataSource dataSource : files) {
-            String niceFileName = filenameFrom(dataSource);
+            for (final DataSource dataSource : files) {
+                // this is the real, canonical and absolute filename (not shortened)
+                String realFileName = dataSource.getNiceFileName(false, null);
 
-            runAnalysis(new PmdRunnable(dataSource, niceFileName, renderers, ctx, rs, processor));
+                runAnalysis(new PmdRunnable(dataSource, realFileName, renderers, ctx, rs, processor));
+            }
+
+            // render base report first - general errors
+            renderReports(renderers, ctx.getReport());
+
+            // then add analysis results per file
+            collectReports(renderers);
+        } finally {
+            // in case we analyzed files within Zip Files/Jars, we need to close them after
+            // the analysis is finished
+            for (DataSource dataSource : files) {
+                IOUtils.closeQuietly(dataSource);
+            }
         }
-
-        // render base report first - general errors
-        renderReports(renderers, ctx.getReport());
-        
-        // then add analysis results per file
-        collectReports(renderers);
     }
 
     protected abstract void runAnalysis(PmdRunnable runnable);

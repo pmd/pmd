@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,15 +6,16 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.FunctionNode;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
+    @Deprecated
+    @InternalApi
     public ASTFunctionNode(FunctionNode functionNode) {
         super(functionNode);
         super.setImage(functionNode.getName());
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -26,7 +27,7 @@ public class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
 
     public ASTName getFunctionName() {
         if (node.getFunctionName() != null) {
-            return (ASTName) jjtGetChild(0);
+            return (ASTName) getChild(0);
         }
         return null;
     }
@@ -36,11 +37,11 @@ public class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
         if (node.getFunctionName() != null) {
             paramIndex = index + 1;
         }
-        return (EcmascriptNode<?>) jjtGetChild(paramIndex);
+        return (EcmascriptNode<?>) getChild(paramIndex);
     }
 
     public EcmascriptNode<?> getBody() {
-        return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
+        return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
     }
 
     @Deprecated // use getBody() instead

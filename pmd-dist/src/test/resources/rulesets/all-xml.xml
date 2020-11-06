@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<ruleset name="All XML Rules" 
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>Every XML Rule in PMD</description>
+
+    <rule ref="category/xml/bestpractices.xml" />
+    <rule ref="category/xml/codestyle.xml" />
+    <rule ref="category/xml/design.xml" />
+    <rule ref="category/xml/documentation.xml" />
+    <rule ref="category/xml/errorprone.xml" />
+    <rule ref="category/xml/multithreading.xml" />
+    <rule ref="category/xml/performance.xml" />
+    <rule ref="category/xml/security.xml" />
+
+</ruleset>

@@ -1,0 +1,55 @@
+# This file describes custom XPath functions per language
+# This is rendered using _includes/custom/xpath_fun_doc.html
+
+aliases:
+  - &qname_param
+    name: javaQualifiedName
+    type: "xs:string"
+    description: "The qualified name of a Java class, possibly with pairs of brackets to indicate an array type.
+                  Can also be a primitive type name."
+  - &needs_typenode "The context node must be a {% jdoc jast::TypeNode %}"
+
+langs:
+  - name: "Java"
+    ns: "pmd-java"
+    funs:
+      - name: typeIs
+        returnType: "xs:boolean"
+        shortDescription: "Tests a node's static type"
+        description: "Returns true if the context node's static Java type is a subtype of the given type.
+                      This tests for the resolved type of the Java construct, not the type of the AST node.
+                      For example, the AST node for a literal (e.g. `5d`) has type ASTLiteral, however this
+                      function will compare the type of the literal (eg here, `double`) against the argument."
+        notes: *needs_typenode
+        parameters:
+          - *qname_param
+        examples:
+          - code: '//FormalParameter[pmd-java:typeIs("java.lang.String[]")]'
+            outcome: "Matches formal parameters of type `String[]` (including vararg parameters)"
+          - code: '//VariableDeclaratorId[pmd-java:typeIs("java.lang.List")]'
+            outcome: "Matches variable declarators of type `List` or any of its subtypes (including e.g. `ArrayList`)"
+
+
+      - name: typeIsExactly
+        returnType: "xs:boolean"
+        shortDescription: "Tests a node's static type, ignoring subtypes"
+        description: "Returns true if the context node's static type is exactly the given type.
+                      In particular, returns false if the context node's type is
+                      a subtype of the given type."
+        notes: *needs_typenode
+        parameters:
+          - *qname_param
+        examples:
+          - code: '//VariableDeclaratorId[pmd-java:typeIsExactly("java.lang.List")]'
+            outcome: "Matches variable declarators of type `List` (but not e.g. `ArrayList`)"
+
+
+      - name: metric
+        returnType: "xs:decimal?"
+        shortDescription: "Computes and returns the value of a metric"
+        description: "Returns the value of the metric as evaluated on the context node"
+        notes: "The context node must be a {% jdoc jast::ASTAnyTypeDeclaration %} or a {% jdoc jast::MethodLikeNode %}"
+        parameters:
+          - name: "metricKey"
+            type: "xs:string"
+            description: "The name of an enum constant in {% jdoc jmx::api.JavaOperationMetricKey %} or {% jdoc jmx::api.JavaClassMetricKey %}"

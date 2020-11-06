@@ -35,7 +35,7 @@ public class NullAssignmentRule extends AbstractJavaRule {
                 return data;
             }
 
-            if (n.jjtGetNumChildren() > 2 && n.jjtGetChild(1) instanceof ASTAssignmentOperator) {
+            if (n.getNumChildren() > 2 && n.getChild(1) instanceof ASTAssignmentOperator) {
                 addViolation(data, node);
             }
         } else if (node.getNthParent(4) instanceof ASTConditionalExpression) {
@@ -69,7 +69,7 @@ public class NullAssignmentRule extends AbstractJavaRule {
             isInitializer = statement == variableInitializer.getFirstParentOfType(ASTBlockStatement.class);
         }
 
-        return !(ternary.jjtGetChild(0) instanceof ASTEqualityExpression)
+        return !(ternary.getChild(0) instanceof ASTEqualityExpression)
                 && !isInitializer
                 && !(ternary.getNthParent(2) instanceof ASTReturnStatement)
                 && !(ternary.getNthParent(2) instanceof ASTLambdaExpression);

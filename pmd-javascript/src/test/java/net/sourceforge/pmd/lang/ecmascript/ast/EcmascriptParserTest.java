@@ -32,7 +32,7 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
     @Test
     public void testLineNumbers() {
         final String SOURCE_CODE = "function a() {" + PMD.EOL + "  alert('hello');" + PMD.EOL + "}" + PMD.EOL;
-        EcmascriptNode<AstRoot> node = parse(SOURCE_CODE);
+        EcmascriptNode<AstRoot> node = js.parse(SOURCE_CODE);
         assertEquals(1, node.getBeginLine());
         assertEquals(1, node.getBeginColumn());
         assertEquals(3, node.getEndLine());
@@ -69,7 +69,7 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
 
         MyEcmascriptRule rule = new MyEcmascriptRule();
         RuleContext ctx = new RuleContext();
-        rule.apply(Arrays.asList(parse(source)), ctx);
+        rule.apply(Arrays.asList(js.parse(source)), ctx);
 
         assertEquals("Scope from 2 to 4", output.get(0));
         assertEquals("Scope from 4 to 6", output.get(1));
@@ -80,7 +80,7 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     public void testArrayAccess() {
-        EcmascriptNode<AstRoot> node = parse("function a() { b['a'] = 1; c[1] = 2; }");
+        EcmascriptNode<AstRoot> node = js.parse("function a() { b['a'] = 1; c[1] = 2; }");
         List<ASTElementGet> arrays = node.findDescendantsOfType(ASTElementGet.class);
         assertEquals("b", arrays.get(0).getTarget().getImage());
         assertEquals("a", arrays.get(0).getElement().getImage());
@@ -94,9 +94,9 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     public void testArrayMethod() {
-        EcmascriptNode<AstRoot> rootNode = parse(
-                "function test(){\n" + "  a();      // OK\n" + "  b.c();    // OK\n" + "  d[0]();   // OK\n"
-                        + "  e[0].f(); // OK\n" + "  y.z[0](); // FAIL ==> java.lang.NullPointerException\n" + "}");
+        EcmascriptNode<AstRoot> rootNode = js.parse(
+            "function test(){\n" + "  a();      // OK\n" + "  b.c();    // OK\n" + "  d[0]();   // OK\n"
+                + "  e[0].f(); // OK\n" + "  y.z[0](); // FAIL ==> java.lang.NullPointerException\n" + "}");
 
         List<ASTFunctionCall> calls = rootNode.findDescendantsOfType(ASTFunctionCall.class);
         List<String> results = new ArrayList<>();
@@ -129,11 +129,11 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     public void testCaseAsIdentifier() {
-        ASTAstRoot rootNode = parse("function f(a){\n" + "    a.case.flag = 1;\n" + "    return;\n" + "}");
+        ASTAstRoot rootNode = js.parse("function f(a){\n" + "    a.case.flag = 1;\n" + "    return;\n" + "}");
         ASTBlock block = rootNode.getFirstDescendantOfType(ASTBlock.class);
-        assertFalse(block.jjtGetChild(0) instanceof ASTEmptyExpression);
-        assertTrue(block.jjtGetChild(0) instanceof ASTExpressionStatement);
-        assertTrue(block.jjtGetChild(0).jjtGetChild(0) instanceof ASTAssignment);
+        assertFalse(block.getChild(0) instanceof ASTEmptyExpression);
+        assertTrue(block.getChild(0) instanceof ASTExpressionStatement);
+        assertTrue(block.getChild(0).getChild(0) instanceof ASTAssignment);
     }
 
     /**
@@ -163,9 +163,9 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     public void testVoidKeyword() {
-        ASTAstRoot rootNode = parse("function f(matchFn, fieldval, n){\n"
-                + "    return (matchFn)?(matcharray = eval(matchFn+\"('\"+fieldval+\"','\"+n.id+\"')\")):void(0);\n"
-                + "}\n");
+        ASTAstRoot rootNode = js.parse("function f(matchFn, fieldval, n){\n"
+                                           + "    return (matchFn)?(matcharray = eval(matchFn+\"('\"+fieldval+\"','\"+n.id+\"')\")):void(0);\n"
+                                           + "}\n");
         ASTUnaryExpression unary = rootNode.getFirstDescendantOfType(ASTUnaryExpression.class);
         assertEquals("void", unary.getImage());
     }
@@ -175,9 +175,9 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     public void testXorAssignment() {
-        ASTAstRoot rootNode = parse("function f() { var x = 2; x ^= 2; x &= 2; x |= 2; "
-                + "x &&= true; x ||= false; x *= 2; x /= 2; x %= 2; x += 2; x -= 2; "
-                + "x <<= 2; x >>= 2; x >>>= 2; }");
+        ASTAstRoot rootNode = js.parse("function f() { var x = 2; x ^= 2; x &= 2; x |= 2; "
+                                           + "x &&= true; x ||= false; x *= 2; x /= 2; x %= 2; x += 2; x -= 2; "
+                                           + "x <<= 2; x >>= 2; x >>>= 2; }");
         ASTAssignment infix = rootNode.getFirstDescendantOfType(ASTAssignment.class);
         assertEquals("^=", infix.getImage());
     }

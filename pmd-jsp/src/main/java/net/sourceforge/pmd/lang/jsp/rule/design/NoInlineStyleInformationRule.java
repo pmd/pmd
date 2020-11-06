@@ -81,8 +81,8 @@ public class NoInlineStyleInformationRule extends AbstractJspRule {
      */
     private boolean isStyleAttribute(ASTAttribute attributeNode) {
         if (STYLE_ATTRIBUTES.contains(attributeNode.getName().toUpperCase(Locale.ROOT))) {
-            if (attributeNode.jjtGetParent() instanceof ASTElement) {
-                ASTElement parent = (ASTElement) attributeNode.jjtGetParent();
+            if (attributeNode.getParent() instanceof ASTElement) {
+                ASTElement parent = (ASTElement) attributeNode.getParent();
                 if (ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES.contains(parent.getName().toUpperCase(Locale.ROOT))) {
                     return true;
                 }

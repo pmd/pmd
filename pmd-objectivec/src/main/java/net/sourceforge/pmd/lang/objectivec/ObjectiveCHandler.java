@@ -11,7 +11,10 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
  * Implementation of LanguageVersionHandler for the Objective-C Language.
+ *
+ * @deprecated There is no full PMD support for Objective-C.
  */
+@Deprecated
 public class ObjectiveCHandler extends AbstractLanguageVersionHandler {
 
     @Override

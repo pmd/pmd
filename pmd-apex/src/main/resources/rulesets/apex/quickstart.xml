@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="quickstart"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+   <description>Quickstart configuration of PMD for Salesforce.com Apex. Includes the rules that are most likely to apply everywhere.</description>
+
+   <!-- COMPLEXITY -->
+   <rule ref="category/apex/design.xml/ExcessiveClassLength" message="Avoid really long classes (lines of code)">
+      <priority>3</priority>
+      <properties>
+         <property name="minimum" value="1000" />
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Complexity" />
+         <property name="cc_remediation_points_multiplier" value="150" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/design.xml/ExcessiveParameterList" message="Avoid long parameter lists">
+      <priority>3</priority>
+      <properties>
+         <property name="minimum" value="4" />
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Complexity" />
+         <property name="cc_remediation_points_multiplier" value="50" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/design.xml/ExcessivePublicCount" message="This class has too many public methods and attributes">
+      <priority>3</priority>
+      <properties>
+         <property name="minimum" value="25" />
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Complexity" />
+         <property name="cc_remediation_points_multiplier" value="150" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/design.xml/NcssConstructorCount" message="The constructor has an NCSS line count of {0}">
+      <priority>3</priority>
+      <properties>
+         <property name="minimum" value="20" />
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Complexity" />
+         <property name="cc_remediation_points_multiplier" value="50" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/design.xml/NcssMethodCount" message="The method {0}() has an NCSS line count of {1}">
+      <priority>3</priority>
+      <properties>
+         <property name="minimum" value="60" />
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Complexity" />
+         <property name="cc_remediation_points_multiplier" value="50" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/design.xml/NcssTypeCount" message="The type has an NCSS line count of {0}">
+      <priority>3</priority>
+      <properties>
+         <property name="minimum" value="700" />
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Complexity" />
+         <property name="cc_remediation_points_multiplier" value="250" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/design.xml/StdCyclomaticComplexity" message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}.">
+      <priority>3</priority>
+      <properties>
+         <property name="reportLevel" value="10" />
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Complexity" />
+         <property name="cc_remediation_points_multiplier" value="250" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/design.xml/TooManyFields" message="Too many fields">
+      <priority>3</priority>
+      <properties>
+         <property name="maxfields" value="20" />
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Complexity" />
+         <property name="cc_remediation_points_multiplier" value="200" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/design.xml/AvoidDeeplyNestedIfStmts" message="Deeply nested if..else statements are hard to read">
+      <priority>3</priority>
+      <properties>
+         <property name="problemDepth" value="4" />
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Complexity" />
+         <property name="cc_remediation_points_multiplier" value="200" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/design.xml/CyclomaticComplexity">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Complexity" />
+         <property name="cc_remediation_points_multiplier" value="200" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <!-- <rule ref="category/apex/design.xml/CognitiveComplexity"/> -->
+
+   <!-- PERFORMANCE -->
+   <rule ref="category/apex/performance.xml/OperationWithLimitsInLoop" message="Avoid operations in loops that may hit governor limits">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Performance" />
+         <property name="cc_remediation_points_multiplier" value="150" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/errorprone.xml/AvoidDirectAccessTriggerMap" message="Avoid directly accessing Trigger.old and Trigger.new">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Performance" />
+         <property name="cc_remediation_points_multiplier" value="150" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/bestpractices.xml/AvoidLogicInTrigger" message="Avoid logic in triggers">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="200" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/bestpractices.xml/AvoidGlobalModifier" message="Avoid using global modifier">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="100" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/errorprone.xml/AvoidNonExistentAnnotations">
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="100" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/errorprone.xml/AvoidHardcodingId" message="Avoid hardcoding ID's">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security"/>
+         <property name="cc_remediation_points_multiplier" value="20"/>
+         <property name="cc_block_highlighting" value="false"/>
+      </properties>
+   </rule>
+
+   <!-- NAMING -->
+   <rule ref="category/apex/codestyle.xml/ClassNamingConventions" message="Class names should begin with an uppercase character">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/MethodNamingConventions" message="Method name does not begin with a lower case character.">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="1" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/errorprone.xml/MethodWithSameNameAsEnclosingClass" message="Classes should not have non-constructor methods with the same name as the class">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="50" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+
+   <!-- NAMING -->
+   <rule ref="category/apex/codestyle.xml/FieldNamingConventions">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/FormalParameterNamingConventions">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/LocalVariableNamingConventions">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/PropertyNamingConventions">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+
+   <!-- TESTS -->
+   <rule ref="category/apex/bestpractices.xml/ApexUnitTestClassShouldHaveAsserts" message="Apex unit test classes should have at least one System.assert() or assertEquals() or AssertNotEquals() call">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Bug Risk" />
+         <property name="cc_remediation_points_multiplier" value="100" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/bestpractices.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" message="@isTest(seeAllData=true) should not be used in Apex unit tests because it opens up the existing database data for unexpected modification by tests">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Bug Risk" />
+         <property name="cc_remediation_points_multiplier" value="100" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+<!--    <rule ref="category/apex/bestpractices.xml/ApexAssertionsShouldIncludeMessage"/> -->
+<!--    <rule ref="category/apex/bestpractices.xml/ApexUnitTestMethodShouldHaveIsTestAnnotation"/> -->
+<!--    <rule ref="category/apex/errorprone.xml/TestMethodsMustBeInTestClasses"/> -->
+
+   <!-- SECURITY -->
+   <rule ref="category/apex/security.xml/ApexSharingViolations" message="Apex classes should declare a sharing model if DML or SOQL is used">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/security.xml/ApexInsecureEndpoint" message="Apex callouts should use encrypted communication channels">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security" />
+         <property name="cc_remediation_points_multiplier" value="50" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/errorprone.xml/ApexCSRF">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security" />
+         <property name="cc_remediation_points_multiplier" value="100" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/security.xml/ApexOpenRedirect" message="Apex classes should safely redirect to a known location">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security" />
+         <property name="cc_remediation_points_multiplier" value="50" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/security.xml/ApexSOQLInjection" message="Apex classes should escape variables merged in DML query">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security" />
+         <property name="cc_remediation_points_multiplier" value="20" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/security.xml/ApexXSSFromURLParam" message="Apex classes should escape Strings obtained from URL parameters">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security" />
+         <property name="cc_remediation_points_multiplier" value="20" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/security.xml/ApexXSSFromEscapeFalse" message="Apex classes should escape addError strings">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security" />
+         <property name="cc_remediation_points_multiplier" value="20" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/security.xml/ApexBadCrypto" message="Apex Crypto should use random IV/key">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security" />
+         <property name="cc_remediation_points_multiplier" value="50" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/security.xml/ApexCRUDViolation" message="Validate CRUD permission before SOQL/DML operation">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security"/>
+         <property name="cc_remediation_points_multiplier" value="150"/>
+         <property name="cc_block_highlighting" value="false"/>
+      </properties>
+   </rule>
+   <rule ref="category/apex/security.xml/ApexDangerousMethods" message="Calling potentially dangerous method">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security"/>
+         <property name="cc_remediation_points_multiplier" value="50"/>
+         <property name="cc_block_highlighting" value="false"/>
+      </properties>
+   </rule>
+   <rule ref="category/apex/security.xml/ApexSuggestUsingNamedCred" message="Consider using named credentials for authenticated callouts">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security"/>
+         <property name="cc_remediation_points_multiplier" value="20"/>
+         <property name="cc_block_highlighting" value="false"/>
+      </properties>
+   </rule>
+
+   <!-- BRACES -->
+   <rule ref="category/apex/codestyle.xml/IfStmtsMustUseBraces" message="Avoid using if statements without curly braces">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/WhileLoopsMustUseBraces" message="Avoid using 'while' statements without curly braces">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/IfElseStmtsMustUseBraces" message="Avoid using 'if...else' statements without curly braces">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+         </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/ForLoopsMustUseBraces" message="Avoid using 'for' statements without curly braces">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+
+   <!-- EMPTY -->
+   <rule ref="category/apex/errorprone.xml/EmptyCatchBlock" message="Avoid empty catch blocks">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+         </properties>
+   </rule>
+   <rule ref="category/apex/errorprone.xml/EmptyIfStmt" message="Avoid empty 'if' statements">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+         </properties>
+   </rule>
+   <rule ref="category/apex/errorprone.xml/EmptyWhileStmt" message="Avoid empty 'while' statements">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/errorprone.xml/EmptyTryOrFinallyBlock" message="Avoid empty try or finally blocks">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/errorprone.xml/EmptyStatementBlock" message="Avoid empty block statements.">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+
+   <!-- STYLE -->
+   <rule ref="category/apex/codestyle.xml/OneDeclarationPerLine">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <!-- <rule ref="category/apex/codestyle.xml/FieldDeclarationsShouldBeAtStart"/> -->
+
+   <!-- DOCUMENTATION -->
+   <rule ref="category/apex/documentation.xml/ApexDoc" message="Document classes, methods, and properties that are public or global.">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="50" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+
+   <!-- CLARITY / BEST PRACTICES -->
+   <rule ref="category/apex/bestpractices.xml/DebugsShouldUseLoggingLevel">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Clarity" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <!-- <rule ref="category/apex/bestpractices.xml/UnusedLocalVariable"/> -->
+
+</ruleset>

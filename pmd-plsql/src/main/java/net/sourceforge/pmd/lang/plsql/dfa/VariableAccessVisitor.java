@@ -34,25 +34,27 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * type of access of a variable.
  *
  * @author raik, Sven Jacob
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
 
     public void compute(ASTMethodDeclaration node) {
         // This includes Package Bodies and Object Type Bodies
-        if (node.jjtGetParent() instanceof ASTPackageBody) {
+        if (node.getParent() instanceof ASTPackageBody) {
             this.computeNow(node);
         }
     }
 
     public void compute(ASTProgramUnit node) {
         // Treat Compound Trigger as a Package Body
-        if (node.jjtGetParent() instanceof ASTPackageBody || node.jjtGetParent() instanceof ASTCompoundTriggerBlock) {
+        if (node.getParent() instanceof ASTPackageBody || node.getParent() instanceof ASTCompoundTriggerBlock) {
             this.computeNow(node);
         }
     }
 
     public void compute(ASTTypeMethod node) {
-        if (node.jjtGetParent() instanceof ASTPackageBody) {
+        if (node.getParent() instanceof ASTPackageBody) {
             this.computeNow(node);
         }
     }
@@ -92,10 +94,10 @@ public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
             for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : declarations.entrySet()) {
                 NameDeclaration vnd = entry.getKey();
 
-                if (vnd.getNode().jjtGetParent() instanceof ASTFormalParameter) {
+                if (vnd.getNode().getParent() instanceof ASTFormalParameter) {
                     // no definition/undefinition/references for parameters
                     continue;
-                } else if (vnd.getNode().jjtGetParent()
+                } else if (vnd.getNode().getParent()
                         .getFirstDescendantOfType(ASTVariableOrConstantInitializer.class) != null) {
                     // add definition for initialized variables
                     addVariableAccess(vnd.getNode(), new VariableAccess(VariableAccess.DEFINITION, vnd.getImage()),
@@ -141,7 +143,7 @@ public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
 
     /**
      * Adds a VariableAccess to a dataflow node.
-     * 
+     *
      * @param node
      *            location of the access of a variable
      * @param va

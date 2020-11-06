@@ -16,12 +16,15 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 
 /**
  * Adapter for the Matlab Parser.
+ *
+ * @deprecated There is no full PMD support for Matlab.
  */
+@Deprecated
 public class MatlabParser extends AbstractParser {
 
     /**
      * Creates a new Matlab Parser.
-     * 
+     *
      * @param parserOptions
      *            the options
      */

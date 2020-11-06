@@ -3,11 +3,11 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-fail, == 0
-     ]]></description>
+        <description>fail, == 0</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public static boolean bar(List lst) {
@@ -17,12 +17,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, isEmpty
-     ]]></description>
+        <description>ok, isEmpty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -33,13 +32,13 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail, != 0
-     ]]></description>
+        <description>fail, != 0</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public static boolean bar(List lst) {
@@ -49,12 +48,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, !isEmpty
-     ]]></description>
+        <description>ok, !isEmpty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -65,13 +63,13 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail, != 0
-     ]]></description>
+        <description>fail, != 0</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public static boolean bar(List lst, boolean b) {
@@ -81,12 +79,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, !isEmpty
-     ]]></description>
+        <description>ok, !isEmpty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -97,13 +94,13 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail, 0 ==
-     ]]></description>
+        <description>fail, 0 ==</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public static boolean bar(List lst) {
@@ -113,13 +110,13 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail, > 0
-     ]]></description>
+        <description>fail, &gt; 0</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public static boolean bar(List lst) {
@@ -129,12 +126,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, in expression
-     ]]></description>
+        <description>ok, in expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -146,12 +142,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, in expression
-     ]]></description>
+        <description>ok, in expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -163,11 +158,13 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1214 UseCollectionIsEmpty misses some usage</description>
         <expected-problems>5</expected-problems>
+        <expected-linenumbers>25,28,31,34,37</expected-linenumbers>
         <code><![CDATA[
 import java.util.ArrayList;
 
@@ -223,6 +220,7 @@ public class TestIsEmpty {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1230 UseCollectionIsEmpty gets false positives</description>
         <expected-problems>4</expected-problems>
@@ -281,6 +279,7 @@ public class IsEmptyTest {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1304 UseCollectionIsEmpty false positive comparing to 1</description>
         <expected-problems>0</expected-problems>
@@ -297,6 +296,7 @@ public class PMDIsEmptyFalsePositive {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1345 UseCollectionIsEmpty throws NullPointerException</description>
         <expected-problems>0</expected-problems>
@@ -316,6 +316,34 @@ public class PmdBugBait {
         if (list.size() < this.getSize()) {
             throw new IllegalArgumentException();
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2543 false negative on this.collection.size</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+
+public class Foo {
+
+    private List<String> list = new ArrayList<>();
+    private Bar notACollection = new Bar();
+
+    public void bar() {
+        if (this.list.size() == 0) {
+            throw new RuntimeException("Empty list");
+        }
+        if (notACollection.size() == 0) { }
+        if (this.notACollection.size() == 0) { }
+    }
+
+    public int size() {
+        return 0;
     }
 }
         ]]></code>

@@ -7,13 +7,17 @@ package net.sourceforge.pmd.stat;
 import java.util.Random;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
+
 
 /**
  * Datapoint used for rules that deal with metrics.
  *
  * @author David Dixon-Peugh
  * @since Aug 8, 2002
+ * @deprecated see {@link StatisticalRule}
  */
+@Deprecated
 public class DataPoint implements Comparable<DataPoint> {
 
     private Node node;

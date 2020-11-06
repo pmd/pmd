@@ -3,71 +3,60 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Short as field
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
-			    public class UsingShort
-			    {
-			        private short doNotUseShort = 0;
-				}
-		     ]]>
-		</code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Short as local variable
-     ]]></description>
+        <description>Short as field</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-    public class UsingShort
-    {
-		public UsingShort() {
-			short shouldNotBeUsed = 1;
-		}
-	}
-     ]]></code>
+public class UsingShort
+{
+    private short doNotUseShort = 0;
+}
+        ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Short as local variable</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class UsingShort
+{
+    public UsingShort() {
+        short shouldNotBeUsed = 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
      <test-code>
-        <description><![CDATA[
-Short as method return type
-     ]]></description>
+        <description>Short as method return type</description>
         <expected-problems>2</expected-problems>
-        <code>
-        <![CDATA[
-		 public class UsingShort {
-		   	public short badReturntype() {
-				short var = 0;
-				return var;
-			}
-		}
-     	]]>
-     	</code>
+        <code><![CDATA[
+public class UsingShort {
+    public short badReturntype() {
+        short var = 0;
+        return var;
+    }
+}
+        ]]></code>
     </test-code>
-         <test-code>
-        <description><![CDATA[
-Short as method return type
-     ]]></description>
+
+    <test-code>
+        <description>Short as method return type</description>
         <expected-problems>0</expected-problems>
-        <code>
-        <![CDATA[
-    public class TypeNameWithshort
-    {
-		// … is not an infraction !
-		int shortName = 0;
+        <code><![CDATA[
+public class TypeNameWithshort
+{
+    // … is not an infraction !
+    int shortName = 0;
 
-		public void avoidCommonMisinterpretation() {
-			// … is not an infraction !
-			int shortName = 0;
-			TypeNameWithshort legal = new TypeNameWithshort(shortName);
-		}
-
-	}
-		]]>
-		</code>
+    public void avoidCommonMisinterpretation() {
+        // … is not an infraction !
+        int shortName = 0;
+        TypeNameWithshort legal = new TypeNameWithshort(shortName);
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>

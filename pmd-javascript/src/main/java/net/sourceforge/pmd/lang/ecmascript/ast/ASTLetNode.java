@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,21 +6,22 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.LetNode;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTLetNode extends AbstractEcmascriptNode<LetNode> {
+    @Deprecated
+    @InternalApi
     public ASTLetNode(LetNode letNode) {
         super(letNode);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
     public ASTVariableDeclaration getVariables() {
-        return (ASTVariableDeclaration) jjtGetChild(0);
+        return (ASTVariableDeclaration) getChild(0);
     }
 
     public boolean hasBody() {
@@ -29,7 +30,7 @@ public class ASTLetNode extends AbstractEcmascriptNode<LetNode> {
 
     public EcmascriptNode<?> getBody() {
         if (hasBody()) {
-            return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
+            return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
         } else {
             return null;
         }

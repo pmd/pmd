@@ -8,7 +8,10 @@ import net.sourceforge.pmd.lang.BaseLanguageModule;
 
 /**
  * Language Module for C#
+ *
+ * @deprecated There is no full PMD support for c#.
  */
+@Deprecated
 public class CsLanguageModule extends BaseLanguageModule {
 
     /** The name. */
@@ -20,7 +23,7 @@ public class CsLanguageModule extends BaseLanguageModule {
      * Create a new instance of C# Language Module.
      */
     public CsLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "cs");
+        super(NAME, null, TERSE_NAME, "cs");
         addVersion("", null, true);
     }
 }

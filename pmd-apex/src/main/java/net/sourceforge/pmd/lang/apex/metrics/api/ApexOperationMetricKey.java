@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.metrics.api;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.metrics.impl.CognitiveComplexityMetric;
 import net.sourceforge.pmd.lang.apex.metrics.impl.CycloMetric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 
@@ -12,7 +13,8 @@ import net.sourceforge.pmd.lang.metrics.MetricKey;
  * @author Clément Fournier
  */
 public enum ApexOperationMetricKey implements MetricKey<ASTMethod> {
-    CYCLO(new CycloMetric());
+    CYCLO(new CycloMetric()),
+    COGNITIVE(new CognitiveComplexityMetric());
 
 
     private final ApexOperationMetric calculator;

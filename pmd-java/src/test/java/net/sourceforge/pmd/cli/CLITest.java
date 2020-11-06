@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cli;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
@@ -16,7 +17,7 @@ import net.sourceforge.pmd.util.FileUtil;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
- * 
+ *
  */
 public class CLITest extends BaseCLITest {
     @Test
@@ -38,7 +39,7 @@ public class CLITest extends BaseCLITest {
     }
 
     @Test
-    public void changeJavaVersion() {
+    public void changeJavaVersion() throws IOException {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml", "-version", "1.5", "-language",
             "java", "-debug", };
         String resultFilename = runTest(args, "chgJavaVersion");
@@ -53,14 +54,14 @@ public class CLITest extends BaseCLITest {
     }
 
     @Test
-    public void exitStatusWithViolations() {
+    public void exitStatusWithViolations() throws IOException {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/errorprone.xml", };
         String resultFilename = runTest(args, "exitStatusWithViolations", 4);
         assertTrue(FileUtil.findPatternInFile(new File(resultFilename), "Avoid empty if"));
     }
 
     @Test
-    public void exitStatusWithViolationsAndWithoutFailOnViolations() {
+    public void exitStatusWithViolationsAndWithoutFailOnViolations() throws IOException {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/errorprone.xml", "-failOnViolation", "false", };
         String resultFilename = runTest(args, "exitStatusWithViolationsAndWithoutFailOnViolations", 0);
         assertTrue(FileUtil.findPatternInFile(new File(resultFilename), "Avoid empty if"));
@@ -105,6 +106,6 @@ public class CLITest extends BaseCLITest {
         runPMDWith(args);
         Assert.assertEquals(1, getStatusCode());
         assertTrue(FileUtil.findPatternInFile(new File(filename), Pattern
-                .quote("No rules found. Maybe you mispelled a rule name?" + " (category/java/design.xml/ThisRuleDoesNotExist)")));
+                .quote("No rules found. Maybe you misspelled a rule name?" + " (category/java/design.xml/ThisRuleDoesNotExist)")));
     }
 }

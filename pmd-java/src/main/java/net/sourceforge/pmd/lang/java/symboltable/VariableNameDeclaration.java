@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -31,7 +32,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;
         ASTType typeNode = astVariableDeclaratorId.getTypeNode();
         if (typeNode != null) {
-            return ((Dimensionable) typeNode.jjtGetParent()).isArray();
+            return ((Dimensionable) typeNode.getParent()).isArray();
         } else {
             return false;
         }
@@ -41,7 +42,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;
         ASTType typeNode = astVariableDeclaratorId.getTypeNode();
         if (typeNode != null) {
-            return ((Dimensionable) typeNode.jjtGetParent()).getArrayDepth();
+            return ((Dimensionable) typeNode.getParent()).getArrayDepth();
         } else {
             return 0;
         }
@@ -71,12 +72,12 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
 
     public boolean isPrimitiveType() {
         return !isTypeInferred()
-                && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTPrimitiveType;
+                && getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0) instanceof ASTPrimitiveType;
     }
 
     @Override
     public String getTypeImage() {
-        TypeNode typeNode = getTypeNode();
+        TypeNode typeNode = getExplicitTypeNode();
         if (typeNode != null) {
             return typeNode.getImage();
         }
@@ -88,37 +89,55 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
      */
     public boolean isReferenceType() {
         return !isTypeInferred()
-                && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTReferenceType;
+                && getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0) instanceof ASTReferenceType;
+    }
+
+    private boolean isRecordComponent() {
+        return node.getParent() instanceof ASTRecordComponent;
     }
 
     public AccessNode getAccessNodeParent() {
-        if (node.jjtGetParent() instanceof ASTFormalParameter || node.jjtGetParent() instanceof ASTLambdaExpression) {
-            return (AccessNode) node.jjtGetParent();
+        if (isRecordComponent()) {
+            return null;
         }
-        return (AccessNode) node.jjtGetParent().jjtGetParent();
+
+        if (node.getParent() instanceof ASTFormalParameter || node.getParent() instanceof ASTLambdaExpression) {
+            return (AccessNode) node.getParent();
+        }
+        return (AccessNode) node.getParent().getParent();
     }
 
     public ASTVariableDeclaratorId getDeclaratorId() {
         return (ASTVariableDeclaratorId) node;
     }
 
-    private TypeNode getTypeNode() {
+    @Override
+    public TypeNode getTypeNode() {
+        return getDeclaratorId();
+    }
+
+    private TypeNode getExplicitTypeNode() {
+        if (isRecordComponent()) {
+            return (TypeNode) node.getParent().getFirstChildOfType(ASTType.class).getChild(0);
+        }
         if (isPrimitiveType()) {
-            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0);
+            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0);
         }
         if (!isTypeInferred()) {
-            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).jjtGetChild(0);
+            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0).getChild(0);
         }
         return null;
     }
 
     @Override
     public Class<?> getType() {
-        TypeNode typeNode = getTypeNode();
+        TypeNode typeNode = getExplicitTypeNode();
         if (typeNode != null) {
             return typeNode.getType();
         }
-        return null;
+        // if there is no type node, then return the type of the declarator id.
+        // this might be a inferred type
+        return getDeclaratorId().getType();
     }
 
     @Override

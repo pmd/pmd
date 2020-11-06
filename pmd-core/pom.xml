@@ -7,7 +7,8 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.10.0-SNAPSHOT</version>
+        <version>6.30.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <build>
@@ -97,12 +98,18 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>net.java.dev.javacc</groupId>
+            <artifactId>javacc</artifactId>
+            <scope>provided</scope> <!-- only needed for generating the parser via ant -->
+        </dependency>
+
+        <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
         </dependency>
         <dependency>
-          <groupId>com.beust</groupId>
-          <artifactId>jcommander</artifactId>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -121,10 +128,7 @@
             -->
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>net.java.dev.javacc</groupId>
-            <artifactId>javacc</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>net.sourceforge.saxon</groupId>
             <artifactId>saxon</artifactId>
@@ -140,7 +144,7 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.5</version>
+            <version>2.8.5</version>
         </dependency>
 
 
@@ -157,13 +161,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -178,7 +182,7 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -190,14 +194,14 @@
 
     <profiles>
         <profile>
-           <id>m2e</id>
-           <!-- This profile is only activated when building in Eclipse with m2e -->
-           <activation>
-             <property>
-               <name>m2e.version</name>
-             </property>
-           </activation>
-           <dependencies>
+            <id>m2e</id>
+            <!-- This profile is only activated when building in Eclipse with m2e -->
+            <activation>
+                <property>
+                    <name>m2e.version</name>
+                </property>
+            </activation>
+            <dependencies>
                 <!--
                     the maven-shade-plugin runs during package phase,
                     but inside eclipse, this phase is not executed during development.
@@ -208,24 +212,24 @@
                     <artifactId>jaxen</artifactId>
                     <optional>false</optional>
                 </dependency>
-           </dependencies>
+            </dependencies>
         </profile>
         <profile>
-           <id>idea</id>
-           <!-- This profile is only activated when building in IntelliJ -->
-           <!-- It serves the same purpose as the above for eclipse-->
-           <activation>
-             <property>
-               <name>idea.maven.embedder.version</name>
-             </property>
-           </activation>
-           <dependencies>
+            <id>idea</id>
+            <!-- This profile is only activated when building in IntelliJ -->
+            <!-- It serves the same purpose as the above for eclipse-->
+            <activation>
+                <property>
+                    <name>idea.maven.embedder.version</name>
+                </property>
+            </activation>
+            <dependencies>
                 <dependency>
                     <groupId>jaxen</groupId>
                     <artifactId>jaxen</artifactId>
                     <optional>false</optional>
                 </dependency>
-           </dependencies>
+            </dependencies>
         </profile>
     </profiles>
 </project>

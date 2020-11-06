@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,7 +6,9 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -15,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
@@ -23,9 +24,12 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * Utility methods for the package
  *
  * Created on Jan 17, 2005
- * 
+ *
  * @author mgriffa
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractSunSecureRule extends AbstractJavaRule {
 
     /**
@@ -38,7 +42,7 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
      * @return <code>true</code> if there is a field in the type declaration
      *         named varName, <code>false</code> in other case
      */
-    protected final boolean isField(String varName, ASTTypeDeclaration typeDeclaration) {
+    protected final boolean isField(String varName, ASTAnyTypeDeclaration typeDeclaration) {
         final List<ASTFieldDeclaration> fds = typeDeclaration.findDescendantsOfType(ASTFieldDeclaration.class);
         if (fds != null) {
             for (ASTFieldDeclaration fd : fds) {
@@ -64,7 +68,7 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
      */
     protected final String getReturnedVariableName(ASTReturnStatement ret) {
         if (hasTernaryCondition(ret) && hasTernaryNullCheck(ret)) {
-            return ret.getFirstDescendantOfType(ASTConditionalExpression.class).jjtGetChild(0)
+            return ret.getFirstDescendantOfType(ASTConditionalExpression.class).getChild(0)
                     .getFirstDescendantOfType(ASTName.class).getImage();
         }
 
@@ -81,10 +85,10 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
 
     private boolean hasTernaryNullCheck(ASTReturnStatement ret) {
         ASTConditionalExpression condition = ret.getFirstDescendantOfType(ASTConditionalExpression.class);
-        return condition.jjtGetChild(0) instanceof ASTEqualityExpression
-                && condition.jjtGetChild(0).hasImageEqualTo("==")
-                && condition.jjtGetChild(0).jjtGetChild(0).hasDescendantOfType(ASTName.class)
-                && condition.jjtGetChild(0).jjtGetChild(1).hasDescendantOfType(ASTNullLiteral.class);
+        return condition.getChild(0) instanceof ASTEqualityExpression
+                && condition.getChild(0).hasImageEqualTo("==")
+                && condition.getChild(0).getChild(0).hasDescendantOfType(ASTName.class)
+                && condition.getChild(0).getChild(1).hasDescendantOfType(ASTNullLiteral.class);
     }
 
     private boolean hasTernaryCondition(ASTReturnStatement ret) {
@@ -122,7 +126,7 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
      * of the given node.
      *
      * E.g.
-     * 
+     *
      * <pre>
      * n = Expression || StatementExpression
      *       PrimaryExpression

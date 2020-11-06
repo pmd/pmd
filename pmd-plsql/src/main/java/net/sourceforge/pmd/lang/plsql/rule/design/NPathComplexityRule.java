@@ -54,8 +54,8 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
         int npath = npathStart;
         PLSQLNode n;
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            n = (PLSQLNode) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            n = (PLSQLNode) node.getChild(i);
             npath *= (Integer) n.jjtAccept(this, data);
         }
 
@@ -177,11 +177,11 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
         int complexity = 0;
 
         List<PLSQLNode> statementChildren = new ArrayList<>();
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            if (node.jjtGetChild(i).getClass() == ASTStatement.class
-                    || node.jjtGetChild(i).getClass() == ASTElsifClause.class
-                    || node.jjtGetChild(i).getClass() == ASTElseClause.class) {
-                statementChildren.add((PLSQLNode) node.jjtGetChild(i));
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            if (node.getChild(i).getClass() == ASTStatement.class
+                    || node.getChild(i).getClass() == ASTElsifClause.class
+                    || node.getChild(i).getClass() == ASTElseClause.class) {
+                statementChildren.add((PLSQLNode) node.getChild(i));
             }
         }
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -203,7 +203,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
          * the list of statements // add path for not taking if if (null ==
          * node.getFirstChildOfType(ASTElsifClause.class) ) //
          * !node.hasElse()!node.hasElse()) { complexity++; }
-         * 
+         *
          * if (null == node.getFirstChildOfType(ASTElseClause.class) ) //
          * !node.hasElse()!node.hasElse()) { complexity++; }
          */
@@ -227,9 +227,9 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
         int complexity = 0;
 
         List<PLSQLNode> statementChildren = new ArrayList<>();
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
-                statementChildren.add((PLSQLNode) node.jjtGetChild(i));
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            if (node.getChild(i).getClass() == ASTStatement.class) {
+                statementChildren.add((PLSQLNode) node.getChild(i));
             }
         }
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -263,9 +263,9 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
         int complexity = 0;
 
         List<PLSQLNode> statementChildren = new ArrayList<>();
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
-                statementChildren.add((PLSQLNode) node.jjtGetChild(i));
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            if (node.getChild(i).getClass() == ASTStatement.class) {
+                statementChildren.add((PLSQLNode) node.getChild(i));
             }
         }
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -355,8 +355,8 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
         int npath = 1;
         int caseRange = 0;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            PLSQLNode n = (PLSQLNode) node.getChild(i);
 
             // Fall-through labels count as 1 for complexity
             Integer complexity = (Integer) n.jjtAccept(this, data);
@@ -377,8 +377,8 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
         int npath = 0;
         int caseRange = 0;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            PLSQLNode n = (PLSQLNode) node.getChild(i);
 
             // Fall-through labels count as 1 for complexity
             Integer complexity = (Integer) n.jjtAccept(this, data);
@@ -420,12 +420,12 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
         int children = 0;
 
         for (ASTConditionalOrExpression element : orNodes) {
-            children += element.jjtGetNumChildren();
+            children += element.getNumChildren();
             children--;
         }
 
         for (ASTConditionalAndExpression element : andNodes) {
-            children += element.jjtGetNumChildren();
+            children += element.getNumChildren();
             children--;
         }
 

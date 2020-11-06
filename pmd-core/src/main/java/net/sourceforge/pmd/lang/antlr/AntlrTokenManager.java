@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.Recognizer;
 
 import net.sourceforge.pmd.cpd.token.AntlrToken;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 /**
  * Generic token manager implementation for all Antlr lexers.
@@ -34,6 +35,14 @@ public class AntlrTokenManager implements TokenManager {
 
     @Override
     public Object getNextToken() {
+        AntlrToken nextToken = getNextTokenFromAnyChannel();
+        while (!nextToken.isDefault()) {
+            nextToken = getNextTokenFromAnyChannel();
+        }
+        return nextToken;
+    }
+
+    private AntlrToken getNextTokenFromAnyChannel() {
         final AntlrToken previousComment = previousToken != null && previousToken.isHidden() ? previousToken : null;
         final AntlrToken currentToken = new AntlrToken(lexer.nextToken(), previousComment);
         previousToken = currentToken;
@@ -64,6 +73,10 @@ public class AntlrTokenManager implements TokenManager {
         }
     }
 
+    /**
+     * @deprecated On 7.0.x branch this has been replaced by {@link TokenMgrError} already
+     */
+    @Deprecated
     public static class ANTLRSyntaxError extends RuntimeException {
         private static final long serialVersionUID = 1L;
         private final int line;

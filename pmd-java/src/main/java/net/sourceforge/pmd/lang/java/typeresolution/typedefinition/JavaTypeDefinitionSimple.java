@@ -16,8 +16,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +27,7 @@ import java.util.logging.Logger;
 
 /* default */ class JavaTypeDefinitionSimple extends JavaTypeDefinition {
     private final Class<?> clazz;
-    private final List<JavaTypeDefinition> genericArgs;
+    private final JavaTypeDefinition[] genericArgs;
     // cached because calling clazz.getTypeParameters().length create a new array every time
     private final int typeParameterCount;
     private final boolean isGeneric;
@@ -36,6 +35,7 @@ import java.util.logging.Logger;
     private final JavaTypeDefinition enclosingClass;
 
     private static final Logger LOG = Logger.getLogger(JavaTypeDefinitionSimple.class.getName());
+    private static final JavaTypeDefinition[] NO_GENERICS = {};
 
     protected JavaTypeDefinitionSimple(Class<?> clazz, JavaTypeDefinition... boundGenerics) {
         super(EXACT);
@@ -59,15 +59,21 @@ import java.util.logging.Logger;
         isRawType = isGeneric && boundGenerics.length == 0;
 
         if (isGeneric) {
-            // Generics will be lazily loaded
-            this.genericArgs = new ArrayList<>(typeParameters.length);
-            // boundGenerics would be empty if this is a raw type, hence the lazy loading
-            Collections.addAll(this.genericArgs, boundGenerics);
+            // Generics will be lazily loaded if not already known
+            this.genericArgs = Arrays.copyOf(boundGenerics, typeParameterCount);
         } else {
-            this.genericArgs = Collections.emptyList();
+            this.genericArgs = NO_GENERICS;
         }
 
-        enclosingClass = forClass(clazz.getEnclosingClass());
+        Class<?> enclosing = null;
+        try {
+            enclosing = clazz.getEnclosingClass();
+        } catch (LinkageError e) {
+            if (LOG.isLoggable(Level.WARNING)) {
+                LOG.log(Level.WARNING, "Could not load enclosing class of " + clazz.getName() + ", due to: " + e);
+            }
+        }
+        enclosingClass = forClass(enclosing);
     }
 
     @Override
@@ -82,7 +88,7 @@ import java.util.logging.Logger;
 
     @Override
     public boolean isGeneric() {
-        return !genericArgs.isEmpty();
+        return isGeneric;
     }
 
     private JavaTypeDefinition getGenericType(final String parameterName, Method method,
@@ -126,29 +132,22 @@ import java.util.logging.Logger;
     @Override
     public JavaTypeDefinition getGenericType(final int index) {
         // Check if it has been lazily initialized first
-        if (genericArgs.size() > index) {
-            final JavaTypeDefinition cachedDefinition = genericArgs.get(index);
-            if (cachedDefinition != null) {
-                return cachedDefinition;
-            }
-        }
-
-        // Force the list to have enough elements
-        for (int i = genericArgs.size(); i <= index; i++) {
-            genericArgs.add(null);
+        final JavaTypeDefinition cachedDefinition = genericArgs[index];
+        if (cachedDefinition != null) {
+            return cachedDefinition;
         }
 
         /*
-         * Set a default to circuit-brake any recursions (ie: raw types with no generic info)
+         * Set a default to circuit-break any recursions (ie: raw types with no generic info)
          * Object.class is a right answer in those scenarios
          */
-        genericArgs.set(index, forClass(Object.class));
+        genericArgs[index] = forClass(Object.class);
 
         final TypeVariable<?> typeVariable = clazz.getTypeParameters()[index];
         final JavaTypeDefinition typeDefinition = resolveTypeDefinition(typeVariable.getBounds()[0]);
 
         // cache result
-        genericArgs.set(index, typeDefinition);
+        genericArgs[index] = typeDefinition;
         return typeDefinition;
     }
 
@@ -279,7 +278,7 @@ import java.util.logging.Logger;
                 .append(", genericArgs=[");
 
         // Forcefully resolve all generic types
-        for (int i = 0; i < genericArgs.size(); i++) {
+        for (int i = 0; i < genericArgs.length; i++) {
             getGenericType(i);
         }
 
@@ -287,7 +286,7 @@ import java.util.logging.Logger;
             sb.append(jtd.shallowString()).append(", ");
         }
 
-        if (!genericArgs.isEmpty()) {
+        if (genericArgs.length != 0) {
             sb.replace(sb.length() - 3, sb.length() - 1, "");   // remove last comma
         }
 

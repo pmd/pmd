@@ -23,7 +23,7 @@
  */
 options
 {
-    /** The default package for this parser kit 
+    /** The default package for this parser kit
     NODE_PACKAGE="org.apache.velocity.runtime.parser";
     */
   NODE_PACKAGE="net.sourceforge.pmd.lang.vm.ast";
@@ -75,12 +75,12 @@ options
      */
     DEBUG_PARSER=false;
     DEBUG_TOKEN_MANAGER=false;
-    
+
     /**
     	Copied from JSP parser
     */
     FORCE_LA_CHECK = false;
-    IGNORE_CASE = true; 
+    IGNORE_CASE = true;
 }
 
 PARSER_BEGIN(VmParser)
@@ -156,7 +156,7 @@ public class VmParser
         int iLast = strImage.lastIndexOf("\\");
 
         String strDirective = strImage.substring(iLast + 1);
-        
+
 //        return ( strImage.substring(0,iLast/2) + strDirective);
 
         boolean bRecognizedDirective = false;
@@ -592,7 +592,7 @@ TOKEN:
 
 /*
  * needed because #set is so wacky in it's desired behavior.  We want set
- * to eat any preceeding whitespace so it is invisible in formatting.
+ * to eat any preceding whitespace so it is invisible in formatting.
  * (As it should be.)  If this works well, I am going to chuck the whole MORE:
  * token abomination.
  *
@@ -998,9 +998,9 @@ TOKEN:
         /*
          * Remove the double period if it is there
          */
-        if (matchedToken.image.endsWith("..")) {
+        if (matchedToken.getImage().endsWith("..")) {
             input_stream.backup(2);
-            matchedToken.image = matchedToken.image.substring(0,matchedToken.image.length()-2);
+            matchedToken.image = matchedToken.getImage().substring(0,matchedToken.getImage().length()-2);
         }
 
         /*
@@ -1197,7 +1197,7 @@ void EscapedDirective() : {}
         /*
          *  churn and burn..
          */
-        t.image = escapedDirective( t.image );
+        t.image = escapedDirective( t.getImage() );
     }
 }
 
@@ -1238,7 +1238,7 @@ void Escape() : {}
         /*
          * if that failed, lets lookahead to see if we matched a PD or a VM
          */
-        String nTag = t.next.image.substring(1);
+        String nTag = t.next.getImage().substring(1);
         if (strictEscape
             || isDirective(nTag)
             || macroNames.containsKey(nTag)
@@ -1247,10 +1247,12 @@ void Escape() : {}
             control = true;
         }
 
-        jjtThis.val = "";
+        String value = "";
 
-        for( int i = 0; i < count; i++)
-            jjtThis.val += ( control ? "\\" : "\\\\");
+        for( int i = 0; i < count; i++) {
+            value += ( control ? "\\" : "\\\\");
+        }
+        jjtThis.setValue(value);
     }
 
 }
@@ -1380,11 +1382,11 @@ VmNode Directive() :
         String directiveName;
         if (t.kind == VmParserConstants.BRACKETED_WORD)
         {
-            directiveName = t.image.substring(2, t.image.length() - 1);
+            directiveName = t.getImage().substring(2, t.getImage().length() - 1);
         }
         else
         {
-            directiveName = t.image.substring(1);
+            directiveName = t.getImage().substring(1);
         }
 
         d = getDirective(directiveName);
@@ -1459,13 +1461,13 @@ VmNode Directive() :
                     else if (isVM)
                     {
                         throw new MacroParseException("Invalid arg #"
-                        + argPos + " in VM " + t.image, currentTemplateName, t);
+                        + argPos + " in VM " + t.getImage(), currentTemplateName, t);
                     }
                                           /* if #foreach and it's the 2nd arg, ok */
                     else if (d != null && (!directiveName.equals("foreach") || argPos != 1))
                     {
                         throw new MacroParseException("Invalid arg #"
-                        + argPos + " in directive " + t.image, currentTemplateName, t);
+                        + argPos + " in directive " + t.getImage(), currentTemplateName, t);
                     }
                     else
                     {
@@ -1505,7 +1507,7 @@ VmNode Directive() :
             throw new MacroParseException("A macro declaration requires at least a name argument"
               , currentTemplateName, t);
 	}
-	
+
         /**
          * Not a directive
          */
@@ -1533,7 +1535,7 @@ VmNode Directive() :
         {
             // Add the macro name so that we can peform escape processing
             // on defined macros
-            String macroName = ((AbstractVmNode)jjtThis.jjtGetChild(0)).getFirstToken().image;
+            String macroName = ((AbstractVmNode)jjtThis.jjtGetChild(0)).getFirstToken().getImage();
             macroNames.put(macroName, macroName);
         }
 /*
@@ -1953,8 +1955,8 @@ void PrimaryExpression() #void : {}
     The recent versions of the parser are trying to support precise output to
     support general template use. The directives do not render trailing
     whitespace and newlines if followed by a newline.  They will render
-    preceeding whitespace. The only exception is #set, which also eats
-    preceeding whitespace.
+    preceding whitespace. The only exception is #set, which also eats
+    preceding whitespace.
 
     So, with a template :
 

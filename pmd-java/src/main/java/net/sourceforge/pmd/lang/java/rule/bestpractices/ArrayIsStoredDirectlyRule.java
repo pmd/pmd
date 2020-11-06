@@ -22,6 +22,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * If a method or constructor receives an array as an argument, the array should
@@ -32,6 +34,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
  * @author mgriffa
  */
 public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
+    private static final PropertyDescriptor<Boolean> ALLOW_PRIVATE =
+            PropertyFactory.booleanProperty("allowPrivate")
+                .defaultValue(true)
+                .desc("If true, allow private methods/constructors to store arrays directly")
+                .build();
+
+    public ArrayIsStoredDirectlyRule() {
+        definePropertyDescriptor(ALLOW_PRIVATE);
+    }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
@@ -43,7 +54,11 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        ASTFormalParameter[] arrs = getArrays(node.getParameters());
+        if (node.isPrivate() && getProperty(ALLOW_PRIVATE)) {
+            return data;
+        }
+
+        ASTFormalParameter[] arrs = getArrays(node.getFormalParameters());
         // TODO check if one of these arrays is stored in a non local
         // variable
         List<ASTBlockStatement> bs = node.findDescendantsOfType(ASTBlockStatement.class);
@@ -53,6 +68,10 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        if (node.isPrivate() && getProperty(ALLOW_PRIVATE)) {
+            return data;
+        }
+
         final ASTFormalParameters params = node.getFirstDescendantOfType(ASTFormalParameters.class);
         ASTFormalParameter[] arrs = getArrays(params);
         checkAll(data, arrs, node.findDescendantsOfType(ASTBlockStatement.class));
@@ -95,7 +114,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
         for (ASTBlockStatement b : bs) {
             if (b.hasDescendantOfType(ASTAssignmentOperator.class)) {
                 final ASTStatementExpression se = b.getFirstDescendantOfType(ASTStatementExpression.class);
-                if (se == null || !(se.jjtGetChild(0) instanceof ASTPrimaryExpression)) {
+                if (se == null || !(se.getChild(0) instanceof ASTPrimaryExpression)) {
                     continue;
                 }
                 String assignedVar = getExpressionVarName(se);
@@ -103,7 +122,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
                     continue;
                 }
 
-                ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
+                ASTPrimaryExpression pe = (ASTPrimaryExpression) se.getChild(0);
                 Node n = pe.getFirstParentOfType(ASTMethodDeclaration.class);
                 if (n == null) {
                     n = pe.getFirstParentOfType(ASTConstructorDeclaration.class);
@@ -116,10 +135,10 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
                     // need to build out the PMD internal framework more
                     // to support simply queries like "isAssignedTo()" or
                     // something
-                    if (se.jjtGetNumChildren() < 3) {
+                    if (se.getNumChildren() < 3) {
                         continue;
                     }
-                    ASTExpression e = (ASTExpression) se.jjtGetChild(2);
+                    ASTExpression e = (ASTExpression) se.getChild(2);
                     if (e.hasDescendantOfType(ASTEqualityExpression.class)) {
                         continue;
                     }

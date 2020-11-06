@@ -10,6 +10,11 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @deprecated This class will be removed with PMD 7. The rule designer is a better way to inspect nodes.
+ */
+@Deprecated
 public class DumpFacade extends PLSQLParserVisitorAdapter {
 
     private PrintWriter writer;

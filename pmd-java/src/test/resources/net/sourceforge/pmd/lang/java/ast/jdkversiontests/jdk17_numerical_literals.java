@@ -11,7 +11,7 @@ public class Test {
   int i10 = 1;
   int i11 = 1___3;
   int i12 = 1_43_43598_7;
-  
+
   long l1 = 0b00011110L;
   long l2 = 0B00011110l;
   long l3 = 0xAL;
@@ -25,7 +25,7 @@ public class Test {
   long l11 = 1___3l;
   long l12 = 1_43_43598_7L;
   long l13 = 1_43_43598_7;
-  
+
   float f1 = .1f;
   float f2 = 1.f;
   float f3 = 0f;
@@ -41,7 +41,7 @@ public class Test {
   float f13 = 1_34e0__4__3f;
   float f14 = 1__1_2e00__000_4f;
   float f15 = 2_1___2.3__4_5e00______0_5F;
-  
+
   double d1 = .1d;
   double d2 = 1.D;
   double d3 = 0d;
@@ -58,15 +58,15 @@ public class Test {
   double d14 = 1__1_2e00__000_4d;
   double d15 = 2_1___2.3__4_5e00______0_5D;
   double d16 = 0.12___34;
-  
+
   float hf1 = 0x.1___AFp1;
   float hf2 = 0x.1___AFp0__0__0f;
   float hf3 = 0x2__3_34.4___AFP00_00f;
-  
+
   double hd1 = 0x.1___AFp1;
   double hd2 = 0x.1___AFp0__0__0d;
   double hd3 = 0x2__3_34.4___AFP00_00d;
-  
+
   int doc1 = 1234_5678;
   long doc2 = 1_2_3_4__5_6_7_8L;
   int doc3 = 0b0001_0010_0100_1000;

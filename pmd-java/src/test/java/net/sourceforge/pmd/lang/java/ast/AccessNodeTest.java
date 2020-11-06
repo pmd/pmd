@@ -4,15 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
+import java.util.List;
 
 import org.junit.Test;
 
-public class AccessNodeTest {
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+
+public class AccessNodeTest extends BaseParserTest {
 
     public static class MyAccessNode extends AbstractJavaAccessNode {
         public MyAccessNode(int i) {
@@ -26,8 +29,8 @@ public class AccessNodeTest {
 
     @Test
     public void testModifiersOnClassDecl() {
-        Set<ASTClassOrInterfaceDeclaration> ops = getNodes(ASTClassOrInterfaceDeclaration.class, TEST1);
-        assertTrue(ops.iterator().next().isPublic());
+        List<ASTClassOrInterfaceDeclaration> ops = java.getNodes(ASTClassOrInterfaceDeclaration.class, TEST1);
+        assertTrue(ops.get(0).isPublic());
     }
 
     private static final String TEST1 = "public class Foo {}";
@@ -132,5 +135,25 @@ public class AccessNodeTest {
         node = new MyAccessNode(1);
         node.setProtected(true);
         assertFalse("Node set to protected, still package private.", node.isPackagePrivate());
+    }
+
+
+    private static String makeAccessJavaCode(String[] access, String declRest) {
+        String result = "public class Test { ";
+        for (String s : access) {
+            result += s + " ";
+        }
+        return result + " " + declRest + " }";
+    }
+
+
+    public static <T extends Node> T getDeclWithModifiers(String[] access, Class<T> target, String declRest) {
+        ASTCompilationUnit acu = JavaParsingHelper.JUST_PARSE.parse(makeAccessJavaCode(access, declRest));
+
+        List<T> declarations = acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class)
+                            .findDescendantsOfType(target);
+
+        assertEquals("Wrong number of declarations", 1, declarations.size());
+        return declarations.get(0);
     }
 }

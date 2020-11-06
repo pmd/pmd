@@ -55,12 +55,12 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
             AccessNode accessNodeParent = field.getAccessNodeParent();
             if (accessNodeParent.isStatic() || !accessNodeParent.isPrivate() || accessNodeParent.isFinal()
                     || accessNodeParent.isVolatile()
-                    || hasClassLombokAnnotation()
+                    || hasLombokAnnotation(node)
                     || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
                 continue;
             }
 
-            FieldImmutabilityType type = initializedInConstructor(entry.getValue(), new HashSet<>(constructors));
+            FieldImmutabilityType type = initializedInConstructor(field, entry.getValue(), new HashSet<>(constructors));
             if (type == FieldImmutabilityType.MUTABLE) {
                 continue;
             }
@@ -75,7 +75,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
         return field.getAccessNodeParent().hasDescendantOfType(ASTVariableInitializer.class);
     }
 
-    private FieldImmutabilityType initializedInConstructor(List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
+    private FieldImmutabilityType initializedInConstructor(VariableNameDeclaration field, List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
         FieldImmutabilityType result = FieldImmutabilityType.MUTABLE;
         int methodInitCount = 0;
         int lambdaUsage = 0;
@@ -85,8 +85,9 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
             if (jocc.isOnLeftHandSide() || jocc.isSelfAssignment()) {
                 Node node = jocc.getLocation();
                 ASTConstructorDeclaration constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
-                if (constructor != null) {
+                if (constructor != null && isSameClass(field, constructor)) {
                     if (inLoopOrTry(node)) {
+                        methodInitCount++;
                         continue;
                     }
                     // Check for assigns in if-statements, which can depend on
@@ -122,6 +123,14 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
             }
         }
         return result;
+    }
+
+    /**
+     * Checks whether the given constructor belongs to the class, in which the field is declared.
+     * This might not be the case for inner classes, which accesses the fields of the outer class.
+     */
+    private boolean isSameClass(VariableNameDeclaration field, ASTConstructorDeclaration constructor) {
+        return constructor.getFirstParentOfType(ASTClassOrInterfaceBody.class) == field.getNode().getFirstParentOfType(ASTClassOrInterfaceBody.class);
     }
 
     private boolean inLoopOrTry(Node node) {

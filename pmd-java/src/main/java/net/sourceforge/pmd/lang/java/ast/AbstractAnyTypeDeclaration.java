@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
@@ -12,6 +14,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 /**
  * Abstract class for type declarations nodes.
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
 
     private JavaTypeQualifiedName qualifiedName;
@@ -29,10 +33,40 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
 
     @Override
     public final boolean isNested() {
-        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
-                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+        return getParent() instanceof ASTClassOrInterfaceBodyDeclaration
+            || getParent() instanceof ASTAnnotationTypeMemberDeclaration
+            || getParent() instanceof ASTRecordBody;
     }
 
+    /**
+     * @deprecated Use {@link #getSimpleName()}
+     */
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@SimpleName")
+    @Override
+    public String getImage() {
+        return getSimpleName();
+    }
+
+    @Override
+    public String getBinaryName() {
+        return getQualifiedName().getBinaryName();
+    }
+
+    @Override
+    public String getSimpleName() {
+        return super.getImage();
+    }
+
+
+    /**
+     * Returns the record component list, or null if this is not a record
+     * declaration.
+     */
+    // @Nullable // TODO pull up to ASTAnyTypeDecl on 7.0.x
+    public ASTRecordComponentList getRecordComponents() {
+        return getFirstChildOfType(ASTRecordComponentList.class);
+    }
 
     /**
      * Returns true if the enclosing type of this type declaration
@@ -80,6 +114,8 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
     }
 
 
+    @InternalApi
+    @Deprecated
     public void setQualifiedName(JavaTypeQualifiedName qualifiedName) {
         this.qualifiedName = qualifiedName;
         this.typeDefinition = JavaTypeDefinition.forClass(qualifiedName.getType());

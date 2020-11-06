@@ -12,6 +12,10 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.plsql.ast.ASTLabelledStatement;
 import net.sourceforge.pmd.lang.plsql.dfa.PLSQLDataFlowNode;
 
+/**
+ * @deprecated See {@link DataFlowNode}
+ */
+@Deprecated
 public class PLSQLDataFlowHandler implements DataFlowHandler {
     @Override
     public DataFlowNode createDataFlowNode(List<DataFlowNode> dataFlow, Node node) {

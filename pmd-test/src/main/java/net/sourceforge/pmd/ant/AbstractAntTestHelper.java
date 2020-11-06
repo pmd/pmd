@@ -29,7 +29,7 @@ public abstract class AbstractAntTestHelper {
 
     @Rule
     public final TemporaryFolder tempFolder = new TemporaryFolder();
-    
+
     @Rule
     public final BuildFileRule buildRule = new BuildFileRule();
 

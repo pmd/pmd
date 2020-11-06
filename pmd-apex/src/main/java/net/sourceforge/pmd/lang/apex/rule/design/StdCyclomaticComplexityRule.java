@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+
 import java.util.Stack;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
@@ -20,32 +23,33 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * Implements the standard cyclomatic complexity rule
  * <p>
  * Standard rules: +1 for each decision point, but not including boolean
  * operators unlike CyclomaticComplexityRule.
- * 
+ *
  * @author ported on Java version of Alan Hohn, based on work by Donald A.
  *         Leckie
- * 
+ *
  * @since June 18, 2014
  */
 public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
-    public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR 
-            = IntegerProperty.named("reportLevel")
+    public static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
+            = PropertyFactory.intProperty("reportLevel")
                              .desc("Cyclomatic Complexity reporting threshold")
-                             .range(1, 30).defaultValue(10).uiOrder(1.0f).build();
+                             .require(inRange(1, 30))
+                             .defaultValue(10)
+                             .build();
 
-    public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
-            "showClassesComplexity", "Add class average violations to the report", true, 2.0f);
+    public static final PropertyDescriptor<Boolean> SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = booleanProperty("showClassesComplexity").desc("Add class average violations to the report").defaultValue(true).build();
 
-    public static final BooleanProperty SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
-            "showMethodsComplexity", "Add method average violations to the report", true, 3.0f);
+    public static final PropertyDescriptor<Boolean> SHOW_METHODS_COMPLEXITY_DESCRIPTOR = booleanProperty("showMethodsComplexity").desc("Add method average violations to the report").defaultValue(true).build();
 
     private int reportLevel;
     private boolean showClassesComplexity = true;
@@ -125,13 +129,6 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTUserEnum node, Object data) {
-        entryStack.push(new Entry());
-        super.visit(node, data);
-        Entry classEntry = entryStack.pop();
-        if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-            addViolation(data, node, new String[] { "class", node.getImage(),
-                classEntry.getComplexityAverage() + "(Highest = " + classEntry.highestDecisionPoints + ')', });
-        }
         return data;
     }
 
@@ -151,7 +148,7 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
             }
 
             if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
-                String methodType = node.getNode().getMethodInfo().isConstructor() ? "constructor" : "method";
+                String methodType = node.isConstructor() ? "constructor" : "method";
                 addViolation(data, node,
                         new String[] { methodType, node.getImage(), String.valueOf(methodEntry.decisionPoints) });
             }

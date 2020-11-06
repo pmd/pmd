@@ -11,9 +11,7 @@ import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.DumpFacade;
@@ -72,6 +70,7 @@ public class PLSQLHandler extends AbstractLanguageVersionHandler {
         };
     }
 
+    @Deprecated
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {
@@ -82,11 +81,4 @@ public class PLSQLHandler extends AbstractLanguageVersionHandler {
         };
     }
 
-    /**
-     * Return minimal XPathHandler to cope with Jaxen XPath Rules.
-     */
-    @Override
-    public XPathHandler getXPathHandler() {
-        return new DefaultASTXPathHandler();
-    }
 }

@@ -14,6 +14,7 @@ import net.sourceforge.pmd.Rule;
  *
  * @author Clément Fournier
  */
+@Deprecated
 /* default */ abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
         implements SingleValuePropertyDescriptor<T> {
 

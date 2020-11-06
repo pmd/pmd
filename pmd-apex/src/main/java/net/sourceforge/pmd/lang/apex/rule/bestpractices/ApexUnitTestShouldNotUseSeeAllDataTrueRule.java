@@ -4,18 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
+import java.util.List;
+
+import net.sourceforge.pmd.lang.apex.ast.ASTAnnotationParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
-import apex.jorje.semantic.ast.modifier.Annotation;
-import apex.jorje.semantic.ast.modifier.AnnotationParameter;
-import apex.jorje.semantic.ast.modifier.ModifierOrAnnotation;
-import apex.jorje.semantic.symbol.type.AnnotationTypeInfos;
-import apex.jorje.semantic.symbol.type.ModifierOrAnnotationTypeInfo;
-import apex.jorje.semantic.symbol.type.TypeInfoEquivalence;
 import apex.jorje.services.Version;
 
 /**
@@ -31,11 +28,8 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnit
 
     @Override
     public Object visit(final ASTUserClass node, final Object data) {
-        // @isTest(seeAllData) was introduced in v24, and was set to false by
-        // default
-        final Version classApiVersion = node.getNode().getDefiningType().getCodeUnitDetails().getVersion();
-
-        if (!isTestMethodOrClass(node) && classApiVersion.isGreaterThan(Version.V174)) {
+        // @isTest(seeAllData) was introduced in v24, and was set to false by default
+        if (!isTestMethodOrClass(node) && node.getApexVersion() >= Version.V176.getExternal()) {
             return data;
         }
 
@@ -56,17 +50,11 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnit
         final ASTModifierNode modifierNode = node.getFirstChildOfType(ASTModifierNode.class);
 
         if (modifierNode != null) {
-            for (final ModifierOrAnnotationTypeInfo modifierOrAnnotationTypeInfo : modifierNode.getNode().getModifiers().all()) {
-                ModifierOrAnnotation modifierOrAnnotation = modifierNode.getNode().getModifiers().get(modifierOrAnnotationTypeInfo);
-                if (modifierOrAnnotation instanceof Annotation && TypeInfoEquivalence
-                        .isEquivalent(modifierOrAnnotationTypeInfo, AnnotationTypeInfos.IS_TEST)) {
-                    final Annotation annotation = (Annotation) modifierOrAnnotation;
-                    final AnnotationParameter parameter = annotation.getParameter("seeAllData");
-
-                    if (parameter != null && parameter.getBooleanValue() == true) {
-                        addViolation(data, node);
-                        return data;
-                    }
+            List<ASTAnnotationParameter> annotationParameters = modifierNode.findDescendantsOfType(ASTAnnotationParameter.class);
+            for (ASTAnnotationParameter parameter : annotationParameters) {
+                if (ASTAnnotationParameter.SEE_ALL_DATA.equals(parameter.getName()) && parameter.getBooleanValue()) {
+                    addViolation(data, node);
+                    return data;
                 }
             }
         }

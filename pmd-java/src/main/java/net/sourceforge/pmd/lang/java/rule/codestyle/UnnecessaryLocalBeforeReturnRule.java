@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +13,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberSelector;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -22,15 +25,13 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
-import net.sourceforge.pmd.lang.symboltable.ScopedNode;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
 
-    private static final BooleanProperty STATEMENT_ORDER_MATTERS = new BooleanProperty("statementOrderMatters",
-            "If set to false this rule no longer requires the variable declaration and return statement to be "
-            + "on consecutive lines. Any variable that is used solely in a return statement will be reported.",
-            true, 1.0f);
+    private static final PropertyDescriptor<Boolean> STATEMENT_ORDER_MATTERS = booleanProperty("statementOrderMatters").defaultValue(true).desc("If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.").build();
+
 
     public UnnecessaryLocalBeforeReturnRule() {
         definePropertyDescriptor(STATEMENT_ORDER_MATTERS);
@@ -55,6 +56,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
 
         // skip 'complicated' expressions
         if (rtn.findDescendantsOfType(ASTExpression.class).size() > 1
+                || rtn.getFirstDescendantOfType(ASTMemberSelector.class) != null
                 || rtn.findDescendantsOfType(ASTPrimaryExpression.class).size() > 1 || isMethodCall(rtn)) {
             return data;
         }
@@ -66,7 +68,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
             if (variableDeclaration.getDeclaratorId().isFormalParameter()) {
                 continue;
             }
-            
+
             List<NameOccurrence> usages = entry.getValue();
 
             if (usages.size() == 1) { // If there is more than 1 usage, then it's not only returned
@@ -98,8 +100,8 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
         ASTBlockStatement returnBlockStatement = returnStatement.getFirstParentOfType(ASTBlockStatement.class);
 
         // double check: we should now be at the same level in the AST - both block statements are children of the same parent
-        if (declarationStatement.jjtGetParent() == returnBlockStatement.jjtGetParent()) {
-            return returnBlockStatement.jjtGetChildIndex() - declarationStatement.jjtGetChildIndex() > 1;
+        if (declarationStatement.getParent() == returnBlockStatement.getParent()) {
+            return returnBlockStatement.getIndexInParent() - declarationStatement.getIndexInParent() > 1;
         }
         return false;
     }
@@ -114,7 +116,13 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
             final ASTReturnStatement rtn) {
         final ASTVariableInitializer initializer = variableDeclaration.getAccessNodeParent()
                 .getFirstDescendantOfType(ASTVariableInitializer.class);
+
         if (initializer != null) {
+            // Get the block statements for each, so we can compare apples to apples
+            final ASTBlockStatement initializerStmt = variableDeclaration.getAccessNodeParent()
+                    .getFirstParentOfType(ASTBlockStatement.class);
+            final ASTBlockStatement rtnStmt = rtn.getFirstParentOfType(ASTBlockStatement.class);
+
             final List<ASTName> referencedNames = initializer.findDescendantsOfType(ASTName.class);
             for (final ASTName refName : referencedNames) {
                 // TODO : Shouldn't the scope allow us to search for a var name occurrences directly, moving up through parent scopes?
@@ -127,9 +135,10 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
                         if (entry.getKey().getName().equals(refName.getImage())) {
                             // Variable found! Check usage locations
                             for (final NameOccurrence occ : entry.getValue()) {
-                                final ScopedNode location = occ.getLocation();
+                                final ASTBlockStatement location = occ.getLocation().getFirstParentOfType(ASTBlockStatement.class);
+
                                 // Is it used after initializing our "unnecessary" local but before the return statement?
-                                if (isAfter(location, initializer) && isAfter(rtn, location)) {
+                                if (location != null && isAfter(location, initializerStmt) && isAfter(rtnStmt, location)) {
                                     return true;
                                 }
                             }

@@ -1,13 +1,18 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 import apex.jorje.semantic.ast.modifier.ModifierNode;
+import apex.jorje.semantic.symbol.type.ModifierTypeInfos;
 
 public class ASTModifierNode extends AbstractApexNode<ModifierNode> implements AccessNode {
 
+    @Deprecated
+    @InternalApi
     public ASTModifierNode(ModifierNode modifierNode) {
         super(modifierNode);
     }
@@ -55,5 +60,37 @@ public class ASTModifierNode extends AbstractApexNode<ModifierNode> implements A
     @Override
     public boolean isTransient() {
         return (node.getModifiers().getJavaModifiers() & TRANSIENT) == TRANSIENT;
+    }
+
+    public boolean isTest() {
+        return node.getModifiers().isTest();
+    }
+
+    public boolean isTestOrTestSetup() {
+        return node.getModifiers().isTestOrTestSetup();
+    }
+
+    public boolean isWithSharing() {
+        return node.getModifiers().has(ModifierTypeInfos.WITH_SHARING);
+    }
+
+    public boolean isWithoutSharing() {
+        return node.getModifiers().has(ModifierTypeInfos.WITHOUT_SHARING);
+    }
+
+    public boolean isInheritedSharing() {
+        return node.getModifiers().has(ModifierTypeInfos.INHERITED_SHARING);
+    }
+
+    public boolean isWebService() {
+        return node.getModifiers().has(ModifierTypeInfos.WEB_SERVICE);
+    }
+
+    public boolean isGlobal() {
+        return node.getModifiers().has(ModifierTypeInfos.GLOBAL);
+    }
+
+    public boolean isOverride() {
+        return node.getModifiers().has(ModifierTypeInfos.OVERRIDE);
     }
 }

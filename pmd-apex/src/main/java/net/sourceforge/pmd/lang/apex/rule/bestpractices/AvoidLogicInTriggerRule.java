@@ -16,6 +16,7 @@ public class AvoidLogicInTriggerRule extends AbstractApexRule {
         setProperty(CODECLIMATE_CATEGORIES, "Style");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 200);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+        addRuleChainVisit(ASTUserTrigger.class);
     }
 
     @Override

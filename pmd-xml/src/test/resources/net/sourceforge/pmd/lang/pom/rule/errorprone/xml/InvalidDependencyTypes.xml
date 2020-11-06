@@ -3,6 +3,7 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Simple POM file - no violation</description>
         <expected-problems>0</expected-problems>
@@ -13,20 +14,19 @@
     <artifactId>xml-pom</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-  <dependencyManagement>
-    <dependency>
-      <groupId>org.jboss.arquillian</groupId>
-      <artifactId>arquillian-bom</artifactId>
-      <version>${arquillian.version}</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencyManagement>
-
+    <dependencyManagement>
+        <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-bom</artifactId>
+            <version>${arquillian.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencyManagement>
 </project>
-     ]]></code>
-        <source-type>pom</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Simple POM file with violation</description>
         <expected-problems>1</expected-problems>
@@ -37,23 +37,21 @@
     <artifactId>xml-pom</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-  <dependencyManagement>
-    <dependency>
-      <groupId>org.jboss.arquillian</groupId>
-      <artifactId>arquillian-bom</artifactId>
-      <version>${arquillian.version}</version>
-      <type>bom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencyManagement>
-
+    <dependencyManagement>
+        <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-bom</artifactId>
+            <version>${arquillian.version}</version>
+            <type>bom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencyManagement>
 </project>
-     ]]></code>
-        <source-type>pom</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description>Simple POM file with violation</description>
+        <description>Simple POM file with bom</description>
         <rule-property name="validTypes">bom</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -63,18 +61,16 @@
     <artifactId>xml-pom</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-  <dependencyManagement>
-    <dependency>
-      <groupId>org.jboss.arquillian</groupId>
-      <artifactId>arquillian-bom</artifactId>
-      <version>${arquillian.version}</version>
-      <type>bom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencyManagement>
-
+    <dependencyManagement>
+        <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-bom</artifactId>
+            <version>${arquillian.version}</version>
+            <type>bom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencyManagement>
 </project>
-     ]]></code>
-        <source-type>pom</source-type>
+        ]]></code>
     </test-code>
 </test-data>

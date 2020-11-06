@@ -15,9 +15,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.renderers.ColumnDescriptor.Accessor;
+
 
 /**
  * Renderer the results to a comma-delimited text format. All available columns
@@ -33,12 +35,12 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     private static final String DEFAULT_SEPARATOR = ",";
 
-    private static final Map<String, BooleanProperty> PROPERTY_DESCRIPTORS_BY_ID = new HashMap<>();
+    private static final Map<String, PropertyDescriptor<Boolean>> PROPERTY_DESCRIPTORS_BY_ID = new HashMap<>();
 
     public static final String NAME = "csv";
 
     @SuppressWarnings("unchecked")
-    private static final ColumnDescriptor<RuleViolation>[] ALL_COLUMNS = new ColumnDescriptor[] {
+    private final ColumnDescriptor<RuleViolation>[] allColumns = new ColumnDescriptor[] {
         new ColumnDescriptor<>("problem", "Problem", new Accessor<RuleViolation>() {
             @Override
             public String get(int idx, RuleViolation rv, String cr) {
@@ -52,7 +54,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
         }), new ColumnDescriptor<>("file", "File", new Accessor<RuleViolation>() {
             @Override
             public String get(int idx, RuleViolation rv, String cr) {
-                return rv.getFilename();
+                return CSVRenderer.this.determineFileName(rv.getFilename());
             }
         }), new ColumnDescriptor<>("priority", "Priority", new Accessor<RuleViolation>() {
             @Override
@@ -93,17 +95,24 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
     }
 
     public CSVRenderer() {
-        this(ALL_COLUMNS, DEFAULT_SEPARATOR, PMD.EOL);
+        super(NAME, "Comma-separated values tabular format.");
+
+        separator = DEFAULT_SEPARATOR;
+        cr = PMD.EOL;
+
+        for (ColumnDescriptor<RuleViolation> desc : allColumns) {
+            definePropertyDescriptor(booleanPropertyFor(desc.id, desc.title));
+        }
     }
 
-    private static BooleanProperty booleanPropertyFor(String id, String label) {
+    private static PropertyDescriptor<Boolean> booleanPropertyFor(String id, String label) {
 
-        BooleanProperty prop = PROPERTY_DESCRIPTORS_BY_ID.get(id);
+        PropertyDescriptor<Boolean> prop = PROPERTY_DESCRIPTORS_BY_ID.get(id);
         if (prop != null) {
             return prop;
         }
 
-        prop = new BooleanProperty(id, "Include " + label + " column", true, 1.0f);
+        prop = PropertyFactory.booleanProperty(id).defaultValue(true).desc("Include " + label + " column").build();
         PROPERTY_DESCRIPTORS_BY_ID.put(id, prop);
         return prop;
     }
@@ -112,13 +121,12 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
         List<ColumnDescriptor<RuleViolation>> actives = new ArrayList<>();
 
-        for (ColumnDescriptor<RuleViolation> desc : ALL_COLUMNS) {
-            BooleanProperty prop = booleanPropertyFor(desc.id, null);
+        for (ColumnDescriptor<RuleViolation> desc : allColumns) {
+            PropertyDescriptor<Boolean> prop = booleanPropertyFor(desc.id, null);
             if (getProperty(prop)) {
                 actives.add(desc);
-            } else {
-                // System.out.println("disabled: " + prop);
             }
+
         }
         return actives;
     }

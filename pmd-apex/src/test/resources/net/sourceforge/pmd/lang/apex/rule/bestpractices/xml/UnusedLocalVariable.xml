@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Unused variables should result in errors</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
+        <expected-messages>
+            <message>Variable 'foo' defined but not used</message>
+            <message>Variable 'foo' defined but not used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void assignedVariable() {
+        String foo = 'unused string';
+    }
+
+    public void justADeclaration() {
+        String foo;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Used variables should not result in errors</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String basicUsage() {
+        String x = 'used variable';
+        return x;
+    }
+
+    public Account moreComplexUsage() {
+        String x = 'blah';
+        return [SELECT Id FROM Account WHERE Name = :x];
+    }
+
+    public String usageInBlocks(Boolean y) {
+        String x = 'used variable';
+
+        if (y) {
+            return x;
+        } else {
+            return 'some other string';
+        }
+    }
+
+    public void hasMethodCalledOnIt() {
+        String foo = 'foobar';
+        foo.substringAfter('foo');
+    }
+
+    public void handlesChainedMethods() {
+        String foo = 'foobar';
+        foo.substringAfter('f').substringAfter('b');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Shadowing a field</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private String myfield;
+
+    public void unused() {
+        String myfield = 'unused string';
+    }
+
+    public String usedDifferentMethod() {
+        String myfield = 'used';
+        return myfield;
+    }
+
+    public String fieldUsage() {
+        return myfield;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE with triggers (#2554)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+trigger leadOwnerUpdate on Lead (after update) {
+    for(Lead Id : Trigger.new) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] UnusedLocalVariable - false positive on case insensitivity allowed in Apex #2626</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    private String foo() {
+        String Bar;
+        bar = 'bar';
+        return bar;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

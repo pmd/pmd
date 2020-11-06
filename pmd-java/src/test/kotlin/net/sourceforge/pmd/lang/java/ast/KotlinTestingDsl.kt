@@ -1,24 +1,34 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.Matcher
-import io.kotlintest.Result
-import io.kotlintest.matchers.string.shouldContain
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.string.shouldContain
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.*
-import net.sourceforge.pmd.lang.java.ParserTstUtil
-import io.kotlintest.should as kotlintestShould
-
+import net.sourceforge.pmd.lang.ast.test.Assertions
+import net.sourceforge.pmd.lang.ast.test.NodeSpec
+import net.sourceforge.pmd.lang.ast.test.matchNode
+import net.sourceforge.pmd.lang.ast.test.shouldMatchNode
+import net.sourceforge.pmd.lang.java.JavaParsingHelper
 
 /**
  * Represents the different Java language versions.
  */
 enum class JavaVersion : Comparable<JavaVersion> {
-    J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11;
+    J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11,
+    J12,
+    J13,
+    J14, J14__PREVIEW,
+    J15, J15__PREVIEW;
 
-    /** Name suitable for use with e.g. [ParserTstUtil.parseAndTypeResolveJava] */
-    val pmdName: String = name.removePrefix("J").replace('_', '.')
+    /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
+    val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
+
+    val parser: JavaParsingHelper = JavaParsingHelper.WITH_PROCESSING.withDefaultVersion(pmdName)
+
+    operator fun not(): List<JavaVersion> = values().toList() - this
 
     /**
      * Overloads the range operator, e.g. (`J9..J11`).
@@ -37,109 +47,9 @@ enum class JavaVersion : Comparable<JavaVersion> {
     }
 }
 
-
-/**
- * Specify several tests at once for different java versions.
- * One test will be generated per version in [javaVersions].
- * Use [focusOn] to execute one test in isolation.
- *
- * @param name Name of the test. Will be postfixed by the specific
- *             java version used to run it
- * @param javaVersions Language versions for which to generate tests
- * @param focusOn Sets the java version of the test to isolate
- * @param assertions Assertions and further configuration
- *                   to perform with the parsing context
- */
-fun AbstractFunSpec.parserTest(name: String,
-                               javaVersions: List<JavaVersion>,
-                               focusOn: JavaVersion? = null,
-                               assertions: ParserTestCtx.() -> Unit) {
-
-    javaVersions.forEach {
-
-        val focus = if (focusOn != null && focusOn == it) "f:" else ""
-
-        test("$focus$name (Java ${it.pmdName})") {
-            ParserTestCtx(it).assertions()
-        }
-    }
-}
-
-/**
- * Specify a new test for a single java version. To execute the test in isolation,
- * prefix the name with `"f:"`.
- *
- * @param name Name of the test. Will be postfixed by the [javaVersion]
- * @param javaVersion Language version to use when parsing
- * @param assertions Assertions and further configuration
- *                   to perform with the parsing context
- */
-fun AbstractFunSpec.parserTest(name: String,
-                               javaVersion: JavaVersion = JavaVersion.Latest,
-                               assertions: ParserTestCtx.() -> Unit) {
-    parserTest(name, listOf(javaVersion), null, assertions)
-}
-
-
-/**
- * Defines a group of tests that should be named similarly,
- * executed on several java versions. Calls to "should" in
- * the block are intercepted to create a new test, with the
- * given [name] as a common prefix.
- *
- * This is useful to make a batch of grammar specs for grammar
- * regression tests without bothering to find a name.
- *
- * @param name Common prefix for the test names
- * @param javaVersions Language versions for which to generate tests
- * @param spec Assertions. Each call to [io.kotlintest.should] on a string
- *             receiver is replaced by a [GroupTestCtx.should], which creates a
- *             new parser test.
- */
-fun AbstractFunSpec.testGroup(name: String,
-                              javaVersions: List<JavaVersion>,
-                              spec: GroupTestCtx.() -> Unit) {
-    javaVersions.forEach {
-        testGroup(name, it, spec)
-    }
-}
-
-
-/**
- * Defines a group of tests that should be named similarly.
- * Calls to "should" in the block are intercepted to create
- * a new test, with the given [name] as a common prefix.
- *
- * This is useful to make a batch of grammar specs for grammar
- * regression tests without bothering to find a name.
- *
- * @param name Common prefix for the test names
- * @param javaVersion Language versions to use when parsing
- * @param spec Assertions. Each call to [io.kotlintest.should] on a string
- *             receiver is replaced by a [GroupTestCtx.should], which creates a
- *             new parser test.
- *
- */
-fun AbstractFunSpec.testGroup(name: String,
-                              javaVersion: JavaVersion = JavaVersion.Latest,
-                              spec: GroupTestCtx.() -> Unit) {
-    GroupTestCtx(this, name, javaVersion).spec()
-}
-
-class GroupTestCtx(private val funspec: AbstractFunSpec, private val groupName: String, javaVersion: JavaVersion) : ParserTestCtx(javaVersion) {
-
-    infix fun String.should(matcher: Matcher<String>) {
-        funspec.parserTest("$groupName: '$this'") {
-            this@should kotlintestShould matcher
-        }
-    }
-
-}
-
-
 /**
  * Extensible environment to describe parse/match testing workflows in a concise way.
- * Can be used inside of a [io.kotlintest.specs.FunSpec] with [parserTest].
+ * Can be used inside of a [ParserTestSpec] with [ParserTestSpec.parserTest].
  *
  * Parsing contexts allow to parse a string containing only the node you're interested
  * in instead of writing up a full class that the parser can handle. See [parseAstExpression],
@@ -151,7 +61,7 @@ class GroupTestCtx(private val funspec: AbstractFunSpec, private val groupName: 
  *
  * These are implicitly used by [matchExpr] and [matchStmt], which specify a matcher directly
  * on the strings, using their type parameter and the info in this test context to parse, find
- * the node, and execute the matcher in a single call. These may be used by [io.kotlintest.should],
+ * the node, and execute the matcher in a single call. These may be used by [io.kotest.matchers.should],
  * e.g.
  *
  *      parserTest("Test ShiftExpression operator") {
@@ -164,7 +74,7 @@ class GroupTestCtx(private val funspec: AbstractFunSpec, private val groupName: 
  * Import statements in the parsing contexts can be configured by adding types to [importedTypes],
  * or strings to [otherImports].
  *
- * Technically the utilities provided by this class may be used outside of [io.kotlintest.specs.FunSpec]s,
+ * Technically the utilities provided by this class may be used outside of [io.kotest.specs.FunSpec]s,
  * e.g. in regular JUnit tests, but I think we should strive to uniformize our testing style,
  * especially since KotlinTest defines so many.
  *
@@ -173,10 +83,12 @@ class GroupTestCtx(private val funspec: AbstractFunSpec, private val groupName: 
  * @property javaVersion The java version that will be used for parsing.
  * @property importedTypes Types to import at the beginning of parsing contexts
  * @property otherImports Other imports, without the `import` and semicolon
+ * @property genClassHeader Header of the enclosing class used in parsing contexts like parseExpression, etc. E.g. "class Foo"
  */
 open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                          val importedTypes: MutableList<Class<*>> = mutableListOf(),
-                         val otherImports: MutableList<String> = mutableListOf()) {
+                         val otherImports: MutableList<String> = mutableListOf(),
+                         var genClassHeader: String = "class Foo") {
 
     /** Imports to add to the top of the parsing contexts. */
     internal val imports: List<String>
@@ -185,11 +97,8 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             return types + otherImports.map { "import $it;" }
         }
 
-    inline fun <reified N : Node> makeMatcher(nodeParsingCtx: NodeParsingCtx<*>, ignoreChildren: Boolean, noinline nodeSpec: NWrapper<N>.() -> Unit): Matcher<String> =
-            object : Matcher<String> {
-                override fun test(value: String): Result =
-                        matchNode(ignoreChildren, nodeSpec).test(nodeParsingCtx.parseAndFind<N>(value))
-            }
+    inline fun <reified N : Node> makeMatcher(nodeParsingCtx: NodeParsingCtx<*>, ignoreChildren: Boolean, noinline nodeSpec: NodeSpec<N>)
+            : Assertions<String> = { nodeParsingCtx.parseAndFind<N>(it).shouldMatchNode(ignoreChildren, nodeSpec) }
 
 
     /**
@@ -198,7 +107,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      *
      */
     inline fun <reified N : Node> matchExpr(ignoreChildren: Boolean = false,
-                                            noinline nodeSpec: NWrapper<N>.() -> Unit): Matcher<String> =
+                                            noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(ExpressionParsingCtx(this), ignoreChildren, nodeSpec)
 
     /**
@@ -206,7 +115,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      */
     inline fun <reified N : Node> matchStmt(ignoreChildren: Boolean = false,
-                                            noinline nodeSpec: NWrapper<N>.() -> Unit) =
+                                            noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(StatementParsingCtx(this), ignoreChildren, nodeSpec)
 
 
@@ -215,8 +124,26 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      */
     inline fun <reified N : Node> matchType(ignoreChildren: Boolean = false,
-                                            noinline nodeSpec: NWrapper<N>.() -> Unit) =
+                                            noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(TypeParsingCtx(this), ignoreChildren, nodeSpec)
+
+    /**
+     * Returns a String matcher that parses the node using [parseToplevelDeclaration] with
+     * type param [N], then matches it against the [nodeSpec] using [matchNode].
+     */
+    inline fun <reified N : ASTAnyTypeDeclaration> matchToplevelType(ignoreChildren: Boolean = false,
+                                                                     noinline nodeSpec: NodeSpec<N>) =
+            makeMatcher(TopLevelTypeDeclarationParsingCtx(this), ignoreChildren, nodeSpec)
+
+    /**
+     * Returns a String matcher that parses the node using [parseBodyDeclaration] with
+     * type param [N], then matches it against the [nodeSpec] using [matchNode].
+     *
+     * Note that the enclosing type declaration can be customized by changing [genClassHeader].
+     */
+    inline fun <reified N : Node> matchDeclaration(
+            ignoreChildren: Boolean = false,
+            noinline nodeSpec: NodeSpec<N>) = makeMatcher(EnclosedDeclarationParsingCtx(this), ignoreChildren, nodeSpec)
 
 
     /**
@@ -239,6 +166,11 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
     fun parseAstType(type: String): ASTType = TypeParsingCtx(this).parseNode(type)
 
+    fun parseToplevelAnyTypeDeclaration(type: String): ASTAnyTypeDeclaration = TopLevelTypeDeclarationParsingCtx(this).parseNode(type)
+
+    fun parseBodyDeclaration(type: String): ASTAnyTypeBodyDeclaration = EnclosedDeclarationParsingCtx(this).parseNode(type)
+
+    // reified shorthands, fetching the node
 
     inline fun <reified N : Node> parseExpression(expr: String): N = ExpressionParsingCtx(this).parseAndFind(expr)
 
@@ -247,6 +179,9 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
     inline fun <reified N : Node> parseType(type: String): N = TypeParsingCtx(this).parseAndFind(type)
 
+    inline fun <reified N : Node> parseToplevelDeclaration(decl: String): N = TopLevelTypeDeclarationParsingCtx(this).parseAndFind(decl)
+
+    inline fun <reified N : Node> parseDeclaration(decl: String): N = EnclosedDeclarationParsingCtx(this).parseAndFind(decl)
 
     companion object {
 
@@ -261,11 +196,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
          */
         fun <N : Node> Node.findFirstNodeOnStraightLine(klass: Class<N>): N? {
             return when {
-                klass.isInstance(this) -> {
-                    @Suppress("UNCHECKED_CAST")
-                    val n = this as N
-                    n
-                }
+                klass.isInstance(this) -> klass.cast(this)
                 this.numChildren == 1 -> getChild(0).findFirstNodeOnStraightLine(klass)
                 else -> null
             }
@@ -294,7 +225,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
              * @throws ParseException If the argument is no valid construct of this kind (mind the language version)
              */
             fun parseNode(construct: String): T {
-                val root = ParserTstUtil.parseAndTypeResolveJava(ctx.javaVersion.pmdName, getTemplate(construct))
+                val root = JavaParsingHelper.WITH_PROCESSING.parse(getTemplate(construct), ctx.javaVersion.pmdName)
 
                 return retrieveNode(root)
             }
@@ -326,7 +257,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             override fun getTemplate(construct: String): String =
                 """
                 ${ctx.imports.joinToString(separator = "\n")}
-                class Foo {
+                ${ctx.genClassHeader} {
                     {
                         Object o = $construct;
                     }
@@ -342,7 +273,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             override fun getTemplate(construct: String): String =
                 """
                 ${ctx.imports.joinToString(separator = "\n")}
-                class Foo {
+                ${ctx.genClassHeader} {
                     {
                         $construct
                     }
@@ -353,11 +284,34 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             override fun retrieveNode(acu: ASTCompilationUnit): ASTBlockStatement = acu.getFirstDescendantOfType(ASTBlockStatement::class.java)
         }
 
+        class EnclosedDeclarationParsingCtx(ctx: ParserTestCtx) : NodeParsingCtx<ASTAnyTypeBodyDeclaration>("enclosed declaration", ctx) {
+
+            override fun getTemplate(construct: String): String = """
+                ${ctx.imports.joinToString(separator = "\n")}
+                ${ctx.genClassHeader} {
+                    $construct
+                }
+                """.trimIndent()
+
+            override fun retrieveNode(acu: ASTCompilationUnit): ASTAnyTypeBodyDeclaration =
+                    acu.getFirstDescendantOfType(ASTAnyTypeBodyDeclaration::class.java)!!
+        }
+
+        class TopLevelTypeDeclarationParsingCtx(ctx: ParserTestCtx) : NodeParsingCtx<ASTAnyTypeDeclaration>("top-level declaration", ctx) {
+
+            override fun getTemplate(construct: String): String = """
+            ${ctx.imports.joinToString(separator = "\n")}
+            $construct
+            """.trimIndent()
+
+            override fun retrieveNode(acu: ASTCompilationUnit): ASTAnyTypeDeclaration = acu.getFirstDescendantOfType(ASTAnyTypeDeclaration::class.java)!!
+        }
+
         class TypeParsingCtx(ctx: ParserTestCtx) : NodeParsingCtx<ASTType>("type", ctx) {
             override fun getTemplate(construct: String): String =
                 """
                 ${ctx.imports.joinToString(separator = "\n")}
-                class Foo {
+                ${ctx.genClassHeader} {
                     $construct foo;
                 }
                 """.trimIndent()

@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -18,12 +19,15 @@ import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
  * Base test class for {@link LanguageVersion} implementations. <br>
  * Each language implementation should subclass this and provide a data method.
- * 
+ *
  * <pre>
  * &#64;Parameters
  *     public static Collection&lt;Object[]&gt; data() {
@@ -38,7 +42,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
  *              null }
  *       });
  * </pre>
- * 
+ *
  * <p>For the parameters, see the constructor
  * {@link #AbstractLanguageVersionTest(String, String, String, LanguageVersion)}.</p>
  */
@@ -53,7 +57,7 @@ public class AbstractLanguageVersionTest {
 
     /**
      * Creates a new {@link AbstractLanguageVersionTest}
-     * 
+     *
      * @param name
      *            the name under which the language module is registered
      * @param terseName
@@ -102,14 +106,48 @@ public class AbstractLanguageVersionTest {
         assertEquals(expected, languageVersion);
     }
 
+    private boolean supportsRules() {
+        if (expected == null || expected.getLanguage().getRuleChainVisitorClass() == null
+                || expected.getLanguageVersionHandler() == null) {
+            return false;
+        }
+
+        LanguageVersionHandler languageVersionHandler = expected.getLanguageVersionHandler();
+        ParserOptions defaultParserOptions = languageVersionHandler.getDefaultParserOptions();
+        Parser parser = languageVersionHandler.getParser(defaultParserOptions);
+        return parser.canParse();
+    }
+
     /**
-     * Makes sure, that for each language a "rulesets.properties" file exists.
-     * 
+     * Makes sure, that for each language a "categories.properties" file exists.
+     *
      * @throws Exception
      *             any error
      */
     @Test
     public void testRegisteredRulesets() throws Exception {
+        // only check for languages, that support rules
+        if (!supportsRules()) {
+            return;
+        }
+
+        ResourceLoader rl = new ResourceLoader();
+        Properties props = new Properties();
+        String rulesetsProperties = "category/" + simpleTerseName + "/categories.properties";
+        try (InputStream inputStream = rl.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
+            props.load(inputStream);
+        }
+        assertRulesetsAndCategoriesProperties(rl, props);
+    }
+
+    /**
+     * If a rulesets.properties file still exists, test it as well.
+     *
+     * @throws Exception
+     *             any error
+     */
+    @Test
+    public void testOldRegisteredRulesets() throws Exception {
         // only check for languages, that support rules
         if (expected == null || expected.getLanguage().getRuleChainVisitorClass() == null) {
             return;
@@ -118,13 +156,41 @@ public class AbstractLanguageVersionTest {
         ResourceLoader rl = new ResourceLoader();
         Properties props = new Properties();
         String rulesetsProperties = "rulesets/" + simpleTerseName + "/rulesets.properties";
-        try (InputStream inputStream = rl.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
-            props.load(inputStream);
+        InputStream inputStream = rl.loadClassPathResourceAsStream(rulesetsProperties);
+        if (inputStream != null) {
+            // rulesets.properties file exists
+            try (InputStream in = inputStream) {
+                props.load(in);
+            }
+            assertRulesetsAndCategoriesProperties(rl, props);
         }
+    }
+
+    @Test
+    public void testVersionsAreDistinct() {
+        if (expected == null) {
+            return;
+        }
+
+        Language lang = expected.getLanguage();
+
+        int count = 0;
+        for (LanguageVersion lv : lang.getVersions()) {
+            if (lv.equals(expected)) {
+                count++;
+            }
+        }
+
+        assertEquals("Expected exactly one occurrence of " + expected
+                         + " in the language versions of its language", 1, count);
+    }
+
+    private void assertRulesetsAndCategoriesProperties(ResourceLoader rl, Properties props)
+            throws IOException, RuleSetNotFoundException {
         String rulesetFilenames = props.getProperty("rulesets.filenames");
         assertNotNull(rulesetFilenames);
 
-        RuleSetFactory factory = new RuleSetFactory();
+        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
 
         if (rulesetFilenames.trim().isEmpty()) {
             return;
@@ -132,9 +198,9 @@ public class AbstractLanguageVersionTest {
 
         String[] rulesets = rulesetFilenames.split(",");
         for (String r : rulesets) {
-            InputStream stream = rl.loadClassPathResourceAsStream(r);
-            assertNotNull(stream);
-            stream.close();
+            try (InputStream stream = rl.loadClassPathResourceAsStream(r)) {
+                assertNotNull(stream);
+            }
             RuleSet ruleset = factory.createRuleSet(r);
             assertNotNull(ruleset);
         }

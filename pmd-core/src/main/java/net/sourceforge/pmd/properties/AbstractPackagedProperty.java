@@ -19,6 +19,7 @@ import net.sourceforge.pmd.properties.modules.PackagedPropertyModule;
  * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
+@Deprecated
 /* default */ abstract class AbstractPackagedProperty<T> extends AbstractSingleValueProperty<T>
         implements PackagedPropertyDescriptor<T> {
 

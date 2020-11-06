@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -24,7 +25,10 @@ import net.sourceforge.pmd.lang.java.ast.Annotatable;
  * with Lombok annotations.
  *
  * @author Andreas Dangel
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
 
     private boolean lombokImported = false;
@@ -65,21 +69,27 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        boolean oldValue = classHasLombokAnnotation;
         classHasLombokAnnotation = hasLombokAnnotation(node);
-        return super.visit(node, data);
+        Object result = super.visit(node, data);
+        classHasLombokAnnotation = oldValue;
+        return result;
     }
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
+        boolean oldValue = classHasLombokAnnotation;
         classHasLombokAnnotation = hasLombokAnnotation(node);
-        return super.visit(node, data);
+        Object result = super.visit(node, data);
+        classHasLombokAnnotation = oldValue;
+        return result;
     }
 
     /**
      * Returns whether there have been class level Lombok annotations found.
      * Note: this can only be queried after the class declaration node has been
      * processed.
-     * 
+     *
      * @return <code>true</code> if a lombok annotation at the class level has
      *         been found
      */
@@ -99,7 +109,7 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
     @Deprecated
     protected boolean hasLombokAnnotation(Node node) {
         boolean result = false;
-        Node parent = node.jjtGetParent();
+        Node parent = node.getParent();
         List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
         for (ASTAnnotation annotation : annotations) {
             ASTName name = annotation.getFirstDescendantOfType(ASTName.class);

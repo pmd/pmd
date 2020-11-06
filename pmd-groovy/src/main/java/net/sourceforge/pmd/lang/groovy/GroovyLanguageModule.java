@@ -8,7 +8,10 @@ import net.sourceforge.pmd.lang.BaseLanguageModule;
 
 /**
  * Language Module for Groovy
+ *
+ * @deprecated There is no full PMD support for Groovy.
  */
+@Deprecated
 public class GroovyLanguageModule extends BaseLanguageModule {
 
     /** The name. */
@@ -20,7 +23,7 @@ public class GroovyLanguageModule extends BaseLanguageModule {
      * Create a new instance of Groovy Language Module.
      */
     public GroovyLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "groovy");
+        super(NAME, null, TERSE_NAME, "groovy");
         addVersion("", null, true);
     }
 }

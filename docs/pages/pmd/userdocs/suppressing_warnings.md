@@ -32,7 +32,7 @@ for you:
     changing the Rule, but you do not need to submit a patch back to the
     PMD project.
 
-If you need to modify the Rule, see [How to write a rule](pmd_devdocs_writing_pmd_rules.html).
+If you need to modify the Rule, see [How to write a rule](pmd_userdocs_extending_writing_rules_intro.html).
 Otherwise, the other suppression methods are explained in the following sections.
 
 ## Annotations
@@ -129,7 +129,7 @@ $ cat ~/tmp/Foo.java
 public class Foo {
     void bar() {
         int x = 42;
-        if (x &gt; 5) { // NOPMD
+        if (x > 5) { // NOPMD
         }
     }
 }
@@ -187,10 +187,15 @@ of no use.
 ###  The property `violationSuppressXPath`
 
 This property defines an XPath query to be executed *using the
-violation node as the starting point*.  If the XPath query matches anything,
-then the violation will be suppressed.
+violation node as the context node*.  If the XPath query matches anything,
+then the violation will be suppressed. Note that the query shouldn't be finding
+the violation nodes to suppress, but rather, finding a non-empty sequence of nodes
+when evaluated with the violation node as a context node.
 
-For example, to suppress reporting specifically typed parameters which are unused:
+The XPath version used by those queries is XPath 1.0, so it doesn't support various XPath 2.0
+features. This will be updated with PMD 7.0.0.
+
+For example, to suppress reporting specifically "String" parameters which are unused:
 
 ```xml
 <rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
@@ -199,6 +204,25 @@ For example, to suppress reporting specifically typed parameters which are unuse
   </properties>
 </rule>
 ```
+
+Note the use of `.` to refer to the context node. Using `//` at the start of the
+expression should be avoided, as it would test all nodes in the file, and suppress
+more violations than expected.
+
+Another example, to suppress violations occurring in classes whose name contains `Bean`:
+```xml
+<property name="violationSuppressXPath" value="./ancestor::ClassOrInterfaceDeclaration[contains(@Image, 'Bean')]"/>
+```
+
+You can also use regex for string comparison. The next example suppresses violations in classes ending with `Bean`:
+```xml
+<property name="violationSuppressXPath" value="./ancestor::ClassOrInterfaceDeclaration[matches(@Image, '^.*Bean$')]"/>
+```
+
+
+Note here the usage of the `./ancestor::` axis instead of `//`. The latter would match
+any ClassOrInterfaceDeclaration in the file, while the former matches only class
+declaration nodes that *enclose the violation node*, which is usually what you'd want.
 
 Note for XPath based suppression to work, you must know how to write
 an XPath query that matches the AST structure of the nodes of the

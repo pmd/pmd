@@ -18,6 +18,7 @@ Rules which enforce generally accepted best practices.
         <description>Avoid using with - it's bad news</description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -36,6 +37,7 @@ with (object) {
     </rule>
 
     <rule name="ConsistentReturn"
+          language="ecmascript"
           since="5.0"
           message="A function should not mix 'return' statements with and without a result."
           class="net.sourceforge.pmd.lang.ecmascript.rule.bestpractices.ConsistentReturnRule"
@@ -79,10 +81,11 @@ Global variables can lead to side-effects that are hard to debug.
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Assignment[Name/@GlobalName = 'true']
+//Assignment[Name/@GlobalName = true()]
 ]]>
                 </value>
             </property>
@@ -116,6 +119,7 @@ is better to explicitly scope the variable name to the nearest enclosing scope w
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -171,6 +175,7 @@ See also: [parseInt()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/R
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

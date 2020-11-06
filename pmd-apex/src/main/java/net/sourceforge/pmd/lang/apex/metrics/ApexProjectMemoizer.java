@@ -13,5 +13,6 @@ import net.sourceforge.pmd.lang.metrics.BasicProjectMemoizer;
  *
  * @author Clément Fournier
  */
+@Deprecated
 class ApexProjectMemoizer extends BasicProjectMemoizer<ASTUserClassOrInterface<?>, ASTMethod> {
 }

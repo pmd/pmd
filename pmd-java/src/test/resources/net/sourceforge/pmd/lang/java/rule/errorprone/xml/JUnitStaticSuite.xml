@@ -3,63 +3,58 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-non-static is bad
-     ]]></description>
+        <description>non-static is bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public TestSuite suite() {}
+    public TestSuite suite() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-public static with no params is OK
-     ]]></description>
+        <description>public static with no params is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public static TestSuite suite() {}
+    public static TestSuite suite() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-private suite() is bad
-     ]]></description>
+        <description>private suite() is bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- private static TestSuite suite() {}
+    private static TestSuite suite() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-if there are params, just skip it
-     ]]></description>
+        <description>if there are params, just skip it</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- protected static Test suite(Foo foo) {}
+    protected static Test suite(Foo foo) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Not a JUnit test (nonstatic is bad)
-     ]]></description>
+        <description>Not a JUnit test (nonstatic is bad)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public TestSuite suite() {}
+    public TestSuite suite() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

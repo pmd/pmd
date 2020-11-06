@@ -9,7 +9,10 @@ package net.sourceforge.pmd.util.filter;
  *
  * @param <T>
  *            The underlying type on which the filter applies.
+ *
+ * @deprecated Will be replaced with standard java.util.function.Predicate with 7.0.0
  */
+@Deprecated
 public interface Filter<T> {
     boolean filter(T obj);
 }

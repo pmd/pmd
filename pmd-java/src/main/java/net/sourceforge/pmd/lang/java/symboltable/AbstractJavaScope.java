@@ -6,15 +6,18 @@ package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.symboltable.AbstractScope;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * Provides the basic java scope implementation.
- * 
+ *
  * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-6.html#jls-6.3">JLS 6.3</a>
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractJavaScope extends AbstractScope {
 
     @Override

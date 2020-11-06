@@ -3,71 +3,103 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-	<test-code>
-		<description>No CDATASection</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+
+    <test-code>
+        <description>No CDATASection</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <root>
-   <child>
-   </child>
+    <child>
+    </child>
 </root>
-     ]]></code>
-		<source-type>xml</source-type>
-	</test-code>
-	<test-code>
-		<description>Valid CDATASection</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Valid CDATASection</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <root>
-   <child>
-      <![CDATA[
-         some text data
-      ]]><![CDATA[]]]]><![CDATA[>]]><![CDATA[
-   </child>
+    <child>
+        <![CDATA[
+            some text data
+        ]]><![CDATA[]]]]><![CDATA[>]]><![CDATA[
+    </child>
 </root>
-     ]]></code>
-		<source-type>xml</source-type>
-	</test-code>
-	<test-code>
-		<description>CDATASection with [ and ] in it, but not at the ends</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CDATASection with [ and ] in it, but not at the ends</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <root>
-   <child>
-      <![CDATA[
-         some [text] data
-      ]]><![CDATA[]]]]><![CDATA[>]]><![CDATA[
-   </child>
+    <child>
+        <![CDATA[
+            some [text] data
+        ]]><![CDATA[]]]]><![CDATA[>]]><![CDATA[
+    </child>
 </root>
-     ]]></code>
-		<source-type>xml</source-type>
-	</test-code>
-	<test-code>
-		<description>CDATASection with [ at the beginning</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CDATASection with [ at the beginning</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 <root>
-   <child>
-      <![CDATA[[
-         some text data
-      ]]><![CDATA[]]]]><![CDATA[>]]><![CDATA[
-   </child>
+    <child>
+        <![CDATA[[
+            some text data
+        ]]><![CDATA[]]]]><![CDATA[>]]><![CDATA[
+    </child>
 </root>
-     ]]></code>
-		<source-type>xml</source-type>
-	</test-code>
-	<test-code>
-		<description>CDATASection with ] at the end</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CDATASection with ] at the end</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 <root>
-   <child>
-      <![CDATA[
-         some text data
-      ]]]><![CDATA[]]]]><![CDATA[>]]><![CDATA[
-   </child>
+    <child>
+        <![CDATA[
+            some text data
+        ]]]><![CDATA[]]]]><![CDATA[>]]><![CDATA[
+    </child>
 </root>
-     ]]></code>
-		<source-type>xml</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Example code</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <code><![CDATA[
+<root>
+    <child>
+        <![CDATA[ character data ]]]><![CDATA[]]]]><![CDATA[> - this cdata section is valid, but it contains an
+        additional square bracket in the end.
+        It should probably be just <![CDATA[ character data ]]><![CDATA[]]]]><![CDATA[>.
+    </child>
+    <child>
+        <![CDATA[[ character data ]]><![CDATA[]]]]><![CDATA[> - this cdata section is valid, but it contains an
+        additional square bracket at the beginning.
+        It should probably be just <![CDATA[ character data ]]><![CDATA[]]]]><![CDATA[>.
+    </child>
+</root>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Square bracket at end separate by space is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<root>
+    <child>
+        <![CDATA[ character data[] ]]><![CDATA[]]]]><![CDATA[>
+    </child>
+</root>
+        ]]></code>
+    </test-code>
 </test-data>

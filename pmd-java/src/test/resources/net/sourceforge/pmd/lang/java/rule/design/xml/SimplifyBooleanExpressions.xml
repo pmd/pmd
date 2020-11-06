@@ -3,67 +3,62 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-in field assignment
-     ]]></description>
+        <description>in field assignment</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private boolean foo = (isFoo() == true);
- boolean isFoo() {return foo;}
+    private boolean foo = (isFoo() == true);
+    boolean isFoo() {return foo;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-in method body
-     ]]></description>
+        <description>in method body</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  boolean bar = (new String().length() >2) == false;
- }
+    void foo() {
+        boolean bar = (new String().length() >2) == false;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- boolean bar = true;
+    boolean bar = true;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-two cases in an && expression
-     ]]></description>
+        <description>two cases in an &amp;&amp; expression</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (getFoo() == false && isBar() == true) {}
- }
+    void bar() {
+        if (getFoo() == false && isBar() == true) {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-simple use of BooleanLiteral, should not be flagged
-     ]]></description>
+        <description>simple use of BooleanLiteral, should not be flagged</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (true) {}
-  if (false) {}
- }
+    void bar() {
+        if (true) {}
+        if (false) {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

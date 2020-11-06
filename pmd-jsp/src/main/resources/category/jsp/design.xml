@@ -21,6 +21,7 @@ Externalized script could be reused between pages.  Browsers can also cache the 
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -32,6 +33,7 @@ Externalized script could be reused between pages.  Browsers can also cache the 
     </rule>
 
     <rule name="NoInlineStyleInformation"
+          language="jsp"
           since="3.6"
           message="Avoid having style information in JSP files."
           class="net.sourceforge.pmd.lang.jsp.rule.design.NoInlineStyleInformationRule"
@@ -59,6 +61,7 @@ Scripts should be part of Tag Libraries, rather than part of JSP pages.
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -105,6 +108,7 @@ Scriptlets should be factored into Tag Libraries or JSP declarations, rather tha
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

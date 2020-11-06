@@ -20,13 +20,16 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.signature.SignatureReader;
 
+import net.sourceforge.pmd.dcd.DCD;
 import net.sourceforge.pmd.dcd.asm.PrintVisitor;
 import net.sourceforge.pmd.dcd.asm.TypeSignatureVisitor;
 import net.sourceforge.pmd.util.filter.Filter;
 
 /**
  * Utility class used to build a UsageGraph.
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public class UsageGraphBuilder {
 
     /**

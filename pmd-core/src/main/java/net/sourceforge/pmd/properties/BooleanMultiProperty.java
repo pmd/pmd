@@ -17,7 +17,9 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversi
  * Defines a property type that supports multiple Boolean values.
  *
  * @author Brian Remedios
+ * @deprecated Not useful, will be removed with 7.0.0
  */
+@Deprecated
 public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boolean> {
 
 
@@ -28,7 +30,10 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
      * @param theDescription Description
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
+     *
+     * @deprecated Not useful, will be removed with 7.0.0
      */
+    @Deprecated
     public BooleanMultiProperty(String theName, String theDescription, Boolean[] defaultValues, float theUIOrder) {
         this(theName, theDescription, Arrays.asList(defaultValues), theUIOrder, false);
     }
@@ -48,7 +53,10 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
      * @param theDescription Description
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
+     *
+     * @deprecated Not useful, will be removed with 7.0.0
      */
+    @Deprecated
     public BooleanMultiProperty(String theName, String theDescription, List<Boolean> defaultValues, float theUIOrder) {
         this(theName, theDescription, defaultValues, theUIOrder, false);
     }
@@ -76,11 +84,19 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
     }
 
 
+    /**
+     * @deprecated Not useful, will be removed with 7.0.0
+     */
+    @Deprecated
     public static BooleanMultiPBuilder named(String name) {
         return new BooleanMultiPBuilder(name);
     }
 
 
+    /**
+     * @deprecated Not useful, will be removed with 7.0.0
+     */
+    @Deprecated
     public static final class BooleanMultiPBuilder extends MultiValuePropertyBuilder<Boolean, BooleanMultiPBuilder> {
         private BooleanMultiPBuilder(String name) {
             super(name);

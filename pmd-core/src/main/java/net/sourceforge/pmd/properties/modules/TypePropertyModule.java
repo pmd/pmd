@@ -12,6 +12,7 @@ import java.util.List;
  *
  * @author Clément Fournier
  */
+@Deprecated
 public class TypePropertyModule extends PackagedPropertyModule<Class> {
 
     public TypePropertyModule(String[] legalPackageNames, List<Class> defaults) {

@@ -10,20 +10,13 @@ import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.vf.ast.DumpFacade;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
 import net.sourceforge.pmd.lang.vf.rule.VfRuleViolationFactory;
 
 public class VfHandler extends AbstractLanguageVersionHandler {
-
-    @Override
-    public XPathHandler getXPathHandler() {
-        return new DefaultASTXPathHandler();
-    }
 
     @Override
     public RuleViolationFactory getRuleViolationFactory() {
@@ -35,6 +28,7 @@ public class VfHandler extends AbstractLanguageVersionHandler {
         return new VfParser(parserOptions);
     }
 
+    @Deprecated
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {

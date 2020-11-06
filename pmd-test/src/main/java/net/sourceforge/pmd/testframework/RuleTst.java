@@ -7,6 +7,7 @@ package net.sourceforge.pmd.testframework;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -39,10 +40,10 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -98,7 +99,7 @@ public abstract class RuleTst {
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
-            Rule rule = new RuleSetFactory().createRuleSets(ruleSet).getRuleByName(ruleName);
+            Rule rule = RulesetsFactoryUtils.defaultFactory().createRuleSets(ruleSet).getRuleByName(ruleName);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             } else {
@@ -211,8 +212,9 @@ public abstract class RuleTst {
 
         List<Integer> expected = test.getExpectedLineNumbers();
         if (report.size() != expected.size()) {
-            throw new RuntimeException("Test setup error: number of execpted line numbers doesn't match "
-                    + "number of violations for test case '" + test.getDescription() + "'");
+            throw new RuntimeException("Test setup error: number of expected line numbers " + expected.size()
+                    + " doesn't match number of violations " + report.size() + " for test case '"
+                    + test.getDescription() + "'");
         }
 
         Iterator<RuleViolation> it = report.iterator();
@@ -272,13 +274,27 @@ public abstract class RuleTst {
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
                 p.getConfiguration().prependClasspath(".");
+            } else {
+                // simple class loader, that doesn't delegate to parent.
+                // this allows us in the tests to simulate PMD run without
+                // auxclasspath, not even the classes from the test dependencies
+                // will be found.
+                p.getConfiguration().setClassLoader(new ClassLoader() {
+                    @Override
+                    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+                        if (name.startsWith("java.") || name.startsWith("javax.")) {
+                            return super.loadClass(name, resolve);
+                        }
+                        throw new ClassNotFoundException(name);
+                    }
+                });
             }
             RuleContext ctx = new RuleContext();
             ctx.setReport(report);
-            ctx.setSourceCodeFilename("n/a");
+            ctx.setSourceCodeFile(new File("n/a"));
             ctx.setLanguageVersion(languageVersion);
             ctx.setIgnoreExceptions(false);
-            RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
+            RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
             p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -334,12 +350,8 @@ public abstract class RuleTst {
                 throw new RuntimeException("Couldn't find " + testXmlFileName);
             }
             doc = documentBuilder.parse(inputStream);
-        } catch (FactoryConfigurationError fce) {
-            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + fce, fce);
-        } catch (IOException ioe) {
-            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + ioe, ioe);
-        } catch (SAXException se) {
-            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + se, se);
+        } catch (FactoryConfigurationError | IOException | SAXException e) {
+            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + e, e);
         }
 
         return parseTests(rule, doc);
@@ -498,7 +510,7 @@ public abstract class RuleTst {
     }
 
     private static String parseTextNode(Node exampleNode) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < exampleNode.getChildNodes().getLength(); i++) {
             Node node = exampleNode.getChildNodes().item(i);
             if (node.getNodeType() == Node.CDATA_SECTION_NODE || node.getNodeType() == Node.TEXT_NODE) {

@@ -21,9 +21,12 @@ import net.sourceforge.pmd.properties.modules.MethodPropertyModule;
  * <p>Rule developers can limit the rules to those within designated packages per the 'legalPackages' argument in the
  * constructor which can be an array of partial package names, i.e., ["java.lang", "com.mycompany" ].</p>
  *
+ * @deprecated Not useful, will be remove by 7.0.0
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ * @deprecated Will be removed with 7.0.0 with no scheduled replacement
  */
+@Deprecated
 public final class MethodProperty extends AbstractPackagedProperty<Method> {
 
 

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,16 @@ import java.util.Locale;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.KeywordLiteral;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTKeywordLiteral extends AbstractEcmascriptNode<KeywordLiteral> {
+    @Deprecated
+    @InternalApi
     public ASTKeywordLiteral(KeywordLiteral keywordLiteral) {
         super(keywordLiteral);
         super.setImage(Token.typeToName(keywordLiteral.getType()).toLowerCase(Locale.ROOT));
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

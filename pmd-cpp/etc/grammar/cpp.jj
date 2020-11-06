@@ -96,12 +96,12 @@ public final class CppParser {
      if (t.kind != ID && t.kind != SCOPE)
         return null;
 
-     StringBuffer s = new StringBuffer();
+     StringBuilder s = new StringBuilder();
 
      int i;
      if (t.kind != SCOPE)
      {
-        s.append(t.image);
+        s.append(t.getImage());
         t = getToken(2);
         i = 3;
      }
@@ -110,8 +110,8 @@ public final class CppParser {
 
      while (t.kind == SCOPE)
      {
-        s.append(t.image);
-        s.append((t = getToken(i++)).image);
+        s.append(t.getImage());
+        s.append((t = getToken(i++)).getImage());
         t = getToken(i++);
      }
 
@@ -172,7 +172,7 @@ MORE:
   |
   "\\\r\n"
   |
-  "/*": IN_PREPROCESSOR_OUTPUT_COMMENT 
+  "/*": IN_PREPROCESSOR_OUTPUT_COMMENT
   |
   < ~[] >
 }
@@ -282,44 +282,148 @@ TOKEN :
 | < FINALLY: "finally" >
 }
 
-TOKEN [IGNORE_CASE] :
+TOKEN:
 {
-  <  OCTALINT : "0" (["0"-"7"])* >
-| <  OCTALLONG : <OCTALINT> "l" >
-| <  UNSIGNED_OCTALINT : <OCTALINT> "u" >
-| <  UNSIGNED_OCTALLONG : <OCTALINT> ("ul" | "lu") >
+  <  #DECIMALDIGIT: ["0"-"9"] >
+| <  #OCTALDIGIT:   ["0"-"7"] >
+| <  #HEXDIGIT:     ["a"-"f", "A"-"F", "0"-"9"] >
+| <  #INT_SUFFIX:   ["u", "U", "l", "L"] | "uL" | "Ul" | "UL" | "ul" | "lu" | "Lu" | "lU" | "LU" >
 
-| <  DECIMALINT : ["1"-"9"] (["0"-"9"])* >
-| <  DECIMALLONG : <DECIMALINT> ["u","l"] >
-| <  UNSIGNED_DECIMALINT : <DECIMALINT> "u" >
-| <  UNSIGNED_DECIMALLONG : <DECIMALINT> ("ul" | "lu") >
+| <  ZERO: "0" >
+| <  OCTAL_INT_LITERAL:       "0"                       ("'" | <OCTALDIGIT>)+   (<INT_SUFFIX>)? >
+| <  DECIMAL_INT_LITERAL:     ["1"-"9"]                 ("'" | <DECIMALDIGIT>)* (<INT_SUFFIX>)? >
+| <  HEXADECIMAL_INT_LITERAL: "0" ["x", "X"] <HEXDIGIT> ("'" | <HEXDIGIT>)+     (<INT_SUFFIX>)? >
 
+// like DECIMALINT but may start with 0
+| <  #INT_IN_FLOAT: ["0"-"9"] ("'" | <DECIMALDIGIT>)* >
+| <  #EXP_PART: ["e", "E"] (["-","+"])? <INT_IN_FLOAT> >
 
-| <  HEXADECIMALINT : "0x" (["0"-"9","a"-"f"])+ >
-| <  HEXADECIMALLONG : <HEXADECIMALINT> (["u","l"])? >
-| <  UNSIGNED_HEXADECIMALINT : <HEXADECIMALINT> "u" >
-| <  UNSIGNED_HEXADECIMALLONG : <HEXADECIMALINT> ("ul" | "lu") >
-
-
-| <  FLOATONE : ((["0"-"9"])+ "." (["0"-"9"])* | (["0"-"9"])* "." (["0"-"9"])+)
-              ("e" (["-","+"])? (["0"-"9"])+)? (["f","l"])? >
-
-| <  FLOATTWO : (["0"-"9"])+ "e" (["-","+"])?  (["0"-"9"])+ (["f","l"])? >
+| <  FLOAT_LITERAL : <INT_IN_FLOAT> ("." (<INT_IN_FLOAT> (<EXP_PART>)?)? | <EXP_PART> ) (["f", "l", "F", "L"])? >
 }
 
 TOKEN :
 {
+  < #CHRPREF : <STRPREF>>
+| <  CHARACTER : <CHRPREF>
+      "'" ( ( ~["'","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] ) ) )+ "'" >
 
-  <  CHARACTER : ("L")? "'" ( ( ~["'","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] ) ) )* "'" >
+| < #STRPREF : ("L" | "u" | "U" | "u8")? >
+| <  STRING : <STRPREF>
+      "\"" ( ( ~["\"","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] | "\n" | "\r\n" ) ) )* "\"" >
 
-| <  STRING : ("L")? "\"" ( ( ~["\"","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] | "\n" | "\r\n" ) ) )* "\"" >
+}
 
-| <  RSTRING : "R\"(" ( ~[")"] | ( ")" ~["\""] ) )* ")\"" >
+// Raw C++11 string literal support
+// https://en.cppreference.com/w/cpp/language/string_literal
+TOKEN :
+{
+  <  RSTRING : <STRPREF> "R\"" >
+  {
+    StringBuilder sb = new StringBuilder(16);
+
+    // delim ------+
+    //            vvv
+    // Matching R"...(...)..."
+    //               ^
+    for (;;) {
+      try { curChar = input_stream.readChar(); }
+      catch(java.io.IOException e) { return; }
+      if (curChar == '(') break;
+      sb.append(curChar);
+    }
+    final String delim = sb.toString();
+
+rstringbody:
+    // Matching R"...(...)..."
+    //                   ^
+    for (;;) {
+      try { curChar = input_stream.readChar(); }
+      catch(java.io.IOException e) { return; }
+      if (curChar == ')') {
+	// delim --------------+
+	//                    vvv
+	// Matching R"...(...)..."
+	//                    ^^^
+	for (int i = 0; i < delim.length(); i++) {
+	  try { curChar = input_stream.readChar(); }
+	  catch(java.io.IOException e) { return; }
+	  if (delim.charAt(i) != curChar) {
+	    input_stream.backup(1);
+	    continue rstringbody;
+	  }
+	}
+	// Matching R"...(...)..."
+	//                       ^
+	try { curChar = input_stream.readChar(); }
+	catch(java.io.IOException e) { return; }
+	if (curChar != '"') {
+	  input_stream.backup(1);
+	  continue rstringbody;
+	}
+	break;
+      }
+    }
+    // Setting final token image
+    matchedToken.image = input_stream.GetImage();
+    matchedToken.endLine = input_stream.getEndLine();
+    matchedToken.endColumn = input_stream.getEndColumn();
+  }
 }
 
 TOKEN :
 {
-  < ID : ["$", "a"-"z","A"-"Z", "_"] (["a"-"z","A"-"Z","0"-"9","_","$"])* >
+// https://en.cppreference.com/w/cpp/language/identifiers#Unicode_characters_in_identifiers
+
+  < ID : <ID_START_CHAR> (<ID_CHAR>)* >
+
+| < #UNICODE_ESCAPE: "\\" ( "u" <HEXDIGIT_4> | "U" <HEXDIGIT_4> <HEXDIGIT_4> ) >
+| < #HEXDIGIT_4: <HEXDIGIT> <HEXDIGIT> <HEXDIGIT> <HEXDIGIT> >
+| < #ID_CHAR: <UNICODE_ESCAPE> | [
+    "a"-"z", "A"-"Z", "0"-"9", "_", "$",
+    "\u00a8", "\u00aa", "\u00ad", "\u00af",
+    "\u00b2"-"\u00b5", "\u00b7"-"\u00ba",
+    "\u00b7"-"\u00ba", "\u00bc"-"\u00be",
+    "\u00c0"-"\u00d6", "\u00d8"-"\u00f6",
+    "\u00f8"-"\u167f", "\u1681"-"\u180d",
+    "\u180f"-"\u1fff", "\u200b"-"\u200d",
+    "\u202a"-"\u202e", "\u203f"-"\u2040",
+    "\u2054", "\u2060"-"\u218f",
+    "\u2460"-"\u24ff", "\u2776"-"\u2793",
+    "\u2c00"-"\u2dff", "\u2e80"-"\u2fff",
+    "\u3004"-"\u3007", "\u3021"-"\u302f",
+    "\u3031"-"\ud7ff", "\uf900"-"\ufd3d",
+    "\ufd40"-"\ufdcf", "\ufdf0"-"\ufe44",
+    "\ufe47"-"\ufffd"
+    // the standard also allows code points in planes 1 through e,
+    // but javacc doesn't support supplementary characters
+  ] >
+// this production is the same as the above,
+// with some ranges subtracted
+| < #ID_START_CHAR: <UNICODE_ESCAPE> | [
+     "a"-"z", "A"-"Z", "_", "$",
+     "\u00a8", "\u00aa", "\u00ad", "\u00af",
+     "\u00b2"-"\u00b5", "\u00b7"-"\u00ba",
+     "\u00b7"-"\u00ba", "\u00bc"-"\u00be",
+     "\u00c0"-"\u00d6", "\u00d8"-"\u00f6",
+     // subtracted u+0300-u+036f from u+00f8-u+167f
+     "\u00f8"-"\u02ff", "\u0370"-"\u167f",
+     "\u1681"-"\u180d",
+     // subtracted u+1dc0-u+1dff from u+180f-u+1fff
+     "\u180f"-"\u1dbf", "\u1e00"-"\u1fff",
+     "\u200b"-"\u200d",
+     "\u202a"-"\u202e", "\u203f"-"\u2040",
+     "\u2054",
+     // subtracted u+20d0-u+20ff from u+2060-u+218f
+     "\u2060"-"\u20cf", "\u2100"-"\u218f",
+     "\u2460"-"\u24ff", "\u2776"-"\u2793",
+     "\u2c00"-"\u2dff", "\u2e80"-"\u2fff",
+     "\u3004"-"\u3007", "\u3021"-"\u302f",
+     "\u3031"-"\ud7ff", "\uf900"-"\ufd3d",
+     "\ufd40"-"\ufdcf",
+     // subtracted u+fe20-u+fe2f from u+fdf0-u+fe44
+     "\ufdf0"-"\ufe1f", "\ufe30"-"\ufe44",
+     "\ufe47"-"\ufffd"
+   ] >
 }
 
 
@@ -543,12 +647,12 @@ String scope_override() :
     ("::")  { name += "::"; }
     (
       LOOKAHEAD(2) t = <ID> ("<" template_argument_list() ">")? "::"
-                   { name += t.image + "::"; }
+                   { name += t.getImage() + "::"; }
     )*
    |
     (
       LOOKAHEAD(2) t = <ID> ("<" template_argument_list() ">")? "::"
-                   { name += t.image + "::"; }
+                   { name += t.getImage() + "::"; }
     )+
   )
   { return name; }
@@ -564,7 +668,7 @@ String qualified_id() :
     [ LOOKAHEAD(scope_override_lookahead()) name = scope_override() ]
     (
       t = <ID> [ "<" template_argument_list()  ">" ]
-      { return name + t.image; }
+      { return name + t.getImage(); }
      |
       "operator" optor() { return "operator"; }
     )
@@ -655,7 +759,7 @@ void class_specifier() :
    |
     LOOKAHEAD(2) t = <ID>
      {
-        sc = (ClassScope)sym.OpenScope(t.image, true);
+        sc = (ClassScope)sym.OpenScope(t.getImage(), true);
      }
      (base_clause(sc))?
     "{"
@@ -666,7 +770,7 @@ void class_specifier() :
         }
    |
     t=<ID> (LOOKAHEAD(2) "<" template_argument_list()  ">")?
-    { sym.PutTypeName(t.image); }
+    { sym.PutTypeName(t.getImage()); }
    )
 }
 
@@ -682,7 +786,7 @@ void base_specifier(ClassScope scope) :
    ("virtual" (access_specifier())? | access_specifier() ("virtual")?)?
    (LOOKAHEAD(scope_override_lookahead()) scope_override())?
    t = <ID> ("<" template_argument_list()  ">")?
-   {                          scope.AddSuper(sym.GetScope(t.image));
+   {                          scope.AddSuper(sym.GetScope(t.getImage()));
    }
 }
 
@@ -736,8 +840,8 @@ void member_declaration() :
 void member_declarator_list(boolean isTypedef) :
 {}
 {
-   member_declarator(isTypedef) ("=" <OCTALINT>)?
-   ("," member_declarator(isTypedef) ("=" <OCTALINT>)?)*
+   member_declarator(isTypedef) ("=" assignment_expression())?
+   ("," member_declarator(isTypedef) ("=" assignment_expression())?)*
 }
 
 void member_declarator(boolean isTypedef) :
@@ -774,7 +878,7 @@ void enum_specifier() :
     "{" enumerator_list() "}"
    |
     t=<ID> (LOOKAHEAD(2) "{" enumerator_list() "}")?
-           { sym.PutTypeName(t.image); }
+           { sym.PutTypeName(t.getImage()); }
    )
 }
 
@@ -831,7 +935,7 @@ String direct_declarator() :
 {
    LOOKAHEAD(2)
     "~" t = <ID> (LOOKAHEAD(2) declarator_suffixes())?
-        { return "~" + t.image; }
+        { return "~" + t.getImage(); }
    |
     "(" name = declarator() ")" (LOOKAHEAD(2) declarator_suffixes())?
         { return name; }
@@ -891,7 +995,7 @@ Scope function_direct_declarator(boolean isTypedef) :
      "(" (parameter_list())?  ")"
      (LOOKAHEAD(2) type_qualifier())?
      (exception_spec())?
-     (LOOKAHEAD("=") "=" <OCTALINT>)?
+     ("=" <ZERO>)?
 
      {
         if (closeReqd)
@@ -1086,7 +1190,7 @@ void template_parameter() :
 { Token t; }
 {
     LOOKAHEAD(3)
-      "class" t=<ID> { sym.PutTypeName(t.image); }
+      "class" t=<ID> { sym.PutTypeName(t.getImage()); }
    |
     parameter_declaration()
 }
@@ -1480,23 +1584,14 @@ void expression_list() :
 
 void constant() :
 {}
-{    <OCTALINT>
-   | <OCTALLONG>
-   | <DECIMALINT>
-   | <DECIMALLONG>
-   | <HEXADECIMALINT>
-   | <HEXADECIMALLONG>
-
-   | <UNSIGNED_OCTALINT>
-   | <UNSIGNED_OCTALLONG>
-   | <UNSIGNED_DECIMALINT>
-   | <UNSIGNED_DECIMALLONG>
-   | <UNSIGNED_HEXADECIMALINT>
-   | <UNSIGNED_HEXADECIMALLONG>
+{
+     <ZERO>
+   | <OCTAL_INT_LITERAL>
+   | <DECIMAL_INT_LITERAL>
+   | <HEXADECIMAL_INT_LITERAL>
+   | <FLOAT_LITERAL>
 
    | <CHARACTER>
-   | <FLOATONE>
-   | <FLOATTWO>
    | "true"
    | "false"
 }

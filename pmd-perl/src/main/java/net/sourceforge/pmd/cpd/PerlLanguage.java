@@ -6,6 +6,6 @@ package net.sourceforge.pmd.cpd;
 
 public class PerlLanguage extends AbstractLanguage {
     public PerlLanguage() {
-        super("Perl", "perl", new PerlTokenizer(), ".pm", ".pl", ".t");
+        super("Perl", "perl", new AnyTokenizer("#"), ".pm", ".pl", ".t");
     }
 }

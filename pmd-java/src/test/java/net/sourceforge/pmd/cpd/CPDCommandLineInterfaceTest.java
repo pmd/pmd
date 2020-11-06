@@ -83,7 +83,7 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
 
     /**
      * See: https://sourceforge.net/p/pmd/bugs/1178/
-     * 
+     *
      * @throws IOException
      *             any error
      */

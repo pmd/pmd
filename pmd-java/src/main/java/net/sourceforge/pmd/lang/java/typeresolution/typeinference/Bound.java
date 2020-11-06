@@ -6,9 +6,12 @@ package net.sourceforge.pmd.lang.java.typeresolution.typeinference;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
+@Deprecated
+@InternalApi
 public class Bound extends BoundOrConstraint {
     public Bound(JavaTypeDefinition leftProperType, JavaTypeDefinition rightProperType, InferenceRuleType ruleType) {
         super(leftProperType, rightProperType, ruleType);

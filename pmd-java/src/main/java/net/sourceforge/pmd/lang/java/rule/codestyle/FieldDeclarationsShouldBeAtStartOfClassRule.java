@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
@@ -14,13 +16,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 /**
  * Detects fields that are declared after methods, constructors, etc. It was a
  * XPath rule, but the Java version is much faster. The XPath rule for
  * reference:
- * 
+ *
  * <pre>
 //ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [not(.//ClassOrInterfaceBodyDeclaration) or $ignoreAnonymousClassDeclarations = 'false']
@@ -36,16 +39,11 @@ import net.sourceforge.pmd.properties.BooleanProperty;
  */
 public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRule {
 
-    private BooleanProperty ignoreEnumDeclarations = new BooleanProperty("ignoreEnumDeclarations",
-            "Ignore Enum Declarations that precede fields.", true, 1.0f);
-    private BooleanProperty ignoreAnonymousClassDeclarations = new BooleanProperty("ignoreAnonymousClassDeclarations",
-            "Ignore Field Declarations, that are initialized with anonymous class declarations", true, 2.0f);
-    private BooleanProperty ignoreInterfaceDeclarations = new BooleanProperty("ignoreInterfaceDeclarations",
-            "Ignore Interface Declarations that precede fields.", false, 3.0f);
+    private final PropertyDescriptor<Boolean> ignoreEnumDeclarations = booleanProperty("ignoreEnumDeclarations").defaultValue(true).desc("Ignore Enum Declarations that precede fields.").build();
+    private final PropertyDescriptor<Boolean> ignoreAnonymousClassDeclarations = booleanProperty("ignoreAnonymousClassDeclarations").defaultValue(true).desc("Ignore Field Declarations, that are initialized with anonymous class declarations").build();
+    private final PropertyDescriptor<Boolean> ignoreInterfaceDeclarations = booleanProperty("ignoreInterfaceDeclarations").defaultValue(false).desc("Ignore Interface Declarations that precede fields.").build();
 
-    /**
-     * Initializes the rule {@link FieldDeclarationsShouldBeAtStartOfClassRule}.
-     */
+
     public FieldDeclarationsShouldBeAtStartOfClassRule() {
         definePropertyDescriptor(ignoreEnumDeclarations);
         definePropertyDescriptor(ignoreAnonymousClassDeclarations);
@@ -54,10 +52,10 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        Node parent = node.jjtGetParent().jjtGetParent();
-        for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
-            Node child = parent.jjtGetChild(i);
-            if (child.jjtGetNumChildren() > 0) {
+        Node parent = node.getParent().getParent();
+        for (int i = 0; i < parent.getNumChildren(); i++) {
+            Node child = parent.getChild(i);
+            if (child.getNumChildren() > 0) {
                 child = skipAnnotations(child);
             }
             if (child.equals(node)) {
@@ -67,7 +65,7 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
                 continue;
             }
             if (node.hasDescendantOfType(ASTClassOrInterfaceBodyDeclaration.class)
-                    && getProperty(ignoreAnonymousClassDeclarations).booleanValue()) {
+                    && getProperty(ignoreAnonymousClassDeclarations)) {
                 continue;
             }
             if (child instanceof ASTMethodDeclaration || child instanceof ASTConstructorDeclaration
@@ -77,14 +75,14 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             }
             if (child instanceof ASTClassOrInterfaceDeclaration) {
                 ASTClassOrInterfaceDeclaration declaration = (ASTClassOrInterfaceDeclaration) child;
-                if (declaration.isInterface() && getProperty(ignoreInterfaceDeclarations).booleanValue()) {
+                if (declaration.isInterface() && getProperty(ignoreInterfaceDeclarations)) {
                     continue;
                 } else {
                     addViolation(data, node);
                     break;
                 }
             }
-            if (child instanceof ASTEnumDeclaration && !getProperty(ignoreEnumDeclarations).booleanValue()) {
+            if (child instanceof ASTEnumDeclaration && !getProperty(ignoreEnumDeclarations)) {
                 addViolation(data, node);
                 break;
             }
@@ -95,16 +93,16 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
     /**
      * Ignore all annotations, until anything, that is not an annotation and
      * return this node
-     * 
+     *
      * @param child
      *            the node from where to start the search
      * @return the first child or the first child after annotations
      */
     private Node skipAnnotations(Node child) {
-        Node nextChild = child.jjtGetChild(0);
-        for (int j = 0; j < child.jjtGetNumChildren(); j++) {
-            if (!(child.jjtGetChild(j) instanceof ASTAnnotation)) {
-                nextChild = child.jjtGetChild(j);
+        Node nextChild = child.getChild(0);
+        for (int j = 0; j < child.getNumChildren(); j++) {
+            if (!(child.getChild(j) instanceof ASTAnnotation)) {
+                nextChild = child.getChild(j);
                 break;
             }
         }

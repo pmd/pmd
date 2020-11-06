@@ -125,11 +125,13 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
                                                 .getNode()
                                                 .getFirstParentOfType(ASTFieldDeclaration.class);
 
+                // the field might be null in record types - the fields for the record components are synthetic
+                if (field != null) {
+                    Matcher matcher = FIELD_NAME_PATTERN.matcher(field.getVariableName());
+                    String varName = matcher.find() ? matcher.group(1) : field.getVariableName();
 
-                Matcher matcher = FIELD_NAME_PATTERN.matcher(field.getVariableName());
-                String varName = matcher.find() ? matcher.group(1) : field.getVariableName();
-
-                fieldNames.put(varName, field.getFirstChildOfType(ASTType.class).getTypeImage());
+                    fieldNames.put(varName, field.getFirstChildOfType(ASTType.class).getTypeImage());
+                }
             }
 
             return isGetter(node, fieldNames) || isSetter(node, fieldNames);
@@ -139,7 +141,7 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
         /** Attempts to determine if the method is a getter. */
         private static boolean isGetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
 
-            if (node.getFirstDescendantOfType(ASTFormalParameters.class).getParameterCount() != 0
+            if (node.getFirstDescendantOfType(ASTFormalParameters.class).size() != 0
                 || node.getFirstDescendantOfType(ASTResultType.class).isVoid()) {
                 return false;
             }
@@ -158,7 +160,7 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
         /** Attempts to determine if the method is a setter. */
         private static boolean isSetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
 
-            if (node.getFirstDescendantOfType(ASTFormalParameters.class).getParameterCount() != 1
+            if (node.getFirstDescendantOfType(ASTFormalParameters.class).size() != 1
                 || !node.getFirstDescendantOfType(ASTResultType.class).isVoid()) {
                 return false;
             }

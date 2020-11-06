@@ -24,13 +24,13 @@ public class EcmascriptParserOptionsTest {
         EcmascriptParserOptions parserOptions = new EcmascriptParserOptions();
         assertTrue(parserOptions.isRecordingComments());
         assertTrue(parserOptions.isRecordingLocalJsDocComments());
-        assertEquals(EcmascriptParserOptions.Version.VERSION_DEFAULT, parserOptions.getRhinoLanguageVersion());
+        assertEquals(EcmascriptParserOptions.Version.VERSION_ES6, parserOptions.getRhinoLanguageVersion());
 
         MyRule rule = new MyRule();
         parserOptions = (EcmascriptParserOptions) rule.getParserOptions();
         assertTrue(parserOptions.isRecordingComments());
         assertTrue(parserOptions.isRecordingLocalJsDocComments());
-        assertEquals(EcmascriptParserOptions.Version.VERSION_DEFAULT, parserOptions.getRhinoLanguageVersion());
+        assertEquals(EcmascriptParserOptions.Version.VERSION_ES6, parserOptions.getRhinoLanguageVersion());
     }
 
     @Test
@@ -107,9 +107,5 @@ public class EcmascriptParserOptionsTest {
     }
 
     private static final class MyRule extends AbstractEcmascriptRule {
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(EcmascriptParserOptionsTest.class);
     }
 }

@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -21,7 +22,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.qname.ImmutableList.ListFactory;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
@@ -40,7 +41,10 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  *
  * @author Clément Fournier
  * @since 6.1.0
+ * @deprecated Is internal API
  */
+@Deprecated
+@InternalApi
 public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
 
     // Package names to package representation.
@@ -109,9 +113,10 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
 
     /**
      * Initialises the visitor and starts it.
+     *
      * @param classLoader The classloader that will be used by type qualified names
      *                    to load their type.
-     * @param rootNode The root hierarchy
+     * @param rootNode    The root hierarchy
      */
     public void initializeWith(ClassLoader classLoader, ASTCompilationUnit rootNode) {
         this.classLoader = PMDASMClassLoader.getInstance(classLoader);
@@ -147,7 +152,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
             return ListFactory.emptyList();
         }
 
-        final String image = pack.getPackageNameImage();
+        final String image = pack.getName();
         ImmutableList<String> fullExisting = FOUND_PACKAGES.get(image);
 
         if (fullExisting != null) {
@@ -204,10 +209,10 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
         if (node instanceof ASTClassOrInterfaceDeclaration
                 && ((ASTClassOrInterfaceDeclaration) node).isLocal()) {
 
-            localIndex = getNextIndexFromHistogram(currentLocalIndices.peek(), node.getImage(), 1);
+            localIndex = getNextIndexFromHistogram(currentLocalIndices.peek(), node.getSimpleName(), 1);
         }
 
-        updateClassContext(node.getImage(), localIndex);
+        updateClassContext(node.getSimpleName(), localIndex);
 
         ((AbstractAnyTypeDeclaration) node).setQualifiedName(contextClassQName());
 
@@ -254,7 +259,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        String opname = getOperationName(node.getMethodName(), node.getFirstDescendantOfType(ASTFormalParameters.class));
+        String opname = getOperationName(node.getName(), node.getFirstDescendantOfType(ASTFormalParameters.class));
         node.setQualifiedName(contextOperationQName(opname, false));
         return super.visit(node, data);
     }
@@ -368,13 +373,13 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
 
 
     private String findLambdaScopeNameSegment(ASTLambdaExpression node) {
-        Node parent = node.jjtGetParent();
+        Node parent = node.getParent();
         while (parent != null
                 && !(parent instanceof ASTFieldDeclaration)
                 && !(parent instanceof ASTEnumConstant)
                 && !(parent instanceof ASTInitializer)
                 && !(parent instanceof MethodLikeNode)) {
-            parent = parent.jjtGetParent();
+            parent = parent.getParent();
         }
 
         if (parent == null) {
@@ -402,34 +407,14 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
                 return "new";
             }
         } else { // ASTMethodDeclaration
-            return ((ASTMethodDeclaration) parent).getMethodName();
+            return ((ASTMethodDeclaration) parent).getName();
         }
     }
 
 
     /** Returns a normalized method name (not Java-canonical!). */
     private static String getOperationName(String methodName, ASTFormalParameters params) {
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(methodName);
-        sb.append('(');
-
-        boolean first = true;
-        for (ASTFormalParameter param : params) {
-            if (!first) {
-                sb.append(", ");
-            }
-            first = false;
-
-            sb.append(param.getTypeNode().getTypeImage());
-            if (param.isVarargs()) {
-                sb.append("...");
-            }
-        }
-
-        sb.append(')');
-
-        return sb.toString();
+        return PrettyPrintingUtil.displaySignature(methodName, params);
     }
 
 

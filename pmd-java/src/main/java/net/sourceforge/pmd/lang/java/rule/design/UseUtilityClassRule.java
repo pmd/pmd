@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -17,32 +19,43 @@ import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 
-public class UseUtilityClassRule extends AbstractJavaRule {
+public class UseUtilityClassRule extends AbstractLombokAwareRule {
 
-    public UseUtilityClassRule() {
-        addRuleChainVisit(ASTClassOrInterfaceBody.class);
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        return Arrays.asList("lombok.experimental.UtilityClass");
+    }
+
+    @Override
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (hasIgnoredAnnotation(node)) {
+            return data;
+        }
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTClassOrInterfaceBody decl, Object data) {
-        if (decl.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
-            ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration) decl.jjtGetParent();
+        Object result = super.visit(decl, data);
+
+        if (decl.getParent() instanceof ASTClassOrInterfaceDeclaration) {
+            ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration) decl.getParent();
             if (parent.isAbstract() || parent.isInterface() || parent.getSuperClassTypeNode() != null) {
-                return data;
+                return result;
             }
 
-            if (isOkUsingLombok(parent)) {
-                return data;
+            if (hasLombokNoArgsConstructor(parent)) {
+                return result;
             }
 
-            int i = decl.jjtGetNumChildren();
+            int i = decl.getNumChildren();
             int methodCount = 0;
             boolean isOK = false;
             while (i > 0) {
-                Node p = decl.jjtGetChild(--i);
-                if (p.jjtGetNumChildren() == 0) {
+                Node p = decl.getChild(--i);
+                if (p.getNumChildren() == 0) {
                     continue;
                 }
                 Node n = skipAnnotations(p);
@@ -67,7 +80,7 @@ public class UseUtilityClassRule extends AbstractJavaRule {
                     }
 
                     // TODO use symbol table
-                    if (m.getMethodName().equals("suite")) {
+                    if ("suite".equals(m.getName())) {
                         ASTResultType res = m.getResultType();
                         ASTClassOrInterfaceType c = res.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
                         if (c != null && c.hasImageEqualTo("Test")) {
@@ -81,10 +94,10 @@ public class UseUtilityClassRule extends AbstractJavaRule {
                 addViolation(data, decl);
             }
         }
-        return data;
+        return result;
     }
 
-    private boolean isOkUsingLombok(ASTClassOrInterfaceDeclaration parent) {
+    private boolean hasLombokNoArgsConstructor(ASTClassOrInterfaceDeclaration parent) {
         // check if there's a lombok no arg private constructor, if so skip the rest of the rules
         ASTAnnotation annotation = parent.getAnnotation("lombok.NoArgsConstructor");
 
@@ -113,9 +126,9 @@ public class UseUtilityClassRule extends AbstractJavaRule {
 
     private Node skipAnnotations(Node p) {
         int index = 0;
-        Node n = p.jjtGetChild(index++);
-        while (n instanceof ASTAnnotation && index < p.jjtGetNumChildren()) {
-            n = p.jjtGetChild(index++);
+        Node n = p.getChild(index++);
+        while (n instanceof ASTAnnotation && index < p.getNumChildren()) {
+            n = p.getChild(index++);
         }
         return n;
     }

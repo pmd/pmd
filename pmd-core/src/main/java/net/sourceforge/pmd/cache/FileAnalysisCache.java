@@ -10,19 +10,23 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * An analysis cache backed by a regular file.
+ *
+ * @deprecated This is internal API, will be hidden with 7.0.0
  */
+@Deprecated
+@InternalApi
 public class FileAnalysisCache extends AbstractAnalysisCache {
 
     private final File cacheFile;
@@ -46,7 +50,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
         if (cacheExists()) {
             try (
                 DataInputStream inputStream = new DataInputStream(
-                    new BufferedInputStream(new FileInputStream(cacheFile)));
+                    new BufferedInputStream(Files.newInputStream(cacheFile.toPath())));
             ) {
                 final String cacheVersion = inputStream.readUTF();
 
@@ -106,7 +110,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
 
         try (
             DataOutputStream outputStream = new DataOutputStream(
-                new BufferedOutputStream(new FileOutputStream(cacheFile)))
+                new BufferedOutputStream(Files.newOutputStream(cacheFile.toPath())))
         ) {
             outputStream.writeUTF(pmdVersion);
 
@@ -117,7 +121,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
             for (final Map.Entry<String, AnalysisResult> resultEntry : updatedResultsCache.entrySet()) {
                 final List<RuleViolation> violations = resultEntry.getValue().getViolations();
 
-                outputStream.writeUTF(resultEntry.getKey());
+                outputStream.writeUTF(resultEntry.getKey()); // the full filename
                 outputStream.writeLong(resultEntry.getValue().getFileChecksum());
 
                 outputStream.writeInt(violations.size());

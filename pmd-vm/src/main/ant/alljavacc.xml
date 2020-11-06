@@ -123,5 +123,39 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
 
 ]]></replacevalue>
         </replace>
+
+
+
+        <replaceregexp>
+            <regexp pattern="public (?:class|interface)" />
+            <substitution expression="@Deprecated${line.separator}@net.sourceforge.pmd.annotation.InternalApi${line.separator}\0" />
+            <fileset dir="${target}/net/sourceforge/pmd/lang/vm/ast">
+                <exclude name="AST*.java" />
+                <exclude name="ParseException.java" />
+                <exclude name="*ParserVisitor.java"/>
+            </fileset>
+        </replaceregexp>
+
+        <replaceregexp>
+            <regexp pattern="(?m)\*/\s+(public class ParseException )" />
+            <substitution expression="*${line.separator} * @deprecated Use superclass {@link net.sourceforge.pmd.lang.ast.ParseException}${line.separator} */${line.separator}@Deprecated${line.separator}@net.sourceforge.pmd.annotation.InternalApi${line.separator}\1 " />
+            <fileset file="${target}/net/sourceforge/pmd/lang/vm/ast/ParseException.java"/>
+        </replaceregexp>
+
+        <!-- mark constructors of AST* InternalApi -->
+        <replaceregexp>
+            <regexp pattern="public AST.+\(int id\)" />
+            <substitution expression="@Deprecated @net.sourceforge.pmd.annotation.InternalApi \0"/>
+            <fileset dir="${target}/net/sourceforge/pmd/lang/vm/ast">
+              <include name="AST*.java" />
+            </fileset>
+        </replaceregexp>
+        <replaceregexp>
+            <regexp pattern="public AST.+\(VmParser p, int id\)" />
+            <substitution expression="@Deprecated @net.sourceforge.pmd.annotation.InternalApi \0"/>
+            <fileset dir="${target}/net/sourceforge/pmd/lang/vm/ast">
+              <include name="AST*.java" />
+            </fileset>
+        </replaceregexp>
     </target>
 </project>

@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -20,7 +21,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  * As well as the following source file specific information:
  * <ul>
  * <li>A File for the source file.</li>
- * <li>A String for the name of the source file.</li>
  * <li>The Language Version of the source file.</li>
  * </ul>
  * It is <strong>required</strong> that all source file specific options be set
@@ -29,9 +29,10 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  */
 public class RuleContext {
 
+    private static final Logger LOG = Logger.getLogger(RuleContext.class.getName());
+
     private Report report = new Report();
     private File sourceCodeFile;
-    private String sourceCodeFilename;
     private LanguageVersion languageVersion;
     private final ConcurrentMap<String, Object> attributes;
     private boolean ignoreExceptions = true;
@@ -97,11 +98,15 @@ public class RuleContext {
 
     /**
      * Get the file name associated with the current source file.
+     * If there is no source file, then an empty string is returned.
      *
      * @return The file name.
      */
     public String getSourceCodeFilename() {
-        return sourceCodeFilename;
+        if (sourceCodeFile != null) {
+            return sourceCodeFile.getName();
+        }
+        return "";
     }
 
     /**
@@ -109,9 +114,15 @@ public class RuleContext {
      *
      * @param filename
      *            The file name.
+     * @deprecated This method will be removed. The file should only be
+     * set with {@link #setSourceCodeFile(File)}. Setting the filename here
+     * has no effect.
      */
+    @Deprecated
     public void setSourceCodeFilename(String filename) {
-        this.sourceCodeFilename = filename;
+        // ignored, does nothing.
+        LOG.warning("The method RuleContext::setSourceCodeFilename(String) has been deprecated and will be removed."
+                + "Setting the filename here has no effect. Use RuleContext::setSourceCodeFile(File) instead.");
     }
 
     /**
@@ -156,7 +167,11 @@ public class RuleContext {
      *                <code>null</code>
      * @return <code>true</code> if the attribute was set, <code>false</code>
      *         otherwise.
+     *
+     * @deprecated Stateful methods of the rule context will be removed.
+     * Their interaction with incremental analysis are unspecified.
      */
+    @Deprecated
     public boolean setAttribute(String name, Object value) {
         if (name == null) {
             throw new IllegalArgumentException("Parameter 'name' cannot be null.");
@@ -183,7 +198,11 @@ public class RuleContext {
      *            The attribute name.
      * @return The current attribute value, or <code>null</code> if the
      *         attribute does not exist.
+     *
+     * @deprecated Stateful methods of the rule context will be removed.
+     * Their interaction with incremental analysis are unspecified.
      */
+    @Deprecated
     public Object getAttribute(String name) {
         return this.attributes.get(name);
     }
@@ -204,7 +223,11 @@ public class RuleContext {
      *            The attribute name.
      * @return The current attribute value, or <code>null</code> if the
      *         attribute does not exist.
+     *
+     * @deprecated Stateful methods of the rule context will be removed.
+     * Their interaction with incremental analysis are unspecified.
      */
+    @Deprecated
     public Object removeAttribute(String name) {
         return this.attributes.remove(name);
     }

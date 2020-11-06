@@ -229,6 +229,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      * @see Rule#setPriority(RulePriority)
      */
     @Override
+    @Deprecated
     public ParserOptions getParserOptions() {
         return new ParserOptions();
     }
@@ -436,7 +437,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         return getClass().getName().hashCode() + (getName() != null ? getName().hashCode() : 0)
                 + getPriority().hashCode() + (propertyValues != null ? propertyValues.hashCode() : 0);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public Rule deepCopy() {
@@ -468,10 +469,11 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
             if (rule.getPropertyDescriptor(prop.name()) == null) {
                 rule.definePropertyDescriptor(prop); // Property descriptors are immutable, and can be freely shared
             }
-            
-            rule.setProperty((PropertyDescriptor<Object>) prop, getProperty((PropertyDescriptor<Object>) prop));
+
+            if (isPropertyOverridden(prop)) {
+                rule.setProperty((PropertyDescriptor<Object>) prop, getProperty((PropertyDescriptor<Object>) prop));
+            }
         }
-        
         return rule;
     }
 }

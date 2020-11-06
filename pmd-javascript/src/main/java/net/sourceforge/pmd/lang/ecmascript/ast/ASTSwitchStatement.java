@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,21 +6,22 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.SwitchStatement;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTSwitchStatement extends AbstractEcmascriptNode<SwitchStatement> {
+    @Deprecated
+    @InternalApi
     public ASTSwitchStatement(SwitchStatement switchStatement) {
         super(switchStatement);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
     public EcmascriptNode<?> getExpression() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public int getNumCases() {
@@ -28,6 +29,6 @@ public class ASTSwitchStatement extends AbstractEcmascriptNode<SwitchStatement> 
     }
 
     public ASTSwitchCase getSwitchCase(int index) {
-        return (ASTSwitchCase) jjtGetChild(index + 1);
+        return (ASTSwitchCase) getChild(index + 1);
     }
 }

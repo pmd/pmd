@@ -4,11 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.metrics;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 /**
@@ -16,7 +20,9 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ * @deprecated Use {@link MetricsUtil}
  */
+@Deprecated
 public final class ApexMetrics {
 
     private static final ApexMetricsFacade FACADE = new ApexMetricsFacade();
@@ -32,14 +38,9 @@ public final class ApexMetrics {
      *
      * @return The facade
      */
+    @Deprecated
     public static ApexMetricsFacade getFacade() {
         return FACADE;
-    }
-
-
-    /** Resets the entire data structure. Used for tests. */
-    static void reset() {
-        FACADE.reset();
     }
 
 
@@ -52,7 +53,7 @@ public final class ApexMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node) {
-        return FACADE.computeForType(key, node, MetricOptions.emptyOptions());
+        return get(key, node, MetricOptions.emptyOptions());
     }
 
 
@@ -67,7 +68,7 @@ public final class ApexMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node, MetricOptions options) {
-        return FACADE.computeForType(key, node, options);
+        return MetricsUtil.computeMetricOrNaN(key, node, options);
     }
 
 
@@ -80,7 +81,7 @@ public final class ApexMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTMethod> key, ASTMethod node) {
-        return FACADE.computeForOperation(key, node, MetricOptions.emptyOptions());
+        return get(key, node, MetricOptions.emptyOptions());
     }
 
 
@@ -95,7 +96,7 @@ public final class ApexMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTMethod> key, ASTMethod node, MetricOptions options) {
-        return FACADE.computeForOperation(key, node, options);
+        return MetricsUtil.computeMetricOrNaN(key, node, options);
     }
 
 
@@ -108,10 +109,10 @@ public final class ApexMetrics {
      * @param resultOption The result option to use
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is
-     * {@code null}
+     *     {@code null}
      */
     public static double get(MetricKey<ASTMethod> key, ASTUserClassOrInterface<?> node, ResultOption resultOption) {
-        return FACADE.computeWithResultOption(key, node, MetricOptions.emptyOptions(), resultOption);
+        return MetricsUtil.computeAggregate(key, findOps(node), resultOption);
     }
 
 
@@ -125,12 +126,22 @@ public final class ApexMetrics {
      * @param resultOption The result option to use
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is
-     * {@code null}
+     *     {@code null}
      */
     public static double get(MetricKey<ASTMethod> key, ASTUserClassOrInterface<?> node, MetricOptions options,
                              ResultOption resultOption) {
-        return FACADE.computeWithResultOption(key, node, options, resultOption);
+        return MetricsUtil.computeAggregate(key, findOps(node), options, resultOption);
     }
 
 
+    public static List<ASTMethod> findOps(ASTUserClassOrInterface<?> node) {
+        List<ASTMethod> candidates = node.findChildrenOfType(ASTMethod.class);
+        List<ASTMethod> result = new ArrayList<>(candidates);
+        for (ASTMethod method : candidates) {
+            if (method.getImage().matches("(<clinit>|<init>|clone)")) {
+                result.remove(method);
+            }
+        }
+        return result;
+    }
 }

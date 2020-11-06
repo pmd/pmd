@@ -3,67 +3,64 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-object.equals(null), bad
-     ]]></description>
+        <description>object.equals(null), bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (foo.equals(null)) {}
- }
+    void bar() {
+        if (foo.equals(null)) {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-object == null, ok
-     ]]></description>
+        <description>object == null, ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (foo == null) {}
- }
+    void bar() {
+        if (foo == null) {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-object.method().equals(null), bad
-     ]]></description>
+        <description>object.method().equals(null), bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (foo.bar().equals(null)) {}
- }
+    void bar() {
+        if (foo.bar().equals(null)) {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-object.equals(null, other), ok
-     ]]></description>
+        <description>object.equals(null, other), ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (foo.equals(null, other)) {}
- }
+    void bar() {
+        if (foo.equals(null, other)) {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1120 equalsnull false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-  void bar() {
-    if (container.getLabel(null).equals(grandChild.getCollectionName())) {
+    void bar() {
+        if (container.getLabel(null).equals(grandChild.getCollectionName())) {
+        }
     }
-  }
 }
         ]]></code>
     </test-code>

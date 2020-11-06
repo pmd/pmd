@@ -1,0 +1,1634 @@
++- Source
+   +- Pkg
+      +- TermName
+      +- Pkg
+         +- TermName
+         +- Pkg
+            +- TermName
+            +- Import
+            |  +- Importer
+            |     +- TermSelect
+            |     |  +- TermSelect
+            |     |  |  +- TermName
+            |     |  |  +- TermName
+            |     |  +- TermName
+            |     +- ImporteeName
+            |        +- NameIndeterminate
+            +- Import
+            |  +- Importer
+            |     +- TermSelect
+            |     |  +- TermName
+            |     |  +- TermName
+            |     +- ImporteeName
+            |        +- NameIndeterminate
+            +- Import
+            |  +- Importer
+            |     +- TermName
+            |     +- ImporteeName
+            |     |  +- NameIndeterminate
+            |     +- ImporteeName
+            |        +- NameIndeterminate
+            +- Import
+            |  +- Importer
+            |     +- TermSelect
+            |     |  +- TermSelect
+            |     |  |  +- TermName
+            |     |  |  +- TermName
+            |     |  +- TermName
+            |     +- ImporteeName
+            |        +- NameIndeterminate
+            +- Import
+            |  +- Importer
+            |     +- TermSelect
+            |     |  +- TermSelect
+            |     |  |  +- TermName
+            |     |  |  +- TermName
+            |     |  +- TermName
+            |     +- ImporteeName
+            |        +- NameIndeterminate
+            +- DefnClass
+            |  +- ModAnnot
+            |  |  +- Init
+            |  |     +- TypeName
+            |  |     +- NameAnonymous
+            |  |     +- LitLong
+            |  +- ModSealed
+            |  +- ModAbstract
+            |  +- TypeName
+            |  +- TypeParam
+            |  |  +- ModCovariant
+            |  |  +- TypeName
+            |  |  +- TypeBounds
+            |  +- CtorPrimary
+            |  |  +- NameAnonymous
+            |  +- Template
+            |     +- Init
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- NameAnonymous
+            |     +- Init
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- NameAnonymous
+            |     +- Init
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  |  +- TypeApply
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- NameAnonymous
+            |     +- Init
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  |  +- TypeApply
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- NameAnonymous
+            |     +- Init
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  |  +- TypeApply
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- NameAnonymous
+            |     +- Init
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- NameAnonymous
+            |     +- Init
+            |     |  +- TypeName
+            |     |  +- NameAnonymous
+            |     +- Self
+            |     |  +- NameAnonymous
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- TermName
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeName
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- TermIf
+            |     |     +- TermApplyInfix
+            |     |     |  +- TermName
+            |     |     |  +- TermName
+            |     |     |  +- TermApplyInfix
+            |     |     |     +- TermName
+            |     |     |     +- TermName
+            |     |     |     +- LitInt
+            |     |     +- TermName
+            |     |     +- TermBlock
+            |     |        +- DefnVal
+            |     |        |  +- PatVar
+            |     |        |  |  +- TermName
+            |     |        |  +- TermNew
+            |     |        |     +- Init
+            |     |        |        +- TypeName
+            |     |        |        +- NameAnonymous
+            |     |        |        +- TermName
+            |     |        |        +- TermName
+            |     |        +- DefnVar
+            |     |        |  +- PatVar
+            |     |        |  |  +- TermName
+            |     |        |  +- TermName
+            |     |        +- DefnVar
+            |     |        |  +- PatVar
+            |     |        |  |  +- TermName
+            |     |        |  +- TermName
+            |     |        +- DefnVar
+            |     |        |  +- PatVar
+            |     |        |  |  +- TermName
+            |     |        |  +- LitInt
+            |     |        +- TermWhile
+            |     |        |  +- TermBlock
+            |     |        |  |  +- TermIf
+            |     |        |  |  |  +- TermSelect
+            |     |        |  |  |  |  +- TermName
+            |     |        |  |  |  |  +- TermName
+            |     |        |  |  |  +- TermReturn
+            |     |        |  |  |  |  +- TermThis
+            |     |        |  |  |  |     +- NameAnonymous
+            |     |        |  |  |  +- LitUnit
+            |     |        |  |  +- TermApplyInfix
+            |     |        |  |     +- TermName
+            |     |        |  |     +- TermName
+            |     |        |  |     +- TermName
+            |     |        |  +- TermBlock
+            |     |        |     +- TermApplyInfix
+            |     |        |     |  +- TermName
+            |     |        |     |  +- TermName
+            |     |        |     |  +- LitInt
+            |     |        |     +- DefnVal
+            |     |        |     |  +- PatVar
+            |     |        |     |  |  +- TermName
+            |     |        |     |  +- TermNew
+            |     |        |     |     +- Init
+            |     |        |     |        +- TypeName
+            |     |        |     |        +- NameAnonymous
+            |     |        |     |        +- TermSelect
+            |     |        |     |        |  +- TermName
+            |     |        |     |        |  +- TermName
+            |     |        |     |        +- TermName
+            |     |        |     +- TermAssign
+            |     |        |     |  +- TermSelect
+            |     |        |     |  |  +- TermName
+            |     |        |     |  |  +- TermName
+            |     |        |     |  +- TermName
+            |     |        |     +- TermAssign
+            |     |        |     |  +- TermName
+            |     |        |     |  +- TermName
+            |     |        |     +- TermAssign
+            |     |        |        +- TermName
+            |     |        |        +- TermSelect
+            |     |        |           +- TermName
+            |     |        |           +- TermName
+            |     |        +- TermApply
+            |     |        |  +- TermName
+            |     |        +- TermName
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeName
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVal
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermApply
+            |     |     |     +- TermSelect
+            |     |     |     |  +- TermSelect
+            |     |     |     |  |  +- TermName
+            |     |     |     |  |  +- TermName
+            |     |     |     |  +- TermName
+            |     |     |     +- TermName
+            |     |     |     +- LitInt
+            |     |     +- TermIf
+            |     |        +- TermApplyInfix
+            |     |        |  +- TermApplyInfix
+            |     |        |  |  +- TermName
+            |     |        |  |  +- TermName
+            |     |        |  |  +- TermName
+            |     |        |  +- TermName
+            |     |        |  +- TermName
+            |     |        +- TermName
+            |     |        +- TermApplyInfix
+            |     |           +- TermApplyInfix
+            |     |           |  +- TermThis
+            |     |           |  |  +- NameAnonymous
+            |     |           |  +- TermName
+            |     |           |  +- TermName
+            |     |           +- TermName
+            |     |           +- TermApplyInfix
+            |     |              +- TermName
+            |     |              +- TermName
+            |     |              +- TermName
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeName
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnDef
+            |     |     |  +- ModAnnot
+            |     |     |  |  +- Init
+            |     |     |  |     +- TypeName
+            |     |     |  |     +- NameAnonymous
+            |     |     |  +- TermName
+            |     |     |  +- TermParam
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TypeApply
+            |     |     |  |     +- TypeName
+            |     |     |  |     +- TypeName
+            |     |     |  +- TermParam
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TypeApply
+            |     |     |  |     +- TypeName
+            |     |     |  |     +- TypeName
+            |     |     |  +- TypeApply
+            |     |     |  |  +- TypeName
+            |     |     |  |  +- TypeName
+            |     |     |  +- TermMatch
+            |     |     |     +- TermName
+            |     |     |     +- Case
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermName
+            |     |     |     +- Case
+            |     |     |        +- PatExtractInfix
+            |     |     |        |  +- PatWildcard
+            |     |     |        |  +- TermName
+            |     |     |        |  +- PatVar
+            |     |     |        |     +- TermName
+            |     |     |        +- TermApply
+            |     |     |           +- TermName
+            |     |     |           +- TermName
+            |     |     |           +- TermSelect
+            |     |     |              +- TermName
+            |     |     |              +- TermName
+            |     |     +- TermApply
+            |     |        +- TermName
+            |     |        +- TermApply
+            |     |        |  +- TermName
+            |     |        |  +- TermName
+            |     |        +- TermThis
+            |     |           +- NameAnonymous
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeName
+            |     |  +- TypeTuple
+            |     |  |  +- TypeApply
+            |     |  |  |  +- TypeName
+            |     |  |  |  +- TypeName
+            |     |  |  +- TypeApply
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVal
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermNew
+            |     |     |     +- Init
+            |     |     |        +- TypeApply
+            |     |     |        |  +- TypeName
+            |     |     |        |  +- TypeName
+            |     |     |        +- NameAnonymous
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- LitInt
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermThis
+            |     |     |     +- NameAnonymous
+            |     |     +- TermWhile
+            |     |     |  +- TermApplyInfix
+            |     |     |  |  +- TermApplyUnary
+            |     |     |  |  |  +- TermName
+            |     |     |  |  |  +- TermSelect
+            |     |     |  |  |     +- TermName
+            |     |     |  |  |     +- TermName
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TermApplyInfix
+            |     |     |  |     +- TermName
+            |     |     |  |     +- TermName
+            |     |     |  |     +- TermName
+            |     |     |  +- TermBlock
+            |     |     |     +- TermApplyInfix
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermName
+            |     |     |     |  +- LitInt
+            |     |     |     +- TermApplyInfix
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermSelect
+            |     |     |     |     +- TermName
+            |     |     |     |     +- TermName
+            |     |     |     +- TermAssign
+            |     |     |        +- TermName
+            |     |     |        +- TermSelect
+            |     |     |           +- TermName
+            |     |     |           +- TermName
+            |     |     +- TermTuple
+            |     |        +- TermSelect
+            |     |        |  +- TermName
+            |     |        |  +- TermName
+            |     |        +- TermName
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeParam
+            |     |  |  +- TypeName
+            |     |  |  +- TypeBounds
+            |     |  |     +- TypeName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeName
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- LitInt
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermThis
+            |     |     |     +- NameAnonymous
+            |     |     +- DefnVal
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermApplyType
+            |     |     |     +- TermSelect
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermName
+            |     |     |     +- TypeName
+            |     |     +- TermWhile
+            |     |     |  +- TermApplyInfix
+            |     |     |  |  +- TermApplyInfix
+            |     |     |  |  |  +- TermName
+            |     |     |  |  |  +- TermName
+            |     |     |  |  |  +- TermName
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TermSelect
+            |     |     |  |     +- TermName
+            |     |     |  |     +- TermName
+            |     |     |  +- TermBlock
+            |     |     |     +- TermApplyInfix
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermName
+            |     |     |     |  +- LitInt
+            |     |     |     +- TermApplyInfix
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermSelect
+            |     |     |     |     +- TermName
+            |     |     |     |     +- TermName
+            |     |     |     +- TermAssign
+            |     |     |        +- TermName
+            |     |     |        +- TermSelect
+            |     |     |           +- TermName
+            |     |     |           +- TermName
+            |     |     +- TermIf
+            |     |        +- TermApplyInfix
+            |     |        |  +- TermApplyInfix
+            |     |        |  |  +- TermName
+            |     |        |  |  +- TermName
+            |     |        |  |  +- TermName
+            |     |        |  +- TermName
+            |     |        |  +- TermSelect
+            |     |        |     +- TermName
+            |     |        |     +- TermName
+            |     |        +- TermBlock
+            |     |        |  +- TermApply
+            |     |        |     +- TermSelect
+            |     |        |     |  +- TermName
+            |     |        |     |  +- TermName
+            |     |        |     +- TermApplyInfix
+            |     |        |        +- TermName
+            |     |        |        +- TermName
+            |     |        |        +- TermSelect
+            |     |        |           +- TermName
+            |     |        |           +- TermName
+            |     |        +- TermBlock
+            |     |           +- TermThrow
+            |     |              +- TermNew
+            |     |                 +- Init
+            |     |                    +- TypeName
+            |     |                    +- NameAnonymous
+            |     |                    +- TermInterpolate
+            |     |                       +- TermName
+            |     |                       +- LitString
+            |     |                       +- LitString
+            |     |                       +- LitString
+            |     |                       +- TermName
+            |     |                       +- TermApplyInfix
+            |     |                          +- TermName
+            |     |                          +- TermName
+            |     |                          +- TermApplyInfix
+            |     |                             +- TermName
+            |     |                             +- TermName
+            |     |                             +- LitInt
+            |     +- DefnDef
+            |     |  +- ModFinal
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeParam
+            |     |  |  +- TypeName
+            |     |  |  +- TypeBounds
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeFunction
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- TermIf
+            |     |        +- TermApplyInfix
+            |     |        |  +- TermThis
+            |     |        |  |  +- NameAnonymous
+            |     |        |  +- TermName
+            |     |        |  +- TermName
+            |     |        +- TermName
+            |     |        +- TermBlock
+            |     |           +- DefnVal
+            |     |           |  +- PatVar
+            |     |           |  |  +- TermName
+            |     |           |  +- TermNew
+            |     |           |     +- Init
+            |     |           |        +- TypeApply
+            |     |           |        |  +- TypeName
+            |     |           |        |  +- TypeName
+            |     |           |        +- NameAnonymous
+            |     |           |        +- TermApply
+            |     |           |        |  +- TermName
+            |     |           |        |  +- TermName
+            |     |           |        +- TermName
+            |     |           +- DefnVar
+            |     |           |  +- PatVar
+            |     |           |  |  +- TermName
+            |     |           |  +- TypeApply
+            |     |           |  |  +- TypeName
+            |     |           |  |  +- TypeName
+            |     |           |  +- TermName
+            |     |           +- DefnVar
+            |     |           |  +- PatVar
+            |     |           |  |  +- TermName
+            |     |           |  +- TermName
+            |     |           +- TermWhile
+            |     |           |  +- TermApplyInfix
+            |     |           |  |  +- TermName
+            |     |           |  |  +- TermName
+            |     |           |  |  +- TermName
+            |     |           |  +- TermBlock
+            |     |           |     +- DefnVal
+            |     |           |     |  +- PatVar
+            |     |           |     |  |  +- TermName
+            |     |           |     |  +- TermNew
+            |     |           |     |     +- Init
+            |     |           |     |        +- TypeName
+            |     |           |     |        +- NameAnonymous
+            |     |           |     |        +- TermApply
+            |     |           |     |        |  +- TermName
+            |     |           |     |        |  +- TermSelect
+            |     |           |     |        |     +- TermName
+            |     |           |     |        |     +- TermName
+            |     |           |     |        +- TermName
+            |     |           |     +- TermAssign
+            |     |           |     |  +- TermSelect
+            |     |           |     |  |  +- TermName
+            |     |           |     |  |  +- TermName
+            |     |           |     |  +- TermName
+            |     |           |     +- TermAssign
+            |     |           |     |  +- TermName
+            |     |           |     |  +- TermName
+            |     |           |     +- TermAssign
+            |     |           |        +- TermName
+            |     |           |        +- TermSelect
+            |     |           |           +- TermName
+            |     |           |           +- TermName
+            |     |           +- TermApply
+            |     |           |  +- TermName
+            |     |           +- TermName
+            |     +- DefnDef
+            |     |  +- ModFinal
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeParam
+            |     |  |  +- TypeName
+            |     |  |  +- TypeBounds
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeApply
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- TermIf
+            |     |        +- TermApplyInfix
+            |     |        |  +- TermThis
+            |     |        |  |  +- NameAnonymous
+            |     |        |  +- TermName
+            |     |        |  +- TermName
+            |     |        +- TermName
+            |     |        +- TermBlock
+            |     |           +- DefnVar
+            |     |           |  +- PatVar
+            |     |           |  |  +- TermName
+            |     |           |  +- TermThis
+            |     |           |     +- NameAnonymous
+            |     |           +- DefnVar
+            |     |           |  +- PatVar
+            |     |           |  |  +- TermName
+            |     |           |  +- TypeApply
+            |     |           |  |  +- TypeName
+            |     |           |  |  +- TypeName
+            |     |           |  +- LitNull
+            |     |           +- DefnVar
+            |     |           |  +- PatVar
+            |     |           |  |  +- TermName
+            |     |           |  +- TypeName
+            |     |           |  +- LitNull
+            |     |           +- TermWhile
+            |     |           |  +- TermApplyInfix
+            |     |           |  |  +- TermName
+            |     |           |  |  +- TermName
+            |     |           |  |  +- LitNull
+            |     |           |  +- TermBlock
+            |     |           |     +- TermAssign
+            |     |           |     |  +- TermName
+            |     |           |     |  +- TermApply
+            |     |           |     |     +- TermSelect
+            |     |           |     |     |  +- TermName
+            |     |           |     |     |  +- TermName
+            |     |           |     |     +- TermSelect
+            |     |           |     |     |  +- TermName
+            |     |           |     |     |  +- TermName
+            |     |           |     |     +- TermSelect
+            |     |           |     |        +- TermName
+            |     |           |     |        +- TermName
+            |     |           |     +- TermIf
+            |     |           |     |  +- TermApplyInfix
+            |     |           |     |  |  +- TermApplyType
+            |     |           |     |  |  |  +- TermSelect
+            |     |           |     |  |  |  |  +- TermName
+            |     |           |     |  |  |  |  +- TermName
+            |     |           |     |  |  |  +- TypeName
+            |     |           |     |  |  +- TermName
+            |     |           |     |  |  +- TermSelect
+            |     |           |     |  |     +- TermName
+            |     |           |     |  |     +- TermName
+            |     |           |     |  +- TermAssign
+            |     |           |     |  |  +- TermName
+            |     |           |     |  |  +- TermNew
+            |     |           |     |  |     +- Init
+            |     |           |     |  |        +- TypeName
+            |     |           |     |  |        +- NameAnonymous
+            |     |           |     |  |        +- TermApplyType
+            |     |           |     |  |        |  +- TermSelect
+            |     |           |     |  |        |  |  +- TermName
+            |     |           |     |  |        |  |  +- TermName
+            |     |           |     |  |        |  +- TypeName
+            |     |           |     |  |        +- TermName
+            |     |           |     |  +- LitUnit
+            |     |           |     +- TermAssign
+            |     |           |     |  +- TermName
+            |     |           |     |  +- TermSelect
+            |     |           |     |     +- TermName
+            |     |           |     |     +- TermName
+            |     |           |     +- TermIf
+            |     |           |        +- TermApplyInfix
+            |     |           |        |  +- TermName
+            |     |           |        |  +- TermName
+            |     |           |        |  +- TermName
+            |     |           |        +- TermReturn
+            |     |           |        |  +- TermIf
+            |     |           |        |     +- TermApplyInfix
+            |     |           |        |     |  +- TermName
+            |     |           |        |     |  +- TermName
+            |     |           |        |     |  +- LitNull
+            |     |           |        |     +- TermName
+            |     |           |        |     +- TermName
+            |     |           |        +- LitUnit
+            |     |           +- DefnVar
+            |     |           |  +- PatVar
+            |     |           |  |  +- TermName
+            |     |           |  +- TermName
+            |     |           +- TermWhile
+            |     |           |  +- TermApplyInfix
+            |     |           |  |  +- TermName
+            |     |           |  |  +- TermName
+            |     |           |  |  +- TermName
+            |     |           |  +- TermBlock
+            |     |           |     +- TermAssign
+            |     |           |     |  +- TermName
+            |     |           |     |  +- TermApply
+            |     |           |     |     +- TermSelect
+            |     |           |     |     |  +- TermName
+            |     |           |     |     |  +- TermName
+            |     |           |     |     +- TermSelect
+            |     |           |     |     |  +- TermName
+            |     |           |     |     |  +- TermName
+            |     |           |     |     +- TermSelect
+            |     |           |     |        +- TermName
+            |     |           |     |        +- TermName
+            |     |           |     +- TermIf
+            |     |           |     |  +- TermApplyInfix
+            |     |           |     |  |  +- TermApplyType
+            |     |           |     |  |  |  +- TermSelect
+            |     |           |     |  |  |  |  +- TermName
+            |     |           |     |  |  |  |  +- TermName
+            |     |           |     |  |  |  +- TypeName
+            |     |           |     |  |  +- TermName
+            |     |           |     |  |  +- TermSelect
+            |     |           |     |  |     +- TermName
+            |     |           |     |  |     +- TermName
+            |     |           |     |  +- TermBlock
+            |     |           |     |  |  +- DefnVal
+            |     |           |     |  |  |  +- PatVar
+            |     |           |     |  |  |  |  +- TermName
+            |     |           |     |  |  |  +- TermNew
+            |     |           |     |  |  |     +- Init
+            |     |           |     |  |  |        +- TypeName
+            |     |           |     |  |  |        +- NameAnonymous
+            |     |           |     |  |  |        +- TermApplyType
+            |     |           |     |  |  |        |  +- TermSelect
+            |     |           |     |  |  |        |  |  +- TermName
+            |     |           |     |  |  |        |  |  +- TermName
+            |     |           |     |  |  |        |  +- TypeName
+            |     |           |     |  |  |        +- TermName
+            |     |           |     |  |  +- TermAssign
+            |     |           |     |  |  |  +- TermSelect
+            |     |           |     |  |  |  |  +- TermName
+            |     |           |     |  |  |  |  +- TermName
+            |     |           |     |  |  |  +- TermName
+            |     |           |     |  |  +- TermAssign
+            |     |           |     |  |     +- TermName
+            |     |           |     |  |     +- TermName
+            |     |           |     |  +- LitUnit
+            |     |           |     +- TermAssign
+            |     |           |        +- TermName
+            |     |           |        +- TermSelect
+            |     |           |           +- TermName
+            |     |           |           +- TermName
+            |     |           +- TermApply
+            |     |           |  +- TermName
+            |     |           +- TermName
+            |     +- DefnDef
+            |     |  +- ModFinal
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeParam
+            |     |  |  +- TypeName
+            |     |  |  +- TypeBounds
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeFunction
+            |     |  |     +- TypeName
+            |     |  |     +- TypeApply
+            |     |  |        +- TypeName
+            |     |  |        +- TypeName
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermThis
+            |     |     |     +- NameAnonymous
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TypeApply
+            |     |     |  |  +- TypeName
+            |     |     |  |  +- TypeName
+            |     |     |  +- LitNull
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TypeApply
+            |     |     |  |  +- TypeName
+            |     |     |  |  +- TypeName
+            |     |     |  +- LitNull
+            |     |     +- TermWhile
+            |     |     |  +- TermApplyInfix
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TermName
+            |     |     |  +- TermBlock
+            |     |     |     +- DefnVal
+            |     |     |     |  +- PatVar
+            |     |     |     |  |  +- TermName
+            |     |     |     |  +- TermSelect
+            |     |     |     |     +- TermApply
+            |     |     |     |     |  +- TermName
+            |     |     |     |     |  +- TermSelect
+            |     |     |     |     |     +- TermName
+            |     |     |     |     |     +- TermName
+            |     |     |     |     +- TermName
+            |     |     |     +- TermWhile
+            |     |     |     |  +- TermSelect
+            |     |     |     |  |  +- TermName
+            |     |     |     |  |  +- TermName
+            |     |     |     |  +- TermBlock
+            |     |     |     |     +- DefnVal
+            |     |     |     |     |  +- PatVar
+            |     |     |     |     |  |  +- TermName
+            |     |     |     |     |  +- TermNew
+            |     |     |     |     |     +- Init
+            |     |     |     |     |        +- TypeName
+            |     |     |     |     |        +- NameAnonymous
+            |     |     |     |     |        +- TermApply
+            |     |     |     |     |        |  +- TermSelect
+            |     |     |     |     |        |     +- TermName
+            |     |     |     |     |        |     +- TermName
+            |     |     |     |     |        +- TermName
+            |     |     |     |     +- TermIf
+            |     |     |     |     |  +- TermApplyInfix
+            |     |     |     |     |  |  +- TermName
+            |     |     |     |     |  |  +- TermName
+            |     |     |     |     |  |  +- LitNull
+            |     |     |     |     |  +- TermBlock
+            |     |     |     |     |  |  +- TermAssign
+            |     |     |     |     |  |     +- TermName
+            |     |     |     |     |  |     +- TermName
+            |     |     |     |     |  +- TermBlock
+            |     |     |     |     |     +- TermAssign
+            |     |     |     |     |        +- TermSelect
+            |     |     |     |     |        |  +- TermName
+            |     |     |     |     |        |  +- TermName
+            |     |     |     |     |        +- TermName
+            |     |     |     |     +- TermAssign
+            |     |     |     |        +- TermName
+            |     |     |     |        +- TermName
+            |     |     |     +- TermAssign
+            |     |     |        +- TermName
+            |     |     |        +- TermSelect
+            |     |     |           +- TermName
+            |     |     |           +- TermName
+            |     |     +- TermIf
+            |     |        +- TermApplyInfix
+            |     |        |  +- TermName
+            |     |        |  +- TermName
+            |     |        |  +- LitNull
+            |     |        +- TermName
+            |     |        +- TermBlock
+            |     |           +- TermApply
+            |     |           |  +- TermName
+            |     |           +- TermName
+            |     +- DefnDef
+            |     |  +- ModAnnot
+            |     |  |  +- Init
+            |     |  |     +- TypeName
+            |     |  |     +- NameAnonymous
+            |     |  +- ModFinal
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeFunction
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVal
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermNew
+            |     |     |     +- Init
+            |     |     |        +- TypeApply
+            |     |     |        |  +- TypeName
+            |     |     |        |  +- TypeName
+            |     |     |        +- NameAnonymous
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermThis
+            |     |     |     +- NameAnonymous
+            |     |     +- TermWhile
+            |     |     |  +- TermApplyInfix
+            |     |     |  |  +- TermApplyUnary
+            |     |     |  |  |  +- TermName
+            |     |     |  |  |  +- TermSelect
+            |     |     |  |  |     +- TermName
+            |     |     |  |  |     +- TermName
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TermApply
+            |     |     |  |     +- TermName
+            |     |     |  |     +- TermSelect
+            |     |     |  |        +- TermName
+            |     |     |  |        +- TermName
+            |     |     |  +- TermBlock
+            |     |     |     +- TermApplyInfix
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermSelect
+            |     |     |     |     +- TermName
+            |     |     |     |     +- TermName
+            |     |     |     +- TermAssign
+            |     |     |        +- TermName
+            |     |     |        +- TermSelect
+            |     |     |           +- TermName
+            |     |     |           +- TermName
+            |     |     +- TermSelect
+            |     |        +- TermName
+            |     |        +- TermName
+            |     +- DefnDef
+            |     |  +- ModAnnot
+            |     |  |  +- Init
+            |     |  |     +- TypeName
+            |     |  |     +- NameAnonymous
+            |     |  +- ModFinal
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeFunction
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- TypeTuple
+            |     |  |  +- TypeApply
+            |     |  |  |  +- TypeName
+            |     |  |  |  +- TypeName
+            |     |  |  +- TypeApply
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVal
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermNew
+            |     |     |     +- Init
+            |     |     |        +- TypeApply
+            |     |     |        |  +- TypeName
+            |     |     |        |  +- TypeName
+            |     |     |        +- NameAnonymous
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermThis
+            |     |     |     +- NameAnonymous
+            |     |     +- TermWhile
+            |     |     |  +- TermApplyInfix
+            |     |     |  |  +- TermApplyUnary
+            |     |     |  |  |  +- TermName
+            |     |     |  |  |  +- TermSelect
+            |     |     |  |  |     +- TermName
+            |     |     |  |  |     +- TermName
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TermApply
+            |     |     |  |     +- TermName
+            |     |     |  |     +- TermSelect
+            |     |     |  |        +- TermName
+            |     |     |  |        +- TermName
+            |     |     |  +- TermBlock
+            |     |     |     +- TermApplyInfix
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermSelect
+            |     |     |     |     +- TermName
+            |     |     |     |     +- TermName
+            |     |     |     +- TermAssign
+            |     |     |        +- TermName
+            |     |     |        +- TermSelect
+            |     |     |           +- TermName
+            |     |     |           +- TermName
+            |     |     +- TermTuple
+            |     |        +- TermSelect
+            |     |        |  +- TermName
+            |     |        |  +- TermName
+            |     |        +- TermName
+            |     +- DefnDef
+            |     |  +- ModAnnot
+            |     |  |  +- Init
+            |     |  |     +- TypeName
+            |     |  |     +- NameAnonymous
+            |     |  +- ModFinal
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeParam
+            |     |  |  +- TypeName
+            |     |  |  +- TypeBounds
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeFunction
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermThis
+            |     |     |     +- NameAnonymous
+            |     |     +- TermWhile
+            |     |        +- TermApplyUnary
+            |     |        |  +- TermName
+            |     |        |  +- TermSelect
+            |     |        |     +- TermName
+            |     |        |     +- TermName
+            |     |        +- TermBlock
+            |     |           +- TermApply
+            |     |           |  +- TermName
+            |     |           |  +- TermSelect
+            |     |           |     +- TermName
+            |     |           |     +- TermName
+            |     |           +- TermAssign
+            |     |              +- TermName
+            |     |              +- TermSelect
+            |     |                 +- TermName
+            |     |                 +- TermName
+            |     +- DefnDef
+            |     |  +- ModFinal
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TypeApply
+            |     |     |  |  +- TypeName
+            |     |     |  |  +- TypeName
+            |     |     |  +- TermName
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermThis
+            |     |     |     +- NameAnonymous
+            |     |     +- TermWhile
+            |     |     |  +- TermApplyUnary
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TermSelect
+            |     |     |  |     +- TermName
+            |     |     |  |     +- TermName
+            |     |     |  +- TermBlock
+            |     |     |     +- TermAssign
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermApplyInfix
+            |     |     |     |     +- TermSelect
+            |     |     |     |     |  +- TermName
+            |     |     |     |     |  +- TermName
+            |     |     |     |     +- TermName
+            |     |     |     |     +- TermName
+            |     |     |     +- TermAssign
+            |     |     |        +- TermName
+            |     |     |        +- TermSelect
+            |     |     |           +- TermName
+            |     |     |           +- TermName
+            |     |     +- TermName
+            |     +- DefnDef
+            |     |  +- ModFinal
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeParam
+            |     |  |  +- TypeName
+            |     |  |  +- TypeBounds
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeFunction
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermName
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TypeApply
+            |     |     |  |  +- TypeName
+            |     |     |  |  +- TypeName
+            |     |     |  +- TermName
+            |     |     +- TermWhile
+            |     |     |  +- TermApplyUnary
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TermSelect
+            |     |     |  |     +- TermName
+            |     |     |  |     +- TermName
+            |     |     |  +- TermBlock
+            |     |     |     +- TermAssign
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermApply
+            |     |     |     |     +- TermName
+            |     |     |     |     +- TermSelect
+            |     |     |     |     |  +- TermName
+            |     |     |     |     |  +- TermName
+            |     |     |     |     +- TermName
+            |     |     |     +- TermAssign
+            |     |     |        +- TermName
+            |     |     |        +- TermSelect
+            |     |     |           +- TermName
+            |     |     |           +- TermName
+            |     |     +- TermName
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- ModFinal
+            |     |  +- TermName
+            |     |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TermThis
+            |     |     |     +- NameAnonymous
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- LitInt
+            |     |     +- TermWhile
+            |     |     |  +- TermApplyUnary
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TermSelect
+            |     |     |  |     +- TermName
+            |     |     |  |     +- TermName
+            |     |     |  +- TermBlock
+            |     |     |     +- TermApplyInfix
+            |     |     |     |  +- TermName
+            |     |     |     |  +- TermName
+            |     |     |     |  +- LitInt
+            |     |     |     +- TermAssign
+            |     |     |        +- TermName
+            |     |     |        +- TermSelect
+            |     |     |           +- TermName
+            |     |     |           +- TermName
+            |     |     +- TermName
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- ModFinal
+            |     |  +- TermName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeName
+            |     |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnDef
+            |     |     |  +- ModAnnot
+            |     |     |  |  +- Init
+            |     |     |  |     +- TypeName
+            |     |     |  |     +- NameAnonymous
+            |     |     |  +- TermName
+            |     |     |  +- TermParam
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TypeName
+            |     |     |  +- TermParam
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TypeApply
+            |     |     |  |     +- TypeName
+            |     |     |  |     +- TypeName
+            |     |     |  +- TypeName
+            |     |     |  +- TermBlock
+            |     |     |     +- TermIf
+            |     |     |        +- TermApplyInfix
+            |     |     |        |  +- TermName
+            |     |     |        |  +- TermName
+            |     |     |        |  +- TermName
+            |     |     |        +- TermIf
+            |     |     |        |  +- TermSelect
+            |     |     |        |  |  +- TermName
+            |     |     |        |  |  +- TermName
+            |     |     |        |  +- LitInt
+            |     |     |        |  +- LitInt
+            |     |     |        +- TermIf
+            |     |     |           +- TermSelect
+            |     |     |           |  +- TermName
+            |     |     |           |  +- TermName
+            |     |     |           +- LitInt
+            |     |     |           +- TermApply
+            |     |     |              +- TermName
+            |     |     |              +- TermApplyInfix
+            |     |     |              |  +- TermName
+            |     |     |              |  +- TermName
+            |     |     |              |  +- LitInt
+            |     |     |              +- TermSelect
+            |     |     |                 +- TermName
+            |     |     |                 +- TermName
+            |     |     +- TermIf
+            |     |        +- TermApplyInfix
+            |     |        |  +- TermName
+            |     |        |  +- TermName
+            |     |        |  +- LitInt
+            |     |        +- LitInt
+            |     |        +- TermApply
+            |     |           +- TermName
+            |     |           +- LitInt
+            |     |           +- TermName
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- ModFinal
+            |     |  +- TermName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeFunction
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TypeApply
+            |     |     |  |  +- TypeName
+            |     |     |  |  +- TypeName
+            |     |     |  +- TermThis
+            |     |     |     +- NameAnonymous
+            |     |     +- TermWhile
+            |     |     |  +- TermApplyUnary
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TermSelect
+            |     |     |  |     +- TermName
+            |     |     |  |     +- TermName
+            |     |     |  +- TermBlock
+            |     |     |     +- TermIf
+            |     |     |     |  +- TermApplyUnary
+            |     |     |     |  |  +- TermName
+            |     |     |     |  |  +- TermApply
+            |     |     |     |  |     +- TermName
+            |     |     |     |  |     +- TermSelect
+            |     |     |     |  |        +- TermName
+            |     |     |     |  |        +- TermName
+            |     |     |     |  +- TermReturn
+            |     |     |     |  |  +- LitBoolean
+            |     |     |     |  +- LitUnit
+            |     |     |     +- TermAssign
+            |     |     |        +- TermName
+            |     |     |        +- TermSelect
+            |     |     |           +- TermName
+            |     |     |           +- TermName
+            |     |     +- LitBoolean
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- ModFinal
+            |     |  +- TermName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeFunction
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TypeApply
+            |     |     |  |  +- TypeName
+            |     |     |  |  +- TypeName
+            |     |     |  +- TermThis
+            |     |     |     +- NameAnonymous
+            |     |     +- TermWhile
+            |     |     |  +- TermApplyUnary
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TermSelect
+            |     |     |  |     +- TermName
+            |     |     |  |     +- TermName
+            |     |     |  +- TermBlock
+            |     |     |     +- TermIf
+            |     |     |     |  +- TermApply
+            |     |     |     |  |  +- TermName
+            |     |     |     |  |  +- TermSelect
+            |     |     |     |  |     +- TermName
+            |     |     |     |  |     +- TermName
+            |     |     |     |  +- TermReturn
+            |     |     |     |  |  +- LitBoolean
+            |     |     |     |  +- LitUnit
+            |     |     |     +- TermAssign
+            |     |     |        +- TermName
+            |     |     |        +- TermSelect
+            |     |     |           +- TermName
+            |     |     |           +- TermName
+            |     |     +- LitBoolean
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- ModFinal
+            |     |  +- TermName
+            |     |  +- TypeParam
+            |     |  |  +- TypeName
+            |     |  |  +- TypeBounds
+            |     |  |     +- TypeName
+            |     |  +- TermParam
+            |     |  |  +- TermName
+            |     |  |  +- TypeName
+            |     |  +- TypeName
+            |     |  +- TermBlock
+            |     |     +- DefnVar
+            |     |     |  +- PatVar
+            |     |     |  |  +- TermName
+            |     |     |  +- TypeApply
+            |     |     |  |  +- TypeName
+            |     |     |  |  +- TypeName
+            |     |     |  +- TermThis
+            |     |     |     +- NameAnonymous
+            |     |     +- TermWhile
+            |     |     |  +- TermApplyUnary
+            |     |     |  |  +- TermName
+            |     |     |  |  +- TermSelect
+            |     |     |  |     +- TermName
+            |     |     |  |     +- TermName
+            |     |     |  +- TermBlock
+            |     |     |     +- TermIf
+            |     |     |     |  +- TermApplyInfix
+            |     |     |     |  |  +- TermSelect
+            |     |     |     |  |  |  +- TermName
+            |     |     |     |  |  |  +- TermName
+            |     |     |     |  |  +- TermName
+            |     |     |     |  |  +- TermName
+            |     |     |     |  +- TermReturn
+            |     |     |     |  |  +- LitBoolean
+            |     |     |     |  +- LitUnit
+            |     |     |     +- TermAssign
+            |     |     |        +- TermName
+            |     |     |        +- TermSelect
+            |     |     |           +- TermName
+            |     |     |           +- TermName
+            |     |     +- LitBoolean
+            |     +- DefnDef
+            |        +- ModOverride
+            |        +- ModFinal
+            |        +- TermName
+            |        +- TermParam
+            |        |  +- TermName
+            |        |  +- TypeFunction
+            |        |     +- TypeName
+            |        |     +- TypeName
+            |        +- TypeApply
+            |        |  +- TypeName
+            |        |  +- TypeName
+            |        +- TermBlock
+            |           +- DefnVar
+            |           |  +- PatVar
+            |           |  |  +- TermName
+            |           |  +- TypeApply
+            |           |  |  +- TypeName
+            |           |  |  +- TypeName
+            |           |  +- TermThis
+            |           |     +- NameAnonymous
+            |           +- TermWhile
+            |           |  +- TermApplyUnary
+            |           |  |  +- TermName
+            |           |  |  +- TermSelect
+            |           |  |     +- TermName
+            |           |  |     +- TermName
+            |           |  +- TermBlock
+            |           |     +- TermIf
+            |           |     |  +- TermApply
+            |           |     |  |  +- TermName
+            |           |     |  |  +- TermSelect
+            |           |     |  |     +- TermName
+            |           |     |  |     +- TermName
+            |           |     |  +- TermReturn
+            |           |     |  |  +- TermApply
+            |           |     |  |     +- TermName
+            |           |     |  |     +- TermSelect
+            |           |     |  |        +- TermName
+            |           |     |  |        +- TermName
+            |           |     |  +- LitUnit
+            |           |     +- TermAssign
+            |           |        +- TermName
+            |           |        +- TermSelect
+            |           |           +- TermName
+            |           |           +- TermName
+            |           +- TermName
+            +- DefnClass
+            |  +- ModFinal
+            |  +- ModCase
+            |  +- TypeName
+            |  +- TypeParam
+            |  |  +- ModCovariant
+            |  |  +- TypeName
+            |  |  +- TypeBounds
+            |  +- CtorPrimary
+            |  |  +- NameAnonymous
+            |  |  +- TermParam
+            |  |  |  +- ModOverride
+            |  |  |  +- ModValParam
+            |  |  |  +- TermName
+            |  |  |  +- TypeName
+            |  |  +- TermParam
+            |  |     +- ModPrivate
+            |  |     |  +- NameIndeterminate
+            |  |     +- ModVarParam
+            |  |     +- TermName
+            |  |     +- TypeApply
+            |  |        +- TypeName
+            |  |        +- TypeAnnotate
+            |  |           +- TypeName
+            |  |           +- ModAnnot
+            |  |              +- Init
+            |  |                 +- TypeName
+            |  |                 +- NameAnonymous
+            |  +- Template
+            |     +- Init
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- NameAnonymous
+            |     +- Self
+            |     |  +- NameAnonymous
+            |     +- TermApply
+            |     |  +- TermName
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- TermApply
+            |     |     +- TermName
+            |     |     +- TermName
+            |     +- DefnDef
+            |        +- ModOverride
+            |        +- TermName
+            |        +- TypeApply
+            |        |  +- TypeName
+            |        |  +- TypeName
+            |        +- TermName
+            +- DefnObject
+            |  +- ModCase
+            |  +- TermName
+            |  +- Template
+            |     +- Init
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- NameAnonymous
+            |     +- Self
+            |     |  +- NameAnonymous
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeName
+            |     |  +- TermThrow
+            |     |     +- TermNew
+            |     |        +- Init
+            |     |           +- TypeName
+            |     |           +- NameAnonymous
+            |     |           +- LitString
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeSingleton
+            |     |  |  +- TermName
+            |     |  +- TermName
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeName
+            |     |  +- TermThrow
+            |     |     +- TermNew
+            |     |        +- Init
+            |     |           +- TypeName
+            |     |           +- NameAnonymous
+            |     |           +- LitString
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeName
+            |     |  +- TermThrow
+            |     |     +- TermNew
+            |     |        +- Init
+            |     |           +- TypeName
+            |     |           +- NameAnonymous
+            |     |           +- LitString
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeName
+            |     |  +- TermThrow
+            |     |     +- TermNew
+            |     |        +- Init
+            |     |           +- TypeName
+            |     |           +- NameAnonymous
+            |     |           +- LitString
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeName
+            |     |  +- LitInt
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeApply
+            |     |  |  +- TypeName
+            |     |  |  +- TypeName
+            |     |  +- TermSelect
+            |     |     +- TermName
+            |     |     +- TermName
+            |     +- DefnDef
+            |     |  +- ModOverride
+            |     |  +- TermName
+            |     |  +- TypeParam
+            |     |  |  +- TypeName
+            |     |  |  +- TypeBounds
+            |     |  +- TypeParam
+            |     |  |  +- TypeName
+            |     |  |  +- TypeBounds
+            |     |  +- TermParam
+            |     |  |  +- ModImplicit
+            |     |  |  +- TermName
+            |     |  |  +- TypeFunction
+            |     |  |     +- TypeName
+            |     |  |     +- TypeTuple
+            |     |  |        +- TypeName
+            |     |  |        +- TypeName
+            |     |  +- TypeTuple
+            |     |  |  +- TypeApply
+            |     |  |  |  +- TypeName
+            |     |  |  |  +- TypeName
+            |     |  |  +- TypeApply
+            |     |  |     +- TypeName
+            |     |  |     +- TypeName
+            |     |  +- TermName
+            |     +- DefnVal
+            |        +- ModAnnot
+            |        |  +- Init
+            |        |     +- TypeName
+            |        |     +- NameAnonymous
+            |        +- ModPrivate
+            |        |  +- TermThis
+            |        |     +- NameAnonymous
+            |        +- PatVar
+            |        |  +- TermName
+            |        +- TermTuple
+            |           +- TermName
+            |           +- TermName
+            +- DefnObject
+               +- ModAnnot
+               |  +- Init
+               |     +- TypeName
+               |     +- NameAnonymous
+               |     +- LitLong
+               +- TermName
+               +- Template
+                  +- Init
+                  |  +- TypeApply
+                  |  |  +- TypeName
+                  |  |  +- TypeName
+                  |  +- NameAnonymous
+                  +- Self
+                  |  +- NameAnonymous
+                  +- DefnVal
+                  |  +- ModPrivate
+                  |  |  +- NameAnonymous
+                  |  +- PatVar
+                  |  |  +- TermName
+                  |  +- TermTuple
+                  |     +- TermName
+                  |     +- TermName
+                  +- DefnDef
+                  |  +- TermName
+                  |  +- TypeParam
+                  |  |  +- TypeName
+                  |  |  +- TypeBounds
+                  |  +- TermParam
+                  |  |  +- TermName
+                  |  |  +- TypeApply
+                  |  |     +- TypeSelect
+                  |  |     |  +- TermName
+                  |  |     |  +- TypeName
+                  |  |     +- TypeName
+                  |  +- TypeApply
+                  |  |  +- TypeName
+                  |  |  +- TypeName
+                  |  +- TermMatch
+                  |     +- TermName
+                  |     +- Case
+                  |     |  +- PatTyped
+                  |     |  |  +- PatVar
+                  |     |  |  |  +- TermName
+                  |     |  |  +- TypeApply
+                  |     |  |     +- TypeName
+                  |     |  |     +- TypeName
+                  |     |  +- TermName
+                  |     +- Case
+                  |     |  +- PatWildcard
+                  |     |  +- TermApplyInfix
+                  |     |  |  +- TermSelect
+                  |     |  |  |  +- TermName
+                  |     |  |  |  +- TermName
+                  |     |  |  +- TermName
+                  |     |  |  +- LitInt
+                  |     |  +- TermApplyType
+                  |     |     +- TermName
+                  |     |     +- TypeName
+                  |     +- Case
+                  |     |  +- PatTyped
+                  |     |  |  +- PatVar
+                  |     |  |  |  +- TermName
+                  |     |  |  +- TypeApply
+                  |     |  |     +- TypeName
+                  |     |  |     +- TypeName
+                  |     |  +- TermSelect
+                  |     |     +- TermName
+                  |     |     +- TermName
+                  |     +- Case
+                  |        +- PatWildcard
+                  |        +- TermSelect
+                  |           +- TermApply
+                  |           |  +- TermSelect
+                  |           |  |  +- TermName
+                  |           |  |  +- TermName
+                  |           |  +- TermName
+                  |           +- TermName
+                  +- DefnDef
+                  |  +- TermName
+                  |  +- TypeParam
+                  |  |  +- TypeName
+                  |  |  +- TypeBounds
+                  |  +- TypeApply
+                  |  |  +- TypeName
+                  |  |  +- TypeName
+                  |  |  +- TypeApply
+                  |  |     +- TypeName
+                  |  |     +- TypeName
+                  |  +- TermNew
+                  |     +- Init
+                  |        +- TypeName
+                  |        +- NameAnonymous
+                  +- DefnDef
+                  |  +- TermName
+                  |  +- TypeParam
+                  |  |  +- TypeName
+                  |  |  +- TypeBounds
+                  |  +- TypeApply
+                  |  |  +- TypeName
+                  |  |  +- TypeName
+                  |  +- TermName
+                  +- DefnVal
+                     +- ModAnnot
+                     |  +- Init
+                     |     +- TypeName
+                     |     +- NameAnonymous
+                     +- ModPrivate
+                     |  +- NameIndeterminate
+                     +- PatVar
+                     |  +- TermName
+                     +- TermNewAnonymous
+                        +- Template
+                           +- Init
+                           |  +- TypeApply
+                           |  |  +- TypeName
+                           |  |  +- TypeName
+                           |  |  +- TypeName
+                           |  +- NameAnonymous
+                           +- Self
+                           |  +- NameAnonymous
+                           +- DefnDef
+                              +- TermName
+                              +- TermParam
+                              |  +- TermName
+                              |  +- TypeName
+                              +- TypeName
+                              +- TermThis
+                                 +- NameAnonymous

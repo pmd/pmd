@@ -22,7 +22,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @author Brian Remedios
  * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
+ * @deprecated Use a {@code PropertyDescriptor<E>} instead. A builder is available from {@link PropertyFactory#enumProperty(String, Map)}.
+ *             This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
         implements EnumeratedPropertyDescriptor<E, E> {
 
@@ -41,7 +44,7 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
      * @param valueType      Type of the values
      * @param theUIOrder     UI order
      *
-     * @deprecated will be removed in 7.0.0. Use {@link #EnumeratedProperty(String, String, Map, Object, Class, float)}
+     * @deprecated Use {@link PropertyFactory#enumProperty(String, Map)}
      */
     @Deprecated
     public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
@@ -62,7 +65,7 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
      * @param defaultIndex   Index of the default value
      * @param theUIOrder     UI order
      *
-     * @deprecated will be removed in 7.0.0. Use {@link #EnumeratedProperty(String, String, Map, Object, Class, float)}
+     * @deprecated Use {@link PropertyFactory#enumProperty(String, Map)}
      */
     @Deprecated
     public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
@@ -81,7 +84,9 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
      * @param defaultValue    Default value
      * @param valueType       Type of the values
      * @param theUIOrder      UI order
+     * @deprecated Use {@link PropertyFactory#enumProperty(String, Map)}
      */
+    @Deprecated
     public EnumeratedProperty(String theName, String theDescription, Map<String, E> labelsToChoices,
                               E defaultValue, Class<E> valueType, float theUIOrder) {
         this(theName, theDescription, labelsToChoices, defaultValue, valueType, theUIOrder, false);
@@ -128,10 +133,19 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#enumProperty(String, Map)}
+     */
+    @Deprecated
     public static <E> EnumPBuilder<E> named(String name) {
         return new EnumPBuilder<>(name);
     }
 
+
+    /**
+     * @deprecated Use {@link PropertyFactory#enumProperty(String, Map)}
+     */
+    @Deprecated
     public static final class EnumPBuilder<E> extends SingleValuePropertyBuilder<E, EnumPBuilder<E>> {
 
         private Class<E> valueType;

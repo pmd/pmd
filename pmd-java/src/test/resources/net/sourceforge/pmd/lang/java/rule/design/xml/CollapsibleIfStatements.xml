@@ -3,54 +3,51 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
+        <description>failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (x) {
-   if (y) {
-   }
-  }
- }
+    void bar() {
+        if (x) {
+            if (y) {
+            }
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, intervening statements
-     ]]></description>
+        <description>ok, intervening statements</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (x) {
-   int z = 5;
-   if (y) {
-   }
-  }
- }
+    void bar() {
+        if (x) {
+            int z = 5;
+            if (y) {
+            }
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, different intervening statements
-     ]]></description>
+        <description>ok, different intervening statements</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (x) {
-   if (y) {
-   }
-   int z = 5;
-  }
- }
+    void bar() {
+        if (x) {
+            if (y) {
+            }
+            int z = 5;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

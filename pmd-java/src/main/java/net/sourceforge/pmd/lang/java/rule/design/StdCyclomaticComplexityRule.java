@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -25,25 +27,27 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * Implements the standard cyclomatic complexity rule
  * <p>
  * Standard rules: +1 for each decision point, including case statements but not
  * including boolean operators unlike CyclomaticComplexityRule.
- * 
+ *
  * @author Alan Hohn, based on work by Donald A. Leckie
- * 
+ *
  * @since June 18, 2014
  */
 @Deprecated
 public class StdCyclomaticComplexityRule extends AbstractJavaRule {
 
-    public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR 
-            = IntegerProperty.named("reportLevel")
+    public static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
+            = PropertyFactory.intProperty("reportLevel")
                              .desc("Cyclomatic Complexity reporting threshold")
-                             .range(1, 30).defaultValue(10).uiOrder(1.0f).build();
+                             .require(positive()).defaultValue(10).build();
 
     public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
             "showClassesComplexity", "Add class average violations to the report", true, 2.0f);
@@ -127,16 +131,16 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
     public Object visit(ASTSwitchStatement node, Object data) {
         Entry entry = entryStack.peek();
 
-        int childCount = node.jjtGetNumChildren();
+        int childCount = node.getNumChildren();
         int lastIndex = childCount - 1;
         for (int n = 0; n < lastIndex; n++) {
-            Node childNode = node.jjtGetChild(n);
+            Node childNode = node.getChild(n);
             if (childNode instanceof ASTSwitchLabel) {
                 // default is generally not considered a decision (same as
                 // "else")
                 ASTSwitchLabel sl = (ASTSwitchLabel) childNode;
                 if (!sl.isDefault()) {
-                    childNode = node.jjtGetChild(n + 1);
+                    childNode = node.getChild(n + 1);
                     if (childNode instanceof ASTBlockStatement) {
                         entry.bumpDecisionPoints();
                     }
@@ -195,8 +199,8 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
             }
 
             ASTMethodDeclarator methodDeclarator = null;
-            for (int n = 0; n < node.jjtGetNumChildren(); n++) {
-                Node childNode = node.jjtGetChild(n);
+            for (int n = 0; n < node.getNumChildren(); n++) {
+                Node childNode = node.getChild(n);
                 if (childNode instanceof ASTMethodDeclarator) {
                     methodDeclarator = (ASTMethodDeclarator) childNode;
                     break;

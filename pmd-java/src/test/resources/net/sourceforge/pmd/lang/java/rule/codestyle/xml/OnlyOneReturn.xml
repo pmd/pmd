@@ -3,100 +3,95 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-two returns
-     ]]></description>
+        <description>two returns</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int foo(int x) {    
-  if (x > 0) {
-   return 3;
-  }
-  return 2;
- }
+    public int foo(int x) {
+        if (x > 0) {
+            return 3;
+        }
+        return 2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-one
-     ]]></description>
+        <description>one</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int foo(int x) {    
-  return 2;
- }
+    public int foo(int x) {
+        return 2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-none
-     ]]></description>
+        <description>none</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void foo(int x) {      
-  int y =2;
- }
+    public void foo(int x) {
+        int y =2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-void
-     ]]></description>
+        <description>void</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void foo(int x) {      
-  if (x>2) {
-    return;
-  }
-  int y =2;
- }
+    public void foo(int x) {
+        if (x>2) {
+            return;
+        }
+        int y =2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-finally
-     ]]></description>
+        <description>finally</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int foo(int x) {
-  try {
-   x += 2;
-   return x;
-  } finally {
-    int y;
-  }
- }
+    public int foo(int x) {
+        try {
+            x += 2;
+            return x;
+        } finally {
+            int y;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-return inside anonymous inner class
-     ]]></description>
+        <description>return inside anonymous inner class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int foo() {
-  FileFilter f = new FileFilter() {
-   public boolean accept(File file) {
-    return false;
-   }
-  };
-  return 2;
- }
+    public int foo() {
+        FileFilter f = new FileFilter() {
+            public boolean accept(File file) {
+                return false;
+            }
+        };
+        return 2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1353 False positive "Only One Return" with lambda</description>
         <expected-problems>0</expected-problems>

@@ -24,7 +24,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * This class implements the #stop directive which allows a user to stop the
  * merging and rendering process. The #stop directive will accept a single
  * message argument with info about the reason for stopping.
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class Stop extends Directive {
 
     /**

@@ -7,13 +7,19 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTOuterJoinType extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
     private Type type;
 
+    @Deprecated
+    @InternalApi
     public ASTOuterJoinType(int id) {
         super(id);
     }
 
+    @Deprecated
+    @InternalApi
     public ASTOuterJoinType(PLSQLParser p, int id) {
         super(p, id);
     }
@@ -50,7 +56,3 @@ public class ASTOuterJoinType extends net.sourceforge.pmd.lang.plsql.ast.Abstrac
 
     public enum Type { FULL, LEFT, RIGHT }
 }
-/*
- * JavaCC - OriginalChecksum=a9d3d0c7e83eeffeba49ea365c782af6 (do not edit this
- * line)
- */

@@ -26,17 +26,23 @@ import java.util.logging.Logger;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.stat.Metric;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
+ *
+ * @deprecated This is internal API, will be hidden with 7.0.0
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     protected static final Logger LOG = Logger.getLogger(AbstractAnalysisCache.class.getName());
@@ -118,6 +124,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
         final long currentAuxClassPathChecksum;
         if (auxclassPathClassLoader instanceof URLClassLoader) {
+            // we don't want to close our aux classpath loader - we still need it...
+            @SuppressWarnings("PMD.CloseResource")
             final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
             currentAuxClassPathChecksum = computeClassPathHash(urlClassLoader.getURLs());
 
@@ -153,28 +161,48 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         ruleMapper.initialize(ruleSets);
     }
 
+    private static boolean isClassPathWildcard(String entry) {
+        return entry.endsWith("/*") || entry.endsWith("\\*");
+    }
+
     private URL[] getClassPathEntries() {
         final String classpath = System.getProperty("java.class.path");
         final String[] classpathEntries = classpath.split(File.pathSeparator);
         final List<URL> entries = new ArrayList<>();
 
+        final SimpleFileVisitor<Path> fileVisitor = new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(final Path file,
+                    final BasicFileAttributes attrs) throws IOException {
+                if (!attrs.isSymbolicLink()) { // Broken link that can't be followed
+                    entries.add(file.toUri().toURL());
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        };
+        final SimpleFileVisitor<Path> jarFileVisitor = new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(final Path file,
+                    final BasicFileAttributes attrs) throws IOException {
+                String extension = FilenameUtils.getExtension(file.toString());
+                if ("jar".equalsIgnoreCase(extension)) {
+                    fileVisitor.visitFile(file, attrs);
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        };
+
         try {
             for (final String entry : classpathEntries) {
                 final File f = new File(entry);
-                if (f.isFile()) {
+                if (isClassPathWildcard(entry)) {
+                    Files.walkFileTree(new File(entry.substring(0, entry.length() - 1)).toPath(),
+                            EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, jarFileVisitor);
+                } else if (f.isFile()) {
                     entries.add(f.toURI().toURL());
-                } else {
+                } else if (f.exists()) { // ignore non-existing directories
                     Files.walkFileTree(f.toPath(), EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
-                        new SimpleFileVisitor<Path>() {
-                            @Override
-                            public FileVisitResult visitFile(final Path file,
-                                    final BasicFileAttributes attrs) throws IOException {
-                                if (!attrs.isSymbolicLink()) { // Broken link that can't be followed
-                                    entries.add(file.toUri().toURL());
-                                }
-                                return FileVisitResult.CONTINUE;
-                            }
-                        });
+                            fileVisitor);
                 }
             }
         } catch (final IOException e) {

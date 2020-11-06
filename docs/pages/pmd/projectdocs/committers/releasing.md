@@ -1,12 +1,12 @@
 ---
-title: Releasing
+title: Release process
 permalink: pmd_projectdocs_committers_releasing.html
 author: Romain Pelisse <rpelisse@users.sourceforge.net>, Andreas Dangel <adangel@users.sourceforge.net>
 ---
 
 This page describes the current status of the release process.
 
-Since versions 5.4.5 / 5.5.4 there is an automated release process using [travis-ci](https://travis-ci.org)
+Since versions 5.4.5 / 5.5.4 there is an automated release process using [travis-ci](https://travis-ci.com)
 in place. However, there are still a few steps, that need manual examination.
 
 Note: You can find a small shell script in the root of the repo: `do-release.sh`. This script guides you
@@ -27,21 +27,51 @@ Make sure code is up to date and everything is committed and pushed with git:
 
 You can find the release notes here: `docs/pages/release_notes.md`.
 
-The date and the version must be updated in `docs/_config.yml`,  e.g.
+The date (`date +%d-%B-%Y`) and the version (remove the SNAPSHOT) must be updated in `docs/_config.yml`,  e.g.
 
 ```
 pmd:
-    version: 6.0.0
-    date: 2017-12-15
+    version: 6.22.0
+    previous_version: 6.21.0
+    date: 12-March-2020
+    release_type: minor
 ```
 
+The release type could be one of "bugfix", "minor", or "major".
 
 The release notes usual mention any new rules that have been added since the last release.
 Please double check the file `pmd-core/src/main/resources/rulesets/releases/<version>.xml`, so
 that all new rules are listed.
 
+Add the new rules as comments to the quickstart rulesets:
+* `pmd-apex/src/main/resources/rulesets/apex/quickstart.xml`
+* `pmd-java/src/main/resources/rulesets/java/quickstart.xml`
+
 We maintain a documentation for the [next major release](pmd_next_major_development.html). Copy the API
 changes from the current release notes to this document: `docs/pages/next_major_development.md`.
+
+The designer lives at [pmd/pmd-designer](https://github.com/pmd/pmd-designer).
+Update property `pmd-designer.version` in **pom.xml** to reference the latest pmd-designer release.
+See <https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&core=gav> for the available releases.
+
+Starting with PMD 6.23.0 we'll provide small statistics for every release. This needs to be added
+to the release notes as the last section. To count the closed issues and pull requests, the milestone
+on github with the title of the new release is searched. Make sure, there is a milestone
+on <https://github.com/pmd/pmd/milestones>. The following snippet will
+create the numbers, that can be attached to the release notes as a last section:
+
+```shell
+LAST_VERSION=6.22.0
+NEW_VERSION=6.23.0
+NEW_VERSION_COMMITISH=HEAD
+
+echo "### Stats"
+echo "* $(git log pmd_releases/${LAST_VERSION}..${NEW_VERSION_COMMITISH} --oneline --no-merges |wc -l) commits"
+echo "* $(curl -s https://api.github.com/repos/pmd/pmd/milestones|jq ".[] | select(.title == \"$NEW_VERSION\") | .closed_issues") closed tickets & PRs"
+echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/${LAST_VERSION}) ) / 86400))"
+```
+
+Note: this part is also integrated into `do-release.sh`.
 
 Check in all (version) changes to branch master or any other branch, from which the release takes place:
 
@@ -57,13 +87,13 @@ The new version needs to be entered into `_config.yml`, e.g.:
 
 ```
 pmd:
-  latestVersion: 6.0.0
-  latestVersionDate: 15th December 2017
+  latestVersion: 6.22.0
+  latestVersionDate: 12-March-2020
 ```
 
 Also move the previous version down into the "downloads" section.
 
-Then create a new page for the new release, e.g. `_posts/2017-12-15-PMD-6.0.0.md` and copy
+Then create a new page for the new release, e.g. `_posts/2020-03-12-PMD-6.22.0.md` and copy
 the release notes into this page. This will appear under the news section.
 
 Check in all (version) changes to branch master:
@@ -102,6 +132,7 @@ it is a tag build and a released version build, travis-ci will do a couple of ad
     selected as the new default downloads for PMD.
 *   Add the documentation of the new release to a subfolder on <https://pmd.github.io>, also make
     this folder available as `latest`.
+*   Upload the documentation to <https://docs.pmd-code.org>.
 
 
 ## After the release
@@ -136,7 +167,16 @@ the following template:
 
 ### Prepare the new release notes
 
-*   Update version in **docs/_config.yml**
+*   Update version in **docs/_config.yml**. Note - the next version needs to have a SNAPSHOT in it.
+    
+    ```
+    pmd:
+        version: 6.23.0-SNAPSHOT
+        previous_version: 6.22.0
+        date: ??-??-2020
+        release_type: minor
+    ```
+
 *   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**.
 *   Update version/release info in **docs/pages/release_notes.md**. Use the following template:
 

@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.testframework;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -16,6 +15,7 @@ import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -55,7 +55,7 @@ public class RuleTstTest {
         verify(rule, times(2)).isRuleChain();
         verify(rule).getMinimumLanguageVersion();
         verify(rule).getMaximumLanguageVersion();
-        verify(rule).apply(anyList(), any(RuleContext.class));
+        verify(rule).apply(ArgumentMatchers.<Node>anyList(), any(RuleContext.class));
         verify(rule, times(4)).getName();
         verify(rule).getPropertiesByPropertyDescriptor();
         verifyNoMoreInteractions(rule);
@@ -76,13 +76,13 @@ public class RuleTstTest {
 
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
-                RuleContext context = invocation.getArgumentAt(1, RuleContext.class);
+                RuleContext context = invocation.getArgument(1, RuleContext.class);
                 // the violations are reported out of order
                 context.getReport().addRuleViolation(createViolation(context, 15, "first reported violation"));
                 context.getReport().addRuleViolation(createViolation(context, 5, "second reported violation"));
                 return null;
             }
-        }).when(rule).apply(Mockito.anyList(), Mockito.any(RuleContext.class));
+        }).when(rule).apply(ArgumentMatchers.<Node>anyList(), Mockito.any(RuleContext.class));
 
         TestDescriptor testDescriptor = new TestDescriptor("the code", "sample test", 2, rule, dummyLanguage);
         testDescriptor.setReinitializeRule(false);

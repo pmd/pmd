@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.plsql.rule.design;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
@@ -33,7 +34,11 @@ import net.sourceforge.pmd.util.NumericConstants;
 /**
  * Abstract superclass for NCSS counting methods. Analogous to and cribbed from
  * the Java version of the rule.
+ *
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule {
     private static final Logger LOGGER = Logger.getLogger(AbstractNcssCountRule.class.getName());
 
@@ -41,7 +46,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
 
     /**
      * Count the nodes of the given type using NCSS rules.
-     * 
+     *
      * @param nodeClass
      *            class of node to count
      */
@@ -56,8 +61,8 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
     public Object visit(PLSQLNode node, Object data) {
         int numNodes = 0;
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            PLSQLNode n = (PLSQLNode) node.getChild(i);
             Integer treeSize = (Integer) n.jjtAccept(this, data);
             numNodes += treeSize.intValue();
         }
@@ -90,7 +95,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
     /**
      * Count the number of children of the given PLSQL node. Adds one to count
      * the node itself.
-     * 
+     *
      * @param node
      *            PLSQL node having children counted
      * @param data
@@ -100,8 +105,8 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
     protected Integer countNodeChildren(Node node, Object data) {
         Integer nodeCount = null;
         int lineCount = 0;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            nodeCount = (Integer) ((PLSQLNode) node.jjtGetChild(i)).jjtAccept(this, data);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            nodeCount = (Integer) ((PLSQLNode) node.getChild(i)).jjtAccept(this, data);
             lineCount += nodeCount.intValue();
         }
         return ++lineCount;
@@ -176,7 +181,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
     public Object visit(ASTExpression node, Object data) {
 
         // "For" update expressions do not count as separate lines of code
-        if (node.jjtGetParent() instanceof ASTStatement) {
+        if (node.getParent() instanceof ASTStatement) {
             return NumericConstants.ZERO;
         }
 

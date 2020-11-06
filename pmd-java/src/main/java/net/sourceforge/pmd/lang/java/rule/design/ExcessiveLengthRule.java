@@ -10,9 +10,9 @@ import net.sourceforge.pmd.stat.DataPoint;
 
 /**
  * This is a common super class for things which have excessive length.
- * 
+ *
  * <p>i.e. LongMethod and LongClass rules.</p>
- * 
+ *
  * <p>To implement an ExcessiveLength rule, you pass in the Class of node you want
  * to check, and this does the rest for you.</p>
  */

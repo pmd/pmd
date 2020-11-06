@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * @author Clément Fournier
  */
+@Deprecated
 public class LongPropertyTest extends AbstractNumericPropertyDescriptorTester<Long> {
 
     private static final long MIN = 10L;

@@ -8,27 +8,25 @@
         <description>Default config reports on every type decl</description>
         <expected-problems>5</expected-problems>
         <code><![CDATA[
-            public class foo {
+public class foo {
+    public @interface Foo_Bar { }
 
-                public @interface Foo_Bar { }
+    public enum $Enum$ { }
 
-                public enum $Enum$ { }
+    interface café { }
 
-                interface café { }
-
-                public abstract class tehehe { }
-
-            }
-     ]]></code>
+    public abstract class tehehe { }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>This is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class FooBar {
-            }
-            ]]></code>
+public class FooBar {
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -39,220 +37,233 @@
             <message>The class name 'foo' doesn't match '[A-Z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
-            @covfefe
-            public class foo {
+@covfefe
+public class foo {
 
-                @interface covfefe {
-                }
+    @interface covfefe {
+    }
 
-            }
-            ]]></code>
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Utility class convention</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper)'</message>
+            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)'</message>
         </expected-messages>
         <code><![CDATA[
-            public class Foo {
+public class Foo {
 
-                static final int ZERO = 0;
+    static final int ZERO = 0;
 
-                static int bar() {
-                    return bar();
-                }
+    static int bar() {
+        return bar();
+    }
 
-                static class BarUtil {
+    static class BarUtil {
 
-                    static final int ONE = 1;
+        static final int ONE = 1;
 
-                }
-            }
-            ]]></code>
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Class with only empty decls should not be a utility class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                ;;;
-            }
-            ]]></code>
+public class Foo {
+    ;;;
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Class with some instance fields should not be a utility class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Position {
-                final int x;
-                final int y;
+public class Position {
+    final int x;
+    final int y;
 
 
-                private Position(int px, int py) {
-                    x = px;
-                    y = py;
-                }
+    private Position(int px, int py) {
+        x = px;
+        y = py;
+    }
 
-                static Position of(int px, int py) {
-                    new Position(px, py);
-                }
+    static Position of(int px, int py) {
+        new Position(px, py);
+    }
 
-            }
-            ]]></code>
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Class with static initializer alone should not be a utility class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
+public class Foo {
 
-                static {
-                    // ugly side effects
-                }
+    static {
+        // ugly side effects
+    }
 
-            }
-            ]]></code>
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Class with instance initializer should not be a utility class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
+public class Foo {
 
-                {
-                    // ugly side effects
-                }
+    {
+        // ugly side effects
+    }
 
-                static final int ZERO = 0;
+    static final int ZERO = 0;
 
 
-                static int bar() {
-                    return bar();
-                }
+    static int bar() {
+        return bar();
+    }
 
-            }
-            ]]></code>
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Class with only static members except constructors should be a utility class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper)'</message>
+            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)'</message>
         </expected-messages>
         <code><![CDATA[
-            public class Foo {
+public class Foo {
 
-                private Foo() {
-                }
+    private Foo() {
+    }
 
-                public Foo() {
-                    // This constructor shouldn't exist,
-                    // but we consider the class a utility class anyway
-                }
+    public Foo() {
+        // This constructor shouldn't exist,
+        // but we consider the class a utility class anyway
+    }
 
-                static final int ZERO = 0;
+    static final int ZERO = 0;
 
 
-                static int bar() {
-                    return bar();
-                }
+    static int bar() {
+        return bar();
+    }
 
-            }
-            ]]></code>
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Class with only constructors should not be a utility class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
+public class Foo {
 
-                private Foo() {
-                }
+    private Foo() {
+    }
 
-            }
-            ]]></code>
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Numbers should be allowed by default</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Md5Checksum {
-            }
-            ]]></code>
+public class Md5Checksum {
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Class extending another class should not be utility class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class StringList extends ArrayList<String> {
-                static StringList emptyList() {
-                    return new StringList();
-                }
-            }
-            ]]></code>
+public class StringList extends ArrayList<String> {
+    static StringList emptyList() {
+        return new StringList();
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Class extending another class should not be utility class 2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            // I couldn't reproduce the original failure, but we can use another regression test.
-            public class MyException extends RuntimeException {
-                public MyException(Exception exception) {
-                    super(exception);
-                }
-            }
-            ]]></code>
+// I couldn't reproduce the original failure, but we can use another regression test.
+public class MyException extends RuntimeException {
+    public MyException(Exception exception) {
+        super(exception);
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Class with only main method should not be utility class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class MyException {
+public class MyException {
 
-                public static void main(String[] args) {
-                    // whitelisted
-                }
-            }
-            ]]></code>
+    public static void main(String[] args) {
+        // whitelisted
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Class with only main method should not be utility class - varargs case</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class MyException {
+public class MyException {
 
-                public static void main(String... args) {
-                    // whitelisted
-                }
-            }
-            ]]></code>
+    public static void main(String... args) {
+        // whitelisted
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Class with main method and private static fields should not be utility class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class MyException {
-                private static final String foo = "FOOO";
+public class MyException {
+    private static final String foo = "FOOO";
 
-                public static void main(String[] args) {
-                    // whitelisted
-                }
-            }
-            ]]></code>
+    public static void main(String[] args) {
+        // whitelisted
+    }
+}
+        ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Utility class can have name constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyConstants {
+    public static final String FOOO = "FOOO";
+
+    private MyConstants() {
+        // whitelisted
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

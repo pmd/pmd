@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -18,14 +20,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 /**
  * A method/constructor shouldn't explicitly throw java.lang.Exception, since it
  * is unclear which exceptions that can be thrown from the methods. It might be
  * difficult to document and understand such vague interfaces. Use either a class
  * derived from RuntimeException or a checked exception.
- * 
+ *
  * <p>This rule uses PMD's type resolution facilities, and can detect
  * if the class implements or extends TestCase class
  *
@@ -36,8 +39,7 @@ import net.sourceforge.pmd.properties.BooleanProperty;
 
 public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
 
-    private static final BooleanProperty IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = new BooleanProperty(
-            "IgnoreJUnitCompletely", "Allow all methods in a JUnit testcase to throw Exceptions", false, 1.0f);
+    private static final PropertyDescriptor<Boolean> IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = booleanProperty("IgnoreJUnitCompletely").defaultValue(false).desc("Allow all methods in a JUnit testcase to throw Exceptions").build();
 
     // Set to true when the class is determined to be a JUnit testcase
     private boolean junitImported = false;
@@ -64,7 +66,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
                 return super.visit(node, data);
             }
         }
-        
+
         ASTClassOrInterfaceType type = node.getSuperClassTypeNode();
         if (type != null && isJUnitTest(type)) {
             junitImported = true;
@@ -96,12 +98,12 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
     }
 
     private boolean isJUnitTest(Class<?> clazz) {
-        return clazz.getName().equals("junit.framework.Test");
+        return "junit.framework.Test".equals(clazz.getName());
     }
 
     @Override
     public Object visit(ASTImportDeclaration node, Object o) {
-        if (node.getImportedName().indexOf("junit") != -1) {
+        if (node.getImportedName().contains("junit")) {
             junitImported = true;
         }
         return super.visit(node, o);
@@ -113,12 +115,12 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
             return super.visit(methodDeclaration, o);
         }
 
-        if (methodDeclaration.getMethodName().startsWith("test")) {
+        if (methodDeclaration.getName().startsWith("test")) {
             return super.visit(methodDeclaration, o);
         }
-        
+
         // Ignore overridden methods, the issue should be marked on the method definition
-        final List<ASTAnnotation> methodAnnotations = methodDeclaration.jjtGetParent().findChildrenOfType(ASTAnnotation.class);
+        final List<ASTAnnotation> methodAnnotations = methodDeclaration.getParent().findChildrenOfType(ASTAnnotation.class);
         for (final ASTAnnotation annotation : methodAnnotations) {
             final ASTName annotationName = annotation.getFirstDescendantOfType(ASTName.class);
             if (annotationName.hasImageEqualTo("Override") || annotationName.hasImageEqualTo("java.lang.Override")) {
@@ -135,8 +137,8 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
         if (getProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)) {
             return true;
         } else {
-            return methodDeclaration.getMethodName().equals("setUp")
-                    || methodDeclaration.getMethodName().equals("tearDown");
+            return "setUp".equals(methodDeclaration.getName())
+                    || "tearDown".equals(methodDeclaration.getName());
         }
     }
 
@@ -195,13 +197,13 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
     /**
      * Checks if the given exception is declared in the method or constructor
      * signature.
-     * 
+     *
      * @param exception
      *            to evaluate
      * @return true if parent node is either a method or constructor declaration
      */
     private boolean isParentSignatureDeclaration(ASTName exception) {
-        Node parent = exception.jjtGetParent().jjtGetParent();
+        Node parent = exception.getParent().getParent();
         return parent instanceof ASTMethodDeclaration || parent instanceof ASTConstructorDeclaration;
     }
 

@@ -14,7 +14,10 @@ import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
  *
  * @author Clément Fournier
  * @since 6.1.0
+ *
+ * @deprecated See {@link JavaQualifiedName}
  */
+@Deprecated
 public final class JavaOperationQualifiedName extends JavaQualifiedName {
 
 

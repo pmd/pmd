@@ -16,13 +16,14 @@ Rules that flag suboptimal code.
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_xsl_performance.html#avoidaxisnavigation">
         <description>
-Avoid using the 'following' or 'preceeding' axes whenever possible, as these can cut
+Avoid using the 'following' or 'preceding' axes whenever possible, as these can cut
 through 100% of the document in the worst case.  Also, try to avoid using 'descendant'
-or 'descendant-self' axes, as if you're at the top of the Document, it necessarily means
+or 'descendant-or-self' axes, as if you're at the top of the Document, it necessarily means
 cutting through 100% of the document.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
 <!-- the use of node() allow to target any node with an select attribute
      but also workaround the ambiguity of having the xsl namespace in the
@@ -30,15 +31,15 @@ cutting through 100% of the document.
                 <value>
 <![CDATA[
 //node()[
-  contains(@select,'preceeding::')
+  contains(@select,'preceding::')
   or
   contains(@select,'following::')
   or
   contains(@select,'descendant::')
-  or 
+  or
   contains(@select,'descendant-self::')
   or (
-    ($checkSelfDescendantAbreviation = 'true' )
+    ($checkSelfDescendantAbreviation = true() )
     and
     contains(@select,'//')
     )

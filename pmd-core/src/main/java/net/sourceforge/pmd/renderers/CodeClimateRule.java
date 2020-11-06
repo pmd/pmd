@@ -19,7 +19,10 @@ import net.sourceforge.pmd.properties.IntegerProperty;
  * This interface tags a Rule specifying properties required for the Code
  * Climate output format. Each rule implementing this interface must define the
  * two code climate properties "categories" and "remediation multiplier".
+ *
+ * @deprecated: This will be remove in 7.0.x (see the PR #1702)
  */
+@Deprecated
 public interface CodeClimateRule extends Rule {
 
     /** Represent a CodeClimate category. */
@@ -54,6 +57,7 @@ public interface CodeClimateRule extends Rule {
         }
     }
 
+    // these properties may not be updated yet
 
     /**
      * Defines the code climate categories for which this rule will find
@@ -66,7 +70,7 @@ public interface CodeClimateRule extends Rule {
      */
     EnumeratedMultiProperty<String> CODECLIMATE_CATEGORIES // better would be to use CodeClimateCategory as values but might break the API
         = new EnumeratedMultiProperty<>("cc_categories",
-                                        "Code Climate Categories",
+                                        "deprecated! Code Climate Categories",
                                         CodeClimateCategory.categoryMap(),
                                         Collections.singletonList(CodeClimateCategory.STYLE.name),
                                         String.class, 1.0f);
@@ -83,7 +87,7 @@ public interface CodeClimateRule extends Rule {
     // Note: We use a multiplier to the Code Climate default of 50000 for the
     // simplest possible remediation
     IntegerProperty CODECLIMATE_REMEDIATION_MULTIPLIER = new IntegerProperty("cc_remediation_points_multiplier",
-            "Code Climate Remediation Points multiplier", Integer.MIN_VALUE,
+            "deprecated! Code Climate Remediation Points multiplier", Integer.MIN_VALUE,
             Integer.MAX_VALUE / REMEDIATION_POINTS_DEFAULT, 1, 1.0f);
 
     /**
@@ -92,5 +96,5 @@ public interface CodeClimateRule extends Rule {
      * highlighting is disabled for reasons of clarity.
      */
     BooleanProperty CODECLIMATE_BLOCK_HIGHLIGHTING = new BooleanProperty("cc_block_highlighting",
-            "Code Climate Block Highlighting", false, 1.0f);
+            "deprecated! Code Climate Block Highlighting", false, 1.0f);
 }

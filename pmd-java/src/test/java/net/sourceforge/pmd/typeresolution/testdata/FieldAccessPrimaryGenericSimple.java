@@ -40,7 +40,7 @@ public class FieldAccessPrimaryGenericSimple extends GenericSuperClassA<Long> {
 
     class Nested<T extends GenericClass<String, Number>> {
         T field;
-        
+
         void foo() {
             // Primary[Prefix[this], Suffix[field], Suffix[first]]
             this.field.first = "";

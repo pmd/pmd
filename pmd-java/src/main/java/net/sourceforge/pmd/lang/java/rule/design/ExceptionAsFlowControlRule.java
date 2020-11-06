@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -16,7 +18,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
  * Catches the use of exception statements as a flow control device.
- * 
+ *
  * @author Will Sargent
  */
 public class ExceptionAsFlowControlRule extends AbstractJavaRule {
@@ -32,11 +34,10 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRule {
 
             List<ASTCatchStatement> list = parent.findDescendantsOfType(ASTCatchStatement.class);
             for (ASTCatchStatement catchStmt : list) {
-                ASTFormalParameter fp = (ASTFormalParameter) catchStmt.jjtGetChild(0);
+                ASTFormalParameter fp = (ASTFormalParameter) catchStmt.getChild(0);
                 ASTType type = fp.getFirstDescendantOfType(ASTType.class);
                 ASTClassOrInterfaceType name = type.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-                if (node.getFirstClassOrInterfaceTypeImage() != null
-                        && node.getFirstClassOrInterfaceTypeImage().equals(name.getImage())) {
+                if (isExceptionOfTypeThrown(node, name.getImage())) {
                     addViolation(data, name);
                 }
             }
@@ -44,4 +45,9 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRule {
         return data;
     }
 
+    private boolean isExceptionOfTypeThrown(ASTThrowStatement throwStatement, String typeName) {
+        final ASTClassOrInterfaceType t = throwStatement.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        String thrownTypeName = t == null ? null : t.getImage();
+        return StringUtils.equals(thrownTypeName, typeName);
+    }
 }

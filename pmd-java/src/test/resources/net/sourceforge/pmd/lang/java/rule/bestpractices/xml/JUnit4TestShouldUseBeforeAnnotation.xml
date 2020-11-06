@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Contains setUp
-     ]]></description>
+        <description>Contains setUp</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -16,12 +15,11 @@ public class Foo {
     public void foo() {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Contains @setUp
-     ]]></description>
+        <description>Contains @setUp</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -32,12 +30,11 @@ public class Foo {
     public void foo() {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Renamed setup
-     ]]></description>
+        <description>Renamed setup</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -48,8 +45,9 @@ public class Foo {
     public void foo() {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1400 False positive with JUnit4TestShouldUseBeforeAnnotation</description>
         <expected-problems>0</expected-problems>
@@ -62,6 +60,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1446 False positive with JUnit4TestShouldUseBeforeAnnotation when TestNG is used</description>
         <expected-problems>0</expected-problems>
@@ -76,6 +75,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#940 False positive with JUnit4TestShouldUseBeforeAnnotation when JUnit5's 'BeforeEach' is used</description>
         <expected-problems>0</expected-problems>
@@ -90,6 +90,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#940 False positive with JUnit4TestShouldUseBeforeAnnotation when JUnit5's 'BeforeAll' is used</description>
         <expected-problems>0</expected-problems>

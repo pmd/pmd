@@ -4,21 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava15;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import net.sourceforge.pmd.lang.java.ast.testdata.InterfaceWithNestedClass;
 
-public class ASTFieldDeclarationTest {
+public class ASTFieldDeclarationTest extends BaseParserTest {
 
     @Test
     public void testIsArray() {
-        ASTCompilationUnit cu = parseJava14(TEST1);
+        ASTCompilationUnit cu = java.parse(TEST1);
         Dimensionable node = cu.findDescendantsOfType(ASTFieldDeclaration.class).get(0);
         assertTrue(node.isArray());
         assertEquals(1, node.getArrayDepth());
@@ -26,14 +27,14 @@ public class ASTFieldDeclarationTest {
 
     @Test
     public void testMultiDimensionalArray() {
-        ASTCompilationUnit cu = parseJava14(TEST2);
+        ASTCompilationUnit cu = java.parse(TEST2);
         Dimensionable node = cu.findDescendantsOfType(ASTFieldDeclaration.class).get(0);
         assertEquals(3, node.getArrayDepth());
     }
 
     @Test
     public void testIsSyntacticallyPublic() {
-        ASTCompilationUnit cu = parseJava14(TEST3);
+        ASTCompilationUnit cu = java.parse(TEST3);
         ASTFieldDeclaration node = cu.findDescendantsOfType(ASTFieldDeclaration.class).get(0);
         assertFalse(node.isSyntacticallyPublic());
         assertFalse(node.isPackagePrivate());
@@ -46,29 +47,28 @@ public class ASTFieldDeclarationTest {
 
     @Test
     public void testWithEnum() {
-        ASTCompilationUnit cu = parseJava15(TEST4);
+        ASTCompilationUnit cu = java5.parse(TEST4);
         ASTFieldDeclaration node = cu.findDescendantsOfType(ASTFieldDeclaration.class).get(0);
         assertFalse(node.isInterfaceMember());
     }
 
     @Test
     public void testWithAnnotation() {
-        ASTCompilationUnit cu = parseJava15(TEST5);
+        ASTCompilationUnit cu = java5.parse(TEST5);
         ASTFieldDeclaration node = cu.findDescendantsOfType(ASTFieldDeclaration.class).get(0);
         assertFalse(node.isInterfaceMember());
         assertTrue(node.isAnnotationMember());
     }
 
-    private static final String TEST1 = "class Foo {" + PMD.EOL + " String[] foo;" + PMD.EOL + "}";
+    private static final String TEST1 = "class Foo {\n String[] foo;\n}";
 
-    private static final String TEST2 = "class Foo {" + PMD.EOL + " String[][][] foo;" + PMD.EOL + "}";
+    private static final String TEST2 = "class Foo {\n String[][][] foo;\n}";
 
-    private static final String TEST3 = "interface Foo {" + PMD.EOL + " int BAR = 6;" + PMD.EOL + "}";
+    private static final String TEST3 = "interface Foo {\n int BAR = 6;\n}";
 
-    private static final String TEST4 = "public enum Foo {" + PMD.EOL + " FOO(1);" + PMD.EOL + " private int x;"
-            + PMD.EOL + "}";
+    private static final String TEST4 = "public enum Foo {\n FOO(1);\n private int x;\n}";
 
-    private static final String TEST5 = "public @interface Foo {" + PMD.EOL + " int BAR = 6;" + PMD.EOL + "}";
+    private static final String TEST5 = "public @interface Foo {\n int BAR = 6;\n}";
 
     @Test
     public void testGetVariableName() {
@@ -84,5 +84,18 @@ public class ASTFieldDeclarationTest {
 
         assertEquals("foo", n.getVariableName());
 
+    }
+
+    @Test
+    public void testPrivateFieldInNestedClassInsideInterface() {
+        ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parseClass(InterfaceWithNestedClass.class, "10");
+        List<ASTFieldDeclaration> fields = cu.findDescendantsOfType(ASTFieldDeclaration.class, true);
+        assertEquals(2, fields.size());
+        assertEquals("MAPPING", fields.get(0).getFirstDescendantOfType(ASTVariableDeclaratorId.class).getImage());
+        assertTrue(fields.get(0).isPublic());
+        assertFalse(fields.get(0).isPrivate());
+        assertEquals("serialVersionUID", fields.get(1).getFirstDescendantOfType(ASTVariableDeclaratorId.class).getImage());
+        assertFalse(fields.get(1).isPublic());
+        assertTrue(fields.get(1).isPrivate());
     }
 }

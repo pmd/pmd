@@ -3,163 +3,150 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-simple failure case
-     ]]></description>
+        <description>simple failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- Boolean b = new Boolean("true");
+    Boolean b = new Boolean("true");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-new java.lang.Boolean
-     ]]></description>
+        <description>new java.lang.Boolean</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- Boolean b = new java.lang.Boolean("true");
+    Boolean b = new java.lang.Boolean("true");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- Boolean b = Boolean.TRUE;
+    Boolean b = Boolean.TRUE;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-don't use Boolean.valueOf() with literal
-     ]]></description>
+        <description>don't use Boolean.valueOf() with literal</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- Boolean b = Boolean.valueOf(true);
- Boolean b1 = Boolean.valueOf(false);
+    Boolean b = Boolean.valueOf(true);
+    Boolean b1 = Boolean.valueOf(false);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-valueOf() with variable is fine
-     ]]></description>
+        <description>valueOf() with variable is fine</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- Boolean b = Boolean.valueOf(x);
+    Boolean b = Boolean.valueOf(x);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-don't use Boolean.valueOf() with string literal
-     ]]></description>
+        <description>don't use Boolean.valueOf() with string literal</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- Boolean b = Boolean.valueOf("true");
+    Boolean b = Boolean.valueOf("true");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-don't use Boolean.valueOf() in method call
-     ]]></description>
+        <description>don't use Boolean.valueOf() in method call</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   public void go(){
-     foo(new Boolean("true"));
-   }
+    public void go(){
+        foo(new Boolean("true"));
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-don't use new Boolean() in method call
-     ]]></description>
+        <description>don't use new Boolean() in method call</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   public void go(){
-      foo(Boolean.valueOf("true"));
-   }
+    public void go(){
+        foo(Boolean.valueOf("true"));
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-   public void go(){
- foo(Boolean.TRUE);
-   }
+    public void go() {
+        foo(Boolean.TRUE);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-   static {
- foo(Boolean.TRUE);
-   }
+    static {
+        foo(Boolean.TRUE);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-don't use new Boolean() in static block
-     ]]></description>
+        <description>don't use new Boolean() in static block</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   static {
-      foo(Boolean.valueOf("true"));
-   }
+    static {
+        foo(Boolean.valueOf("true"));
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bug 1744065, should be ok
-     ]]></description>
+        <description>Bug 1744065, should be ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import my.own.Boolean;
 
 public class Foo {
-   public void Bar() {
-      Boolean b = new Boolean("true");
-   }
+    public void Bar() {
+        Boolean b = new Boolean("true");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Test for failure after rule with custom Boolean, should report failure if rule reset done correctly
-     ]]></description>
+        <description>Test for failure after rule with custom Boolean, should report failure if rule reset done correctly</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- Boolean b = Boolean.valueOf("true");
+    Boolean b = Boolean.valueOf("true");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>

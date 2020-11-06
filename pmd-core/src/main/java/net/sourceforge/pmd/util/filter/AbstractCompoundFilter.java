@@ -14,7 +14,9 @@ import java.util.List;
  *
  * @param <T>
  *            The underlying type on which the filter applies.
+ * @deprecated See {@link Filter}
  */
+@Deprecated
 public abstract class AbstractCompoundFilter<T> implements Filter<T> {
 
     protected List<Filter<T>> filters;

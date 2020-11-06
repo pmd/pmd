@@ -11,7 +11,7 @@ public class NestedAnonymousClass {
 
     public class Bar {
     }
-    
+
     public ConverterFactory<String, Bar> factory = new ConverterFactory<String, Bar>() {
 
         @Override

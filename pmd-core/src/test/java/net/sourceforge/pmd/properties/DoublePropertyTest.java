@@ -14,6 +14,7 @@ import java.util.List;
  *
  * @author Brian Remedios
  */
+@Deprecated
 public class DoublePropertyTest extends AbstractNumericPropertyDescriptorTester<Double> {
 
     private static final double MIN = -10.0;

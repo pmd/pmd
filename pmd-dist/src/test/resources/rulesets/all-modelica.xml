@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<ruleset name="All Modelica Rules" 
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>Every Modelica Rule in PMD</description>
+
+    <rule ref="category/modelica/bestpractices.xml" />
+<!--     <rule ref="category/modelica/codestyle.xml" /> -->
+<!--     <rule ref="category/modelica/design.xml" /> -->
+<!--     <rule ref="category/modelica/documentation.xml" /> -->
+<!--     <rule ref="category/modelica/errorprone.xml" /> -->
+<!--     <rule ref="category/modelica/multithreading.xml" /> -->
+<!--     <rule ref="category/modelica/performance.xml" /> -->
+<!--     <rule ref="category/modelica/security.xml" /> -->
+
+</ruleset>

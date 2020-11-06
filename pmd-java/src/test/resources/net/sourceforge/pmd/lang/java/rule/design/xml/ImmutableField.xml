@@ -3,468 +3,468 @@
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Could be immutable, only assigned in constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x;
+public class Foo {
+    private int x;
 
-                public Foo() {
-                    x = 2;
-                }
-            }
-            ]]></code>
+    public Foo() {
+        x = 2;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Could be immutable, only assigned in decl</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x = 42;
-            }
-            ]]></code>
+public class Foo {
+    private int x = 42;
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Ok, assigned twice</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x;
+public class Foo {
+    private int x;
 
-                public Foo() {
-                    x = 41;
-                }
+    public Foo() {
+        x = 41;
+    }
 
-                public void bar() {
-                    x = 42;
-                }
-            }
-            ]]></code>
+    public void bar() {
+        x = 42;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Ok, static field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private static int x = 0;
-                private final int y;
+public class Foo {
+    private static int x = 0;
+    private final int y;
 
-                public Foo() {
-                    y = x;
-                    x++;
-                }
-            }
-            ]]></code>
+    public Foo() {
+        y = x;
+        x++;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Ok, one constructor assigns, one doesn't</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x;
+public class Foo {
+    private int x;
 
-                public Foo(int y) {
-                    x = y;
-                }
+    public Foo(int y) {
+        x = y;
+    }
 
-                public Foo() {
-                }
-            }
-            ]]></code>
+    public Foo() {
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Ok, assignment via postfix expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x;
+public class Foo {
+    private int x;
 
-                public Foo() {
-                }
+    public Foo() {
+    }
 
-                private void bar() {
-                    x++;
-                }
-            }
-            ]]></code>
+    private void bar() {
+        x++;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Postfix expressions imply mutability</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x = 0;
+public class Foo {
+    private int x = 0;
 
-                private void bar() {
-                    x++;
-                }
-            }
-            ]]></code>
+    private void bar() {
+        x++;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Compound assignment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int w;
-                private int z;
+public class Foo {
+    private int w;
+    private int z;
 
-                private void bar() {
-                    w = 2;
-                    z = 4;
-                }
+    private void bar() {
+        w = 2;
+        z = 4;
+    }
 
-                private void gaz() {
-                    w += z++;
-                }
-            }
-            ]]></code>
+    private void gaz() {
+        w += z++;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Preincrement</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x = 0;
+public class Foo {
+    private int x = 0;
 
-                public void bar() {
-                    ++x;
-                }
-            }
-            ]]></code>
+    public void bar() {
+        ++x;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Predecrement</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x = 0;
+public class Foo {
+    private int x = 0;
 
-                public void bar() {
-                    --x;
-                }
-            }
-            ]]></code>
+    public void bar() {
+        --x;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Compound assignment 2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x = 0;
+public class Foo {
+    private int x = 0;
 
-                public void bar() {
-                    x += 1;
-                }
-            }
-            ]]></code>
+    public void bar() {
+        x += 1;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Rhs 2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x = 0;
+public class Foo {
+    private int x = 0;
 
-                public void bar() {
-                    Object y = new Bar(x++);
-                }
-            }
-            ]]></code>
+    public void bar() {
+        Object y = new Bar(x++);
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Assignment in constructor is in try block</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x;
+public class Foo {
+    private int x;
 
-                public Foo() {
-                    try {
-                        x = 2;
-                    } catch (Exception e) {
-                    }
-                }
-            }
-            ]]></code>
+    public Foo() {
+        try {
+            x = 2;
+        } catch (Exception e) {
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Assignment in method is in try block</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x;
+public class Foo {
+    private int x;
 
-                public void bar() {
-                    try {
-                        x = 2;
-                    } catch (Exception e) {
-                    }
-                }
-            }
-            ]]></code>
+    public void bar() {
+        try {
+            x = 2;
+        } catch (Exception e) {
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Assignment in constructor in loop is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x;
+public class Foo {
+    private int x;
 
-                public Foo() {
-                    for (int i = 0; i < 10; i++) {
-                        x += 5;
-                    }
-                }
-            }
-            ]]></code>
+    public Foo() {
+        for (int i = 0; i < 10; i++) {
+            x += 5;
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Assignment in anonymous inner class method is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int x = 2;
+public class Foo {
+    private int x = 2;
 
-                public Foo() {
-                    mouseListener = new MouseAdapter() {
-                        public void mouseClicked(MouseEvent e) {
-                            x = e.getSource();
-                            super.mouseClicked(e);
-                        }
-                    };
-                }
+    public Foo() {
+        mouseListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                x = e.getSource();
+                super.mouseClicked(e);
             }
-            ]]></code>
+        };
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Assignment through this</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private int counter;
+public class Foo {
+    private int counter;
 
-                private Foo() {
-                    counter = 0;
-                }
+    private Foo() {
+        counter = 0;
+    }
 
-                private int foo() {
-                    if (++this.counter < 3) {
-                        return 0;
-                    }
-                    return 1;
-                }
-            }
-            ]]></code>
+    private int foo() {
+        if (++this.counter < 3) {
+            return 0;
+        }
+        return 1;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Volatile variables can't be final</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public final class Foo {
-                private volatile boolean bar = false;
+public final class Foo {
+    private volatile boolean bar = false;
 
-                public Foo() {
-                }
-            }
-            ]]></code>
+    public Foo() {
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Bug 1740480, optional override of default value based on constructor argument check</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class MyClass {
-                private int positive = 1;
+public class MyClass {
+    private int positive = 1;
 
-                public MyClass(int value) {
-                    // if negative keep default
-                    if (value > 0) {
-                        positive = value;
-                    }
-                }
-            }
-            ]]></code>
+    public MyClass(int value) {
+        // if negative keep default
+        if (value > 0) {
+            positive = value;
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Bug 1740480, assignment in single constructor based on constructor argument check</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class MyClass {
-                private int positive;
+public class MyClass {
+    private int positive;
 
-                public MyClass(int value) {
-                    if (value > 0) {
-                        positive = value;
-                    } else {
-                        positive = 1;
-                    }
-                }
-            }
-            ]]></code>
+    public MyClass(int value) {
+        if (value > 0) {
+            positive = value;
+        } else {
+            positive = 1;
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>3526212, pmd-5.0.0: ImmutableField false positive on self-inc/dec</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class pmd_inc {
-                private int test;
+public class pmd_inc {
+    private int test;
 
-                public pmd_inc() {
-                    this.test = 2;
-                }
+    public pmd_inc() {
+        this.test = 2;
+    }
 
-                public int get_test() {
-                    return this.test;
-                }
+    public int get_test() {
+        return this.test;
+    }
 
-                public void inc_test(int val) {
-                    this.test += val;
-                }
-            }
-            ]]></code>
+    public void inc_test(int val) {
+        this.test += val;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#946 ImmutableField false +</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class MyClass {
-                private long counter = 0;
+public class MyClass {
+    private long counter = 0;
 
-                public <E> void run(final E entity, final Class<? extends TemplatedClass<E>> m) throws MyException {
-                    this.counter += 1;
-                }
-            }
-            ]]></code>
+    public <E> void run(final E entity, final Class<? extends TemplatedClass<E>> m) throws MyException {
+        this.counter += 1;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#1032 ImmutableField Rule: Private field in inner class gives false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                private static class Bar {
-                    private int i;
+public class Foo {
+    private static class Bar {
+        private int i;
 
-                    Bar(final int i) {
-                        this.i = i;
-                    }
-                }
+        Bar(final int i) {
+            this.i = i;
+        }
+    }
 
-                public int foo() {
-                    final Bar b = new Bar(1);
-                    b.i = 0;
-                    return b.i;
-                }
-            }
-            ]]></code>
+    public int foo() {
+        final Bar b = new Bar(1);
+        b.i = 0;
+        return b.i;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#1448 [java] ImmutableField: Private field in inner class gives false positive with lambdas</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class CombinersTest {
+public class CombinersTest {
 
-                private static final BinaryOperator<Purse> ADDITION = (p1, p2) -> {
-                    p1.amount += p2.amount;
-                    return p1;
-                };
+    private static final BinaryOperator<Purse> ADDITION = (p1, p2) -> {
+        p1.amount += p2.amount;
+        return p1;
+    };
 
-                private static class Purse {
-                    private int amount;
+    private static class Purse {
+        private int amount;
 
-                    public Purse(final int amount) {
-                        this.amount = amount;
-                    }
-                }
-
-            }
-            ]]></code>
+        public Purse(final int amount) {
+            this.amount = amount;
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#410 [java] ImmutableField: False positive with lombok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            import lombok.Getter;
-            import lombok.Setter;
+import lombok.Getter;
+import lombok.Setter;
 
-            @Getter
-            @Setter
-            public class Foo {
-                private String id;
+@Getter
+@Setter
+public class Foo {
+    private String id;
 
-                public Foo(String id) {
-                    this.id = id;
-                }
-            }
-            ]]></code>
+    public Foo(String id) {
+        this.id = id;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#855 [java] ImmutableField: False positive within lambda</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            class Foo {
-                private Bar bar;
+class Foo {
+    private Bar bar;
 
-                public Foo() {
-                    someMethod(() -> {
-                        bar = new Bar();
-                    });
-                }
+    public Foo() {
+        someMethod(() -> {
+            bar = new Bar();
+        });
+    }
 
-                private void someMethod(Runnable action) {
-                    action.run();
-                }
+    private void someMethod(Runnable action) {
+        action.run();
+    }
 
-                static class Bar {
-                }
-            }
-            ]]></code>
+    static class Bar {
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#855 [java] ImmutableField: False positive within lambda (expression style)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            class Foo {
-                private Bar bar;
+class Foo {
+    private Bar bar;
 
-                public Foo() {
-                    someMethod(() -> bar = new Bar());
-                }
+    public Foo() {
+        someMethod(() -> bar = new Bar());
+    }
 
-                private void someMethod(Runnable action) {
-                    action.run();
-                }
+    private void someMethod(Runnable action) {
+        action.run();
+    }
 
-                static class Bar {
-                }
-            }
-            ]]></code>
+    static class Bar {
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -479,6 +479,75 @@ public class Foo {
     public Foo() {
         x = 2;
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1792 Immutable field should still be detected with @Delegate</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.Delegate;
+
+public class Foo {
+    @Delegate
+    private String x;
+
+    public Foo() {
+        x = "bar";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2075 [java] ImmutableField false positive with inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Stack {
+    private Node first;
+    private int n;   // can't be made final
+
+    public void insert(int x) {
+        first = new Node(first, x);
+    }
+
+    public int size() {
+        return n;
+    }
+
+    private class Node {
+        Node next;
+        int x;
+        private Node(Node next, int x) {
+            this.next = next;
+            this.x = x;
+            n++;  // inner class updates instance variable in outer class
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ImmutableField: False positive when variable is updated in conditional loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmdtests;
+
+import java.util.Random;
+import java.math.BigInteger;
+
+public class TestFinal {
+  private BigInteger e;
+
+  public TestFinal() {
+    Random random = new Random();
+    e = BigInteger.probablePrime(Integer.MAX_VALUE / 2, random);
+
+    while (random.nextBoolean())
+      e = e.add(BigInteger.ONE);
+  }
 }
         ]]></code>
     </test-code>

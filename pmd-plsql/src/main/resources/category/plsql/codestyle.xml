@@ -9,6 +9,24 @@
 Rules which enforce a specific coding style.
     </description>
 
+    <rule name="AvoidTabCharacter"
+          language="plsql"
+          since="6.13.0"
+          message="Avoid tab characters for indentation. Use spaces instead."
+          class="net.sourceforge.pmd.lang.plsql.rule.codestyle.AvoidTabCharacterRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codestyle.html#avoidtabcharacter">
+        <description>
+This rule checks, that there are no tab characters (`\t`) in the source file.
+It reports only the first occurrence per file.
+
+Using tab characters for indentation is not recommended, since this requires that every developer
+uses the same tab with in their editor.
+
+This rule is the PMD equivalent of checkstyle's [FileTabCharacter](http://checkstyle.sourceforge.net/config_whitespace.html#FileTabCharacter) check.
+        </description>
+        <priority>3</priority>
+    </rule>
+
     <rule name="CodeFormat"
           language="plsql"
           since="6.9.0"
@@ -87,6 +105,7 @@ https://docs.oracle.com/cd/B28359_01/appdev.111/b28370/static.htm#BABIIHBJ
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -128,17 +147,18 @@ In case you have loops please name the loop variables more meaningful.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //CursorForLoopStatement[
-    $allowSimpleLoops = 'false' or
+    $allowSimpleLoops = false() or
     (Statement//CursorForLoopStatement or ancestor::CursorForLoopStatement)
 ]
 /ForIndex[not(matches(@Image, $cursorPattern))]
 |
 //ForStatement[
-    $allowSimpleLoops = 'false' or
+    $allowSimpleLoops = false() or
     (Statement//ForStatement or ancestor::ForStatement)
 ]
 /ForIndex[not(matches(@Image, $indexPattern))]
@@ -177,4 +197,19 @@ END;
 ]]>
         </example>
     </rule>
+
+    <rule name="LineLength"
+          language="plsql"
+          since="6.13.0"
+          message="The line is too long."
+          class="net.sourceforge.pmd.lang.plsql.rule.codestyle.LineLengthRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codestyle.html#linelength">
+        <description>
+This rule checks for long lines. Please note that comments are not ignored.
+
+This rule is the PMD equivalent of checkstyle's [LineLength](http://checkstyle.sourceforge.net/config_sizes.html#LineLength) check.
+        </description>
+        <priority>3</priority>
+    </rule>
+
 </ruleset>

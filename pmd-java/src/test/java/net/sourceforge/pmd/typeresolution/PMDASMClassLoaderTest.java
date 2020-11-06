@@ -98,7 +98,7 @@ public class PMDASMClassLoaderTest {
     /**
      * With this test you can verify, how much memory could be consumed by the
      * dontBother cache.
-     * 
+     *
      * @throws Exception
      *             any error
      */

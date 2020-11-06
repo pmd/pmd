@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 /**
- * 
+ *
  * @author Zev Blut zb@ubit.com
  */
 public class EcmascriptLanguage extends AbstractLanguage {

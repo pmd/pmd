@@ -1,15 +1,18 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.semantic.ast.member.Field;
 
 public class ASTField extends AbstractApexNode<Field> implements CanSuppressWarnings {
 
+    @Deprecated
+    @InternalApi
     public ASTField(Field field) {
         super(field);
     }
@@ -21,7 +24,7 @@ public class ASTField extends AbstractApexNode<Field> implements CanSuppressWarn
 
     @Override
     public String getImage() {
-        return node.getFieldInfo().getName();
+        return getName();
     }
 
     @Override
@@ -34,5 +37,24 @@ public class ASTField extends AbstractApexNode<Field> implements CanSuppressWarn
             }
         }
         return false;
+    }
+
+    public String getType() {
+        return node.getFieldInfo().getType().getApexName();
+    }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
+
+    public String getName() {
+        return node.getFieldInfo().getName();
+    }
+
+    public String getValue() {
+        if (node.getFieldInfo().getValue() != null) {
+            return String.valueOf(node.getFieldInfo().getValue());
+        }
+        return null;
     }
 }

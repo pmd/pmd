@@ -1,0 +1,989 @@
+/*
+ BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+
+ Based on Antlr4 Modelica grammar downloaded from https://github.com/antlr/grammars-v4
+ License of the original modelica.g4:
+
+[The "BSD licence"]
+Copyright (c) 2012 Tom Everett
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+options {
+  CACHE_TOKENS=true;
+  STATIC = false;
+  USER_CHAR_STREAM = true;
+  JDK_VERSION = "1.5";
+
+  MULTI = true;
+  VISITOR = true;
+  NODE_USES_PARSER = true;
+  TRACK_TOKENS = true;
+  NODE_PACKAGE="net.sourceforge.pmd.lang.modelica.ast";
+
+  UNICODE_INPUT = true;
+}
+
+PARSER_BEGIN(ModelicaParser)
+package net.sourceforge.pmd.lang.modelica.ast;
+
+import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
+
+public class ModelicaParser {
+
+}
+
+PARSER_END(ModelicaParser)
+
+TOKEN: {
+  <BOM: "\uFEFF" >
+| <LPAREN: "(" >
+| <RPAREN: ")" >
+| <LCURL: "{">
+| <RCURL: "}" >
+| <LSQUARE: "[" >
+| <RSQUARE: "]" >
+| <SC: ";" >
+| <EQ_SIGN: "=" >
+| <COMMA: "," >
+| <DOT: "." >
+| <COLON: ":" >
+| <IMPORT: "import">
+| <WITHIN: "within" >
+| <ENCAPSULATED: "encapsulated" >
+| <PARTIAL: "partial" >
+| <FINAL: "final">
+| <CLASS: "class" >
+| <MODEL: "model" >
+| <OPERATOR: "operator" >
+| <RECORD: "record" >
+| <BLOCK: "block" >
+| <EXPANDABLE: "expandable" >
+| <CONNECTOR: "connector" >
+| <TYPE: "type" >
+| <PACKAGE: "package" >
+| <PURE: "pure" >
+| <IMPURE: "impure" >
+| <FUNCTION: "function" >
+| <EXTENDS: "extends" >
+| <END: "end" >
+| <ENUMERATION: "enumeration" >
+| <PUBLIC: "public" >
+| <PROTECTED: "protected" >
+| <EXTERNAL: "external" >
+| <REDECLARE: "redeclare" >
+| <INNER: "inner" >
+| <OUTER: "outer" >
+| <REPLACEABLE: "replaceable" >
+| <CONSTRAINEDBY: "constrainedby" >
+| <FLOW: "flow" >
+| <STREAM: "stream" >
+| <DISCRETE: "discrete" >
+| <PARAMETER: "parameter" >
+| <CONSTANT: "constant" >
+| <INPUT: "input" >
+| <OUTPUT: "output" >
+| <DER: "der" >
+| <CONNECT: "connect" >
+| <IF: "if" >
+| <ASSIGN: ":=" >
+| <EACH: "each" >
+| <INITIAL: "initial" >
+| <EQUATION: "equation" >
+| <ALGORITHM: "algorithm" >
+| <ANNOTATION: "annotation" >
+| <BREAK: "break" >
+| <RETURN: "return" >
+| <THEN: "then" >
+| <ELSEIF: "elseif" >
+| <ELSE: "else" >
+| <FOR: "for" >
+| <LOOP: "loop" >
+| <IN: "in" >
+| <WHILE: "while" >
+| <WHEN: "when" >
+| <ELSEWHEN: "elsewhen" >
+
+| <OR: "or" >
+| <AND: "and" >
+| <NOT: "not" >
+| <TRUE: "true" >
+| <FALSE: "false" >
+
+| <LT: "<" >
+| <LE: "<=" >
+| <GT: ">" >
+| <GE: ">=" >
+| <EQ: "==" >
+| <NEQ: "<>" >
+
+| <PLUS: "+" >
+| <MINUS: "-" >
+| <ASTERISK: "*" >
+| <SLASH: "/" >
+| <HAT: "^" >
+| <DOT_PLUS: ".+">
+| <DOT_MINUS: ".-">
+| <DOT_ASTERISK: ".*">
+| <DOT_SLASH: "./">
+| <DOT_HAT: ".^">
+}
+
+TOKEN: {
+  <IDENT: (<NONDIGIT> (<DIGIT> | <NONDIGIT>)*) | <Q_IDENT>>
+| <#Q_IDENT: "\'" (<Q_CHAR> | <S_ESCAPE>)+ "\'">
+| <#S_CHAR: ~["\"", "\\"] >
+| <#NONDIGIT: [ "_", "a" - "z", "A" - "Z" ]>
+| <STRING: "\"" (<S_CHAR> | <S_ESCAPE>)* "\"">
+| <#Q_CHAR: <NONDIGIT> | <DIGIT> | [ "!", "#", "$", "%", "&", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", ">", "=", "?", "@", "[", "]", "^", "{", "}", "|", "~" ] >
+| <#S_ESCAPE: "\\" [ "\u2019", "\'", "\"", "?", "\\", "a", "b", "f", "n", "r", "t", "v" ] >
+| <#DIGIT: ["0" - "9"]>
+| <#UNSIGNED_INTEGER: (<DIGIT>)+ >
+| <UNSIGNED_NUMBER: <UNSIGNED_INTEGER> ("." (<UNSIGNED_INTEGER>)?)? (["e", "E"] (["+", "-"])? <UNSIGNED_INTEGER>)?>
+}
+
+SKIP: {
+  <WS: ([" ", "\r", "\n", "\t"])+ >
+| <LINE_COMMENT: "//" (~["\r", "\n"])* >
+}
+
+
+// Copyed from cpp.jj
+MORE:
+{ "/*" : IN_MULTI_LINE_COMMENT }
+
+<IN_MULTI_LINE_COMMENT> SPECIAL_TOKEN:
+{ <MULTI_LINE_COMMENT: "*/">: DEFAULT }
+
+<IN_MULTI_LINE_COMMENT,IN_PREPROCESSOR_OUTPUT_COMMENT> MORE:
+{ < ~[] > }
+
+
+ASTStoredDefinition StoredDefinition(): {}
+{
+    (<BOM> {jjtThis.markHasBOM(); } )?
+    ((<WITHIN> (Name())? <SC>) #WithinClause)*
+    ((<FINAL>)? ClassDefinition() <SC>)*
+    <EOF>
+    { return jjtThis; }
+}
+
+void ClassDefinition(): {}
+{
+    (<ENCAPSULATED> #EncapsulatedClause)?
+    ClassPrefixes()
+    ClassSpecifier()
+}
+
+void ClassSpecifier(): {}
+{
+      LOOKAHEAD(2) LongClassSpecifier()
+    | LOOKAHEAD(3) DerClassSpecifier()
+    | ShortClassSpecifier()
+}
+
+void ClassPrefixes(): {}
+{
+    (<PARTIAL> #PartialClause)?
+    (
+          <CLASS> #ClassClause
+        | <MODEL> #ModelClause
+        | <RECORD> #RecordClause
+        | LOOKAHEAD(2) (<OPERATOR> <RECORD> #OperatorRecordClause)
+        | <BLOCK> #BlockClause
+        | LOOKAHEAD(2) (<EXPANDABLE> <CONNECTOR> #ExpandableConnectorClause)
+        | <CONNECTOR> #ConnectorClause
+        | <TYPE> #TypeClause
+        | <PACKAGE> #PackageClause
+        | LOOKAHEAD(3) ((<PURE> #PureClause | <IMPURE> #ImpureClause)? (<OPERATOR> #OperatorClause)? <FUNCTION>) #FunctionClause
+        | <OPERATOR> #Operator
+    )
+}
+
+void LongClassSpecifier() #void: {}
+{
+    (
+        SimpleName()
+        StringComment()
+        Composition()
+        <END>
+        SimpleName()
+    ) #SimpleLongClassSpecifier
+    | (
+        <EXTENDS>
+        SimpleName()
+        (ClassModification())?
+        StringComment()
+        Composition()
+        <END>
+        SimpleName()
+    ) #ExtendingLongClassSpecifier
+}
+
+void ShortClassSpecifier() #void: {}
+{
+    LOOKAHEAD(3) (
+        SimpleName()
+        <EQ_SIGN>
+        BasePrefix()
+        Name()
+        (ArraySubscripts())?
+        (ClassModification())?
+        Comment()
+    ) #SimpleShortClassSpecifier
+    | (
+        SimpleName()
+        <EQ_SIGN>
+        <ENUMERATION>
+        <LPAREN>
+        (
+              <COLON>
+            | (EnumList())?
+        )
+        <RPAREN>
+        Comment()
+    ) #EnumerationShortClassSpecifier
+}
+
+void DerClassSpecifier(): {}
+{
+    SimpleName()
+    <EQ_SIGN>
+    <DER>
+    (
+        <LPAREN>
+        Name()
+        <COMMA>
+        <IDENT>
+        (
+           <COMMA>
+           SimpleName()
+        )*
+        <RPAREN>
+    ) #DerClause
+    Comment()
+}
+
+void BasePrefix(): {}
+{
+    TypePrefix()
+}
+
+void EnumList(): {}
+{
+    EnumerationLiteral()
+    (
+        <COMMA>
+        EnumerationLiteral()
+    )*
+}
+
+void EnumerationLiteral(): {}
+{
+    SimpleName()
+    Comment()
+}
+
+void Composition(): {}
+{
+    ElementList(Visibility.UNSPEC)
+    (
+          (<PUBLIC> ElementList(Visibility.PUBLIC))
+        | (<PROTECTED> ElementList(Visibility.PROTECTED))
+        | LOOKAHEAD(2) EquationSection()
+        | LOOKAHEAD(2) AlgorithmSection()
+    )*
+    ((
+        <EXTERNAL>
+        (LanguageSpecification())?
+        (ExternalFunctionCall())?
+        (Annotation())?
+        <SC>
+    ) #ExternalClause)?
+    (
+        Annotation()
+        <SC>
+    )?
+}
+
+void LanguageSpecification():
+{
+    Token t;
+}
+{
+    t = <STRING>
+    { jjtThis.setImage(t.image); }
+}
+
+void ExternalFunctionCall(): {}
+{
+    (
+        LOOKAHEAD(2) ComponentReference()
+        <EQ_SIGN>
+    )?
+    SimpleName()
+    <LPAREN>
+    (ExpressionList())?
+    <RPAREN>
+
+}
+
+void ElementList(Visibility v): {}
+{
+    { jjtThis.setVisibility(v); }
+    (
+        Element()
+        <SC>
+    )*
+}
+
+void Element() #void: {}
+{
+      ImportClause()
+    | ExtendsClause()
+    | (
+      (<REDECLARE> #RedeclareClause)?
+      (<FINAL> #FinalClause)?
+      (<INNER> #InnerClause)?
+      (<OUTER> #OuterClause)?
+      (
+            (ClassDefinition() | ComponentClause())
+          | (<REPLACEABLE> (ClassDefinition() | ComponentClause()) (ConstrainingClause() Comment())?) #ReplaceableClause
+      )
+    ) #RegularElement
+}
+
+void ImportClause(): {}
+{
+    <IMPORT>
+    (
+          LOOKAHEAD(2) (SimpleName() <EQ_SIGN> Name()) #RenamingImportClause
+        | LOOKAHEAD(Name() ((<DOT> <ASTERISK>) | <DOT_ASTERISK>)) (Name() ((<DOT> <ASTERISK>) | <DOT_ASTERISK>)) #UnqualifiedImportClause
+        | LOOKAHEAD(Name() <DOT> <LCURL>)    ((Name() <DOT> <LCURL> ImportList()) <RCURL>) #MultipleDefinitionImportClause
+        | Name() #SingleDefinitionImportClause
+    )
+    Comment()
+}
+
+void ImportList(): {}
+{
+    SimpleName()
+    (
+        <COMMA>
+        SimpleName()
+    )*
+}
+
+void ExtendsClause(): {}
+{
+    <EXTENDS>
+    Name()
+    (ClassModification())?
+    (Annotation())?
+}
+
+void ConstrainingClause(): {}
+{
+    <CONSTRAINEDBY>
+    Name()
+    (ClassModification())?
+}
+
+void ComponentClause(): {}
+{
+    TypePrefix()
+    TypeSpecifier()
+    (ArraySubscripts())?
+    ComponentList()
+}
+
+void TypePrefix(): {}
+{
+    (<FLOW> #FlowClause | <STREAM> #StreamClause)?
+    (<DISCRETE> #DiscreteClause | <PARAMETER> #ParameterClause | <CONSTANT> #ConstantClause)?
+    (<INPUT> #InputClause | <OUTPUT> #OutputClause)?
+}
+
+void TypeSpecifier(): {}
+{
+    Name()
+}
+
+void ComponentList(): {}
+{
+    ComponentDeclaration()
+    (
+        <COMMA>
+        ComponentDeclaration()
+    )*
+}
+
+void ComponentDeclaration(): {}
+{
+    Declaration()
+    (ConditionAttribute())?
+    Comment()
+}
+
+void ConditionAttribute(): {}
+{
+    <IF>
+    Expression()
+}
+
+void Declaration(): {}
+{
+    SimpleName()
+    (ArraySubscripts())?
+    (Modification())?
+}
+
+void Modification() #void: {}
+{
+    (
+        ClassModification()
+        (
+            <EQ_SIGN>
+            Expression()
+        )?
+    ) #LongModification
+    | (
+        <EQ_SIGN>
+        Expression()
+    ) #ShortModification
+    | (
+        <ASSIGN>
+        Expression()
+    ) #AssignmentModification
+}
+
+void ClassModification(): {}
+{
+    <LPAREN>
+    (ArgumentList())?
+    <RPAREN>
+}
+
+void ArgumentList(): {}
+{
+    Argument()
+    (
+        <COMMA>
+        Argument()
+    )*
+}
+
+void Argument(): {}
+{
+      ElementModificationOrReplaceable()
+    | ElementRedeclaration()
+}
+
+void ElementModificationOrReplaceable(): {}
+{
+    (<EACH> #EachClause)?
+    (<FINAL> #FinalClause)?
+    (
+          ElementModification()
+        | ElementReplaceable()
+    )
+}
+
+void ElementModification(): {}
+{
+    Name()
+    (Modification())?
+    StringComment()
+}
+
+void ElementRedeclaration(): {}
+{
+    <REDECLARE>
+    (<EACH> #EachClause)?
+    (<FINAL> #FinalClause)?
+    (
+          (ShortClassDefinition() | ComponentClause1())
+        | ElementReplaceable()
+    )
+}
+
+void ElementReplaceable(): {}
+{
+    <REPLACEABLE>
+    (ShortClassDefinition() | ComponentClause1())
+    (ConstrainingClause())?
+}
+
+void ComponentClause1(): {}
+{
+    TypePrefix()
+    TypeSpecifier()
+    ComponentDeclaration1()
+}
+
+void ComponentDeclaration1(): {}
+{
+    Declaration()
+    Comment()
+}
+
+void ShortClassDefinition(): {}
+{
+    ClassPrefixes()
+    ShortClassSpecifier()
+}
+
+void EquationSection(): {}
+{
+    (<INITIAL> #InitialClause)?
+    <EQUATION>
+    (
+        LOOKAHEAD(2) Equation()
+        <SC>
+    )*
+}
+
+void AlgorithmSection(): {}
+{
+    (<INITIAL> #InitialClause)?
+    <ALGORITHM>
+    (
+        Statement()
+        <SC>
+    )*
+}
+
+void Equation(): {}
+{
+    (
+          LOOKAHEAD (SimpleExpression() <EQ_SIGN> Expression() /* TODO */) (SimpleExpression() <EQ_SIGN> Expression()) #RegularEquation
+        | IfEquation()
+        | ForEquation()
+        | ConnectClause()
+        | WhenEquation()
+        | (Name() FunctionCallArgs()) #FunctionCallEquation
+    )
+    Comment()
+}
+
+void Statement(): {}
+{
+    (
+          LOOKAHEAD(ComponentReference() <ASSIGN>) (ComponentReference() <ASSIGN> Expression()) #AssignmentStatement
+        | (ComponentReference() FunctionCallArgs()) #FunctionCallStatement
+        | (<LPAREN> OutputExpressionList() <RPAREN> <ASSIGN> ComponentReference() FunctionCallArgs()) #AssignmentFromMultiResultFunctionCall
+        | <BREAK> #BreakStatement
+        | <RETURN> #ReturnStatement
+        | IfStatement()
+        | ForStatement()
+        | WhileStatement()
+        | WhenStatement()
+    )
+    Comment()
+}
+
+void IfEquation(): {}
+{
+    (<IF> Expression() #IfClause)
+    (<THEN> EquationList() #ThenClause)
+    ((<ELSEIF> Expression() <THEN> EquationList()) #ElseIfClause)*
+    (<ELSE> EquationList() #ElseClause)?
+    <END> <IF>
+}
+
+void IfStatement(): {}
+{
+    (<IF> Expression() #IfClause)
+    (<THEN> StatementList() #ThenClause)
+    ((<ELSEIF> Expression() <THEN> StatementList()) #ElseIfClause)*
+    (<ELSE> StatementList() #ElseClause)?
+    <END> <IF>
+}
+
+void ForEquation(): {}
+{
+    <FOR>
+    ForIndices()
+    <LOOP>
+    EquationList()
+    <END> <FOR>
+}
+
+void EquationList(): {}
+{
+    (LOOKAHEAD(Equation() <SC> /* TODO */) Equation() <SC>)*
+}
+
+void StatementList(): {}
+{
+    (Statement() <SC>)*
+}
+
+void ForStatement(): {}
+{
+    <FOR>
+    ForIndices()
+    <LOOP>
+    StatementList()
+    <END> <FOR>
+}
+
+void ForIndices(): {}
+{
+    ForIndex()
+    (<COMMA> ForIndex())*
+}
+
+void ForIndex(): {}
+{
+    SimpleName()
+    (
+        <IN>
+        Expression()
+    )?
+}
+
+void WhileStatement(): {}
+{
+    <WHILE>
+    Expression()
+    <LOOP>
+    StatementList()
+    <END> <WHILE>
+}
+
+void WhenEquation(): {}
+{
+    (<WHEN> Expression() #WhenClause)
+    (<THEN> EquationList() #ThenClause)
+    ((<ELSEWHEN> Expression() <THEN> EquationList()) #ElseWhenClause)*
+    <END> <WHEN>
+}
+
+void WhenStatement(): {}
+{
+    (<WHEN> Expression() #WhenClause)
+    (<THEN> StatementList() #ThenClause)
+    ((<ELSEWHEN> Expression() <THEN> StatementList()) #ElseWhenClause)*
+    <END> <WHEN>
+}
+
+void ConnectClause(): {}
+{
+    <CONNECT>
+    <LPAREN>
+    ComponentReference()
+    <COMMA>
+    ComponentReference()
+    <RPAREN>
+}
+
+void Expression() #void: {}
+{
+      SimpleExpression()
+    | IfExpression()
+}
+
+void IfExpression(): {}
+{
+    ((<IF> Expression()) #IfClause)
+    ((<THEN> Expression()) #ThenClause)
+    ((<ELSEIF> Expression() <THEN> Expression()) #ElseIfClause)*
+    ((<ELSE> Expression()) #ElseClause)
+}
+
+void SimpleExpression() #SimpleExpression(>1): {}
+{
+    LogicalExpression()
+    (
+        <COLON>
+        LogicalExpression()
+        (
+            <COLON>
+            LogicalExpression()
+        )?
+    )?
+}
+
+void LogicalExpression() #LogicalExpression(>1): {}
+{
+    LogicalTerm()
+    (
+        <OR>
+        LogicalTerm()
+    )*
+}
+
+void LogicalTerm() #LogicalTerm(>1): {}
+{
+    LogicalFactor()
+    (
+        <AND>
+        LogicalFactor()
+    )*
+}
+
+void LogicalFactor() #void: {}
+{
+      (<NOT> Relation()) #Negated
+    | Relation()
+}
+
+void Relation() #Relation(>1): {}
+{
+    ArithmeticExpression()
+    (
+        RelOp()
+        ArithmeticExpression()
+    )?
+}
+
+void RelOp(): {}
+{
+    <LT> { jjtThis.setImage("<"); }
+  | <LE> { jjtThis.setImage("<="); }
+  | <GT> { jjtThis.setImage(">"); }
+  | <GE> { jjtThis.setImage(">="); }
+  | <EQ> { jjtThis.setImage("=="); }
+  | <NEQ> { jjtThis.setImage("<>"); }
+}
+
+void ArithmeticExpression() #ArithmeticExpression(>1): {}
+{
+    (AddOp())?
+    Term()
+    (
+        AddOp()
+        Term()
+    )*
+}
+
+void AddOp(): {}
+{
+      <PLUS> { jjtThis.setImage("+"); }
+    | <MINUS> { jjtThis.setImage("-"); }
+    | <DOT_PLUS> { jjtThis.setImage(".+"); }
+    | <DOT_MINUS>{ jjtThis.setImage(".-"); }
+}
+
+void Term() #Term(>1): {}
+{
+    Factor()
+    (
+        MulOp()
+        Factor()
+    )*
+}
+
+void MulOp(): {}
+{
+      <ASTERISK>     { jjtThis.setImage("*"); }
+    | <SLASH>        { jjtThis.setImage("/"); }
+    | <DOT_ASTERISK> { jjtThis.setImage(".*"); }
+    | <DOT_SLASH>    { jjtThis.setImage("./"); }
+}
+
+void Factor() #Factor(>1): {}
+{
+    Primary()
+    (
+        (
+              <HAT>     { jjtThis.setImage("^"); }
+            | <DOT_HAT> { jjtThis.setImage(".^"); }
+        )
+        Primary()
+    )?
+}
+
+void Primary() #void: {}
+{
+      NumberLiteral()
+    | StringLiteral()
+    | <FALSE> #FalseLiteral
+    | <TRUE>  #TrueLiteral
+    | LOOKAHEAD((((Name() | <DER> | <INITIAL>) FunctionCallArgs())) /* TODO */) (((Name() | <DER> #DerClause | <INITIAL> #InitialClause) FunctionCallArgs())) #FunctionInvocation
+    | ComponentReference()
+    | (<LPAREN> OutputExpressionList() <RPAREN>)
+    | (<LSQUARE> ExpressionList() (<SC> ExpressionList())* <RSQUARE>) #ListOfExpressionLists
+    | (<LCURL> FunctionArguments() <RCURL>)
+    | <END>
+}
+
+void NumberLiteral():
+{
+    Token t;
+}
+{
+    t = <UNSIGNED_NUMBER>
+    { jjtThis.setImage(t.image); }
+}
+
+void StringLiteral():
+{
+    Token t;
+}
+{
+    t = <STRING>
+    { jjtThis.setImage(t.image); }
+}
+
+void Name(): {}
+{
+    (<DOT> { jjtThis.markAbsolute(); } )?
+    SimpleName()
+    (LOOKAHEAD(2) (
+        <DOT>
+        SimpleName()
+    ))*
+}
+
+void SimpleName():
+{
+    Token t;
+}
+{
+    t = <IDENT>
+    { jjtThis.setImage(t.image); }
+}
+
+void SubscriptedName(): {}
+{
+    SimpleName()
+    (ArraySubscripts())?
+}
+
+void ComponentReference(): {}
+{
+    (<DOT> { jjtThis.markAbsolute(); } )?
+    SubscriptedName()
+    (
+        <DOT>
+        SubscriptedName()
+    )*
+}
+
+void FunctionCallArgs(): {}
+{
+    <LPAREN>
+    (FunctionArguments())?
+    <RPAREN>
+}
+
+void FunctionArguments(): {}
+{
+      LOOKAHEAD(2) NamedArguments()
+    | (FunctionArgument() (<COMMA> FunctionArguments() | (<FOR> ForIndices()))?)
+}
+
+void NamedArguments(): {}
+{
+    NamedArgument()
+    (
+        <COMMA>
+        NamedArguments()
+    )?
+}
+
+void NamedArgument(): {}
+{
+    SimpleName()
+    <EQ_SIGN>
+    FunctionArgument()
+}
+
+void FunctionArgument(): {}
+{
+    (
+        <FUNCTION>
+        Name()
+        <LPAREN>
+        (NamedArguments())?
+        <RPAREN>
+    ) | (
+        Expression()
+    )
+}
+
+void OutputExpressionList(): {}
+{
+    (Expression())?
+    (
+        <COMMA>
+        (Expression())?
+    )*
+}
+
+void ExpressionList(): {}
+{
+    Expression()
+    (
+        <COMMA>
+        Expression()
+    )*
+}
+
+void ArraySubscripts(): {}
+{
+    <LSQUARE>
+    Subscript()
+    (
+        <COMMA>
+        Subscript()
+    )*
+    <RSQUARE>
+}
+
+void Subscript(): {}
+{
+    ( <COLON> #ColonSubsript)
+    | Expression()
+}
+
+void Comment(): {}
+{
+    StringComment()
+    (Annotation())?
+}
+
+void StringComment() #StringComment(!skip):
+{
+    boolean skip = true;
+    StringBuilder sb = new StringBuilder();
+    Token t;
+}
+{
+    ((
+        t = <STRING>
+        { sb.append(t); }
+        (<PLUS> t = <STRING> { sb.append(t); } )*
+    ) { skip = false; }) ?
+    { jjtThis.setImage(sb.toString()); }
+}
+
+void Annotation(): {}
+{
+    <ANNOTATION>
+    ClassModification()
+}

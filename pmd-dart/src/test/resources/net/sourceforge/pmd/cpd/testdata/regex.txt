@@ -1,0 +1,17 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [class]                                 1         5
+    [MyClass]                               7         13
+    [{]                                     15        15
+L2
+    [final]                                 3         7
+    [regex]                                 9         13
+    [=]                                     15        15
+    [new]                                   17        19
+    [RegExp]                                21        26
+    [(]                                     27        27
+    [r'^--(\[a-zA-Z\\-_0-9\]+)(=(.*))?$[    28        59
+    [)]                                     60        60
+L3
+    [}]                                     1         1
+EOF

@@ -28,7 +28,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * rendered.
  *
  * @since 1.6
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class RuntimeMacro extends Directive {
     /**
      * Name of the macro

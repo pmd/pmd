@@ -4,54 +4,61 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
+import java.util.Properties;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class MatlabTokenizerTest extends AbstractTokenizerTest {
+public class MatlabTokenizerTest extends CpdTextComparisonTest {
 
-    private static final String FILENAME = "sample-matlab.m";
-
-    @Before
-    @Override
-    public void buildTokenizer() throws IOException {
-        this.tokenizer = new MatlabTokenizer();
-        this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(this.getSampleCode(), FILENAME));
+    public MatlabTokenizerTest() {
+        super(".m");
     }
 
     @Override
-    public String getSampleCode() throws IOException {
-        return IOUtils.toString(MatlabTokenizer.class.getResourceAsStream(FILENAME), StandardCharsets.UTF_8);
+    protected String getResourcePrefix() {
+        return "../lang/matlab/cpd/testdata";
     }
 
-    @Test
-    public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = 3925;
-        super.tokenizeTest();
+    @Override
+    public Tokenizer newTokenizer(Properties properties) {
+        return new MatlabTokenizer();
     }
     
     @Test
-    public void testIgnoreBetweenSpecialComments() throws IOException {
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("% CPD-OFF" + PMD.EOL
-                + "function g = vec(op, y)" + PMD.EOL
-                + "  opy = op(y);" + PMD.EOL
-                + "  if ( any(size(opy) > 1) )" + PMD.EOL
-                + "    g = @loopWrapperArray;" + PMD.EOL
-                + "  end" + PMD.EOL
-                + "  % CPD-ON" + PMD.EOL
-                + "end"
-        ));
-        Tokens tokens = new Tokens();
-        tokenizer.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
-        assertEquals(2, tokens.size()); // 2 tokens: "end" + EOF
+    public void testLongSample() {
+        doTest("sample-matlab");
+    }
+
+    @Test
+    public void testIgnoreBetweenSpecialComments() {
+        doTest("specialComments");
+
+    }
+
+    @Test
+    public void testComments() {
+        doTest("comments");
+    }
+
+    @Test
+    public void testBlockComments() {
+        doTest("multilineComments");
+    }
+
+    @Test
+    public void testQuestionMark() {
+        doTest("questionMark");
+    }
+
+    @Test
+    public void testDoubleQuotedStrings() {
+        doTest("doubleQuotedStrings");
+    }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
     }
 }

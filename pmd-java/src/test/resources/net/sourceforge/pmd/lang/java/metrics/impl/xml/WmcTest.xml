@@ -4,59 +4,57 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-    <code-fragment id="full-example">
-        <![CDATA[
-        public class Complicated {
-          int x = 0, y = 1, z = 2, t = 2;
-          boolean a = false, b = true, c = false, d = true;
+    <code-fragment id="full-example"><![CDATA[
+public class Complicated {
+    int x = 0, y = 1, z = 2, t = 2;
+    boolean a = false, b = true, c = false, d = true;
 
-          public void example1() {
-            if (a && b || b && d) {
-              if (y == z) {
+    public void example1() {
+        if (a && b || b && d) {
+            if (y == z) {
                 x = 2;
-              } else if (y == t && !d) {
+            } else if (y == t && !d) {
                 x = 2;
-              } else {
+            } else {
                 x = 2;
-              }
             }
-          }
+        }
+    }
 
-          public void example2() {
-            if (c && d) {
-              while (z < y) {
+    public void example2() {
+        if (c && d) {
+            while (z < y) {
                 x = 2;
-              }
             }
-          }
+        }
+    }
 
-          public void example3() {
-            if (a && !b) {
-              for (int n = 0; n < t; n++) {
+    public void example3() {
+        if (a && !b) {
+            for (int n = 0; n < t; n++) {
                 x = 2;
-              }
             }
-          }
+        }
+    }
 
-          public void example4() {
-            switch (x) {
+    public void example4() {
+        switch (x) {
             case 1:
-              x = 2;
-              break;
+                x = 2;
+                break;
 
             case 2:
             case 3:
-              x = 2;
-              break;
+                x = 2;
+                break;
 
             default:
-              x = 2;
-              break;
-            }
-          }
+                x = 2;
+                break;
         }
-        ]]>
-    </code-fragment>
+    }
+}
+    ]]></code-fragment>
 
     <test-code>
         <description>Complicated class</description>
@@ -73,12 +71,10 @@
         <expected-messages>
             <message>'Foo' has value 0.</message>
         </expected-messages>
-        <code>
-            <![CDATA[
-            class Foo {
-            }
-            ]]>
-        </code>
+        <code><![CDATA[
+class Foo {
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -88,41 +84,60 @@
             <message>'Foo' has value 2.</message>
             <message>'Foo$Bar' has value 4.</message>
         </expected-messages>
-        <code>
-            <![CDATA[
-            abstract class Foo {
-              void foo() {
-                if (true) {
-                  foo();
-                }
-              }
+        <code><![CDATA[
+abstract class Foo {
+    void foo() {
+        if (true) {
+            foo();
+        }
+    }
 
-              enum Bar {
-                BAR, NA, BEE;
+    enum Bar {
+        BAR, NA, BEE;
 
-                void bar() {
-                  switch (this) {
-                    case BAR:
-                    case NA:
-                    case BEE: break;
-                  }
-                }
-              }
+        void bar() {
+            switch (this) {
+                case BAR:
+                case NA:
+                case BEE: break;
             }
-            ]]>
-        </code>
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Annotations and interfaces are not supported</description>
         <expected-problems>0</expected-problems>
-        <code>
-            <![CDATA[
-            interface Foo {
-              void foo();
-            }
-            ]]>
-        </code>
+        <code><![CDATA[
+interface Foo {
+    void foo();
+}
+        ]]></code>
     </test-code>
 
+    <code-fragment id="nested-class"><![CDATA[
+class Outer {
+    void foo() { // 1
+        return;
+    }
+
+    class Inner {
+        void foo() { // 1
+            return;
+        }
+    }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Classes should not factor in the complexity of nested classes</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Outer' has value 1.</message>
+            <message>'Outer$Inner' has value 1.</message>
+        </expected-messages>
+        <code-ref id="nested-class"/>
+    </test-code>
 </test-data>

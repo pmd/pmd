@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.PMD;
@@ -30,13 +29,12 @@ public class TextRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        Writer writer = getWriter();
         StringBuilder buf = new StringBuilder();
 
         while (violations.hasNext()) {
             buf.setLength(0);
             RuleViolation rv = violations.next();
-            buf.append(rv.getFilename());
+            buf.append(determineFileName(rv.getFilename()));
             buf.append(':').append(Integer.toString(rv.getBeginLine()));
             buf.append(":\t").append(rv.getDescription()).append(PMD.EOL);
             writer.write(buf.toString());
@@ -45,12 +43,11 @@ public class TextRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void end() throws IOException {
-        Writer writer = getWriter();
         StringBuilder buf = new StringBuilder(500);
-        
+
         for (Report.ProcessingError error : errors) {
             buf.setLength(0);
-            buf.append(error.getFile());
+            buf.append(determineFileName(error.getFile()));
             buf.append("\t-\t").append(error.getMsg()).append(PMD.EOL);
             writer.write(buf.toString());
         }
@@ -60,10 +57,10 @@ public class TextRenderer extends AbstractIncrementingRenderer {
             buf.append(excluded.getRuleViolation().getRule().getName());
             buf.append(" rule violation suppressed by ");
             buf.append(excluded.suppressedByNOPMD() ? "//NOPMD" : "Annotation");
-            buf.append(" in ").append(excluded.getRuleViolation().getFilename()).append(PMD.EOL);
+            buf.append(" in ").append(determineFileName(excluded.getRuleViolation().getFilename())).append(PMD.EOL);
             writer.write(buf.toString());
         }
-        
+
         for (Report.ConfigurationError error : configErrors) {
             buf.setLength(0);
             buf.append(error.rule().getName());

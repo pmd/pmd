@@ -3,6 +3,8 @@ package net.sourceforge.pmd.lang.vm.ast;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -38,17 +40,14 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class ASTDirective extends AbstractVmNode {
     private String directiveName = "";
 
-    /**
-     * @param id
-     */
+    @InternalApi
+    @Deprecated
     public ASTDirective(final int id) {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
+    @InternalApi
+    @Deprecated
     public ASTDirective(final VmParser p, final int id) {
         super(p, id);
     }
@@ -62,9 +61,9 @@ public class ASTDirective extends AbstractVmNode {
      * Sets the directive name. Used by the parser. This keeps us from having to
      * dig it out of the token stream and gives the parse the change to
      * override.
-     *
-     * @param str
      */
+    @InternalApi
+    @Deprecated
     public void setDirectiveName(final String str) {
         directiveName = str;
     }

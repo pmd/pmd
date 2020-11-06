@@ -25,12 +25,19 @@ import net.sourceforge.pmd.properties.BooleanProperty;
  */
 public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
 
+    @Deprecated
     public static final BooleanProperty COALESCING_DESCRIPTOR = XmlParserOptions.COALESCING_DESCRIPTOR;
+    @Deprecated
     public static final BooleanProperty EXPAND_ENTITY_REFERENCES_DESCRIPTOR = XmlParserOptions.EXPAND_ENTITY_REFERENCES_DESCRIPTOR;
+    @Deprecated
     public static final BooleanProperty IGNORING_COMMENTS_DESCRIPTOR = XmlParserOptions.IGNORING_COMMENTS_DESCRIPTOR;
+    @Deprecated
     public static final BooleanProperty IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR = XmlParserOptions.IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR;
+    @Deprecated
     public static final BooleanProperty NAMESPACE_AWARE_DESCRIPTOR = XmlParserOptions.NAMESPACE_AWARE_DESCRIPTOR;
+    @Deprecated
     public static final BooleanProperty VALIDATING_DESCRIPTOR = XmlParserOptions.VALIDATING_DESCRIPTOR;
+    @Deprecated
     public static final BooleanProperty XINCLUDE_AWARE_DESCRIPTOR = XmlParserOptions.XINCLUDE_AWARE_DESCRIPTOR;
 
     public AbstractXmlRule() {
@@ -65,15 +72,16 @@ public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
-            XmlNode node = (XmlNode) element;
-            visit(node, ctx);
+            if (element instanceof XmlNode) {
+                visit((XmlNode) element, ctx);
+            }
         }
     }
 
     protected void visit(XmlNode node, RuleContext ctx) {
-        final int numChildren = node.jjtGetNumChildren();
+        final int numChildren = node.getNumChildren();
         for (int i = 0; i < numChildren; i++) {
-            XmlNode child = (XmlNode) node.jjtGetChild(i);
+            XmlNode child = (XmlNode) node.getChild(i);
             visit(child, ctx);
         }
     }

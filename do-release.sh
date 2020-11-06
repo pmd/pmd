@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 # Make sure, everything is English...
@@ -15,7 +15,7 @@ if [ ! -f pom.xml -o ! -d ../pmd.github.io ]; then
     exit 1
 fi
 
-
+LAST_VERSION=
 RELEASE_VERSION=
 DEVELOPMENT_VERSION=
 CURRENT_BRANCH=
@@ -25,7 +25,7 @@ echo "Releasing PMD"
 echo "-------------------------------------------"
 
 # see also https://gist.github.com/pdunnavant/4743895
-CURRENT_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
+CURRENT_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec)
 RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
 MAJOR=$(echo $RELEASE_VERSION | cut -d . -f 1)
 MINOR=$(echo $RELEASE_VERSION | cut -d . -f 2)
@@ -33,11 +33,16 @@ PATCH=$(echo $RELEASE_VERSION | cut -d . -f 3)
 if [ "$PATCH" == "0" ]; then
     NEXT_MINOR=$(expr ${MINOR} + 1)
     NEXT_PATCH="0"
+    LAST_MINOR=$(expr ${MINOR} - 1)
+    LAST_PATCH="0"
 else
     # this is a bugfixing release
     NEXT_MINOR="${MINOR}"
     NEXT_PATCH=$(expr ${PATCH} + 1)
+    LAST_MINOR="${MINOR}"
+    LAST_PATCH=$(expr ${PATCH} - 1)
 fi
+LAST_VERSION="$MAJOR.$LAST_MINOR.$LAST_PATCH"
 DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH"
 DEVELOPMENT_VERSION="${DEVELOPMENT_VERSION}-SNAPSHOT"
 
@@ -52,17 +57,18 @@ CURRENT_BRANCH=$(git symbolic-ref -q HEAD)
 CURRENT_BRANCH=${CURRENT_BRANCH##refs/heads/}
 CURRENT_BRANCH=${CURRENT_BRANCH:-HEAD}
 
-echo "RELEASE_VERSION: ${RELEASE_VERSION}"
-echo "DEVELOPMENT_VERSION: ${DEVELOPMENT_VERSION}"
+echo "LAST_VERSION: ${LAST_VERSION}"
+echo "RELEASE_VERSION: ${RELEASE_VERSION} (this release)"
+echo "DEVELOPMENT_VERSION: ${DEVELOPMENT_VERSION} (the next version after the release)"
 echo "CURRENT_BRANCH: ${CURRENT_BRANCH}"
 
 echo
 echo "Is this correct?"
 echo
-echo "Press enter to continue..."
+echo "Press enter to continue... (or CTRL+C to cancel)"
 read
 
-
+export LAST_VERSION
 export RELEASE_VERSION
 export DEVELOPMENT_VERSION
 export CURRENT_BRANCH
@@ -72,19 +78,53 @@ RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION
 echo "*   Update date info in **docs/_config.yml**."
 echo "    date: $(date -u +%d-%B-%Y)"
 echo
+echo "*   Update version info in **docs/_config.yml**."
+echo "    remove the SNAPSHOT from site.pmd.version"
+echo
 echo "*   Ensure all the new rules are listed in the proper file:"
 echo "    ${RELEASE_RULESET}"
 echo
+echo "*   Update **pmd-apex/src/main/resources/rulesets/apex/quickstart.xml** and"
+echo "    **pmd-java/src/main/resources/rulesets/java/quickstart.xml** with the new rules."
+echo
 echo "*   Update **docs/pages/next_major_development.md** with the API changes for"
-echo "    the new release based on the release notes"
+echo "    the new release based on the release notes. Also add any deprecated rules to the list."
 echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
+echo
+echo "*   Update property \`pmd-designer.version\` in **pom.xml** to reference the latest pmd-designer release"
+echo "    See <https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&core=gav> for the available releases."
+echo
+echo "Press enter to continue..."
+read
+
+
+# calculating stats for release notes
+
+STATS=$(
+echo "### Stats"
+echo "* $(git log pmd_releases/${LAST_VERSION}..HEAD --oneline --no-merges |wc -l) commits"
+echo "* $(curl -s https://api.github.com/repos/pmd/pmd/milestones|jq ".[] | select(.title == \"$RELEASE_VERSION\") | .closed_issues") closed tickets & PRs"
+echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/${LAST_VERSION}) ) / 86400))"
+)
+
+TEMP_RELEASE_NOTES=$(cat docs/pages/release_notes.md)
+TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/$STATS$'\n'$'\n'\{\% endtocmaker \%\}$'\n'}
+echo "${TEMP_RELEASE_NOTES}" > docs/pages/release_notes.md
+
+echo
+echo "Updated stats in release notes:"
+echo "$STATS"
+echo
+echo "Please verify docs/pages/release_notes.md"
 echo
 echo "Press enter to continue..."
 read
 
 # install bundles needed for rendering release notes
-bundle install --with=release_notes_preprocessing --path vendor/bundle
+bundle config set --local path vendor/bundle
+bundle config set --local with release_notes_preprocessing
+bundle install
 
 export RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
 echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
@@ -106,21 +146,24 @@ fi
 
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
-    echo "Committing current changes (pmd.github.io)"
     cd ../pmd.github.io
     git add ${RELEASE_NOTES_POST}
-    git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
-    git push
+    changes=$(git status --porcelain 2>/dev/null| egrep "^[AMDRC]" | wc -l)
+    if [ $changes -gt 0 ]; then
+        echo "Committing current changes (pmd.github.io)"
+        git commit -a -m "Prepare pmd release ${RELEASE_VERSION}" && git push
+    fi
 )
 
 ./mvnw -B release:clean release:prepare \
     -Dtag=pmd_releases/${RELEASE_VERSION} \
     -DreleaseVersion=${RELEASE_VERSION} \
-    -DdevelopmentVersion=${DEVELOPMENT_VERSION}
+    -DdevelopmentVersion=${DEVELOPMENT_VERSION} \
+    -Pgenerate-rule-docs
 
 
 echo
-echo "Tag has been pushed.... now check travis build: <https://travis-ci.org/pmd/pmd>"
+echo "Tag has been pushed.... now check travis build: <https://travis-ci.com/pmd/pmd>"
 echo
 echo
 echo "Press enter to continue..."
@@ -134,6 +177,9 @@ echo
 echo
 echo "Prepare Next development version:"
 echo "*   Update version/date info in **docs/_config.yml**."
+echo "    move version to previous_version, increase version, make sure it is a SNAPSHOT version"
+echo "    otherwise the javadoc links won't work during development"
+echo "    also update the date, e.g. ??-month-year."
 echo
 echo
 echo "Press enter to continue..."
@@ -182,6 +228,8 @@ echo
 echo
 echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
 echo
+echo "*   Wait until the new version is synced to maven central and appears in as latest version in"
+echo "    <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/maven-metadata.xml>."
 echo "*   Submit news to SF on <https://sourceforge.net/p/pmd/news/> page. Use same text as in the email below."
 echo "*   Send out an announcement mail to the mailing list:"
 echo
@@ -194,6 +242,16 @@ echo
 echo "$NEW_RELEASE_NOTES"
 echo
 echo
+echo
+tweet="PMD ${RELEASE_VERSION} released: https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION} #PMD"
+tweet="${tweet// /%20}"
+tweet="${tweet//:/%3A}"
+tweet="${tweet//#/%23}"
+tweet="${tweet//\//%2F}"
+tweet="${tweet//$'\r'//}"
+tweet="${tweet//$'\n'//%0A}"
+echo "*   Tweet about this release on https://twitter.com/pmd_analyzer:"
+echo "        <https://twitter.com/intent/tweet?text=$tweet>"
 echo
 echo "------------------------------------------"
 echo "Done."

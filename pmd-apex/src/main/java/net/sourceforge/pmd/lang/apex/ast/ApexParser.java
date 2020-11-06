@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,11 +6,11 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -24,6 +24,11 @@ import apex.jorje.semantic.ast.compilation.UserTrigger;
 import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 
+/**
+ * @deprecated Internal API
+ */
+@InternalApi
+@Deprecated
 public class ApexParser {
     protected final ApexParserOptions parserOptions;
 
@@ -47,15 +52,15 @@ public class ApexParser {
         try {
             final String sourceCode = IOUtils.toString(reader);
             final Compilation astRoot = parseApex(sourceCode);
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode);
-            suppressMap = new HashMap<>();
+            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, parserOptions);
+            suppressMap = treeBuilder.getSuppressMap();
 
             if (astRoot == null) {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
             return treeBuilder.build(astRoot);
-        } catch (IOException e) {
+        } catch (IOException | apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);
         }
     }

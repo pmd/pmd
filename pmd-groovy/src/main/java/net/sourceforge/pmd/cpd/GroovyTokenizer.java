@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.StringReader;
 
+import org.codehaus.groovy.antlr.SourceInfo;
 import org.codehaus.groovy.antlr.parser.GroovyLexer;
 
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
@@ -15,7 +16,7 @@ import groovyjarjarantlr.TokenStream;
 import groovyjarjarantlr.TokenStreamException;
 
 /**
- * The Grooovy Tokenizer
+ * The Groovy Tokenizer
  */
 public class GroovyTokenizer implements Tokenizer {
 
@@ -30,7 +31,21 @@ public class GroovyTokenizer implements Tokenizer {
             Token token = tokenStream.nextToken();
 
             while (token.getType() != Token.EOF_TYPE) {
-                TokenEntry tokenEntry = new TokenEntry(token.getText(), sourceCode.getFileName(), token.getLine());
+                String tokenText = token.getText();
+
+
+                int lastCol;
+                if (token instanceof SourceInfo) {
+                    lastCol = ((SourceInfo) token).getColumnLast() - 1;
+                    if (lastCol == 0) {
+                        // newline
+                        lastCol = token.getColumn() + 1;
+                    }
+                } else {
+                    // fallback
+                    lastCol = token.getColumn() + tokenText.length();
+                }
+                TokenEntry tokenEntry = new TokenEntry(tokenText, sourceCode.getFileName(), token.getLine(), token.getColumn(), lastCol);
 
                 tokenEntries.add(tokenEntry);
                 token = tokenStream.nextToken();
@@ -40,9 +55,7 @@ public class GroovyTokenizer implements Tokenizer {
             // they are correctly handled
             // when CPD is executed with the '--skipLexicalErrors' command line
             // option
-            throw new TokenMgrError("Lexical error in file " + sourceCode.getFileName() + " at line " + lexer.getLine()
-                    + ", column " + lexer.getColumn() + ".  Encountered: " + err.getMessage(),
-                    TokenMgrError.LEXICAL_ERROR);
+            throw new TokenMgrError(lexer.getLine(), lexer.getColumn(), sourceCode.getFileName(), err.getMessage(), err);
         } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }

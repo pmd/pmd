@@ -92,7 +92,13 @@ public class AbstractDomXmlRuleTest {
         assertEquals(3, visited.size());
         assertEquals("TEXT", ((Text) visited.get(0)).getData());
         assertEquals(">", ((Text) visited.get(1)).getData());
-        assertEquals("e<", ((Text) visited.get(2)).getData());
+        String text = ((Text) visited.get(2)).getData();
+        if ("<".equals(text)) {
+            // java13 and later don't expand entities if setExpandEntityReferences==false
+            assertEquals("<", ((Text) visited.get(2)).getData());
+        } else {
+            assertEquals("e<", ((Text) visited.get(2)).getData());
+        }
     }
 
     @Test

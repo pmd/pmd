@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,7 +6,11 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 /**
  * @author Clément Fournier
+ *
+ * @deprecated The functionality of this adapter will be moved into the base apex visitor, so this class will
+ *             go away with PMD 7.
  */
+@Deprecated
 public class ApexParserVisitorReducedAdapter extends ApexParserVisitorAdapter {
 
 
@@ -23,7 +27,7 @@ public class ApexParserVisitorReducedAdapter extends ApexParserVisitorAdapter {
 
 
     public Object visit(ASTUserClassOrInterface<?> node, Object data) {
-        return visit((AbstractApexNodeBase) node, data);
+        return visit((ApexNode<?>) node, data);
     }
 
 }

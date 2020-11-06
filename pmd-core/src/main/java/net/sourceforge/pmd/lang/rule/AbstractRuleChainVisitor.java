@@ -28,7 +28,10 @@ import net.sourceforge.pmd.lang.ast.Node;
  * This is a base class for RuleChainVisitor implementations which extracts
  * interesting nodes from an AST, and lets each Rule visit the nodes it has
  * expressed interest in.
+ *
+ * @deprecated See {@link RuleChainVisitor}
  */
+@Deprecated
 public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     private static final Logger LOG = Logger.getLogger(AbstractRuleChainVisitor.class.getName());
 
@@ -100,11 +103,11 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
                         rcto.close(visits);
                     } catch (RuntimeException e) {
                         if (ctx.isIgnoreExceptions()) {
-                            ctx.getReport().addError(new Report.ProcessingError(e, ctx.getSourceCodeFilename()));
+                            ctx.getReport().addError(new Report.ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
 
                             if (LOG.isLoggable(Level.WARNING)) {
                                 LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
-                                        + ctx.getSourceCodeFilename() + ", continuing with next rule", e);
+                                        + ctx.getSourceCodeFile() + ", continuing with next rule", e);
                             }
                         } else {
                             throw e;
@@ -157,9 +160,13 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
                 Rule rule = ruleIterator.next();
                 if (rule.isRuleChain()) {
                     visitedNodes.addAll(rule.getRuleChainVisits());
+
+                    logXPathRuleChainUsage(true, rule);
                 } else {
                     // Drop rules which do not participate in the rule chain.
                     ruleIterator.remove();
+
+                    logXPathRuleChainUsage(false, rule);
                 }
             }
             // Drop RuleSets in which all Rules have been dropped.
@@ -175,6 +182,23 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
         for (String s : visitedNodes) {
             List<Node> nodes = new ArrayList<>(100);
             nodeNameToNodes.put(s, nodes);
+        }
+    }
+
+    private void logXPathRuleChainUsage(boolean usesRuleChain, Rule rule) {
+        if (LOG.isLoggable(Level.FINE)) {
+            Rule r;
+            if (rule instanceof RuleReference) {
+                r = ((RuleReference) rule).getRule();
+            } else {
+                r = rule;
+            }
+            if (r instanceof XPathRule) {
+                String message = (usesRuleChain ? "Using " : "no ")
+                        + "rule chain for XPath " + rule.getProperty(XPathRule.VERSION_DESCRIPTOR)
+                        + " rule: " + rule.getName() + " (" + rule.getRuleSetName() + ")";
+                LOG.fine(message);
+            }
         }
     }
 

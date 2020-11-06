@@ -23,9 +23,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
@@ -219,21 +220,21 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
         public static MethodInvocation getMethod(ASTPrimaryExpression node) {
             MethodInvocation meth = null;
-            int i = node.jjtGetNumChildren();
+            int i = node.getNumChildren();
             if (i > 1) {
                 // should always be at least 2, probably can eliminate this check
                 // start at end which is guaranteed, work backwards
-                Node lastNode = node.jjtGetChild(i - 1);
+                Node lastNode = node.getChild(i - 1);
                 // could be ASTExpression for instance 'a[4] = 5';
-                if (lastNode.jjtGetNumChildren() == 1 && lastNode.jjtGetChild(0) instanceof ASTArguments) {
+                if (lastNode.getNumChildren() == 1 && lastNode.getChild(0) instanceof ASTArguments) {
                     // start putting method together
                     // System.out.println("Putting method together now");
                     List<String> varNames = new ArrayList<>();
                     // look in JLS for better name here
                     List<String> packagesAndClasses = new ArrayList<>();
                     String methodName = null;
-                    ASTArguments args = (ASTArguments) lastNode.jjtGetChild(0);
-                    int numOfArguments = args.getArgumentCount();
+                    ASTArguments args = (ASTArguments) lastNode.getChild(0);
+                    int numOfArguments = args.size();
                     List<String> argumentTypes = ConstructorCallsOverridableMethodRule.getArgumentTypes(args);
                     boolean superFirst = false;
                     int thisIndex = -1;
@@ -251,7 +252,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                         // ASTArguments)
                         // super is an ASTPrimaryPrefix with a non-null image
                         for (int x = 0; x < i - 1; x++) {
-                            Node child = node.jjtGetChild(x);
+                            Node child = node.getChild(x);
                             // check suffix type match
                             if (child instanceof ASTPrimarySuffix) {
                                 ASTPrimarySuffix child2 = (ASTPrimarySuffix) child;
@@ -259,7 +260,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                 // getNameFromSuffix((ASTPrimarySuffix)child);
                                 // System.out.println("found name suffix of : "
                                 // + name);
-                                if (child2.getImage() == null && child2.jjtGetNumChildren() == 0) {
+                                if (child2.getImage() == null && child2.getNumChildren() == 0) {
                                     thisIndex = x;
                                     break;
                                 }
@@ -308,7 +309,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             // all variables or method
                             // System.out.println("super first");
                             FIRSTNODE: {
-                                ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
+                                ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.getChild(0);
                                 String name = child.getImage(); // special case
                                 if (i == 2) { // last named node = method name
                                     methodName = name;
@@ -320,7 +321,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             }
                             OTHERNODES: { // variables
                                 for (int x = 1; x < i - 1; x++) {
-                                    Node child = node.jjtGetChild(x);
+                                    Node child = node.getChild(x);
                                     ASTPrimarySuffix ps = (ASTPrimarySuffix) child;
                                     if (!ps.isArguments()) {
                                         String name = ((ASTPrimarySuffix) child).getImage();
@@ -338,7 +339,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             // not super call
                             FIRSTNODE: {
                                 if (thisIndex == 1) { // qualifiers in node 0
-                                    ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
+                                    ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.getChild(0);
                                     String toParse = getNameFromPrefix(child);
                                     // System.out.println("parsing for
                                     // class/package names in : " + toParse);
@@ -355,7 +356,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                 // this is at 1, the node 0 contains qualifiers
                                 for (int x = thisIndex + 1; x < i - 1; x++) {
                                     // everything after this is var name or method name
-                                    ASTPrimarySuffix child = (ASTPrimarySuffix) node.jjtGetChild(x);
+                                    ASTPrimarySuffix child = (ASTPrimarySuffix) node.getChild(x);
                                     if (!child.isArguments()) {
                                         // skip the () of method calls
                                         String name = child.getImage();
@@ -377,7 +378,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                         FIRSTNODE: {
                             // variable names are in the prefix + the
                             // first method call [a.b.c.x()]
-                            ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
+                            ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.getChild(0);
                             String toParse = getNameFromPrefix(child);
                             // System.out.println("parsing for var names in : "
                             // + toParse);
@@ -403,7 +404,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             // other methods called in this statement
                             // are grabbed here
                             for (int x = 1; x < i - 1; x++) {
-                                ASTPrimarySuffix child = (ASTPrimarySuffix) node.jjtGetChild(x);
+                                ASTPrimarySuffix child = (ASTPrimarySuffix) node.getChild(x);
                                 if (!child.isArguments()) {
                                     String name = child.getImage();
                                     if (x == i - 2) {
@@ -454,7 +455,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             List<ASTArguments> l = eci.findChildrenOfType(ASTArguments.class);
             if (!l.isEmpty()) {
                 ASTArguments aa = l.get(0);
-                count = aa.getArgumentCount();
+                count = aa.size();
                 argumentTypes = ConstructorCallsOverridableMethodRule.getArgumentTypes(aa);
             }
             name = eci.getImage();
@@ -478,11 +479,11 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private static final class MethodHolder {
-        private ASTMethodDeclarator amd;
+        private ASTMethodDeclaration amd;
         private boolean dangerous;
         private String called;
 
-        MethodHolder(ASTMethodDeclarator amd) {
+        MethodHolder(ASTMethodDeclaration amd) {
             this.amd = amd;
         }
 
@@ -494,7 +495,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             return this.called;
         }
 
-        public ASTMethodDeclarator getASTMethodDeclarator() {
+        public ASTMethodDeclaration getASTMethodDeclaration() {
             return amd;
         }
 
@@ -573,7 +574,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     private static class MethodHolderComparator implements Comparator<MethodHolder> {
         @Override
         public int compare(MethodHolder o1, MethodHolder o2) {
-            return compareNodes(o1.getASTMethodDeclarator(), o2.getASTMethodDeclarator());
+            return compareNodes(o1.getASTMethodDeclaration(), o2.getASTMethodDeclaration());
         }
     }
 
@@ -673,9 +674,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 // check against each dangerous method in class
                 for (MethodHolder h : getCurrentEvalPackage().allMethodsOfClass.keySet()) {
                     if (h.isDangerous()) {
-                        String methName = h.getASTMethodDeclarator().getImage();
-                        int count = h.getASTMethodDeclarator().getParameterCount();
-                        List<String> parameterTypes = getMethodDeclaratorParameterTypes(h.getASTMethodDeclarator());
+                        String methName = h.getASTMethodDeclaration().getName();
+                        int count = h.getASTMethodDeclaration().getArity();
+                        List<String> parameterTypes = getMethodDeclaratorParameterTypes(h.getASTMethodDeclaration());
                         if (methName.equals(meth.getName()) && meth.getArgumentCount() == count
                                 && parameterTypes.equals(meth.getArgumentTypes())) {
                             addViolation(data, meth.getASTPrimaryExpression(), "method '" + h.getCalled() + "'");
@@ -693,7 +694,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     // constructor with " +
                     // ch.getASTConstructorDeclaration().getParameterCount() + "
                     // params");
-                    int paramCount = ch.getASTConstructorDeclaration().getParameterCount();
+                    int paramCount = ch.getASTConstructorDeclaration().getArity();
                     for (ConstructorInvocation ci : getCurrentEvalPackage().calledConstructors) {
                         if (ci.getArgumentCount() == paramCount) {
                             // match name super / this !?
@@ -737,9 +738,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 for (MethodHolder h3 : classMethodMap.keySet()) {
                     // need to skip self here h == h3
                     if (h3.isDangerous()) {
-                        String matchMethodName = h3.getASTMethodDeclarator().getImage();
-                        int matchMethodParamCount = h3.getASTMethodDeclarator().getParameterCount();
-                        List<String> parameterTypes = getMethodDeclaratorParameterTypes(h3.getASTMethodDeclarator());
+                        String matchMethodName = h3.getASTMethodDeclaration().getName();
+                        int matchMethodParamCount = h3.getASTMethodDeclaration().getArity();
+                        List<String> parameterTypes = getMethodDeclaratorParameterTypes(h3.getASTMethodDeclaration());
                         // System.out.println("matching " + matchMethodName + "
                         // to " + meth.getName());
                         if (matchMethodName.equals(meth.getName()) && matchMethodParamCount == meth.getArgumentCount()
@@ -786,9 +787,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     // optimize this out
                     for (MethodHolder h : evaluatedMethods) {
                         if (h.isDangerous()) {
-                            String matchName = h.getASTMethodDeclarator().getImage();
-                            int matchParamCount = h.getASTMethodDeclarator().getParameterCount();
-                            List<String> parameterTypes = getMethodDeclaratorParameterTypes(h.getASTMethodDeclarator());
+                            String matchName = h.getASTMethodDeclaration().getName();
+                            int matchParamCount = h.getASTMethodDeclaration().getArity();
+                            List<String> parameterTypes = getMethodDeclaratorParameterTypes(h.getASTMethodDeclaration());
                             if (methName.equals(matchName) && methArgCount == matchParamCount
                                     && parameterTypes.equals(meth.getArgumentTypes())) {
                                 ch.setDangerous(true);
@@ -831,7 +832,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 // check for each, but only 1 hit
                 ConstructorHolder h2 = innerConstIter.next();
                 if (h2.isDangerous()) {
-                    int matchConstArgCount = h2.getASTConstructorDeclaration().getParameterCount();
+                    int matchConstArgCount = h2.getASTConstructorDeclaration().getArity();
                     List<String> parameterTypes = getMethodDeclaratorParameterTypes(h2.getASTConstructorDeclaration());
                     if (matchConstArgCount == cCount && parameterTypes.equals(calledC.getArgumentTypes())) {
                         ch.setDangerous(true);
@@ -928,19 +929,17 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * in the Map as the Object
      */
     @Override
-    public Object visit(ASTMethodDeclarator node, Object data) {
+    public Object visit(ASTMethodDeclaration node, Object data) {
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {
             // only evaluate if we have an eval package for this class
-            AccessNode parent = (AccessNode) node.jjtGetParent();
             MethodHolder h = new MethodHolder(node);
-            if (!parent.isAbstract() && !parent.isPrivate() && !parent.isStatic() && !parent.isFinal()) {
+            if (!node.isAbstract() && !node.isPrivate() && !node.isStatic() && !node.isFinal()) {
                 // Skip abstract methods, have a separate rule for that
                 h.setDangerous(); // this method is overridable
-                ASTMethodDeclaration decl = node.getFirstParentOfType(ASTMethodDeclaration.class);
-                h.setCalledMethod(decl.getMethodName());
+                h.setCalledMethod(node.getName());
             }
             List<MethodInvocation> l = new ArrayList<>();
-            addCalledMethodsOfNode(parent, l, getCurrentEvalPackage().className);
+            addCalledMethodsOfNode(node, l, getCurrentEvalPackage().className);
             getCurrentEvalPackage().allMethodsOfClass.put(h, l);
         }
         return super.visit(node, data);
@@ -950,8 +949,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * Adds all methods called on this instance from within this Node.
      */
     private static void addCalledMethodsOfNode(Node node, List<MethodInvocation> calledMethods, String className) {
-        List<ASTPrimaryExpression> expressions = new ArrayList<>();
-        node.findDescendantsOfType(ASTPrimaryExpression.class, expressions, !(node instanceof AccessNode));
+        List<ASTPrimaryExpression> expressions = node.findDescendantsOfType(ASTPrimaryExpression.class,
+                !(node instanceof AccessNode));
         addCalledMethodsOfNodeImpl(expressions, calledMethods, className);
     }
 
@@ -972,8 +971,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      *         name to the actual method being called.
      */
     private static MethodInvocation findMethod(ASTPrimaryExpression node, String className) {
-        if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0).jjtGetNumChildren() > 0
-                && node.jjtGetChild(0).jjtGetChild(0) instanceof ASTLiteral) {
+        if (node.getNumChildren() > 0 && node.getChild(0).getNumChildren() > 0
+                && node.getChild(0).getChild(0) instanceof ASTLiteral) {
             return null;
         }
         MethodInvocation meth = MethodInvocation.getMethod(node);
@@ -1011,8 +1010,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     private static String getNameFromPrefix(ASTPrimaryPrefix node) {
         String name = null;
         // should only be 1 child, if more I need more knowledge
-        if (node.jjtGetNumChildren() == 1) { // safety check
-            Node nnode = node.jjtGetChild(0);
+        if (node.getNumChildren() == 1) { // safety check
+            Node nnode = node.getChild(0);
             if (nnode instanceof ASTName) {
                 // just as easy as null check and it
                 // should be an ASTName anyway
@@ -1022,19 +1021,18 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         return name;
     }
 
-    private static List<String> getMethodDeclaratorParameterTypes(Node methodOrConstructorDeclarator) {
-        List<ASTFormalParameter> parameters = methodOrConstructorDeclarator
-                .findDescendantsOfType(ASTFormalParameter.class);
+    private static List<String> getMethodDeclaratorParameterTypes(ASTMethodOrConstructorDeclaration methodOrConstructorDeclarator) {
+        ASTFormalParameters parameters = methodOrConstructorDeclarator.getFirstDescendantOfType(ASTFormalParameters.class);
         List<String> parameterTypes = new ArrayList<>();
         if (parameters != null) {
             for (ASTFormalParameter p : parameters) {
                 ASTType type = p.getFirstChildOfType(ASTType.class);
-                if (type.jjtGetChild(0) instanceof ASTPrimitiveType) {
-                    parameterTypes.add(type.jjtGetChild(0).getImage());
-                } else if (type.jjtGetChild(0) instanceof ASTReferenceType) {
+                if (type.getChild(0) instanceof ASTPrimitiveType) {
+                    parameterTypes.add(type.getChild(0).getImage());
+                } else if (type.getChild(0) instanceof ASTReferenceType) {
                     parameterTypes.add("ref");
                 } else {
-                    parameterTypes.add("<unkown>");
+                    parameterTypes.add("<unknown>");
                 }
             }
         }
@@ -1045,13 +1043,13 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         List<String> argumentTypes = new ArrayList<>();
         ASTArgumentList argumentList = args.getFirstChildOfType(ASTArgumentList.class);
         if (argumentList != null) {
-            for (int a = 0; a < argumentList.jjtGetNumChildren(); a++) {
-                Node expression = argumentList.jjtGetChild(a);
+            for (int a = 0; a < argumentList.getNumChildren(); a++) {
+                Node expression = argumentList.getChild(a);
                 ASTPrimaryPrefix arg = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
                 String type = "<unknown>";
-                if (arg != null && arg.jjtGetNumChildren() > 0) {
-                    if (arg.jjtGetChild(0) instanceof ASTLiteral) {
-                        ASTLiteral lit = (ASTLiteral) arg.jjtGetChild(0);
+                if (arg != null && arg.getNumChildren() > 0) {
+                    if (arg.getChild(0) instanceof ASTLiteral) {
+                        ASTLiteral lit = (ASTLiteral) arg.getChild(0);
                         if (lit.isCharLiteral()) {
                             type = "char";
                         } else if (lit.isFloatLiteral()) {
@@ -1060,15 +1058,15 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             type = "int";
                         } else if (lit.isStringLiteral()) {
                             type = "String";
-                        } else if (lit.jjtGetNumChildren() > 0 && lit.jjtGetChild(0) instanceof ASTBooleanLiteral) {
+                        } else if (lit.getNumChildren() > 0 && lit.getChild(0) instanceof ASTBooleanLiteral) {
                             type = "boolean";
                         } else if (lit.isDoubleLiteral()) {
                             type = "double";
                         } else if (lit.isLongLiteral()) {
                             type = "long";
                         }
-                    } else if (arg.jjtGetChild(0) instanceof ASTName) {
-                        // ASTName n = (ASTName)arg.jjtGetChild(0);
+                    } else if (arg.getChild(0) instanceof ASTName) {
+                        // ASTName n = (ASTName)arg.getChild(0);
                         type = "ref";
                     }
                 }

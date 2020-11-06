@@ -9,7 +9,49 @@
 Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
     </description>
 
+    <rule name="ApexCSRF"
+          language="apex"
+          since="5.5.3"
+          message="Avoid making DML operations in Apex class constructor or initializers"
+          class="net.sourceforge.pmd.lang.apex.rule.errorprone.ApexCSRFRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#apexcsrf">
+        <description>
+Having DML operations in Apex class constructor or initializers can have unexpected side effects:
+By just accessing a page, the DML statements would be executed and the database would be modified.
+Just querying the database is permitted.
+
+In addition to constructors and initializers, any method called `init` is checked as well.
+
+Salesforce Apex already protects against this scenario and raises a runtime exception.
+
+Note: This rule has been moved from category "Security" to "Error Prone" with PMD 6.21.0, since
+using DML in constructors is not a security problem, but crashes the application.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    // initializer
+    {
+        insert data;
+    }
+
+    // static initializer
+    static {
+        insert data;
+    }
+
+    // constructor
+    public Foo() {
+        insert data;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidDirectAccessTriggerMap"
+          language="apex"
           since="6.0.0"
           message="Avoid directly accessing Trigger.old and Trigger.new"
           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
@@ -19,6 +61,7 @@ Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Tr
         </description>
         <priority>3</priority>
             <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -31,8 +74,8 @@ Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Tr
 <![CDATA[
 trigger AccountTrigger on Account (before insert, before update) {
    Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.
-   
-   foreach ( Account a : Trigger.new ){   
+
+   for ( Account a : Trigger.new ) {
         //Good: Iterate through the trigger.new array instead.
    }
 }
@@ -41,6 +84,7 @@ trigger AccountTrigger on Account (before insert, before update) {
     </rule>
 
     <rule name="AvoidHardcodingId"
+          language="apex"
           since="6.0.0"
           message="Hardcoding Id's is bound to break when changing environments."
           class="net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidHardcodingIdRule"
@@ -56,9 +100,9 @@ the logic can dynamically identify the proper data to operate against and not fa
 public without sharing class Foo {
     void foo() {
         //Error - hardcoded the record type id
-        if(a.RecordTypeId == '012500000009WAr'){
+        if (a.RecordTypeId == '012500000009WAr') {
             //do some logic here.....
-        } else if(a.RecordTypeId == '0123000000095Km'){
+        } else if (a.RecordTypeId == '0123000000095Km') {
             //do some logic here for a different record type...
         }
     }
@@ -74,12 +118,13 @@ public without sharing class Foo {
           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptycatchblock">
         <description>
-Empty Catch Block finds instances where an exception is caught, but nothing is done.  
-In most circumstances, this swallows an exception which should either be acted on 
+Empty Catch Block finds instances where an exception is caught, but nothing is done.
+In most circumstances, this swallows an exception which should either be acted on
 or reported.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -91,12 +136,12 @@ or reported.
         <example>
 <![CDATA[
 public void doSomething() {
-  ...
-  try {
-    insert accounts;
-  } catch (DmlException dmle) {
-    // not good
-  }
+    ...
+    try {
+        insert accounts;
+    } catch (DmlException dmle) {
+        // not good
+    }
 }
 ]]>
         </example>
@@ -113,6 +158,7 @@ Empty If Statement finds instances where a condition is checked but nothing is d
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -125,11 +171,11 @@ Empty If Statement finds instances where a condition is checked but nothing is d
         <example>
 <![CDATA[
 public class Foo {
-  public void bar(Integer x) {
-    if (x == 0) {
-      // empty!
+    public void bar(Integer x) {
+        if (x == 0) {
+            // empty!
+        }
     }
-  }
 }
 ]]>
         </example>
@@ -146,10 +192,11 @@ Empty block statements serve no purpose and should be removed.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Method/ModifierNode[@Abstract!='true' and ../BlockStatement[count(*) = 0]]
+//Method/ModifierNode[@Abstract!= true() and ../BlockStatement[count(*) = 0]]
 | //Method/BlockStatement//BlockStatement[count(*) = 0 and @Location != parent::*/@Location]
 ]]>
                 </value>
@@ -159,9 +206,9 @@ Empty block statements serve no purpose and should be removed.
 <![CDATA[
 public class Foo {
 
-   private int _bar;
+   private Integer _bar;
 
-   public void setBar(int bar) {
+   public void setBar(Integer bar) {
         // empty
    }
 
@@ -181,6 +228,7 @@ Avoid empty try or finally blocks - what's the point?
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -204,7 +252,7 @@ public class Foo {
 public class Foo {
     public void bar() {
         try {
-            int x=2;
+            Integer x=2;
         } finally {
             // empty!
         }
@@ -221,12 +269,13 @@ public class Foo {
           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptywhilestmt">
         <description>
-Empty While Statement finds all instances where a while statement does nothing.  
+Empty While Statement finds all instances where a while statement does nothing.
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -247,6 +296,7 @@ public void bar(Integer a, Integer b) {
     </rule>
 
     <rule name="MethodWithSameNameAsEnclosingClass"
+          language="apex"
           since="5.5.0"
           message="Classes should not have non-constructor methods with the same name as the class"
           class="net.sourceforge.pmd.lang.apex.rule.errorprone.MethodWithSameNameAsEnclosingClassRule"
@@ -268,6 +318,7 @@ public class MyClass {
     </rule>
 
     <rule name="AvoidNonExistentAnnotations"
+          language="apex"
           since="6.5.0"
           message="Use of non existent annotations will lead to broken Apex code which will not compile in the future."
           class="net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidNonExistentAnnotationsRule"
@@ -287,5 +338,70 @@ public class MyClass {
 }
 ]]>
         </example>
+    </rule>
+
+    <rule name="TestMethodsMustBeInTestClasses"
+          language="apex"
+          since="6.22.0"
+          message="Test methods must be in test classes"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses">
+       <description>
+          Test methods marked as a testMethod or annotated with @IsTest,
+          but not residing in a test class should be moved to a proper
+          class or have the @IsTest annotation added to the class.
+
+          Support for tests inside functional classes was removed in Spring-13 (API Version 27.0),
+          making classes that violate this rule fail compile-time. This rule is mostly usable when
+          dealing with legacy code.
+       </description>
+       <priority>3</priority>
+       <properties>
+          <property name="version" value="2.0"/>
+          <property name="xpath">
+             <value>
+    <![CDATA[
+    //UserClass[
+      not(./ModifierNode/Annotation[lower-case(@Image) = 'istest']) and
+      (
+        (./Method/ModifierNode/Annotation[lower-case(@Image) = 'istest']) or
+        (./Method/ModifierNode[@Test = true()])
+      )
+    ]
+
+    ]]>
+             </value>
+          </property>
+       </properties>
+       <example>
+           <![CDATA[// Violating
+private class TestClass {
+  @IsTest static void myTest() {
+    // Code here
+  }
+}
+
+private class TestClass {
+  static testMethod void myTest() {
+    // Code here
+  }
+}
+
+// Compliant
+@IsTest
+private class TestClass {
+  @IsTest static void myTest() {
+    // Code here
+  }
+}
+
+@IsTest
+private class TestClass {
+  static testMethod void myTest() {
+    // Code here
+  }
+}
+]]>
+       </example>
     </rule>
 </ruleset>

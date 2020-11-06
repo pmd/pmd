@@ -12,24 +12,30 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
 import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * Rule that tries to match an XPath expression against a DOM view of an AST.
- *
- * <p>This rule needs a "xpath" property value in order to function.</p>
  */
 public class XPathRule extends AbstractRule {
 
+    /**
+     * @deprecated Use {@link #XPathRule(XPathVersion, String)}
+     */
+    @Deprecated
     public static final StringProperty XPATH_DESCRIPTOR = StringProperty.named("xpath")
             .desc("XPath expression")
             .defaultValue("")
@@ -46,6 +52,11 @@ public class XPathRule extends AbstractRule {
         XPATH_VERSIONS = Collections.unmodifiableMap(tmp);
     }
 
+
+    /**
+     * @deprecated Use {@link #XPathRule(XPathVersion, String)}
+     */
+    @Deprecated
     public static final EnumeratedProperty<String> VERSION_DESCRIPTOR = EnumeratedProperty.<String>named("version")
             .desc("XPath specification version")
             .mappings(XPATH_VERSIONS)
@@ -59,16 +70,25 @@ public class XPathRule extends AbstractRule {
      */
     private XPathRuleQuery xpathRuleQuery;
 
+    // this is shared with rules forked by deepCopy, used by the XPathRuleQuery
+    private DeprecatedAttrLogger attrLogger = DeprecatedAttrLogger.create(this);
+
     /**
      * Creates a new XPathRule without the corresponding XPath query.
+     *
+     * @deprecated Use {@link #XPathRule(XPathVersion, String)}
      */
     public XPathRule() {
         definePropertyDescriptor(XPATH_DESCRIPTOR);
         definePropertyDescriptor(VERSION_DESCRIPTOR);
+        // Enable Type Resolution on XPath Rules by default - see issue #2048
+        super.setTypeResolution(true);
     }
 
     /**
      * Creates a new XPathRule and associates the XPath query.
+     *
+     * @deprecated Use {@link #XPathRule(XPathVersion, String)}
      */
     public XPathRule(final String xPath) {
         this();
@@ -76,21 +96,62 @@ public class XPathRule extends AbstractRule {
     }
 
     /**
-     * Sets the XPath to query against the desired nodes in {@link #apply(List, RuleContext)}.
+     * Make a new XPath rule with the given version + expression
      *
-     * @param xPath the XPath query
+     * @param version    Version of the XPath language
+     * @param expression XPath expression
+     *
+     * @throws NullPointerException If any of the arguments is null
      */
+    public XPathRule(XPathVersion version, String expression) {
+        this();
+        Objects.requireNonNull(version, "XPath version is null");
+        Objects.requireNonNull(expression, "XPath expression is null");
+        setXPath(expression);
+        setVersion(version.getXmlName());
+    }
+
+
+    @Override
+    public Rule deepCopy() {
+        XPathRule rule = (XPathRule) super.deepCopy();
+        rule.attrLogger = this.attrLogger;
+        return rule;
+    }
+
+    /**
+     * Returns the version for this rule. Returns null if this is not
+     * set or invalid.
+     */
+    public XPathVersion getVersion() {
+        return XPathVersion.ofId(getProperty(VERSION_DESCRIPTOR));
+    }
+
+    /**
+     * Returns the XPath expression that implements this rule.
+     */
+    public String getXPathExpression() {
+        return getProperty(XPATH_DESCRIPTOR);
+    }
+
+    /**
+     * @deprecated Use the constructor {@link #XPathRule(XPathVersion, String)},
+     *     don't set the expression after the fact.
+     */
+    @Deprecated
     public void setXPath(final String xPath) {
         setProperty(XPathRule.XPATH_DESCRIPTOR, xPath);
     }
 
+    /**
+     * @deprecated Use the constructor {@link #XPathRule(XPathVersion, String)},
+     *     don't set the version after the fact.
+     */
+    @Deprecated
     public void setVersion(final String version) {
         setProperty(XPathRule.VERSION_DESCRIPTOR, version);
     }
 
-    /**
-     * Apply the rule to all nodes.
-     */
     @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
         for (Node node : nodes) {
@@ -103,7 +164,10 @@ public class XPathRule extends AbstractRule {
      *
      * @param node The Node that to be checked.
      * @param data The RuleContext.
+     *
+     * @deprecated Use {@link #apply(List, RuleContext)}
      */
+    @Deprecated
     public void evaluate(final Node node, final RuleContext data) {
         if (xPathRuleQueryNeedsInitialization()) {
             initXPathRuleQuery();
@@ -120,13 +184,21 @@ public class XPathRule extends AbstractRule {
      * engine in which the query will be run it looks at the XPath version.
      */
     private void initXPathRuleQuery() {
-        String xpath = getProperty(XPATH_DESCRIPTOR);
-        String version = getProperty(VERSION_DESCRIPTOR);
+        String xpath = getXPathExpression();
+        XPathVersion version = getVersion();
 
-        initRuleQueryBasedOnVersion(version);
+        if (version == null) {
+            throw new IllegalStateException("Invalid XPath version, should have been caught by Rule::dysfunctionReason");
+        }
+
+        if (version == XPathVersion.XPATH_1_0) {
+            xpathRuleQuery = new JaxenXPathRuleQuery(attrLogger);
+        } else {
+            xpathRuleQuery = new SaxonXPathRuleQuery(attrLogger);
+        }
 
         xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setVersion(version);
+        xpathRuleQuery.setVersion(version.getXmlName());
         xpathRuleQuery.setProperties(getPropertiesByPropertyDescriptor());
     }
 
@@ -137,10 +209,6 @@ public class XPathRule extends AbstractRule {
      */
     private boolean xPathRuleQueryNeedsInitialization() {
         return xpathRuleQuery == null;
-    }
-
-    private void initRuleQueryBasedOnVersion(final String version) {
-        xpathRuleQuery = XPATH_1_0.equals(version) ? new JaxenXPathRuleQuery() : new SaxonXPathRuleQuery();
     }
 
     @Override
@@ -157,10 +225,11 @@ public class XPathRule extends AbstractRule {
 
     @Override
     public String dysfunctionReason() {
-        return hasXPathExpression() ? null : "Missing xPath expression";
-    }
-
-    private boolean hasXPathExpression() {
-        return StringUtils.isNotBlank(getProperty(XPATH_DESCRIPTOR));
+        if (getVersion() == null) {
+            return "Invalid XPath version '" + getProperty(VERSION_DESCRIPTOR) + "'";
+        } else if (StringUtils.isBlank(getXPathExpression())) {
+            return "Missing XPath expression";
+        }
+        return null;
     }
 }

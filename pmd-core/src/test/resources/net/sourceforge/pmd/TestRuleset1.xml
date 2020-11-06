@@ -33,7 +33,7 @@ Just for test
     <rule name="MockRule3" deprecated="true" ref="net/sourceforge/pmd/TestRuleset2.xml/TestRule"/>
 
     <rule name="MockRule4" language="dummy" since="1.0" message="Test Rule"
-          class="net.sourceforge.pmd.lang.rule.MockRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/test/TestRuleset1.xml#MockRule">
         <description>
             Just for test

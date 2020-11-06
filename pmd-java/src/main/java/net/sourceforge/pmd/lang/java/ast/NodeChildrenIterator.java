@@ -29,7 +29,7 @@ class NodeChildrenIterator<T extends Node> implements Iterator<T> {
 
 
     private void moveToNext() {
-        while (i < parent.jjtGetNumChildren() && !(targetChildType.isInstance(parent.jjtGetChild(i)))) {
+        while (i < parent.getNumChildren() && !(targetChildType.isInstance(parent.getChild(i)))) {
             i++;
         }
     }
@@ -38,7 +38,7 @@ class NodeChildrenIterator<T extends Node> implements Iterator<T> {
     @Override
     public boolean hasNext() {
         moveToNext();
-        return i < parent.jjtGetNumChildren();
+        return i < parent.getNumChildren();
     }
 
 
@@ -47,7 +47,7 @@ class NodeChildrenIterator<T extends Node> implements Iterator<T> {
         moveToNext();
 
         @SuppressWarnings("unchecked")
-        T t = (T) parent.jjtGetChild(i++);
+        T t = (T) parent.getChild(i++);
         return t;
     }
 

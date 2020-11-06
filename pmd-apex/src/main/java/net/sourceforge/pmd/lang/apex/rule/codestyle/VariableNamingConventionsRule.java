@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.FINAL;
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,12 +16,12 @@ import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
+import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.StringMultiProperty;
 
+@Deprecated
 public class VariableNamingConventionsRule extends AbstractApexRule {
 
     private boolean checkMembers;
@@ -35,56 +36,78 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
     private List<String> parameterPrefixes;
     private List<String> parameterSuffixes;
 
-    private static final BooleanProperty CHECK_MEMBERS_DESCRIPTOR = new BooleanProperty("checkMembers",
-            "Check member variables", true, 1.0f);
+    private static final PropertyDescriptor<Boolean> CHECK_MEMBERS_DESCRIPTOR =
+            booleanProperty("checkMembers")
+                .desc("Check member variables").defaultValue(true).build();
 
-    private static final BooleanProperty CHECK_LOCALS_DESCRIPTOR = new BooleanProperty("checkLocals",
-            "Check local variables", true, 2.0f);
+    private static final PropertyDescriptor<Boolean> CHECK_LOCALS_DESCRIPTOR =
+            booleanProperty("checkLocals")
+                .desc("Check local variables").defaultValue(true).build();
 
-    private static final BooleanProperty CHECK_PARAMETERS_DESCRIPTOR = new BooleanProperty("checkParameters",
-            "Check constructor and method parameter variables", true, 3.0f);
+    private static final PropertyDescriptor<Boolean> CHECK_PARAMETERS_DESCRIPTOR =
+            booleanProperty("checkParameters")
+                .desc("Check constructor and method parameter variables").defaultValue(true).build();
 
-    private static final StringMultiProperty STATIC_PREFIXES_DESCRIPTOR = new StringMultiProperty("staticPrefix",
-            "Static variable prefixes", new String[] { "" }, 4.0f, ',');
+    private static final PropertyDescriptor<List<String>> STATIC_PREFIXES_DESCRIPTOR =
+            stringListProperty("staticPrefix")
+                    .desc("Static variable prefixes").defaultValues("").delim(',').build();
 
-    private static final StringMultiProperty STATIC_SUFFIXES_DESCRIPTOR = new StringMultiProperty("staticSuffix",
-            "Static variable suffixes", new String[] { "" }, 5.0f, ',');
+    private static final PropertyDescriptor<List<String>> STATIC_SUFFIXES_DESCRIPTOR =
+            stringListProperty("staticSuffix")
+                    .desc("Static variable suffixes").defaultValues("").delim(',').build();
 
-    private static final StringMultiProperty MEMBER_PREFIXES_DESCRIPTOR = new StringMultiProperty("memberPrefix",
-            "Member variable prefixes", new String[] { "" }, 6.0f, ',');
+    private static final PropertyDescriptor<List<String>> MEMBER_PREFIXES_DESCRIPTOR =
+            stringListProperty("memberPrefix")
+                    .desc("Member variable prefixes").defaultValues("").delim(',').build();
 
-    private static final StringMultiProperty MEMBER_SUFFIXES_DESCRIPTOR = new StringMultiProperty("memberSuffix",
-            "Member variable suffixes", new String[] { "" }, 7.0f, ',');
+    private static final PropertyDescriptor<List<String>> MEMBER_SUFFIXES_DESCRIPTOR =
+            stringListProperty("memberSuffix")
+                    .desc("Member variable suffixes").defaultValues("").delim(',').build();
 
-    private static final StringMultiProperty LOCAL_PREFIXES_DESCRIPTOR = new StringMultiProperty("localPrefix",
-            "Local variable prefixes", new String[] { "" }, 8.0f, ',');
+    private static final PropertyDescriptor<List<String>> LOCAL_PREFIXES_DESCRIPTOR =
+            stringListProperty("localPrefix")
+                    .desc("Local variable prefixes").defaultValues("").delim(',').build();
 
-    private static final StringMultiProperty LOCAL_SUFFIXES_DESCRIPTOR = new StringMultiProperty("localSuffix",
-            "Local variable suffixes", new String[] { "" }, 9.0f, ',');
+    private static final PropertyDescriptor<List<String>> LOCAL_SUFFIXES_DESCRIPTOR =
+            stringListProperty("localSuffix")
+                    .desc("Local variable suffixes").defaultValues("").delim(',').build();
 
-    private static final StringMultiProperty PARAMETER_PREFIXES_DESCRIPTOR = new StringMultiProperty("parameterPrefix",
-            "Method parameter variable prefixes", new String[] { "" }, 10.0f, ',');
+    private static final PropertyDescriptor<List<String>> PARAMETER_PREFIXES_DESCRIPTOR =
+            stringListProperty("parameterPrefix")
+                    .desc("Method parameter variable prefixes")
+                    .defaultValues("").delim(',').build();
 
-    private static final StringMultiProperty PARAMETER_SUFFIXES_DESCRIPTOR = new StringMultiProperty("parameterSuffix",
-            "Method parameter variable suffixes", new String[] { "" }, 11.0f, ',');
+    private static final PropertyDescriptor<List<String>> PARAMETER_SUFFIXES_DESCRIPTOR =
+            stringListProperty("parameterSuffix")
+                    .desc("Method parameter variable suffixes")
+                    .defaultValues("").delim(',').build();
+
 
     public VariableNamingConventionsRule() {
         definePropertyDescriptor(CHECK_MEMBERS_DESCRIPTOR);
         definePropertyDescriptor(CHECK_LOCALS_DESCRIPTOR);
         definePropertyDescriptor(CHECK_PARAMETERS_DESCRIPTOR);
-        definePropertyDescriptor(STATIC_PREFIXES_DESCRIPTOR);
-        definePropertyDescriptor(STATIC_SUFFIXES_DESCRIPTOR);
-        definePropertyDescriptor(MEMBER_PREFIXES_DESCRIPTOR);
-        definePropertyDescriptor(MEMBER_SUFFIXES_DESCRIPTOR);
-        definePropertyDescriptor(LOCAL_PREFIXES_DESCRIPTOR);
-        definePropertyDescriptor(LOCAL_SUFFIXES_DESCRIPTOR);
-        definePropertyDescriptor(PARAMETER_PREFIXES_DESCRIPTOR);
-        definePropertyDescriptor(PARAMETER_SUFFIXES_DESCRIPTOR);
+        for (PropertyDescriptor<List<String>> property : suffixOrPrefixProperties()) {
+            definePropertyDescriptor(property);
+        }
 
         setProperty(CODECLIMATE_CATEGORIES, "Style");
         // Note: x10 as Apex has not automatic refactoring
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 5);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+    }
+
+    private static List<PropertyDescriptor<List<String>>> suffixOrPrefixProperties() {
+        List<PropertyDescriptor<List<String>>> res = new ArrayList<>();
+        res.add(STATIC_PREFIXES_DESCRIPTOR);
+        res.add(STATIC_SUFFIXES_DESCRIPTOR);
+        res.add(MEMBER_PREFIXES_DESCRIPTOR);
+        res.add(MEMBER_SUFFIXES_DESCRIPTOR);
+        res.add(LOCAL_PREFIXES_DESCRIPTOR);
+        res.add(LOCAL_SUFFIXES_DESCRIPTOR);
+        res.add(PARAMETER_PREFIXES_DESCRIPTOR);
+        res.add(PARAMETER_SUFFIXES_DESCRIPTOR);
+        return res;
     }
 
     @Override
@@ -118,8 +141,8 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         if (!checkMembers) {
             return data;
         }
-        boolean isStatic = node.getNode().getFieldInfo().getModifiers().has(STATIC);
-        boolean isFinal = node.getNode().getFieldInfo().getModifiers().has(FINAL);
+        boolean isStatic = node.getModifiers().isStatic();
+        boolean isFinal = node.getModifiers().isFinal();
 
         return checkName(isStatic ? staticPrefixes : memberPrefixes, isStatic ? staticSuffixes : memberSuffixes, node,
                 isStatic, isFinal, data);
@@ -132,7 +155,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
             return data;
         }
 
-        boolean isFinal = node.getNode().getLocalInfo().getModifiers().has(FINAL);
+        boolean isFinal = node.getFirstParentOfType(ASTVariableDeclarationStatements.class).getModifiers().isFinal();
         return checkName(localPrefixes, localSuffixes, node, false, isFinal, data);
     }
 
@@ -142,7 +165,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
             return data;
         }
 
-        boolean isFinal = node.getNode().getModifierInfo().has(FINAL);
+        boolean isFinal = node.getModifiers().isFinal();
         return checkName(parameterPrefixes, parameterSuffixes, node, false, isFinal, data);
     }
 
@@ -189,8 +212,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         if (suffixes != null) {
             for (String suffix : suffixes) {
                 if (varName.endsWith(suffix)) {
-                    varName = varName.substring(0, varName.length() - suffix.length());
-                    break;
+                    return varName.substring(0, varName.length() - suffix.length());
                 }
             }
         }
@@ -209,13 +231,9 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
     }
 
     public boolean hasPrefixesOrSuffixes() {
-
-        for (PropertyDescriptor<?> desc : getPropertyDescriptors()) {
-            if (desc instanceof StringMultiProperty) {
-                List<String> values = getProperty((StringMultiProperty) desc);
-                if (!values.isEmpty()) {
-                    return true;
-                }
+        for (PropertyDescriptor<List<String>> desc : suffixOrPrefixProperties()) {
+            if (!getProperty(desc).isEmpty()) {
+                return true;
             }
         }
         return false;

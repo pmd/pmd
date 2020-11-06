@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -23,58 +24,113 @@ public interface AccessNode extends Node {
     int VOLATILE = 0x0200;
     int STRICTFP = 0x1000;
     int DEFAULT = 0x2000;
+    int SEALED = 0x4000;
+    int NON_SEALED = 0x8000;
+
 
     int getModifiers();
 
+
+    @Deprecated
+    @InternalApi
     void setModifiers(int modifiers);
+
 
     boolean isPublic();
 
+
+    @Deprecated
+    @InternalApi
     void setPublic(boolean isPublic);
+
 
     boolean isProtected();
 
+
+    @Deprecated
+    @InternalApi
     void setProtected(boolean isProtected);
+
 
     boolean isPrivate();
 
+
+    @Deprecated
+    @InternalApi
     void setPrivate(boolean isPrivate);
+
 
     boolean isAbstract();
 
+
+    @Deprecated
+    @InternalApi
     void setAbstract(boolean isAbstract);
+
 
     boolean isStatic();
 
+
+    @Deprecated
+    @InternalApi
     void setStatic(boolean isStatic);
+
 
     boolean isFinal();
 
+
+    @Deprecated
+    @InternalApi
     void setFinal(boolean isFinal);
+
 
     boolean isSynchronized();
 
+
+    @Deprecated
+    @InternalApi
     void setSynchronized(boolean isSynchronized);
+
 
     boolean isNative();
 
+
+    @Deprecated
+    @InternalApi
     void setNative(boolean isNative);
+
 
     boolean isTransient();
 
+
+    @Deprecated
+    @InternalApi
     void setTransient(boolean isTransient);
+
 
     boolean isVolatile();
 
+
+    @Deprecated
+    @InternalApi
     void setVolatile(boolean isVolatile);
+
 
     boolean isStrictfp();
 
+
+    @Deprecated
+    @InternalApi
     void setStrictfp(boolean isStrictfp);
+
 
     boolean isPackagePrivate();
 
+
+    @Deprecated
+    @InternalApi
     void setDefault(boolean isDefault);
+
 
     boolean isDefault();
 }

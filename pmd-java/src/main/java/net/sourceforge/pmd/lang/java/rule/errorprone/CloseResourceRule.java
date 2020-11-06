@@ -4,42 +4,56 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jaxen.JaxenException;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
+import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.properties.StringMultiProperty;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * Makes sure you close your database connections. It does this by looking for
  * code patterned like this:
- * 
+ *
  * <pre>
  *  Connection c = X;
  *  try {
@@ -48,48 +62,78 @@ import net.sourceforge.pmd.properties.StringMultiProperty;
  *   c.close();
  *  }
  * </pre>
- * 
+ *
  *  @author original author unknown
  *  @author Contribution from Pierre Mathien
  */
 public class CloseResourceRule extends AbstractJavaRule {
 
-    private Set<String> types = new HashSet<>();
-    private Set<String> simpleTypes = new HashSet<>();
+    private static final String WRAPPING_TRY_WITH_RES_VAR_MESSAGE = "it is recommended to wrap resource in try-with-resource declaration directly";
+    private static final String REASSIGN_BEFORE_CLOSED_MESSAGE = "'' is reassigned, but the original instance is not closed";
+    private static final String CLOSE_IN_FINALLY_BLOCK_MESSAGE = "'' is not closed within a finally block, thus might not be closed at all in case of exceptions";
 
-    private Set<String> closeTargets = new HashSet<>();
-    private static final StringMultiProperty CLOSE_TARGETS_DESCRIPTOR = new StringMultiProperty("closeTargets",
-            "Methods which may close this resource", new String[] {}, 1.0f, ',');
+    private static final PropertyDescriptor<List<String>> CLOSE_TARGETS_DESCRIPTOR =
+            stringListProperty("closeTargets")
+                           .desc("Methods which may close this resource")
+                           .emptyDefaultValue()
+                           .delim(',').build();
 
-    private static final StringMultiProperty TYPES_DESCRIPTOR = new StringMultiProperty("types", "Affected types",
-            new String[] { "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet" }, 2.0f, ',');
+    private static final PropertyDescriptor<List<String>> TYPES_DESCRIPTOR =
+            stringListProperty("types")
+                    .desc("Affected types")
+                    .defaultValues("java.lang.AutoCloseable", "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet")
+                    .delim(',').build();
 
-    private static final BooleanProperty USE_CLOSE_AS_DEFAULT_TARGET = new BooleanProperty("closeAsDefaultTarget",
-            "Consider 'close' as a target by default", true, 3.0f);
+    private static final PropertyDescriptor<Boolean> USE_CLOSE_AS_DEFAULT_TARGET =
+            booleanProperty("closeAsDefaultTarget")
+                    .desc("Consider 'close' as a target by default").defaultValue(true).build();
+
+    private static final PropertyDescriptor<List<String>> ALLOWED_RESOURCE_TYPES =
+            stringListProperty("allowedResourceTypes")
+            .desc("Exact class names that do not need to be closed")
+            .defaultValues("java.io.ByteArrayOutputStream", "java.io.ByteArrayInputStream", "java.io.StringWriter",
+                    "java.io.CharArrayWriter", "java.util.stream.Stream", "java.util.stream.IntStream", "java.util.stream.LongStream",
+                    "java.util.stream.DoubleStream")
+            .build();
+
+    private static final PropertyDescriptor<Boolean> DETECT_CLOSE_NOT_IN_FINALLY =
+            booleanProperty("closeNotInFinally")
+                .desc("Detect if 'close' (or other closeTargets) is called outside of a finally-block").defaultValue(false).build();
+
+    private final Set<String> types = new HashSet<>();
+    private final Set<String> simpleTypes = new HashSet<>();
+    private final Set<String> closeTargets = new HashSet<>();
+
+    // keeps track of already reported violations to avoid duplicated violations for the same variable
+    private final Set<String> reportedVarNames = new HashSet<>();
+
 
     public CloseResourceRule() {
         definePropertyDescriptor(CLOSE_TARGETS_DESCRIPTOR);
         definePropertyDescriptor(TYPES_DESCRIPTOR);
         definePropertyDescriptor(USE_CLOSE_AS_DEFAULT_TARGET);
+        definePropertyDescriptor(ALLOWED_RESOURCE_TYPES);
+        definePropertyDescriptor(DETECT_CLOSE_NOT_IN_FINALLY);
     }
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
-        if (closeTargets.isEmpty() && getProperty(CLOSE_TARGETS_DESCRIPTOR) != null) {
+    public void start(RuleContext ctx) {
+        closeTargets.clear();
+        simpleTypes.clear();
+        types.clear();
+
+        if (getProperty(CLOSE_TARGETS_DESCRIPTOR) != null) {
             closeTargets.addAll(getProperty(CLOSE_TARGETS_DESCRIPTOR));
         }
-        if (getProperty(USE_CLOSE_AS_DEFAULT_TARGET) && !closeTargets.contains("close")) {
+        if (getProperty(USE_CLOSE_AS_DEFAULT_TARGET)) {
             closeTargets.add("close");
         }
-        if (types.isEmpty() && getProperty(TYPES_DESCRIPTOR) != null) {
+        if (getProperty(TYPES_DESCRIPTOR) != null) {
             types.addAll(getProperty(TYPES_DESCRIPTOR));
-        }
-        if (simpleTypes.isEmpty() && getProperty(TYPES_DESCRIPTOR) != null) {
             for (String type : getProperty(TYPES_DESCRIPTOR)) {
                 simpleTypes.add(toSimpleType(type));
             }
         }
-        return super.visit(node, data);
     }
 
     private static String toSimpleType(String fullyQualifiedClassName) {
@@ -113,239 +157,361 @@ public class CloseResourceRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
 
-    private void checkForResources(Node node, Object data) {
-        List<ASTLocalVariableDeclaration> vars = node.findDescendantsOfType(ASTLocalVariableDeclaration.class);
-        List<ASTVariableDeclaratorId> ids = new ArrayList<>();
-
-        // find all variable references to Connection objects
-        for (ASTLocalVariableDeclaration var : vars) {
-            ASTType type = var.getTypeNode();
-
-            if (type != null && type.jjtGetChild(0) instanceof ASTReferenceType) {
-                ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
-                if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
-                    ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
-
-                    if (clazz.getType() != null && types.contains(clazz.getType().getName())
-                            || clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage()))
-                                    && !clazz.isReferenceToClassSameCompilationUnit()
-                            || types.contains(clazz.getImage()) && !clazz.isReferenceToClassSameCompilationUnit()) {
-
-                        ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-                        ids.add(id);
-                    }
+    private void checkForResources(ASTMethodOrConstructorDeclaration methodOrConstructor, Object data) {
+        reportedVarNames.clear();
+        Map<ASTVariableDeclarator, TypeNode> resVars = getResourceVariables(methodOrConstructor);
+        for (Map.Entry<ASTVariableDeclarator, TypeNode> resVarEntry : resVars.entrySet()) {
+            ASTVariableDeclarator resVar = resVarEntry.getKey();
+            TypeNode resVarType = resVarEntry.getValue();
+            if (isWrappingResourceSpecifiedInTry(resVar)) {
+                reportedVarNames.add(resVar.getVariableId().getName());
+                addViolationWithMessage(data, resVar, WRAPPING_TRY_WITH_RES_VAR_MESSAGE);
+            } else if (shouldVarOfTypeBeClosedInMethod(resVar, resVarType, methodOrConstructor)) {
+                reportedVarNames.add(resVar.getVariableId().getName());
+                addCloseResourceViolation(resVar.getVariableId(), resVarType, data);
+            } else {
+                ASTStatementExpression reassigningStatement = getFirstReassigningStatementBeforeBeingClosed(resVar, methodOrConstructor);
+                if (reassigningStatement != null) {
+                    reportedVarNames.add(resVar.getVariableId().getName());
+                    addViolationWithMessage(data, reassigningStatement, reassignBeforeClosedMessageForVar(resVar.getName()));
                 }
             }
         }
-
-        // if there are connections, ensure each is closed.
-        for (ASTVariableDeclaratorId x : ids) {
-            ensureClosed((ASTLocalVariableDeclaration) x.jjtGetParent().jjtGetParent(), x, data);
-        }
     }
 
-    private boolean hasNullInitializer(ASTLocalVariableDeclaration var) {
-        ASTVariableInitializer init = var.getFirstDescendantOfType(ASTVariableInitializer.class);
-        if (init != null) {
-            try {
-                List<?> nulls = init
-                        .findChildNodesWithXPath("Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral");
-                return !nulls.isEmpty();
-            } catch (JaxenException e) {
-                return false;
+    private Map<ASTVariableDeclarator, TypeNode> getResourceVariables(ASTMethodOrConstructorDeclaration method) {
+        List<ASTVariableDeclarator> vars = method.findDescendantsOfType(ASTVariableDeclarator.class);
+        Map<ASTVariableDeclarator, TypeNode> resVars = new HashMap<>();
+        for (ASTVariableDeclarator var : vars) {
+            TypeNode varType = getTypeOfVariable(var);
+            if (varType != null && isResourceTypeOrSubtype(varType)) {
+                resVars.put(var, wrappedResourceTypeOrReturn(var, varType));
+            }
+        }
+        return resVars;
+    }
+
+    private TypeNode getTypeOfVariable(ASTVariableDeclarator var) {
+        TypeNode runtimeType = getRuntimeTypeOfVariable(var);
+        return runtimeType != null ? runtimeType : getDeclaredTypeOfVariable(var);
+    }
+
+    private TypeNode getDeclaredTypeOfVariable(ASTVariableDeclarator var) {
+        ASTLocalVariableDeclaration localVar = (ASTLocalVariableDeclaration) var.getParent();
+        return localVar.getTypeNode(); // note: can be null, if type is inferred (var)
+    }
+
+    private TypeNode getRuntimeTypeOfVariable(ASTVariableDeclarator var) {
+        ASTExpression initExpr = initializerExpressionOf(var);
+        return isRuntimeType(initExpr) ? initExpr : null;
+    }
+
+    private boolean isRuntimeType(ASTExpression expr) {
+        return expr != null && isNotMethodCall(expr) && expr.getType() != null;
+    }
+
+    private TypeNode wrappedResourceTypeOrReturn(ASTVariableDeclarator var, TypeNode defaultVal) {
+        TypeNode wrappedResType = getWrappedResourceType(var);
+        return wrappedResType != null ? wrappedResType : defaultVal;
+    }
+
+    private TypeNode getWrappedResourceType(ASTVariableDeclarator var) {
+        ASTExpression initExpr = initializerExpressionOf(var);
+        if (initExpr != null) {
+            ASTAllocationExpression resAlloc = getLastResourceAllocation(initExpr);
+            if (resAlloc != null) {
+                ASTExpression firstArgRes = getFirstArgumentVariableIfResource(resAlloc);
+                return firstArgRes != null ? firstArgRes : resAlloc;
+            }
+        }
+        return null;
+    }
+
+    private ASTExpression initializerExpressionOf(ASTVariableDeclarator var) {
+        return var.hasInitializer()
+                ? var.getInitializer().getFirstChildOfType(ASTExpression.class)
+                : null;
+    }
+
+    private ASTAllocationExpression getLastResourceAllocation(ASTExpression expr) {
+        List<ASTAllocationExpression> allocations = expr.findDescendantsOfType(ASTAllocationExpression.class);
+        int lastAllocIndex = allocations.size() - 1;
+        for (int allocIndex = lastAllocIndex; allocIndex >= 0; allocIndex--) {
+            ASTAllocationExpression allocation = allocations.get(allocIndex);
+            if (isResourceTypeOrSubtype(allocation)) {
+                return allocation;
+            }
+        }
+        return null;
+    }
+
+    private ASTExpression getFirstArgumentVariableIfResource(ASTAllocationExpression allocation) {
+        ASTArgumentList argsList = allocation.getFirstDescendantOfType(ASTArgumentList.class);
+        if (argsList != null) {
+            ASTExpression firstArg = argsList.getFirstChildOfType(ASTExpression.class);
+            return firstArg != null && isNotMethodCall(firstArg) && isResourceTypeOrSubtype(firstArg)
+                    ? firstArg
+                    : null;
+        }
+        return null;
+    }
+
+    private boolean isNotMethodCall(ASTExpression expr) {
+        return !isMethodCall(expr);
+    }
+
+    private boolean isMethodCall(ASTExpression expression) {
+        if (expression != null) {
+            ASTPrimaryExpression primaryExpression = expression.getFirstChildOfType(ASTPrimaryExpression.class);
+            return primaryExpression != null && primaryExpression.getFirstChildOfType(ASTPrimarySuffix.class) != null;
+        }
+        return false;
+    }
+
+    private boolean isWrappingResourceSpecifiedInTry(ASTVariableDeclarator var) {
+        String wrappedVarName = getWrappedVariableName(var);
+        if (wrappedVarName != null) {
+            List<ASTTryStatement> tryContainers = var.getParentsOfType(ASTTryStatement.class);
+            for (ASTTryStatement tryContainer : tryContainers) {
+                if (isTryWithResourceSpecifyingVariable(tryContainer, wrappedVarName)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    private void ensureClosed(ASTLocalVariableDeclaration var, ASTVariableDeclaratorId id, Object data) {
-        // What are the chances of a Connection being instantiated in a
-        // for-loop init block? Anyway, I'm lazy!
-        String variableToClose = id.getImage();
-        Node n = var;
-
-        while (!(n instanceof ASTBlock) && !(n instanceof ASTConstructorDeclaration)) {
-            n = n.jjtGetParent();
-        }
-
-        Node top = n;
-
-        List<ASTTryStatement> tryblocks = top.findDescendantsOfType(ASTTryStatement.class);
-
-        boolean closed = false;
-
-        ASTBlockStatement parentBlock = id.getFirstParentOfType(ASTBlockStatement.class);
-
-        // look for try blocks below the line the variable was
-        // introduced and make sure there is a .close call in a finally
-        // block.
-        for (ASTTryStatement t : tryblocks) {
-
-            // verifies that there are no critical statements between the
-            // variable declaration and
-            // the beginning of the try block.
-            ASTBlockStatement tryBlock = t.getFirstParentOfType(ASTBlockStatement.class);
-            // no need to check for critical statements, if
-            // the variable has been initialized with null
-            if (!hasNullInitializer(var) && parentBlock.jjtGetParent() == tryBlock.jjtGetParent()) {
-
-                List<ASTBlockStatement> blocks = parentBlock.jjtGetParent().findChildrenOfType(ASTBlockStatement.class);
-                int parentBlockIndex = blocks.indexOf(parentBlock);
-                int tryBlockIndex = blocks.indexOf(tryBlock);
-                boolean criticalStatements = false;
-
-                for (int i = parentBlockIndex + 1; i < tryBlockIndex; i++) {
-                    // assume variable declarations are not critical
-                    ASTLocalVariableDeclaration varDecl = blocks.get(i)
-                            .getFirstDescendantOfType(ASTLocalVariableDeclaration.class);
-                    if (varDecl == null) {
-                        criticalStatements = true;
-                        break;
-                    }
-                }
-                if (criticalStatements) {
-                    break;
-                }
-            }
-
-            if (t.getBeginLine() > id.getBeginLine() && t.hasFinally()) {
-                ASTBlock f = (ASTBlock) t.getFinally().jjtGetChild(0);
-                List<ASTName> names = f.findDescendantsOfType(ASTName.class);
-                for (ASTName oName : names) {
-                    String name = oName.getImage();
-                    if (name != null && name.contains(".")) {
-                        String[] parts = name.split("\\.");
-                        if (parts.length == 2) {
-                            String methodName = parts[1];
-                            String varName = parts[0];
-                            if (varName.equals(variableToClose) && closeTargets.contains(methodName)
-                                    && nullCheckIfCondition(f, oName, varName)) {
-                                closed = true;
-                                break;
-                            }
-
-                        }
-                    }
-                }
-                if (closed) {
-                    break;
-                }
-
-                List<ASTStatementExpression> exprs = new ArrayList<>();
-                f.findDescendantsOfType(ASTStatementExpression.class, exprs, true);
-                for (ASTStatementExpression stmt : exprs) {
-                    ASTPrimaryExpression expr = stmt.getFirstChildOfType(ASTPrimaryExpression.class);
-                    if (expr != null) {
-                        ASTPrimaryPrefix prefix = expr.getFirstChildOfType(ASTPrimaryPrefix.class);
-                        ASTPrimarySuffix suffix = expr.getFirstChildOfType(ASTPrimarySuffix.class);
-                        if (prefix != null && suffix != null) {
-                            if (prefix.getImage() == null) {
-                                ASTName prefixName = prefix.getFirstChildOfType(ASTName.class);
-                                if (prefixName != null && closeTargets.contains(prefixName.getImage())) {
-                                    // Found a call to a "close target" that is
-                                    // a direct
-                                    // method call without a "ClassName."
-                                    // prefix.
-                                    closed = variableIsPassedToMethod(expr, variableToClose);
-                                    if (closed) {
-                                        break;
-                                    }
-                                }
-                            } else if (suffix.getImage() != null) {
-                                String prefixPlusSuffix = prefix.getImage() + "." + suffix.getImage();
-                                if (closeTargets.contains(prefixPlusSuffix)) {
-                                    // Found a call to a "close target" that is
-                                    // a method call
-                                    // in the form "ClassName.methodName".
-                                    closed = variableIsPassedToMethod(expr, variableToClose);
-                                    if (closed) {
-                                        break;
-                                    }
-                                }
-                            }
-                            // look for primary suffix containing the close
-                            // Targets elements.
-                            // If the .close is executed in another class
-                            // accessed by a method
-                            // this form :
-                            // getProviderInstance().closeConnexion(connexion)
-                            // For this use case, we assume the variable is
-                            // correctly closed
-                            // in the other class since there is no way to
-                            // really check it.
-                            if (!closed) {
-                                List<ASTPrimarySuffix> suffixes = new ArrayList<>();
-                                expr.findDescendantsOfType(ASTPrimarySuffix.class, suffixes, true);
-                                for (ASTPrimarySuffix oSuffix : suffixes) {
-                                    String suff = oSuffix.getImage();
-                                    if (closeTargets.contains(suff)) {
-                                        closed = variableIsPassedToMethod(expr, variableToClose);
-                                        if (closed) {
-                                            break;
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
-                if (closed) {
-                    break;
-                }
-            }
-        }
-
-        if (!closed) {
-            // See if the variable is returned by the method, which means the
-            // method is a utility for creating the db resource, which means of
-            // course it can't be closed by the method, so it isn't an error.
-            List<ASTReturnStatement> returns = new ArrayList<>();
-            top.findDescendantsOfType(ASTReturnStatement.class, returns, true);
-            for (ASTReturnStatement returnStatement : returns) {
-                ASTName name = returnStatement.getFirstDescendantOfType(ASTName.class);
-                if (name != null && name.getImage().equals(variableToClose)) {
-                    closed = true;
-                    break;
-                }
-            }
-        }
-
-        // if all is not well, complain
-        if (!closed) {
-            ASTType type = var.getFirstChildOfType(ASTType.class);
-            ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
-            ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
-            addViolation(data, id, clazz.getImage());
-        }
+    private boolean shouldVarOfTypeBeClosedInMethod(ASTVariableDeclarator var, TypeNode type,
+            ASTMethodOrConstructorDeclaration method) {
+        return isNotAllowedResourceType(type) && isNotWrappingResourceMethodParameter(var, method)
+                && isResourceVariableUnclosed(var);
     }
 
-    private boolean variableIsPassedToMethod(ASTPrimaryExpression expr, String variable) {
-        List<ASTName> methodParams = new ArrayList<>();
-        expr.findDescendantsOfType(ASTName.class, methodParams, true);
-        for (ASTName pName : methodParams) {
-            String paramName = pName.getImage();
-            // also check if we've got the a parameter (i.e if it's an argument
-            // !)
-            ASTArgumentList parentParam = pName.getFirstParentOfType(ASTArgumentList.class);
-            if (paramName.equals(variable) && parentParam != null) {
+    private boolean isNotAllowedResourceType(TypeNode varType) {
+        return !isAllowedResourceType(varType);
+    }
+
+    private boolean isAllowedResourceType(TypeNode refType) {
+        List<String> allowedResourceTypes = getProperty(ALLOWED_RESOURCE_TYPES);
+        if (allowedResourceTypes != null) {
+            for (String type : allowedResourceTypes) {
+                // the check here must be a exact type match, since subclasses may override close()
+                // and actually require closing
+                if (TypeTestUtil.isExactlyA(type, refType)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isNotWrappingResourceMethodParameter(ASTVariableDeclarator var,
+            ASTMethodOrConstructorDeclaration method) {
+        return !isWrappingResourceMethodParameter(var, method);
+    }
+
+    /**
+     * Checks whether the variable is resource and initialized from a method parameter.
+     * @param var the resource variable that is being initialized
+     * @param method the method or constructor in which the variable is declared
+     * @return <code>true</code> if the variable is resource and initialized from a method parameter. <code>false</code>
+     *         otherwise.
+     */
+    private boolean isWrappingResourceMethodParameter(ASTVariableDeclarator var, ASTMethodOrConstructorDeclaration method) {
+        String wrappedVarName = getWrappedVariableName(var);
+        if (wrappedVarName != null) {
+            ASTFormalParameters methodParams = method.getFirstDescendantOfType(ASTFormalParameters.class);
+            if (methodParams != null) {
+                List<ASTVariableDeclaratorId> ids = methodParams.findDescendantsOfType(ASTVariableDeclaratorId.class);
+                for (ASTVariableDeclaratorId id : ids) {
+                    if (id.hasImageEqualTo(wrappedVarName) && isResourceTypeOrSubtype(id)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private String getWrappedVariableName(ASTVariableDeclarator var) {
+        if (var.hasInitializer()) {
+            ASTName varName = var.getInitializer().getFirstDescendantOfType(ASTName.class);
+            return varName != null ? varName.getImage() : null;
+        }
+        return null;
+    }
+
+    private boolean isResourceTypeOrSubtype(TypeNode refType) {
+        return refType.getType() != null
+                ? isNodeInstanceOfResourceType(refType)
+                : nodeHasReferenceToResourceType(refType);
+    }
+
+    private boolean isNodeInstanceOfResourceType(TypeNode refType) {
+        for (String resType : types) {
+            if (TypeTestUtil.isA(resType, refType)) {
                 return true;
             }
         }
         return false;
     }
 
-    private ASTIfStatement findIfStatement(ASTBlock enclosingBlock, Node node) {
-        ASTIfStatement ifStatement = node.getFirstParentOfType(ASTIfStatement.class);
-        List<ASTIfStatement> allIfStatements = enclosingBlock.findDescendantsOfType(ASTIfStatement.class);
-        if (ifStatement != null && allIfStatements.contains(ifStatement)) {
-            return ifStatement;
+    private boolean nodeHasReferenceToResourceType(TypeNode refType) {
+        ASTClassOrInterfaceType type = refType.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        return type != null && isResourceTypeName(type.getImage()) && !type.isReferenceToClassSameCompilationUnit();
+    }
+
+    private boolean isResourceTypeName(String typeName) {
+        String simpleTypeName = toSimpleType(typeName);
+        return types.contains(typeName) || simpleTypes.contains(simpleTypeName);
+    }
+
+    private boolean isResourceVariableUnclosed(ASTVariableDeclarator var) {
+        return !isResourceVariableClosed(var);
+    }
+
+    private boolean isResourceVariableClosed(ASTVariableDeclarator var) {
+        Node methodOfVar = getMethodOfNode(var);
+        return hasTryStatementClosingResourceVariable(methodOfVar, var)
+                || isReturnedByMethod(var.getName(), methodOfVar);
+    }
+
+    private Node getMethodOfNode(Node node) {
+        Node parent = node.getParent();
+        while (isNotMethod(parent)) {
+            parent = parent.getParent();
         }
-        return null;
+        return parent;
+    }
+
+    private boolean isNotMethod(Node node) {
+        return !(node instanceof ASTBlock || node instanceof ASTConstructorDeclaration);
+    }
+
+    private boolean hasTryStatementClosingResourceVariable(Node node, ASTVariableDeclarator var) {
+        List<ASTTryStatement> tryStatements = node.findDescendantsOfType(ASTTryStatement.class, true);
+        for (ASTTryStatement tryStatement : tryStatements) {
+            if (tryStatementClosesResourceVariable(tryStatement, var)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean tryStatementClosesResourceVariable(ASTTryStatement tryStatement, ASTVariableDeclarator var) {
+        if (tryStatement.getBeginLine() >= var.getBeginLine() && noneCriticalStatementsBetween(var, tryStatement)) {
+            if (isTryWithResourceSpecifyingVariable(tryStatement, var.getName())) {
+                return true;
+            }
+            if (hasFinallyClause(tryStatement)) {
+                ASTBlock finallyBody = tryStatement.getFinallyClause().getBody();
+                return blockClosesResourceVariable(finallyBody, var.getName());
+            }
+        }
+        return false;
+    }
+
+    private boolean noneCriticalStatementsBetween(ASTVariableDeclarator var, ASTTryStatement tryStatement) {
+        return !anyCriticalStatementBetween(var, tryStatement);
+    }
+
+    private boolean anyCriticalStatementBetween(ASTVariableDeclarator var, ASTTryStatement tryStatement) {
+        ASTBlockStatement varBlockStatement = var.getFirstParentOfType(ASTBlockStatement.class);
+        ASTBlockStatement tryBlockStatement = tryStatement.getFirstParentOfType(ASTBlockStatement.class);
+        if (isNotNullInitialized(var) && areStatementsOfSameBlock(varBlockStatement, tryBlockStatement)) {
+            for (ASTBlockStatement bsBetween : getBlockStatementsBetween(varBlockStatement, tryBlockStatement)) {
+                if (isCriticalStatement(bsBetween)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isNotNullInitialized(ASTVariableDeclarator var) {
+        return !hasNullInitializer(var);
+    }
+
+    private boolean hasNullInitializer(ASTVariableDeclarator var) {
+        if (var.hasInitializer()) {
+            ASTPrimaryPrefix primaryPrefix = var.getInitializer().getFirstDescendantOfType(ASTPrimaryPrefix.class);
+            return primaryPrefix != null && primaryPrefix.hasDescendantOfType(ASTNullLiteral.class);
+        }
+        return false;
+    }
+
+    private boolean areStatementsOfSameBlock(ASTBlockStatement bs0, ASTBlockStatement bs1) {
+        return bs0.getParent() == bs1.getParent();
+    }
+
+    private List<ASTBlockStatement> getBlockStatementsBetween(ASTBlockStatement top, ASTBlockStatement bottom) {
+        List<ASTBlockStatement> blockStatements = top.getParent().findChildrenOfType(ASTBlockStatement.class);
+        int topBSIndex = blockStatements.indexOf(top);
+        int bottomBSIndex = blockStatements.indexOf(bottom);
+        return blockStatements.subList(topBSIndex + 1, bottomBSIndex);
+    }
+
+    private boolean isCriticalStatement(ASTBlockStatement blockStatement) {
+        boolean isVarDeclaration = blockStatement.hasDescendantOfType(ASTLocalVariableDeclaration.class);
+        boolean isAssignmentOperator = blockStatement.hasDescendantOfType(ASTAssignmentOperator.class);
+        return !isVarDeclaration && !isAssignmentOperator;
+    }
+
+    private boolean isTryWithResourceSpecifyingVariable(ASTTryStatement tryStatement, String varName) {
+        return tryStatement.isTryWithResources() && isVariableSpecifiedInTryWithResource(varName, tryStatement);
+    }
+
+    private boolean isVariableSpecifiedInTryWithResource(String varName, ASTTryStatement tryWithResource) {
+        List<JavaNode> specifiedResources = getResourcesSpecifiedInTryWith(tryWithResource);
+        for (JavaNode res : specifiedResources) {
+            if (res.hasImageEqualTo(varName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<JavaNode> getResourcesSpecifiedInTryWith(ASTTryStatement tryWithResource) {
+        ASTResourceSpecification resSpecification = tryWithResource.getFirstChildOfType(ASTResourceSpecification.class);
+        List<ASTVariableDeclaratorId> initializedVars = resSpecification
+                .findDescendantsOfType(ASTVariableDeclaratorId.class);
+        List<ASTName> specifiedVars = resSpecification.findDescendantsOfType(ASTName.class);
+        return combineNodeLists(initializedVars, specifiedVars);
+    }
+
+    private List<JavaNode> combineNodeLists(List<? extends JavaNode> list0, List<? extends JavaNode> list1) {
+        List<JavaNode> nodeList = new ArrayList<>(list0);
+        nodeList.addAll(list1);
+        return nodeList;
+    }
+
+    private boolean hasFinallyClause(ASTTryStatement tryStatement) {
+        return tryStatement.getFinallyClause() != null;
+    }
+
+    private boolean blockClosesResourceVariable(ASTBlock block, String variableToClose) {
+        return hasNotConditionalCloseCallOnVariable(block, variableToClose)
+                || hasMethodCallClosingResourceVariable(block, variableToClose);
+    }
+
+    private boolean hasNotConditionalCloseCallOnVariable(ASTBlock block, String variableToClose) {
+        List<ASTName> operations = block.findDescendantsOfType(ASTName.class);
+        for (ASTName operation : operations) {
+            if (isCloseCallOnVariable(operation, variableToClose)
+                    && isNotConditional(block, operation, variableToClose)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isCloseCallOnVariable(ASTName op, String variableToClose) {
+        String closedVar = getVariableClosedByMethodCall(op);
+        return variableToClose.equals(closedVar);
     }
 
     /**
-     * Checks, whether the given node is inside a if condition, and if so,
+     * Checks, whether the given node is inside an if condition, and if so,
      * whether this is a null check for the given varName.
      *
      * @param enclosingBlock
@@ -357,7 +523,7 @@ public class CloseResourceRule extends AbstractJavaRule {
      * @return <code>true</code> if no if condition is involved or if the if
      *         condition is a null-check.
      */
-    private boolean nullCheckIfCondition(ASTBlock enclosingBlock, Node node, String varName) {
+    private boolean isNotConditional(ASTBlock enclosingBlock, Node node, String varName) {
         ASTIfStatement ifStatement = findIfStatement(enclosingBlock, node);
         if (ifStatement != null) {
             try {
@@ -371,5 +537,215 @@ public class CloseResourceRule extends AbstractJavaRule {
             }
         }
         return true;
+    }
+
+    private ASTIfStatement findIfStatement(ASTBlock enclosingBlock, Node node) {
+        ASTIfStatement ifStatement = node.getFirstParentOfType(ASTIfStatement.class);
+        List<ASTIfStatement> allIfStatements = enclosingBlock.findDescendantsOfType(ASTIfStatement.class);
+        if (ifStatement != null && allIfStatements.contains(ifStatement)) {
+            return ifStatement;
+        }
+        return null;
+    }
+
+    private boolean hasMethodCallClosingResourceVariable(ASTBlock block, String variableToClose) {
+        List<ASTPrimaryExpression> expressions = block.findDescendantsOfType(ASTPrimaryExpression.class, true);
+        for (ASTPrimaryExpression expression : expressions) {
+            if (isMethodCallClosingResourceVariable(expression, variableToClose)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isMethodCallClosingResourceVariable(ASTPrimaryExpression expression, String variableToClose) {
+        ASTPrimaryPrefix prefix = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
+        ASTPrimarySuffix suffix = expression.getFirstDescendantOfType(ASTPrimarySuffix.class);
+        if (prefix != null && suffix != null) {
+            return (isCloseTargetMethodCall(prefix, suffix) || hasChainedCloseTargetMethodCall(expression))
+                    && variableIsPassedToMethod(variableToClose, expression);
+        }
+        return false;
+    }
+
+    private boolean isCloseTargetMethodCall(ASTPrimaryPrefix prefix, ASTPrimarySuffix suffix) {
+        String methodCall = getMethodCallStr(prefix, suffix);
+        return methodCall != null && closeTargets.contains(methodCall);
+    }
+
+    private String getMethodCallStr(ASTPrimaryPrefix prefix, ASTPrimarySuffix suffix) {
+        if (prefix.getImage() == null) {
+            ASTName name = prefix.getFirstDescendantOfType(ASTName.class);
+            return name != null ? name.getImage() : null;
+        } else if (suffix.getImage() != null) {
+            return prefix.getImage() + "." + suffix.getImage();
+        }
+        return null;
+    }
+
+    private boolean hasChainedCloseTargetMethodCall(ASTPrimaryExpression expr) {
+        List<ASTPrimarySuffix> methodCalls = expr.findDescendantsOfType(ASTPrimarySuffix.class, true);
+        for (ASTPrimarySuffix methodCall : methodCalls) {
+            if (closeTargets.contains(methodCall.getImage())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean variableIsPassedToMethod(String varName, ASTPrimaryExpression methodCall) {
+        List<ASTName> methodCallArgs = methodCall.findDescendantsOfType(ASTName.class, true);
+        for (ASTName methodCallArg : methodCallArgs) {
+            if (isMethodCallArgument(methodCallArg) && methodCallArg.hasImageEqualTo(varName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isMethodCallArgument(ASTName varName) {
+        return varName.getFirstParentOfType(ASTArgumentList.class) != null;
+    }
+
+    private boolean isReturnedByMethod(String varName, Node method) {
+        List<ASTReturnStatement> returns = method.findDescendantsOfType(ASTReturnStatement.class, true);
+        for (ASTReturnStatement returnStatement : returns) {
+            ASTName name = returnStatement.getFirstDescendantOfType(ASTName.class);
+            if (name != null && name.hasImageEqualTo(varName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void addCloseResourceViolation(ASTVariableDeclaratorId id, TypeNode type, Object data) {
+        String resTypeName = getResourceTypeName(id, type);
+        addViolation(data, id, resTypeName);
+    }
+
+    private String getResourceTypeName(ASTVariableDeclaratorId varId, TypeNode type) {
+        Class<?> typeClass = type.getType();
+        if (typeClass == null) {
+            ASTLocalVariableDeclaration localVarDecl = varId.getFirstParentOfType(ASTLocalVariableDeclaration.class);
+            return localVarDecl != null && localVarDecl.getTypeNode() != null
+                    ? localVarDecl.getTypeNode().getTypeImage()
+                    : varId.getName();
+        }
+        return typeClass.getSimpleName();
+    }
+
+    @Override
+    public Object visit(ASTPrimaryPrefix prefix, Object data) {
+        if (!getProperty(DETECT_CLOSE_NOT_IN_FINALLY)) {
+            return super.visit(prefix, data);
+        }
+
+        ASTName methodCall = prefix.getFirstChildOfType(ASTName.class);
+        if (methodCall != null && isNodeInstanceOfResourceType(methodCall)) {
+            String closedVar = getVariableClosedByMethodCall(methodCall);
+            if (closedVar != null && isNotInFinallyBlock(prefix) && !reportedVarNames.contains(closedVar)) {
+                String violationMsg = closeInFinallyBlockMessageForVar(closedVar);
+                addViolationWithMessage(data, prefix, violationMsg);
+            }
+        }
+        return super.visit(prefix, data);
+    }
+
+    private String getVariableClosedByMethodCall(ASTName methodCall) {
+        String[] callParts = getMethodCallParts(methodCall);
+        if (callParts != null) {
+            String varName = callParts[0];
+            String methodName = callParts[1];
+            return closeTargets.contains(methodName) ? varName : null;
+        }
+        return null;
+    }
+
+    private String[] getMethodCallParts(ASTName methodCall) {
+        String methodCallStr = methodCall.getImage();
+        return methodCallStr != null && methodCallStr.contains(".")
+                ? methodCallStr.split("\\.")
+                : null;
+    }
+
+    private boolean isNotInFinallyBlock(ASTPrimaryPrefix prefix) {
+        return prefix.getFirstParentOfType(ASTFinallyStatement.class) == null;
+    }
+
+    private String closeInFinallyBlockMessageForVar(String var) {
+        return "''" + var + CLOSE_IN_FINALLY_BLOCK_MESSAGE;
+    }
+
+    private String reassignBeforeClosedMessageForVar(String var) {
+        return "''" + var + REASSIGN_BEFORE_CLOSED_MESSAGE;
+    }
+
+    private ASTStatementExpression getFirstReassigningStatementBeforeBeingClosed(ASTVariableDeclarator variable, ASTMethodOrConstructorDeclaration methodOrConstructor) {
+        List<ASTStatementExpression> statements = methodOrConstructor.findDescendantsOfType(ASTStatementExpression.class);
+        boolean variableClosed = false;
+        boolean isInitialized = !hasNullInitializer(variable);
+        ASTExpression initializingExpression = initializerExpressionOf(variable);
+        for (ASTStatementExpression statement : statements) {
+            if (isClosingVariableStatement(statement, variable)) {
+                variableClosed = true;
+            }
+
+            if (isAssignmentForVariable(statement, variable)) {
+                if (isInitialized && !variableClosed) {
+                    if (initializingExpression != null && !inSameIfBlock(statement, initializingExpression)) {
+                        return statement;
+                    }
+                }
+
+                if (variableClosed) {
+                    variableClosed = false;
+                } 
+                if (!isInitialized) {
+                    isInitialized = true;
+                    initializingExpression = statement.getFirstDescendantOfType(ASTExpression.class);
+                }                
+            }
+        }
+        return null;
+    }
+
+    private boolean inSameIfBlock(ASTStatementExpression statement1, ASTExpression statement2) {
+        List<ASTIfStatement> parents1 = statement1.getParentsOfType(ASTIfStatement.class);
+        List<ASTIfStatement> parents2 = statement2.getParentsOfType(ASTIfStatement.class);
+        parents1.retainAll(parents2);
+        return !parents1.isEmpty();
+    }
+
+    private boolean isClosingVariableStatement(ASTStatementExpression statement, ASTVariableDeclarator variable) {
+        List<ASTPrimaryExpression> expressions = statement.findDescendantsOfType(ASTPrimaryExpression.class);
+        for (ASTPrimaryExpression expression : expressions) {
+            if (isMethodCallClosingResourceVariable(expression, variable.getName())) {
+                return true;
+            }
+        }
+        List<ASTName> names = statement.findDescendantsOfType(ASTName.class);
+        for (ASTName name : names) {
+            if (isCloseCallOnVariable(name, variable.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isAssignmentForVariable(ASTStatementExpression statement, ASTVariableDeclarator variable) {
+        if (statement == null || variable == null) {
+            return false;
+        }
+        ASTName name = statement.getFirstDescendantOfType(ASTName.class);
+        if (name == null) {
+            return false;
+        }
+        NameDeclaration statementVariable = name.getNameDeclaration();
+        if (statementVariable == null) {
+            return false;
+        }
+
+        return statement.hasDescendantOfType(ASTAssignmentOperator.class)
+                && statementVariable.equals(variable.getVariableId().getNameDeclaration());
     }
 }

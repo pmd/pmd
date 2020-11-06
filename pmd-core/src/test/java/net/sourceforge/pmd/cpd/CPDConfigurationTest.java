@@ -29,7 +29,7 @@ public class CPDConfigurationTest {
             Assert.assertSame(entry.getValue(), r.getClass());
         }
     }
-    
+
     @Test
     public void testCPDRenderers() {
         Map<String, Class<? extends CPDRenderer>> renderersToTest = new HashMap<>();

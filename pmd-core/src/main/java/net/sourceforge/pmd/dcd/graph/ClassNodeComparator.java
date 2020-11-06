@@ -6,10 +6,14 @@ package net.sourceforge.pmd.dcd.graph;
 
 import java.util.Comparator;
 
+import net.sourceforge.pmd.dcd.DCD;
+
 /**
  * Compares ClassNodes by the name of the class. Can also compare String class
  * names to ClassNodes.
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public final class ClassNodeComparator implements Comparator {
 
     public static final ClassNodeComparator INSTANCE = new ClassNodeComparator();

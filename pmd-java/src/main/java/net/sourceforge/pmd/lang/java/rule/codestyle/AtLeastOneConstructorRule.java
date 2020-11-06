@@ -33,7 +33,7 @@ public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
                 "lombok.Builder",
                 "lombok.NoArgsConstructor",
                 "lombok.RequiredArgsConstructor",
-                "lombok.AllArgsConstructorAtLeastOneConstructor");
+                "lombok.AllArgsConstructor");
     }
 
     @Override

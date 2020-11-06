@@ -6,13 +6,18 @@ package net.sourceforge.pmd.lang.matlab;
 
 import java.io.Reader;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 import net.sourceforge.pmd.lang.matlab.ast.MatlabParserTokenManager;
 
 /**
  * Matlab Token Manager implementation.
+ *
+ * @deprecated This is internal API
  */
+@Deprecated
+@InternalApi
 public class MatlabTokenManager implements TokenManager {
     private final MatlabParserTokenManager tokenManager;
 

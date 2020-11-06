@@ -3,196 +3,222 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-appending single character string, should fail
-     ]]></description>
+        <description>appending single character string, should fail</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  sb.append("a");
- }
+    public void bar(StringBuffer sb) {
+        sb.append("a");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-appending single char, should be ok
-     ]]></description>
+        <description>appending single char, should be ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  sb.append('a');
- }
+    public void bar(StringBuffer sb) {
+        sb.append('a');
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-this is probably wrong, but shouldn't fail
-     ]]></description>
+        <description>this is probably wrong, but shouldn't fail</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  sb.append("a" + "foo");
- }
+    public void bar(StringBuffer sb) {
+        sb.append("a" + "foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-concatenates a three character int
-     ]]></description>
+        <description>concatenates a three character int</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  sb.append(123);
- }
+    public void bar(StringBuffer sb) {
+        sb.append(123);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-concatenates a string explicitly set to 1 character, not explicitly checking right now
-     ]]></description>
+        <description>concatenates a string explicitly set to 1 character, not explicitly checking right now</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  String str = "a";
-  sb.append(str);
- }
+    public void bar(StringBuffer sb) {
+        String str = "a";
+        sb.append(str);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-for statement
-     ]]></description>
+        <description>for statement</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  for(int ix = 0; ix < 100; ix++) 
-      sb.append("a");
- }
+    public void bar(StringBuffer sb) {
+        for(int ix = 0; ix < 100; ix++)
+            sb.append("a");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-concatenates an escaped character
-     ]]></description>
+        <description>concatenates an escaped character</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  sb.append("\t");
- }
+    public void bar(StringBuffer sb) {
+        sb.append("\t");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-concatenates all escaped characters
-     ]]></description>
+        <description>concatenates all escaped characters</description>
         <expected-problems>8</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  sb.append("\n");
-  sb.append("\t");
-  sb.append("\b");
-  sb.append("\r");
-  sb.append("\f");
-  sb.append("\\");
-  sb.append("\'");
-  sb.append("\"");
- }
+    public void bar(StringBuffer sb) {
+        sb.append("\n");
+        sb.append("\t");
+        sb.append("\b");
+        sb.append("\r");
+        sb.append("\f");
+        sb.append("\\");
+        sb.append("\'");
+        sb.append("\"");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-concatenates a single upper case
-     ]]></description>
+        <description>concatenates a single upper case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  sb.append("A");
- }
+    public void bar(StringBuffer sb) {
+        sb.append("A");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-concatenates a single number
-     ]]></description>
+        <description>concatenates a single number</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  sb.append("3");
- }
+    public void bar(StringBuffer sb) {
+        sb.append("3");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-concatenates a single character &
-     ]]></description>
+        <description>concatenates a single character &amp;</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  sb.append("&");
- }
+    public void bar(StringBuffer sb) {
+        sb.append("&");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-concatenates two characters
-     ]]></description>
+        <description>concatenates two characters</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  sb.append("/t");
- }
+    public void bar(StringBuffer sb) {
+        sb.append("/t");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-a single octal character
-     ]]></description>
+        <description>a single octal character</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  sb.append("\12");
-  sb.append("\123");
- }
+    public void bar(StringBuffer sb) {
+        sb.append("\12");
+        sb.append("\123");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-octal character in longer string
-     ]]></description>
+        <description>octal character in longer string</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(StringBuffer sb) {
-  sb.append("\1234");
- }
+    public void bar(StringBuffer sb) {
+        sb.append("\1234");
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>append a single character as part of an expression (#2275)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(StringBuffer sb, int length) {
+        sb.append("a".repeat(length));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>append single character string in constructor chain</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder sb = new StringBuilder().append("a");
+        sb = new StringBuilder().append("c");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false positive with string as constructor arg in StringBuilder method chain</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private String name = "bar";
+    public String toString() {
+        StringBuilder sb = new StringBuilder("#").append("Foo").append('#').append(this.name);
+        return sb.toString();
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

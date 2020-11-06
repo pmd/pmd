@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava17;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -15,6 +13,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -27,13 +26,14 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature.Visibility;
+import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
 /**
  * Test class for {@link JavaSignature} and its subclasses.
  *
  * @author Clément Fournier
  */
-public class SignatureTest {
+public class SignatureTest extends BaseNonParserTest {
 
     // common to operation and field signatures
     @Test
@@ -103,7 +103,7 @@ public class SignatureTest {
 
     @Test
     public void testGetterDetection() {
-        ASTCompilationUnit compilationUnit = parseJava17(GetterDetection.class);
+        ASTCompilationUnit compilationUnit = JavaParsingHelper.WITH_PROCESSING.parseClass(GetterDetection.class);
 
         compilationUnit.jjtAccept(new JavaParserVisitorAdapter() {
             @Override
@@ -116,7 +116,7 @@ public class SignatureTest {
 
     @Test
     public void testSetterDetection() {
-        ASTCompilationUnit compilationUnit = parseJava17(SetterDetection.class);
+        ASTCompilationUnit compilationUnit = JavaParsingHelper.WITH_PROCESSING.parseClass(SetterDetection.class);
 
         compilationUnit.jjtAccept(new JavaParserVisitorAdapter() {
             @Override
@@ -255,13 +255,13 @@ public class SignatureTest {
         List<JavaFieldSignature> sigs = new ArrayList<>();
         List<JavaFieldSignature> sigs2 = new ArrayList<>();
 
-        for (int i = 0; i < sigs.size(); i++) {
+        for (int i = 0; i < nodes.size(); i++) {
             sigs.add(JavaFieldSignature.buildFor(nodes.get(i)));
             sigs2.add(JavaFieldSignature.buildFor(nodes2.get(i)));
 
         }
 
-        for (int i = 0; i < sigs.size() - 1; i++) {
+        for (int i = 0; i < nodes.size() - 1; i++) {
             assertTrue(sigs.get(i) == sigs.get(i + 1));
             assertTrue(sigs2.get(i) == sigs2.get(i + 1));
         }

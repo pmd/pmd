@@ -7,8 +7,9 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Collection;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
+// package private
 abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements Annotatable {
 
     AbstractJavaAnnotatableNode(int i) {
@@ -21,7 +22,7 @@ abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements A
 
     @Override
     public List<ASTAnnotation> getDeclaredAnnotations() {
-        return this.jjtGetParent().findChildrenOfType(ASTAnnotation.class);
+        return this.getParent().findChildrenOfType(ASTAnnotation.class);
     }
 
     @Override
@@ -29,7 +30,7 @@ abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements A
         List<ASTAnnotation> annotations = getDeclaredAnnotations();
         for (ASTAnnotation annotation : annotations) {
             ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
-            if (name != null && TypeHelper.isA(name, annotQualifiedName)) {
+            if (TypeTestUtil.isA(annotQualifiedName, name)) {
                 return annotation;
             }
         }

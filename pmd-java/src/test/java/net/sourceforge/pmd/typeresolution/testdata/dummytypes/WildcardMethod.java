@@ -7,6 +7,6 @@ package net.sourceforge.pmd.typeresolution.testdata.dummytypes;
 public class WildcardMethod {
 
     public void useWildcard(GenericSuperType<?> param) {
-        
+
     }
 }

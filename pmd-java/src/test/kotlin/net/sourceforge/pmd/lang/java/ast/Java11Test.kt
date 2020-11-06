@@ -1,15 +1,16 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 
-class Java11Test : FunSpec({
+class Java11Test : ParserTestSpec({
 
 
-    parserTest("Test lambda parameter with var keyword", javaVersions = J1_8..J10) {
+    parserTest("var keyword should be a normal type pre-java 11", javaVersions = J1_8..J10) {
 
         "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
             child<ASTFormalParameters> {
@@ -76,7 +77,7 @@ class Java11Test : FunSpec({
         }
     }
 
-    parserTest("Test lambda parameter with var keyword", javaVersions = J11..Latest) {
+    parserTest("var keyword should generate no type after java 11", javaVersions = J11..Latest) {
 
         "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
             child<ASTFormalParameters> {

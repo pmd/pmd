@@ -83,7 +83,7 @@ public class ASTPanel extends JPanel implements ViewerModelListener, TreeSelecti
         case ViewerModelEvent.NODE_SELECTED:
             if (e.getSource() != this) {
                 List<Node> list = new ArrayList<>();
-                for (Node n = (Node) e.getParameter(); n != null; n = n.jjtGetParent()) {
+                for (Node n = (Node) e.getParameter(); n != null; n = n.getParent()) {
                     list.add(n);
                 }
                 Collections.reverse(list);

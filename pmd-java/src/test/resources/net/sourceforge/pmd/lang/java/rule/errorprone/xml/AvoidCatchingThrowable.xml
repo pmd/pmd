@@ -3,30 +3,45 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-simple failure case
-     ]]></description>
+        <description>simple failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  try {} catch (Throwable t) {}   
- }
+    void foo() {
+        try {} catch (Throwable t) {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  try {} catch (RuntimeException t) {}   
- }
+    void foo() {
+        try {} catch (RuntimeException t) {}
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>full class name false-negative test</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+            Foo.class.isAssignableFrom(null);
+        } catch(java.lang.Throwable e) {
+            e.printStackTrace();
+        }
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

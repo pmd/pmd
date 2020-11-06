@@ -4,10 +4,14 @@
 
 package net.sourceforge.pmd.util;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  *
  * @author Brian Remedios
  */
+@InternalApi
+@Deprecated
 public final class DateTimeUtil {
 
     private DateTimeUtil() {

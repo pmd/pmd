@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
+
 /**
  * Marker interface for type body declarations, such as annotation members, field or method declarations.
  *
@@ -22,6 +24,7 @@ public interface ASTAnyTypeBodyDeclaration extends JavaNode {
      */
     JavaNode getDeclarationNode();
 
+
     /**
      * Gets the kind of declaration this node contains.
      * This is a cue for the node type the child of this
@@ -29,7 +32,12 @@ public interface ASTAnyTypeBodyDeclaration extends JavaNode {
      */
     DeclarationKind getKind();
 
-    /** Kind of declaration. */
+
+    /**
+     * Kind of declaration. This is not deprecated because the node will
+     * go away entirely in 7.0.0 and one cannot avoid using it on master.
+     * See {@link TypeKind} for the reasons for deprecation.
+     */
     enum DeclarationKind {
         /** See {@link ASTInitializer}. */
         INITIALIZER,
@@ -50,7 +58,11 @@ public interface ASTAnyTypeBodyDeclaration extends JavaNode {
         /** See {@link ASTAnnotationTypeDeclaration}. */
         ANNOTATION,
         /** No child, {@link #getDeclarationNode()} will return null. */
-        EMPTY
+        EMPTY,
+        /** See {@link ASTRecordDeclaration}. */
+        RECORD,
+        /** See {@link ASTRecordConstructorDeclaration}. */
+        RECORD_CONSTRUCTOR
     }
 
 }

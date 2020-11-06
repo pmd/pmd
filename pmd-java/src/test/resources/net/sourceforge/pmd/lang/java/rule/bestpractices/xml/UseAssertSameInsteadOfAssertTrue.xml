@@ -3,133 +3,124 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-assert true a == b
-     ]]></description>
+        <description>assert true a == b</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertTrue(a==b);
- }
+    public void test1() {
+        assertTrue(a==b);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assert true a != b
-     ]]></description>
+        <description>assert true a != b</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertTrue(a!=b);
- }
+    public void test1() {
+        assertTrue(a!=b);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assert false a == b
-     ]]></description>
+        <description>assert false a == b</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertFalse(a==b);
- }
+    public void test1() {
+        assertFalse(a==b);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assert false a != b
-     ]]></description>
+        <description>assert false a != b</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertFalse(a!=b);
- }
+    public void test1() {
+        assertFalse(a!=b);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip assertTrue(x == null), UseAssertNullInsteadOfAssertTrue will pick those up
-     ]]></description>
+        <description>skip assertTrue(x == null), UseAssertNullInsteadOfAssertTrue will pick those up</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertFalse(a == null);
- }
+    public void test1() {
+        assertFalse(a == null);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-bug 1626715, the null check in the rule shouldn't match the null outside the assert method 
-     ]]></description>
+        <description>bug 1626715, the null check in the rule shouldn't match the null outside the assert method</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertFalse(a==b);
-  null;
- }
+    public void test1() {
+        assertFalse(a==b);
+        null;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assert true a == b BUT not a Junit test
-     ]]></description>
+        <description>assert true a == b BUT not a Junit test</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-  assertTrue(a==b);
- }
+    public void test1() {
+        assertTrue(a==b);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-JUnit 4 - assert true a == b
-     ]]></description>
+        <description>JUnit 4 - assert true a == b</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.junit.Test;
 public class Foo {
- @Test
- public void test1() {
-  assertTrue(a==b);
- }
+    @Test
+    public void test1() {
+        assertTrue(a==b);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-JUnit 5 - assert true a == b - @Test
-     ]]></description>
+        <description>JUnit 5 - assert true a == b - @Test</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 public class Foo {
- @Test
- public void test1() {
-  assertTrue(a==b);
- }
+    @Test
+    public void test1() {
+        assertTrue(a==b);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

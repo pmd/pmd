@@ -4,12 +4,17 @@
 
 package net.sourceforge.pmd.properties;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
+
 /**
  * Parses a value from a string.
  *
  * @param <U> The type of the value to parse
  */
 // FUTURE @FunctionalInterface
+@Deprecated
+@InternalApi
 public interface ValueParser<U> {
 
     /**

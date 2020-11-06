@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -26,7 +27,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJUnitRule {
         }
 
         public void check(Object ctx, ASTArguments node) {
-            if (node.getArgumentCount() == argumentsCount
+            if (node.size() == argumentsCount
                     && node.getNthParent(2) instanceof ASTPrimaryExpression) {
                 ASTPrimaryPrefix primaryPrefix = node.getNthParent(2).getFirstChildOfType(ASTPrimaryPrefix.class);
 
@@ -65,7 +66,9 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJUnitRule {
         checks.add(new AssertionCall("assertEquals", 3) {
             @Override
             protected boolean isException(ASTArguments node) {
-                List<ASTExpression> arguments = node.findDescendantsOfType(ASTExpression.class);
+                // consider the top-level expressions of the arguments: Arguments/ArgumentList/Expression
+                ASTArgumentList argumentList = node.getFirstChildOfType(ASTArgumentList.class);
+                List<ASTExpression> arguments = argumentList.findChildrenOfType(ASTExpression.class);
                 boolean isExceptionJunit4 = isStringTypeOrNull(arguments.get(0));
                 boolean isExceptionJunit5 = isStringTypeOrNull(arguments.get(2));
 

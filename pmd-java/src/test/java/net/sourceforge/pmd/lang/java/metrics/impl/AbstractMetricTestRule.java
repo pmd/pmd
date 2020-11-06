@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -18,28 +18,40 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
-import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.properties.DoubleProperty;
-import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * Abstract test rule for a metric. Tests of metrics use the standard framework for rule testing, using one dummy rule
- * per metric. Default parameters can be overriden by overriding the protected methods of this class.
+ * per metric. Default parameters can be overridden by overriding the protected methods of this class.
  *
  * @author Clément Fournier
  */
 public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
 
-    private final EnumeratedMultiProperty<MetricOption> optionsDescriptor = new EnumeratedMultiProperty<>(
-        "metricOptions", "Choose a variant of the metric or the standard",
-        optionMappings(), Collections.<MetricOption>emptyList(), MetricOption.class, 3.0f);
-    private final BooleanProperty reportClassesDescriptor = new BooleanProperty(
-        "reportClasses", "Add class violations to the report", isReportClasses(), 2.0f);
-    private final BooleanProperty reportMethodsDescriptor = new BooleanProperty(
-        "reportMethods", "Add method violations to the report", isReportMethods(), 3.0f);
-    private final DoubleProperty reportLevelDescriptor = new DoubleProperty(
-        "reportLevel", "Minimum value required to report", -1., Double.POSITIVE_INFINITY, defaultReportLevel(), 3.0f);
+
+    private final PropertyDescriptor<List<MetricOption>> optionsDescriptor =
+            PropertyFactory.enumListProperty("metricOptions", optionMappings())
+                           .desc("Choose a variant of the metric or the standard")
+                           .emptyDefaultValue().build();
+
+    private final PropertyDescriptor<Boolean> reportClassesDescriptor =
+            PropertyFactory.booleanProperty("reportClasses")
+                           .desc("Add class violations to the report")
+                           .defaultValue(isReportClasses()).build();
+
+    private final PropertyDescriptor<Boolean> reportMethodsDescriptor =
+            PropertyFactory.booleanProperty("reportMethods")
+                           .desc("Add method violations to the report")
+                           .defaultValue(isReportMethods()).build();
+
+    private final PropertyDescriptor<Double> reportLevelDescriptor =
+            PropertyFactory.doubleProperty("reportLevel")
+                           .desc("Minimum value required to report")
+                           .defaultValue(defaultReportLevel()).build();
 
     private MetricOptions metricOptions;
     private boolean reportClasses;
@@ -140,7 +152,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         if (classKey != null && reportClasses && classKey.supports(node)) {
-            double classValue = JavaMetrics.get(classKey, node, metricOptions);
+            double classValue = MetricsUtil.computeMetric(classKey, node, metricOptions);
 
             String valueReport = niceDoubleString(classValue);
 
@@ -159,7 +171,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(MethodLikeNode node, Object data) {
         if (opKey != null && reportMethods && opKey.supports(node)) {
-            double methodValue = JavaMetrics.get(opKey, node, metricOptions);
+            double methodValue = MetricsUtil.computeMetric(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(),
                                                        "" + niceDoubleString(methodValue), });

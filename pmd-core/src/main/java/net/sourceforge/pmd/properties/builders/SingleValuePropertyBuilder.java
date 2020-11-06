@@ -7,9 +7,11 @@ package net.sourceforge.pmd.properties.builders;
 /**
  * For single-value property descriptors.
  *
+ * @deprecated see {@link net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder}
  * @param <E> Value type of the built descriptor
  * @param <T> Concrete type of this builder instance.
  */
+@Deprecated
 public abstract class SingleValuePropertyBuilder<E, T extends SingleValuePropertyBuilder<E, T>>
     extends PropertyDescriptorBuilder<E, T> {
 

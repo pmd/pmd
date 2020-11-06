@@ -7,7 +7,9 @@ package net.sourceforge.pmd.lang.dfa;
 /**
  * @since Created on 14.07.2004
  * @author raik
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public class VariableAccess {
 
     public static final int DEFINITION = 0;

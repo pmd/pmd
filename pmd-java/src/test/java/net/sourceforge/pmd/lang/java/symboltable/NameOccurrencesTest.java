@@ -13,13 +13,14 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 
-public class NameOccurrencesTest extends STBBaseTst {
+public class NameOccurrencesTest extends BaseNonParserTest {
 
     @Test
     public void testSuper() {
-        parseCode(TEST1);
+        ASTCompilationUnit acu = parseCode(TEST1);
         List<ASTPrimaryExpression> nodes = acu.findDescendantsOfType(ASTPrimaryExpression.class);
         NameFinder occs = new NameFinder(nodes.get(0));
         assertEquals("super", occs.getNames().get(0).getImage());
@@ -27,7 +28,7 @@ public class NameOccurrencesTest extends STBBaseTst {
 
     @Test
     public void testThis() {
-        parseCode(TEST2);
+        ASTCompilationUnit acu = parseCode(TEST2);
         List<ASTPrimaryExpression> nodes = acu.findDescendantsOfType(ASTPrimaryExpression.class);
         NameFinder occs = new NameFinder(nodes.get(0));
         assertEquals("this", occs.getNames().get(0).getImage());
@@ -36,7 +37,7 @@ public class NameOccurrencesTest extends STBBaseTst {
 
     @Test
     public void testNameLinkage() {
-        parseCode(TEST2);
+        ASTCompilationUnit acu = parseCode(TEST2);
         List<ASTPrimaryExpression> nodes = acu.findDescendantsOfType(ASTPrimaryExpression.class);
         NameFinder occs = new NameFinder(nodes.get(0));
         JavaNameOccurrence thisNameOccurrence = occs.getNames().get(0);
@@ -45,7 +46,7 @@ public class NameOccurrencesTest extends STBBaseTst {
 
     @Test
     public void testSimpleVariableOccurrence() {
-        parseCode(TEST3);
+        ASTCompilationUnit acu = parseCode(TEST3);
         List<ASTPrimaryExpression> nodes = acu.findDescendantsOfType(ASTPrimaryExpression.class);
         NameFinder occs = new NameFinder(nodes.get(0));
         assertEquals("x", occs.getNames().get(0).getImage());
@@ -56,7 +57,7 @@ public class NameOccurrencesTest extends STBBaseTst {
 
     @Test
     public void testQualifiedOccurrence() {
-        parseCode(TEST4);
+        ASTCompilationUnit acu = parseCode(TEST4);
         List<ASTPrimaryExpression> nodes = acu.findDescendantsOfType(ASTPrimaryExpression.class);
         NameFinder occs = new NameFinder(nodes.get(0));
         assertEquals("b", occs.getNames().get(0).getImage());
@@ -65,12 +66,12 @@ public class NameOccurrencesTest extends STBBaseTst {
 
     @Test
     public void testIsSelfAssignment() {
-        parseCode(TEST5);
+        ASTCompilationUnit acu = parseCode(TEST5);
         List<ASTPrimaryExpression> nodes = acu.findDescendantsOfType(ASTPrimaryExpression.class);
         NameFinder occs = new NameFinder(nodes.get(2));
         assertTrue(occs.getNames().get(0).isSelfAssignment());
 
-        parseCode(TEST6);
+        acu = parseCode(TEST6);
         nodes = acu.findDescendantsOfType(ASTPrimaryExpression.class);
         occs = new NameFinder(nodes.get(2));
         assertTrue(occs.getNames().get(0).isSelfAssignment());
@@ -78,7 +79,7 @@ public class NameOccurrencesTest extends STBBaseTst {
 
     @Test
     public void testEnumStaticUsage() {
-        parseCode(TEST_ENUM);
+        ASTCompilationUnit acu = parseCode(TEST_ENUM);
         List<ASTPrimaryExpression> nodes = acu.findDescendantsOfType(ASTPrimaryExpression.class);
 
         NameFinder occs = new NameFinder(nodes.get(4));

@@ -10,6 +10,11 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @deprecated This class will be removed with PMD 7. The rule designer is a better way to inspect nodes.
+ */
+@Deprecated
 public class DumpFacade extends JavaParserVisitorAdapter {
 
     private PrintWriter writer;
@@ -102,7 +107,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
 
         // Other extras
         if (node instanceof ASTArguments) {
-            extras.add(String.valueOf(((ASTArguments) node).getArgumentCount()));
+            extras.add(String.valueOf(((ASTArguments) node).size()));
         } else if (node instanceof ASTAssignmentOperator) {
             extras.add(((ASTAssignmentOperator) node).isCompound() ? "compound" : "simple");
         } else if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
@@ -124,7 +129,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
         } else if (node instanceof ASTConditionalExpression) {
             extras.add("ternary");
         } else if (node instanceof ASTConstructorDeclaration) {
-            extras.add(String.valueOf(((ASTConstructorDeclaration) node).getParameterCount()));
+            extras.add(String.valueOf(((ASTConstructorDeclaration) node).getArity()));
             if (((ASTConstructorDeclaration) node).containsComment()) {
                 extras.add("contains comment");
             }
@@ -141,7 +146,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
                 extras.add("varargs");
             }
         } else if (node instanceof ASTFormalParameters) {
-            extras.add(String.valueOf(((ASTFormalParameters) node).getParameterCount()));
+            extras.add(String.valueOf(((ASTFormalParameters) node).size()));
         } else if (node instanceof ASTIfStatement) {
             if (((ASTIfStatement) node).hasElse()) {
                 extras.add("has else");

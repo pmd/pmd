@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.RegexProperty;
 
 
 /**
@@ -23,11 +22,11 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
     // These are not exhaustive, but are chosen to be the most useful, for a start
 
 
-    private final RegexProperty formalParamRegex = defaultProp("methodParameter", "formal parameter").build();
-    private final RegexProperty finalFormalParamRegex = defaultProp("finalMethodParameter", "final formal parameter").build();
+    private final PropertyDescriptor<Pattern> formalParamRegex = defaultProp("methodParameter", "formal parameter").build();
+    private final PropertyDescriptor<Pattern> finalFormalParamRegex = defaultProp("finalMethodParameter", "final formal parameter").build();
 
-    private final RegexProperty lambdaParamRegex = defaultProp("lambdaParameter", "inferred-type lambda parameter").build();
-    private final RegexProperty explicitLambdaParamRegex = defaultProp("explicitLambdaParameter", "explicitly-typed lambda parameter").build();
+    private final PropertyDescriptor<Pattern> lambdaParamRegex = defaultProp("lambdaParameter", "inferred-type lambda parameter").build();
+    private final PropertyDescriptor<Pattern> explicitLambdaParamRegex = defaultProp("explicitLambdaParameter", "explicitly-typed lambda parameter").build();
 
 
     public FormalParameterNamingConventionsRule() {

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -52,6 +51,10 @@ private class Foo { }
     <test-code>
         <description>class comment should have description</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Missing ApexDoc @description</message>
+        </expected-messages>
         <code><![CDATA[
 /**
  */
@@ -327,9 +330,9 @@ public class Foo {
     </test-code>
 
     <test-code>
-    <description>public property should have comment</description>
-    <expected-problems>1</expected-problems>
-    <code><![CDATA[
+        <description>public property should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 /**
  * @description Foo
  */
@@ -337,7 +340,7 @@ public class Foo {
     public Object Bar { get; set; }
 }
         ]]></code>
-</test-code>
+    </test-code>
 
     <test-code>
         <description>global property should have comment</description>
@@ -398,4 +401,49 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#1783 correct comments for constructor and inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+
+    /**
+     * @description Foo
+     */
+    public Foo() {
+    }
+
+    /**
+     * @description Bar
+     */
+    public class Bar {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1783 correct comments for constructor and inner class - false negative</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+
+    /**
+     * @description Foo
+     */
+    public Foo() {
+    }
+
+    public class Bar {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

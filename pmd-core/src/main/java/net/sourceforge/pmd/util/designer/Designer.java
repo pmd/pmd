@@ -20,13 +20,13 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Proxy;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -142,7 +142,7 @@ public class Designer implements ClipboardOwner {
 
     public Designer(String[] args) {
         if (args.length > 0) {
-            exitOnClose = !args[0].equals("-noexitonclose");
+            exitOnClose = !"-noexitonclose".equals(args[0]);
         }
 
         Initializer.initialize();
@@ -179,11 +179,11 @@ public class Designer implements ClipboardOwner {
         frame.setSize(screenWidth * 3 / 4, screenHeight * 3 / 4);
         frame.setLocation((screenWidth - frame.getWidth()) / 2, (screenHeight - frame.getHeight()) / 2);
         frame.setVisible(true);
-        int horozontalMiddleLocation = controlSplitPane.getMaximumDividerLocation() * 3 / 5;
-        controlSplitPane.setDividerLocation(horozontalMiddleLocation);
+        int horizontalMiddleLocation = controlSplitPane.getMaximumDividerLocation() * 3 / 5;
+        controlSplitPane.setDividerLocation(horizontalMiddleLocation);
         containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
         astAndSymbolTablePane.setDividerLocation(astAndSymbolTablePane.getMaximumDividerLocation() / 3);
-        resultsSplitPane.setDividerLocation(horozontalMiddleLocation);
+        resultsSplitPane.setDividerLocation(horizontalMiddleLocation);
 
         loadSettings();
     }
@@ -348,7 +348,7 @@ public class Designer implements ClipboardOwner {
         ASTTreeNode(Node theNode) {
             node = theNode;
 
-            Node parent = node.jjtGetParent();
+            Node parent = node.getParent();
             if (parent != null) {
                 this.parent = new ASTTreeNode(parent);
             }
@@ -361,7 +361,7 @@ public class Designer implements ClipboardOwner {
 
         @Override
         public int getChildCount() {
-            return node.jjtGetNumChildren();
+            return node.getNumChildren();
         }
 
         @Override
@@ -371,7 +371,7 @@ public class Designer implements ClipboardOwner {
 
         @Override
         public boolean isLeaf() {
-            return node.jjtGetNumChildren() == 0;
+            return node.getNumChildren() == 0;
         }
 
         @Override
@@ -412,9 +412,9 @@ public class Designer implements ClipboardOwner {
         public TreeNode getChildAt(int childIndex) {
 
             if (kids == null) {
-                kids = new ASTTreeNode[node.jjtGetNumChildren()];
+                kids = new ASTTreeNode[node.getNumChildren()];
                 for (int i = 0; i < kids.length; i++) {
-                    kids[i] = new ASTTreeNode(this.parent, node.jjtGetChild(i));
+                    kids[i] = new ASTTreeNode(this.parent, node.getChild(i));
                 }
             }
             return kids[childIndex];
@@ -566,12 +566,11 @@ public class Designer implements ClipboardOwner {
             if (dfaGraphRule != null) {
                 final RuleSet rs = new RuleSetFactory().createSingleRuleRuleSet(dfaGraphRule);
                 RuleContext ctx = new RuleContext();
-                ctx.setSourceCodeFilename("[no filename]." + languageVersion.getLanguage().getExtensions().get(0));
-                StringReader reader = new StringReader(codeEditorPane.getText());
+                ctx.setSourceCodeFile(new File("[no filename]." + languageVersion.getLanguage().getExtensions().get(0)));
                 PMDConfiguration config = new PMDConfiguration();
                 config.setDefaultLanguageVersion(languageVersion);
 
-                try {
+                try (StringReader reader = new StringReader(codeEditorPane.getText())) {
                     new SourceCodeProcessor(config).processSourceCode(reader, new RuleSets(rs), ctx);
                     // } catch (PMDException pmde) {
                     // loadTreeData(new ExceptionNode(pmde));
@@ -661,9 +660,9 @@ public class Designer implements ClipboardOwner {
                                 entry.getKey().getClass().getSimpleName() + ": " + entry.getKey());
                         scopeTreeNode.add(nameDeclarationTreeNode);
                         for (NameOccurrence nameOccurrence : entry.getValue()) {
-                            DefaultMutableTreeNode nameOccurranceTreeNode = new DefaultMutableTreeNode(
+                            DefaultMutableTreeNode nameOccurrenceTreeNode = new DefaultMutableTreeNode(
                                     "Name occurrence: " + nameOccurrence);
-                            nameDeclarationTreeNode.add(nameOccurranceTreeNode);
+                            nameDeclarationTreeNode.add(nameOccurrenceTreeNode);
                         }
                     }
                 }
@@ -711,7 +710,7 @@ public class Designer implements ClipboardOwner {
             String text;
             if (value instanceof Node) {
                 Node node = (Node) value;
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
                 if (Proxy.isProxyClass(value.getClass())) {
                     name = value.toString();
@@ -891,16 +890,16 @@ public class Designer implements ClipboardOwner {
         return b;
     }
 
-    private static void makeTextComponentUndoable(JTextComponent textConponent) {
+    private static void makeTextComponentUndoable(JTextComponent textComponent) {
         final UndoManager undoManager = new UndoManager();
-        textConponent.getDocument().addUndoableEditListener(new UndoableEditListener() {
+        textComponent.getDocument().addUndoableEditListener(new UndoableEditListener() {
             @Override
             public void undoableEditHappened(UndoableEditEvent evt) {
                 undoManager.addEdit(evt.getEdit());
             }
         });
-        ActionMap actionMap = textConponent.getActionMap();
-        InputMap inputMap = textConponent.getInputMap();
+        ActionMap actionMap = textComponent.getActionMap();
+        InputMap inputMap = textComponent.getInputMap();
         actionMap.put("Undo", new AbstractAction("Undo") {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -939,7 +938,7 @@ public class Designer implements ClipboardOwner {
     }
 
     private String getXmlTreeCode() {
-        if (codeEditorPane.getText() != null && codeEditorPane.getText().trim().length() > 0) {
+        if (codeEditorPane.getText() != null && !codeEditorPane.getText().trim().isEmpty()) {
             Node cu = getCompilationUnit();
             return getXmlTreeCode(cu);
         }
@@ -993,7 +992,7 @@ public class Designer implements ClipboardOwner {
     private void loadSettings() {
         File file = new File(SETTINGS_FILE_NAME);
         if (file.exists()) {
-            try (InputStream stream = new FileInputStream(file)) {
+            try (InputStream stream = Files.newInputStream(file.toPath())) {
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
                 Document document = builder.parse(stream);
                 Element settingsElement = document.getDocumentElement();
@@ -1015,11 +1014,7 @@ public class Designer implements ClipboardOwner {
                         break;
                     }
                 }
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (SAXException e) {
+            } catch (ParserConfigurationException | IOException | SAXException e) {
                 e.printStackTrace();
             }
         }
@@ -1054,13 +1049,10 @@ public class Designer implements ClipboardOwner {
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
             Source source = new DOMSource(document);
-            Result result = new StreamResult(new FileWriter(new File(SETTINGS_FILE_NAME)));
+            Result result = new StreamResult(Files.newBufferedWriter(new File(SETTINGS_FILE_NAME).toPath(),
+                    StandardCharsets.UTF_8));
             transformer.transform(source, result);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TransformerException e) {
+        } catch (ParserConfigurationException | IOException | TransformerException e) {
             e.printStackTrace();
         }
     }

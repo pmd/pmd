@@ -3,40 +3,36 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Bad SessionBean name
-     ]]></description>
+        <description>Bad SessionBean name</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class SomeClass implements SessionBean {}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bad MessageDrivenBean name
-     ]]></description>
+        <description>Bad MessageDrivenBean name</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class SomeClass implements MessageDrivenBean {}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Good SessionBean name
-     ]]></description>
+        <description>Good SessionBean name</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class SomeBean implements SessionBean {}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Good MessageDrivenBean name
-     ]]></description>
+        <description>Good MessageDrivenBean name</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class SomeBean implements MessageDrivenBean {}
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

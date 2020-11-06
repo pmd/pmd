@@ -1,329 +1,310 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-	<test-code>
-		<description>Potentially unsafe SOQL on concatenation of variables 1
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
-public class Foo {
-	public void test1() {
-		String field1 = getSomeID(); 
-		String field2 = 'SELECT Id FROM Account WHERE Id =';
-		Database.query(field2 + field1);
-	}		
-}
-		]]></code>
-	</test-code>
 
-	<test-code>
-		<description>Potentially unsafe SOQL on concatenation of variables 2
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Potentially unsafe SOQL on concatenation of variables 1</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String field1 = getSomeID(); 
-		String field2 = 'SELECT Id FROM Account WHERE Id =' + field1;
-		Database.query(field2);
-	}		
+    public void test1() {
+        String field1 = getSomeID();
+        String field2 = 'SELECT Id FROM Account WHERE Id =';
+        Database.query(field2 + field1);
+    }
 }
-		]]></code>
-	</test-code>
-	<test-code>
-		<description>Safe SOQL concatenation of hardcoded
-			variables
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-public class Foo {
-	public void test1() {
-		String field1 = 'someIDhere'; 
-		String field2 = 'SELECT Id FROM Account WHERE Id =';
-		Database.query(field2 + field1);
-	}		
-}
-		]]></code>
-	</test-code>
-	<test-code>
-		<description>Safe SOQL on concatenation of variables</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-public class Foo {
-	public void test1() {
-		String field1 = String.escapeSingleQuotes('yo'); 
-		String field2 = 'SELECT Id FROM Account WHERE Id =' + field1;
-		Database.query(field2);
-	}		
-}
-		]]></code>
-	</test-code>
-	<test-code>
-		<description>Safe SOQL + merged variable from a literal</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-public class Foo {
-	public void test1() {
-		String field1 = String.escapeSingleQuotes('yo'); 
-		Database.query('SELECT Id FROM Account WHERE Id =' + field1);
-	}		
-}
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Safe SOQL + merged variable</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Potentially unsafe SOQL on concatenation of variables 2</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        String field1 = getSomeID();
+        String field2 = 'SELECT Id FROM Account WHERE Id =' + field1;
+        Database.query(field2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Safe SOQL concatenation of hardcoded variables</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        String field1 = 'someIDhere';
+        String field2 = 'SELECT Id FROM Account WHERE Id =';
+        Database.query(field2 + field1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Safe SOQL on concatenation of variables</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        String field1 = String.escapeSingleQuotes('yo');
+        String field2 = 'SELECT Id FROM Account WHERE Id =' + field1;
+        Database.query(field2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Safe SOQL + merged variable from a literal</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        String field1 = String.escapeSingleQuotes('yo');
+        Database.query('SELECT Id FROM Account WHERE Id =' + field1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Safe SOQL + merged variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
 
-	public void test1(String field1) {
-		field2 = String.escapeSingleQuotes(field1); 
-		Database.query('SELECT Id FROM Account WHERE Id =' + field2);		
-	}
+    public void test1(String field1) {
+        field2 = String.escapeSingleQuotes(field1);
+        Database.query('SELECT Id FROM Account WHERE Id =' + field2);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>No issue when SOQL is called</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>No issue when SOQL is called</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		Database.query('SELECT Id FROM Account');		
-	}
+    public void test1() {
+        Database.query('SELECT Id FROM Account');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Potentially unsafe SOQL with variable concatenation
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Potentially unsafe SOQL with variable concatenation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1(String t1) {
-		Database.query('SELECT Id FROM Account' + t1);		
-	}
+    public void test1(String t1) {
+        Database.query('SELECT Id FROM Account' + t1);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Potentially unsafe SOQL with multiple variable
-			concatenation
-		</description>
-		<expected-problems>2</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Potentially unsafe SOQL with multiple variable concatenation</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1(String t1, String t2) {
-		Database.query('SELECT Id FROM Account ' + t1 + ' WHERE ' + t2 + ';');		
-	}
+    public void test1(String t1, String t2) {
+        Database.query('SELECT Id FROM Account ' + t1 + ' WHERE ' + t2 + ';');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Safe SOQL with List concatenation
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe SOQL with List concatenation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1(List<String> t1) {
-		Database.query('SELECT Id FROM Account ' + string.join(t1, ','));		
-	}
+    public void test1(List<String> t1) {
+        Database.query('SELECT Id FROM Account ' + string.join(t1, ','));
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>SOQL + merged variable from literal
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>SOQL + merged variable from literal</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String field1 = 'yo'; 
-		Database.query('SELECT Id FROM Account WHERE Id =' + field1);		
-	}
+    public void test1() {
+        String field1 = 'yo';
+        Database.query('SELECT Id FROM Account WHERE Id =' + field1);
+    }
 }
-		]]></code>
-	</test-code>
-	<test-code>
-		<description>SOQL with merged with field variable
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-public class Foo {
-	public static String field1 = 'yo'; 
-	public void test1() {	
-		Database.query('SELECT Id FROM Account WHERE Id =' + field1 + 'string');		
-	}
-}
-		]]></code>
-	</test-code>
-	<test-code>
-		<description>SOQL with merged variable from literal 2
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-public class Foo {
-	public void test1() {
-		String field1 = 'yo'; 
-		Database.query('SELECT Id FROM Account WHERE Id =' + field1 + 'string');		
-	}
-}
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Safe SOQL + merged variable</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-		
+    <test-code>
+        <description>SOQL with merged with field variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1(String field1) {
-		Database.query('SELECT Id FROM Account WHERE Id =' + String.escapeSingleQuotes(field1) + 'string');		
-	}
+    public static String field1 = 'yo';
+    public void test1() {
+        Database.query('SELECT Id FROM Account WHERE Id =' + field1 + 'string');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Dynamic SOQL with Integer
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>SOQL with merged variable from literal 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		Integer field1 = 4; 
-		Database.query('SELECT Id FROM Account LIMIT ' + field1);		
-	}
+    public void test1() {
+        String field1 = 'yo';
+        Database.query('SELECT Id FROM Account WHERE Id =' + field1 + 'string');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Dynamic safe escaped SOQL with multipart
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe SOQL + merged variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String name = 'Name';
-		String someQuery = 'SELECT Id, ' + name + ' FROM ' + String.escapeSingleQuotes(objectName);
+    public void test1(String field1) {
+        Database.query('SELECT Id FROM Account WHERE Id =' + String.escapeSingleQuotes(field1) + 'string');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Dynamic SOQL with Integer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        Integer field1 = 4;
+        Database.query('SELECT Id FROM Account LIMIT ' + field1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Dynamic safe escaped SOQL with multipart</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        String name = 'Name';
+        String someQuery = 'SELECT Id, ' + name + ' FROM ' + String.escapeSingleQuotes(objectName);
         Database.query(someQuery);
-        
-	}
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Dynamic safe escaped SOQL with multipart
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Dynamic safe escaped SOQL with multipart</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1(String objectName) {
-		String name = 'Name';
-		String someQuery = 'SELECT Id, ' + name + ' FROM ' + objectName;
+    public void test1(String objectName) {
+        String name = 'Name';
+        String someQuery = 'SELECT Id, ' + name + ' FROM ' + objectName;
         Database.query(someQuery);
-        
-	}
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Unsafe SOQL merged from many variables</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
-		
+    <test-code>
+        <description>Unsafe SOQL merged from many variables</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
 
-	public List<SObject> test1(String fieldNameQuery, String objName) {
-		String baseQuery = 'Select ';
-		String finalObjectQuery;
-		finalObjectQuery = baseQuery + fieldNameQuery + ' from ' + objName;
-		return Database.query(finalObjectQuery);	
-	}
+    public List<SObject> test1(String fieldNameQuery, String objName) {
+        String baseQuery = 'Select ';
+        String finalObjectQuery;
+        finalObjectQuery = baseQuery + fieldNameQuery + ' from ' + objName;
+        return Database.query(finalObjectQuery);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Literal concatenation in the query method is safe
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[		
+    <test-code>
+        <description>Literal concatenation in the query method is safe</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
 
-	public List<SObject> test1(String objName) {
-		String baseQuery = 'Select Id, Name From ' + String.escapeSingleQuotes(objName);
-		return Database.query(baseQuery + ' LIMIT 1');	
-	}
+    public List<SObject> test1(String objName) {
+        String baseQuery = 'Select Id, Name From ' + String.escapeSingleQuotes(objName);
+        return Database.query(baseQuery + ' LIMIT 1');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Integer is safe in query</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[		
+    <test-code>
+        <description>Integer is safe in query</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1(String objName, String limit) {
-		Integer nLimit = Integer.valueOf(limit);
-		List<SObject> res = Database.query('Select Id, Name From ' + String.escapeSingleQuotes(objName) + ' LIMIT ' + nLimit);	
-	}
+    public void test1(String objName, String lim) { // "limit" is a kw
+        Integer nLimit = Integer.valueOf(lim);
+        List<SObject> res = Database.query('Select Id, Name From ' + String.escapeSingleQuotes(objName) + ' LIMIT ' + nLimit);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>ID var decl is safe in query</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[		
+    <test-code>
+        <description>ID var decl is safe in query</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		ID someId;
-		someId = getId();
-		List<SObject> res = Database.query('Select Id, Name From Account Where Id=' + someId);	
-	}
+    public void test1() {
+        ID someId;
+        someId = getId();
+        List<SObject> res = Database.query('Select Id, Name From Account Where Id=' + someId);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Safe ID and unsafe String from method signature
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[		
+    <test-code>
+        <description>Safe ID and unsafe String from method signature</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1(ID someId, String name) {
-		List<SObject> res = Database.query('Select Id,' + name + ' From Account Where Id=' + someId);	
-	}
+    public void test1(ID someId, String name) {
+        List<SObject> res = Database.query('Select Id,' + name + ' From Account Where Id=' + someId);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Ternary operator condition var is safe but resulting type
-			isn't
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[		
+    <test-code>
+        <description>Ternary operator condition var is safe but resulting type isn't</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1(String name) {
-		List<SObject> res = Database.query('Select Id,Name From ' + (name == 'Account' ? name : 'Cases');	
-	}
+    public void test1(String name) {
+        List<SObject> res = Database.query('Select Id,Name From ' + (name == 'Account' ? name : 'Cases'));
+    }
 }
-		]]></code>
-	</test-code>
-
-
+        ]]></code>
+    </test-code>
 </test-data>

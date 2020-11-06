@@ -15,7 +15,7 @@ import org.jaxen.XPathFunctionContext;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 
 @InternalApi
@@ -35,7 +35,7 @@ public class TypeIsExactlyFunction implements Function {
         }
         final String fullTypeName = (String) args.get(0);
         final Node n = (Node) context.getNodeSet().get(0);
-        
+
         return typeIsExactly(n, fullTypeName);
     }
 
@@ -50,7 +50,7 @@ public class TypeIsExactlyFunction implements Function {
      */
     public static boolean typeIsExactly(final Node n, final String fullTypeName) {
         if (n instanceof TypeNode) {
-            return TypeHelper.isExactlyA((TypeNode) n, fullTypeName);
+            return TypeTestUtil.isExactlyA(fullTypeName, (TypeNode) n);
         } else {
             throw new IllegalArgumentException("typeIsExactly function may only be called on a TypeNode.");
         }

@@ -31,7 +31,21 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
  *
  * @since 5.8.1
  * @author Clément Fournier
+ *
+ * @deprecated This class and subclasses will be removed in PMD 7.0 for
+ *             lack of usefulness. JavaQualifiedName cannot be used to
+ *             represent unknown entities, because in Java source, the
+ *             only thing we can observe are *canonical* names, which
+ *             eg don't exist for local classes, and can be ambiguous
+ *             between a member class and a package name.
+ *
+ *             <p>So you can't build a conformant JavaQualifiedName without
+ *             having parsed the source file where the entity is. But since
+ *             you have parsed the file, you have much better data structures
+ *             than JavaQualifiedName to reflect the content of the program:
+ *             you have nodes. So we can do away with this class.
  */
+@Deprecated
 public abstract class JavaQualifiedName implements QualifiedName {
 
     // toString cache

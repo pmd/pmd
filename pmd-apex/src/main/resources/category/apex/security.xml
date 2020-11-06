@@ -10,6 +10,7 @@ Rules that flag potential security flaws.
     </description>
 
     <rule name="ApexBadCrypto"
+          language="apex"
           since="5.5.3"
           message="Apex classes should use random IV/key"
           class="net.sourceforge.pmd.lang.apex.rule.security.ApexBadCryptoRule"
@@ -32,13 +33,14 @@ public without sharing class Foo {
     </rule>
 
     <rule name="ApexCRUDViolation"
+          language="apex"
           since="5.5.3"
           message="Validate CRUD permission before SOQL/DML operation"
           class="net.sourceforge.pmd.lang.apex.rule.security.ApexCRUDViolationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_security.html#apexcrudviolation">
         <description>
 The rule validates you are checking for access permissions before a SOQL/SOSL/DML operation.
-Since Apex runs in system mode not having proper permissions checks results in escalation of 
+Since Apex runs in system mode not having proper permissions checks results in escalation of
 privilege and may produce runtime errors. This check forces you to handle such scenarios.
         </description>
         <priority>3</priority>
@@ -62,32 +64,10 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="ApexCSRF"
-          since="5.5.3"
-          message="Avoid making DML operations in Apex class constructor/init method"
-          class="net.sourceforge.pmd.lang.apex.rule.security.ApexCSRFRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_security.html#apexcsrf">
-        <description>
-Check to avoid making DML operations in Apex class constructor/init method. This prevents
-modification of the database just by accessing a page.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo {
-    public init() {
-        insert data;
-    }
-
-    public Foo() {
-        insert data;
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="ApexCSRF" ref="category/apex/errorprone.xml/ApexCSRF" deprecated="true"/>
 
     <rule name="ApexDangerousMethods"
+          language="apex"
           since="5.5.3"
           message="Calling potentially dangerous method"
           class="net.sourceforge.pmd.lang.apex.rule.security.ApexDangerousMethodsRule"
@@ -115,6 +95,7 @@ public class Foo {
     </rule>
 
     <rule name="ApexInsecureEndpoint"
+          language="apex"
           since="5.5.3"
           message="Apex callouts should use encrypted communication channels"
           class="net.sourceforge.pmd.lang.apex.rule.security.ApexInsecureEndpointRule"
@@ -137,6 +118,7 @@ public without sharing class Foo {
     </rule>
 
     <rule name="ApexOpenRedirect"
+          language="apex"
           since="5.5.3"
           message="Apex classes should safely redirect to a known location"
           class="net.sourceforge.pmd.lang.apex.rule.security.ApexOpenRedirectRule"
@@ -159,6 +141,7 @@ public without sharing class Foo {
     </rule>
 
     <rule name="ApexSharingViolations"
+          language="apex"
           since="5.5.3"
           message="Apex classes should declare a sharing model if DML or SOQL/SOSL is used"
           class="net.sourceforge.pmd.lang.apex.rule.security.ApexSharingViolationsRule"
@@ -178,6 +161,7 @@ public without sharing class Foo {
     </rule>
 
     <rule name="ApexSOQLInjection"
+          language="apex"
           since="5.5.3"
           message="Avoid untrusted/unescaped variables in DML query"
           class="net.sourceforge.pmd.lang.apex.rule.security.ApexSOQLInjectionRule"
@@ -198,6 +182,7 @@ public class Foo {
     </rule>
 
     <rule name="ApexSuggestUsingNamedCred"
+          language="apex"
           since="5.5.3"
           message="Suggest named credentials for authentication"
           class="net.sourceforge.pmd.lang.apex.rule.security.ApexSuggestUsingNamedCredRule"
@@ -232,6 +217,7 @@ public class Foo {
     </rule>
 
     <rule name="ApexXSSFromEscapeFalse"
+          language="apex"
           since="5.5.3"
           message="Apex classes should escape Strings in error messages"
           class="net.sourceforge.pmd.lang.apex.rule.security.ApexXSSFromEscapeFalseRule"
@@ -252,6 +238,7 @@ public without sharing class Foo {
     </rule>
 
     <rule name="ApexXSSFromURLParam"
+          language="apex"
           since="5.5.3"
           message="Apex classes should escape/sanitize Strings obtained from URL parameters"
           class="net.sourceforge.pmd.lang.apex.rule.security.ApexXSSFromURLParamRule"

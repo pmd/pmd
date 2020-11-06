@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-	<test-code>
-		<description>short</description>
-		<rule-property name="minimum">9</rule-property>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>short</description>
+        <rule-property name="minimum">9</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void foo() {}
+    public void foo() {}
 }
-		]]></code>
-	</test-code>
-    
-	<test-code>
-		<description>long</description>
-		<rule-property name="minimum">9</rule-property>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>long</description>
+        <rule-property name="minimum">9</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void foo(Integer p01, Integer p02, Integer p03, Integer p04, Integer p05, Integer p06, Integer p07, Integer p08, Integer p09, Integer p10 ) { }
-	public void bar(Integer p01, Integer p02, Integer p03, Integer p04, Integer p05 ) { }
+    public void foo(Integer p01, Integer p02, Integer p03, Integer p04, Integer p05, Integer p06, Integer p07, Integer p08, Integer p09, Integer p10 ) { }
+    public void bar(Integer p01, Integer p02, Integer p03, Integer p04, Integer p05 ) { }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
     <test-code>
        <description>#1396 Public method with javadoc</description>
@@ -41,7 +40,7 @@ public class SomeClass {
      * Comment
      */
     public void doSomething() {
-        System.debug("hello world");
+        System.debug('hello world');
     }
 
     /** Field comment */
@@ -49,5 +48,4 @@ public class SomeClass {
 }
        ]]></code>
     </test-code>
-
 </test-data>

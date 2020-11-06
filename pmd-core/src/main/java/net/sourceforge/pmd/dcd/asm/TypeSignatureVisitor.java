@@ -12,7 +12,12 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.signature.SignatureVisitor;
 
 import net.sourceforge.pmd.dcd.ClassLoaderUtil;
+import net.sourceforge.pmd.dcd.DCD;
 
+/**
+ * @deprecated See {@link DCD}
+ */
+@Deprecated
 public class TypeSignatureVisitor extends SignatureVisitor {
 
     private static final boolean TRACE = false;

@@ -9,10 +9,16 @@ import java.util.Objects;
 import org.mozilla.javascript.Context;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
 
+/**
+ * @deprecated Will be removed in 7.0 TODO refactor this into language versions?
+ *             In PMD 6, use {@link LanguageVersionHandler#getDefaultParserOptions()} instead.
+ */
+@Deprecated
 public class EcmascriptParserOptions extends ParserOptions {
 
     public enum Version {
@@ -25,7 +31,8 @@ public class EcmascriptParserOptions extends ParserOptions {
         VERSION_1_5("1.5", Context.VERSION_1_5),
         VERSION_1_6("1.6", Context.VERSION_1_6),
         VERSION_1_7("1.7", Context.VERSION_1_7),
-        VERSION_1_8("1.8", Context.VERSION_1_8);
+        VERSION_1_8("1.8", Context.VERSION_1_8),
+        VERSION_ES6("ES6", Context.VERSION_ES6);
 
         private final String name;
         private final int version;
@@ -48,10 +55,14 @@ public class EcmascriptParserOptions extends ParserOptions {
                                                     Version.VERSION_1_0.getLabel(), Version.VERSION_1_1.getLabel(), Version.VERSION_1_2.getLabel(),
                                                     Version.VERSION_1_3.getLabel(), Version.VERSION_1_4.getLabel(), Version.VERSION_1_5.getLabel(),
                                                     Version.VERSION_1_6.getLabel(), Version.VERSION_1_7.getLabel(),
-                                                    Version.VERSION_1_8.getLabel(), };
+                                                    Version.VERSION_1_8.getLabel(), Version.VERSION_ES6.getLabel()};
 
     // Note: The UI order values are chosen to be larger than those built into
     // XPathRule.
+
+    // These aren't converted to the new property framework
+    // Do we need them anyway?
+
     public static final BooleanProperty RECORDING_COMMENTS_DESCRIPTOR = new BooleanProperty("recordingComments",
             "Specifies that comments are produced in the AST.", Boolean.TRUE, 3.0f);
     public static final BooleanProperty RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR = new BooleanProperty(
@@ -59,8 +70,8 @@ public class EcmascriptParserOptions extends ParserOptions {
             4.0f);
     public static final EnumeratedProperty<Version> RHINO_LANGUAGE_VERSION = new EnumeratedProperty<>(
             "rhinoLanguageVersion",
-            "Specifies the Rhino Language Version to use for parsing.  Defaults to Rhino default.", VERSION_LABELS,
-            Version.values(), 0, Version.class, 5.0f);
+            "Specifies the Rhino Language Version to use for parsing.  Defaults to ES6.", VERSION_LABELS,
+            Version.values(), Version.VERSION_ES6.ordinal(), Version.class, 5.0f);
 
     private boolean recordingComments;
     private boolean recordingLocalJsDocComments;

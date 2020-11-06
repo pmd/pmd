@@ -24,6 +24,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptorField;
  *
  * @author Clément Fournier
  */
+@Deprecated
 public abstract class PackagedPropertyModule<T> {
 
     private static final Pattern PACKAGE_NAME_PATTERN = Pattern.compile("(\\w+)(\\.\\w+)*");

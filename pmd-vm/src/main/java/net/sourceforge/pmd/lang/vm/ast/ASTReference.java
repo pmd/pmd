@@ -1,6 +1,8 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -39,29 +41,32 @@ public class ASTReference extends AbstractVmNode {
 
     /**
      * Indicates if we are running in strict reference mode.
+     *
+     * @deprecated for removal with PMD 7.0.0
      */
+    @Deprecated
     public boolean strictRef = false;
 
     /**
      * Indicates if toString() should be called during condition evaluation just
      * to ensure it does not return null. Check is unnecessary if all toString()
      * implementations are known to have non-null return values. Disabling the
-     * check will give a performance improval since toString() may be a complex
+     * check will give a performance improvement since toString() may be a complex
      * operation on large objects.
+     *
+     * @deprecated for removal with PMD 7.0.0
      */
+    @Deprecated
     public boolean toStringNullCheck = true;
 
-    /**
-     * @param id
-     */
+    @InternalApi
+    @Deprecated
     public ASTReference(final int id) {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
+    @InternalApi
+    @Deprecated
     public ASTReference(final VmParser p, final int id) {
         super(p, id);
     }
@@ -84,13 +89,15 @@ public class ASTReference extends AbstractVmNode {
      * Routine to allow the literal representation to be externally overridden.
      * Used now in the VM system to override a reference in a VM tree with the
      * literal of the calling arg to make it work nicely when calling arg is
-     * null. It seems a bit much, but does keep things consistant.
+     * null. It seems a bit much, but does keep things consistent.
      *
      * Note, you can only set the literal once...
      *
      * @param literal
      *            String to render to when null
      */
+    @InternalApi
+    @Deprecated
     public void setLiteral(final String literal) {
         /*
          * do only once

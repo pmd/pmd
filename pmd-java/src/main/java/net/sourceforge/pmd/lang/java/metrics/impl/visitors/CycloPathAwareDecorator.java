@@ -19,12 +19,16 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 
+
 /**
  * Decorator which counts the complexity of boolean expressions for Cyclo.
+ *
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
  *
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric
  */
+@Deprecated
 public class CycloPathAwareDecorator extends JavaParserVisitorDecorator {
 
 
@@ -46,7 +50,7 @@ public class CycloPathAwareDecorator extends JavaParserVisitorDecorator {
             return data;
         }
 
-        int boolCompFor = CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
+        int boolCompFor = CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode());
         ((MutableInt) data).add(boolCompFor);
         return data;
     }

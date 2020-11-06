@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
@@ -17,7 +18,11 @@ import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
  * visitation of the AST, and not need perform their own independent visitation.
  * The RuleChain exists as a means to improve the speed of PMD when there are
  * many Rules.
+ *
+ * @deprecated Internal API, will be removed with PMD 7.0.0.
  */
+@Deprecated
+@InternalApi
 public class RuleChain {
     // Mapping from Language to RuleChainVisitor
     private final Map<Language, RuleChainVisitor> languageToRuleChainVisitor = new HashMap<>();
@@ -74,11 +79,8 @@ public class RuleChain {
         if (visitor == null) {
             if (language.getRuleChainVisitorClass() != null) {
                 try {
-                    visitor = (RuleChainVisitor) language.getRuleChainVisitorClass().newInstance();
-                } catch (InstantiationException e) {
-                    throw new IllegalStateException(
-                            "Failure to created RuleChainVisitor: " + language.getRuleChainVisitorClass(), e);
-                } catch (IllegalAccessException e) {
+                    visitor = (RuleChainVisitor) language.getRuleChainVisitorClass().getConstructor().newInstance();
+                } catch (ReflectiveOperationException | SecurityException | IllegalArgumentException e) {
                     throw new IllegalStateException(
                             "Failure to created RuleChainVisitor: " + language.getRuleChainVisitorClass(), e);
                 }

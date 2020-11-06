@@ -16,7 +16,12 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversi
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ *
+ *
+ * @deprecated Use a {@code PropertyDescriptor<List<Integer>>} instead. A builder is available from {@link PropertyFactory#intListProperty(String)}.
+ *             This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer> {
 
 
@@ -31,7 +36,9 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
+     * @deprecated Use {@link PropertyFactory#intListProperty(String)}
      */
+    @Deprecated
     public IntegerMultiProperty(String theName, String theDescription, Integer min, Integer max,
                                 Integer[] defaultValues, float theUIOrder) {
         this(theName, theDescription, min, max, Arrays.asList(defaultValues), theUIOrder, false);
@@ -57,7 +64,9 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
+     * @deprecated Use {@link PropertyFactory#intListProperty(String)}
      */
+    @Deprecated
     public IntegerMultiProperty(String theName, String theDescription, Integer min, Integer max,
                                 List<Integer> defaultValues, float theUIOrder) {
 
@@ -87,11 +96,19 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#intListProperty(String)}
+     */
+    @Deprecated
     public static IntegerMultiPBuilder named(String name) {
         return new IntegerMultiPBuilder(name);
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#intListProperty(String)}
+     */
+    @Deprecated
     public static final class IntegerMultiPBuilder extends MultiNumericPropertyBuilder<Integer, IntegerMultiPBuilder> {
         private IntegerMultiPBuilder(String name) {
             super(name);

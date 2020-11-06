@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -17,12 +17,18 @@ public interface EcmascriptNode<T extends AstNode> extends Node {
 
     /**
      * Accept the visitor. *
+     *
+     * @deprecated This method is not useful, the logic for combining
+     *     children values should be present on the visitor, not the node
      */
+    @Deprecated
     Object childrenAccept(EcmascriptParserVisitor visitor, Object data);
 
     /**
      * Get the underlying Rhino AST node.
+     * @deprecated The underlying Rhino node should not be used directly.
      */
+    @Deprecated
     T getNode();
 
     /**

@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-1, Exception thrown without preserving stack
-     ]]></description>
+        <description>1, Exception thrown without preserving stack</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -18,12 +17,11 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-2, Exception thrown, stack preserved
-     ]]></description>
+        <description>2, Exception thrown, stack preserved</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -35,12 +33,11 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-3, Exception thrown, stack preserved
-     ]]></description>
+        <description>3, Exception thrown, stack preserved</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -52,12 +49,11 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-4, No exception thrown, OK
-     ]]></description>
+        <description>4, No exception thrown, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -69,12 +65,11 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-5, No exception thrown, OK
-     ]]></description>
+        <description>5, No exception thrown, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -85,12 +80,11 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-6, No exception thrown, OK
-     ]]></description>
+        <description>6, No exception thrown, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -102,12 +96,11 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-7, No exception thrown, OK
-     ]]></description>
+        <description>7, No exception thrown, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -119,12 +112,11 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-8, No exception thrown, OK
-     ]]></description>
+        <description>8, No exception thrown, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -136,12 +128,11 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-9, Excetion is cast, OK
-     ]]></description>
+        <description>9, Excetion is cast, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -153,12 +144,11 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-10, Throwing new Exception, OK
-     ]]></description>
+        <description>10, Throwing new Exception, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -171,12 +161,11 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-11, Throwing new Exception, OK
-     ]]></description>
+        <description>11, Throwing new Exception, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -189,12 +178,11 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-12, Catch and throw RuntimeException
-     ]]></description>
+        <description>12, Catch and throw RuntimeException</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class B {
@@ -206,12 +194,11 @@ public class B {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-13, Catch and throw RuntimeException, fail
-     ]]></description>
+        <description>13, Catch and throw RuntimeException, fail</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class B {
@@ -223,12 +210,11 @@ public class B {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-14, Nested with same name catch and throw, fail on inner
-     ]]></description>
+        <description>14, Nested with same name catch and throw, fail on inner</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class B {
@@ -244,100 +230,84 @@ public class B {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
-	<test-code>
-        <description><![CDATA[
-15, IllegalStateException can take a cause exception in the constructor, too.
-     ]]></description>
+    <test-code>
+        <description>15, IllegalStateException can take a cause exception in the constructor, too.</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar() {
         try {
-			;
         } catch (Exception excep) {
-			throw new IllegalStateException();
-	}
-
+            throw new IllegalStateException();
+        }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-16, False -, No violations reported by PreserveStackTrace Rule
-     ]]></description>
+        <description>16, False -, No violations reported by PreserveStackTrace Rule</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar() {
         try {
-			;
         } catch (Exception notUsed) {
-			RuntimeException ex = new RuntimeException();
-			throw ex;
-		}
+            RuntimeException ex = new RuntimeException();
+            throw ex;
+        }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-17, PreserveStackTrace Rule should exclude this as initCause is used.
-     ]]></description>
+        <description>17, PreserveStackTrace Rule should exclude this as initCause is used.</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar() {
         try {
-			;
         } catch (Exception e) {
-			IllegalStateException ex = new IllegalStateException();
-			ex.initCause(e);
-			throw ex;
-		}
+            IllegalStateException ex = new IllegalStateException();
+            ex.initCause(e);
+            throw ex;
+        }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-18, side effects on rules
-     ]]></description>
+        <description>18, side effects on rules</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar1() {
         try {
-			;
         } catch (Exception notUsed) {
-			RuntimeException ex = new RuntimeException();
-			throw ex;
-		}
+            RuntimeException ex = new RuntimeException();
+            throw ex;
+        }
     }
 
     public void bar2() {
         try {
-			;
         } catch (Exception e) {
-			IllegalStateException ex = new IllegalStateException();
-			ex.initCause(e);
-			throw ex;
-		}
+            IllegalStateException ex = new IllegalStateException();
+            ex.initCause(e);
+            throw ex;
+        }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-19, False positive
-     ]]></description>
+        <description>19, False positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -360,74 +330,63 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-20, False positive
-     ]]></description>
+        <description>20, False positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
 
- private CodeException[] getCodeExceptions() {
-    int             size  = exception_vec.size();
-    CodeException[] c_exc = new CodeException[size];
+    private CodeException[] getCodeExceptions() {
+        int             size  = exception_vec.size();
+        CodeException[] c_exc = new CodeException[size];
 
-    try {
-      for(int i=0; i < size; i++) {
-        CodeExceptionGen c = (CodeExceptionGen)exception_vec.get(i);
-        c_exc[i] = c.getCodeException(cp);
-      }
-    } catch(ArrayIndexOutOfBoundsException e) {}
-
-    return c_exc;
-  }
+        try {
+            for (int i=0; i < size; i++) {
+                CodeExceptionGen c = (CodeExceptionGen)exception_vec.get(i);
+                c_exc[i] = c.getCodeException(cp);
+            }
+        } catch(ArrayIndexOutOfBoundsException e) {}
+        return c_exc;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[
-21, Java 7's multi-catch, NOK
-     ]]></description>
+        <description>21, Java 7's multi-catch, NOK</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 class MultiCatch {
 
-  public static void main(String[] args) {
-    try {
-      Class.forName("org.example.Foo").newInstance();
-    } catch (InstantiationException | ClassNotFoundException | IllegalAccessException eMultiCatch) {
-      throw new UnsupportedOperationException(args[0]);
+    public static void main(String[] args) {
+        try {
+            Class.forName("org.example.Foo").newInstance();
+        } catch (InstantiationException | ClassNotFoundException | IllegalAccessException eMultiCatch) {
+            throw new UnsupportedOperationException(args[0]);
+        }
     }
-  }
-
 }
-     ]]></code>
-        <source-type>java 1.7</source-type>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[
-22, Java 7's multi-catch, OK
-     ]]></description>
+        <description>22, Java 7's multi-catch, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class MultiCatch {
 
-  public static void main(String[] args) {
-    try {
-      Class.forName("org.example.Foo").newInstance();
-    } catch (InstantiationException | ClassNotFoundException | IllegalAccessException eMultiCatch) {
-      throw new UnsupportedOperationException(eMultiCatch);
+    public static void main(String[] args) {
+        try {
+            Class.forName("org.example.Foo").newInstance();
+        } catch (InstantiationException | ClassNotFoundException | IllegalAccessException eMultiCatch) {
+            throw new UnsupportedOperationException(eMultiCatch);
+        }
     }
-  }
-
 }
-     ]]></code>
-        <source-type>java 1.7</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -539,11 +498,11 @@ public class Bug {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
-    <description>#543 False negative with String concatenation</description>
-    <expected-problems>3</expected-problems>
-    <code><![CDATA[
+        <description>#543 False negative with String concatenation</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
 public class Foo {
     public void foo(String a) throws Exception {
         try {
@@ -557,6 +516,6 @@ public class Foo {
         }
     }
 }
-    ]]></code>
-</test-code>
+        ]]></code>
+    </test-code>
 </test-data>

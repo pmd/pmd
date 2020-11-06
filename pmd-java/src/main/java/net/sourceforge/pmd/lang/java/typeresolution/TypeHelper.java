@@ -4,11 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
-import org.apache.commons.lang3.ClassUtils;
+import java.util.Objects;
 
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
+/**
+ * @deprecated Use the similar {@link TypeTestUtil}
+ */
+@Deprecated
 public final class TypeHelper {
 
     private TypeHelper() {
@@ -20,20 +25,21 @@ public final class TypeHelper {
      * given by the clazzName. If the clazzName is on the auxclasspath, then also subclasses
      * are considered.
      *
+     * <p>If clazzName is not on the auxclasspath (so it can't be resolved), then a string
+     * comparison of the class names are performed. This might result in comparing only
+     * the simple name of the classes.
+     *
      * @param n the type node to check
      * @param clazzName the class name to compare to
      * @return <code>true</code> if type node n is of type clazzName or a subtype of clazzName
+     * @deprecated Use {@link TypeTestUtil#isA(Class, TypeNode)}
      */
+    @Deprecated
     public static boolean isA(final TypeNode n, final String clazzName) {
-        final Class<?> clazz = loadClassWithNodeClassloader(n, clazzName);
-
-        if (clazz != null) {
-            return isA(n, clazz);
-        }
-
-        return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
+        Objects.requireNonNull(n);
+        return clazzName != null && TypeTestUtil.isA(clazzName, n);
     }
-    
+
     /**
      * Checks whether the resolved type of the given {@link TypeNode} n is exactly of the type
      * given by the clazzName.
@@ -41,76 +47,67 @@ public final class TypeHelper {
      * @param n the type node to check
      * @param clazzName the class name to compare to
      * @return <code>true</code> if type node n is exactly of type clazzName.
+     * @deprecated Use {@link TypeTestUtil#isExactlyA(Class, TypeNode)}
      */
+    @Deprecated
     public static boolean isExactlyA(final TypeNode n, final String clazzName) {
-        final Class<?> clazz = loadClassWithNodeClassloader(n, clazzName);
-
-        if (clazz != null) {
-            return n.getType() == clazz;
-        }
-
-        return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
-    }
-    
-    private static Class<?> loadClassWithNodeClassloader(final TypeNode n, final String clazzName) {
-        if (n.getType() != null) {
-            try {
-                ClassLoader classLoader = n.getType().getClassLoader();
-                if (classLoader == null) {
-                    // Using the system classloader then
-                    classLoader = ClassLoader.getSystemClassLoader();
-                }
-    
-                // If the requested type is in the classpath, using the same classloader should work
-                return ClassUtils.getClass(classLoader, clazzName);
-            } catch (final ClassNotFoundException ignored) {
-                // The requested type is not on the auxclasspath. This might happen, if the type node
-                // is probed for a specific type (e.g. is is a JUnit5 Test Annotation class).
-                // Failing to resolve clazzName does not necessarily indicate an incomplete auxclasspath.
-            } catch (final LinkageError expected) {
-                // We found the class but it's invalid / incomplete. This may be an incomplete auxclasspath
-                // if it was a NoClassDefFoundError. TODO : Report it?
-            }
-        }
-        
-        return null;
+        Objects.requireNonNull(n);
+        return clazzName != null && TypeTestUtil.isExactlyA(clazzName, n);
     }
 
-    /** @see #isA(TypeNode, String) */
+
+    /**
+     * @deprecated Use {@link TypeTestUtil#isA(Class, TypeNode)}
+     */
+    @Deprecated
     public static boolean isA(TypeNode n, Class<?> clazz) {
-        return subclasses(n, clazz);
+        Objects.requireNonNull(n);
+        return clazz != null && TypeTestUtil.isA(clazz, n);
     }
 
+    /**
+     * @deprecated Not useful, use {@link TypeTestUtil#isA(Class, TypeNode)}
+     */
+    @Deprecated
     public static boolean isEither(TypeNode n, Class<?> class1, Class<?> class2) {
         return subclasses(n, class1) || subclasses(n, class2);
     }
 
+    /**
+     * @deprecated Not useful, use {@link TypedNameDeclaration#getTypeNode()} and {@link TypeTestUtil#isExactlyA(Class, TypeNode)}
+     */
+    @Deprecated
     public static boolean isExactlyAny(TypedNameDeclaration vnd, Class<?>... clazzes) {
         Class<?> type = vnd.getType();
         for (final Class<?> clazz : clazzes) {
             if (type != null && type.equals(clazz) || type == null
-                    && (clazz.getSimpleName().equals(vnd.getTypeImage()) || clazz.getName().equals(vnd.getTypeImage()))) {
+                && (clazz.getSimpleName().equals(vnd.getTypeImage()) || clazz.getName().equals(vnd.getTypeImage()))) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
+    /**
+     * @deprecated Not useful, use a negated {@link TypeTestUtil#isExactlyA(Class, TypeNode)}
+     */
+    @Deprecated
     public static boolean isExactlyNone(TypedNameDeclaration vnd, Class<?>... clazzes) {
         return !isExactlyAny(vnd, clazzes);
     }
-    
+
     /**
-     * @deprecated use {@link #isExactlyAny(TypedNameDeclaration, Class...)}
+     * @deprecated use {@link TypeTestUtil#isA(Class, TypeNode) TypeTestUtil.isA(vnd.getTypeNode(), clazz)}
      */
     @Deprecated
     public static boolean isA(TypedNameDeclaration vnd, Class<?> clazz) {
         return isExactlyAny(vnd, clazz);
     }
 
+
     /**
-     * @deprecated use {@link #isExactlyAny(TypedNameDeclaration, Class...)}
+     * @deprecated Not useful, use {@link TypeTestUtil#isA(Class, TypeNode)}
      */
     @Deprecated
     public static boolean isEither(TypedNameDeclaration vnd, Class<?> class1, Class<?> class2) {
@@ -118,19 +115,27 @@ public final class TypeHelper {
     }
 
     /**
-     * @deprecated use {@link #isExactlyNone(TypedNameDeclaration, Class...)}
+     * @deprecated Not useful, use a negated {@link TypeTestUtil#isA(Class, TypeNode)}
      */
     @Deprecated
     public static boolean isNeither(TypedNameDeclaration vnd, Class<?> class1, Class<?> class2) {
         return !isA(vnd, class1) && !isA(vnd, class2);
     }
 
+    /**
+     * @deprecated Use {@link TypeTestUtil#isA(Class, TypeNode)}
+     */
+    @Deprecated
     public static boolean subclasses(TypeNode n, Class<?> clazz) {
-        Class<?> type = n.getType();
-        if (type == null) {
-            return n.hasImageEqualTo(clazz.getSimpleName()) || n.hasImageEqualTo(clazz.getName());
-        }
+        Objects.requireNonNull(n);
+        return clazz != null && TypeTestUtil.isA(clazz, n);
+    }
 
-        return clazz.isAssignableFrom(type);
+
+    /**
+     * @deprecated use {@link TypeTestUtil#isA(Class, TypeNode) TypeTestUtil.isA(vnd.getTypeNode(), className)}
+     */
+    public static boolean isA(TypedNameDeclaration vnd, String className) {
+        return isA(vnd.getTypeNode(), className);
     }
 }

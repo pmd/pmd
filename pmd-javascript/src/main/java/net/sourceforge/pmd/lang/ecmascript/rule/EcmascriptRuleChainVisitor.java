@@ -14,8 +14,14 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
+import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
+/**
+ * @deprecated for removal with PMD 7. A language dependent rule chain visitor is not needed anymore.
+ *      See {@link RuleChainVisitor}.
+ */
+@Deprecated
 public class EcmascriptRuleChainVisitor extends AbstractRuleChainVisitor {
 
     @Override
@@ -27,9 +33,9 @@ public class EcmascriptRuleChainVisitor extends AbstractRuleChainVisitor {
         while (!stack.isEmpty()) {
             Node node = stack.pop();
             indexNode(node);
-            if (node.jjtGetNumChildren() > 0) {
-                for (int i = node.jjtGetNumChildren() - 1; i >= 0; i--) {
-                    stack.push(node.jjtGetChild(i));
+            if (node.getNumChildren() > 0) {
+                for (int i = node.getNumChildren() - 1; i >= 0; i--) {
+                    stack.push(node.getChild(i));
                 }
             }
         }

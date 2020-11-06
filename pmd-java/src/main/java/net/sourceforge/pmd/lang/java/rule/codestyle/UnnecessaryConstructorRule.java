@@ -70,7 +70,7 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
 
         ASTConstructorDeclaration cdnode = nodes.get(0);
 
-        return cdnode.getParameterCount() == 0 && !hasIgnoredAnnotation(cdnode)
+        return cdnode.getArity() == 0 && !hasIgnoredAnnotation(cdnode)
             && !cdnode.hasDescendantOfType(ASTBlockStatement.class) && !cdnode.hasDescendantOfType(ASTNameList.class)
             && hasDefaultConstructorInvocation(cdnode);
     }
@@ -87,7 +87,7 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * Returns {@code true} if access modifier of construtor is same as class's,
+     * Returns {@code true} if access modifier of constructor is same as class's,
      * otherwise {@code false}.
      *
      * @param node the class declaration node

@@ -7,6 +7,10 @@ package net.sourceforge.pmd.util.filter;
 import java.io.File;
 import java.util.Locale;
 
+/**
+ * @deprecated See {@link Filter}
+ */
+@Deprecated
 public class FileExtensionFilter implements Filter<File> {
     protected final String[] extensions;
     protected final boolean ignoreCase;

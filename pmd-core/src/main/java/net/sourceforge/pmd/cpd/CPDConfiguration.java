@@ -40,7 +40,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     public static final String DEFAULT_RENDERER = "text";
 
     private static final Map<String, Class<? extends CPDRenderer>> RENDERERS = new HashMap<>();
-    
+
     static {
         RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
         RENDERERS.put("xml", XMLRenderer.class);
@@ -71,7 +71,7 @@ public class CPDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     private Renderer renderer;
-    
+
     private CPDRenderer cpdRenderer;
 
     private String encoding;
@@ -203,7 +203,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             return new SimpleRenderer();
         }
     }
-    
+
     public static CPDRenderer getCPDRendererFromString(String name, String encoding) {
         String clazzname = name;
         if (clazzname == null || "".equals(clazzname)) {
@@ -317,7 +317,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     public Renderer getRenderer() {
         return renderer;
     }
-    
+
     public CPDRenderer getCPDRenderer() {
         return cpdRenderer;
     }
@@ -373,7 +373,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.renderer = renderer;
         this.cpdRenderer = null;
     }
-    
+
     public void setCPDRenderer(CPDRenderer renderer) {
         this.cpdRenderer = renderer;
         this.renderer = null;

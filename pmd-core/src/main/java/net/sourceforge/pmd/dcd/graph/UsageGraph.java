@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.dcd.ClassLoaderUtil;
+import net.sourceforge.pmd.dcd.DCD;
 import net.sourceforge.pmd.util.filter.Filter;
 
 /**
@@ -43,7 +44,10 @@ import net.sourceforge.pmd.util.filter.Filter;
  * @see MethodNode
  * @see NodeVisitor
  * @see NodeVisitorAcceptor
+ *
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public class UsageGraph implements NodeVisitorAcceptor {
 
     private final List<ClassNode> classNodes = new ArrayList<>();

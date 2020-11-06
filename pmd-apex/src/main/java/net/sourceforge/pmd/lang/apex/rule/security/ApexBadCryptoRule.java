@@ -13,12 +13,13 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
 /**
  * Finds encryption schemes using hardcoded IV, hardcoded key
- * 
+ *
  * @author sergey.gorbaty
  *
  */
@@ -64,13 +65,13 @@ public class ApexBadCryptoRule extends AbstractApexRule {
                 validateStaticIVorKey(methodCall, data);
             }
         }
-        
+
         potentiallyStaticBlob.clear();
-        
+
         return data;
     }
 
-    private void findSafeVariables(AbstractApexNode<?> var) {
+    private void findSafeVariables(ApexNode<?> var) {
         ASTMethodCallExpression methodCall = var.getFirstChildOfType(ASTMethodCallExpression.class);
         if (methodCall != null && Helper.isMethodName(methodCall, BLOB, VALUE_OF)) {
             ASTVariableExpression variable = var.getFirstChildOfType(ASTVariableExpression.class);
@@ -82,19 +83,19 @@ public class ApexBadCryptoRule extends AbstractApexRule {
 
     private void validateStaticIVorKey(ASTMethodCallExpression methodCall, Object data) {
         // .encrypt('AES128', key, exampleIv, data);
-        int numberOfChildren = methodCall.jjtGetNumChildren();
+        int numberOfChildren = methodCall.getNumChildren();
         switch (numberOfChildren) {
         // matching signature to encrypt(
         case 5:
-            Object potentialIV = methodCall.jjtGetChild(3);
+            Object potentialIV = methodCall.getChild(3);
             reportIfHardCoded(data, potentialIV);
-            Object potentialKey = methodCall.jjtGetChild(2);
+            Object potentialKey = methodCall.getChild(2);
             reportIfHardCoded(data, potentialKey);
             break;
 
         // matching signature to encryptWithManagedIV(
         case 4:
-            Object key = methodCall.jjtGetChild(2);
+            Object key = methodCall.getChild(2);
             reportIfHardCoded(data, key);
             break;
 

@@ -8,16 +8,23 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractParser;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 
 /**
  * Adapter for the VfParser.
+ *
+ * @deprecated This is internal API, use {@link LanguageVersionHandler#getParser(ParserOptions)}.
  */
+@Deprecated
+@InternalApi
 public class VfParser extends AbstractParser {
 
     public VfParser(ParserOptions parserOptions) {
@@ -37,7 +44,7 @@ public class VfParser extends AbstractParser {
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
-        return new net.sourceforge.pmd.lang.vf.ast.VfParser(new VfSimpleCharStream(source)).CompilationUnit();
+        return new net.sourceforge.pmd.lang.vf.ast.VfParser(new SimpleCharStream(source)).CompilationUnit();
     }
 
     @Override

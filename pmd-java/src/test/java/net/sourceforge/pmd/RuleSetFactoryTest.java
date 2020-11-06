@@ -23,7 +23,7 @@ public class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
                         + "  <description>Custom ruleset for tests</description>\n"
                         + "  <rule ref=\"category/java/codestyle.xml\">\n"
                         + "    <exclude name=\"UselessParentheses\"/>\n" + "  </rule>\n" + "</ruleset>\n");
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
         RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
         Rule rule = ruleset.getRuleByName("UselessParentheses");
         assertNull(rule);

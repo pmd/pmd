@@ -19,7 +19,9 @@ import net.sourceforge.pmd.dcd.graph.UsageGraph;
  * Perform a visitation a UsageGraph, looking for <em>dead code</em>, which is
  * essential code which is not used by any other code. There are various options
  * for configuration how this determination is made.
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public class UsageNodeVisitor extends NodeVisitorAdapter {
 
     /**
@@ -143,7 +145,7 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
             if (options.isIgnoreFieldInlinable()) {
                 if (Modifier.isFinal(fieldNode.getMember().getModifiers())
                         && fieldNode.getMember().getType().isPrimitive()
-                        || fieldNode.getMember().getType().getName().equals("java.lang.String")) {
+                        || "java.lang.String".equals(fieldNode.getMember().getType().getName())) {
                     ignore("field inlinable", fieldNode);
                     log = false;
                 }
@@ -188,7 +190,7 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
 
         final Method method = node.getMember();
 
-        return method.getName().equals("main") && Modifier.isPublic(method.getModifiers())
+        return "main".equals(method.getName()) && Modifier.isPublic(method.getModifiers())
                 && Modifier.isStatic(method.getModifiers()) && method.getReturnType() == Void.TYPE
                 && method.getParameterTypes().length == 1 && method.getParameterTypes()[0].isArray()
                 && method.getParameterTypes()[0].getComponentType().equals(java.lang.String.class);
@@ -199,13 +201,13 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
         if (methodNode.getUsers().isEmpty()) {
             boolean log = true;
             if (options.isIgnoreMethodAllOverride()) {
-                if (ClassLoaderUtil.isOverridenMethod(methodNode.getClassNode().getClass(), methodNode.getMember(),
+                if (ClassLoaderUtil.isOverriddenMethod(methodNode.getClassNode().getClass(), methodNode.getMember(),
                         false)) {
                     ignore("method all override", methodNode);
                     log = false;
                 }
             } else if (options.isIgnoreMethodJavaLangObjectOverride()) {
-                if (ClassLoaderUtil.isOverridenMethod(java.lang.Object.class, methodNode.getMember(), true)) {
+                if (ClassLoaderUtil.isOverriddenMethod(java.lang.Object.class, methodNode.getMember(), true)) {
                     ignore("method java.lang.Object override", methodNode);
                     log = false;
                 }

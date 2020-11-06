@@ -6,7 +6,7 @@ package net.sourceforge.pmd.renderers;
 
 import org.junit.Test;
 
-public class EmptyRendererTest extends AbstractRendererTst {
+public class EmptyRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {

@@ -1,13 +1,17 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 import apex.jorje.semantic.ast.statement.ExpressionStatement;
 
 public class ASTExpressionStatement extends AbstractApexNode<ExpressionStatement> {
 
+    @Deprecated
+    @InternalApi
     public ASTExpressionStatement(ExpressionStatement expressionStatement) {
         super(expressionStatement);
     }
@@ -25,8 +29,8 @@ public class ASTExpressionStatement extends AbstractApexNode<ExpressionStatement
             return super.getBeginColumn() - beginColumnDiff;
         }
 
-        if (jjtGetNumChildren() > 0 && jjtGetChild(0) instanceof ASTMethodCallExpression) {
-            ASTMethodCallExpression methodCallExpression = (ASTMethodCallExpression) jjtGetChild(0);
+        if (getNumChildren() > 0 && getChild(0) instanceof ASTMethodCallExpression) {
+            ASTMethodCallExpression methodCallExpression = (ASTMethodCallExpression) getChild(0);
 
             int fullLength = methodCallExpression.getFullMethodName().length();
             int nameLength = methodCallExpression.getMethodName().length();

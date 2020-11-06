@@ -6,7 +6,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
 
-public class IDEAJRendererTest extends AbstractRendererTst {
+public class IDEAJRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {

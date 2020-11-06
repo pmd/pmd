@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.xpath;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.Iterator;
 
@@ -18,19 +19,22 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.xpath.MetricFunction;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**
  * @author Clément Fournier
  * @since 6.0.0
  */
 public class XPathMetricFunctionTest {
+
+    // TODO 7.0 when removing jaxen these tests need to be updated to use pmd-java:metric
 
     private static final String VIOLATION_MESSAGE = "violation";
 
@@ -39,8 +43,7 @@ public class XPathMetricFunctionTest {
 
 
     private Rule makeXpathRuleFromXPath(String xpath) {
-        XPathRule rule = new XPathRule();
-        rule.setXPath(xpath);
+        XPathRule rule = new XPathRule(XPathVersion.XPATH_1_0, xpath);
         rule.setMessage(VIOLATION_MESSAGE);
         rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
         return rule;
@@ -52,9 +55,9 @@ public class XPathMetricFunctionTest {
         RuleContext ctx = new RuleContext();
         Report report = new Report();
         ctx.setReport(report);
-        ctx.setSourceCodeFilename("n/a");
+        ctx.setSourceCodeFile(new File("n/a"));
         ctx.setIgnoreExceptions(false); // for test, we want immediate exceptions thrown and not collect them
-        RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
+        RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
         return report.iterator();
     }

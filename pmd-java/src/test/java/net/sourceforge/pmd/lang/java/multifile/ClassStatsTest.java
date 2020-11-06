@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
@@ -33,7 +34,7 @@ public class ClassStatsTest {
     @Ignore("Exception in typeresolution visit")
     public void testCountOpSigs() {
 
-        JavaMultifileVisitorTest.parseAndVisitForClass(SignatureCountTestData.class);
+        JavaParsingHelper.WITH_PROCESSING.parseClass(SignatureCountTestData.class);
 
         final ProjectMirror toplevel = PackageStats.INSTANCE;
 

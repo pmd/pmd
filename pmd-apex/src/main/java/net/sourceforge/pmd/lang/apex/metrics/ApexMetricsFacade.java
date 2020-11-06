@@ -13,21 +13,17 @@ import net.sourceforge.pmd.lang.metrics.MetricsComputer;
  * Backs the static façade.
  *
  * @author Clément Fournier
+ * @deprecated Not useful anymore
  */
+@Deprecated
 public class ApexMetricsFacade extends AbstractMetricsFacade<ASTUserClassOrInterface<?>, ASTMethod> {
 
     private final ApexProjectMemoizer memoizer = new ApexProjectMemoizer();
 
 
-    /** Resets the entire project mirror. Used for tests. */
-    void reset() {
-        memoizer.reset();
-    }
-
-
     @Override
     protected MetricsComputer<ASTUserClassOrInterface<?>, ASTMethod> getLanguageSpecificComputer() {
-        return ApexMetricsComputer.INSTANCE;
+        return ApexMetricsComputer.getInstance();
     }
 
 

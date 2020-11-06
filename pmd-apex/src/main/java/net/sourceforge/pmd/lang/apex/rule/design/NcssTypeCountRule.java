@@ -14,7 +14,7 @@ import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Non-commented source statement counter for type declarations.
- * 
+ *
  * @author ported from Java original of Jason Bennett
  */
 public class NcssTypeCountRule extends AbstractNcssCountRule {

@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,11 +31,18 @@ public final class LanguageRegistry {
         // Use current class' classloader instead of the threads context classloader, see https://github.com/pmd/pmd/issues/1377
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, getClass().getClassLoader());
         Iterator<Language> iterator = languageLoader.iterator();
-        while (iterator.hasNext()) {
+
+        while (true) {
+            // this loop is weird, but both hasNext and next may throw ServiceConfigurationError,
+            // it's more robust that way
             try {
-                Language language = iterator.next();
-                languagesList.add(language);
-            } catch (UnsupportedClassVersionError e) {
+                if (iterator.hasNext()) {
+                    Language language = iterator.next();
+                    languagesList.add(language);
+                } else {
+                    break;
+                }
+            } catch (UnsupportedClassVersionError | ServiceConfigurationError e) {
                 // Some languages require java8 and are therefore only available
                 // if java8 or later is used as runtime.
                 System.err.println("Ignoring language for PMD: " + e.toString());
@@ -57,12 +65,34 @@ public final class LanguageRegistry {
         }
     }
 
+    /**
+     * @deprecated Use the static methods instead, will be made private
+     */
+    @Deprecated
     public static LanguageRegistry getInstance() {
         return instance;
     }
 
     public static Collection<Language> getLanguages() {
-        return getInstance().languages.values();
+        // Filter out languages, that are not fully supported by PMD yet.
+        // Those languages should not have a LanguageModule then, but they have it.
+        // TODO This is unnecessary, if the incomplete language modules have been removed.
+        List<Language> languages = new ArrayList<>();
+        for (Language language : getInstance().languages.values()) {
+            LanguageVersionHandler languageVersionHandler = language.getDefaultVersion().getLanguageVersionHandler();
+            boolean pmdSupported = false;
+
+            if (languageVersionHandler != null) {
+                ParserOptions defaultParserOptions = languageVersionHandler.getDefaultParserOptions();
+                Parser parser = languageVersionHandler.getParser(defaultParserOptions);
+                pmdSupported = parser.canParse();
+            }
+
+            if (pmdSupported) {
+                languages.add(language);
+            }
+        }
+        return languages;
     }
 
     public static Language getLanguage(String languageName) {
@@ -89,6 +119,10 @@ public final class LanguageRegistry {
         return null;
     }
 
+    /**
+     * @deprecated This is not useful, will be removed with 7.0.0
+     */
+    @Deprecated
     public static LanguageVersion findLanguageVersionByTerseName(String terseNameAndVersion) {
         String version;
         String terseName;
@@ -120,6 +154,10 @@ public final class LanguageRegistry {
         return languages;
     }
 
+    /**
+     * @deprecated This is not useful, will be removed with 7.0.0
+     */
+    @Deprecated
     public static List<LanguageVersion> findAllVersions() {
         List<LanguageVersion> versions = new ArrayList<>();
         for (Language language : getLanguages()) {
@@ -132,17 +170,18 @@ public final class LanguageRegistry {
      * A utility method to find the Languages which have Rule support.
      *
      * @return A List of Languages with Rule support.
+     *
+     * @deprecated This method will be removed with PMD 7.0.0. Use {@link #getLanguages()} instead.
      */
+    @Deprecated
     public static List<Language> findWithRuleSupport() {
-        List<Language> languages = new ArrayList<>();
-        for (Language language : getInstance().languages.values()) {
-            if (language.getRuleChainVisitorClass() != null) {
-                languages.add(language);
-            }
-        }
-        return languages;
+        return new ArrayList<>(getLanguages());
     }
 
+    /**
+     * @deprecated This is too specific, will be removed with 7.0.0
+     */
+    @Deprecated
     public static String commaSeparatedTerseNamesForLanguage(List<Language> languages) {
         StringBuilder builder = new StringBuilder();
         for (Language language : languages) {
@@ -154,6 +193,10 @@ public final class LanguageRegistry {
         return builder.toString();
     }
 
+    /**
+     * @deprecated This is too specific, will be removed with 7.0.0
+     */
+    @Deprecated
     public static String commaSeparatedTerseNamesForLanguageVersion(List<LanguageVersion> languageVersions) {
         if (languageVersions == null || languageVersions.isEmpty()) {
             return "";

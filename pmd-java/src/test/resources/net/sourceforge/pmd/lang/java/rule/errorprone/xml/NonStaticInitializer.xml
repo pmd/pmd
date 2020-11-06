@@ -3,26 +3,100 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-bad
-     ]]></description>
+        <description>bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- {}
+    {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-static initializers are OK
-     ]]></description>
+        <description>static initializers are OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- static {}
+    static {}
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Allowed in anonymous classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Animation getStatusTransition() {
+        return new Transition() {
+
+            {
+                setCycleDuration(Duration.millis(1200));
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                // magic
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Flag in local class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    static {
+        class Local {{}}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Allowed in enum constant</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public enum Foo {
+    A {
+        { setCycleDuration(Duration.millis(1200)); }
+    };
+
+
+    { setCycleDuration(Duration.millis(1200)); }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Flag in nested local class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public Animation getStatusTransition() {
+        return new Transition() {
+
+            {
+                setCycleDuration(Duration.millis(1200));
+                class ImInAnon {{}} // should be flagged
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                // magic
+            }
+        };
+     }
+}
+        ]]></code>
     </test-code>
 </test-data>

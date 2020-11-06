@@ -19,21 +19,21 @@ public class IdempotentOperationsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTStatementExpression node, Object data) {
-        if (node.jjtGetNumChildren() != 3 || !(node.jjtGetChild(0) instanceof ASTPrimaryExpression)
-                || !(node.jjtGetChild(1) instanceof ASTAssignmentOperator)
-                || ((ASTAssignmentOperator) node.jjtGetChild(1)).isCompound()
-                || !(node.jjtGetChild(2) instanceof ASTExpression)
-                || node.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() == 0
-                || node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() == 0) {
+        if (node.getNumChildren() != 3 || !(node.getChild(0) instanceof ASTPrimaryExpression)
+                || !(node.getChild(1) instanceof ASTAssignmentOperator)
+                || ((ASTAssignmentOperator) node.getChild(1)).isCompound()
+                || !(node.getChild(2) instanceof ASTExpression)
+                || node.getChild(0).getChild(0).getNumChildren() == 0
+                || node.getChild(2).getChild(0).getChild(0).getNumChildren() == 0) {
             return super.visit(node, data);
         }
 
-        Node lhs = node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+        Node lhs = node.getChild(0).getChild(0).getChild(0);
         if (!(lhs instanceof ASTName)) {
             return super.visit(node, data);
         }
 
-        Node rhs = node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+        Node rhs = node.getChild(2).getChild(0).getChild(0).getChild(0);
         if (!(rhs instanceof ASTName)) {
             return super.visit(node, data);
         }
@@ -42,15 +42,15 @@ public class IdempotentOperationsRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        if (lhs.jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
-            Node n = lhs.jjtGetParent().jjtGetParent().jjtGetChild(1);
+        if (lhs.getParent().getParent().getNumChildren() > 1) {
+            Node n = lhs.getParent().getParent().getChild(1);
             if (n instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) n).isArrayDereference()) {
                 return super.visit(node, data);
             }
         }
 
-        if (rhs.jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
-            Node n = rhs.jjtGetParent().jjtGetParent().jjtGetChild(1);
+        if (rhs.getParent().getParent().getNumChildren() > 1) {
+            Node n = rhs.getParent().getParent().getChild(1);
             if (n instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) n).isArguments()
                     || ((ASTPrimarySuffix) n).isArrayDereference()) {
                 return super.visit(node, data);
@@ -62,9 +62,9 @@ public class IdempotentOperationsRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        List<ASTPrimarySuffix> lhsSuffixes = lhs.jjtGetParent().jjtGetParent()
+        List<ASTPrimarySuffix> lhsSuffixes = lhs.getParent().getParent()
                 .findDescendantsOfType(ASTPrimarySuffix.class);
-        List<ASTPrimarySuffix> rhsSuffixes = rhs.jjtGetParent().jjtGetParent()
+        List<ASTPrimarySuffix> rhsSuffixes = rhs.getParent().getParent()
                 .findDescendantsOfType(ASTPrimarySuffix.class);
         if (lhsSuffixes.size() != rhsSuffixes.size()) {
             return super.visit(node, data);

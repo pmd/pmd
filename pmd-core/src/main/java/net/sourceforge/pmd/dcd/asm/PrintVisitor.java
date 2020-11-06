@@ -4,6 +4,12 @@
 
 package net.sourceforge.pmd.dcd.asm;
 
+import net.sourceforge.pmd.dcd.DCD;
+
+/**
+ * @deprecated See {@link DCD}
+ */
+@Deprecated
 public class PrintVisitor {
 
     private static final String INDENT = "\t";

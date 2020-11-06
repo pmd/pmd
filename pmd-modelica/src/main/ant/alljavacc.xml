@@ -1,0 +1,175 @@
+<project name="pmd" default="alljavacc" basedir="../../">
+
+    <property name="javacc-home.path" value="target/lib" />
+
+    <target name="alljavacc"
+            description="Generates all JavaCC aspects within PMD Modelica"
+            depends="checkUpToDate,init,modelicajjtree,cleanup" />
+
+    <target name="checkUpToDate">
+        <uptodate property="javaccBuildNotRequired" targetfile="${target}/last-generated-timestamp">
+            <srcfiles dir="etc/grammar" includes="*.jj*"/>
+        </uptodate>
+        <echo message="up to date check: javaccBuildNotRequired=${javaccBuildNotRequired}"/>
+    </target>
+
+    <target name="init" unless="javaccBuildNotRequired">
+        <mkdir dir="${javacc-home.path}" />
+        <copy file="${javacc.jar}" tofile="${javacc-home.path}/javacc.jar" />
+
+        <mkdir dir="${target}"/>
+        <touch file="${target}/last-generated-timestamp"/>
+    </target>
+
+    <target name="cleanup">
+        <delete dir="${javacc-home.path}" />
+    </target>
+
+    <target name="modelicajjtree" description="Generates the Modelica parser and AST source files" unless="javaccBuildNotRequired">
+        <delete dir="${target}/net/sourceforge/pmd/lang/modelica/ast" />
+        <mkdir dir="${target}/net/sourceforge/pmd/lang/modelica/ast" />
+        <jjtree target="etc/grammar/Modelica.jjt"
+                outputdirectory="${target}/net/sourceforge/pmd/lang/modelica/ast"
+                javacchome="${javacc-home.path}" />
+        <!-- Ensure generated using CharStream interface -->
+        <javacc static="false"
+                usercharstream="true"
+                target="${target}/net/sourceforge/pmd/lang/modelica/ast/Modelica.jj"
+                outputdirectory="${target}/net/sourceforge/pmd/lang/modelica/ast"
+                javacchome="${javacc-home.path}" />
+        <delete file="${target}/net/sourceforge/pmd/lang/modelica/ast/Node.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/modelica/ast/SimpleNode.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/modelica/ast/CharStream.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/modelica/ast/TokenMgrError.java" />
+
+        <replace file="${target}/net/sourceforge/pmd/lang/modelica/ast/ModelicaParserTokenManager.java"
+                 token="class ModelicaParserTokenManager"
+                 value="class ModelicaParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+        <replace file="${target}/net/sourceforge/pmd/lang/modelica/ast/ModelicaParser.java"
+                 token="throw new Error"
+                 value="throw new RuntimeException" />
+        <replace file="${target}/net/sourceforge/pmd/lang/modelica/ast/ParseException.java"
+                 token="extends Exception"
+                 value="extends net.sourceforge.pmd.lang.ast.ParseException" />
+        <replace file="${target}/net/sourceforge/pmd/lang/modelica/ast/ModelicaParserVisitor.java"
+                 token="SimpleNode"
+                 value="ModelicaNode" />
+        <replace file="${target}/net/sourceforge/pmd/lang/modelica/ast/JJTModelicaParserState.java">
+            <replacetoken>public class</replacetoken>
+            <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.Node;
+
+public class]]></replacevalue>
+        </replace>
+
+        <replace file="${target}/net/sourceforge/pmd/lang/modelica/ast/Token.java">
+            <replacetoken><![CDATA[      default : return new Token(ofKind, image);
+    }
+  }
+]]></replacetoken>
+            <replacevalue><![CDATA[
+      default : return new Token(ofKind, image);
+    }
+  }
+]]></replacevalue>
+        </replace>
+
+        <replace file="${target}/net/sourceforge/pmd/lang/modelica/ast/Token.java">
+            <replacetoken>public class Token implements java.io.Serializable</replacetoken>
+            <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.GenericToken;
+
+public class Token implements GenericToken, java.io.Serializable]]></replacevalue>
+        </replace>
+
+        <!--Add implementation methods of GenericToken-->
+        <replace file="${target}/net/sourceforge/pmd/lang/modelica/ast/Token.java">
+            <replacetoken>public Token specialToken;</replacetoken>
+            <replacevalue><![CDATA[public Token specialToken;
+
+  @Override
+  public GenericToken getNext() {
+    return next;
+  }
+
+  @Override
+  public GenericToken getPreviousComment() {
+    return specialToken;
+  }
+
+  @Override
+  public String getImage() {
+    return image;
+  }
+
+  @Override
+  public int getBeginLine() {
+    return beginLine;
+  }
+
+  @Override
+  public int getEndLine() {
+    return endLine;
+  }
+
+  @Override
+  public int getBeginColumn() {
+    return beginColumn;
+  }
+
+  @Override
+  public int getEndColumn() {
+    return endColumn;
+  }
+
+]]></replacevalue>
+        </replace>
+        <replace>
+            <fileset dir="${target}/net/sourceforge/pmd/lang/modelica/ast">
+                <include name="AST*.java" />
+            </fileset>
+            <replacetoken>SimpleNode</replacetoken>
+            <replacevalue>AbstractModelicaNode</replacevalue>
+        </replace>
+
+        <delete>
+            <fileset dir="${target}/net/sourceforge/pmd/lang/modelica/ast">
+                <include name="ASTStoredDefinition.java" />
+                <include name="ASTWithinClause.java" />
+                <include name="ASTElementList.java" />
+
+                <include name="ASTClassDefinition.java" />
+                <include name="ASTDerClassSpecifier.java" />
+                <include name="ASTEnumerationShortClassSpecifier.java" />
+                <include name="ASTExtendingLongClassSpecifier.java" />
+                <include name="ASTSimpleLongClassSpecifier.java" />
+                <include name="ASTSimpleShortClassSpecifier.java" />
+
+                <include name="ASTName.java" />
+                <include name="ASTComponentReference.java" />
+
+                <include name="ASTRenamingImportClause.java" />
+                <include name="ASTSingleDefinitionImportClause.java" />
+                <include name="ASTMultipleDefinitionImportClause.java" />
+                <include name="ASTUnqualifiedImportClause.java" />
+            </fileset>
+        </delete>
+
+
+
+        <replaceregexp>
+            <regexp pattern="class|interface" />
+            <substitution expression="@Deprecated @net.sourceforge.pmd.annotation.InternalApi \0" />
+            <fileset dir="${target}/net/sourceforge/pmd/lang/modelica/ast">
+                <exclude name="AST*.java" />
+                <exclude name="*ParserVisitor.java"/>
+            </fileset>
+        </replaceregexp>
+
+        <replaceregexp>
+            <regexp pattern="public class ParseException " />
+            <substitution expression=" /** @deprecated Use superclass {@link net.sourceforge.pmd.lang.ast.ParseException} */
+@Deprecated @net.sourceforge.pmd.annotation.InternalApi \0" />
+            <fileset file="${target}/net/sourceforge/pmd/lang/modelica/ast/ParseException.java"/>
+        </replaceregexp>
+
+    </target>
+</project>

@@ -4,31 +4,25 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
-
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-
-public class ASTAnnotationTest {
+public class ASTAnnotationTest extends BaseParserTest {
 
     @Test
     public void testAnnotationSucceedsWithDefaultMode() {
-        getNodes(ASTAnnotation.class, TEST1);
+        java.parse(TEST1);
     }
 
     @Test(expected = ParseException.class)
     public void testAnnotationFailsWithJDK14() {
-        getNodes(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4"), ASTAnnotation.class, TEST1);
+        java.parse(TEST1, "1.4");
     }
 
     @Test
     public void testAnnotationSucceedsWithJDK15() {
-        getNodes(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"), ASTAnnotation.class, TEST1);
+        java.parse(TEST1, "1.5");
     }
 
-    private static final String TEST1 = "public class Foo extends Buz {" + PMD.EOL + " @Override" + PMD.EOL
-            + " void bar() {" + PMD.EOL + "  // overrides a superclass method" + PMD.EOL + " }" + PMD.EOL + "}";
+    private static final String TEST1 =
+        "public class Foo extends Buz {\n @Override\n void bar() {\n  // overrides a superclass method\n }\n}";
 }

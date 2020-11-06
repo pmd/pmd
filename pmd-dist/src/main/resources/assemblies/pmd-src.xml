@@ -1,0 +1,49 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+    <id>pmd-src</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <includeBaseDirectory>true</includeBaseDirectory>
+    <baseDirectory>pmd-src-${project.version}</baseDirectory>
+
+    <fileSets>
+        <fileSet>
+            <useDefaultExcludes>false</useDefaultExcludes>
+            <directory>${project.basedir}/..</directory>
+            <outputDirectory></outputDirectory>
+            <excludes>
+                <exclude>.git/**</exclude>
+                <exclude>**/target/**</exclude>
+                <exclude>**/bin/**</exclude>
+
+                <exclude>**/.settings/**</exclude>
+                <exclude>**/.project</exclude>
+                <exclude>**/.classpath</exclude>
+                <exclude>**/.checkstyle</exclude>
+                <exclude>**/.pmd</exclude>
+                <exclude>**/.pmdruleset.xml</exclude>
+                <exclude>**/.ruleset</exclude>
+                <exclude>**/.idea/**</exclude>
+                <exclude>**/*.iml</exclude>
+
+                <exclude>.travis/secrets.tar</exclude>
+                <exclude>.travis/id_rsa</exclude>
+                <exclude>.travis/*.gpg</exclude>
+
+                <exclude>.bundle/**</exclude>
+                <exclude>vendor/**</exclude>
+                <exclude>Gemfile.lock</exclude>
+                <exclude>docs/.bundle/**</exclude>
+                <exclude>docs/vendor/**</exclude>
+                <exclude>docs/_site/**</exclude>
+
+                <exclude>pmd-core/dependency-reduced-pom.xml</exclude>
+            </excludes>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0644</fileMode>
+        </fileSet>
+    </fileSets>
+</assembly>

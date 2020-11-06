@@ -3,75 +3,69 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-param
-     ]]></description>
+        <description>param</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void foo(String argsWithExtraMustard) {} 
+    void foo(String argsWithExtraMustard) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     void foo() {
-       int bugleDeWump = -1;
+        int bugleDeWump = -1;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    <test-code>
-        <description><![CDATA[
-local
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
 
-    void foo() {
-       int abcdefghijklmnopqrstuvwxyz = -1; 
-    }
-}
-     ]]></code>
-    </test-code>
     <test-code>
-        <description><![CDATA[
-for
-     ]]></description>
+        <description>local</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   void foo() {
-       for (int interestingIntIterator = 0; 
-            interestingIntIterator < 10; 
-            interestingIntIterator++) { }
+    void foo() {
+        int abcdefghijklmnopqrstuvwxyz = -1;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-17 character max
-     ]]></description>
+        <description>for loop var</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        for (int interestingIntIterator = 0;
+                interestingIntIterator < 10;
+                interestingIntIterator++) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>17 character max</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     private int a2345678901234567;
     private int a23456789012345678;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-threshold test
-     ]]></description>
+        <description>threshold test</description>
         <rule-property name="minimum">3</rule-property>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
@@ -79,6 +73,6 @@ public class Foo {
     private int a234;
     private int b234;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

@@ -42,6 +42,9 @@
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/CharStream.java"
                  token="net.sourceforge.pmd.lang.ast.dummy"
                  value="net.sourceforge.pmd.lang.ast" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/CharStream.java"
+                 token="interface"
+                 value="@Deprecated @net.sourceforge.pmd.annotation.InternalApi interface" />
         <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/CharStream.java"
               tofile="${target}/net/sourceforge/pmd/lang/ast/CharStream.java" />
@@ -59,7 +62,20 @@
                  value="net.sourceforge.pmd.lang.ast" />
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
                  token="class JavaCharStream"
-                 value="class JavaCharStream implements CharStream" />
+                 value="@Deprecated @net.sourceforge.pmd.annotation.InternalApi class JavaCharStream implements CharStream" />
+        <replaceregexp file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java">
+            <regexp pattern='throw new Error\("Invalid escape character at line " \+ line \+\s+" column " \+ column \+ "."\);' />
+            <substitution expression='throw new TokenMgrError(line, column, AbstractTokenManager.getFileName(), "Invalid unicode escape", null);' />
+        </replaceregexp>
+        <!-- This is in ExpandBuf, the exception this may throw is OutOfMemoryError, which is stupidly erased by javacc -->
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
+                 token="throw new Error(t.getMessage())"
+                 value="throw t" />
+        <!-- Set tab size of JavaCC to 1 -->
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
+                 token="int tabSize = 8;"
+                 value="int tabSize = 1;" />
+
         <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
               tofile="${target}/net/sourceforge/pmd/lang/ast/JavaCharStream.java" />
@@ -77,26 +93,20 @@
                  value="net.sourceforge.pmd.lang.ast" />
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
                  token="public class SimpleCharStream"
-                 value="public class SimpleCharStream implements CharStream" />
+                 value="@Deprecated @net.sourceforge.pmd.annotation.InternalApi public class SimpleCharStream implements CharStream" />
+        <!-- This is in ExpandBuf, the exception this may throw is OutOfMemoryError, which is stupidly erased by javacc -->
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
+                 token="throw new Error(t.getMessage())"
+                 value="throw t" />
+        <!-- Set tab size of JavaCC to 1 -->
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
+                 token="int tabSize = 8;"
+                 value="int tabSize = 1;" />
+
+
         <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
               tofile="${target}/net/sourceforge/pmd/lang/ast/SimpleCharStream.java" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
-                 token="net.sourceforge.pmd.lang.ast.dummy"
-                 value="net.sourceforge.pmd.lang.ast" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
-                 token="extends Error"
-                 value="extends RuntimeException" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
-                 token="static final int"
-                 value="public static final int" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java">
-            <replacetoken><![CDATA["Lexical error at line "]]></replacetoken>
-            <replacevalue><![CDATA["Lexical error in file " + AbstractTokenManager.getFileName() + " at line "]]></replacevalue>
-        </replace>
-        <move overwrite="true"
-              file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
-              tofile="${target}/net/sourceforge/pmd/lang/ast/TokenMgrError.java" />
 
         <delete dir="${target}/net/sourceforge/pmd/lang/ast/dummy" />
 

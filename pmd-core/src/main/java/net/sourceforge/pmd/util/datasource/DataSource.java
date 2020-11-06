@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.datasource;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -12,7 +13,7 @@ import java.io.InputStream;
  * the source file from different places: the filesystem, a zip or jar file,
  * etc.
  */
-public interface DataSource {
+public interface DataSource extends Closeable {
     /**
      * Get an InputStream on the source file.
      *

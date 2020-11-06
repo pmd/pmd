@@ -83,9 +83,9 @@ on the topic.</strong>
     using a 'magic' system like Unix uses to tell different versions of files
     apart based on actual content.
 
-*   Should we change Node interface to something like 'Node&lt;T extends Node&lt;T>>',
+*   Should we change Node interface to something like 'Node&lt;T extends Node&lt;T&gt;&gt;',
     and then declare the language specific node interfaces to be something like
-    'JavaNode extends Node&lt;JavaNode>'?  This could allow anything on the Node
+    'JavaNode extends Node&lt;JavaNode&gt;'?  This could allow anything on the Node
     interface to return the language specific node type instead of generic
     node.  For example, ASTStatement.jjtGetParent() to return a JavaNode,
     instead of a Node.  This is a rather huge change, as the Node interface is

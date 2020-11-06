@@ -21,15 +21,15 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {
-        if (node.jjtGetNumChildren() == 0 || !(node.jjtGetChild(0) instanceof ASTName)) {
+        if (node.getNumChildren() == 0 || !(node.getChild(0) instanceof ASTName)) {
             return super.visit(node, data);
         }
 
-        String image = ((ASTName) node.jjtGetChild(0)).getImage();
+        String image = ((ASTName) node.getChild(0)).getImage();
 
         if ("String.valueOf".equals(image)) {
-            Node parent = node.jjtGetParent();
-            if (parent.jjtGetNumChildren() != 2) {
+            Node parent = node.getParent();
+            if (parent.getNumChildren() != 2) {
                 return super.visit(node, data);
             }
             // skip String.valueOf(anyarraytype[])
@@ -39,25 +39,25 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
                 if (arg != null) {
                     NameDeclaration declaration = arg.getNameDeclaration();
                     if (declaration != null) {
-                        ASTType argType = declaration.getNode().jjtGetParent().jjtGetParent()
+                        ASTType argType = declaration.getNode().getParent().getParent()
                                 .getFirstDescendantOfType(ASTType.class);
-                        if (argType != null && argType.jjtGetChild(0) instanceof ASTReferenceType
-                                && ((ASTReferenceType) argType.jjtGetChild(0)).isArray()) {
+                        if (argType != null && argType.getChild(0) instanceof ASTReferenceType
+                                && ((ASTReferenceType) argType.getChild(0)).isArray()) {
                             return super.visit(node, data);
                         }
                     }
                 }
             }
 
-            Node gp = parent.jjtGetParent();
+            Node gp = parent.getParent();
             if (parent instanceof ASTPrimaryExpression && gp instanceof ASTAdditiveExpression
                     && "+".equals(gp.getImage())) {
                 boolean ok = false;
-                if (gp.jjtGetChild(0) == parent) {
-                    ok = !isPrimitive(gp.jjtGetChild(1));
+                if (gp.getChild(0) == parent) {
+                    ok = !isPrimitive(gp.getChild(1));
                 } else {
-                    for (int i = 0; !ok && gp.jjtGetChild(i) != parent; i++) {
-                        ok = !isPrimitive(gp.jjtGetChild(i));
+                    for (int i = 0; !ok && gp.getChild(i) != parent; i++) {
+                        ok = !isPrimitive(gp.getChild(i));
                     }
                 }
                 if (ok) {
@@ -71,10 +71,10 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
 
     private static boolean isPrimitive(Node parent) {
         boolean result = false;
-        if (parent instanceof ASTPrimaryExpression && parent.jjtGetNumChildren() == 1) {
-            Node child = parent.jjtGetChild(0);
-            if (child instanceof ASTPrimaryPrefix && child.jjtGetNumChildren() == 1) {
-                Node gc = child.jjtGetChild(0);
+        if (parent instanceof ASTPrimaryExpression && parent.getNumChildren() == 1) {
+            Node child = parent.getChild(0);
+            if (child instanceof ASTPrimaryPrefix && child.getNumChildren() == 1) {
+                Node gc = child.getChild(0);
                 if (gc instanceof ASTName) {
                     ASTName name = (ASTName) gc;
                     NameDeclaration nd = name.getNameDeclaration();

@@ -8,11 +8,37 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.10.0-SNAPSHOT</version>
+        <version>6.30.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
+
+    <properties>
+        <pmd.dist.bin.baseDirectory>pmd-bin-${project.version}</pmd.dist.bin.baseDirectory>
+    </properties>
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/extra-resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
@@ -30,9 +56,9 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>pmd-bin-${project.version}</finalName>
+                            <finalName>${pmd.dist.bin.baseDirectory}</finalName>
                             <descriptors>
-                                <descriptor>src/main/assembly/bin.xml</descriptor>
+                                <descriptor>src/main/resources/assemblies/pmd-bin.xml</descriptor>
                             </descriptors>
                         </configuration>
                     </execution>
@@ -45,7 +71,7 @@
                         <configuration>
                             <finalName>pmd-src-${project.version}</finalName>
                             <descriptors>
-                                <descriptor>src/main/assembly/src.xml</descriptor>
+                                <descriptor>src/main/resources/assemblies/pmd-src.xml</descriptor>
                             </descriptors>
                         </configuration>
                     </execution>
@@ -54,9 +80,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.19.1</version>
                 <executions>
                     <execution>
+                        <id>failsafe-default</id>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
@@ -84,6 +110,11 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-dart</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-fortran</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -95,6 +126,11 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-groovy</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-lua</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -119,7 +155,17 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-kotlin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-matlab</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-modelica</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -154,11 +200,6 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-scala</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-swift</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -178,7 +219,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -190,9 +230,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.18</version>
+            <version>1.19</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -211,10 +256,46 @@
                 </dependency>
                 <dependency>
                     <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-ui</artifactId>
+                    <artifactId>pmd-scala_2.13</artifactId>
                     <version>${project.version}</version>
                 </dependency>
+                <dependency>
+                    <groupId>net.sourceforge.pmd</groupId>
+                    <artifactId>pmd-ui</artifactId>
+                    <version>${pmd-designer.version}</version>
+                </dependency>
             </dependencies>
+        </profile>
+        <profile>
+            <id>jdk7-compat-it</id>
+            <activation>
+                <property>
+                    <name>java7.home</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jdk7-compat-it</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <environmentVariables>
+                                        <JAVA_HOME>${java7.home}</JAVA_HOME>
+                                        <PATH>${java7.home}/bin:${env.PATH}</PATH>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

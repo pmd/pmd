@@ -3,122 +3,132 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Fail, BigInteger(1)
-     ]]></description>
+        <description>Fail, BigInteger(1)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigInteger;
+
 public class Foo {
- BigInteger b = new BigInteger("1");
+    BigInteger b = new BigInteger("1");
 }
-     ]]></code>
+        ]]></code>
         <source-type>java 1.4</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Pass, BigInteger(10)
-     ]]></description>
+        <description>Pass, BigInteger(10)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigInteger;
+
 public class Foo {
- BigInteger b = new BigInteger("10");
+    BigInteger b = new BigInteger("10");
 }
-     ]]></code>
+        ]]></code>
         <source-type>java 1.4</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Fail, BigInteger(0)
-     ]]></description>
+        <description>Fail, BigInteger(0)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigInteger;
+
 public class Foo {
- BigInteger b = new BigInteger("0");
+    BigInteger b = new BigInteger("0");
 }
-     ]]></code>
+        ]]></code>
         <source-type>java 1.4</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Pass, BigDecimal(i - 1)
-     ]]></description>
+        <description>Pass, BigDecimal(i - 1)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
- int i = 42;
- BigDecimal b = new BigDecimal(i - 1);
+    int i = 42;
+    BigDecimal b = new BigDecimal(i - 1);
 }
-     ]]></code>
+        ]]></code>
         <source-type>java 1.4</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Pass, BigInteger("10") and BigDecimal in 1.4 mode
-     ]]></description>
+        <description>Pass, BigInteger("10") and BigDecimal in 1.4 mode</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigInteger;
+import java.math.BigDecimal;
+
 public class Foo {
- void test14() {
-  BigInteger b = new BigInteger("10");
-  BigDecimal d;
-  d = new BigDecimal(0);
-  d = new BigDecimal(1);
-  d = new BigDecimal(10);
-  d = new BigDecimal("0");
-  d = new BigDecimal("1");
-  d = new BigDecimal("10");
- }
+    void test14() {
+        BigInteger b = new BigInteger("10");
+        BigDecimal d;
+        d = new BigDecimal(0);
+        d = new BigDecimal(1);
+        d = new BigDecimal(10);
+        d = new BigDecimal("0");
+        d = new BigDecimal("1");
+        d = new BigDecimal("10");
+    }
 }
-     ]]></code>
-    <source-type>java 1.4</source-type>
+        ]]></code>
+        <source-type>java 1.4</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Fail, BigInteger(10) 1.5 mode
-     ]]></description>
+        <description>Fail, BigInteger(10) 1.5 mode</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigInteger;
+
 public class Foo {
- BigInteger b = new BigInteger("10");
+    BigInteger b = new BigInteger("10");
 }
-     ]]></code>
-    <source-type>java 1.5</source-type>
+        ]]></code>
+        <source-type>java 1.5</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Fail, BigDecimal(1)
-     ]]></description>
+        <description>Fail, BigDecimal(1)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
- BigDecimal b = new BigDecimal(1);
+    BigDecimal b = new BigDecimal(1);
 }
-     ]]></code>
-    <source-type>java 1.5</source-type>
+        ]]></code>
+        <source-type>java 1.5</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Fail, BigDecimal(10)
-     ]]></description>
+        <description>Fail, BigDecimal(10)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
- BigDecimal b = new BigDecimal(10);
+    BigDecimal b = new BigDecimal(10);
 }
-     ]]></code>
-    <source-type>java 1.5</source-type>
+        ]]></code>
+        <source-type>java 1.5</source-type>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Fail, BigDecimal(0)
-     ]]></description>
+        <description>Fail, BigDecimal(0)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
- BigDecimal b = new BigDecimal(0);
+    BigDecimal b = new BigDecimal(0);
 }
-     ]]></code>
-    <source-type>java 1.5</source-type>
+        ]]></code>
+        <source-type>java 1.5</source-type>
     </test-code>
 </test-data>

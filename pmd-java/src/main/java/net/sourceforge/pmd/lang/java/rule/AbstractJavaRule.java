@@ -7,10 +7,140 @@ package net.sourceforge.pmd.lang.java.rule;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ast.*;
+import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeBody;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeMemberDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTDefaultValue;
+import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTEmptyStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForInit;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTInstanceOfExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberSelector;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValueArrayInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePairs;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTModuleDirective;
+import net.sourceforge.pmd.lang.java.ast.ASTModuleName;
+import net.sourceforge.pmd.lang.java.ast.ASTMultiplicativeExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTNameList;
+import net.sourceforge.pmd.lang.java.ast.ASTNormalAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPermitsList;
+import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTRSIGNEDSHIFT;
+import net.sourceforge.pmd.lang.java.ast.ASTRUNSIGNEDSHIFT;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordBody;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
+import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTResource;
+import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
+import net.sourceforge.pmd.lang.java.ast.ASTResources;
+import net.sourceforge.pmd.lang.java.ast.ASTResultType;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSingleMemberAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpressionList;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeBound;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTWildcardBounds;
+import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
@@ -29,14 +159,8 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
-            /*
-                It is important to note that we are assuming that all nodes here are of type Compilation Unit,
-                but our caller method may be called with any type of node, and that's why we need to check the kind
-                of instance of each element
-            */
-            if (element instanceof ASTCompilationUnit) {
-                ASTCompilationUnit node = (ASTCompilationUnit) element;
-                visit(node, ctx);
+            if (element instanceof JavaNode) {
+                ((JavaNode) element).jjtAccept(this, ctx);
             }
         }
     }
@@ -47,7 +171,13 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
      *
      * @param node
      *            the node which will be searched
+     *
+     * @deprecated This method just returns the type name as a string
+     *     which doesn't leverage any type resolution. Use {@link Node#getFirstParentOfType(Class)}
+     *     directly to find the node of type {@link ASTClassOrInterfaceBodyDeclaration} via the
+     *     {@code getType} method.
      */
+    @Deprecated
     protected final String getDeclaringType(Node node) {
         ASTClassOrInterfaceDeclaration c = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
         if (c != null) {
@@ -70,6 +200,11 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return false;
     }
 
+    /**
+     * @deprecated Not useful, and suppression should happen transparently to rule implementations.
+     *             This will be removed with 7.0.0
+     */
+    @Deprecated
     protected boolean isSuppressed(Node node) {
         return JavaRuleViolation.isSupressed(node, this);
     }
@@ -81,7 +216,9 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     //
     @Override
     public Object visit(JavaNode node, Object data) {
-        node.childrenAccept(this, data);
+        for (JavaNode child : node.children()) {
+            child.jjtAccept(this, data);
+        }
         return null;
     }
 
@@ -672,6 +809,73 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     @Override
     public Object visit(ASTModuleName node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchExpression node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchLabeledBlock node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchLabeledExpression node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchLabeledThrowStatement node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTYieldStatement node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTTypeTestPattern node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordDeclaration node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordComponentList node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordComponent node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordBody node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordConstructorDeclaration node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTPermitsList node, Object data) {
         return visit((JavaNode) node, data);
     }
 }

@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.documentation;
 
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.GLOBAL;
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.OVERRIDE;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,14 +14,12 @@ import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
+import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-
-import apex.jorje.data.Locations;
-import apex.jorje.semantic.ast.modifier.ModifierGroup;
 
 public class ApexDocRule extends AbstractApexRule {
     private static final Pattern DESCRIPTION_PATTERN = Pattern.compile("@description\\s");
@@ -43,7 +38,7 @@ public class ApexDocRule extends AbstractApexRule {
         addRuleChainVisit(ASTMethod.class);
         addRuleChainVisit(ASTProperty.class);
     }
-    
+
     @Override
     public Object visit(ASTUserClass node, Object data) {
         handleClassOrInterface(node, data);
@@ -58,7 +53,7 @@ public class ApexDocRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (node.jjtGetParent() instanceof ASTProperty) {
+        if (node.getParent() instanceof ASTProperty) {
             // Skip property methods, doc is required on the property itself
             return data;
         }
@@ -73,7 +68,7 @@ public class ApexDocRule extends AbstractApexRule {
                 addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
             }
 
-            String returnType = node.getNode().getReturnTypeRef().toString();
+            String returnType = node.getReturnType();
             boolean shouldHaveReturn = !(returnType.isEmpty() || "void".equalsIgnoreCase(returnType));
             if (comment.hasReturn != shouldHaveReturn) {
                 if (shouldHaveReturn) {
@@ -84,8 +79,8 @@ public class ApexDocRule extends AbstractApexRule {
             }
 
             // Collect parameter names in order
-            final List<String> params = node.getNode().getMethodInfo().getParameters()
-                    .stream().map(p -> p.getName().getValue()).collect(Collectors.toList());
+            final List<String> params = node.findChildrenOfType(ASTParameter.class)
+                    .stream().map(p -> p.getImage()).collect(Collectors.toList());
 
             if (!comment.params.equals(params)) {
                 addViolationWithMessage(data, node, MISMATCHED_PARAM_MESSAGE);
@@ -125,24 +120,20 @@ public class ApexDocRule extends AbstractApexRule {
     }
 
     private boolean shouldHaveApexDocs(ApexNode<?> node) {
-        if (node.getNode().getLoc() == Locations.NONE) {
+        if (!node.hasRealLoc()) {
             return false;
         }
 
         // is this a test?
         for (final ASTAnnotation annotation : node.findDescendantsOfType(ASTAnnotation.class)) {
-            if (annotation.getImage().equals("IsTest")) {
+            if ("IsTest".equals(annotation.getImage())) {
                 return false;
             }
         }
 
         ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
         if (modifier != null) {
-            boolean isPublic = modifier.isPublic();
-            ModifierGroup modifierGroup = modifier.getNode().getModifiers();
-            boolean isGlobal = modifierGroup.has(GLOBAL);
-            boolean isOverride = modifierGroup.has(OVERRIDE);
-            return (isPublic || isGlobal) && !isOverride;
+            return (modifier.isPublic() || modifier.isGlobal()) && !modifier.isOverride();
         }
         return false;
     }

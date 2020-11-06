@@ -31,7 +31,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
@@ -55,7 +54,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!TypeHelper.isExactlyAny(node.getNameDeclaration(), StringBuffer.class, StringBuilder.class)) {
+        if (node.getNameDeclaration() == null
+                || !ConsecutiveLiteralAppendsRule.isStringBuilderOrBuffer(node)) {
             return data;
         }
         Node rootNode = node;
@@ -72,10 +72,10 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         for (NameOccurrence no : usage) {
             JavaNameOccurrence jno = (JavaNameOccurrence) no;
             Node n = jno.getLocation();
-            if (!InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "append")) {
+            if (!InefficientStringBufferingRule.isInStringBufferOperationChain(n, "append")) {
 
                 if (!jno.isOnLeftHandSide()
-                        && !InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "setLength")) {
+                        && !InefficientStringBufferingRule.isInStringBufferOperationChain(n, "setLength")) {
                     continue;
                 }
                 if (constructorLength != -1 && anticipatedLength > constructorLength) {
@@ -88,9 +88,9 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 anticipatedLength = getInitialLength(node);
             }
             ASTPrimaryExpression s = n.getFirstParentOfType(ASTPrimaryExpression.class);
-            int numChildren = s.jjtGetNumChildren();
+            int numChildren = s.getNumChildren();
             for (int jx = 0; jx < numChildren; jx++) {
-                Node sn = s.jjtGetChild(jx);
+                Node sn = s.getChild(jx);
                 if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
                     continue;
                 }
@@ -129,8 +129,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
      *            The block in question
      */
     private void storeBlockStatistics(Map<Node, Map<Node, Integer>> blocks, int thisSize, Node block) {
-        Node statement = block.jjtGetParent();
-        if (block.jjtGetParent() instanceof ASTIfStatement) {
+        Node statement = block.getParent();
+        if (block.getParent() instanceof ASTIfStatement) {
             // Else Ifs are their own subnode in AST. So we have to
             // look a little farther up the tree to find the IF statement
             Node possibleStatement = statement.getFirstParentOfType(ASTIfStatement.class);
@@ -171,8 +171,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             return 0;
         }
         int anticipatedLength = 0;
-        for (int ix = 0; ix < additive.jjtGetNumChildren(); ix++) {
-            Node childNode = additive.jjtGetChild(ix);
+        for (int ix = 0; ix < additive.getNumChildren(); ix++) {
+            Node childNode = additive.getChild(ix);
             ASTLiteral literal = childNode.getFirstDescendantOfType(ASTLiteral.class);
             if (literal != null && literal.getImage() != null) {
                 anticipatedLength += literal.getImage().length() - 2;
@@ -191,9 +191,9 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         if (sn != null) {
             ASTPrimaryPrefix xn = sn.getFirstDescendantOfType(ASTPrimaryPrefix.class);
             if (xn != null) {
-                if (xn.jjtGetNumChildren() != 0 && xn.jjtGetChild(0) instanceof ASTLiteral) {
-                    ASTLiteral literal = (ASTLiteral) xn.jjtGetChild(0);
-                    String str = xn.jjtGetChild(0).getImage();
+                if (xn.getNumChildren() != 0 && xn.getChild(0) instanceof ASTLiteral) {
+                    ASTLiteral literal = (ASTLiteral) xn.getChild(0);
+                    String str = xn.getChild(0).getImage();
                     if (str != null) {
                         if (literal.isStringLiteral()) {
                             anticipatedLength += str.length() - 2;
@@ -201,7 +201,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                             anticipatedLength += 1;
                         } else if (literal.isIntLiteral()) {
                             // but only if we are not inside a cast expression
-                            Node parentNode = literal.jjtGetParent().jjtGetParent().jjtGetParent();
+                            Node parentNode = literal.getParent().getParent().getParent();
                             if (parentNode instanceof ASTCastExpression
                                     && ((ASTCastExpression) parentNode).getType() == char.class) {
                                 anticipatedLength += 1;
@@ -322,8 +322,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             if (initializer != null) {
                 final Node primExp = initializer.getFirstDescendantOfType(ASTPrimaryExpression.class);
                 if (primExp != null) {
-                    for (int i = 0; i < primExp.jjtGetNumChildren(); i++) {
-                        final Node sn = primExp.jjtGetChild(i);
+                    for (int i = 0; i < primExp.getNumChildren(); i++) {
+                        final Node sn = primExp.getChild(i);
                         if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
                             continue;
                         }
@@ -352,12 +352,12 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
      *         parent of this object
      */
     private Node getFirstParentBlock(Node node) {
-        Node parentNode = node.jjtGetParent();
+        Node parentNode = node.getParent();
 
         Node lastNode = node;
         while (parentNode != null && !BLOCK_PARENTS.contains(parentNode.getClass())) {
             lastNode = parentNode;
-            parentNode = parentNode.jjtGetParent();
+            parentNode = parentNode.getParent();
         }
         if (parentNode instanceof ASTIfStatement) {
             parentNode = lastNode;
@@ -377,10 +377,10 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
      * @return The parent node for the switch statement
      */
     private static Node getSwitchParent(Node parentNode, Node lastNode) {
-        int allChildren = parentNode.jjtGetNumChildren();
+        int allChildren = parentNode.getNumChildren();
         ASTSwitchLabel label = null;
         for (int ix = 0; ix < allChildren; ix++) {
-            Node n = parentNode.jjtGetChild(ix);
+            Node n = parentNode.getChild(ix);
             if (n instanceof ASTSwitchLabel) {
                 label = (ASTSwitchLabel) n;
             } else if (n.equals(lastNode)) {

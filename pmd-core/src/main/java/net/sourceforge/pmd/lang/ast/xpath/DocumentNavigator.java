@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.jaxen.DefaultNavigator;
 import org.jaxen.XPath;
@@ -16,7 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
- * @author daniels
+ * Navigator used for XPath 1.0 (Jaxen) queries.
  */
 @Deprecated
 @InternalApi
@@ -127,7 +129,7 @@ public class DocumentNavigator extends DefaultNavigator {
     @Override
     public Object getParentNode(Object arg0) {
         if (arg0 instanceof Node) {
-            return ((Node) arg0).jjtGetParent();
+            return ((Node) arg0).getParent();
         }
         if (arg0 instanceof Attribute) {
             return ((Attribute) arg0).getParent();
@@ -137,8 +139,53 @@ public class DocumentNavigator extends DefaultNavigator {
     }
 
     @Override
-    public Iterator<Attribute> getAttributeAxisIterator(Object arg0) {
-        return ((Node) arg0).getXPathAttributesIterator();
+    public Iterator<Attribute> getAttributeAxisIterator(final Object arg0) {
+        // for XPath 1.0, we don't return any attributes, that are lists. XPath 1.0
+        // has no good support for lists/sequences and the value would only be available
+        // as a simple string.
+        return new ListFilteringAttributeIterator(((Node) arg0).getXPathAttributesIterator());
+    }
+
+    private static class ListFilteringAttributeIterator implements Iterator<Attribute> {
+        private final Iterator<Attribute> baseIterator;
+        private Attribute current;
+
+        ListFilteringAttributeIterator(Iterator<Attribute> baseIterator) {
+            this.baseIterator = baseIterator;
+            this.current = getNextAttribute();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public Attribute next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            Attribute result = current;
+            current = getNextAttribute();
+            return result;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        private Attribute getNextAttribute() {
+            Attribute result = null;
+            while (baseIterator.hasNext() && result == null) {
+                Attribute candidate = baseIterator.next();
+                // Calling getValue() here would break laziness
+                if (!List.class.isAssignableFrom(candidate.getType())) {
+                    result = candidate;
+                }
+            }
+            return result;
+        }
     }
 
     /**
@@ -175,7 +222,7 @@ public class DocumentNavigator extends DefaultNavigator {
         if (isAttribute(contextNode)) {
             return new SingleObjectIterator(((Attribute) contextNode).getParent());
         }
-        Node parent = ((Node) contextNode).jjtGetParent();
+        Node parent = ((Node) contextNode).getParent();
         if (parent != null) {
             return new SingleObjectIterator(parent);
         } else {
@@ -244,7 +291,7 @@ public class DocumentNavigator extends DefaultNavigator {
                 } else {
                     Node sibling = getNextSibling(node);
                     if (sibling == null) {
-                        return getFirstNode(node.jjtGetParent());
+                        return getFirstNode(node.getParent());
                     } else {
                         return sibling;
                     }
@@ -261,7 +308,7 @@ public class DocumentNavigator extends DefaultNavigator {
                         n = getNextSibling(node);
                     }
                     if (n == null) {
-                        return getFirstNode(node.jjtGetParent());
+                        return getFirstNode(node.getParent());
                     } else {
                         return n;
                     }
@@ -287,7 +334,7 @@ public class DocumentNavigator extends DefaultNavigator {
                 } else {
                     Node sibling = getPreviousSibling(node);
                     if (sibling == null) {
-                        return getFirstNode(node.jjtGetParent());
+                        return getFirstNode(node.getParent());
                     } else {
                         return sibling;
                     }
@@ -304,7 +351,7 @@ public class DocumentNavigator extends DefaultNavigator {
                         n = getPreviousSibling(node);
                     }
                     if (n == null) {
-                        return getFirstNode(node.jjtGetParent());
+                        return getFirstNode(node.getParent());
                     } else {
                         return n;
                     }

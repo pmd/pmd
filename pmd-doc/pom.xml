@@ -8,39 +8,68 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.10.0-SNAPSHOT</version>
+        <version>6.30.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <properties>
         <java.version>8</java.version>
-        <!-- Workaround for https://youtrack.jetbrains.com/issue/IDEA-188690 -->
-        <maven.compiler.source>1.${java.version}</maven.compiler.source>
-        <maven.compiler.target>1.${java.version}</maven.compiler.target>
     </properties>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <phase>package</phase>
-          </execution>
-        </executions>
-        <configuration>
-          <mainClass>net.sourceforge.pmd.docs.GenerateRuleDocsCmd</mainClass>
-          <arguments>
-            <argument>${project.basedir}</argument>
-          </arguments>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <profiles>
+        <profile>
+            <id>generate-rule-docs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>generate-rule-docs</id>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <mainClass>net.sourceforge.pmd.docs.GenerateRuleDocsCmd</mainClass>
+                                    <arguments>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>check-dead-links</id>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <phase>verify</phase>
+                                <configuration>
+                                    <mainClass>net.sourceforge.pmd.docs.DeadLinksChecker</mainClass>
+                                    <arguments>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>check-rule-tags</id>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <phase>verify</phase>
+                                <configuration>
+                                    <mainClass>net.sourceforge.pmd.docs.RuleTagChecker</mainClass>
+                                    <arguments>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
@@ -63,14 +92,23 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.19</version>
+            <version>1.26</version>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

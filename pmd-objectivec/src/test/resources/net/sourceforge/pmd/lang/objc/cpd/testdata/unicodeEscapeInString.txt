@@ -1,0 +1,52 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [@property]                             1         9
+    [(]                                     11        11
+    [nonatomic]                             12        20
+    [,]                                     21        21
+    [strong]                                23        28
+    [)]                                     29        29
+    [UIButton]                              31        38
+    [*]                                     40        40
+    [copyrightsButton]                      41        56
+    [;]                                     57        57
+L3
+    [-]                                     1         1
+    [(]                                     3         3
+    [void]                                  4         7
+    [)]                                     8         8
+    [setupCopyrightsButton]                 9         29
+    [{]                                     31        31
+L4
+    [self]                                  5         8
+    [.]                                     9         9
+    [copyrightsButton]                      10        25
+    [=]                                     27        27
+    [\[]                                    29        29
+    [\[]                                    30        30
+    [UIButton]                              31        38
+    [alloc]                                 40        44
+    [\]]                                    45        45
+    [initWithFrame]                         47        59
+    [:]                                     60        60
+    [CGRectZero]                            61        70
+    [\]]                                    71        71
+    [;]                                     72        72
+L5
+    [\[]                                    5         5
+    [self]                                  6         9
+    [.]                                     10        10
+    [copyrightsButton]                      11        26
+    [setTitle]                              28        35
+    [:]                                     36        36
+    [@"\\u00a9"]                            37        45
+    [forState]                              47        54
+    [:]                                     55        55
+    [UIControlStateNormal]                  56        75
+    [\]]                                    76        76
+    [;]                                     77        77
+L6
+    [}]                                     1         1
+L8
+    [@end]                                  1         4
+EOF

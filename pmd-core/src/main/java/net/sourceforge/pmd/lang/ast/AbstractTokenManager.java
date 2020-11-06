@@ -19,10 +19,18 @@ public abstract class AbstractTokenManager {
     protected Map<Integer, String> suppressMap = new HashMap<>();
     protected String suppressMarker = PMD.SUPPRESS_MARKER;
 
+    /**
+     * @deprecated For removal in 7.0.0
+     */
+    @Deprecated
     public static void setFileName(String fileName) {
         AbstractTokenManager.fileName.set(fileName);
     }
 
+    /**
+     * @deprecated For removal in 7.0.0
+     */
+    @Deprecated
     public static String getFileName() {
         String fileName = AbstractTokenManager.fileName.get();
         return fileName == null ? "(no file name provided)" : fileName;

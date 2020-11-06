@@ -216,7 +216,7 @@ interface ImmutableList<E> extends List<E> {
 
             // Eliminate the trailing empty strings
             if (limit == 0) {
-                while (!matchList.isEmpty() && matchList.head().equals("")) {
+                while (!matchList.isEmpty() && "".equals(matchList.head())) {
                     matchList = matchList.tail();
                 }
             }
@@ -563,11 +563,7 @@ interface ImmutableList<E> extends List<E> {
 
             @Override
             public List<E> toList() {
-                List<E> result = new ArrayList<>(size());
-                for (E item : this) {
-                    result.add(item);
-                }
-                return result;
+                return new ArrayList<>(this);
             }
 
 

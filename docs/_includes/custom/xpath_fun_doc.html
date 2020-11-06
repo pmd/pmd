@@ -1,0 +1,101 @@
+{% for lang in site.data.xpath_funs.langs %}
+
+<!-- Generates the documentation of XPath functions. -->
+
+### {{ lang.name }}
+
+{{ lang.name }} functions are in the namespace `{{ lang.ns }}`.
+
+<div class="table-responsive">
+    <table width="100%">
+
+        <thead>
+        <tr>
+            <th>Function name</th>
+            <th>Description (click for details)</th>
+            <th></th>
+        </tr>
+        </thead>
+
+
+        {% for fun in lang.funs %}
+
+        {% capture fun_id %}{{ lang.ns | append: '-' | append: fun.name }}{% endcapture %}
+
+        <tr data-toggle="collapse" id="{{ fun_id }}" data-target="{{ fun_id | prepend: '#' | append: '-expand' }}" class="accordion-toggle">
+
+            <td>{{ fun.name }}</td>
+            <td>{{ fun.shortDescription }}</td>
+            <td>
+                <button type="button" class="btn btn-link"><i
+                        class="fa fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="{{ fun_id | append: '-expand' }}">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="{{ fun_id }}">
+                            <span class="fun-ns">{{ lang.ns | append: ':' }}</span><span
+                                class="fun-name">{{ fun.name }}</span><span
+                                class="fun-ns">{{ fun | xpath_fun_type }}</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>{{ fun.description | render_markdown }}</dd>
+                                <dt>Remarks</dt>
+                                <dd>{{ fun.notes | render_markdown }}</dd>
+
+                                {% if fun.parameters.size > 0 %}
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        {% for param in fun.parameters %}
+                                        <dt>
+                                            <span class="param-name">{{ param.name }}</span>
+                                            <span class="param-type"> as {{ param.type }}</span>
+                                        </dt>
+                                        <dd>{{ param.description | render_markdown }}</dd>
+                                        {% endfor %}
+                                    </dl>
+                                </dd>
+
+                                {% endif %}
+
+                                {% if fun.examples.size > 0 %}
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        {% for example in fun.examples %}
+                                        <dt><code>{{ example.code }}</code></dt>
+                                        <dd>{{ example.outcome | render_markdown }}</dd>
+                                        {% endfor %}
+                                    </dl>
+                                </dd>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+{% endfor %}

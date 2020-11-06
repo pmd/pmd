@@ -6,10 +6,18 @@ require 'logger'
 
 def run_pmdtester
   Dir.chdir('..') do
-    argv = ['-r', './pmd', '-b', "#{ENV['TRAVIS_BRANCH']}", '-p', 'FETCH_HEAD', '-m', 'online', '-a']
+    argv = ['--local-git-repo', './pmd',
+            '--list-of-project', './pmd/.travis/project-list.xml',
+            '--base-branch', "#{ENV['TRAVIS_BRANCH']}",
+            '--patch-branch', 'HEAD',
+            '--patch-config', './pmd/.travis/all-java.xml',
+            '--mode', 'online',
+            '--auto-gen-config',
+            # '--debug',
+            ]
     begin
       runner = PmdTester::Runner.new(argv)
-      @new_errors, @removed_errors, @new_violations, @removed_violations = runner.run
+      @new_errors, @removed_errors, @new_violations, @removed_violations, @new_configerrors, @removed_configerrors = runner.run
       upload_report
     rescue StandardError => e
       warn("Running pmdtester failed, this message is mainly used to remind the maintainers of PMD.")
@@ -27,14 +35,17 @@ def upload_report
     end
 
     `tar -cf #{tar_filename} diff/`
-	report_url = `curl -u #{ENV['CHUNK_TOKEN']} -T #{tar_filename} chunk.io`
-	if $?.success?
-	  @logger.info "Successfully uploaded #{tar_filename} to chunk.io"
+    report_url = `curl -u #{ENV['CHUNK_TOKEN']} -T #{tar_filename} https://chunk.io`
+    if $?.success?
+      @logger.info "Successfully uploaded #{tar_filename} to chunk.io"
 
       # set value of sticky to true and the message is kept after new commits are submited to the PR
-	  message("This changeset introduces #{@new_violations} new violations and #{@new_errors} new errors,\n" +
-	          "removes #{@removed_violations} violations and #{@removed_errors} errors. [Full report](#{report_url.chomp}/diff/index.html)", sticky: true)
-	else
+      message("This changeset introduces #{@new_violations} new violations, #{@new_errors} new errors and " +
+              "#{@new_configerrors} new configuration errors,\n" +
+              "removes #{@removed_violations} violations, #{@removed_errors} errors and " +
+              "#{@removed_configerrors} configuration errors.\n" +
+              "[Full report](#{report_url.chomp}/diff/index.html)", sticky: true)
+    else
       @logger.error "Error while uploading #{tar_filename} to chunk.io: #{report_url}"
       warn("Uploading the diff report failed, this message is mainly used to remind the maintainers of PMD.")
     end

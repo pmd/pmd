@@ -43,8 +43,8 @@ public class FooRule extends AbstractRule {
     }
 
     protected void apply(Node node, RuleContext ctx) {
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            apply(node.jjtGetChild(i), ctx);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            apply(node.getChild(i), ctx);
         }
         if ("Foo".equals(node.getImage())) {
             addViolation(ctx, node);

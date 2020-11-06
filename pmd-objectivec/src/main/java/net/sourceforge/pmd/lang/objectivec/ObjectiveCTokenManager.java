@@ -6,13 +6,18 @@ package net.sourceforge.pmd.lang.objectivec;
 
 import java.io.Reader;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 import net.sourceforge.pmd.lang.objectivec.ast.ObjectiveCParserTokenManager;
 
 /**
  * Objective-C Token Manager implementation.
+ *
+ * @deprecated This is internal API
  */
+@Deprecated
+@InternalApi
 public class ObjectiveCTokenManager implements TokenManager {
     private final ObjectiveCParserTokenManager tokenManager;
 

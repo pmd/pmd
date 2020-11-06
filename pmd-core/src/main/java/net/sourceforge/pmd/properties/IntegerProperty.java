@@ -14,7 +14,11 @@ import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
  * Defines a datatype that supports single Integer property values within an upper and lower boundary.
  *
  * @author Brian Remedios
+ *
+ * @deprecated Use a {@code PropertyDescriptor<Integer>} instead. A builder is available from {@link PropertyFactory#intProperty(String)}.
+ *             This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class IntegerProperty extends AbstractNumericProperty<Integer> {
 
 
@@ -29,7 +33,10 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
+     *
+     * @deprecated Use {@link PropertyFactory#intProperty(String)}
      */
+    @Deprecated
     public IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer theDefault,
                            float theUIOrder) {
         this(theName, theDescription, min, max, theDefault, theUIOrder, false);
@@ -65,11 +72,19 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#intProperty(String)}
+     */
+    @Deprecated
     public static IntegerPBuilder named(String name) {
         return new IntegerPBuilder(name);
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#intProperty(String)}
+     */
+    @Deprecated
     public static final class IntegerPBuilder extends SingleNumericPropertyBuilder<Integer, IntegerPBuilder> {
         private IntegerPBuilder(String name) {
             super(name);

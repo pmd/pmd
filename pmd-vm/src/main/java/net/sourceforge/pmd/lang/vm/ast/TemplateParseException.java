@@ -31,7 +31,9 @@ import net.sourceforge.pmd.lang.vm.util.LogUtil;
  * @version $Id: TemplateParseException.java 703544 2008-10-10 18:15:53Z nbubna
  *          $
  * @since 1.5
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class TemplateParseException extends ParseException {
     private static final long serialVersionUID = -3146323135623083918L;
 
@@ -105,18 +107,18 @@ public class TemplateParseException extends ParseException {
     }
 
     /**
-     * returns the Template name where this exception occured.
+     * returns the Template name where this exception occurred.
      *
-     * @return The Template name where this exception occured.
+     * @return The Template name where this exception occurred.
      */
     public String getTemplateName() {
         return templateName;
     }
 
     /**
-     * returns the line number where this exception occured.
+     * returns the line number where this exception occurred.
      *
-     * @return The line number where this exception occured.
+     * @return The line number where this exception occurred.
      */
     public int getLineNumber() {
         if (currentToken != null && currentToken.next != null) {
@@ -127,9 +129,9 @@ public class TemplateParseException extends ParseException {
     }
 
     /**
-     * returns the column number where this exception occured.
+     * returns the column number where this exception occurred.
      *
-     * @return The column number where this exception occured.
+     * @return The column number where this exception occurred.
      */
     public int getColumnNumber() {
         if (currentToken != null && currentToken.next != null) {
@@ -160,7 +162,7 @@ public class TemplateParseException extends ParseException {
 
         int maxSize = 0;
 
-        final StringBuffer expected = new StringBuffer();
+        final StringBuilder expected = new StringBuilder();
 
         for (int i = 0; i < expectedTokenSequences.length; i++) {
             if (maxSize < expectedTokenSequences[i].length) {

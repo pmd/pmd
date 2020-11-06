@@ -15,6 +15,6 @@ public class PMDTaskTest extends AbstractAntTestHelper {
     @Test
     public void testXML() {
         executeTarget("testXML");
-        assertOutputContaining("Potentialy mistyped CDATA section with extra [ at beginning or ] at the end.");
+        assertOutputContaining("Potentially mistyped CDATA section with extra [ at beginning or ] at the end.");
     }
 }

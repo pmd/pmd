@@ -6,11 +6,11 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,9 +27,9 @@ import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
 /**
  * CPDTask
- * 
+ *
  * <p>Runs the CPD utility via ant. The ant task looks like this:</p>
- * 
+ *
  * <pre>
  * &lt;project name="CPDProj" default="main" basedir="."&gt;
  *   &lt;taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" /&gt;
@@ -44,7 +44,7 @@ import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
  *   &lt;/target&gt;
  * &lt;/project&gt;
  * </pre>
- * 
+ *
  * <p>Required: minimumTokenCount, outputFile, and at least one file</p>
  */
 public class CPDTask extends Task {
@@ -131,21 +131,22 @@ public class CPDTask extends Task {
             log("No duplicates over " + minimumTokenCount + " tokens found", Project.MSG_INFO);
         }
         CPDRenderer renderer = createRenderer();
-        
+
         try {
+            // will be closed via BufferedWriter/OutputStreamWriter chain down below
             final OutputStream os;
             if (outputFile == null) {
                 os = System.out;
             } else if (outputFile.isAbsolute()) {
-                os = new FileOutputStream(outputFile);
+                os = Files.newOutputStream(outputFile.toPath());
             } else {
-                os = new FileOutputStream(new File(getProject().getBaseDir(), outputFile.toString()));
+                os = Files.newOutputStream(new File(getProject().getBaseDir(), outputFile.toString()).toPath());
             }
-            
+
             if (encoding == null) {
                 encoding = System.getProperty("file.encoding");
             }
-            
+
             try (Writer writer = new BufferedWriter(new OutputStreamWriter(os, encoding))) {
                 renderer.render(cpd.getMatches(), writer);
             }

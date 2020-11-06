@@ -15,7 +15,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  * Each data flow contains a set of DataFlowNodes.
  *
  * @author raik
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public abstract class AbstractDataFlowNode implements DataFlowNode {
 
     protected Node node;

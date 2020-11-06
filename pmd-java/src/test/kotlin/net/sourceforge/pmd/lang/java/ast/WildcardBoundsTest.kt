@@ -1,12 +1,12 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
+import io.kotest.matchers.shouldBe
 
-// prototype using a junit syntax
-
-class WildcardBoundsTest : FunSpec({
+class WildcardBoundsTest : ParserTestSpec({
 
     parserTest("Simple grammar test") {
 

@@ -6,24 +6,19 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
-import net.sourceforge.pmd.cpd.token.TokenFilter;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
+import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
+import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.cpp.CppTokenManager;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * The C++ tokenizer.
  */
-public class CPPTokenizer implements Tokenizer {
+public class CPPTokenizer extends JavaCCTokenizer {
 
     private boolean skipBlocks = true;
     private String skipBlocksStart;
@@ -31,7 +26,7 @@ public class CPPTokenizer implements Tokenizer {
 
     /**
      * Sets the possible options for the C++ tokenizer.
-     * 
+     *
      * @param properties
      *            the properties
      * @see #OPTION_SKIP_BLOCKS
@@ -51,51 +46,38 @@ public class CPPTokenizer implements Tokenizer {
         }
     }
 
-    @Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        StringBuilder buffer = sourceCode.getCodeBuffer();
-        try (Reader reader = IOUtil.skipBOM(new StringReader(maybeSkipBlocks(buffer.toString())))) {
-            LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(CppLanguageModule.NAME)
-                    .getDefaultVersion().getLanguageVersionHandler();
-            final TokenFilter tokenFilter = new JavaCCTokenFilter(
-                languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions())
-                    .getTokenManager(sourceCode.getFileName(), reader));
-            
-            GenericToken currentToken = tokenFilter.getNextToken();
-            while (currentToken != null) {
-                tokenEntries.add(new TokenEntry(currentToken.getImage(), sourceCode.getFileName(), currentToken.getBeginLine()));
-                currentToken = tokenFilter.getNextToken();
-            }
-            tokenEntries.add(TokenEntry.getEOF());
-            System.err.println("Added " + sourceCode.getFileName());
-        } catch (TokenMgrError | IOException err) {
-            err.printStackTrace();
-            System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
-            tokenEntries.add(TokenEntry.getEOF());
-        }
-    }
-
     private String maybeSkipBlocks(String test) throws IOException {
         if (!skipBlocks) {
             return test;
         }
 
-        BufferedReader reader = new BufferedReader(new StringReader(test));
-        StringBuilder filtered = new StringBuilder(test.length());
-        String line;
-        boolean skip = false;
-        while ((line = reader.readLine()) != null) {
-            if (skipBlocksStart.equalsIgnoreCase(line.trim())) {
-                skip = true;
-            } else if (skip && skipBlocksEnd.equalsIgnoreCase(line.trim())) {
-                skip = false;
+        try (BufferedReader reader = new BufferedReader(new StringReader(test))) {
+            StringBuilder filtered = new StringBuilder(test.length());
+            String line;
+            boolean skip = false;
+            while ((line = reader.readLine()) != null) {
+                if (skipBlocksStart.equalsIgnoreCase(line.trim())) {
+                    skip = true;
+                } else if (skip && skipBlocksEnd.equalsIgnoreCase(line.trim())) {
+                    skip = false;
+                }
+                if (!skip) {
+                    filtered.append(line);
+                }
+                // always add a new line to keep the line-numbering
+                filtered.append(PMD.EOL);
             }
-            if (!skip) {
-                filtered.append(line);
-            }
-            // always add a new line to keep the line-numbering
-            filtered.append(PMD.EOL); 
+            return filtered.toString();
         }
-        return filtered.toString();
+    }
+
+    @Override
+    protected TokenManager getLexerForSource(SourceCode sourceCode) {
+        try {
+            StringBuilder buffer = sourceCode.getCodeBuffer();
+            return new CppTokenManager(IOUtil.skipBOM(new StringReader(maybeSkipBlocks(buffer.toString()))));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

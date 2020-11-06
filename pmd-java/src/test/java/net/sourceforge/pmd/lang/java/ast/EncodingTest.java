@@ -4,22 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
-public class EncodingTest {
+public class EncodingTest extends BaseParserTest {
 
     @Test
-    public void testDecodingOfUTF8() throws Exception {
-        ASTCompilationUnit acu = parseJava14(TEST_UTF8);
+    public void testDecodingOfUTF8() {
+        ASTCompilationUnit acu = java.parse(TEST_UTF8);
         String methodName = acu.findDescendantsOfType(ASTMethodDeclarator.class).get(0).getImage();
         assertEquals("é", methodName);
     }
 
-    private static final String TEST_UTF8 = "class Foo {" + PMD.EOL + "  void é() {}" + PMD.EOL + "  void fiddle() {}"
-            + PMD.EOL + "}";
+    private static final String TEST_UTF8 = "class Foo {\n  void é() {}\n  void fiddle() {}\n}";
 }

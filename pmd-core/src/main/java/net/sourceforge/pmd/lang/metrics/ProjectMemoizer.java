@@ -19,7 +19,9 @@ import net.sourceforge.pmd.lang.ast.QualifiedName;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ * @deprecated See package description
  */
+@Deprecated
 public interface ProjectMemoizer<T extends QualifiableNode, O extends QualifiableNode> {
 
     /**

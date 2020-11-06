@@ -15,7 +15,9 @@ public class TokenEntry implements Comparable<TokenEntry> {
     public static final TokenEntry EOF = new TokenEntry();
 
     private String tokenSrcID;
-    private int beginLine;
+    private final int beginLine;
+    private final int beginColumn;
+    private final int endColumn;
     private int index;
     private int identifier;
     private int hashCode;
@@ -36,6 +38,9 @@ public class TokenEntry implements Comparable<TokenEntry> {
     private TokenEntry() {
         this.identifier = 0;
         this.tokenSrcID = "EOFMarker";
+        this.beginLine = -1;
+        this.beginColumn = -1;
+        this.endColumn = -1;
     }
 
     /**
@@ -43,12 +48,34 @@ public class TokenEntry implements Comparable<TokenEntry> {
      * @param image
      * @param tokenSrcID
      * @param beginLine the linenumber, 1-based.
+     *
+     * @deprecated Use {@link #TokenEntry(String, String, int, int, int)}, don't be lazy
      */
+    @Deprecated
     public TokenEntry(String image, String tokenSrcID, int beginLine) {
+        this(image, tokenSrcID, beginLine, -1, -1);
+    }
+
+    /**
+     * Creates a new token entry with the given informations.
+     * @param image
+     * @param tokenSrcID
+     * @param beginLine the linenumber, 1-based.
+     * @param beginColumn the column number, 1-based
+     * @param endColumn the column number, 1-based
+     */
+    public TokenEntry(String image, String tokenSrcID, int beginLine, int beginColumn, int endColumn) {
+        assert isOk(beginLine) && isOk(beginColumn) && isOk(endColumn) : "Coordinates are 1-based";
         setImage(image);
         this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;
+        this.beginColumn = beginColumn;
+        this.endColumn = endColumn;
         this.index = TOKEN_COUNT.get().getAndIncrement();
+    }
+
+    private boolean isOk(int coord) {
+        return coord >= 1 || coord == -1;
     }
 
     public static TokenEntry getEOF() {
@@ -93,6 +120,24 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return beginLine;
     }
 
+    /**
+     * The column number where this token begins.
+     * returns -1 if not available
+     * @return the begin column number
+     */
+    public int getBeginColumn() {
+        return beginColumn; // TODO Java 1.8 make optional
+    }
+
+    /**
+     * The column number where this token ends.
+     * returns -1 if not available
+     * @return the end column number
+     */
+    public int getEndColumn() {
+        return endColumn; // TODO Java 1.8 make optional
+    }
+
     public int getIdentifier() {
         return this.identifier;
     }
@@ -134,7 +179,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
                 return e.getKey();
             }
         }
-        return "--unkown--";
+        return "--unknown--";
     }
 
     final void setImage(String image) {

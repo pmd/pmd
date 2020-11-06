@@ -164,6 +164,7 @@ public abstract class AbstractPropertySource implements PropertySource {
 
 
     @Override
+    @Deprecated
     public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
         checkValidPropertyDescriptor(propertyDescriptor);
         propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList(Arrays.asList(values)));
@@ -238,6 +239,17 @@ public abstract class AbstractPropertySource implements PropertySource {
     // todo Java 8 move up to interface
     @Override
     public String dysfunctionReason() {
+        for (PropertyDescriptor<?> descriptor : getOverriddenPropertyDescriptors()) {
+            String error = errorForPropCapture(descriptor);
+            if (error != null) {
+                return error;
+            }
+        }
         return null;
+    }
+
+
+    private <T> String errorForPropCapture(PropertyDescriptor<T> descriptor) {
+        return descriptor.errorFor(getProperty(descriptor));
     }
 }

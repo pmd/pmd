@@ -51,7 +51,7 @@ public class RuleSetWriterTest {
      */
     @Test
     public void testWrite() throws Exception {
-        RuleSet braces = new RuleSetFactory().createRuleSet("net/sourceforge/pmd/TestRuleset1.xml");
+        RuleSet braces = RulesetsFactoryUtils.defaultFactory().createRuleSet("net/sourceforge/pmd/TestRuleset1.xml");
         RuleSet ruleSet = new RuleSetBuilder(new Random().nextLong())
                 .withName("ruleset")
                 .withDescription("ruleset description")
@@ -72,7 +72,7 @@ public class RuleSetWriterTest {
      */
     @Test
     public void testRuleReferenceOverriddenName() throws Exception {
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
         RuleSet rs = ruleSetFactory.createRuleSet("dummy-basic");
         RuleSetReference ruleSetReference = new RuleSetReference("rulesets/dummy/basic.xml");
 

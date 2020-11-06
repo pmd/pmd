@@ -16,12 +16,15 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 
 /**
  * Adapter for the C++ Parser.
+ *
+ * @deprecated There is no full PMD support for c++.
  */
+@Deprecated
 public class CppParser extends AbstractParser {
 
     /**
      * Creates a new C++ Parser.
-     * 
+     *
      * @param parserOptions
      *            the options
      */

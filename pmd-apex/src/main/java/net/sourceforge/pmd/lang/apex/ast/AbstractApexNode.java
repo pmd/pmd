@@ -1,23 +1,45 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import apex.jorje.data.Location;
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.exception.UnexpectedCodePathException;
+import apex.jorje.semantic.symbol.type.TypeInfo;
 
+/**
+ * @deprecated Use {@link ApexNode}
+ */
+@Deprecated
+@InternalApi
 public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNodeBase implements ApexNode<T> {
 
     protected final T node;
 
-    public AbstractApexNode(T node) {
+    protected AbstractApexNode(T node) {
         super(node.getClass());
         this.node = node;
+    }
+
+    @Override
+    public ApexNode<?> getChild(int index) {
+        return (ApexNode<?>) super.getChild(index);
+    }
+
+    @Override
+    public ApexNode<?> getParent() {
+        return (ApexNode<?>) super.getParent();
+    }
+
+    @Override
+    public Iterable<? extends ApexNode<?>> children() {
+        return (Iterable<? extends ApexNode<?>>) super.children();
     }
 
     void calculateLineNumbers(SourceCodePositioner positioner) {
@@ -33,22 +55,22 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
         // default implementation does nothing
     }
 
+    @Deprecated
+    @InternalApi
     @Override
     public T getNode() {
         return node;
     }
 
-    protected boolean hasRealLoc() {
+    @Override
+    public boolean hasRealLoc() {
         try {
             Location loc = node.getLoc();
             return loc != null && Locations.isReal(loc);
         } catch (UnexpectedCodePathException e) {
             return false;
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
             // bug in apex-jorje? happens on some ReferenceExpression nodes
-            return false;
-        } catch (NullPointerException e) {
-            // bug in apex-jorje?
             return false;
         }
     }
@@ -59,5 +81,31 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
         } else {
             return "no location";
         }
+    }
+
+    private TypeInfo getDefiningTypeOrNull() {
+        try {
+            return node.getDefiningType();
+        } catch (UnsupportedOperationException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public String getDefiningType() {
+        TypeInfo definingType = getDefiningTypeOrNull();
+        if (definingType != null) {
+            return definingType.getApexName();
+        }
+        return null;
+    }
+
+    @Override
+    public String getNamespace() {
+        TypeInfo definingType = getDefiningTypeOrNull();
+        if (definingType != null) {
+            return definingType.getNamespace().toString();
+        }
+        return null;
     }
 }

@@ -8,6 +8,10 @@ import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 
+/**
+ * @deprecated Only used by the deprecated designer
+ */
+@Deprecated
 public interface DFAGraphRule extends Rule {
     List<DFAGraphMethod> getMethods();
 }

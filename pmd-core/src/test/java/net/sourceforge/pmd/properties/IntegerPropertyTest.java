@@ -15,6 +15,7 @@ import java.util.List;
  *
  * @author Brian Remedios
  */
+@Deprecated
 public class IntegerPropertyTest extends AbstractNumericPropertyDescriptorTester<Integer> {
 
     private static final int MIN = 1;

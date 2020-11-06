@@ -24,7 +24,7 @@ public class UnnecessaryReturnRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTReturnStatement node, Object data) {
-        if (node.jjtGetParent() instanceof ASTStatement && node.getNthParent(2) instanceof ASTBlockStatement
+        if (node.getParent() instanceof ASTStatement && node.getNthParent(2) instanceof ASTBlockStatement
                 && node.getNthParent(3) instanceof ASTBlock && node.getNthParent(4) instanceof ASTMethodDeclaration) {
             addViolation(data, node);
         }

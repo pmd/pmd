@@ -10,11 +10,14 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.dcd.ClassLoaderUtil;
+import net.sourceforge.pmd.dcd.DCD;
 
 /**
  * Represents a Class in a UsageGraph. Contains lists of FieldNodes,
  * ConstructorNodes, and MethodNodes.
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public class ClassNode implements NodeVisitorAcceptor, Comparable<ClassNode> {
 
     private final String name;

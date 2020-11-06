@@ -8,10 +8,15 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
+
 /**
  * Just stores a type image and a actual type. And makes it easy to compare
  * these.
  */
+@Deprecated
+@InternalApi
 public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
 
     private final String typeImage;
@@ -35,7 +40,7 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
 
     /**
      * Creates a new {@link SimpleTypedNameDeclaration} with the given type
-     * 
+     *
      * @param typeImage
      *            the type image
      * @param type
@@ -62,6 +67,11 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
         } else {
             this.next.addNext(next);
         }
+    }
+
+    @Override
+    public TypeNode getTypeNode() {
+        return null;
     }
 
     @Override

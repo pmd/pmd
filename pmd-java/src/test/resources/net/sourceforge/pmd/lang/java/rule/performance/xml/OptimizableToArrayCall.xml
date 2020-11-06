@@ -3,32 +3,41 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Preferred usage (sf #1454)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- {x.toArray(new Foo[0]);}
+    {
+        x.toArray(new Foo[0]);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Array dimensioner uses method call, performance issue</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- {x.toArray(new Foo[x.size()]);}
+    {
+        x.toArray(new Foo[x.size()]);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Array dimensioner uses variable, performance issue</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- {x.toArray(new Foo[y]);}
+    {
+        x.toArray(new Foo[y]);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>

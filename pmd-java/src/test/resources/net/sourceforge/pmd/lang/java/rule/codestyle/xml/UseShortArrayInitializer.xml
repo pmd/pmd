@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>simple failure case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class UseShortArrayExample {
+    void foo() {
+        int[] x = new int[] {1,2,3};
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>case with two initializers</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,3</expected-linenumbers>
+        <code><![CDATA[
+public class UseShortArrayExample {
+    void foo() {
+        int ar[] = new int[] { 1,2,3}, foo[] = new int[] { 4, 5, 6 };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseShortArrayExample {
+    void foo() {
+        int[] x = {1,2,3};
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assignment needs to use new</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseShortArrayExample {
+    void foo() {
+        int[] a = { 1 };
+        a = new int[] { 2 }; // can't be replaced
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>empty array initialization</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseShortArrayExample {
+    public void foo() {
+        int[] a = new int[3]; // no violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>array initialization with fields</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,3,3</expected-linenumbers>
+        <code><![CDATA[
+public class UseShortArrayExample {
+    private int[] f1 = new int[] {1,2,3};
+    private int[] f2 = new int[] {1,2,3}, f3 = new int[] { 4,5,6 };
+
+    private int[] good = { 1,2,3 };
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>array initialization with var</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseShortArrayExample {
+    public void foo() {
+        var ar1 = new int[] { 1, 2 };
+        //var ar2 = { 1, 2 }; // this is actually a compile-time error and is forbidden. See JLS 14.4.
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

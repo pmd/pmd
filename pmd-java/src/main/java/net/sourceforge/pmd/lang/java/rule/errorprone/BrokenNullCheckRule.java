@@ -29,7 +29,7 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
-        ASTExpression expression = (ASTExpression) node.jjtGetChild(0);
+        ASTExpression expression = (ASTExpression) node.getChild(0);
 
         ASTConditionalAndExpression conditionalAndExpression = expression
                 .getFirstDescendantOfType(ASTConditionalAndExpression.class);
@@ -77,8 +77,8 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
         }
 
         // Now we find the expression to compare to and do the comparison
-        for (int i = 0; i < conditionalExpression.jjtGetNumChildren(); i++) {
-            Node conditionalSubnode = conditionalExpression.jjtGetChild(i);
+        for (int i = 0; i < conditionalExpression.getNumChildren(); i++) {
+            Node conditionalSubnode = conditionalExpression.getChild(i);
 
             // We skip the null compare branch
             ASTEqualityExpression nullEqualityExpression = nullLiteral
@@ -127,7 +127,7 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
                     && !expressionUsageName.startsWith(nullCompareExpressionName + ".")) {
                 // Some other expression is being used after the
                 // null compare
-                return false; 
+                return false;
             }
         }
 
@@ -139,8 +139,8 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
      * PrimaryExpression.
      */
     private void findExpressionNames(Node nullCompareVariable, List<String> results) {
-        for (int i = 0; i < nullCompareVariable.jjtGetNumChildren(); i++) {
-            Node child = nullCompareVariable.jjtGetChild(i);
+        for (int i = 0; i < nullCompareVariable.getNumChildren(); i++) {
+            Node child = nullCompareVariable.getChild(i);
 
             if (child instanceof ASTName) {
                 // Variable names and some method calls
@@ -162,7 +162,7 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
                 results.add(name);
             }
 
-            if (child.jjtGetNumChildren() > 0) {
+            if (child.getNumChildren() > 0) {
                 findExpressionNames(child, results);
             }
         }

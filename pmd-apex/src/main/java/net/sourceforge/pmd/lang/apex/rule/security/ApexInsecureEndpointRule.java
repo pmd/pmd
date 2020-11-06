@@ -15,13 +15,14 @@ import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
 /**
  * Insecure HTTP endpoints passed to (req.setEndpoint)
  * req.setHeader('Authorization') should use named credentials
- * 
+ *
  * @author sergey.gorbaty
  *
  */
@@ -55,7 +56,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
         return data;
     }
 
-    private void findInsecureEndpoints(AbstractApexNode<?> node) {
+    private void findInsecureEndpoints(ApexNode<?> node) {
         ASTVariableExpression variableNode = node.getFirstChildOfType(ASTVariableExpression.class);
         findInnerInsecureEndpoints(node, variableNode);
 
@@ -66,13 +67,12 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
 
     }
 
-    private void findInnerInsecureEndpoints(AbstractApexNode<?> node, ASTVariableExpression variableNode) {
+    private void findInnerInsecureEndpoints(ApexNode<?> node, ASTVariableExpression variableNode) {
         ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
 
         if (literalNode != null && variableNode != null) {
-            Object o = literalNode.getNode().getLiteral();
-            if (o instanceof String) {
-                String literal = (String) o;
+            if (literalNode.isString()) {
+                String literal = literalNode.getImage();
                 if (PATTERN.matcher(literal).matches()) {
                     httpEndpointStrings.add(Helper.getFQVariableName(variableNode));
                 }
@@ -100,15 +100,12 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
 
     }
 
-    private void runChecks(AbstractApexNode<?> node, Object data) {
+    private void runChecks(ApexNode<?> node, Object data) {
         ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
-        if (literalNode != null) {
-            Object o = literalNode.getNode().getLiteral();
-            if (o instanceof String) {
-                String literal = (String) o;
-                if (PATTERN.matcher(literal).matches()) {
-                    addViolation(data, literalNode);
-                }
+        if (literalNode != null && literalNode.isString()) {
+            String literal = literalNode.getImage();
+            if (PATTERN.matcher(literal).matches()) {
+                addViolation(data, literalNode);
             }
         }
 

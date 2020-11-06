@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -20,11 +20,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.rule.ImportWrapper;
 
 public class UnusedImportsRule extends AbstractJavaRule {
 
@@ -37,14 +36,14 @@ public class UnusedImportsRule extends AbstractJavaRule {
      * package.class#member(param, param) label} {@link
      * package.class#member(param, param) label} {@link package.class#field}
      * {@value package.class#field}
-     * 
+     *
      * @throws package.class label
      */
     private static final Pattern SEE_PATTERN = Pattern
-            .compile("@see\\s+(\\p{Alpha}\\w*)(?:#\\w*(?:\\(([\\w\\s,]*)\\))?)?");
+            .compile("@see\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?");
 
     private static final Pattern LINK_PATTERNS = Pattern
-            .compile("\\{@link(?:plain)?\\s+(\\p{Alpha}\\w*)(?:#\\w*(?:\\(([.\\w\\s,]*)\\))?)?[\\s\\}]");
+            .compile("\\{@link(?:plain)?\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?[\\s\\}]");
 
     private static final Pattern VALUE_PATTERN = Pattern.compile("\\{@value\\s+(\\p{Alpha}\\w*)[\\s#\\}]");
 
@@ -63,8 +62,8 @@ public class UnusedImportsRule extends AbstractJavaRule {
          * package-info.java package annotations are processed before the import
          * clauses so they need to be examined again later on.
          */
-        if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTPackageDeclaration) {
-            visit((ASTPackageDeclaration) node.jjtGetChild(0), data);
+        if (node.getNumChildren() > 0 && node.getChild(0) instanceof ASTPackageDeclaration) {
+            visit((ASTPackageDeclaration) node.getChild(0), data);
         }
         for (ImportWrapper wrapper : imports) {
             addViolation(data, wrapper.getNode(), wrapper.getFullName());
@@ -83,13 +82,16 @@ public class UnusedImportsRule extends AbstractJavaRule {
             for (Pattern p : PATTERNS) {
                 Matcher m = p.matcher(comment.getImage());
                 while (m.find()) {
-                    String s = m.group(1);
-                    imports.remove(new ImportWrapper(s, s, new DummyJavaNode(-1)));
+                    String fullname = m.group(1);
+
+                    if (fullname != null) { // may be null for "@see #" and "@link #"
+                        imports.remove(new ImportWrapper(fullname, fullname));
+                    }
 
                     if (m.groupCount() > 1) {
-                        s = m.group(2);
-                        if (s != null) {
-                            String[] params = s.split("\\s*,\\s*");
+                        fullname = m.group(2);
+                        if (fullname != null) {
+                            String[] params = fullname.split("\\s*,\\s*");
                             for (String param : params) {
                                 final int firstDot = param.indexOf('.');
                                 final String expectedImportName;
@@ -98,7 +100,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
                                 } else {
                                     expectedImportName = param.substring(0, firstDot);
                                 }
-                                imports.remove(new ImportWrapper(param, expectedImportName, new DummyJavaNode(-1)));
+                                imports.remove(new ImportWrapper(param, expectedImportName));
                             }
                         }
                     }
@@ -114,11 +116,11 @@ public class UnusedImportsRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         if (node.isImportOnDemand()) {
-            ASTName importedType = (ASTName) node.jjtGetChild(0);
-            imports.add(new ImportWrapper(importedType.getImage(), null, node, node.getType(), node.isStatic()));
+            ASTName importedType = (ASTName) node.getChild(0);
+            imports.add(new ImportWrapper(importedType.getImage(), null, node, node.isStatic()));
         } else {
             if (!node.isImportOnDemand()) {
-                ASTName importedType = (ASTName) node.jjtGetChild(0);
+                ASTName importedType = (ASTName) node.getChild(0);
                 String className;
                 if (isQualifiedName(importedType)) {
                     int lastDot = importedType.getImage().lastIndexOf('.') + 1;
@@ -149,14 +151,27 @@ public class UnusedImportsRule extends AbstractJavaRule {
             return;
         }
         ImportWrapper candidate = getImportWrapper(node);
+
+        // check exact imports
         Iterator<ImportWrapper> it = imports.iterator();
         while (it.hasNext()) {
             ImportWrapper i = it.next();
-            if (i.matches(candidate)) {
+            if (!i.isStaticOnDemand() && i.matches(candidate)) {
                 it.remove();
                 return;
             }
         }
+
+        // check static on-demand imports
+        it = imports.iterator();
+        while (it.hasNext()) {
+            ImportWrapper i = it.next();
+            if (i.isStaticOnDemand() && i.matches(candidate)) {
+                it.remove();
+                return;
+            }
+        }
+
         if (TypeNode.class.isAssignableFrom(node.getClass()) && ((TypeNode) node).getType() != null) {
             Class<?> c = ((TypeNode) node).getType();
             if (c.getPackage() != null) {
@@ -196,13 +211,13 @@ public class UnusedImportsRule extends AbstractJavaRule {
         //         Name
         //     PrimarySuffix
 
-        if (node.jjtGetParent() instanceof ASTPrimaryPrefix && node.getNthParent(2) instanceof ASTPrimaryExpression) {
-            Node primaryPrefix = node.jjtGetParent();
-            Node expression = primaryPrefix.jjtGetParent();
+        if (node.getParent() instanceof ASTPrimaryPrefix && node.getNthParent(2) instanceof ASTPrimaryExpression) {
+            Node primaryPrefix = node.getParent();
+            Node expression = primaryPrefix.getParent();
 
-            boolean hasNextSibling = expression.jjtGetNumChildren() > primaryPrefix.jjtGetChildIndex() + 1;
+            boolean hasNextSibling = expression.getNumChildren() > primaryPrefix.getIndexInParent() + 1;
             if (hasNextSibling) {
-                Node nextSibling = expression.jjtGetChild(primaryPrefix.jjtGetChildIndex() + 1);
+                Node nextSibling = expression.getChild(primaryPrefix.getIndexInParent() + 1);
                 if (nextSibling instanceof ASTPrimarySuffix) {
                     return true;
                 }

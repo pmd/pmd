@@ -4,18 +4,26 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
+@Deprecated
+@InternalApi
 public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode implements TypeNode {
+
     /**
      * Type definition, used to get the type of the node.
      */
     protected JavaTypeDefinition typeDefinition;
 
+    @Deprecated
+    @InternalApi
     public AbstractJavaAccessTypeNode(int i) {
         super(i);
     }
 
+    @Deprecated
+    @InternalApi
     public AbstractJavaAccessTypeNode(JavaParser parser, int i) {
         super(parser, i);
     }
@@ -29,6 +37,8 @@ public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode 
         return null;
     }
 
+    @InternalApi
+    @Deprecated
     @Override
     public void setType(Class<?> type) {
         typeDefinition = JavaTypeDefinition.forClass(type);
@@ -39,6 +49,8 @@ public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode 
         return typeDefinition;
     }
 
+    @InternalApi
+    @Deprecated
     @Override
     public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
         this.typeDefinition = typeDefinition;

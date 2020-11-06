@@ -74,7 +74,7 @@ public class MethodScope extends AbstractJavaScope {
         if (node instanceof ASTConstructorDeclaration) {
             return this.getEnclosingScope(ClassScope.class).getClassName();
         }
-        return node.jjtGetChild(1).getImage();
+        return node.getChild(1).getImage();
     }
 
     @Override

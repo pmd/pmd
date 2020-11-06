@@ -3,383 +3,333 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-call super
-     ]]></description>
+        <description>call super</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-  public void foo() {
-    super.foo();
-  }
+    public void foo() {
+        super.foo();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-call super with same argument
-     ]]></description>
+        <description>call super with same argument</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-  public void foo(String bar) {
-    super.foo(bar);
-  }
+    public void foo(String bar) {
+        super.foo(bar);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-call super with different argument
-     ]]></description>
+        <description>call super with different argument</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-  String text = "text";
-  public void foo(String bar) {
-     super.foo(text);
-  }
+    String text = "text";
+    public void foo(String bar) {
+        super.foo(text);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-call super with different argument 2
-     ]]></description>
+        <description>call super with different argument 2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-  public void foo(String bar) {
-    super.foo(boe(bar));
-  }
+    public void foo(String bar) {
+        super.foo(boe(bar));
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-call super with different argument 3
-     ]]></description>
+        <description>call super with different argument 3</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Buz{
-  public String foo(String bar) {
-    super.foo("" + bar);
- }
+    public String foo(String bar) {
+        super.foo("" + bar);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-call super with inverted arguments
-     ]]></description>
+        <description>call super with inverted arguments</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-  public void foo(String bar, String stool) {
-    super.foo(stool, bar);
-  }
+    public void foo(String bar, String stool) {
+        super.foo(stool, bar);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-return value of super
-     ]]></description>
+        <description>return value of super</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-  public String foo() {
-    return super.foo();
-  }
+    public String foo() {
+        return super.foo();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-return value of super with argument
-     ]]></description>
+        <description>return value of super with argument</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-  public String foo(String bar) {
-    return super.foo(bar);
-  }
+    public String foo(String bar) {
+        return super.foo(bar);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-return value of super after adding a string
-     ]]></description>
+        <description>return value of super after adding a string</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-  public String foo(String bar) {
-    return super.foo(bar) + "is foo";
-  }
+    public String foo(String bar) {
+        return super.foo(bar) + "is foo";
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-do not crash on abstract methods
-     ]]></description>
+        <description>do not crash on abstract methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-  public abstract String foo();
+    public abstract String foo();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-do not crash on interfaces
-     ]]></description>
+        <description>do not crash on interfaces</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo extends Bar {
-  public String foo();
+    public String foo();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-do not crash on empty returns
-     ]]></description>
+        <description>do not crash on empty returns</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-  public void foo(String bar) {
-    return;
-  }
+    public void foo(String bar) {
+        return;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-do not crash on super
-     ]]></description>
+        <description>do not crash on super</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-  public void init(String[] args) {
-    super.init( args, Application.NO_MODULES );
-  }
+    public void init(String[] args) {
+        super.init( args, Application.NO_MODULES );
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-call super with different argument 4
-     ]]></description>
+        <description>call super with different argument 4</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Buz{
-  public String foo(Object bar) {
-    super.foo(this);
- }
+    public String foo(Object bar) {
+        super.foo(this);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-adding final is OK
-     ]]></description>
+        <description>adding final is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-   public final String foo() {
-      return super.foo();
-   }
+    public final String foo() {
+        return super.foo();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-adding synchronized is OK
-     ]]></description>
+        <description>adding synchronized is OK, see sf-bug #423</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-   public synchronized String foo() {
-     return super.foo();
-   }
+    public synchronized String foo() {
+        return super.foo();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Constructors are OK
-     ]]></description>
+        <description>Constructors are OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-   public Foo(String bar) {
-     super(bar);
-   }
+    public Foo(String bar) {
+        super(bar);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Should ignore clone implementation ( see bug 1522517)
-     ]]></description>
+        <description>Should ignore clone implementation ( see bug 1522517)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-   public Object clone() throws CloneNotSupportedException {
-	 return super.clone();
-   }
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-clone method with arguments should not be ignored
-     ]]></description>
+        <description>clone method with arguments should not be ignored</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
-   public Object clone(Object o) throws CloneNotSupportedException {
-	  return super.clone(o);
-   }
+    public Object clone(Object o) throws CloneNotSupportedException {
+        return super.clone(o);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    <test-code regressionTest="false">
-        <description>
-        	<![CDATA[
-False +: Overriding method merely calls super (see bug 1415525)
-     		]]>
-     	</description>
-        <expected-problems>0</expected-problems>
-        <code>
-        	<![CDATA[
-import nu.xom.Serializer;
 
-private static class ExposingSerializer extends Serializer {
-
-	ExposingSerializer(OutputStream out, String encoding)
-	throws UnsupportedEncodingException {
-		super(out, encoding);
-	}
-
-  /**
-   * Overriding in order to change the access modifier from
-   * protected to public - so: not only merely calling super.
-   *
-   * Method signature in super class:
-   * protected void writeChild(nu.xom.Node arg0) throws java.io.IOException;
-   *
-   * See: https://sourceforge.net/tracker/?func=detail&aid=1415525&group_id=56262&atid=479921
-   */
-	public void writeChild(Node node) throws IOException {
-	    super.writeChild(node);
-	}
-
-	public void exposedWriteRaw(String text) throws IOException {
-		writeRaw(text);
-	}
-
-	public void exposedWriteEscaped(String text) throws IOException {
-		writeEscaped(text);
-	}
-
-	public void exposedWriteAttributeValue(String text) throws IOException {
-		writeAttributeValue(text);
-	}
-}
-     ]]></code>
-    </test-code>
     <test-code>
-        <description>
-        	<![CDATA[
-[ 1977230 ] false positive: UselessOverridingMethod
-     		]]>
-     	</description>
+        <description>False +: Overriding method merely calls super (see bug 1415525)</description>
         <expected-problems>0</expected-problems>
-        <code>
-        	<![CDATA[
-public class Foo extends Bar {
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 
-	public BigDecimal getBalance(Date date) {
-		return super.getBalance(date).negate();
-	}
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+
+import org.w3c.dom.Node;
+
+class ExposingSerializer extends Serializer {
+
+    ExposingSerializer(OutputStream out, String encoding) throws UnsupportedEncodingException {
+        super(out, encoding);
+    }
+
+    /**
+     * Overriding in order to change the access modifier from protected to public - so: not only merely calling super.
+     *
+     * <p>Method signature in super class: protected void writeChild(nu.xom.Node arg0) throws java.io.IOException;
+     *
+     * <p>See: https://sourceforge.net/tracker/?func=detail&aid=1415525&group_id=56262&atid=479921
+     */
+    public void writeChild(Node node) throws IOException {
+        super.writeChild(node);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[ 1977230 ] false positive: UselessOverridingMethod</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo extends Bar {
+    public BigDecimal getBalance(Date date) {
+        return super.getBalance(date).negate();
+    }
 }
 
 class Bar {
-	public BigDecimal getBalance(Date date) {
-	}
+    public BigDecimal getBalance(Date date) {
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    <test-code reinitializeRule="1">
-        <description>
-        	<![CDATA[
-[ 2142986 ] UselessOverridingMethod doesn't consider annotations, ignoreAnnotations property set to true
-     		]]>
-     	</description>
+
+    <test-code>
+        <description>[ 2142986 ] UselessOverridingMethod doesn't consider annotations, ignoreAnnotations property set to true</description>
         <rule-property name="ignoreAnnotations">true</rule-property>
         <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
+        <code><![CDATA[
 class PersistentObject {
-  public Long getId() { return 1L; } 
+    public Long getId() { return 1L; }
 }
 
 public class Example extends PersistentObject {
-  @Override
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  public Long getId() { return super.getId(); }
+    @Override
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() { return super.getId(); }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    <test-code reinitializeRule="1">
-        <description>
-        	<![CDATA[
-[ 2142986 ] UselessOverridingMethod doesn't consider annotations
-     		]]>
-     	</description>
-        <expected-problems>0</expected-problems>
-        <code>
-        	<![CDATA[
-class PersistentObject {
-  public Long getId() { return 1L; } 
-}
 
-public class Example extends PersistentObject {
-  @Override
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  public Long getId() { return super.getId(); }
-}
-     ]]></code>
-    </test-code>
-    <test-code reinitializeRule="1">
-        <description>
-        	<![CDATA[
-[ 2142986 ] UselessOverridingMethod doesn't consider annotations, @Override only
-     		]]>
-     	</description>
-        <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
-class PersistentObject {
-  public Long getId() { return 1L; } 
-}
-
-public class Example extends PersistentObject {
-  @Override
-  public Long getId() { return super.getId(); }
-}
-     ]]></code>
-    </test-code>
     <test-code>
-        <description><![CDATA[
-ClassCastException in statement cast
-     ]]></description>
+        <description>[ 2142986 ] UselessOverridingMethod doesn't consider annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class PersistentObject {
+    public Long getId() { return 1L; }
+}
+
+public class Example extends PersistentObject {
+    @Override
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() { return super.getId(); }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[ 2142986 ] UselessOverridingMethod doesn't consider annotations, @Override only</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class PersistentObject {
+    public Long getId() { return 1L; }
+}
+
+public class Example extends PersistentObject {
+    @Override
+    public Long getId() { return super.getId(); }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ClassCastException in statement cast</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Comparator;
@@ -387,17 +337,142 @@ import javax.annotation.Nonnull;
 
 public class AnonymousClassConstructor {
 
-	public void method() {
-		@SuppressWarnings("unused")
-		final Comparator<Long> comparator = new Comparator<Long>() {
+    public void method() {
+        @SuppressWarnings("unused")
+        final Comparator<Long> comparator = new Comparator<Long>() {
 
-			@Override
-			public int compare(@Nonnull Long o1, @Nonnull Long o2) {
-				return 0;
-			}
-		};
-	}
+            @Override
+            public int compare(@Nonnull Long o1, @Nonnull Long o2) {
+                return 0;
+            }
+        };
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - direct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class DirectSubclass extends BaseClass {
+
+    @Override
+    public void doBase() {
+        super.doBase();
+    }
+
+    @Override
+    public void doBaseWithArg(String foo) {
+        super.doBaseWithArg(foo);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - direct but changing arguments</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class DirectSubclass extends BaseClass {
+
+    @Override
+    public void doBaseWithArg(String foo) {
+        super.doBaseWithArg(foo.toString());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - direct different package, same visibility</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod.other;
+
+import net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod.BaseClass;
+
+public class DirectSubclassInOtherPackage extends BaseClass {
+
+    @Override
+    protected void doBase() {
+        super.doBase();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - transitive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class TransitiveSubclass extends OtherSubclass {
+
+    @Override
+    public void doBase() {
+        super.doBase();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - direct2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class DirectSubclass2 extends DirectSubclass {
+    @Override
+    public void doBase() { // it's already public in DirectSubclass
+        super.doBase();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Make sure, overriding to add synchronized is Ok, see sf-bug #423</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class DirectSynchronizingSubclass extends BaseClass {
+
+    @Override
+    protected synchronized void doBase() {
+        // overriding for synchronized
+        super.doBase();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Useless override with different packages already public (false negative)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,10</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class UselessOverridingMethodHashCode {
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

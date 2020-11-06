@@ -12,6 +12,11 @@ import java.util.List;
 
 import net.sourceforge.pmd.util.StringUtil;
 
+/**
+ *
+ * @deprecated This class will be removed with PMD 7. The rule designer is a better way to inspect nodes.
+ */
+@Deprecated
 public class DumpFacade {
 
     private PrintWriter writer;
@@ -31,8 +36,8 @@ public class DumpFacade {
     public Object visit(ApexNode<?> node, Object data) {
         dump(node, (String) data);
         if (recurse) {
-            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-                visit((ApexNode<?>) node.jjtGetChild(i), data + " ");
+            for (int i = 0; i < node.getNumChildren(); i++) {
+                visit((ApexNode<?>) node.getChild(i), data + " ");
             }
             return data;
         } else {

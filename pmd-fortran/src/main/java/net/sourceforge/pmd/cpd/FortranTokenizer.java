@@ -8,9 +8,12 @@ import java.util.ArrayList;
 
 /**
  * Tokenizer implementation for Fortran
- * 
+ *
  * @author Romain PELISSE - romain.pelisse@atosorigin.com
+ *
+ * @deprecated Was replaced by an {@link AnyTokenizer}. Use {@link FortranLanguage#getTokenizer()} anyway
  */
+@Deprecated
 public class FortranTokenizer extends AbstractTokenizer implements Tokenizer {
 
     /**
@@ -19,16 +22,16 @@ public class FortranTokenizer extends AbstractTokenizer implements Tokenizer {
     public FortranTokenizer() {
         this.spanMultipleLinesString = false; // No such thing in Fortran !
         // setting markers for "string" in Fortran
-        this.stringToken = new ArrayList<String>();
+        this.stringToken = new ArrayList<>();
         this.stringToken.add("\'");
         // setting markers for 'ignorable character' in Fortran
-        this.ignorableCharacter = new ArrayList<String>();
+        this.ignorableCharacter = new ArrayList<>();
         this.ignorableCharacter.add("(");
         this.ignorableCharacter.add(")");
         this.ignorableCharacter.add(",");
 
         // setting markers for 'ignorable string' in Fortran
-        this.ignorableStmt = new ArrayList<String>();
+        this.ignorableStmt = new ArrayList<>();
         this.ignorableStmt.add("do");
         this.ignorableStmt.add("while");
         this.ignorableStmt.add("end");

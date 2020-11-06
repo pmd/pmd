@@ -20,7 +20,10 @@ import net.sourceforge.pmd.lang.java.qname.ImmutableList.ListFactory;
  *
  * @author Clément Fournier
  * @since 6.1.0
+ *
+ * @deprecated Was internal API, will be removed. See {@link JavaQualifiedName}.
  */
+@Deprecated
 public final class QualifiedNameFactory {
 
     /** Operation part of a lambda. */

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.metrics;
 
-import java.util.Objects;
-
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
 
 /**
@@ -17,12 +15,10 @@ import net.sourceforge.pmd.lang.ast.QualifiableNode;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ * @deprecated See package description
  */
+@Deprecated
 public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends QualifiableNode> {
-
-    private static final String NULL_KEY_MESSAGE = "The metric key must not be null";
-    private static final String NULL_OPTIONS_MESSAGE = "The metric options must not be null";
-    private static final String NULL_NODE_MESSAGE = "The node must not be null";
 
 
     /**
@@ -30,6 +26,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
      *
      * @return The metrics computer
      */
+    @Deprecated
     protected abstract MetricsComputer<T, O> getLanguageSpecificComputer();
 
 
@@ -38,6 +35,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
      *
      * @return The project memoizer
      */
+    @Deprecated
     protected abstract ProjectMemoizer<T, O> getLanguageSpecificProjectMemoizer();
 
 
@@ -52,20 +50,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public double computeForType(MetricKey<T> key, T node, MetricOptions options) {
-
-        Objects.requireNonNull(key, NULL_KEY_MESSAGE);
-        Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
-        Objects.requireNonNull(node, NULL_NODE_MESSAGE);
-
-        if (!key.supports(node)) {
-            return Double.NaN;
-        }
-
-        MetricMemoizer<T> memoizer = getLanguageSpecificProjectMemoizer().getClassMemoizer(node.getQualifiedName());
-
-        return memoizer == null ? Double.NaN
-                                : getLanguageSpecificComputer().computeForType(key, node, false,
-                                                                               options, memoizer);
+        return MetricsUtil.computeMetric(key, node, options);
     }
 
 
@@ -79,22 +64,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public double computeForOperation(MetricKey<O> key, O node, MetricOptions options) {
-
-        Objects.requireNonNull(key, NULL_KEY_MESSAGE);
-        Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
-        Objects.requireNonNull(node, NULL_NODE_MESSAGE);
-
-
-        if (!key.supports(node)) {
-            return Double.NaN;
-        }
-
-        MetricMemoizer<O> memoizer = getLanguageSpecificProjectMemoizer().getOperationMemoizer(node.getQualifiedName());
-
-        return memoizer == null ? Double.NaN
-                                : getLanguageSpecificComputer().computeForOperation(key, node, false,
-                                                                                    options, memoizer);
-
+        return MetricsUtil.computeMetric(key, node, options);
     }
 
 
@@ -112,11 +82,6 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
      */
     public double computeWithResultOption(MetricKey<O> key, T node,
                                           MetricOptions options, ResultOption resultOption) {
-
-        Objects.requireNonNull(key, NULL_KEY_MESSAGE);
-        Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
-        Objects.requireNonNull(node, NULL_NODE_MESSAGE);
-        Objects.requireNonNull(resultOption, "The result option must not be null");
 
         return getLanguageSpecificComputer().computeWithResultOption(key, node, false, options,
                                                                      resultOption, getLanguageSpecificProjectMemoizer());

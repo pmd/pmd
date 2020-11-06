@@ -3,25 +3,23 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-should be utility class since all static, public constructor
-     ]]></description>
+        <description>should be utility class since all static, public constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo() { }
- public static void doSomething() {}
- public static void main(String args[]) {
-  doSomething();
- }
+    public Foo() { }
+    public static void doSomething() {}
+    public static void main(String args[]) {
+        doSomething();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, uses non-static
-     ]]></description>
+        <description>ok, uses non-static</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -29,49 +27,45 @@ public class Foo {
     public void doSomething() { }
     public static void main(String args[]) { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-should be utility class, couple of statics, no constructor
-     ]]></description>
+        <description>should be utility class, couple of statics, no constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public static void doSomething1() { }
     public static void doSomething2() { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-public constructor, no static - ok
-     ]]></description>
+        <description>public constructor, no static - ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public Foo() { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-classic utility class - ok
-     ]]></description>
+        <description>classic utility class - ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private Foo() {}
- public static Foo get() {
-  return null;
- }     
+    private Foo() {}
+    public static Foo get() {
+        return null;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-abstract, so ok
-     ]]></description>
+        <description>abstract, so ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public abstract class Foo {
@@ -79,100 +73,92 @@ public abstract class Foo {
     public static void doSomething2() { }
     public static void doSomething3() { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-has some private and no public static fields, so ok
-     ]]></description>
+        <description>has some private and no public static fields, so ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo() { }
- private int x;
- public static void doSomething() {}
+    public Foo() { }
+    private int x;
+    public static void doSomething() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-has public static field, so need to check
-     ]]></description>
+        <description>has public static field, so need to check</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public static final int x = 5;
- public static void doSomething() {}
+    public static final int x = 5;
+    public static void doSomething() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-junit 'suite' method is OK
-     ]]></description>
+        <description>junit 'suite' method is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class FooTest {
- public static Test suite() {
-  return new TestSuite();
- }
+    public static Test suite() {
+        return new TestSuite();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
-	    <description><![CDATA[
-Reproducing bug [ 2315599 ] False +: UseSingleton with class containing constructor: Although there is a static method, the class also has a non-private constructor. This is a common design for custom exceptions which contain a private static method to format error message strings.
-]]></description>
-	    <expected-problems>0</expected-problems>
-	    <code><![CDATA[
+        <description>Reproducing bug [ 2315599 ] False +: UseSingleton with class containing constructor: Although there is a static method, the class also has a non-private constructor. This is a common design for custom exceptions which contain a private static method to format error message strings.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class UseSingleton extends Exception {
-	UseSingleton(final String string) {
-		super(foo(string));
-	}
-	
-	private static String foo(final String string) {
-		return string;
-	}
+    UseSingleton(final String string) {
+        super(foo(string));
+    }
+
+    private static String foo(final String string) {
+        return string;
+    }
 }
-			   ]]></code>
-    </test-code>    
+        ]]></code>
+    </test-code>
+
     <test-code>
-        <description><![CDATA[
-inner should be utility class since all static, public constructor
-     ]]></description>
+        <description>inner should be utility class since all static, public constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- static class Bar {
-   public Bar() { }
-   public static void doSomething() {}
- }
- public void doSomething() {}
+    static class Bar {
+        public Bar() { }
+        public static void doSomething() {}
+    }
+    public void doSomething() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-[ 2404700 ] UseSingleton should not act on enums
-     ]]></description>
+        <description>[ 2404700 ] UseSingleton should not act on enums</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public enum EnumTest {
-	A, B;
+    A, B;
 
-	EnumTest() { }
+    EnumTest() { }
 
-	public static void main(String[] args) {
-		System.out.println(EnumTest.A);
-	}
+    public static void main(String[] args) {
+        System.out.println(EnumTest.A);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-NPE in incorrect implementation...
-     ]]></description>
+        <description>NPE in incorrect implementation...</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -181,12 +167,11 @@ public class Foo {
     public static void main(String args[]) { }
     ;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-OK, method annotations
-     ]]></description>
+        <description>OK, method annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -195,8 +180,9 @@ public class Foo {
     public void doSomething() { }
     public static void main(String args[]) { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1255 UseUtilityClass false positive with Exceptions</description>
         <expected-problems>0</expected-problems>
@@ -222,27 +208,24 @@ public class MyException extends RuntimeException {
         <code><![CDATA[
 public class AccountFragment extends Fragment {
 
-  public static AccountFragment newInstance() {
-    AccountFragment instance = new AccountFragment();
-    //OTHER STUFF
-    return instance;
-  }
+    public static AccountFragment newInstance() {
+        AccountFragment instance = new AccountFragment();
+        //OTHER STUFF
+        return instance;
+    }
 
-  @Nullable
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.mylayout, container, false);
-  }
-
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.mylayout, container, false);
+    }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-Lombok NoArgsConstructor - ok
-     ]]></description>
+        <description>Lombok NoArgsConstructor - ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.NoArgsConstructor;
@@ -250,17 +233,15 @@ import lombok.AccessLevel;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Foo {
- public static Foo get() {
-  return null;
- }
+    public static Foo get() {
+        return null;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-Lombok NoArgsConstructor static import- ok
-     ]]></description>
+        <description>Lombok NoArgsConstructor static import- ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import static lombok.AccessLevel.PRIVATE;
@@ -269,68 +250,60 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class Foo {
- public static Foo get() {
-  return null;
- }
+    public static Foo get() {
+        return null;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-Lombok NoArgsConstructor no import- ok
-     ]]></description>
+        <description>Lombok NoArgsConstructor no import- ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class Foo {
- public static Foo get() {
-  return null;
- }
+    public static Foo get() {
+        return null;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-Lombok NoArgsConstructor with no access level- should be a utility class
-     ]]></description>
+        <description>Lombok NoArgsConstructor with no access level- should be a utility class</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class Foo {
- public static Foo get() {
-  return null;
- }
+    public static Foo get() {
+        return null;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-Lombok NoArgsConstructor with wrong access level - should be a utility class
-     ]]></description>
+        <description>Lombok NoArgsConstructor with wrong access level - should be a utility class</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PUBLIC)
 public class Foo {
- public static Foo get() {
-  return null;
- }
+    public static Foo get() {
+        return null;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-Lombok AllArgsConstructor - ok
-     ]]></description>
+        <description>Lombok AllArgsConstructor - ok</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import lombok.AllArgsConstructor;
@@ -338,26 +311,92 @@ import lombok.AccessLevel;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Foo {
- public static Foo get() {
-  return null;
- }
+    public static Foo get() {
+        return null;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
-	<test-code>
-        <description><![CDATA[
-#824 False Positive when extending another class
-     ]]></description>
+    <test-code>
+        <description>#824 False Positive when extending another class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.ArrayList;
 
 public class FooLocal extends ThreadLocal<Integer> {
- public static FooLocal get() {
-  return new FooLocal();
- }
+    public static FooLocal get() {
+        return new FooLocal();
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1094 [java] UseUtilityClass should be LombokAware</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public class MyUtil {
+    private final static int CONSTANT = 5;
+
+    public static int addSomething(int in) {
+        return in + CONSTANT;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner class in abstract class false-negative</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Outer {
+    private static class Inner {
+        public static int getInt() { return 42; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner class in abstract class false-negative</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Outer {
+    private static class Inner {
+        private static int answer;
+        public static int getInt() { return answer; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner class in interface false-negative</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Outer {
+    private static class Inner {
+        public static int getInt() { return 42; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner class in sub-class false-negative</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Outer extends Object {
+    private static class Inner {
+        public static boolean isYes(int a) {
+            return a != 0;
+        }
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

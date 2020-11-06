@@ -23,6 +23,7 @@ import net.sourceforge.pmd.Rule;
  * @author Clément Fournier
  * @version 6.0.0
  */
+@Deprecated
 /* default */ abstract class AbstractMultiValueProperty<V> extends AbstractProperty<List<V>>
         implements MultiValuePropertyDescriptor<V> {
 
@@ -74,7 +75,7 @@ import net.sourceforge.pmd.Rule;
     }
 
 
-    /* This is the one overriden in PropertyDescriptor */
+    /* This is the one overridden in PropertyDescriptor */
     @Override
     public String propertyErrorFor(Rule rule) {
         List<V> realValues = rule.getProperty(this);

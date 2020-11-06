@@ -40,14 +40,15 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     {% include custom/cli_option_row.html options="-auxclasspath"
                option_arg="cp"
                description="Specifies the classpath for libraries used by the source code.
-               This is used to resolve types in source files. Alternatively, a `file://` URL
+               This is used to resolve types in source files. The platform specific path delimiter
+               (\":\" on Linux, \";\" on Windows) is used to separate the entries.
+               Alternatively, a single `file:` URL
                to a text file containing path elements on consecutive lines can be specified."
                languages="Java"
     %}
     {% include custom/cli_option_row.html options="-benchmark,-b"
                description="Enables benchmark mode, which outputs a benchmark report upon completion.
                             The report is sent to standard error."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-cache"
                option_arg="filepath"
@@ -59,7 +60,6 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     %}
     {% include custom/cli_option_row.html options="-debug,-verbose,-D,-V"
                description="Debug mode. Prints more log output."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-encoding,-e"
                option_arg="charset"
@@ -87,11 +87,10 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     %}
     {% include custom/cli_option_row.html options="-help,-h,-H"
                description="Display help on usage."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-language,-l"
                option_arg="lang"
-               description="Specify the language PMD should use."
+               description="Specify the language PMD should use. Used together with `-version`. See also [Supported Languages](#supported-languages)."
     %}
     {% include custom/cli_option_row.html options="-minimumpriority,-min"
                option_arg="num"
@@ -99,13 +98,11 @@ The tool comes with a rather extensive help text, simply running with `-help`!
                default="5"
     %}
     {% include custom/cli_option_row.html options="-norulesetcompatibility"
-               description='Disables the ruleset compatibility filter. The filter is active by default and tries to automatically "fix" old ruleset files with old rule names'
-               default="false"
+               description='Disable automatic fixing of invalid rule references. Without the switch, PMD tries to automatically replace rule references that point to moved or renamed rules with the newer location if possible. Disabling it is not recommended.'
     %}
     {% include custom/cli_option_row.html options="-no-cache"
                description="Explicitly disables incremental analysis. This switch turns off suggestions to use Incremental Analysis,
                and causes the `-cache` option to be discarded if it is provided."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-property,-P"
                option_arg="name>=<value"
@@ -118,15 +115,12 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     %}
     {% include custom/cli_option_row.html options="-shortnames"
                description="Prints shortened filenames in the report."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-showsuppressed"
                description="Causes the suppressed rule violations to be added to the report."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-stress,-S"
                description="Performs a stress test."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-suppressmarker"
                option_arg="marker"
@@ -146,9 +140,19 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     %}
     {% include custom/cli_option_row.html options="-version,-v"
                option_arg="version"
-               description="Specify the version of a language PMD should use."
+               description="Specify the version of a language PMD should use. Used together with `-language`. See also [Supported Languages](#supported-languages)."
     %}
 </table>
+
+## Additional Java Runtime Options
+
+PMD is executed via a Java runtime. In some cases, you might need to set additional runtime options, e.g.
+if you want to analyze a project, that uses one of OpenJDK's [Preview Language Features](http://openjdk.java.net/jeps/12).
+
+Just set the environment variable `PMD_JAVA_OPTS` before executing PMD, e.g.
+
+    export PMD_JAVA_OPTS="--enable-preview"
+    ./run.sh pmd -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
 
 ## Exit Status
 
@@ -164,89 +168,37 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 
 ## Supported Languages
 
+The language is determined automatically by PMD from the file extensions. Some languages such as "Java"
+however support multiple versions. The default version will be used, which is usually the latest supported
+version. If you want to use an older version, so that e.g. rules, that suggest usage of language features,
+that are not available yet, won't be executed, you need to specify a specific version via the `-language`
+and `-version` parameter.
+
+These parameters are irrelevant for languages that don't support different versions.
+
+Example:
+
+``` shell
+./run.sh pmd -d src/main/java -f text -R rulesets/java/quickstart.xml -language java -version 8
+```
+
 *   [apex](pmd_rules_apex.html) (Salesforce Apex)
 *   [java](pmd_rules_java.html)
-*   [ecmascript](pmd_rules_javascript.html) (JavaScript)
+    *   Supported Versions: 1.3, 1.4, 1.5, 5, 1.6, 6, 1.7, 7, 1.8, 8, 9, 1.9, 10, 1.10, 11, 12,
+        13, 14, 14-preview, 15 (default), 15-preview
+*   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
 *   [jsp](pmd_rules_jsp.html)
+*   [modelica](pmd_rules_modelica.html)
 *   [plsql](pmd_rules_plsql.html)
+*   [scala](pmd_rules_scala.html)
+    *   Supported Versions: 2.10, 2.11, 2.12, 2.13 (default)
 *   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
 *   [vm](pmd_rules_vm.html) (Apache Velocity)
-*   [xml and xsl](/pmd_rules_xml.html)
+*   [xml and xsl](pmd_rules_xml.html)
 
 
 ## Available Report Formats
 
 PMD comes with many different renderers.
-The mnemonics in bold are used to select them on the command line, as
-arguments to the `-format` option. Some formats accept *properties*,
-which can be specified with the `-property` option on the command-line.
+All formats are described at [PMD Report formats](pmd_userdocs_report_formats.html)
 
-*   **codeclimate**: Renderer for Code Climate JSON format.
-
-*   **csv**: Comma-separated values tabular format.
-
-    Properties:
-
-    *   problem: Include problem column. Default: true.
-    *   package: Include package column. Default: true.
-    *   file: Include file column. Default: true.
-    *   priority: Include priority column. Default: true.
-    *   line: Include line column. Default: true.
-    *   desc: Include description column. Default: true.
-    *   ruleSet: Include Rule set column. Default: true.
-    *   rule: Include Rule column. Default: true.
-
-*   **emacs**: GNU Emacs integration.
-
-*   **html**: HTML format.
-
-    Properties:
-
-    *   linePrefix: Prefix for line number anchor in the source file.
-    *   linkPrefix: Path to HTML source.
-
-*   **ideaj**: IntelliJ IDEA integration.
-
-    Properties:
-
-    *   classAndMethodName: Class and method name, pass `.method` when processing a directory.
-    *   sourcePath:
-    *   fileName:
-
-*   **summaryhtml**: Summary HTML format.
-
-    Properties:
-
-    *   linePrefix: Prefix for line number anchor in the source file.
-    *   linkPrefix: Path to HTML source.
-
-*   **text**: Text format.
-
-*   **textcolor**: Text format, with color support (requires ANSI console support, e.g. xterm, rxvt, etc.).
-
-    Properties:
-
-    *   color: Enables colors with anything other than `false` or `0`. Default: yes.
-
-*   **textpad**: TextPad integration.
-
-*   **vbhtml**: Vladimir Bossicard HTML format.
-
-*   **xml**: XML format.
-
-    Properties:
-
-    *   encoding: XML encoding format, defaults to UTF-8.
-
-*   **xslt**: XML with a XSL transformation applied.
-
-    Properties:
-
-    *   encoding: XML encoding format, defaults to UTF-8.
-    *   xsltFilename: The XSLT file name.
-
-*   **yahtml**: Yet Another HTML format.
-
-    Properties:
-
-    *   outputDir: Output directory.

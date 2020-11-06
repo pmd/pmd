@@ -32,9 +32,9 @@ public class RuleContextTest {
     @Test
     public void testSourceCodeFilename() {
         RuleContext ctx = new RuleContext();
-        assertNull("filename should be null", ctx.getSourceCodeFilename());
-        ctx.setSourceCodeFilename("foo");
-        assertEquals("filename mismatch", "foo", ctx.getSourceCodeFilename());
+        assertEquals("filename should be empty", "", ctx.getSourceCodeFilename());
+        ctx.setSourceCodeFile(new File("dir/foo.java"));
+        assertEquals("filename mismatch", "foo.java", ctx.getSourceCodeFilename());
     }
 
     @Test

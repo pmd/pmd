@@ -1,0 +1,17 @@
+package Test
+  package Inc
+    model X
+    end X;
+    model Y
+    end Y;
+  end Inc;
+  model A
+    model Y
+    end Y;
+  end A;
+  model B
+    extends A;
+    import Inc.*;
+    X x;
+  end B;
+end OtherName;

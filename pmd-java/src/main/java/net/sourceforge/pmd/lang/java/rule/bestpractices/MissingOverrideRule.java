@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -26,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 
@@ -112,25 +114,26 @@ public class MissingOverrideRule extends AbstractJavaRule {
         try {
             Set<Method> overridden = overriddenMethods(exploredType);
             Map<String, Map<Integer, List<Method>>> result = new HashMap<>();
-    
+
             for (Method m : exploredType.getDeclaredMethods()) {
                 if (!result.containsKey(m.getName())) {
                     result.put(m.getName(), new HashMap<Integer, List<Method>>());
                 }
-    
+
                 Map<Integer, List<Method>> pCountToOverloads = result.get(m.getName());
-    
+
                 int paramCount = m.getParameterTypes().length;
                 if (!pCountToOverloads.containsKey(paramCount)) {
                     pCountToOverloads.put(paramCount, new ArrayList<Method>());
                 }
-    
+
                 pCountToOverloads.get(paramCount).add(m);
             }
-            
+
             return new MethodLookup(result, overridden);
         } catch (final LinkageError e) {
-            // we may have an incomplete auxclasspath
+            // This is an incomplete classpath, report the missing class
+            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
             return null;
         }
     }
@@ -169,7 +172,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
                     }
 
                     if (cand.getName().equals(dm.getName()) && Arrays.equals(cand.getParameterTypes(), dm.getParameterTypes())) {
-                        // cand is overriden
+                        // cand is overridden
                         result.add(cand);
                         toRemove.add(cand);
                         // Several methods are eligible, because of return type covariance
@@ -208,7 +211,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (currentLookup.peek() == null) {
+        if (currentLookup.isEmpty() || currentLookup.peek() == null) {
             return super.visit(node, data);
         }
 
@@ -222,13 +225,13 @@ public class MissingOverrideRule extends AbstractJavaRule {
         try {
             boolean overridden = currentLookup.peek().isOverridden(node.getName(), node.getFormalParameters());
             if (overridden) {
-                addViolation(data, node, new Object[]{node.getQualifiedName().getOperation()});
+                addViolation(data, node, new Object[]{PrettyPrintingUtil.displaySignature(node)});
             }
         } catch (NoSuchMethodException e) {
             // may happen in the body of an enum constant,
             // because the method lookup used is the one of
             // the parent class.
-            LOG.warning("MissingOverride encountered unexpected method " + node.getMethodName());
+            LOG.fine("MissingOverride encountered unexpected method " + node.getName());
             // throw new RuntimeException(e); // uncomment when enum constants are handled by typeres
         }
         return super.visit(node, data);
@@ -336,7 +339,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
          * @throws NoSuchMethodException if no method is registered with this name and paramcount, which is a bug
          */
         boolean isOverridden(String name, ASTFormalParameters params) throws NoSuchMethodException {
-            List<Method> methods = getMethods(name, params.getParameterCount());
+            List<Method> methods = getMethods(name, params.size());
 
             if (methods.size() == 1) { // only one method with this name and parameter count, we can conclude
                 return overridden.contains(methods.get(0));
@@ -357,7 +360,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
 
         private static Class<?>[] getParameterTypes(ASTFormalParameters params) {
-            Class<?>[] paramTypes = new Class[params.getParameterCount()];
+            Class<?>[] paramTypes = new Class[params.size()];
             int i = 0;
             for (ASTFormalParameter p : params) {
                 Class<?> pType = p.getType();

@@ -3,70 +3,65 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-skip void/native/abstract methods
-     ]]></description>
+        <description>skip void/native/abstract methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {}
- public native int buz();
- public abstract int baz();
+    public void bar() {}
+    public native int buz();
+    public abstract int baz();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip literal returns
-     ]]></description>
+        <description>skip literal returns</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int bar() { return 5; }
+    public int bar() { return 5; }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-simple failure case
-     ]]></description>
+        <description>simple failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int bar() {
-  int x = doSomething();
-  return x;
- }
+    public int bar() {
+        int x = doSomething();
+        return x;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip complicated returns
-     ]]></description>
+        <description>skip complicated returns</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int bar() {
-  int x = doSomething();
-  return x == null ? foo : bar;
- }
+    public int bar() {
+        int x = doSomething();
+        return x == null ? foo : bar;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip method calls
-     ]]></description>
+        <description>skip method calls</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int bar() {
-  return doSomething(a, b, c);
- }
+    public int bar() {
+        return doSomething(a, b, c);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -109,7 +104,7 @@ public class Foo {
         doSomething();
         return res;
     }
-    
+
     public void doSomething() { }
 }
         ]]></code>
@@ -125,7 +120,7 @@ public class Foo {
         doSomething(res);
         return res;
     }
-    
+
     public void doSomething(int x) { }
 }
         ]]></code>
@@ -142,7 +137,7 @@ public class Foo {
         doSomething(res);
         return res;
     }
-    
+
     public void doSomething(int x) { }
 }
         ]]></code>
@@ -167,7 +162,7 @@ public class UnnecessaryLocalBeforeReturnCase {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#282 UnnecessaryLocalBeforeReturn false positive when cloning Maps</description>
         <expected-problems>0</expected-problems>
@@ -228,6 +223,51 @@ public class UnnecessaryLocalBeforeReturnFP {
         int i = compute(m);
         sideEffect(m);
         return i;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1775 [java] False negative in UnnecessaryLocalBeforeReturn when splitting statements across multiple lines</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class UnnecessaryLocalBeforeReturnFP {
+    public Object test2() {
+        int i = 0;
+        Object o = thing()
+            .make(i);
+        return o; // true positive
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1804 [java] NPE with fields</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class ObjectCreator {
+
+    private static final String A = "";
+    private static final String B = "" + A; // the existence of this line causes the NPE.
+
+    public Object create() {
+        final Object o = new Object(A);
+        return o;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP with captured method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ObjectCreator {
+    public Supplier<String> create() {
+        final Object o = new Object(); // captured by the method ref
+        return o::toString;
     }
 }
         ]]></code>

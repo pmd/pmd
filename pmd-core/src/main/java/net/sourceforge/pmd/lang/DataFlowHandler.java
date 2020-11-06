@@ -9,6 +9,11 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
+
+/**
+ * @deprecated See {@link DataFlowNode}
+ */
+@Deprecated
 public interface DataFlowHandler {
 
     DataFlowHandler DUMMY = new DataFlowHandler() {

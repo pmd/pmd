@@ -1,16 +1,19 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.matchers.collections.shouldContainExactly
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import java.io.IOException
 
 
-class ASTCatchStatementTest : FunSpec({
+class ASTCatchStatementTest : ParserTestSpec({
 
     parserTest("Test crash on multicatch", javaVersions = Earliest..J1_6) {
 
@@ -44,7 +47,7 @@ class ASTCatchStatementTest : FunSpec({
             child<ASTCatchStatement> {
                 it.isMulticatchStatement shouldBe true
 
-                val types = childRet<ASTFormalParameter, List<ASTType>> {
+                val types = fromChild<ASTFormalParameter, List<ASTType>> {
                     val ioe = child<ASTType>(ignoreChildren = true) {
                         it.type shouldBe IOException::class.java
                     }
@@ -57,7 +60,7 @@ class ASTCatchStatementTest : FunSpec({
                         it.image shouldBe "e"
                     }
 
-                    return@childRet listOf(ioe, aerr)
+                    listOf(ioe, aerr)
                 }
 
                 it.caughtExceptionTypeNodes.shouldContainExactly(types)

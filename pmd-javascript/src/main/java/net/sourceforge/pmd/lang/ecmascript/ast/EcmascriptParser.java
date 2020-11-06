@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -19,10 +19,13 @@ import org.mozilla.javascript.ast.Comment;
 import org.mozilla.javascript.ast.ErrorCollector;
 import org.mozilla.javascript.ast.ParseProblem;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 
 public class EcmascriptParser {
+    @Deprecated
+    @InternalApi
     protected final EcmascriptParserOptions parserOptions;
 
     private Map<Integer, String> suppressMap;
@@ -83,6 +86,8 @@ public class EcmascriptParser {
         }
     }
 
+    @Deprecated
+    @InternalApi
     public Map<Integer, String> getSuppressMap() {
         return suppressMap;
     }

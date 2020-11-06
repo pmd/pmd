@@ -10,9 +10,7 @@ import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.jsp.ast.DumpFacade;
 import net.sourceforge.pmd.lang.jsp.ast.JspNode;
 import net.sourceforge.pmd.lang.jsp.rule.JspRuleViolationFactory;
@@ -26,11 +24,6 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 public class JspHandler extends AbstractLanguageVersionHandler {
 
     @Override
-    public XPathHandler getXPathHandler() {
-        return new DefaultASTXPathHandler();
-    }
-
-    @Override
     public RuleViolationFactory getRuleViolationFactory() {
         return JspRuleViolationFactory.INSTANCE;
     }
@@ -40,6 +33,7 @@ public class JspHandler extends AbstractLanguageVersionHandler {
         return new JspParser(parserOptions);
     }
 
+    @Deprecated
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {

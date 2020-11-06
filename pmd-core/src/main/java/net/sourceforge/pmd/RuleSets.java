@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -19,7 +20,11 @@ import net.sourceforge.pmd.lang.ast.Node;
  * Grouping of Rules per Language in a RuleSet.
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
+ *
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public class RuleSets {
     /**
      * Map of RuleLanguage on RuleSet.
@@ -160,7 +165,9 @@ public class RuleSets {
      * @param language
      *            the language of a source
      * @return true if any rule in the RuleSet needs the DFA layer
+     * @deprecated See {@link Rule#isDfa()}
      */
+    @Deprecated
     public boolean usesDFA(Language language) {
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.usesDFA(language)) {
@@ -209,7 +216,9 @@ public class RuleSets {
      *            The Language.
      * @return <code>true</code> if a Rule for the Language uses Type
      *         Resolution, <code>false</code> otherwise.
+     * @deprecated See {@link Rule#isTypeResolution()}
      */
+    @Deprecated
     public boolean usesTypeResolution(Language language) {
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.usesTypeResolution(language)) {
@@ -227,7 +236,9 @@ public class RuleSets {
      *
      * @return {@code true} if a Rule for the Language uses multi file analysis,
      *         {@code false} otherwise.
+     * @deprecated See {@link Rule#isMultifile()}
      */
+    @Deprecated
     public boolean usesMultifile(Language language) {
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.usesMultifile(language)) {
@@ -252,7 +263,7 @@ public class RuleSets {
     /**
      * Retrieves a checksum of the rulesets being used. Any change to any rule
      * of any ruleset should trigger a checksum change.
-     * 
+     *
      * @return The checksum for this ruleset collection.
      */
     public long getChecksum() {

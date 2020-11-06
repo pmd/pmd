@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 
@@ -69,10 +69,10 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     private String getNodeName(Node node) {
         // constructors are differentiated by their parameters, while we only use method name for methods
         if (node instanceof ASTMethodDeclaration) {
-            return ((ASTMethodDeclaration) node).getMethodName();
+            return ((ASTMethodDeclaration) node).getName();
         } else if (node instanceof ASTMethodOrConstructorDeclaration) {
             // constructors are differentiated by their parameters, while we only use method name for methods
-            return ((ASTConstructorDeclaration) node).getQualifiedName().getOperation();
+            return PrettyPrintingUtil.displaySignature((ASTConstructorDeclaration) node);
         } else if (node instanceof ASTFieldDeclaration) {
             return ((ASTFieldDeclaration) node).getVariableName();
         } else if (node instanceof ASTResource) {
@@ -86,9 +86,11 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     // TODO same here
     private String getPrintableNodeKind(Node node) {
         if (node instanceof ASTAnyTypeDeclaration) {
-            return ((ASTAnyTypeDeclaration) node).getTypeKind().getPrintableName();
-        } else if (node instanceof MethodLikeNode) {
-            return ((MethodLikeNode) node).getKind().getPrintableName();
+            return PrettyPrintingUtil.kindName((ASTAnyTypeDeclaration) node);
+        } else if (node instanceof ASTMethodDeclaration || node instanceof ASTAnnotationMethodDeclaration) {
+            return "method";
+        } else if (node instanceof ASTConstructorDeclaration) {
+            return "constructor";
         } else if (node instanceof ASTFieldDeclaration) {
             return "field";
         } else if (node instanceof ASTResource) {
@@ -271,7 +273,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     private void checkDeclarationInInterfaceType(Object data, Node fieldOrMethod, Set<Modifier> unnecessary) {
         // third ancestor could be an AllocationExpression
         // if this is a method in an anonymous inner class
-        Node parent = fieldOrMethod.jjtGetParent().jjtGetParent().jjtGetParent();
+        Node parent = fieldOrMethod.getParent().getParent().getParent();
         if (parent instanceof ASTAnnotationTypeDeclaration
                 || parent instanceof ASTClassOrInterfaceDeclaration
                 && ((ASTClassOrInterfaceDeclaration) parent).isInterface()) {

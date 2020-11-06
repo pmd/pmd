@@ -16,7 +16,11 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversi
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ *
+ * @deprecated Use a {@code PropertyDescriptor<List<Double>>} instead. A builder is available from {@link PropertyFactory#doubleListProperty(String)}.
+ *             This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Double> {
 
     /**
@@ -30,7 +34,9 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
+     * @deprecated use {@link PropertyFactory#doubleListProperty(String)}
      */
+    @Deprecated
     public DoubleMultiProperty(String theName, String theDescription, Double min, Double max,
                                Double[] defaultValues, float theUIOrder) {
         this(theName, theDescription, min, max, Arrays.asList(defaultValues), theUIOrder, false);
@@ -55,7 +61,9 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
+     * @deprecated use {@link PropertyFactory#doubleListProperty(String)}
      */
+    @Deprecated
     public DoubleMultiProperty(String theName, String theDescription, Double min, Double max,
                                List<Double> defaultValues, float theUIOrder) {
         this(theName, theDescription, min, max, defaultValues, theUIOrder, false);
@@ -83,12 +91,15 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
         };
     }
 
-
+    /** @deprecated use {@link PropertyFactory#doubleListProperty(String)} */
+    @Deprecated
     public static DoubleMultiPBuilder named(String name) {
         return new DoubleMultiPBuilder(name);
     }
 
 
+    /** @deprecated use {@link PropertyFactory#doubleListProperty(String)} */
+    @Deprecated
     public static final class DoubleMultiPBuilder extends MultiNumericPropertyBuilder<Double, DoubleMultiPBuilder> {
         private DoubleMultiPBuilder(String name) {
             super(name);

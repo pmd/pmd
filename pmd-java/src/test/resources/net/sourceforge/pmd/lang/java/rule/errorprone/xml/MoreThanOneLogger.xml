@@ -3,57 +3,54 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.apache.log4j.Logger;
 public class Foo {
- Logger log;
+    Logger log;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-two loggers
-     ]]></description>
+        <description>two loggers</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.apache.log4j.Logger;
 public class Foo {
- Logger log;
- Logger log2;
+    Logger log;
+    Logger log2;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-different logger for inner class
-     ]]></description>
+        <description>different logger for inner class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.apache.log4j.Logger;
 public class Foo {
- Logger log;
- class Bar {
-  Logger log2;
- }
+    Logger log;
+    class Bar {
+        Logger log2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, fixing NPE bug
-     ]]></description>
+        <description>ok, fixing NPE bug</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public @interface Foo {
- String FOO = "foo";
+    String FOO = "foo";
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>https://github.com/pmd/pmd/pull/42: Add SLF4j Logger type</description>
         <expected-problems>0</expected-problems>
@@ -64,11 +61,35 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>https://github.com/pmd/pmd/pull/42: Add SLF4j Logger type: Two Loggers</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.slf4j.Logger;
+public class Foo {
+    Logger log;
+    Logger log2;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Add log4j2 Logger type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+public class Foo {
+    Logger log;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Logger type log4j2: Two Loggers</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
 public class Foo {
     Logger log;
     Logger log2;

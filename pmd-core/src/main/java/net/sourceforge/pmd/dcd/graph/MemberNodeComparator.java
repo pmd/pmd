@@ -6,10 +6,14 @@ package net.sourceforge.pmd.dcd.graph;
 
 import java.util.Comparator;
 
+import net.sourceforge.pmd.dcd.DCD;
+
 /**
  * Compares MemberNodes. FieldNodes are smaller than ConstructorNodes which are
  * smaller than MethodNodes.
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public final class MemberNodeComparator implements Comparator<MemberNode> {
 
     public static final MemberNodeComparator INSTANCE = new MemberNodeComparator();

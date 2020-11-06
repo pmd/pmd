@@ -10,7 +10,10 @@ import java.io.Reader;
  * This is a generic implementation of the Parser interface.
  *
  * @see Parser
+ *
+ * @deprecated This will become useless in PMD 7. Implement or use {@link Parser} directly
  */
+@Deprecated
 public abstract class AbstractParser implements Parser {
     protected final ParserOptions parserOptions;
 

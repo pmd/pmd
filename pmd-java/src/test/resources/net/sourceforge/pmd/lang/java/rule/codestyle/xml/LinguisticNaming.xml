@@ -4,7 +4,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-
     <test-code>
         <description>Method Prefix is</description>
         <expected-problems>1</expected-problems>
@@ -508,7 +507,7 @@ public class AtomicBooleanFP {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1334 [java] LinguisticNaming should support AtomicBooleans false negative</description>
         <expected-problems>18</expected-problems>
@@ -548,6 +547,71 @@ public class AtomicBooleanFN {
         AtomicBoolean haveX = new AtomicBoolean(true);
         AtomicBoolean willX = new AtomicBoolean(true);
         AtomicBoolean shouldX = new AtomicBoolean(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1543 [java] LinguisticNaming should ignore overridden methods</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    private int value;
+
+    public int setValue(int value) {
+        this.value = value;
+        return value;
+    }
+}
+public class Bar extends Foo {
+    private int value;
+
+    @Override
+    public int setValue(int value) {
+        this.value = value;
+        return value;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1362 Predicate fields are treated like booleans</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Predicate;
+
+public class ClassWithPredicates {
+    private final Predicate<String> isNotEmpty = string -> !string.isEmpty();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1362 Predicate variables are treated like booleans</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Predicate;
+
+public class SomeClass {
+    public static void main(String[] args) {
+        Predicate<String> isEmpty = String::isEmpty;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1362 Methods returning Predicate are treated like booleans</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Predicate;
+
+public class SomeClass {
+    public Predicate<String> isEmptyPredicate() {
+        return String::isEmpty;
     }
 }
         ]]></code>

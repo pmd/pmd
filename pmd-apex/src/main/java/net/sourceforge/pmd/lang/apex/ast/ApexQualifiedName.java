@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -133,8 +133,8 @@ public final class ApexQualifiedName implements QualifiedName {
     }
 
 
-    static ApexQualifiedName ofOuterClass(ASTUserClassOrInterface astUserClass) {
-        String ns = astUserClass.getNode().getDefiningType().getNamespace().toString();
+    static ApexQualifiedName ofOuterClass(ASTUserClassOrInterface<?> astUserClass) {
+        String ns = astUserClass.getNamespace();
         String[] classes = {astUserClass.getImage()};
         return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, classes, null);
     }
@@ -153,7 +153,7 @@ public final class ApexQualifiedName implements QualifiedName {
         sb.append(node.getImage()).append('(');
 
 
-        List<TypeInfo> paramTypes = node.getNode().getMethodInfo().getParameterTypes();
+        List<TypeInfo> paramTypes = node.node.getMethodInfo().getParameterTypes();
 
         if (!paramTypes.isEmpty()) {
             sb.append(paramTypes.get(0).getApexName());
@@ -174,8 +174,8 @@ public final class ApexQualifiedName implements QualifiedName {
         ASTUserClassOrInterface<?> parent = node.getFirstParentOfType(ASTUserClassOrInterface.class);
         if (parent == null) {
             ASTUserTrigger trigger = node.getFirstParentOfType(ASTUserTrigger.class);
-            String ns = trigger.getNode().getDefiningType().getNamespace().toString();
-            String targetObj = trigger.getNode().getTargetName().get(0).getValue();
+            String ns = trigger.getNamespace();
+            String targetObj = trigger.getTargetName();
 
             return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, new String[]{"trigger", targetObj}, trigger.getImage()); // uses a reserved word as a class name to prevent clashes
 

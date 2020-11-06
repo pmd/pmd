@@ -10,9 +10,9 @@
         <code><![CDATA[
 import java.util.List;
 public class Foo {
-   private List list;
+    private List list;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -22,7 +22,7 @@ public class Foo {
 import java.util.List;
 public class Foo implements List {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -32,7 +32,7 @@ public class Foo implements List {
 import java.util.List;
 public class Foo implements java.util.List {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -42,7 +42,7 @@ public class Foo implements java.util.List {
 import java.util.ArrayList;
 public class Foo implements ArrayList {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -52,7 +52,7 @@ public class Foo implements ArrayList {
 import java.util.ArrayList;
 public class Foo implements java.util.ArrayList {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -61,9 +61,9 @@ public class Foo implements java.util.ArrayList {
         <code><![CDATA[
 import java.util.List;
 public class Foo {
-   private List list;
+    private List list;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -72,9 +72,9 @@ public class Foo {
         <code><![CDATA[
 import java.util.List;
 public class Foo {
-   private java.util.List list;
+    private java.util.List list;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -83,9 +83,9 @@ public class Foo {
         <code><![CDATA[
 import java.util.List;
 public class Foo {
-   private List list();
+    private List list();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -94,9 +94,9 @@ public class Foo {
         <code><![CDATA[
 import java.util.List;
 public class Foo {
-   private java.util.List list();
+    private java.util.List list();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -105,9 +105,9 @@ public class Foo {
         <code><![CDATA[
 import java.util.List;
 public class Foo {
-   private void list(List list);
+    private void list(List list);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -116,9 +116,9 @@ public class Foo {
         <code><![CDATA[
 import java.util.List;
 public class Foo {
-   private void list(java.util.List list);
+    private void list(java.util.List list);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -127,9 +127,9 @@ public class Foo {
         <code><![CDATA[
 import java.util.Arrays;
 public class Foo {
-   List list = Arrays.asList("one");
+    List list = Arrays.asList("one");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -138,9 +138,9 @@ public class Foo {
         <code><![CDATA[
 import java.util.Arrays;
 public class Foo {
-   List list = java.util.Arrays.asList("one");
+    List list = java.util.Arrays.asList("one");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -149,9 +149,9 @@ public class Foo {
         <code><![CDATA[
 import static java.util.Arrays.asList;
 public class Foo {
-   List list = asList("one");
+    List list = asList("one");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -160,9 +160,9 @@ public class Foo {
         <code><![CDATA[
 import static java.util.Arrays.asList;
 public class Foo {
-   List list = java.util.Arrays.asList("one");
+    List list = java.util.Arrays.asList("one");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -172,9 +172,9 @@ public class Foo {
 import java.util.Arrays;
 import static java.util.Arrays.asList;
 public class Foo {
-   List list = asList("one");
+    List list = asList("one");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -184,9 +184,9 @@ public class Foo {
 import java.util.Arrays;
 import static java.util.Arrays.asList;
 public class Foo {
-   List list = Arrays.asList("one");
+    List list = Arrays.asList("one");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -195,9 +195,9 @@ public class Foo {
         <code><![CDATA[
 import java.util.*;
 public class Foo {
-   private List list;
+    private List list;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -206,9 +206,9 @@ public class Foo {
         <code><![CDATA[
 import java.util.*;
 public class Foo {
-   private java.util.List list;
+    private java.util.List list;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -217,9 +217,9 @@ public class Foo {
         <code><![CDATA[
 import static java.util.Arrays.asList;
 public class Foo {
-   List list = asList("one");
+    List list = asList("one");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -228,9 +228,9 @@ public class Foo {
         <code><![CDATA[
 import static java.util.Arrays.*;
 public class Foo {
-   List list = java.util.Arrays.asList("one");
+    List list = java.util.Arrays.asList("one");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -240,9 +240,9 @@ public class Foo {
 import java.util.Arrays;
 import static java.util.Arrays.*;
 public class Foo {
-   List list = asList("one");
+    List list = asList("one");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -252,9 +252,9 @@ public class Foo {
 import java.util.Arrays;
 import static java.util.Arrays.*;
 public class Foo {
-   List list = Arrays.asList("one");
+    List list = Arrays.asList("one");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -326,7 +326,7 @@ import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQuali
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyPowerMockito.*;
 
 public class Foo {
-  private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) is ambiguous (compile error)
+    private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) is ambiguous (compile error)
 }
         ]]></code>
     </test-code>
@@ -340,7 +340,7 @@ import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQuali
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyPowerMockito.mock;
 
 public class Foo {
-  private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) would use a differen method than intended
+    private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) would use a differen method than intended
 }
         ]]></code>
     </test-code>
@@ -352,19 +352,19 @@ public class Foo {
 import java.util.*;
 
 final class Test {
-  private Test() { }
+    private Test() { }
 
-  private static class Locale {
-    public final java.util.Locale locale; // Here we need to fully qualify
-    public Locale(final String tag) {
-      this.locale = java.util.Locale.forLanguageTag(tag);
+    private static class Locale {
+        public final java.util.Locale locale; // Here we need to fully qualify
+        public Locale(final String tag) {
+            this.locale = java.util.Locale.forLanguageTag(tag);
+        }
     }
-  }
 
-  public static void main(String[] args) {
-    final Locale l = new Locale("fr-CA");
-    System.out.println(l.toString());
-  }
+    public static void main(String[] args) {
+        final Locale l = new Locale("fr-CA");
+        System.out.println(l.toString());
+    }
 }
         ]]></code>
     </test-code>
@@ -373,15 +373,15 @@ final class Test {
         <description>#1114 - Star import overwritten by explicit import is not correctly handled</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            import One.*;
-            import Two.Problem;
+import One.*;
+import Two.Problem;
 
 
-            public class CauseProblem {
-                public Problem convert(One.Problem original) {
-                    return new Problem();
-                }
-            }
+public class CauseProblem {
+    public Problem convert(One.Problem original) {
+        return new Problem();
+    }
+}
             ]]></code>
     </test-code>
 
@@ -445,18 +445,17 @@ public class JavaLang {
         <description>#1216 [java] UnnecessaryFullyQualifiedName false positive for the same name method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            import java.awt.Component;
-            import java.awt.Container;
-            import java.util.Arrays;
-            import java.util.asList.*; // we don't use stream since we're on java 7
+import java.awt.Component;
+import java.awt.Container;
+import java.util.Arrays;
+import java.util.asList.*; // we don't use stream since we're on java 7
 
-
-            public final class Test {
-                public static List<String> stream(Container parent) {
-                    return Arrays.asList("", "");
-                }
-            }
-            ]]></code>
+public final class Test {
+    public static List<String> stream(Container parent) {
+        return Arrays.asList("", "");
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -488,7 +487,7 @@ public class TestArrayType {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1199 false negative for same package FQCN</description>
         <expected-problems>1</expected-problems>
@@ -498,6 +497,189 @@ package org.foo;
 
 public class SamePackage {
     public void convert(org.foo.Bar s) { // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1951 false positive when package name is obscured by variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package threads;
+
+public class FQNTest {
+  public static void main(String[] args) {
+    Thread[] threads = new Thread[5];
+    int i = threads.length;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when package name is obscured by variable (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package threads;
+
+public class FQNTest {
+    public static void main(String[] args) {
+        Thread[] threads = new Thread[5];
+        int i = threads.length.foo;
+    }
+}
+
+class length {
+    static int foo;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative when name refers to static field</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary use of fully qualified name 'threads.length.foo' due to existing same package import 'threads.*'</message>
+        </expected-messages>
+        <code><![CDATA[
+package threads;
+
+public class FQNTest {
+    public static void main(String[] args) {
+        // threads.length is the class
+        int i = threads.length.foo;
+    }
+}
+
+class length {
+    static int foo;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when type name is obscured by variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+public class FQNTest {
+    public static void main(String[] args) {
+        length length = new length();
+        // the type name 'length' is obscured.
+        int i = length.foo;
+    }
+}
+
+class length {
+    static int foo;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when subpackage is referenced</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+
+public class FQNTest {
+    public void foo() {
+        new net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.subpackage.MyClass(); // no violation
+        new net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.TestClass(); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when same package static method is referenced</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package java.util;
+
+public class Problem {
+    {
+        Collections.emptySet(); // false positive for UnnecessaryFullyQualifiedName
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when same package inner class is referenced</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle;
+
+public class UnnecessaryFullyQualifiedName {
+    public static void main(String[] args) {
+        System.out.println(UnnecessaryFullyQualifiedNameTest.ENUM1.A);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2098 false positive with annotated package</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@com.example.subpackage.ExampleAnnotation
+package com.example;
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2098 false positive with annotated package - with type-resolution</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.subpackage.MyAnnotation
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False-Negative when referencing inner class</description>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>3,4,6,7,8,9,12</expected-linenumbers>
+        <code><![CDATA[
+package com.example;
+
+public class ClassOne extends com.example.ClassTwo {
+    com.example.ClassTwo.Builder builder = null;
+
+    public void run() throws com.example.ClassOne.MyException {
+        com.example.ClassOne.Builder builder = null;
+        com.example.ClassTwo.Builder builder2 = null;
+        throw new com.example.ClassOne.MyException();
+    }
+
+    public class Builder extends com.example.ClassTwo.Builder {
+    }
+
+    public static class MyException extends Exception { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2029 [java] UnnecessaryFullyQualifiedName false-positive for non-static nested classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+
+import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.TestClass.*;
+
+public class SomeClass {
+
+    public void theMethod() {
+        someMethod();
+        Object someObject = new Object();
+        if(someObject instanceof TestClass.SomeInnerClass) {
+            System.out.println("");
+        }
     }
 }
         ]]></code>

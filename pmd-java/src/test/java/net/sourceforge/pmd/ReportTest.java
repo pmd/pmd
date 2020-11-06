@@ -40,7 +40,7 @@ public class ReportTest extends RuleTst {
     public void testExclusionsInReportWithRuleViolationSuppressXPath() {
         Report rpt = new Report();
         Rule rule = new FooRule();
-        rule.setProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, ".[@Image = 'Foo']");
+        rule.setProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, ".[@SimpleName = 'Foo']");
         runTestFromString(TEST1, rule, rpt, defaultLanguage);
         assertTrue(rpt.isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());

@@ -19,9 +19,11 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 
 public final class GenerateRuleDocsCmd {
     private GenerateRuleDocsCmd() {
@@ -29,11 +31,17 @@ public final class GenerateRuleDocsCmd {
     }
 
     public static void main(String[] args) throws RuleSetNotFoundException {
+        if (args.length != 1) {
+            System.err.println("One argument is required: The base directory of the module pmd-doc.");
+            System.exit(1);
+        }
+
         long start = System.currentTimeMillis();
         Path output = FileSystems.getDefault().getPath(args[0]).resolve("..").toAbsolutePath().normalize();
         System.out.println("Generating docs into " + output);
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        // important: use a RuleSetFactory that includes all rules, e.g. deprecated rule references
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.createFactory(RulePriority.LOW, false, false, true);
         Iterator<RuleSet> registeredRuleSets = ruleSetFactory.getRegisteredRuleSets();
         List<String> additionalRulesets = findAdditionalRulesets(output);
 

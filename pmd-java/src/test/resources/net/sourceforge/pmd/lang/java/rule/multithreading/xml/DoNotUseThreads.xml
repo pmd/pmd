@@ -3,58 +3,112 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Having thread in a type name is doubtfull but allowed
-     ]]></description>
+        <description>Having thread in a type name is doubtfull but allowed</description>
         <expected-problems>0</expected-problems>
-        <code>
-			<![CDATA[
-            public class UsingThread  {
+        <code><![CDATA[
+public class UsingThread  {
+}
+        ]]></code>
+    </test-code>
 
-            }
-            ]]>
-        </code>
-    </test-code>
-        <test-code>
-        <description><![CDATA[
-extending threads is not allowed
-     ]]></description>
+    <test-code>
+        <description>extending threads is not allowed</description>
         <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
-            // This is not allowed
-            public class UsingThread extends Thread {
-            }
-			]]>
-        </code>
+        <code><![CDATA[
+// This is not allowed
+public class UsingThread extends Thread {
+}
+        ]]></code>
     </test-code>
-        <test-code>
-        <description><![CDATA[
-implementing runnabel is not allowed
-     ]]></description>
+
+    <test-code>
+        <description>Implementing ExecutorService is not allowed</description>
         <expected-problems>1</expected-problems>
-        <code>
-    	<![CDATA[
-			public class OtherThread implements Runnable {}
-			]]>
-        </code>
+        <code><![CDATA[
+import java.util.concurrent.ExecutorService;
+
+public class PMDTestExecutorService implements ExecutorService {}
+        ]]></code>
     </test-code>
-        <test-code>
-        <description><![CDATA[
-Use of runnable is also not allowed
-     ]]></description>
+
+    <test-code>
+        <description>Extending AbstractExecutorService is not allowed</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.concurrent.*;
+
+public class PMDTestExecutorService extends AbstractExecutorService {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using ExecutorService is not allowed</description>
         <expected-problems>2</expected-problems>
-        <code>
-    		<![CDATA[
-				public class Violation {
-					public void methode() {
-					Runnable thread = new Thread();
-					thread.run();
-					}
-				}
-			]]>
-        </code>
+        <code><![CDATA[
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+
+public class ExecutorServiceUsage {
+    public void executor_service_method_invocation() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(new Runnable() {
+             @Override
+             public void run() {
+             }
+        });
+    }
+}
+        ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Using Executors directly is not allowed</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.util.concurrent.Executors;
+
+public class ExecutorsUsage {
+    public void static_usage_of_Executors() {
+         Executors.newSingleThreadExecutor().submit(new Runnable() {
+             @Override
+             public void run() {
+             }
+        });
+        Executors.newFixedThreadPool(1).submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                return null;
+            }
+        });
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Implementing Runnable is not forbidden see https://github.com/pmd/pmd/issues/1627</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OtherThread implements Runnable {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use of Runnable is also not forbidden see https://github.com/pmd/pmd/issues/1627</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Violation {
+    public void methode() {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

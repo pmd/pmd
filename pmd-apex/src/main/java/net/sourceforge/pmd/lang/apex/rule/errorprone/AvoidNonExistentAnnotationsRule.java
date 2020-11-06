@@ -4,28 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-
-import apex.jorje.semantic.ast.compilation.UserClass;
-import apex.jorje.semantic.ast.compilation.UserEnum;
-import apex.jorje.semantic.ast.compilation.UserInterface;
-import apex.jorje.semantic.ast.member.Field;
-import apex.jorje.semantic.ast.member.Method;
-import apex.jorje.semantic.ast.member.Property;
-import apex.jorje.semantic.ast.modifier.Annotation;
-import apex.jorje.semantic.ast.modifier.ModifierNode;
-import apex.jorje.semantic.symbol.type.AnnotationTypeInfos;
-import apex.jorje.semantic.symbol.type.StandardAnnotationTypeInfo;
 
 /**
  * Apex supported non existent annotations for legacy reasons.
@@ -36,71 +24,46 @@ import apex.jorje.semantic.symbol.type.StandardAnnotationTypeInfo;
  * @author a.subramanian
  */
 public class AvoidNonExistentAnnotationsRule extends AbstractApexRule {
-
-    private static final Set<StandardAnnotationTypeInfo> SUPPORTED_APEX_ANNOTATIONS = getSupportedApexAnnotations();
-
     @Override
     public Object visit(final ASTUserClass node, final Object data) {
-        final UserClass userClass = node.getNode();
-        checkForNonExistentAnnotation(node, userClass.getModifiers(), data);
+        checkForNonExistentAnnotation(node, node.getModifiers(), data);
         return super.visit(node, data);
     }
 
     @Override
-    public final Object visit(ASTUserInterface node, final Object data) {
-        final UserInterface userInterface = node.getNode();
-        checkForNonExistentAnnotation(node, userInterface.getModifiers(), data);
+    public Object visit(final ASTUserInterface node, final Object data) {
+        checkForNonExistentAnnotation(node, node.getModifiers(), data);
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(final ASTUserEnum node, final Object data) {
-        final UserEnum userEnum = node.getNode();
-        checkForNonExistentAnnotation(node, userEnum.getModifiers(), data);
+        checkForNonExistentAnnotation(node, node.getModifiers(), data);
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(final ASTMethod node, final Object data) {
-        final Method method = node.getNode();
-        return checkForNonExistentAnnotation(node, method.getModifiersNode(), data);
+        return checkForNonExistentAnnotation(node, node.getModifiers(), data);
     }
 
     @Override
     public Object visit(final ASTProperty node, final Object data) {
-        final Property property = node.getNode();
         // may have nested methods, don't visit children
-        return checkForNonExistentAnnotation(node, property.getModifiersNode(), data);
+        return checkForNonExistentAnnotation(node, node.getModifiers(), data);
     }
 
     @Override
     public Object visit(final ASTField node, final Object data) {
-        final Field field = node.getNode();
-        return checkForNonExistentAnnotation(node, field.getModifiers(), data);
+        return checkForNonExistentAnnotation(node, node.getModifiers(), data);
     }
 
-    private Object checkForNonExistentAnnotation(final AbstractApexNode<?> node, final ModifierNode modifierNode, final Object data) {
-        for (final Annotation annotation : modifierNode.getModifiers().getAnnotations()) {
-            if (!SUPPORTED_APEX_ANNOTATIONS.contains(annotation.getType())) {
+    private Object checkForNonExistentAnnotation(final ApexNode<?> node, final ASTModifierNode modifierNode, final Object data) {
+        for (ASTAnnotation annotation : modifierNode.findChildrenOfType(ASTAnnotation.class)) {
+            if (!annotation.isResolved()) {
                 addViolationWithMessage(data, node, "Use of non existent annotations will lead to broken Apex code which will not compile in the future.");
             }
         }
         return data;
-    }
-
-    private static Set<StandardAnnotationTypeInfo> getSupportedApexAnnotations() {
-        final java.lang.reflect.Field[] fields = AnnotationTypeInfos.class.getFields();
-        final Set<StandardAnnotationTypeInfo> annotationTypeInfos = new HashSet<>();
-        for (final java.lang.reflect.Field field : fields) {
-            if (field.getType().isAssignableFrom(StandardAnnotationTypeInfo.class)) {
-                field.setAccessible(true);
-                try {
-                    annotationTypeInfos.add((StandardAnnotationTypeInfo) field.get(null));
-                } catch (final Exception illegalAccessException) {
-                    continue;
-                }
-            }
-        }
-        return annotationTypeInfos;
     }
 }

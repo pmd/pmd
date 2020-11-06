@@ -1,0 +1,17 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [var]                                   1         3
+    [separator]                             5         13
+    [=]                                     15        15
+    ['\\\\']                                17        20
+L2
+    [var]                                   1         3
+    [separators]                            5         14
+    [=]                                     16        16
+    [const]                                 18        22
+    [\[]                                    24        24
+    ['/']                                   25        27
+    [,]                                     28        28
+    ['\\\\']                                30        33
+    [\]]                                    34        34
+EOF

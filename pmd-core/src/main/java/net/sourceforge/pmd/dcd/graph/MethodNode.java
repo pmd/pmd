@@ -10,11 +10,14 @@ import java.lang.reflect.Method;
 import org.objectweb.asm.signature.SignatureReader;
 
 import net.sourceforge.pmd.dcd.ClassLoaderUtil;
+import net.sourceforge.pmd.dcd.DCD;
 import net.sourceforge.pmd.dcd.asm.TypeSignatureVisitor;
 
 /**
  * Represents a Class Method in a UsageGraph.
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public class MethodNode extends MemberNode<MethodNode, Method> {
 
     private WeakReference<Method> methodReference;

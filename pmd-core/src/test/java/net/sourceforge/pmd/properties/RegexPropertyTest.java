@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
  * @author Clément Fournier
  * @since 6.2.0
  */
+@Deprecated
 public class RegexPropertyTest extends AbstractPropertyDescriptorTester<Pattern> {
     public RegexPropertyTest() {
         super("Regex");

@@ -19,12 +19,17 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.XmlLogger;
 import org.apache.tools.ant.taskdefs.RecorderEntry;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * AntLogHandler sends log messages to an Ant Task, so the regular Ant logging
  * is used.
  *
  * @author Wouter Zelle
+ * @deprecated Is internal API
  */
+@Deprecated
+@InternalApi
 public class AntLogHandler extends Handler {
     private Project project;
 
@@ -55,7 +60,7 @@ public class AntLogHandler extends Handler {
                     declaredField = XmlLogger.class.getDeclaredField("msgOutputLevel");
                 } else if (l instanceof RecorderEntry) {
                     declaredField = RecorderEntry.class.getDeclaredField("loglevel");
-                } else if (l.getClass().getName().equals("org.gradle.api.internal.project.ant.AntLoggingAdapter")) {
+                } else if ("org.gradle.api.internal.project.ant.AntLoggingAdapter".equals(l.getClass().getName())) {
                     return determineGradleLogLevel(l);
                 } else {
                     try {

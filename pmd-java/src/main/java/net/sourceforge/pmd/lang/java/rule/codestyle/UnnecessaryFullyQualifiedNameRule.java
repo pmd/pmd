@@ -5,33 +5,41 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
+    private static final Logger LOG = Logger.getLogger(UnnecessaryFullyQualifiedNameRule.class.getName());
 
     private List<ASTImportDeclaration> imports = new ArrayList<>();
     private String currentPackage;
 
     public UnnecessaryFullyQualifiedNameRule() {
-        super.addRuleChainVisit(ASTCompilationUnit.class);
         super.addRuleChainVisit(ASTPackageDeclaration.class);
         super.addRuleChainVisit(ASTImportDeclaration.class);
         super.addRuleChainVisit(ASTClassOrInterfaceType.class);
@@ -39,18 +47,17 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
+    public void start(final RuleContext ctx) {
         imports.clear();
         currentPackage = null;
-        return data;
     }
 
     @Override
     public Object visit(ASTPackageDeclaration node, Object data) {
-        currentPackage = node.getPackageNameImage();
+        currentPackage = node.getName();
         return data;
     }
-    
+
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         imports.add(node);
@@ -69,8 +76,8 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTName node, Object data) {
-        if (!(node.jjtGetParent() instanceof ASTImportDeclaration)
-                && !(node.jjtGetParent() instanceof ASTPackageDeclaration)) {
+        if (!(node.getParent() instanceof ASTImportDeclaration)
+                && !(node.getParent() instanceof ASTPackageDeclaration)) {
             // This name has no qualification, it can't be unnecessarily qualified
             if (node.getImage().indexOf('.') < 0) {
                 return data;
@@ -94,16 +101,24 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     private boolean couldBeMethodCall(JavaNode node) {
         if (node.getNthParent(2) instanceof ASTPrimaryExpression && node.getNthParent(1) instanceof ASTPrimaryPrefix) {
-            int nextSibling = node.jjtGetParent().jjtGetChildIndex() + 1;
-            if (node.getNthParent(2).jjtGetNumChildren() > nextSibling) {
-                return node.getNthParent(2).jjtGetChild(nextSibling) instanceof ASTPrimarySuffix;
+            int nextSibling = node.getParent().getIndexInParent() + 1;
+            if (node.getNthParent(2).getNumChildren() > nextSibling) {
+                return node.getNthParent(2).getChild(nextSibling) instanceof ASTPrimarySuffix;
             }
         }
         return false;
     }
 
-    private void checkImports(AbstractJavaTypeNode node, Object data) {
-        String name = node.getImage();
+    private void checkImports(TypeNode node, Object data) {
+        final String name = node.getImage();
+
+        // variable names shadow everything else
+        // If the first segment is a variable, then all
+        // the following are field accesses and it's not an FQCN
+        if (isVariable(node.getScope(), name)) {
+            return;
+        }
+
         List<ASTImportDeclaration> matches = new ArrayList<>();
 
         // Find all "matching" import declarations
@@ -172,14 +187,15 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         if (matches.isEmpty()) {
             if (isJavaLangImplicit(node)) {
                 addViolation(data, node, new Object[] { node.getImage(), "java.lang.*", "implicit "});
-            } else if (isSamePackage(node)) {
+            } else if (isSamePackage(node, name)) {
                 addViolation(data, node, new Object[] { node.getImage(), currentPackage + ".*", "same package "});
             }
         } else {
             ASTImportDeclaration firstMatch = findFirstMatch(matches);
 
-            // Could this done to avoid a conflict?
-            if (!isAvoidingConflict(node, name, firstMatch)) {
+            if (!isReferencingInnerNonStaticClass(name, firstMatch)
+                    && !isAvoidingConflict(node, name, firstMatch)) {
+
                 String importStr = firstMatch.getImportedName() + (firstMatch.isImportOnDemand() ? ".*" : "");
                 String type = firstMatch.isStatic() ? "static " : "";
 
@@ -211,12 +227,63 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return result;
     }
 
-    private boolean isSamePackage(AbstractJavaTypeNode node) {
-        String name = node.getImage();
-        return name.substring(0, name.lastIndexOf('.')).equals(currentPackage);
+    private boolean isVariable(Scope scope, String name) {
+        String firstSegment = name.substring(0, name.indexOf('.'));
+
+        while (scope != null) {
+
+            for (Entry<VariableNameDeclaration, List<NameOccurrence>> entry : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
+                if (entry.getKey().getName().equals(firstSegment)) {
+                    return true;
+                }
+            }
+
+            scope = scope.getParent();
+        }
+
+        return false;
     }
-    
-    private boolean isJavaLangImplicit(AbstractJavaTypeNode node) {
+
+    private boolean isSamePackage(TypeNode node, String name) {
+        if (node.getType() != null) {
+            // with type resolution we can do an exact package match
+            Package packageOfType = node.getType().getPackage();
+            if (packageOfType != null) {
+
+                // get "package" candidate from name
+                int i = name.lastIndexOf('.');
+                if (i > 0) {
+                    name = name.substring(0, i);
+                }
+
+                return node.getType().getPackage().getName().equals(currentPackage)
+                        && name.equals(currentPackage);
+            }
+        }
+
+        int i = name.lastIndexOf('.');
+        if (i > 0) {
+            name = name.substring(0, i);
+            if (name.equals(currentPackage)) {
+                return true;
+            }
+        }
+        // if it is a name used inside a primary prefix, then it is ambiguous, whether it references
+        // a type or a field or a type inside a subpackage
+        // we assume here, it won't be a subpackage the name references a field, e.g.
+        // package a;
+        // name: a.b.c.d(); -> we assume, b is a class, c is a field, d is a method.
+        // but it could very well be, that: a.b is a package and c is a class, d is a (static) method.
+        if (node.getParent() instanceof ASTPrimaryPrefix
+                || node.getParent() instanceof ASTNameList
+                || node instanceof ASTClassOrInterfaceType) {
+            return currentPackage != null && name.startsWith(currentPackage);
+        }
+
+        return false;
+    }
+
+    private boolean isJavaLangImplicit(TypeNode node) {
         String name = node.getImage();
         boolean isJavaLang = name != null && name.startsWith("java.lang.");
 
@@ -232,8 +299,26 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return false;
     }
 
-    private boolean isAvoidingConflict(final AbstractJavaTypeNode node, final String name,
-            final ASTImportDeclaration firstMatch) {
+    private boolean isReferencingInnerNonStaticClass(final String name, final ASTImportDeclaration firstMatch) {
+        if (firstMatch.isImportOnDemand() && firstMatch.isStatic() && firstMatch.getType() != null) {
+            String[] nameParts = name.split("\\.");
+            String[] importParts = firstMatch.getImportedName().split("\\.");
+
+            if (nameParts.length == 2 && importParts[importParts.length - 1].equals(nameParts[0])) {
+                Class<?>[] declaredClasses = firstMatch.getType().getDeclaredClasses();
+                for (Class<?> innerClass : declaredClasses) {
+                    if (nameParts[1].equals(innerClass.getSimpleName()) && (innerClass.getModifiers() & Modifier.STATIC) != Modifier.STATIC) {
+                        // the referenced inner class is not static, therefore the static import on demand doesn't match
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isAvoidingConflict(final TypeNode node, final String name,
+                                       final ASTImportDeclaration firstMatch) {
         // is it a conflict between different imports?
         if (firstMatch.isImportOnDemand() && firstMatch.isStatic()) {
             final String methodCalled = name.substring(name.indexOf('.') + 1);
@@ -253,10 +338,15 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                         // We need type resolution to make sure there is a
                         // conflicting method
                         if (importDeclaration.getType() != null) {
-                            for (final Method m : importDeclaration.getType().getMethods()) {
-                                if (m.getName().equals(methodCalled)) {
-                                    return true;
+                            try {
+                                for (final Method m : importDeclaration.getType().getMethods()) {
+                                    if (m.getName().equals(methodCalled)) {
+                                        return true;
+                                    }
                                 }
+                            } catch (LinkageError e) {
+                                // This is an incomplete classpath, report the missing class
+                                LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
                             }
                         }
                     } else if (importDeclaration.getImportedName().endsWith(methodCalled)) {

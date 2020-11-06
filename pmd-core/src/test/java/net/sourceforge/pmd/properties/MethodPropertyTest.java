@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,12 +33,23 @@ import net.sourceforge.pmd.util.ClassUtil;
  */
 public class MethodPropertyTest extends AbstractPackagedPropertyDescriptorTester<Method> {
 
-    private static final Method[] ALL_METHODS = String.class.getDeclaredMethods();
+    private static final Method[] ALL_METHODS;
 
     private static final String[] METHOD_SIGNATURES = {"String#indexOf(int)", "String#substring(int,int)",
                                                        "java.lang.String#substring(int,int)", "Integer#parseInt(String)", "java.util.HashMap#put(Object,Object)",
                                                        "HashMap#containsKey(Object)", };
 
+    static {
+        List<Method> allMethods = new ArrayList<>();
+        for (Method m : String.class.getDeclaredMethods()) {
+            // exclude String.resolveConstantDesc to avoid random test failure with java12
+            // there are two methods with the same signature available, but different return types...
+            if (!m.getName().equals("resolveConstantDesc")) {
+                allMethods.add(m);
+            }
+        }
+        ALL_METHODS = allMethods.toArray(new Method[0]);
+    }
 
     public MethodPropertyTest() {
         super("Method");

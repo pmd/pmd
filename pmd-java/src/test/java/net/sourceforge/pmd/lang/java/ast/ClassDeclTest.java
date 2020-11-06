@@ -4,18 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
-
-import java.util.Set;
 
 import org.junit.Test;
 
-public class ClassDeclTest {
+public class ClassDeclTest extends BaseParserTest {
 
     @Test
     public void testPublic() {
-        String[] access = { "public" };
+        String[] access = {"public"};
         ASTClassOrInterfaceDeclaration acd = getClassDecl(access);
         verifyFlags(acd, true, false, false, false);
     }
@@ -57,17 +54,6 @@ public class ClassDeclTest {
     }
 
     public ASTClassOrInterfaceDeclaration getClassDecl(String[] access) {
-        String javaCode = "";
-
-        for (int i = 0; i < access.length; i++) {
-            javaCode += access[i] + " ";
-        }
-
-        javaCode += " class Test { } ";
-
-        Set<ASTClassOrInterfaceDeclaration> classes = getNodes(ASTClassOrInterfaceDeclaration.class, javaCode);
-
-        assertEquals("Wrong number of classes", 1, classes.size());
-        return classes.iterator().next();
+        return AccessNodeTest.getDeclWithModifiers(access, ASTClassOrInterfaceDeclaration.class, "class Test {}");
     }
 }

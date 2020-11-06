@@ -11,5 +11,10 @@ public interface TokenManager {
     // TODO : Change the return to GenericToken in 7.0.0 - maybe even use generics TokenManager<T extends GenericToken>
     Object getNextToken();
 
+
+    /**
+     * @deprecated For removal in 7.0.0
+     */
+    @Deprecated
     void setFileName(String fileName);
 }

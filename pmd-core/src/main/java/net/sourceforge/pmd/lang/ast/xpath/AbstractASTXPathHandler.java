@@ -25,4 +25,14 @@ public abstract class AbstractASTXPathHandler implements XPathHandler {
     public void initialize(IndependentContext context, Language language, Class<?> functionsClass) {
         context.declareNamespace("pmd-" + language.getTerseName(), "java:" + functionsClass.getName());
     }
+
+    @Override
+    public void initialize() {
+        // override if needed
+    }
+
+    @Override
+    public void initialize(IndependentContext context) {
+        // override if needed
+    }
 }

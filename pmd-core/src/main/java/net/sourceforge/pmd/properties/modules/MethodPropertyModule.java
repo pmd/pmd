@@ -16,6 +16,7 @@ import net.sourceforge.pmd.util.ClassUtil;
  *
  * @author Clément Fournier
  */
+@Deprecated
 public class MethodPropertyModule extends PackagedPropertyModule<Method> {
 
     public static final char CLASS_METHOD_DELIMITER = '#';

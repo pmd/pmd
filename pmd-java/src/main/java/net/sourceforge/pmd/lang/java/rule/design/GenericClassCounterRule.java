@@ -39,8 +39,8 @@ import net.sourceforge.pmd.properties.StringProperty;
  *     &lt;!-- Must be a full name to ensure type control !!! --&gt;
  *     &lt;property name="typeMatch" description="a regex to match on implements/extends classname"
  *         value="javax.servlet.Filter"/&gt;
- *     &lt;!-- Define after how many occurences one should log a violation --&gt;
- *     &lt;property name="threshold" description="Defines how many occurences are legal"
+ *     &lt;!-- Define after how many occurrences one should log a violation --&gt;
+ *     &lt;property name="threshold" description="Defines how many occurrences are legal"
  *         value="2"/&gt;
  *     &lt;!-- TODO: Add a parameter to allow "ignore" pattern based on name --&gt;
  * </pre>
@@ -51,6 +51,7 @@ import net.sourceforge.pmd.properties.StringProperty;
  */
 public class GenericClassCounterRule extends AbstractJavaRule {
 
+    // Class is unused, properties won't be converted
     private static final StringMultiProperty NAME_MATCH_DESCRIPTOR = new StringMultiProperty("nameMatch",
             "A series of regex, separated by ',' to match on the classname", new String[] { "" }, 1.0f, ',');
 
@@ -63,7 +64,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 
     // TODO - this should be an IntegerProperty instead?
     private static final StringProperty THRESHOLD_DESCRIPTOR = new StringProperty("threshold",
-            "Defines how many occurences are legal", new String(), 4.0f);
+            "Defines how many occurrences are legal", new String(), 4.0f);
 
     private List<Pattern> namesMatch = new ArrayList<>(0);
     private List<Pattern> typesMatch = new ArrayList<>(0);
@@ -92,7 +93,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
         this.operand = getProperty(OPERAND_DESCRIPTOR);
         this.typesMatch = RegexHelper.compilePatternsFromList(getProperty(TYPE_MATCH_DESCRIPTOR));
         String thresholdAsString = getProperty(THRESHOLD_DESCRIPTOR);
-        this.threshold = Integer.valueOf(thresholdAsString);
+        this.threshold = Integer.parseInt(thresholdAsString);
         // Initializing list of match
         this.matches = new ArrayList<>();
 
@@ -135,7 +136,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
                 addAMatch(classType, data);
             }
         }
-        // TODO: implements the "operand" functionnality
+        // TODO: implements the "operand" functionality
         // Is there any names that actually match ?
         for (Pattern pattern : this.namesMatch) {
             if (RegexHelper.isMatch(pattern, classType.getImage())) {

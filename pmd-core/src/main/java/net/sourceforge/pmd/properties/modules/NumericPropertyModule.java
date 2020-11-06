@@ -17,6 +17,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptorField;
  *
  * @author Clément Fournier
  */
+@Deprecated
 public class NumericPropertyModule<T extends Number> {
 
     private final T lowerLimit;

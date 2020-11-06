@@ -12,14 +12,15 @@ Rules to detect constructs that are either broken, extremely confusing or prone 
     <rule name="MistypedCDATASection"
           language="xml"
           since="5.0"
-          message="Potentialy mistyped CDATA section with extra [ at beginning or ] at the end."
+          message="Potentially mistyped CDATA section with extra [ at beginning or ] at the end."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_xml_errorprone.html#mistypedcdatasection">
         <description>
-An XML CDATA section begins with a &lt;!CDATA[ marker, which has only one [, and ends with a ]]&gt; marker, which has only two ]. 
+An XML CDATA section begins with a &lt;![CDATA[ marker, which has only one [, and ends with a ]]&gt; marker, which has two ].
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -30,7 +31,18 @@ An XML CDATA section begins with a &lt;!CDATA[ marker, which has only one [, and
         </properties>
         <example>
 <![CDATA[
-An extra [ looks like &lt;!CDATA[[]]&gt;, and an extra ] looks like &lt;!CDATA[]]]&gt;.
+<root>
+    <child>
+        <![CDATA[[ character data ]]><![CDATA[]]]]><![CDATA[> - this cdata section is valid, but it contains an
+        additional square bracket at the beginning.
+        It should probably be just <![CDATA[ character data ]]><![CDATA[]]]]><![CDATA[>.
+    </child>
+    <child>
+        <![CDATA[ character data ]]]><![CDATA[]]]]><![CDATA[> - this cdata section is valid, but it contains an
+        additional square bracket in the end.
+        It should probably be just <![CDATA[ character data ]]><![CDATA[]]]]><![CDATA[>.
+    </child>
+</root>
 ]]>
         </example>
     </rule>

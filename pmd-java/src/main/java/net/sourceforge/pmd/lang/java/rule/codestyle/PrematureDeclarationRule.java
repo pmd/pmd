@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -21,7 +22,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * needed. A reference is deemed to be premature if it is created ahead of a
  * block of code that doesn't use it that also has the ability to return or
  * throw an exception.
- * 
+ *
  * @author Brian Remedios
  */
 public class PrematureDeclarationRule extends AbstractJavaRule {
@@ -31,21 +32,24 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
 
         // is it part of a for-loop declaration?
-        if (node.jjtGetParent() instanceof ASTForInit) {
+        if (node.getParent() instanceof ASTForInit) {
             // yes, those don't count
             return super.visit(node, data);
         }
 
-        for (ASTBlockStatement block : statementsAfter(node)) {
-            if (hasReferencesIn(block, node.getVariableName())) {
-                break;
-            }
-            
-            if (hasExit(block)) {
-                addViolation(data, node);
-                break;
+        for (ASTVariableDeclaratorId id : node) {
+            for (ASTBlockStatement block : statementsAfter(node)) {
+                if (hasReferencesIn(block, id.getVariableName())) {
+                    break;
+                }
+
+                if (hasExit(block)) {
+                    addViolation(data, node);
+                    break;
+                }
             }
         }
+
 
         return super.visit(node, data);
     }
@@ -91,15 +95,15 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
      */
     private static List<ASTBlockStatement> statementsAfter(ASTLocalVariableDeclaration node) {
 
-        Node blockOrSwitch = node.jjtGetParent().jjtGetParent();
+        Node blockOrSwitch = node.getParent().getParent();
 
-        int count = blockOrSwitch.jjtGetNumChildren();
-        int start = node.jjtGetParent().jjtGetChildIndex() + 1;
+        int count = blockOrSwitch.getNumChildren();
+        int start = node.getParent().getIndexInParent() + 1;
 
         List<ASTBlockStatement> nextBlocks = new ArrayList<>(count - start);
 
         for (int i = start; i < count; i++) {
-            Node maybeBlock = blockOrSwitch.jjtGetChild(i);
+            Node maybeBlock = blockOrSwitch.getChild(i);
             if (maybeBlock instanceof ASTBlockStatement) {
                 nextBlocks.add((ASTBlockStatement) maybeBlock);
             }

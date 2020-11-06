@@ -6,18 +6,16 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.ref.SoftReference;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.input.BOMInputStream;
-
-import net.sourceforge.pmd.PMD;
 
 public class SourceCode {
 
@@ -36,6 +34,12 @@ public class SourceCode {
             return code.get();
         }
 
+        /**
+         * Loads a range of lines.
+         *
+         * @param startLine Start line (inclusive, 1-based)
+         * @param endLine   End line (inclusive, 1-based)
+         */
         public List<String> getCodeSlice(int startLine, int endLine) {
             List<String> c = null;
             if (code != null) {
@@ -65,9 +69,15 @@ public class SourceCode {
             }
         }
 
+        /**
+         * Loads a range of lines.
+         *
+         * @param startLine Start line (inclusive, 1-based)
+         * @param endLine   End line (inclusive, 1-based)
+         */
         protected List<String> load(int startLine, int endLine) {
             try (BufferedReader reader = new BufferedReader(getReader())) {
-                int linesToRead = endLine - startLine;
+                int linesToRead = 1 + endLine - startLine; // +1 because endLine is inclusive
                 List<String> lines = new ArrayList<>(linesToRead);
 
                 // Skip lines until we reach the start point
@@ -102,7 +112,7 @@ public class SourceCode {
 
         @Override
         public Reader getReader() throws Exception {
-            BOMInputStream inputStream = new BOMInputStream(new FileInputStream(file), ByteOrderMark.UTF_8,
+            BOMInputStream inputStream = new BOMInputStream(Files.newInputStream(file.toPath()), ByteOrderMark.UTF_8,
                     ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE);
 
             if (inputStream.hasBOM()) {
@@ -185,22 +195,29 @@ public class SourceCode {
         return cl.getCode();
     }
 
+    /** Newlines are normalized to \n. */
     public StringBuilder getCodeBuffer() {
         StringBuilder sb = new StringBuilder();
         List<String> lines = cl.getCode();
         for (String line : lines) {
-            sb.append(line).append(PMD.EOL);
+            sb.append(line).append('\n');
         }
         return sb;
     }
 
+    /**
+     * Loads a range of lines. Newlines are normalized to \n
+     *
+     * @param startLine Start line (inclusive, 1-based)
+     * @param endLine   End line (inclusive, 1-based)
+     */
     public String getSlice(int startLine, int endLine) {
         List<String> lines = cl.getCodeSlice(startLine, endLine);
 
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
             if (sb.length() != 0) {
-                sb.append(PMD.EOL);
+                sb.append('\n');
             }
             sb.append(line);
         }

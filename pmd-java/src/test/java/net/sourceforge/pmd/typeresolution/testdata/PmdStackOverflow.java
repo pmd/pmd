@@ -6,7 +6,7 @@ package net.sourceforge.pmd.typeresolution.testdata;
 
 public class PmdStackOverflow {
 
-    public void shouldThrowStackOverfloError() {
+    public void shouldThrowStackOverflowError() {
         MessageBuilder messageBuilder = new MessageBuilderA();
 
         // Works

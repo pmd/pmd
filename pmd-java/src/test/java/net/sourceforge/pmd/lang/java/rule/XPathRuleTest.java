@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,12 +6,12 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -20,9 +20,9 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
@@ -34,9 +34,9 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.StringMultiProperty;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.testframework.RuleTst;
 
 /**
@@ -44,18 +44,16 @@ import net.sourceforge.pmd.testframework.RuleTst;
  */
 public class XPathRuleTest extends RuleTst {
 
-    XPathRule rule;
-
-    @Before
-    public void setUp() {
-        rule = new XPathRule();
+    private XPathRule makeXPath(String expression) {
+        XPathRule rule = new XPathRule(XPathVersion.XPATH_2_0, expression);
         rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
         rule.setMessage("XPath Rule Failed");
+        return rule;
     }
 
     @Test
     public void testPluginname() throws Exception {
-        rule.setXPath("//VariableDeclaratorId[string-length(@Image) < 3]");
+        XPathRule rule = makeXPath("//VariableDeclaratorId[string-length(@Name) < 3]");
         rule.setMessage("{0}");
         Report report = getReportForTestString(rule, TEST1);
         RuleViolation rv = report.iterator().next();
@@ -65,15 +63,14 @@ public class XPathRuleTest extends RuleTst {
 
     @Test
     public void testXPathMultiProperty() throws Exception {
-        rule.setXPath("//VariableDeclaratorId[@Image=$forbiddenNames]");
+        XPathRule rule = makeXPath("//VariableDeclaratorId[@Name=$forbiddenNames]");
         rule.setMessage("Avoid vars");
-        rule.setVersion(XPathRuleQuery.XPATH_2_0);
-        StringMultiProperty varDescriptor
-            = StringMultiProperty.named("forbiddenNames")
-                                 .desc("Forbidden names")
-                                 .defaultValues("forbid1", "forbid2")
-                                 .delim('$')
-                                 .build();
+        PropertyDescriptor<List<String>> varDescriptor
+            = PropertyFactory.stringListProperty("forbiddenNames")
+                             .desc("Forbidden names")
+                             .defaultValues("forbid1", "forbid2")
+                             .delim('$')
+                             .build();
 
         rule.definePropertyDescriptor(varDescriptor);
 
@@ -89,11 +86,28 @@ public class XPathRuleTest extends RuleTst {
 
     @Test
     public void testVariables() throws Exception {
-        rule.setXPath("//VariableDeclaratorId[@Image=$var]");
+        XPathRule rule = makeXPath("//VariableDeclaratorId[@Name=$var]");
         rule.setMessage("Avoid vars");
-        StringProperty varDescriptor = new StringProperty("var", "Test var", null, 1.0f);
+        PropertyDescriptor<String> varDescriptor =
+            PropertyFactory.stringProperty("var").desc("Test var").defaultValue("").build();
         rule.definePropertyDescriptor(varDescriptor);
         rule.setProperty(varDescriptor, "fiddle");
+        Report report = getReportForTestString(rule, TEST2);
+        RuleViolation rv = report.iterator().next();
+        assertEquals(3, rv.getBeginLine());
+    }
+
+    @Test
+    public void testFnPrefixOnSaxon() throws Exception {
+        XPathRule rule = makeXPath("//VariableDeclaratorId[fn:matches(@Name, 'fiddle')]");
+        Report report = getReportForTestString(rule, TEST2);
+        RuleViolation rv = report.iterator().next();
+        assertEquals(3, rv.getBeginLine());
+    }
+
+    @Test
+    public void testNoFnPrefixOnSaxon() throws Exception {
+        XPathRule rule = makeXPath("//VariableDeclaratorId[matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
         RuleViolation rv = report.iterator().next();
         assertEquals(3, rv.getBeginLine());
@@ -103,7 +117,7 @@ public class XPathRuleTest extends RuleTst {
     /**
      * Test for problem reported in bug #1219 PrimarySuffix/@Image does not work
      * in some cases in xpath 2.0
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -148,7 +162,7 @@ public class XPathRuleTest extends RuleTst {
 
     /**
      * Following sibling check: See https://sourceforge.net/p/pmd/bugs/1209/
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -191,8 +205,8 @@ public class XPathRuleTest extends RuleTst {
         RuleContext ctx = new RuleContext();
         Report report = new Report();
         ctx.setReport(report);
-        ctx.setSourceCodeFilename("n/a");
-        RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(r);
+        ctx.setSourceCodeFile(new File("n/a"));
+        RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(r);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(test), new RuleSets(rules), ctx);
         return report;
     }

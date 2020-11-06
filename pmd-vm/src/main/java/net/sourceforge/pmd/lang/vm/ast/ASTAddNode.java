@@ -1,6 +1,8 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -34,22 +36,19 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @version $Id: ASTAddNode.java 712887 2008-11-11 00:27:50Z nbubna $
  */
 public class ASTAddNode extends ASTMathNode {
-    /**
-     * @param id
-     */
+
+    @InternalApi
+    @Deprecated
     public ASTAddNode(final int id) {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
+    @InternalApi
+    @Deprecated
     public ASTAddNode(final VmParser p, final int id) {
         super(p, id);
     }
 
-    /** Accept the visitor. **/
     @Override
     public Object jjtAccept(VmParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

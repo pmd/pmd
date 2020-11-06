@@ -7,16 +7,15 @@ package net.sourceforge.pmd.ant;
 import java.io.BufferedWriter;
 import java.io.Console;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -182,9 +181,8 @@ public class Formatter {
         Writer writer = null;
         boolean isOnError = true;
         try {
-            output = new FileOutputStream(file);
-            writer = new OutputStreamWriter(output, charset);
-            writer = new BufferedWriter(writer);
+            output = Files.newOutputStream(file.toPath());
+            writer = new BufferedWriter(new OutputStreamWriter(output, charset));
             isOnError = false;
         } finally {
             if (isOnError) {
@@ -206,9 +204,7 @@ public class Formatter {
                 if (res instanceof Charset) {
                     return ((Charset) res).name();
                 }
-            } catch (NoSuchFieldException ignored) {
-                // fall-through
-            } catch (IllegalAccessException ignored) {
+            } catch (ReflectiveOperationException ignored) {
                 // fall-through
             }
             return getNativeConsoleEncoding();
@@ -224,11 +220,7 @@ public class Formatter {
             if (res instanceof String) {
                 return (String) res;
             }
-        } catch (NoSuchMethodException ignored) {
-            // fall-through
-        } catch (InvocationTargetException ignored) {
-            // fall-through
-        } catch (IllegalAccessException ignored) {
+        } catch (ReflectiveOperationException ignored) {
             // fall-through
         }
         return null;

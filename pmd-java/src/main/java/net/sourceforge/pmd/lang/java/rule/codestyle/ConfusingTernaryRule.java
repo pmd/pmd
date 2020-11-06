@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -14,8 +16,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 /**
  * <code>if (x != y) { diff(); } else { same(); }</code> and<br>
@@ -51,8 +55,7 @@ import net.sourceforge.pmd.properties.BooleanProperty;
  * </pre>
  */
 public class ConfusingTernaryRule extends AbstractJavaRule {
-    private static BooleanProperty ignoreElseIfProperty = new BooleanProperty("ignoreElseIf",
-            "Ignore conditions with an else-if case", Boolean.FALSE, 0);
+    private static PropertyDescriptor<Boolean> ignoreElseIfProperty = booleanProperty("ignoreElseIf").desc("Ignore conditions with an else-if case").defaultValue(false).build();
 
     public ConfusingTernaryRule() {
         super();
@@ -62,15 +65,15 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         // look for "if (match) ..; else .."
-        if (node.jjtGetNumChildren() == 3) {
-            Node inode = node.jjtGetChild(0);
-            if (inode instanceof ASTExpression && inode.jjtGetNumChildren() == 1) {
-                Node jnode = inode.jjtGetChild(0);
+        if (node.getNumChildren() == 3) {
+            JavaNode inode = node.getChild(0);
+            if (inode instanceof ASTExpression && inode.getNumChildren() == 1) {
+                JavaNode jnode = inode.getChild(0);
                 if (isMatch(jnode)) {
 
                     if (!getProperty(ignoreElseIfProperty)
-                            || !(node.jjtGetChild(2).jjtGetChild(0) instanceof ASTIfStatement)
-                                    && !(node.jjtGetParent().jjtGetParent() instanceof ASTIfStatement)) {
+                            || !(node.getChild(2).getChild(0) instanceof ASTIfStatement)
+                                    && !(node.getParent().getParent() instanceof ASTIfStatement)) {
                         addViolation(data, node);
                     }
                 }
@@ -82,8 +85,8 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
         // look for "match ? .. : .."
-        if (node.jjtGetNumChildren() > 0) {
-            Node inode = node.jjtGetChild(0);
+        if (node.getNumChildren() > 0) {
+            JavaNode inode = node.getChild(0);
             if (isMatch(inode)) {
                 addViolation(data, node);
             }
@@ -92,9 +95,9 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
     }
 
     // recursive!
-    private static boolean isMatch(Node node) {
-        return isUnaryNot(node) || isNotEquals(node) || isConditionalWithAllMatches(node)
-                || isParenthesisAroundMatch(node);
+    private static boolean isMatch(JavaNode node) {
+        node = unwrapParentheses(node);
+        return isUnaryNot(node) || isNotEquals(node) || isConditionalWithAllMatches(node);
     }
 
     private static boolean isUnaryNot(Node node) {
@@ -107,17 +110,17 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
         return node instanceof ASTEqualityExpression && "!=".equals(node.getImage());
     }
 
-    private static boolean isConditionalWithAllMatches(Node node) {
+    private static boolean isConditionalWithAllMatches(JavaNode node) {
         // look for "match && match" or "match || match"
         if (!(node instanceof ASTConditionalAndExpression) && !(node instanceof ASTConditionalOrExpression)) {
             return false;
         }
-        int n = node.jjtGetNumChildren();
+        int n = node.getNumChildren();
         if (n <= 0) {
             return false;
         }
         for (int i = 0; i < n; i++) {
-            Node inode = node.jjtGetChild(i);
+            JavaNode inode = node.getChild(i);
             // recurse!
             if (!isMatch(inode)) {
                 return false;
@@ -127,21 +130,31 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
         return true;
     }
 
-    private static boolean isParenthesisAroundMatch(Node node) {
+    /**
+     * Extracts the outermost node that is not a parenthesized
+     * expression.
+     *
+     * @deprecated This is internal API, because it will be removed in PMD 7.
+     *     In PMD 7 there are no additional layers for parentheses in the Java tree.
+     */
+    @Deprecated
+    public static JavaNode unwrapParentheses(final JavaNode top) {
+        JavaNode node = top;
         // look for "(match)"
-        if (!(node instanceof ASTPrimaryExpression) || node.jjtGetNumChildren() != 1) {
-            return false;
+        if (!(node instanceof ASTPrimaryExpression) || node.getNumChildren() != 1) {
+            return top;
         }
-        Node inode = node.jjtGetChild(0);
-        if (!(inode instanceof ASTPrimaryPrefix) || inode.jjtGetNumChildren() != 1) {
-            return false;
+        node = node.getChild(0);
+        if (!(node instanceof ASTPrimaryPrefix) || node.getNumChildren() != 1) {
+            return top;
         }
-        Node jnode = inode.jjtGetChild(0);
-        if (!(jnode instanceof ASTExpression) || jnode.jjtGetNumChildren() != 1) {
-            return false;
+        node = node.getChild(0);
+        if (!(node instanceof ASTExpression) || node.getNumChildren() != 1) {
+            return top;
         }
-        Node knode = jnode.jjtGetChild(0);
-        // recurse!
-        return isMatch(knode);
+        node = node.getChild(0);
+
+        // recurse to unwrap another layer if possible
+        return unwrapParentheses(node);
     }
 }

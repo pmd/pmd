@@ -26,8 +26,9 @@ import com.beust.jcommander.ParameterException;
 public final class CPDCommandLineInterface {
     private static final Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
 
-    private static final int DUPLICATE_CODE_FOUND = 4;
+    private static final int NO_ERRORS_STATUS = 0;
     private static final int ERROR_STATUS = 1;
+    private static final int DUPLICATE_CODE_FOUND = 4;
 
     public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
     public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
@@ -66,7 +67,7 @@ public final class CPDCommandLineInterface {
             if (arguments.isHelp()) {
                 jcommander.usage();
                 System.out.println(buildUsageText());
-                setStatusCodeOrExit(ERROR_STATUS);
+                setStatusCodeOrExit(NO_ERRORS_STATUS);
                 return;
             }
         } catch (ParameterException e) {
@@ -96,10 +97,10 @@ public final class CPDCommandLineInterface {
                 if (arguments.isFailOnViolation()) {
                     setStatusCodeOrExit(DUPLICATE_CODE_FOUND);
                 } else {
-                    setStatusCodeOrExit(0);
+                    setStatusCodeOrExit(NO_ERRORS_STATUS);
                 }
             } else {
-                setStatusCodeOrExit(0);
+                setStatusCodeOrExit(NO_ERRORS_STATUS);
             }
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
@@ -173,12 +174,8 @@ public final class CPDCommandLineInterface {
             LOGGER.fine(
                     String.format("Adding DBURI=%s with DBType=%s", dburi.toString(), dburi.getDbType().toString()));
             cpd.add(dburi);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             throw new IllegalStateException("uri=" + uri, e);
-        } catch (URISyntaxException ex) {
-            throw new IllegalStateException("uri=" + uri, ex);
-        } catch (Exception ex) {
-            throw new IllegalStateException("uri=" + uri, ex);
         }
     }
 

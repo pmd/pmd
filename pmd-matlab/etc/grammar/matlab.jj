@@ -41,11 +41,11 @@ PARSER_END(MatlabParser)
   "\n" : DEFAULT
 }
 
-MORE:
+<DEFAULT, TRANSPOSE> MORE:
 { "%{": IN_COMMENT }
 
-SPECIAL_TOKEN:
-{ <SINGLE_LINE_COMMENT: "%"(~["\n","\r"])* ("\n"|"\r"|"\r\n")?> }
+<DEFAULT, TRANSPOSE> SPECIAL_TOKEN:
+{ <SINGLE_LINE_COMMENT: "%"~["{"](~["\n","\r"])* ("\n"|"\r"|"\r\n")?> }
 
 <IN_COMMENT> SPECIAL_TOKEN:
 { <MULTI_LINE_COMMENT: "%}">: DEFAULT }
@@ -65,6 +65,7 @@ SPECIAL_TOKEN:
 |   < AT: "@" > : DEFAULT
 |   < DOT: "." > : TRANSPOSE
 |   < COMMA: "," > : DEFAULT
+|   < QUESTIONMARK: "?" > : DEFAULT
 }
 
 <DEFAULT, TRANSPOSE> TOKEN : /* OPERATORS AND ASSIGNMENTS */
@@ -139,6 +140,7 @@ SPECIAL_TOKEN:
 <DEFAULT> TOKEN :
 {
     < STRING: "'" ( <ESC_SEQ> | "'" "'" | ~["\\","'","\n"] )* "'" >
+|   < DSTRING: "\"" ( "\\" | "\"" "\"" | ~["\\","\"","\n"] )* "\"" >
 |   < #ESC_SEQ:
       "\\" ( "b" | "t" | "n" | "f" | "r" | "\"" | "'" | "\\" )
     | <UNICODE_ESC>

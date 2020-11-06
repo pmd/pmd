@@ -5,13 +5,13 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,12 +38,14 @@ public class XSLTRenderer extends XMLRenderer {
 
     public static final String NAME = "xslt";
 
+    // TODO 7.0.0 use PropertyDescriptor<Optional<File>>
     public static final StringProperty XSLT_FILENAME = new StringProperty("xsltFilename", "The XSLT file name.", null,
             0);
 
     private Transformer transformer;
     private String xsltFilename = "/pmd-nicerhtml.xsl";
     private Writer outputWriter;
+    private StringWriter stringWriter;
 
     public XSLTRenderer() {
         super();
@@ -70,21 +72,24 @@ public class XSLTRenderer extends XMLRenderer {
         // We keep the inital writer to put the final html output
         this.outputWriter = getWriter();
         // We use a new one to store the XML...
-        Writer w = new StringWriter();
-        setWriter(w);
+        this.stringWriter = new StringWriter();
+        setWriter(stringWriter);
         // If don't find the xsl no need to bother doing the all report,
         // so we check this here...
         InputStream xslt = null;
         File file = new File(this.xsltFilename);
         if (file.exists() && file.canRead()) {
-            xslt = new FileInputStream(file);
+            xslt = Files.newInputStream(file.toPath());
         } else {
             xslt = this.getClass().getResourceAsStream(this.xsltFilename);
         }
         if (xslt == null) {
-            throw new FileNotFoundException("Can't file XSLT sheet :" + this.xsltFilename);
+            throw new FileNotFoundException("Can't find XSLT file: " + this.xsltFilename);
         }
-        this.prepareTransformer(xslt);
+
+        try (InputStream stream = xslt) {
+            this.prepareTransformer(stream);
+        }
         // Now we build the XML file
         super.start();
     }
@@ -96,16 +101,14 @@ public class XSLTRenderer extends XMLRenderer {
      *            The stylesheet provided as an InputStream
      */
     private void prepareTransformer(InputStream xslt) {
-        if (xslt != null) {
-            try {
-                // Get a TransformerFactory object
-                TransformerFactory factory = TransformerFactory.newInstance();
-                StreamSource src = new StreamSource(xslt);
-                // Get an XSL Transformer object
-                this.transformer = factory.newTransformer(src);
-            } catch (TransformerConfigurationException e) {
-                e.printStackTrace();
-            }
+        try {
+            // Get a TransformerFactory object
+            TransformerFactory factory = TransformerFactory.newInstance();
+            StreamSource src = new StreamSource(xslt);
+            // Get an XSL Transformer object
+            this.transformer = factory.newTransformer(src);
+        } catch (TransformerConfigurationException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -114,27 +117,17 @@ public class XSLTRenderer extends XMLRenderer {
         // First we finish the XML report
         super.end();
         // Now we transform it using XSLT
-        Writer writer = super.getWriter();
-        if (writer instanceof StringWriter) {
-            StringWriter w = (StringWriter) writer;
-            StringBuffer buffer = w.getBuffer();
-            Document doc = this.getDocument(buffer.toString());
-            this.transform(doc);
-        } else {
-            // Should not happen !
-            throw new RuntimeException("Wrong writer");
-        }
-
+        Document doc = this.getDocument(stringWriter.toString());
+        this.transform(doc);
     }
 
     private void transform(Document doc) {
         DOMSource source = new DOMSource(doc);
-        this.setWriter(new StringWriter());
         StreamResult result = new StreamResult(this.outputWriter);
         try {
             transformer.transform(source, result);
         } catch (TransformerException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -142,13 +135,8 @@ public class XSLTRenderer extends XMLRenderer {
         try {
             DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             return parser.parse(new InputSource(new StringReader(xml)));
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 }

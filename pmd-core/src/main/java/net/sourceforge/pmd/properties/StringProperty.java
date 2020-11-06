@@ -13,7 +13,10 @@ import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ * @deprecated Use a {@code PropertyDescriptor<String>}. A builder is available from {@link PropertyFactory#stringProperty(String)}.
+ * This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class StringProperty extends AbstractSingleValueProperty<String> {
 
     /**
@@ -23,7 +26,10 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
      * @param theDescription Description
      * @param defaultValue   Default value
      * @param theUIOrder     UI order
+     *
+     * @deprecated Use {@link PropertyFactory#stringProperty(String)}
      */
+    @Deprecated
     public StringProperty(String theName, String theDescription, String defaultValue, float theUIOrder) {
         this(theName, theDescription, defaultValue, theUIOrder, false);
     }
@@ -31,7 +37,7 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
 
     /** Master constructor. */
     private StringProperty(String theName, String theDescription, String defaultValue, float theUIOrder, boolean
-        isDefinedExternally) {
+            isDefinedExternally) {
         super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
     }
 
@@ -58,11 +64,19 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#stringProperty(String)}
+     */
+    @Deprecated
     public static StringPBuilder named(String name) {
         return new StringPBuilder(name);
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#stringProperty(String)}
+     */
+    @Deprecated
     public static final class StringPBuilder extends SingleValuePropertyBuilder<String, StringPBuilder> {
         private StringPBuilder(String name) {
             super(name);

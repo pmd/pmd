@@ -4,12 +4,17 @@
 
 package net.sourceforge.pmd.renderers;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  *
  * @author Brian Remedios
  *
  * @param <T>
+ * @deprecated Is internal API
  */
+@InternalApi
+@Deprecated
 public class ColumnDescriptor<T extends Object> {
 
     public final String id;

@@ -15,14 +15,15 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
 /**
  * Flags usage of http request.setHeader('Authorization',..) and suggests using
  * named credentials which helps store credentials for the callout in a safe
  * place.
- * 
+ *
  * @author sergey.gorbaty
  *
  */
@@ -66,12 +67,8 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
     }
 
     private void findFieldLiterals(final ASTField fDecl) {
-        Object f = fDecl.getNode().getFieldInfo().getValue();
-        if (f instanceof String) {
-            final String fieldValue = (String) f;
-            if (AUTHORIZATION.equalsIgnoreCase(fieldValue)) {
-                listOfAuthorizationVariables.add(Helper.getFQVariableName(fDecl));
-            }
+        if ("String".equals(fDecl.getType()) && AUTHORIZATION.equalsIgnoreCase(fDecl.getValue())) {
+            listOfAuthorizationVariables.add(Helper.getFQVariableName(fDecl));
         }
     }
 
@@ -89,7 +86,7 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
 
     }
 
-    private void findAuthLiterals(final AbstractApexNode<?> node) {
+    private void findAuthLiterals(final ApexNode<?> node) {
         ASTLiteralExpression literal = node.getFirstChildOfType(ASTLiteralExpression.class);
         if (literal != null) {
             ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
@@ -101,7 +98,7 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
         }
     }
 
-    private void runChecks(final AbstractApexNode<?> node, Object data) {
+    private void runChecks(final ApexNode<?> node, Object data) {
         ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
         if (literalNode != null) {
             if (isAuthorizationLiteral(literalNode)) {
@@ -118,9 +115,8 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
     }
 
     private boolean isAuthorizationLiteral(final ASTLiteralExpression literal) {
-        Object o = literal.getNode().getLiteral();
-        if (o instanceof String) {
-            String lit = (String) o;
+        if (literal.isString()) {
+            String lit = literal.getImage();
             if (lit.equalsIgnoreCase(AUTHORIZATION)) {
                 return true;
             }

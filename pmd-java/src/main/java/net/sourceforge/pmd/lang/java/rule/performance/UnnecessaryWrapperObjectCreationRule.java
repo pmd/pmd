@@ -27,11 +27,11 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {
-        if (node.jjtGetNumChildren() == 0 || !(node.jjtGetChild(0) instanceof ASTName)) {
+        if (node.getNumChildren() == 0 || !(node.getChild(0) instanceof ASTName)) {
             return super.visit(node, data);
         }
 
-        String image = ((ASTName) node.jjtGetChild(0)).getImage();
+        String image = ((ASTName) node.getChild(0)).getImage();
         if (image.startsWith("java.lang.")) {
             image = image.substring(10);
         }
@@ -40,9 +40,9 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
                 .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
 
         if (PREFIX_SET.contains(image) || checkBoolean && "Boolean.valueOf".equals(image)) {
-            ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();
-            if (parent.jjtGetNumChildren() >= 3) {
-                Node n = parent.jjtGetChild(2);
+            ASTPrimaryExpression parent = (ASTPrimaryExpression) node.getParent();
+            if (parent.getNumChildren() >= 3) {
+                Node n = parent.getChild(2);
                 if (n instanceof ASTPrimarySuffix) {
                     ASTPrimarySuffix suffix = (ASTPrimarySuffix) n;
                     image = suffix.getImage();

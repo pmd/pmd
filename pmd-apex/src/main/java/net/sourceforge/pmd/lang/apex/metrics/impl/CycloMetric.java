@@ -29,7 +29,7 @@ public class CycloMetric extends AbstractApexOperationMetric {
     public double computeFor(ASTMethod node, MetricOptions options) {
         return ((MutableInt) node.jjtAccept(new StandardCycloVisitor(), new MutableInt(1))).doubleValue();
     }
-    
+
 
     /**
      * Computes the number of control flow paths through that expression, which is the number of {@code ||} and {@code
@@ -44,7 +44,7 @@ public class CycloMetric extends AbstractApexOperationMetric {
         int complexity = 0;
 
         for (ASTBooleanExpression sub : subs) {
-            BooleanOp op = sub.getNode().getOp();
+            BooleanOp op = sub.getOperator();
             if (op != null && (op == BooleanOp.AND || op == BooleanOp.OR)) {
                 complexity++;
             }

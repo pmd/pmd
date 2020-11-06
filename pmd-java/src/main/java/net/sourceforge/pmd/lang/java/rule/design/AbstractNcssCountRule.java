@@ -1,9 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
@@ -31,16 +32,19 @@ import net.sourceforge.pmd.util.NumericConstants;
 /**
  * Abstract superclass for NCSS counting methods. Counts tokens according to
  * <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS rules</a>.
- * 
+ *
  * @author Jason Bennett
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractNcssCountRule extends AbstractStatisticalJavaRule {
 
     private Class<?> nodeClass;
 
     /**
      * Count the nodes of the given type using NCSS rules.
-     * 
+     *
      * @param nodeClass
      *            class of node to count
      */
@@ -52,8 +56,8 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalJavaRule 
     public Object visit(JavaNode node, Object data) {
         int numNodes = 0;
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            JavaNode n = (JavaNode) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            JavaNode n = (JavaNode) node.getChild(i);
             Integer treeSize = (Integer) n.jjtAccept(this, data);
             numNodes += treeSize.intValue();
         }
@@ -74,7 +78,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalJavaRule 
     /**
      * Count the number of children of the given Java node. Adds one to count
      * the node itself.
-     * 
+     *
      * @param node
      *            java node having children counted
      * @param data
@@ -84,8 +88,8 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalJavaRule 
     protected Integer countNodeChildren(Node node, Object data) {
         Integer nodeCount = null;
         int lineCount = 0;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            nodeCount = (Integer) ((JavaNode) node.jjtGetChild(i)).jjtAccept(this, data);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            nodeCount = (Integer) ((JavaNode) node.getChild(i)).jjtAccept(this, data);
             lineCount += nodeCount.intValue();
         }
         return ++lineCount;
@@ -162,7 +166,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalJavaRule 
     public Object visit(ASTStatementExpression node, Object data) {
 
         // "For" update expressions do not count as separate lines of code
-        if (node.jjtGetParent() instanceof ASTStatementExpressionList) {
+        if (node.getParent() instanceof ASTStatementExpressionList) {
             return NumericConstants.ZERO;
         }
 
@@ -178,7 +182,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalJavaRule 
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
 
         // "For" init declarations do not count as separate lines of code
-        if (node.jjtGetParent() instanceof ASTForInit) {
+        if (node.getParent() instanceof ASTForInit) {
             return NumericConstants.ZERO;
         }
 

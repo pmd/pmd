@@ -14,11 +14,14 @@ import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.DumpFacade;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
+import net.sourceforge.pmd.lang.java.internal.JavaDesignerBindings;
 import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
@@ -30,7 +33,9 @@ import net.sourceforge.pmd.lang.java.xpath.MetricFunction;
 import net.sourceforge.pmd.lang.java.xpath.TypeIsExactlyFunction;
 import net.sourceforge.pmd.lang.java.xpath.TypeIsFunction;
 import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
+import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 import net.sf.saxon.sxpath.IndependentContext;
 
@@ -39,8 +44,13 @@ import net.sf.saxon.sxpath.IndependentContext;
  * classes as adapters of the visitors to the VisitorStarter interface.
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
+ *
+ * @deprecated For removal, the abstraction is not useful.
  */
+@Deprecated
 public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler {
+
+    private final LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> myMetricsProvider = new JavaLanguageHandler.JavaMetricsProvider();
 
     @Override
     public DataFlowHandler getDataFlowHandler() {
@@ -111,6 +121,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
         };
     }
 
+    @Deprecated
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {
@@ -142,9 +153,19 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
         };
     }
 
+    @Override
+    public DesignerBindings getDesignerBindings() {
+        return JavaDesignerBindings.INSTANCE;
+    }
 
     @Override
     public DFAGraphRule getDFAGraphRule() {
         return new JavaDFAGraphRule();
+    }
+
+
+    @Override
+    public LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> getLanguageMetricsProvider() {
+        return myMetricsProvider;
     }
 }

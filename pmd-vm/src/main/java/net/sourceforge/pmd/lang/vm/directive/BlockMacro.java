@@ -52,7 +52,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author <a href="mailto:wyla@removethis.sci.fi">Jarkko Viinamaki</a>
  * @since 1.7
  * @version $Id$
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class BlockMacro extends Block {
     private String name;
 

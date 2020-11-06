@@ -3,75 +3,103 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-null check after method invocation with conditional AND and !=
-     ]]></description>
-        <expected-problems>1</expected-problems>
+        <description>null check after method invocation with conditional AND and !=</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,6,7</expected-linenumbers>
+        <expected-messages>
+            <message>The null check here is misplaced; if the variable 'a' is null there will be a NullPointerException</message>
+            <message>The null check here is misplaced; if the variable 'a' is null there will be a NullPointerException</message>
+            <message>The null check here is misplaced; if the variable 'a' is null there will be a NullPointerException</message>
+            <message>The null check here is misplaced; if the variable 'a' is null there will be a NullPointerException</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (a.equals(baz) && a!=null) {}
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-null check after nested method invocation
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar() {
-  if (a.equals(baz.foo()) && baz != null) {}
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-null check before nested method invocation
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar() {
-  if (a != null && a.equals(foo())) {}
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-1610730: null check after method invocation with conditional OR and ==
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar() {
-  if (a.equals(baz) || a == null) {}
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-3372128: False positive: ArrayIsStoredDirectly
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-  public final void setExcludeStatus(String[] excludeStatus) {
-    if (excludeStatus != null) {
-      this.excludeStatus = Arrays.asList(excludeStatus.clone());
-    } else {
-      this.excludeStatus = null;
+    void bar() {
+        if (a.equals(baz) && a != null) {} // a could be null, misplaced null check
+        if (a.equals(baz) || a == null) {} // a could be null, misplaced null check
+
+        if (a.equals(baz) && null != a) {} // a could be null, misplaced null check
+        if (a.equals(baz) || null == a) {} // a could be null, misplaced null check
+
+        if (a != null && a.equals(baz)) {} // correct null check
+        if (a == null || a.equals(baz)) {} // correct null check
     }
-  }
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>null check after nested method invocation</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,6,7</expected-linenumbers>
+        <expected-messages>
+            <message>The null check here is misplaced; if the variable 'baz' is null there will be a NullPointerException</message>
+            <message>The null check here is misplaced; if the variable 'baz' is null there will be a NullPointerException</message>
+            <message>The null check here is misplaced; if the variable 'baz' is null there will be a NullPointerException</message>
+            <message>The null check here is misplaced; if the variable 'baz' is null there will be a NullPointerException</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if (a.equals(baz.foo()) && baz != null) {} // baz could be null, misplaced null check
+        if (a.equals(baz.foo()) || baz == null) {} // baz could be null, misplaced null check
+
+        if (a.equals(baz.foo()) && null != baz) {} // baz could be null, misplaced null check
+        if (a.equals(baz.foo()) || null == baz) {} // baz could be null, misplaced null check
+
+        if (baz != null && a.equals(baz.foo())) {} // correct null check
+        if (baz == null || a.equals(baz.foo())) {} // correct null check
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>null check before nested method invocation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if (a != null && a.equals(foo())) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1610730: null check after method invocation with conditional OR and ==</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The null check here is misplaced; if the variable 'a' is null there will be a NullPointerException</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if (a.equals(baz) || a == null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>3372128: False positive: ArrayIsStoredDirectly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public final void setExcludeStatus(String[] excludeStatus) {
+        if (excludeStatus != null) {
+            this.excludeStatus = Arrays.asList(excludeStatus.clone());
+        } else {
+            this.excludeStatus = null;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>#977 MisplacedNullCheck makes false positives</description>
         <expected-problems>0</expected-problems>
@@ -81,8 +109,68 @@ public class Test {
         if ((value != null && !value.equals(oldValue)) || value == null) {
             // Do something
         }
+
+        if ((value == null || !value.equals(oldValue)) && value != null) {}
     }
 }
-]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2242 False-positive MisplacedNullCheck reported (1)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    String field;
+
+    Test(String f) { field = f; }
+
+    public boolean method(final String value) {
+        boolean c = value != null
+             && ((field != null && !value.equals(field.toString())) || field == null);
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2242 False-positive MisplacedNullCheck reported (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    String field;
+
+    Test(String f) { field = f; }
+
+    public boolean method(final String value) {
+        boolean c = value != null
+             && (field == null || (field != null && !value.equals(field.toString())));
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False-positive/negative with multiple conditions</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,8</expected-linenumbers>
+        <expected-messages>
+            <message>The null check here is misplaced; if the variable 'attributes' is null there will be a NullPointerException</message>
+            <message>The null check here is misplaced; if the variable 'attributes' is null there will be a NullPointerException</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    public void method(String annotationType, Map<String, Object> attributes) {
+        boolean isStereotype = annotationType.equals("javax.inject.Named");
+        if (isStereotype && attributes != null && attributes.containsKey("value")) {}
+        if (isStereotype || attributes == null || attributes.containsKey("value")) {}
+
+        if (isStereotype && attributes.containsKey("value") && attributes != null) {}
+        if (isStereotype || attributes.containsKey("value") || attributes == null) {}
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

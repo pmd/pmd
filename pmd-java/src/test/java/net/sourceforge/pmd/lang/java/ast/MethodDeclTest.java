@@ -4,11 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Set;
 
 import org.junit.Test;
 
@@ -75,18 +71,7 @@ public class MethodDeclTest {
         assertTrue("Expecting method to be public.", amd.isPublic());
     }
 
-    public ASTMethodDeclaration getMethodDecl(String[] access) {
-        String javaCode = "public class Test { ";
-        for (int i = 0; i < access.length; i++) {
-            javaCode += access[i] + " ";
-        }
-
-        javaCode += " void stuff() { } }";
-
-        Set<ASTMethodDeclaration> methods = getNodes(ASTMethodDeclaration.class, javaCode);
-
-        assertEquals("Wrong number of methods", 1, methods.size());
-
-        return methods.iterator().next();
+    private ASTMethodDeclaration getMethodDecl(String[] access) {
+        return AccessNodeTest.getDeclWithModifiers(access, ASTMethodDeclaration.class, "void stuff(){}");
     }
 }

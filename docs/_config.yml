@@ -1,9 +1,12 @@
 repository: pmd/pmd
 
 pmd:
-    version: 6.10.0
-    date: ??-????-2018
+    version: 6.30.0-SNAPSHOT
+    previous_version: 6.29.0
+    date: ??-November-2020
     release_type: minor
+
+# release types: major, minor, bugfix
 
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.
@@ -39,6 +42,9 @@ exclude:
   - README.md
   - Dockerfile
   - build-docs.sh
+  - pdf-*.sh
+  - pdfconfigs/
+  - pdf/
 
 feedback_subject_line: PMD Source Code Analyzer
 
@@ -112,3 +118,7 @@ description: "Intended as a documentation theme based on Jekyll for technical wr
 # needed for sitemap.xml file only
 url: https://pmd.github.io/pmd
 baseurl: ""
+
+# used by javadoc_tag.rb
+# https://javadoc.io/page/net.sourceforge.pmd
+javadoc_url_prefix: https://docs.pmd-code.org/apidocs

@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import java.util.Set;
-
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JavaParserDecoratedVisitor;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NcssBaseVisitor;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NcssCountImportsDecorator;
+import net.sourceforge.pmd.lang.java.metrics.impl.internal.NcssVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
@@ -54,17 +50,8 @@ public final class NcssMetric {
 
 
         @Override
-        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions version) {
-            Set<MetricOption> options = version.getOptions();
-            JavaParserDecoratedVisitor visitor = new JavaParserDecoratedVisitor(NcssBaseVisitor.INSTANCE);
-
-            if (options.contains(NcssOption.COUNT_IMPORTS)) {
-                visitor.decorateWith(new NcssCountImportsDecorator());
-            }
-
-            // decorate
-
-            MutableInt ncss = (MutableInt) node.jjtAccept(visitor, new MutableInt(0));
+        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
+            MutableInt ncss = (MutableInt) node.jjtAccept(new NcssVisitor(options, node), new MutableInt(0));
             return (double) ncss.getValue();
         }
 
@@ -79,15 +66,8 @@ public final class NcssMetric {
 
 
         @Override
-        public double computeFor(MethodLikeNode node, MetricOptions version) {
-            Set<MetricOption> options = version.getOptions();
-            JavaParserDecoratedVisitor visitor = new JavaParserDecoratedVisitor(NcssBaseVisitor.INSTANCE);
-
-            if (options.contains(NcssOption.COUNT_IMPORTS)) {
-                visitor.decorateWith(new NcssCountImportsDecorator());
-            }
-
-            MutableInt ncss = (MutableInt) node.jjtAccept(visitor, new MutableInt(0));
+        public double computeFor(MethodLikeNode node, MetricOptions options) {
+            MutableInt ncss = (MutableInt) node.jjtAccept(new NcssVisitor(options, node), new MutableInt(0));
             return (double) ncss.getValue();
         }
 

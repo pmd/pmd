@@ -134,7 +134,7 @@ import java.util.Set;
         }
         return builder.append("]").toString();
     }
-    
+
     @Override
     protected String shallowString() {
         return toString();

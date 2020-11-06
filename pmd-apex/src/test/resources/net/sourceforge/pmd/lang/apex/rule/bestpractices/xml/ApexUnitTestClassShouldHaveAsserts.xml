@@ -17,7 +17,7 @@ public class Foo {
       a.toString();
    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -31,7 +31,7 @@ public class Foo {
       SYSTEM.AssertNotEquals(a, null, 'account not found');
    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -40,7 +40,7 @@ public class Foo {
         <code><![CDATA[
 @isTest
 private class C2_Assignment_Report_Job_Test {
-    
+
     public static testMethod void testCreateAssignmentsForDifferentRoles() {
         User u = C2_Test_Utils.getWFUser('testWfc', true);
         System.runAs(u) {
@@ -60,7 +60,7 @@ private class C2_Assignment_Report_Job_Test {
             Test.startTest();
             job.execute(null, scope);
             Test.stopTest();
-            List<C2_Case_Assign_Report_Data__c> caseEventEntries = 
+            List<C2_Case_Assign_Report_Data__c> caseEventEntries =
                     [select Num_Cases_Assign__c, Num_Cases_Not_Completed__c, Num_Cases_Reassigned__c, Num_Cases_Completed__c, User__c, Role__c
                     from C2_Case_Assign_Report_Data__c];
             System.assertEquals(3, caseEventEntries.size());

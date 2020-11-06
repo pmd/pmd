@@ -7,7 +7,7 @@ author: Binguo Bao <djydewang@gmail.com>
 
 ## Introduction
 Pmdtester is a regression testing tool that ensures no new problems and unexpected behaviors will be introduced to PMD after fixing an issue. 
-It can also be used to verify, that new rules work as expected.It has been integrated into travis CI and is actually used automatically for PRs.
+It can also be used to verify, that new rules work as expected. It has been integrated into travis CI and is actually used automatically for PRs.
 Regression difference reports are commented back to the PR for the reviewer's information e.g. https://github.com/pmd/pmd/pull/1265#issuecomment-408945709
 
 ## Run pmdtester locally

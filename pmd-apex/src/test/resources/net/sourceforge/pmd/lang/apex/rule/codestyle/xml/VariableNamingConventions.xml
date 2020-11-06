@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,168 +9,158 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	private static final String foo = '2';
+    private static final String foo = '2';
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>member level, non-finals shouldn't have underscores</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	private Integer foo_bar = 2;
+    private Integer foo_bar = 2;
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>local level, non-finals shouldn't have underscores</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public void foo() {
-		String foo_bar = '2';
-	}
+    public void foo() {
+        String foo_bar = '2';
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>method level, non-finals shouldn't have underscores</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
-	private void foo(boolean foo, String bar, String foo_bar, Integer bar_foo) {
-	}
+    private void foo(boolean foo, String bar, String foo_bar, Integer bar_foo) {
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>constructor level, non-finals shouldn't have underscores</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
-	private Foo(boolean foo, String bar, String foo_bar, Integer bar_foo) {
-	}
+    private Foo(boolean foo, String bar, String foo_bar, Integer bar_foo) {
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>member level, variables names should start with lowercase character</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	private Integer Ubar = 2;
+    private Integer Ubar = 2;
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>local level, variables names should start with lowercase character</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public void foo() {
-		Integer Ubar = 2;
-	}
+    public void foo() {
+        Integer Ubar = 2;
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>method level, variables names should start with lowercase character</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public void foo(Integer Ubar) {
-	}
+    public void foo(Integer Ubar) {
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>constructor level, variables names should start with lowercase character</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public Foo(Integer Ubar) {
-	}
+    public Foo(Integer Ubar) {
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>all is well</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	private Integer bar = 2;
-	private static final Integer FOO_BAR = 2;
+    private Integer bar = 2;
+    private static final Integer FOO_BAR = 2;
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>local finals are ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	private void bar() {
-		final Integer STATE_READING = 0;
-	}
+    private void bar() {
+        final Integer STATE_READING = 0;
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>serialVersionUID is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	static final long serialVersionUID = 423343L;
+    static final long serialVersionUID = 423343L;
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>final non-statics need not be all caps</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	final Integer foo = 42;
+    final Integer foo = 42;
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
-    <test-code>
-        <description>variables in inner classes should not trigger problems in parent declaration</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-	private static final Bar BAR = new FooBar() { public foo(String arg) { } };
-}
-		]]></code>
-    </test-code>
-    
+
     <test-code>
         <description>Rule property control</description>
         <expected-problems>5</expected-problems>
         <code><![CDATA[
 public class Foo {
-	static Integer s_foo = 42;
-	Integer m_foo = 42;
-	private Foo(Integer p_foo) {
-		Integer l_foo = 42;
-	}
-	private void foo(Integer p_foo) {
-	}
+    static Integer s_foo = 42;
+    Integer m_foo = 42;
+    private Foo(Integer p_foo) {
+        Integer l_foo = 42;
+    }
+    private void foo(Integer p_foo) {
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Check prefixes</description>
         <rule-property name="staticPrefix">s_</rule-property>
@@ -181,17 +170,17 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	static Integer s_foo = 42;
-	Integer m_foo = 42;
-	private Foo(Integer p_foo) {
-		Integer l_foo = 42;
-	}
-	private void foo(Integer p_foo) {
-	}
+    static Integer s_foo = 42;
+    Integer m_foo = 42;
+    private Foo(Integer p_foo) {
+        Integer l_foo = 42;
+    }
+    private void foo(Integer p_foo) {
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Check suffixes</description>
         <rule-property name="staticSuffix">_s</rule-property>
@@ -201,78 +190,78 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	static Integer foo_s = 42;
-	Integer foo_m = 42;
-	private Foo(Integer foo_p) {
-		Integer foo_l = 42;
-	}
-	private void foo(Integer foo_p) {
-	}
+    static Integer foo_s = 42;
+    Integer foo_m = 42;
+    private Foo(Integer foo_p) {
+        Integer foo_l = 42;
+    }
+    private void foo(Integer foo_p) {
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Check members disabled</description>
         <rule-property name="checkMembers">false</rule-property>
         <expected-problems>3</expected-problems>
         <code><![CDATA[
 public class Foo {
-	static Integer foo_s = 42;
-	Integer foo_m = 42;
-	private Foo(Integer foo_p) {
-		Integer foo_l = 42;
-	}
-	private void foo(Integer foo_p) {
-	}
+    static Integer foo_s = 42;
+    Integer foo_m = 42;
+    private Foo(Integer foo_p) {
+        Integer foo_l = 42;
+    }
+    private void foo(Integer foo_p) {
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Check locals disabled</description>
         <rule-property name="checkLocals">false</rule-property>
         <expected-problems>4</expected-problems>
         <code><![CDATA[
 public class Foo {
-	static Integer foo_s = 42;
-	Integer foo_m = 42;
-	private Foo(Integer foo_p) {
-		Integer foo_l = 42;
-	}
-	private void foo(Integer foo_p) {
-	}
+static Integer foo_s = 42;
+    Integer foo_m = 42;
+    private Foo(Integer foo_p) {
+        Integer foo_l = 42;
+    }
+    private void foo(Integer foo_p) {
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Check parameters disabled</description>
         <rule-property name="checkParameters">false</rule-property>
         <expected-problems>3</expected-problems>
         <code><![CDATA[
 public class Foo {
-	static Integer foo_s = 42;
-	Integer foo_m = 42;
-	private Foo(Integer foo_p) {
-		Integer foo_l = 42;
-	}
-	private void foo(Integer foo_p) {
-	}
+    static Integer foo_s = 42;
+    Integer foo_m = 42;
+    private Foo(Integer foo_p) {
+        Integer foo_l = 42;
+    }
+    private void foo(Integer foo_p) {
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
-	<test-code>
-		<description>False - with non primitive fields (Bug 2225474)</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+
+    <test-code>
+        <description>False - with non primitive fields (Bug 2225474)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class X {
-	public final static String foo = "3";
+    public final static String foo = '3';
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1349 VariableNamingConventions : underscore in final but at first position ?</description>
         <expected-problems>0</expected-problems>
@@ -288,19 +277,36 @@ public class X {
         <description>Inner exception</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public with sharing class SObjectDataLoader {  
-    public class SerializerException extends Exception {}    
+public with sharing class SObjectDataLoader {
+    public class SerializerException extends Exception {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
-	<test-code>
-		<description>Exception</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+
+    <test-code>
+        <description>Exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class SerializerException extends Exception {
 }
-		]]></code>
-    </test-code>   
-    
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Enum members</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum AsyncApexJobType {
+    Future,
+    SharingRecalculation,
+    ScheduledApex,
+    BatchApex,
+    BatchApexWorker,
+    TestRequest,
+    TestWorker,
+    ApexToken,
+    Queueable
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -7,9 +7,10 @@ package net.sourceforge.pmd.renderers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -53,6 +54,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "textcolor";
 
+    // What? TODO 7.0.0 Use a boolean property
     public static final StringProperty COLOR = new StringProperty("color",
             "Enables colors with anything other than 'false' or '0'.", "yes", 0);
     private static final String SYSTEM_PROPERTY_PMD_COLOR = "pmd.color";
@@ -120,19 +122,44 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             buf.setLength(0);
             numberOfWarnings++;
             RuleViolation rv = i.next();
-            if (!rv.getFilename().equals(lastFile)) {
-                lastFile = rv.getFilename();
-                buf.append(this.yellowBold + "*" + this.colorReset + " file: " + this.whiteBold
-                        + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
+            String nextFile = determineFileName(rv.getFilename());
+            if (!nextFile.equals(lastFile)) {
+                lastFile = nextFile;
+                buf.append(this.yellowBold)
+                        .append("*")
+                        .append(this.colorReset)
+                        .append(" file: ")
+                        .append(this.whiteBold)
+                        .append(this.getRelativePath(lastFile))
+                        .append(this.colorReset)
+                        .append(PMD.EOL);
             }
-            buf.append(
-                    this.green + "    src:  " + this.cyan + lastFile.substring(lastFile.lastIndexOf(File.separator) + 1)
-                            + this.colorReset + ":" + this.cyan + rv.getBeginLine()
-                            + (rv.getEndLine() == -1 ? "" : ":" + rv.getEndLine()) + this.colorReset + PMD.EOL);
-            buf.append(this.green + "    rule: " + this.colorReset + rv.getRule().getName() + PMD.EOL);
-            buf.append(this.green + "    msg:  " + this.colorReset + rv.getDescription() + PMD.EOL);
-            buf.append(this.green + "    code: " + this.colorReset + this.getLine(lastFile, rv.getBeginLine()) + PMD.EOL
-                    + PMD.EOL);
+            buf.append(this.green)
+                    .append("    src:  ")
+                    .append(this.cyan)
+                    .append(lastFile.substring(lastFile.lastIndexOf(File.separator) + 1))
+                    .append(this.colorReset).append(":")
+                    .append(this.cyan)
+                    .append(rv.getBeginLine())
+                    .append(rv.getEndLine() == -1 ? "" : ":" + rv.getEndLine())
+                    .append(this.colorReset)
+                    .append(PMD.EOL);
+            buf.append(this.green)
+                    .append("    rule: ")
+                    .append(this.colorReset)
+                    .append(rv.getRule().getName())
+                    .append(PMD.EOL);
+            buf.append(this.green)
+                    .append("    msg:  ")
+                    .append(this.colorReset)
+                    .append(rv.getDescription())
+                    .append(PMD.EOL);
+            buf.append(this.green)
+                    .append("    code: ")
+                    .append(this.colorReset)
+                    .append(this.getLine(lastFile, rv.getBeginLine()))
+                    .append(PMD.EOL)
+                    .append(PMD.EOL);
             writer.write(buf.toString());
         }
         writer.write(PMD.EOL + PMD.EOL);
@@ -149,23 +176,51 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             buf.setLength(0);
             numberOfErrors++;
             Report.ProcessingError error = i.next();
-            if (error.getFile().equals(lastFile)) {
-                lastFile = error.getFile();
-                buf.append(this.redBold + "*" + this.colorReset + " file: " + this.whiteBold
-                        + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
+            String nextFile = determineFileName(error.getFile());
+            if (!nextFile.equals(lastFile)) {
+                lastFile = nextFile;
+                buf.append(this.redBold)
+                        .append("*")
+                        .append(this.colorReset)
+                        .append(" file: ")
+                        .append(this.whiteBold)
+                        .append(this.getRelativePath(lastFile))
+                        .append(this.colorReset)
+                        .append(PMD.EOL);
             }
-            buf.append(this.green + "    err:  " + this.cyan + error.getMsg() + this.colorReset + PMD.EOL)
-                .append(this.red).append(error.getDetail()).append(colorReset).append(PMD.EOL).append(PMD.EOL);
+            buf.append(this.green)
+                    .append("    err:  ")
+                    .append(this.cyan)
+                    .append(error.getMsg())
+                    .append(this.colorReset)
+                    .append(PMD.EOL)
+                    .append(this.red)
+                    .append(error.getDetail())
+                    .append(colorReset)
+                    .append(PMD.EOL)
+                    .append(PMD.EOL);
             writer.write(buf.toString());
         }
-        
+
         for (Iterator<Report.ConfigurationError> i = report.configErrors(); i.hasNext();) {
             buf.setLength(0);
             numberOfErrors++;
             Report.ConfigurationError error = i.next();
-            buf.append(this.redBold + "*" + this.colorReset + " rule: " + this.whiteBold
-                    + error.rule().getName() + this.colorReset + PMD.EOL);
-            buf.append(this.green + "    err:  " + this.cyan + error.issue() + this.colorReset + PMD.EOL + PMD.EOL);
+            buf.append(this.redBold)
+                    .append("*")
+                    .append(this.colorReset)
+                    .append(" rule: ")
+                    .append(this.whiteBold)
+                    .append(error.rule().getName())
+                    .append(this.colorReset)
+                    .append(PMD.EOL);
+            buf.append(this.green)
+                    .append("    err:  ")
+                    .append(this.cyan)
+                    .append(error.issue())
+                    .append(this.colorReset)
+                    .append(PMD.EOL)
+                    .append(PMD.EOL);
             writer.write(buf.toString());
         }
 
@@ -201,7 +256,13 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
     }
 
     protected Reader getReader(String sourceFile) throws FileNotFoundException {
-        return new FileReader(new File(sourceFile));
+        try {
+            return Files.newBufferedReader(new File(sourceFile).toPath(), Charset.defaultCharset());
+        } catch (IOException e) {
+            FileNotFoundException ex = new FileNotFoundException(sourceFile);
+            ex.initCause(e);
+            throw ex;
+        }
     }
 
     /**
@@ -230,14 +291,14 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         if (fileName.indexOf(this.pwd) == 0) {
             relativePath = "." + fileName.substring(this.pwd.length());
 
-            // remove current dir occuring twice - occurs if . was supplied as
+            // remove current dir occurring twice - occurs if . was supplied as
             // path
             if (relativePath.startsWith("." + File.separator + "." + File.separator)) {
                 relativePath = relativePath.substring(2);
             }
         } else {
             // this happens when pmd's supplied argument deviates from the pwd
-            // 'branch' (god knows this terminolgy - i hope i make some sense).
+            // 'branch' (god knows this terminology - i hope i make some sense).
             // for instance, if supplied=/usr/lots/of/src and
             // pwd=/usr/lots/of/shared/source
             // TODO: a fix to get relative path?

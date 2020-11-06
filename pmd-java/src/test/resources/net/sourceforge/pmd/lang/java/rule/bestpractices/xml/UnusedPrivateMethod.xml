@@ -3,149 +3,138 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-private method called by public method
-     ]]></description>
+        <description>private method called by public method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  foo();
- }
- private void foo() {}
+    public void bar() {
+        foo();
+    }
+    private void foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-simple unused private method
-     ]]></description>
+        <description>simple unused private method</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private void foo() {}
+    private void foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-anonymous inner class calls private method
-     ]]></description>
+        <description>anonymous inner class calls private method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  new Runnable() {
-   public void run() {
-    foo();
-   }
-  };
- }
- private void foo() {}
+    public void bar() {
+        new Runnable() {
+            public void run() {
+                foo();
+            }
+        };
+    }
+    private void foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-two private methods with same name but different parameters
-     ]]></description>
+        <description>two private methods with same name but different parameters</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private void foo() {}
- private void foo(String baz) {}
- public void bar() {
-  foo();
- }
+    private void foo() {}
+    private void foo(String baz) {}
+    public void bar() {
+        foo();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-calling private method after instantiating new copy of myself
-     ]]></description>
+        <description>calling private method after instantiating new copy of myself</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private void foo(String[] args) {}
- public static void main(String[] args) {
-  Foo u = new Foo();
-  u.foo(args); 
- }
+    private void foo(String[] args) {}
+    public static void main(String[] args) {
+        Foo u = new Foo();
+        u.foo(args);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-calling private method using 'this' modifier
-     ]]></description>
+        <description>calling private method using 'this' modifier</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  this.foo();
- }
- private void foo() {}
+    public void bar() {
+        this.foo();
+    }
+    private void foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-simple unused private static method
-     ]]></description>
+        <description>simple unused private static method</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static void foo() {}
+    private static void foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-readResolve/writeReplace/etc are OK
-     ]]></description>
+        <description>readResolve/writeReplace/etc are OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private void readResolve() {}
- private void writeReplace() {}
- private void readObject() {}
- private void writeObject() {}
+    private void readResolve() {}
+    private void writeReplace() {}
+    private void readObject() {}
+    private void writeObject() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Private methods called only by themselves, BUG 1038229
-     ]]></description>
+        <description>Private methods called only by themselves, BUG 1038229</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private void bar() {
-  bar(); 
- }
+    private void bar() {
+        bar();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-private with same name as public, different method signature
-     ]]></description>
+        <description>private with same name as public, different method signature</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(int x) {
-  bar(); 
- }
- private void bar() {}
+    public void bar(int x) {
+        bar();
+    }
+    private void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-False +, BUG 1114754
-     ]]></description>
+        <description>False +, BUG 1114754</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -158,213 +147,200 @@ public class Foo {
        a.toString();
    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-called from constructor
-     ]]></description>
+        <description>called from constructor</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo() {
-  bar();
- }
- private void bar() {}
+    public Foo() {
+        bar();
+    }
+    private void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-private method with same name but diff arg count than public method
-     ]]></description>
+        <description>private method with same name but diff arg count than public method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void baz() {
-  int x, y;
-  baz(x, y);
- }
- private void baz(int x, int y) {}
+    public void baz() {
+        int x, y;
+        baz(x, y);
+    }
+    private void baz(int x, int y) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-static private called from initializer
-     ]]></description>
+        <description>static private called from initializer</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- static { foo(); }
- private static void foo() {}
+    static { foo(); }
+    private static void foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-static private invoked in static context - i.e., Foo.hi()
-     ]]></description>
+        <description>static private invoked in static context - i.e., Foo.hi()</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- static boolean BUZ = Foo.bar(); 
- private static boolean bar() { return true; }
+    static boolean BUZ = Foo.bar();
+    private static boolean bar() { return true; }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-private method with same name as param
-     ]]></description>
+        <description>private method with same name as param</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar(boolean buz) { 
-  buz();
- }
- private void buz() {}
+    void bar(boolean buz) {
+        buz();
+    }
+    private void buz() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-two methods, one private, one public, same name, same arg count, diff types
-     ]]></description>
+        <description>two methods, one private, one public, same name, same arg count, diff types</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void baz() {
-  foo("hi");
- }
- private void foo(String y) {}
- public void foo(List y) {}
+    public void baz() {
+        foo("hi");
+    }
+    private void foo(String y) {}
+    public void foo(List y) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-two private methods, both used, same name, same arg count, diff types
-     ]]></description>
+        <description>two private methods, both used, same name, same arg count, diff types</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void baz() {
-  foo(getBuz());
- }
- private void foo(String y) {}
- private void foo(List y) {}
+    public void baz() {
+        foo(getBuz());
+    }
+    private void foo(String y) {}
+    private void foo(List y) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-private method same name as local
-     ]]></description>
+        <description>private method same name as local</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void baz() {
-  int x = x();
- }
- private int x() { return 42;}
+    public void baz() {
+        int x = x();
+    }
+    private int x() { return 42;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-SuppressWarnings("unused") - simple unused private method
-     ]]></description>
+        <description>SuppressWarnings("unused") - simple unused private method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- @SuppressWarnings("unused")
- private void foo() {}
+    @SuppressWarnings("unused")
+    private void foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Calling method on instance of self
-     ]]></description>
+        <description>Calling method on instance of self</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo { 
- private Foo fooField; 
- 
- public void bar() { 
-  Foo f = new Foo();
-  f.fooField.buz();
- }
- private void buz() {} 
+public class Foo {
+    private Foo fooField;
+
+    public void bar() {
+        Foo f = new Foo();
+        f.fooField.buz();
+    }
+    private void buz() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code regressionTest="false">
         <description>#46 False +: Unused private field: call to instance of self, received from another class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo { 
- private Foo fooField; 
+public class Foo {
+    private Foo fooField;
 
- public void bar() { 
-  Biz.getFoo().buz();
- }
+    public void bar() {
+        Biz.getFoo().buz();
+    }
 
- private void buz() {} 
+    private void buz() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Calling one arg varargs method
-     ]]></description>
+        <description>Calling one arg varargs method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo { 
- public void bar() { 
-  buz("baz");
- }
- private void buz(String... s) {} 
+public class Foo {
+    public void bar() {
+        buz("baz");
+    }
+    private void buz(String... s) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    <test-code>
-        <description><![CDATA[
-Calling two arg varargs method
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo { 
- public void bar() { 
-  buz("baz");
- }
- private void buz(String s, String... args) {} 
-}
-     ]]></code>
-    </test-code>
-        <test-code>
-        <description><![CDATA[
-Reproducing bug #1955852: false positives for UnusedPrivateMethod & UnusedLocalField
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
 
+    <test-code>
+        <description>Calling two arg varargs method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        buz("baz");
+    }
+    private void buz(String s, String... args) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Reproducing bug #1955852: false positives for UnusedPrivateMethod and UnusedLocalField</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class PMDFalsePositiveTest {
-	private <T> T doSomething(Object param){
-		return (T) param;
-	}
+    private <T> T doSomething(Object param){
+        return (T) param;
+    }
 
-	public static void main(String[] args) {
-		PMDFalsePositiveTest test = new PMDFalsePositiveTest();
-		Object o = "Awesome!";
-		String result = test.<String>doSomething(o);
-		System.out.println(result);
-	}
+    public static void main(String[] args) {
+        PMDFalsePositiveTest test = new PMDFalsePositiveTest();
+        Object o = "Awesome!";
+        String result = test.<String>doSomething(o);
+        System.out.println(result);
+    }
 }
-
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>verify #1156 False failure with "Avoid unused private methods"</description>
         <expected-problems>0</expected-problems>
@@ -380,6 +356,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1223 UnusedPrivateMethod: Java 8 method reference causing false positives</description>
         <expected-problems>0</expected-problems>
@@ -405,8 +382,8 @@ public class Foo {
     }
 }
         ]]></code>
-        <source-type>java 1.8</source-type>
     </test-code>
+
     <test-code>
         <description>#1226 False Positive: UnusedPrivateMethod overloading with varargs</description>
         <expected-problems>1</expected-problems>
@@ -435,6 +412,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1228 UnusedPrivateMethod returns false positives (1)</description>
         <expected-problems>0</expected-problems>
@@ -455,6 +433,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1228 UnusedPrivateMethod returns false positives (2)</description>
         <expected-problems>0</expected-problems>
@@ -497,6 +476,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1228 UnusedPrivateMethod returns false positives (3)</description>
         <expected-problems>0</expected-problems>
@@ -519,6 +499,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1228 UnusedPrivateMethod returns false positives (4)</description>
         <expected-problems>0</expected-problems>
@@ -527,36 +508,37 @@ import java.awt.*;
 import javax.swing.*;
 
 public class Foo {
-  public JComponent makeUI() {
-    Box box = Box.createVerticalBox();
-    JTextField field = new JTextField();
-    box.add(makePanel("aaa", field));
-    return box;
-  }
-  private static JPanel makePanel(String title, JComponent c) { // this is wrongly triggered
-    JPanel p = new JPanel(new BorderLayout());
-    p.setBorder(BorderFactory.createTitledBorder(title));
-    p.add(c);
-    return p;
-  }
-  public static void main(String[] args) {
-    EventQueue.invokeLater(new Runnable() {
-      @Override public void run() {
-        createAndShowGUI();
-      }
-    });
-  }
-  public static void createAndShowGUI() {
-    JFrame f = new JFrame();
-    f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    f.getContentPane().add(new Foo().makeUI());
-    f.setSize(320, 240);
-    f.setLocationRelativeTo(null);
-    f.setVisible(true);
-  }
+    public JComponent makeUI() {
+        Box box = Box.createVerticalBox();
+        JTextField field = new JTextField();
+        box.add(makePanel("aaa", field));
+        return box;
+    }
+    private static JPanel makePanel(String title, JComponent c) { // this is wrongly triggered
+        JPanel p = new JPanel(new BorderLayout());
+        p.setBorder(BorderFactory.createTitledBorder(title));
+        p.add(c);
+        return p;
+    }
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            @Override public void run() {
+                createAndShowGUI();
+            }
+        });
+    }
+    public static void createAndShowGUI() {
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        f.getContentPane().add(new Foo().makeUI());
+        f.setSize(320, 240);
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+    }
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1228 UnusedPrivateMethod returns false positives (5a)</description>
         <expected-problems>0</expected-problems>
@@ -576,6 +558,7 @@ public class Foo extends MultiActionController {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1228 UnusedPrivateMethod returns false positives (5b)</description>
         <expected-problems>0</expected-problems>
@@ -597,6 +580,7 @@ public class Foo extends MultiActionController {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1233 UnusedPrivateMethod: False positive : method called on returned object.</description>
         <expected-problems>0</expected-problems>
@@ -626,6 +610,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1228 UnusedPrivateMethod returns false positives (6)</description>
         <expected-problems>0</expected-problems>
@@ -870,6 +855,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1228 UnusedPrivateMethod returns false positives (7)</description>
         <expected-problems>0</expected-problems>
@@ -937,6 +923,7 @@ public class Bar {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1234 Unused private methods still giving false positives in 5.1.3 snapshot</description>
         <expected-problems>0</expected-problems>
@@ -956,7 +943,7 @@ public class Foo {
     }
 
     /**
-     * Get a list of All BLI Code for given fiscal year.  
+     * Get a list of All BLI Code for given fiscal year.
      * @param fy the selected FY
      * @return an List of BLI Codes
      */
@@ -973,6 +960,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1156 False failure with "Avoid unused private methods" (part 2)</description>
         <expected-problems>0</expected-problems>
@@ -988,6 +976,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1251 UnusedPrivateMethod false positives for boxing &amp; unboxing arguments</description>
         <expected-problems>0</expected-problems>
@@ -1012,6 +1001,7 @@ public class UnusedPrivateMethodFalsePositives {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1249 Regression: UnusedPrivateMethod from 5.0.5 to 5.1.2</description>
         <expected-problems>0</expected-problems>
@@ -1025,7 +1015,7 @@ import org.junit.runner.Description;
 /**
  * Holder object for the id in the {@link TestLink} annotation. By defining only a private constructor in this abstract
  * class and having both extending classes as inner classes, we assure nobody is able to create other extending classes.
- * 
+ *
  * @param <T>
  *            of the id, either {@link Long} for internal or {@link String} for external IDs.
  *
@@ -1119,7 +1109,7 @@ public class TestLinkUriResolver {
 
     /**
      * The constructor normalizes the URI by adding a trailing slash when it is missing.
-     * 
+     *
      * @param baseUri
      *            without <tt>index.php</tt>, eg <tt>http://testlink.sourceforge.net/demo/</tt>.
      */
@@ -1134,7 +1124,7 @@ public class TestLinkUriResolver {
 
     /**
      * http://testlink.sourceforge.net/demo/lib/testcases/tcPrint.php?testcase_id=2750.
-     * 
+     *
      * @param internalTestLinkId
      *            id of the testcase
      * @return an URI pointing to the printview of the last version of the testcase description.
@@ -1145,7 +1135,7 @@ public class TestLinkUriResolver {
 
     /**
      * http://testlink.sourceforge.net/demo/lib/testcases/archiveData.php?targetTestCase=SM-1&edit=testcase&allowedit=0.
-     * 
+     *
      * @param externalTestLinkId
      *            id of the testcase
      * @return an URI pointing to the printview of the last version of the testcase description.
@@ -1161,7 +1151,7 @@ public class TestLinkUriResolver {
      *
      * http://testlink.sourceforge.net/demo/lib/testcases/tcPrint.php?testcase_id=2750
      * http://testlink.sourceforge.net/demo/lib/testcases/archiveData.php?targetTestCase=SM-1&edit=testcase&allowedit=0
-     * 
+     *
      * @param testLinkId
      *            of the test case.
      * @return an URI pointing to the last version of the testcase description.
@@ -1177,6 +1167,7 @@ public class TestLinkUriResolver {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1261 False positive "Avoid unused private methods" with Generics</description>
         <expected-problems>0</expected-problems>
@@ -1191,6 +1182,7 @@ public class TestPrivate<T> {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1261 False positive "Avoid unused private methods" with Generics 2</description>
         <expected-problems>0</expected-problems>
@@ -1207,6 +1199,7 @@ public class TestPrivate<T extends List> {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1261 False positive "Avoid unused private methods" with Generics 3</description>
         <expected-problems>0</expected-problems>
@@ -1223,6 +1216,7 @@ public class TestPrivate {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1261 False positive "Avoid unused private methods" with Generics 4</description>
         <expected-problems>0</expected-problems>
@@ -1248,6 +1242,7 @@ public class TestPrivate {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1276 False positive in UnusedPrivateMethod when method arg is Object and not called with plain Object</description>
         <expected-problems>0</expected-problems>
@@ -1275,6 +1270,7 @@ public class Parent {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1281 UnusedPrivateMethod incorrectly flagged for methods nested private classes</description>
         <expected-problems>0</expected-problems>
@@ -1308,6 +1304,7 @@ public class NestedClassPrivateMethods {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1287 UnusedPrivateMethod returns false positives for Superclass</description>
         <expected-problems>0</expected-problems>
@@ -1330,6 +1327,7 @@ public class SuperClassFalsePositive {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1286 UnusedPrivateMethod returns false positives for varags</description>
         <expected-problems>0</expected-problems>
@@ -1357,6 +1355,7 @@ public class VaragsFalsePositive {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1294 False positive UnusedPrivateMethod with public inner enum from another class</description>
         <expected-problems>0</expected-problems>
@@ -1374,7 +1373,7 @@ import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.Clas
 
 /**
  * TODO svenz Describe UnusedPrivateMethodWithEnum
- * 
+ *
  * @author <a href="mailto:svenz@expedia.com">Sven Zethelius</a>
  *
  */
@@ -1394,6 +1393,7 @@ public class UnusedPrivateMethodWithEnum {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1296 PMD UnusedPrivateMethod invalid detection of 'private void method(int,boolean,Integer...)'</description>
         <expected-problems>0</expected-problems>
@@ -1417,9 +1417,9 @@ public class UnusedPrivateMethod {
     </test-code>
 
     <test-code>
-    <description>#1332 False Positive: UnusedPrivateMethod</description>
-    <expected-problems>0</expected-problems>
-    <code><![CDATA[
+        <description>#1332 False Positive: UnusedPrivateMethod</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 package com.acme;
 
 import org.junit.Test;
@@ -1447,7 +1447,7 @@ public class FooTest {
         return b + c;
     }
 }
-    ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -1532,23 +1532,23 @@ public class Something {
         return Stream.of(values).collect(Collectors.toMap(keyMapper, Function.identity()));
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#521 UnusedPrivateMethod returns false positives with primitive data type in map argument</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-        public class Foo {
-          public Foo() {
-            Map<String, double[]> map = new LinkedHashMap<>();
-            addToMap(map);
-          }
+public class Foo {
+    public Foo() {
+        Map<String, double[]> map = new LinkedHashMap<>();
+        addToMap(map);
+    }
 
-          private void addToMap(Map<String, double[]> map) {
-            map.put("foo", new double[]{0., 1.});
-          }
-        }
+    private void addToMap(Map<String, double[]> map) {
+        map.put("foo", new double[]{0., 1.});
+    }
+}
         ]]></code>
     </test-code>
 
@@ -1556,28 +1556,27 @@ public class Something {
         <description>#907 Add IgnoredAnnotations property to UnusedPrivateMethod</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-        public class Foo {
-          @Deprecated
-          private bar() {
-          }
-        }
+public class Foo {
+    @Deprecated
+    private bar() {
+    }
+}
         ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Explicit receiver parameters are ignored when matching methods
-     ]]></description>
+        <description>Explicit receiver parameters are ignored when matching methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
-  public void bar() {
-    test();
-  }
-  
-  private void test(@AnnotatedUsage Foo this) {
-  }
+    public void bar() {
+        test();
+    }
+
+    private void test(@AnnotatedUsage Foo this) {
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -1600,6 +1599,47 @@ public class Foo {
 public class Foo {
     @Deprecated
     private void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1531 [java] UnusedPrivateMethod false-positive with method result</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnusedPrivateMethodFP {
+    private void print(String s) { // <- unused private method?
+        System.out.println(s);
+    }
+
+    public void run() {
+        print(new Integer(1).toString()); // it is used here
+    }
+
+    private void print2(String s) {
+        System.out.println(s);
+    }
+
+    public void run2() {
+        String temp = new Integer(1).toString();
+        print2(temp); // workaround with extra temporary variable
+    }
+
+    private void print3(String s) {
+        System.out.println(s);
+    }
+
+    public void run3() {
+        print3((String)new Integer(1).toString()); // workaround with extra cast
+    }
+
+    public void runBoolean(String s) {
+        privateBooleanMethod(s, "true".equals(s));
+    }
+
+    private void privateBooleanMethod(String s, boolean isTrue) {
+        System.out.println(s);
+    }
 }
         ]]></code>
     </test-code>

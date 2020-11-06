@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -202,14 +203,13 @@ public class PMD {
     public static int doPMD(PMDConfiguration configuration) {
 
         // Load the RuleSets
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, new ResourceLoader());
-        RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
+        final RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, new ResourceLoader());
+        final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
-            return 0;
+            return PMDCommandLineInterface.NO_ERRORS_STATUS;
         }
 
-        Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
-        List<DataSource> files = getApplicableFiles(configuration, languages);
+        final List<DataSource> files = getApplicableFiles(configuration, getApplicableLanguages(configuration, ruleSets));
 
         try {
             Renderer renderer;
@@ -217,8 +217,7 @@ public class PMD {
             try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                 renderer = configuration.createRenderer();
                 renderers = Collections.singletonList(renderer);
-
-                renderer.setWriter(IOUtil.createWriter(configuration.getReportFile()));
+                renderer.setReportFile(configuration.getReportFile());
                 renderer.start();
             }
 
@@ -254,7 +253,7 @@ public class PMD {
             }
             LOG.log(Level.FINE, "Exception during processing", e);
             LOG.info(PMDCommandLineInterface.buildUsageText());
-            return 0;
+            return PMDCommandLineInterface.NO_ERRORS_STATUS;
         } finally {
             /*
              * Make sure it's our own classloader before attempting to close it....
@@ -280,7 +279,6 @@ public class PMD {
 
         RuleContext context = new RuleContext();
         context.setSourceCodeFile(sourceCodeFile);
-        context.setSourceCodeFilename(sourceCodeFilename);
         context.setReport(new Report());
         return context;
     }
@@ -302,34 +300,13 @@ public class PMD {
      */
     public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
             final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
-
-        if (!configuration.isIgnoreIncrementalAnalysis()
-                && configuration.getAnalysisCache() instanceof NoopAnalysisCache
-                && LOG.isLoggable(Level.WARNING)) {
-            final String version = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
-            LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
-                                + "https://pmd.github.io/" + version + "/pmd_userdocs_incremental_analysis.html");
-        }
-
+        encourageToUseIncrementalAnalysis(configuration);
         sortFiles(configuration, files);
-
         // Make sure the cache is listening for analysis results
         ctx.getReport().addListener(configuration.getAnalysisCache());
 
-        final RuleSetFactory silentFactoy = new RuleSetFactory(ruleSetFactory, false);
-
-        /*
-         * Check if multithreaded support is available. ExecutorService can also
-         * be disabled if threadCount is not positive, e.g. using the
-         * "-threads 0" command line option.
-         */
-        if (configuration.getThreads() > 0) {
-            new MultiThreadProcessor(configuration).processFiles(silentFactoy, files, ctx, renderers);
-        } else {
-            new MonoThreadProcessor(configuration).processFiles(silentFactoy, files, ctx, renderers);
-        }
-
-        // Persist the analysis cache
+        final RuleSetFactory silentFactory = new RuleSetFactory(ruleSetFactory, false);
+        newFileProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
         configuration.getAnalysisCache().persist();
     }
 
@@ -349,6 +326,26 @@ public class PMD {
                 }
             });
         }
+    }
+
+    private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
+        if (!configuration.isIgnoreIncrementalAnalysis()
+                && configuration.getAnalysisCache() instanceof NoopAnalysisCache
+                && LOG.isLoggable(Level.WARNING)) {
+            final String version =
+                    PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
+            LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
+                    + "https://pmd.github.io/" + version + "/pmd_userdocs_incremental_analysis.html");
+        }
+    }
+
+    /*
+     * Check if multithreaded support is available. ExecutorService can also
+     * be disabled if threadCount is not positive, e.g. using the
+     * "-threads 0" command line option.
+     */
+    private static AbstractPMDProcessor newFileProcessor(final PMDConfiguration configuration) {
+        return configuration.getThreads() > 0 ? new MultiThreadProcessor(configuration) : new MonoThreadProcessor(configuration);
     }
 
     /**
@@ -425,20 +422,19 @@ public class PMD {
         return files;
     }
 
-    private static Set<Language> getApplicableLanguages(PMDConfiguration configuration, RuleSets ruleSets) {
-        Set<Language> languages = new HashSet<>();
-        LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
+    private static Set<Language> getApplicableLanguages(final PMDConfiguration configuration, final RuleSets ruleSets) {
+        final Set<Language> languages = new HashSet<>();
+        final LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
 
-        for (Rule rule : ruleSets.getAllRules()) {
-            Language language = rule.getLanguage();
-            if (languages.contains(language)) {
-                continue;
-            }
-            LanguageVersion version = discoverer.getDefaultLanguageVersion(language);
-            if (RuleSet.applies(rule, version)) {
-                languages.add(language);
-                if (LOG.isLoggable(Level.FINE)) {
-                    LOG.fine("Using " + language.getShortName() + " version: " + version.getShortName());
+        for (final Rule rule : ruleSets.getAllRules()) {
+            final Language ruleLanguage = rule.getLanguage();
+            if (!languages.contains(ruleLanguage)) {
+                final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
+                if (RuleSet.applies(rule, version)) {
+                    languages.add(ruleLanguage);
+                    if (LOG.isLoggable(Level.FINE)) {
+                        LOG.fine("Using " + ruleLanguage.getShortName() + " version: " + version.getShortName());
+                    }
                 }
             }
         }
@@ -466,12 +462,12 @@ public class PMD {
      */
     public static int run(String[] args) {
         final PMDParameters params = PMDCommandLineInterface.extractParameters(new PMDParameters(), args, "pmd");
-        
+
         if (params.isBenchmark()) {
             TimeTracker.startGlobalTracking();
         }
-        
-        int status = 0;
+
+        int status = PMDCommandLineInterface.NO_ERRORS_STATUS;
         final PMDConfiguration configuration = params.toConfiguration();
 
         final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
@@ -486,7 +482,7 @@ public class PMD {
             if (violations > 0 && configuration.isFailOnViolation()) {
                 status = PMDCommandLineInterface.VIOLATIONS_FOUND;
             } else {
-                status = 0;
+                status = PMDCommandLineInterface.NO_ERRORS_STATUS;
             }
         } catch (Exception e) {
             System.out.println(PMDCommandLineInterface.buildUsageText());
@@ -496,7 +492,7 @@ public class PMD {
         } finally {
             logHandlerManager.close();
             LOG.setLevel(oldLogLevel);
-            
+
             if (params.isBenchmark()) {
                 final TimingReport timingReport = TimeTracker.stopGlobalTracking();
 
@@ -504,6 +500,7 @@ public class PMD {
                 final TimingReportRenderer renderer = new TextTimingReportRenderer();
                 try {
                     // Don't close this writer, we don't want to close stderr
+                    @SuppressWarnings("PMD.CloseResource")
                     final Writer writer = new OutputStreamWriter(System.err);
                     renderer.render(timingReport, writer);
                 } catch (final IOException e) {

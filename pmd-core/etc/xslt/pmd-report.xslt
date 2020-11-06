@@ -50,7 +50,7 @@
     <xsl:for-each select="file">
         <xsl:sort data-type="number" order="descending" select="count(violation)"/>
         <xsl:variable name="filename" select="@name"/>
-        <H3><xsl:value-of disable-output-escaping="yes" select="substring-before(translate(@name,'/','.'),'.java')"/></H3>
+        <H3><xsl:value-of disable-output-escaping="yes" select="translate(substring-before(@name,'.java'),'/','.')"/></H3>
         <table border="0" width="100%" class="details">
             <tr>
                 <th>Begin Line</th>

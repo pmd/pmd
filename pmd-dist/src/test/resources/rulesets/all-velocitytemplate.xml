@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<ruleset name="All Velocity Template Language Rules" 
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>Every Velocity Template Language Rule in PMD</description>
+
+    <rule ref="category/vm/bestpractices.xml" />
+    <rule ref="category/vm/codestyle.xml" />
+    <rule ref="category/vm/design.xml" />
+    <rule ref="category/vm/documentation.xml" />
+    <rule ref="category/vm/errorprone.xml" />
+    <rule ref="category/vm/multithreading.xml" />
+    <rule ref="category/vm/performance.xml" />
+    <rule ref="category/vm/security.xml" />
+
+</ruleset>

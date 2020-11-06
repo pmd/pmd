@@ -260,11 +260,11 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
      */
     @Override
     public AxisIterator iterateAxis(byte axisNumber, NodeTest nodeTest) {
-        AxisIterator axisIterator = iterateAxis(axisNumber);
-        if (nodeTest != null) {
-            axisIterator = new AxisFilter(axisIterator, nodeTest);
-        }
-        return axisIterator;
+        return filter(iterateAxis(axisNumber), nodeTest);
+    }
+
+    protected static AxisIterator filter(AxisIterator axisIterator, NodeTest nodeTest) {
+        return nodeTest != null ? new AxisFilter(axisIterator, nodeTest) : axisIterator;
     }
 
     /**

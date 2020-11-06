@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,17 +17,13 @@ import net.sourceforge.pmd.lang.apex.ast.ASTNewObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-
-import apex.jorje.data.Identifier;
-import apex.jorje.data.ast.TypeRefs.ClassTypeRef;
-import apex.jorje.semantic.symbol.member.variable.StandardFieldInfo;
+import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
 /**
  * Looking for potential Open redirect via PageReference variable input
- * 
+ *
  * @author sergey.gorbaty
  */
 public class ApexOpenRedirectRule extends AbstractApexRule {
@@ -73,7 +68,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
         return data;
     }
 
-    private void findSafeLiterals(AbstractApexNode<?> node) {
+    private void findSafeLiterals(ApexNode<?> node) {
         ASTBinaryExpression binaryExp = node.getFirstChildOfType(ASTBinaryExpression.class);
         if (binaryExp != null) {
             findSafeLiterals(binaryExp);
@@ -81,7 +76,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
 
         ASTLiteralExpression literal = node.getFirstChildOfType(ASTLiteralExpression.class);
         if (literal != null) {
-            int index = literal.jjtGetChildIndex();
+            int index = literal.getIndexInParent();
             if (index == 0) {
                 if (node instanceof ASTVariableDeclaration) {
                     addVariable((ASTVariableDeclaration) node);
@@ -102,36 +97,14 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             }
         } else {
             if (node instanceof ASTField) {
-                /*
-                 * sergey.gorbaty: Apex Jorje parser is returning a null from
-                 * Field.getFieldInfo(), but the info is available from an inner
-                 * field. DO NOT attempt to optimize this block without checking
-                 * that Jorje parser actually fixed its bug.
-                 * 
-                 */
-                try {
-                    final Field f = node.getNode().getClass().getDeclaredField("fieldInfo");
-                    f.setAccessible(true);
-                    final StandardFieldInfo fieldInfo = (StandardFieldInfo) f.get(node.getNode());
-                    if (fieldInfo.getType().getApexName().equalsIgnoreCase("String")) {
-                        if (fieldInfo.getValue() != null) {
-                            addVariable(fieldInfo);
-                        }
+                ASTField field = (ASTField) node;
+                if ("String".equalsIgnoreCase(field.getType())) {
+                    if (field.getValue() != null) {
+                        listOfStringLiteralVariables.add(Helper.getFQVariableName(field));
                     }
-
-                } catch (NoSuchFieldException | SecurityException | IllegalArgumentException
-                        | IllegalAccessException e) {
-                    throw new RuntimeException(e);
                 }
             }
         }
-
-    }
-
-    private void addVariable(StandardFieldInfo fieldInfo) {
-        StringBuilder sb = new StringBuilder().append(fieldInfo.getDefiningType().getApexName()).append(":")
-                .append(fieldInfo.getName());
-        listOfStringLiteralVariables.add(sb.toString());
 
     }
 
@@ -148,7 +121,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
 
     /**
      * Traverses all new declarations to find PageReferences
-     * 
+     *
      * @param node
      * @param data
      */
@@ -159,27 +132,24 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             return;
         }
 
-        ClassTypeRef classRef = (ClassTypeRef) node.getNode().getTypeRef();
-        Identifier identifier = classRef.getNames().get(0);
-
-        if (identifier.getValue().equalsIgnoreCase(PAGEREFERENCE)) {
+        if (node.getType().equalsIgnoreCase(PAGEREFERENCE)) {
             getObjectValue(node, data);
         }
     }
 
     /**
      * Finds any variables being present in PageReference constructor
-     * 
+     *
      * @param node
      *            - PageReference
      * @param data
-     * 
+     *
      */
     private void getObjectValue(ApexNode<?> node, Object data) {
         // PageReference(foo);
         final List<ASTVariableExpression> variableExpressions = node.findChildrenOfType(ASTVariableExpression.class);
         for (ASTVariableExpression variable : variableExpressions) {
-            if (variable.jjtGetChildIndex() == 0
+            if (variable.getIndexInParent() == 0
                     && !listOfStringLiteralVariables.contains(Helper.getFQVariableName(variable))) {
                 addViolation(data, variable);
             }

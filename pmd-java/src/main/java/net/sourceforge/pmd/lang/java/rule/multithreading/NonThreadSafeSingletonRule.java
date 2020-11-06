@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 public class NonThreadSafeSingletonRule extends AbstractJavaRule {
 
@@ -30,12 +33,15 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
     private boolean checkNonStaticMethods = true;
     private boolean checkNonStaticFields = true;
 
-    private static final BooleanProperty CHECK_NON_STATIC_METHODS_DESCRIPTOR = new BooleanProperty(
-            "checkNonStaticMethods",
-            "Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.", true, 1.0f);
-    private static final BooleanProperty CHECK_NON_STATIC_FIELDS_DESCRIPTOR = new BooleanProperty(
-            "checkNonStaticFields",
-            "Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.", false, 2.0f);
+    private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_METHODS_DESCRIPTOR =
+            booleanProperty("checkNonStaticMethods")
+                    .desc("Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.")
+                    .defaultValue(true).build();
+    private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_FIELDS_DESCRIPTOR =
+            booleanProperty("checkNonStaticFields")
+                    .desc("Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.")
+                    .defaultValue(false).build();
+
 
     public NonThreadSafeSingletonRule() {
         definePropertyDescriptor(CHECK_NON_STATIC_METHODS_DESCRIPTOR);
@@ -75,27 +81,27 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
                 if (n == null || !fieldDecls.containsKey(n.getImage())) {
                     continue;
                 }
-                List<ASTAssignmentOperator> assigmnents = ifStatement
+                List<ASTAssignmentOperator> assignments = ifStatement
                         .findDescendantsOfType(ASTAssignmentOperator.class);
                 boolean violation = false;
-                for (int ix = 0; ix < assigmnents.size(); ix++) {
-                    ASTAssignmentOperator oper = assigmnents.get(ix);
-                    if (!(oper.jjtGetParent() instanceof ASTStatementExpression)) {
+                for (int ix = 0; ix < assignments.size(); ix++) {
+                    ASTAssignmentOperator oper = assignments.get(ix);
+                    if (!(oper.getParent() instanceof ASTStatementExpression)) {
                         continue;
                     }
-                    ASTStatementExpression expr = (ASTStatementExpression) oper.jjtGetParent();
-                    if (expr.jjtGetChild(0) instanceof ASTPrimaryExpression
-                            && ((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetNumChildren() == 1
-                            && ((ASTPrimaryExpression) expr.jjtGetChild(0))
-                                    .jjtGetChild(0) instanceof ASTPrimaryPrefix) {
-                        ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ((ASTPrimaryExpression) expr.jjtGetChild(0))
-                                .jjtGetChild(0);
+                    ASTStatementExpression expr = (ASTStatementExpression) oper.getParent();
+                    if (expr.getChild(0) instanceof ASTPrimaryExpression
+                            && ((ASTPrimaryExpression) expr.getChild(0)).getNumChildren() == 1
+                            && ((ASTPrimaryExpression) expr.getChild(0))
+                                    .getChild(0) instanceof ASTPrimaryPrefix) {
+                        ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ((ASTPrimaryExpression) expr.getChild(0))
+                                .getChild(0);
                         String name = null;
                         if (pp.usesThisModifier()) {
                             ASTPrimarySuffix priSuf = expr.getFirstDescendantOfType(ASTPrimarySuffix.class);
                             name = priSuf.getImage();
                         } else {
-                            ASTName astName = (ASTName) pp.jjtGetChild(0);
+                            ASTName astName = (ASTName) pp.getChild(0);
                             name = astName.getImage();
                         }
                         if (fieldDecls.containsKey(name)) {

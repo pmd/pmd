@@ -1,15 +1,18 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
 
 public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration> implements CanSuppressWarnings {
 
+    @Deprecated
+    @InternalApi
     public ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
         super(variableDeclaration);
     }
@@ -21,12 +24,15 @@ public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration
 
     @Override
     public String getImage() {
-        return node.getLocalInfo().getName();
+        if (node.getLocalInfo() != null) {
+            return node.getLocalInfo().getName();
+        }
+        return null;
     }
 
     @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        ASTVariableDeclarationStatements parent = (ASTVariableDeclarationStatements) jjtGetParent();
+        ASTVariableDeclarationStatements parent = (ASTVariableDeclarationStatements) getParent();
 
         for (ASTModifierNode modifier : parent.findChildrenOfType(ASTModifierNode.class)) {
             for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
@@ -36,5 +42,12 @@ public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration
             }
         }
         return false;
+    }
+
+    public String getType() {
+        if (node.getLocalInfo() != null) {
+            return node.getLocalInfo().getType().getApexName();
+        }
+        return null;
     }
 }

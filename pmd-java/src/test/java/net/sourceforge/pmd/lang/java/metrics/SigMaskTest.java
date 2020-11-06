@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -22,12 +21,13 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature.Visibility;
+import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 import net.sourceforge.pmd.lang.metrics.SigMask;
 
 /**
  * @author Clément Fournier
  */
-public class SigMaskTest {
+public class SigMaskTest extends BaseNonParserTest {
 
     private static final String TEST_FIELDS = "class Bzaz{"
         + "public String x;"
@@ -178,14 +178,13 @@ public class SigMaskTest {
                 assertFalse(mask.covers(JavaFieldSignature.buildFor(node)));
             }
         }
-        
+
     }
 
 
     @Test
     public void testOperationVisibility() {
-        List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class,
-                                                                        TEST_OPERATIONS);
+        List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST_OPERATIONS);
 
         JavaOperationSigMask mask = new JavaOperationSigMask();
         mask.coverAbstract();
@@ -233,8 +232,7 @@ public class SigMaskTest {
 
     @Test
     public void testOperationRoles() {
-        List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class,
-                                                                        TEST_OPERATIONS);
+        List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST_OPERATIONS);
         JavaOperationSigMask mask = new JavaOperationSigMask();
         mask.restrictRolesTo(Role.STATIC);
         mask.coverAbstract();
@@ -261,7 +259,7 @@ public class SigMaskTest {
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node instanceof ASTMethodDeclaration
-                && ((ASTMethodDeclaration) node).getMethodName().matches("(get|set).*")) {
+                && ((ASTMethodDeclaration) node).getName().matches("(get|set).*")) {
                 assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
                 assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));
@@ -273,7 +271,7 @@ public class SigMaskTest {
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node instanceof ASTMethodDeclaration
                 && !node.isStatic()
-                && !((ASTMethodDeclaration) node).getMethodName().matches("(get|set).*")) {
+                && !((ASTMethodDeclaration) node).getName().matches("(get|set).*")) {
                 assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
                 assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));

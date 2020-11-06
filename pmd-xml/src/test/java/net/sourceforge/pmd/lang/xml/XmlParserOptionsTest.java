@@ -19,7 +19,7 @@ import net.sourceforge.pmd.properties.BooleanProperty;
 public class XmlParserOptionsTest {
 
     @Test
-    public void testDefaults() throws Exception {
+    public void testDefaults() {
         XmlParserOptions options = new XmlParserOptions();
         assertFalse(options.isCoalescing());
         assertTrue(options.isExpandEntityReferences());
@@ -41,7 +41,7 @@ public class XmlParserOptionsTest {
     }
 
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructor() {
         MyRule rule = new MyRule();
 
         rule.setProperty(XmlParserOptions.COALESCING_DESCRIPTOR, true);

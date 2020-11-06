@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -9,16 +8,190 @@
         <description>class names should not start with lowercase character</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class foo {};
-		]]></code>
+public class foo {}
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>all is well</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class FooBar {};
-		]]></code>
+public class FooBar {}
+        ]]></code>
     </test-code>
-    
+
+    <test-code>
+        <description>test class all is well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+public class TestClass { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>abstract class all is well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class AbstractClass { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>class all is well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooClass { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>interface all is well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface FooInterface { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>enum all is well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public enum FooEnum { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>top-level enum all is well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum FooEnum { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>test class default is title case</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The test class name 'testClass' doesn't match '[A-Z][a-zA-Z0-9_]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+@isTest
+public class testClass { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>abstract class default is title case</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The abstract class name 'abstractClass' doesn't match '[A-Z][a-zA-Z0-9_]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public abstract class abstractClass { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>class default is title case</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The class name 'fooClass' doesn't match '[A-Z][a-zA-Z0-9_]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class fooClass { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>interface default is title case</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The interface name 'fooInterface' doesn't match '[A-Z][a-zA-Z0-9_]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public interface fooInterface { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>enum default is title case</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The enum name 'fooEnum' doesn't match '[A-Z][a-zA-Z0-9_]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public enum fooEnum { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>top-level enum default is title case</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The enum name 'fooEnum' doesn't match '[A-Z][a-zA-Z0-9_]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public enum fooEnum { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom test class pattern</description>
+        <rule-property name="testClassPattern">[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+public class TEST_CLASS { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom abstract class pattern</description>
+        <rule-property name="abstractClassPattern">[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class ABSTRACT_CLASS { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom class pattern</description>
+        <rule-property name="classPattern">[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FOO_CLASS { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom interface pattern</description>
+        <rule-property name="interfacePattern">[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface FOO_INTERFACE { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom enum pattern</description>
+        <rule-property name="enumPattern">E[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum EFOO_ENUM { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom enum pattern</description>
+        <rule-property name="enumPattern">E[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public enum FooEnum { }
+        ]]></code>
+    </test-code>
 </test-data>

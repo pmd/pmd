@@ -5,19 +5,19 @@
 package net.sourceforge.pmd.util.datasource;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.List;
+
+import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
+import net.sourceforge.pmd.util.datasource.internal.AbstractDataSource;
 
 /**
  * DataSource implementation to read data from a file.
  */
-public class FileDataSource implements DataSource {
-
-    private static final String FILE_SEPARATOR = System.getProperty("file.separator");
-
+public class FileDataSource extends AbstractDataSource {
     private final File file;
 
     /**
@@ -30,33 +30,20 @@ public class FileDataSource implements DataSource {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return new FileInputStream(file);
+        return Files.newInputStream(file.toPath());
     }
 
     @Override
-    public String getNiceFileName(boolean shortNames, String inputFileName) {
-        return glomName(shortNames, inputFileName, file);
+    public String getNiceFileName(boolean shortNames, String inputPaths) {
+        return glomName(shortNames, inputPaths, file);
     }
 
-    private String glomName(boolean shortNames, String inputFileName, File file) {
+    private String glomName(boolean shortNames, String inputPaths, File file) {
         if (shortNames) {
-            if (inputFileName != null) {
-                for (final String prefix : inputFileName.split(",")) {
-                    final Path prefPath = Paths.get(prefix).toAbsolutePath();
-                    final String prefPathString = prefPath.toString();
-                    final String absoluteFilePath = file.getAbsolutePath();
-
-                    if (absoluteFilePath.startsWith(prefPathString)) {
-                        if (prefPath.toFile().isDirectory()) {
-                            return trimAnyPathSep(absoluteFilePath.substring(prefPathString.length()));
-                        } else {
-                            if (inputFileName.indexOf(FILE_SEPARATOR.charAt(0)) == -1) {
-                                return inputFileName;
-                            }
-                            return trimAnyPathSep(absoluteFilePath.substring(prefPathString.lastIndexOf(FILE_SEPARATOR)));
-                        }
-                    }
-                }
+            if (inputPaths != null) {
+                List<String> inputPathPrefixes = Arrays.asList(inputPaths.split(","));
+                final String absoluteFilePath = file.getAbsolutePath();
+                return ShortFilenameUtil.determineFileName(inputPathPrefixes, absoluteFilePath);
             } else {
                 // if the 'master' file is not specified, just use the file name
                 return file.getName();
@@ -68,11 +55,6 @@ public class FileDataSource implements DataSource {
         } catch (Exception e) {
             return file.getAbsolutePath();
         }
-    }
-
-    private String trimAnyPathSep(String name) {
-
-        return name.startsWith(FILE_SEPARATOR) ? name.substring(1) : name;
     }
 
     @Override
@@ -103,6 +85,7 @@ public class FileDataSource implements DataSource {
         if (getClass() != obj.getClass()) {
             return false;
         }
+        @SuppressWarnings("PMD.CloseResource")
         FileDataSource other = (FileDataSource) obj;
         if (file == null) {
             if (other.file != null) {

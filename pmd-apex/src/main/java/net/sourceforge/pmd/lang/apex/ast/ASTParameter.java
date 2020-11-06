@@ -1,15 +1,18 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.semantic.ast.member.Parameter;
 
 public class ASTParameter extends AbstractApexNode<Parameter> implements CanSuppressWarnings {
 
+    @Deprecated
+    @InternalApi
     public ASTParameter(Parameter parameter) {
         super(parameter);
     }
@@ -34,5 +37,13 @@ public class ASTParameter extends AbstractApexNode<Parameter> implements CanSupp
             }
         }
         return false;
+    }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
+
+    public String getType() {
+        return node.getType().getApexName();
     }
 }

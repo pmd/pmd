@@ -46,11 +46,11 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImplementsList node, Object data) {
-        for (int ix = 0; ix < node.jjtGetNumChildren(); ix++) {
-            if (node.jjtGetChild(ix) instanceof ASTClassOrInterfaceType) {
-                ASTClassOrInterfaceType cit = (ASTClassOrInterfaceType) node.jjtGetChild(ix);
+        for (int ix = 0; ix < node.getNumChildren(); ix++) {
+            if (node.getChild(ix) instanceof ASTClassOrInterfaceType) {
+                ASTClassOrInterfaceType cit = (ASTClassOrInterfaceType) node.getChild(ix);
                 Class<?> clazz = cit.getType();
-                if (clazz != null && node.jjtGetChild(ix).hasImageEqualTo("Comparable")) {
+                if (clazz != null && node.getChild(ix).hasImageEqualTo("Comparable")) {
                     implementsComparable = true;
                     return data;
                 }
@@ -67,8 +67,8 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRule {
 
         int iFormalParams = 0;
         String paramName = null;
-        for (int ix = 0; ix < node.jjtGetNumChildren(); ix++) {
-            Node sn = node.jjtGetChild(ix);
+        for (int ix = 0; ix < node.getNumChildren(); ix++) {
+            Node sn = node.getChild(ix);
             if (sn instanceof ASTFormalParameters) {
                 List<ASTFormalParameter> allParams = ((ASTFormalParameters) sn)
                         .findChildrenOfType(ASTFormalParameter.class);

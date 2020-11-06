@@ -121,15 +121,14 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
 }
-
-     ]]></code-fragment>
+    ]]></code-fragment>
 
 
     <test-code>
         <description>Full example</description> <!-- TODO issues w/ that-->
         <expected-problems>7</expected-problems>
         <expected-messages>
-            <message>'StatementAndBraceFinder' has value 10 highest 6.</message>
+            <message>'StatementAndBraceFinder' has value 36 highest 18.</message>
             <message>'StatementAndBraceFinder#buildDataFlowFor(JavaNode)' has value 6.</message>
             <message>'StatementAndBraceFinder#tryToLog(String, NodeType, Node)' has value 4.</message>
             <message>'StatementAndBraceFinder#tryToLog(NodeType, Node)' has value 0.</message>
@@ -148,28 +147,24 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             <message>'Foo#bar()' has value 1.</message>
         </expected-messages>
         <code><![CDATA[
-        public class Foo {
-          Type a;
-          void bar() {
-            a.b.foo();
-          }
-        }
+public class Foo {
+    Type a;
+    void bar() {
+        a.b.foo();
+    }
+}
         ]]></code>
     </test-code>
 
     <test-code>
         <description>Test empty class</description>
-
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo' has value 0 highest 0.</message>
         </expected-messages>
         <code><![CDATA[
-        public class Foo {
-
-
-
-        }
+public class Foo {
+}
         ]]></code>
     </test-code>
 
@@ -177,15 +172,49 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         <description>ATFD doesn't support interfaces or annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-        public interface Foo {
+public interface Foo {
 
-           public final int h;
+    public final int h;
 
-           @interface Tag {
-              public static final int num = 0;
-           }
-        }
+    @interface Tag {
+        public static final int num = 0;
+    }
+}
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>ATFD without method call chains</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 2 highest 2.</message>
+            <message>'Foo#bar()' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        JFileChooser openDialog = createOpenFileChooser();
+        FileFilter tmp = openDialog.getFileFilter();
+        showStatus("Not a valid file format: " + tmp.getDescription());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ATFD with method call chains</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 2 highest 2.</message>
+            <message>'Foo#bar()' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        JFileChooser openDialog = createOpenFileChooser();
+        showStatus("Not a valid file format: " + openDialog.getFileFilter().getDescription());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

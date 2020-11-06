@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,27 +22,33 @@ import net.sourceforge.pmd.lang.dfa.pathfinder.Executable;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedAssignmentRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * Starts path search for each method and runs code if found.
  *
  * @author raik
  * @author Sven Jacob
+ *
+ * @deprecated Replaced by {@link UnusedAssignmentRule}
  */
+@Deprecated
 public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Executable {
-    private static final IntegerProperty MAX_PATH_DESCRIPTOR
-            = IntegerProperty.named("maxPaths")
+    private static final PropertyDescriptor<Integer> MAX_PATH_DESCRIPTOR
+            = PropertyFactory.intProperty("maxPaths")
                              .desc("Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.")
-                             .range(100, 8000)
+                             .require(inRange(100, 8000))
                              .defaultValue(1000)
-                             .uiOrder(1.0f).build();
-    private static final IntegerProperty MAX_VIOLATIONS_DESCRIPTOR
-            = IntegerProperty.named("maxViolations")
+                             .build();
+    private static final PropertyDescriptor<Integer> MAX_VIOLATIONS_DESCRIPTOR
+            = PropertyFactory.intProperty("maxViolations")
                              .desc("Maximum number of anomalies per class")
-                             .range(1, 2000)
+                             .require(inRange(1, 2000))
                              .defaultValue(100)
-                             .uiOrder(2.0f).build();
+                             .build();
     private RuleContext rc;
     private List<DaaRuleViolation> daaRuleViolations;
     private int maxRuleViolations;
@@ -127,8 +135,6 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
 
         if (va.accessTypeMatches(u.accessType) && va.isDefinition()) { // DD
             addDaaViolation(rc, lastNode, "DD", va.getVariableName(), startLine, endLine);
-        } else if (u.accessType == VariableAccess.UNDEFINITION && va.isReference()) { // UR
-            addDaaViolation(rc, lastNode, "UR", va.getVariableName(), startLine, endLine);
         } else if (u.accessType == VariableAccess.DEFINITION && va.isUndefinition()) { // DU
             addDaaViolation(rc, firstNode, "DU", va.getVariableName(), startLine, endLine);
         }
