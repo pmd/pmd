@@ -53,6 +53,18 @@ The language module registers only one version (as before), now correctly with v
 Since there is only one version available for JavaScript there is actually no need to selected a specific version.
 The default version is always ES6.
 
+#### Changed Rules
+
+##### Java
+
+*   {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %} has two new properties, to selectively disable reporting on
+    static field and method qualifiers. The rule also has been improved to be more precise.
+*   The rule {% rule "java/codestyle/UselessParentheses" %} has two new properties which control how strict
+    the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
+    not necessary are allowed, if they separate expressions of different precedence.
+    The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
+    reading and understanding the expressions.
+
 #### Removed Rules
 
 The following previously deprecated rules have been finally removed:
@@ -80,8 +92,11 @@ The following previously deprecated rules have been finally removed:
     * [#2796](https://github.com/pmd/pmd/issue/2796): \[java] UnusedAssignment false positive with call chains
     * [#2797](https://github.com/pmd/pmd/issues/2797): \[java] MissingOverride long-standing issues
 * java-codestyle
+    * [#1673](https://github.com/pmd/pmd/issues/1673): \[java] UselessParentheses false positive with conditional operator
     * [#1790](https://github.com/pmd/pmd/issues/1790): \[java] UnnecessaryFullyQualifiedName false positive with enum constant
+    * [#1918](https://github.com/pmd/pmd/issues/1918): \[java] UselessParentheses false positive with boolean operators
     * [#2299](https://github.com/pmd/pmd/issues/2299): \[java] UnnecessaryFullyQualifiedName false positive with similar package name
+    * [#2739](https://github.com/pmd/pmd/issues/2739): \[java] UselessParentheses false positive for string concatenation
 
 ### API Changes
 
@@ -103,12 +118,6 @@ The following previously deprecated rules have been finally removed:
 
 * {% jdoc_old !!core::lang.metrics.MetricKeyUtil#of(java.lang.String, core::lang.metrics.Metric) %} is replaced with {% jdoc_old !!core::lang.metrics.MetricKey#of(java.lang.String, core::lang.metrics.Metric) %}
 * {% jdoc_old !!core::lang.metrics.MetricsUtil#computeAggregate(core::lang.metrics.MetricKey, java.lang.Iterable, core::lang.metrics.ResultOption) %} and its overload are replaced with {% jdoc_old !!core::lang.metrics.MetricsUtil#computeStatistics(core::lang.metrics.MetricKey, java.lang.Iterable) %}, {% jdoc_old core::lang.metrics.ResultOption %} is removed
-
-### Changed rules
-
-#### Java
-
-* {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %} has two new properties, to selectively disable reporting on static field and method qualifiers. The rule also has been improved to be more precise.
 
 ### External Contributions
 
