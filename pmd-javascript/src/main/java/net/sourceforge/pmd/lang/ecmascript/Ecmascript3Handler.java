@@ -4,13 +4,19 @@
 
 package net.sourceforge.pmd.lang.ecmascript;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 
 /**
  * Implementation of LanguageVersionHandler for the ECMAScript Version 3.
+ *
+ * @deprecated This is internal API, use {@link LanguageVersionHandler#getParser(ParserOptions)}.
  */
+@InternalApi
+@Deprecated
 public class Ecmascript3Handler extends AbstractPmdLanguageVersionHandler {
 
     @Override
