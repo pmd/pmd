@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
@@ -29,7 +30,7 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTInfixExpression node, Object data) {
-        if (!node.getOperator().isEquality()) {
+        if (!node.getOperator().hasSamePrecedenceAs(BinaryOp.EQ)) {
             return data;
         }
         ASTExpression left = node.getLeftOperand();

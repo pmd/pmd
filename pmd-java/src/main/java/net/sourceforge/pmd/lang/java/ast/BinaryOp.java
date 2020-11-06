@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Comparator;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents the operator of an {@linkplain ASTInfixExpression infix expression}.
@@ -168,7 +169,7 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
      * for {@code <=}, returns {@code >}. Returns null if this is another kind
      * of operator.
      */
-    public BinaryOp getComplement() {
+    public @Nullable BinaryOp getComplement() {
         switch (this) {
         case CONDITIONAL_OR: return CONDITIONAL_AND;
         case CONDITIONAL_AND: return CONDITIONAL_OR;
