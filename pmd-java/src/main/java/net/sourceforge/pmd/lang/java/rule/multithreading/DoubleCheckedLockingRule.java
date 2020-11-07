@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
@@ -150,7 +151,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
     private boolean isNullCheck(ASTExpression expr, JVariableSymbol var) {
         if (expr instanceof ASTInfixExpression) {
             ASTInfixExpression condition = (ASTInfixExpression) expr;
-            if (condition.getOperator().isEquality()) {
+            if (condition.getOperator().hasSamePrecedenceAs(BinaryOp.EQ)) {
                 ASTNullLiteral nullLit = condition.getFirstChildOfType(ASTNullLiteral.class);
                 if (nullLit != null) {
                     ASTExpression otherChild = (ASTExpression) condition.getChild(1 - nullLit.getIndexInParent());
