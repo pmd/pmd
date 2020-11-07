@@ -11,11 +11,8 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger
 import net.sourceforge.pmd.lang.java.types.JClassType
-import net.sourceforge.pmd.lang.java.types.TypeOps
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class TypeDisambiguationTest : ParserTestSpec({
 
