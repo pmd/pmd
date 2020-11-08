@@ -1807,7 +1807,7 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
             <property name="xpath">
                 <value><![CDATA[
 //VariableDeclarator
-    [VariableDeclaratorId[@TypeInferred = false()]]
+    [VariableDeclaratorId[@TypeInferred = false() and @ArrayType = true()]]
     [ArrayAllocation/ArrayInitializer]
                 ]]></value>
             </property>

@@ -31,8 +31,8 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTMethodCall call, Object data) {
         if ("equals".equals(call.getMethodName())
-            // not an overload
-            && call.getMethodType().getFormalParameters().equals(listOf(call.getTypeSystem().OBJECT))) {
+            && call.getArguments().size() == 1
+            && isEqualsObjectAndNotAnOverload(call)) {
             checkArgs((RuleContext) data, call);
         } else if (STRING_COMPARISONS.contains(call.getMethodName())
             && call.getArguments().size() == 1
@@ -40,6 +40,13 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
             checkArgs((RuleContext) data, call);
         }
         return data;
+    }
+
+    private boolean isEqualsObjectAndNotAnOverload(ASTMethodCall call) {
+        if (call.getOverloadSelectionInfo().isFailed()) {
+            return true; // failed selection is considered probably equals(Object)
+        }
+        return call.getMethodType().getFormalParameters().equals(listOf(call.getTypeSystem().OBJECT));
     }
 
     private void checkArgs(RuleContext ctx, ASTMethodCall call) {

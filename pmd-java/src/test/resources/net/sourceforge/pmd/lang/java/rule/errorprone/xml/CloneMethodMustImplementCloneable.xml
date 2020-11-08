@@ -171,6 +171,16 @@ interface TestInterface extends Cloneable {
     </test-code>
 
     <test-code>
+        <description>#1532 [java] CloneMethodMustImplementCloneable: Implemented Interface extends Cloneable - part 2: interface</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+interface TestInterface {
+    TestInterface clone();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#1532 [java] CloneMethodMustImplementCloneable: Implemented Interface extends Cloneable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

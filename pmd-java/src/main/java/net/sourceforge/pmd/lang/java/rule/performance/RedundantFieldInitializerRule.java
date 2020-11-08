@@ -4,18 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
  * Detects redundant field initializers, i.e. the field initializer expressions
@@ -24,12 +23,10 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
  * @author lucian.ciufudean@gmail.com
  * @since Apr 10, 2009
  */
-public class RedundantFieldInitializerRule extends AbstractJavaRule {
+public class RedundantFieldInitializerRule extends AbstractJavaRulechainRule {
 
-
-    @Override
-    protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTFieldDeclaration.class);
+    public RedundantFieldInitializerRule() {
+        super(ASTFieldDeclaration.class);
     }
 
     @Override
@@ -52,6 +49,10 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
             if (type.isPrimitive(PrimitiveTypeKind.BOOLEAN)) {
                 return expr instanceof ASTBooleanLiteral && !((ASTBooleanLiteral) expr).isTrue();
             } else {
+                if (!isOkExpr(expr)) {
+                    // whitelist named constants or calculations involving them
+                    return false;
+                }
                 Object constValue = expr.getConstValue();
                 return constValue instanceof Number && ((Number) constValue).doubleValue() == 0d
                     || constValue instanceof Character && constValue.equals('\u0000');
@@ -59,5 +60,9 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
         } else {
             return expr instanceof ASTNullLiteral;
         }
+    }
+
+    private static boolean isOkExpr(ASTExpression e) {
+        return e.descendantsOrSelf().none(it -> it instanceof ASTVariableAccess || it instanceof ASTFieldAccess);
     }
 }
