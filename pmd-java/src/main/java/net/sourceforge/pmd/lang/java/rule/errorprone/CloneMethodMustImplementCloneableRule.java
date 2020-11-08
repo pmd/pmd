@@ -29,10 +29,11 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
 
     @Override
     public Object visit(final ASTMethodDeclaration node, final Object data) {
-        ASTBlock body = node.getBody();
-        if (body == null || !isCloneMethod(node)) {
+        if (!isCloneMethod(node)) {
             return data;
-        } else if (justThrowsCloneNotSupported(body)) {
+        }
+        ASTBlock body = node.getBody();
+        if (body != null && justThrowsCloneNotSupported(body)) {
             return data;
         }
 
