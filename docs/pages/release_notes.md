@@ -43,6 +43,9 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   {% jdoc !!javascript::lang.ecmascript.Ecmascript3Parser %}
 *   {% jdoc !!javascript::lang.ecmascript.ast.EcmascriptParser#parserOptions %}
 *   {% jdoc !!javascript::lang.ecmascript.ast.EcmascriptParser#getSuppressMap() %}
+*   {% jdoc !!core::lang.rule.ParametricRuleViolation %}
+*   {% jdoc !!core::lang.ParserOptions#suppressMarker %}
+*   {% jdoc !!modelica::lang.modelica.rule.ModelicaRuleViolationFactory %}
 
 
 ### External Contributions
