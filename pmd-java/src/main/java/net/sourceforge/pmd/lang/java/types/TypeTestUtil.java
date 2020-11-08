@@ -89,7 +89,7 @@ public final class TypeTestUtil {
             return isExactlyA(clazz, type.getSymbol());
         }
 
-        return type.isSubtypeOf(otherType);
+        return isA(type, otherType);
     }
 
 
@@ -127,17 +127,35 @@ public final class TypeTestUtil {
         return isA(canonicalName, thisType, null);
     }
 
-    private static boolean isA(@NonNull String canonicalName, @NonNull JTypeMirror thisType, @Nullable UnresolvedClassStore unresolvedStore) {
+    /**
+     * This is the subtyping routine we use, which prunes some behavior
+     * of isSubtypeOf that we don't want (eg, that unresolved types are
+     * subtypes of everything).
+     */
+    private static boolean isA(JTypeMirror t1, JTypeMirror t2) {
+        if (t1 == null || t2 == null) {
+            return false;
+        } else if (t1.isPrimitive() || t2.isPrimitive()) {
+            return t1.equals(t2); // isSubtypeOf considers primitive widening like subtyping
+        } else if (TypeOps.isUnresolved(t1)) {
+            // we can't get any useful info from this, isSubtypeOf would return true
+            return false;
+        } else if (t2.isClassOrInterface() && ((JClassType) t2).getSymbol().isAnonymousClass()) {
+            return false; // conventionally
+        } else if (t1 instanceof JTypeVar) {
+            return t2.isTop() || isA(((JTypeVar) t1).getUpperBound(), t2);
+        }
 
+        return t1.isSubtypeOf(t2);
+    }
+
+    private static boolean isA(@NonNull String canonicalName, @NonNull JTypeMirror thisType, @Nullable UnresolvedClassStore unresolvedStore) {
         OptionalBool exactMatch = isExactlyAOrAnon(canonicalName, thisType);
         if (exactMatch != OptionalBool.NO) {
             return exactMatch == OptionalBool.YES; // otherwise anon, and we return false
         }
 
         JTypeDeclSymbol thisClass = thisType.getSymbol();
-        if (thisClass instanceof JClassSymbol && ((JClassSymbol) thisClass).isAnnotation()) {
-            return isAnnotationSuperType(canonicalName);
-        }
 
         if (thisClass != null && thisClass.isUnresolved()) {
             // we can't get any useful info from this, isSubtypeOf would return true
@@ -147,22 +165,8 @@ public final class TypeTestUtil {
 
         TypeSystem ts = thisType.getTypeSystem();
         @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName, unresolvedStore);
-        if (otherType == null
-            || otherType.isClassOrInterface() && ((JClassType) otherType).getSymbol().isAnonymousClass()) {
-            return false; // we know isExactlyA(canonicalName, node); returned false
-        } else if (otherType.isPrimitive()) {
-            return otherType.equals(thisType); // isSubtypeOf considers primitive widening like subtyping
-        }
 
-        return thisType.isSubtypeOf(otherType);
-    }
-
-    private static boolean isAnnotationSuperType(String clazzName) {
-        AssertionUtil.assertValidJavaBinaryName(clazzName);
-        // then, the supertype may only be Object, j.l.Annotation
-        // this is used e.g. by the typeIs function in XPath
-        return "java.lang.annotation.Annotation".equals(clazzName)
-            || "java.lang.Object".equals(clazzName);
+        return isA(thisType, otherType);
     }
 
     /**
