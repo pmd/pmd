@@ -129,10 +129,7 @@ Catch blocks that merely rethrow a caught exception only add to code size and ru
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement[FormalParameter
- /VariableDeclaratorId/@Name = Block/BlockStatement/Statement
- /ThrowStatement/Expression/PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix/Name/@Image
- and count(Block/BlockStatement/Statement) =1]
+//CatchClause[CatchParameter/VariableDeclaratorId/@Name = Block[count(*)=1]/ThrowStatement/VariableAccess/@Name]
 ]]>
                 </value>
             </property>
