@@ -76,12 +76,14 @@ import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedAssignmentRule;
 import net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
@@ -1381,6 +1383,27 @@ public final class DataflowPass {
 
         public JavaNode getLocation() {
             return rhs;
+        }
+
+
+        /**
+         * Returns the type of the right-hand side if it is an explicit
+         * expression, null if it cannot be determined or there is no
+         * right-hand side to this expression. TODO test
+         */
+        public @Nullable JTypeMirror getRhsType() {
+            /* test case
+               List<A> as;
+               for (Object o : as) {
+                 // the rhs type of o should be A
+               }
+             */
+            if (isUnbound() || isBlankDeclaration()) {
+                return null;
+            } else if (rhs instanceof ASTExpression) {
+                return ((TypeNode) rhs).getTypeMirror();
+            }
+            return null;
         }
 
         /**
