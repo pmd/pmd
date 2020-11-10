@@ -1,0 +1,17 @@
+name: Release Builds
+on:
+  push:
+    tags:
+      - 'pmd_releases/*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Release Script
+        run: .ci/release.sh
+        shell: bash
+        env:
+          PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}

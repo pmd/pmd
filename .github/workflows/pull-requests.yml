@@ -1,0 +1,30 @@
+name: Pull Requests
+
+on: pull_request
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: false
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.cache
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Install OpenJDK
+        run: .ci/install-openjdk.sh
+        shell: bash
+      - name: Build with mvnw
+        run: |
+          source ${HOME}/java.env
+          ./mvnw -V clean install

@@ -1,0 +1,85 @@
+name: Pushes
+on:
+  push:
+    branches:
+      - main
+      - master
+  schedule:
+    # build it monthly: At 04:00 on day-of-month 1.
+    - cron:  '0 4 1 * *'
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.cache
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Set up Ruby 2.7
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - name: Check Environment
+        run: .ci/check-environment.sh
+        shell: bash
+      - name: Setup Secrets
+        run: .ci/setup-secrets.sh
+        shell: bash
+        env:
+          PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
+      - name: Install OpenJDK
+        run: .ci/install-openjdk.sh
+        shell: bash
+      - name: build
+        run: .ci/build.sh
+        shell: bash
+        env:
+          PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
+          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          CI_SIGN_PASSPHRASE: ${{ secrets.CI_SIGN_PASSPHRASE }}
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.cache
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Install OpenJDK
+        run: .ci/install-openjdk.sh
+        shell: bash
+      - name: Build with mvnw
+        run: |
+          source ${HOME}/java.env
+          ./mvnw -V clean install
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.cache
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Install OpenJDK
+        run: .ci/install-openjdk.sh
+        shell: bash
+      - name: Build with mvnw
+        run: |
+          source ${HOME}/java.env
+          ./mvnw -V clean install
