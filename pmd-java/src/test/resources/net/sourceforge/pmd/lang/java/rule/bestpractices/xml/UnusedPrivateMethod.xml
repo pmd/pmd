@@ -1714,4 +1714,37 @@ public class UnusedPrivateMethodFP {
             }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>UnusedPrivateMethod yields false positive for counter-variant arguments #770</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.junit.Test;
+            import static org.junit.Assert.*;
+            public final class OuterClass {
+
+                @Test
+                public void testFlipCaseDigit() {
+                    testNoChangeOnFlip("0123456789");
+                }
+
+                @Test
+                public void testFlipCaseWhitespace() {
+                    testNoChangeOnFlip(" \r\t\n");
+                }
+
+                @Test
+                public void testFlipCaseOtherChars() {
+                    testNoChangeOnFlip("!@#$%^");
+                }
+
+                private static void testNoChangeOnFlip(CharSequence chars) {
+                    for (int index = 0; index < chars.length(); index++) {
+                        char expected = chars.charAt(index);
+                        char actual = CharacterUtils.flipCase(expected);
+                        assertEquals("Unexpected flipped value", expected, actual);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
