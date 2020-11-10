@@ -41,7 +41,7 @@ mkdir -p ${TARGET_DIR}
 
 if [ ! -e ${CACHE_DIR}/${OPENJDK_ARCHIVE} ]; then
     log_info "Downloading from ${DOWNLOAD_URL} to ${CACHE_DIR}"
-    wget --directory-prefix=${CACHE_DIR} --timestamping --continue --output-document=${OPENJDK_ARCHIVE} ${DOWNLOAD_URL}
+    wget --continue --output-document=${CACHE_DIR}/${OPENJDK_ARCHIVE} ${DOWNLOAD_URL}
 else
     log_info "Skipped download, file ${CACHE_DIR}/${OPENJDK_ARCHIVE} already exists"
 fi
