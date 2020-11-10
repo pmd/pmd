@@ -42,4 +42,18 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java]DontCallThreadRun can't detect the case that call run() in this.run() #2537</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class MatrixThread extends Thread {
+
+                public MatrixThread(int[][] m1, int[][] m2) {
+                    this.m1 = m1;
+                    this.m2 = m2;
+                    this.run();
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
