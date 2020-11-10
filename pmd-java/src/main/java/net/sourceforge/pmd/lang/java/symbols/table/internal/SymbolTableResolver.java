@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -367,7 +368,10 @@ public final class SymbolTableResolver {
             // the varId is only in scope in the body and not the iterable expr
             setTopSymbolTableAndRecurse(node.getIterableExpr(), ctx);
 
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getVarId().getSymbol()));
+            ASTVariableDeclaratorId varId = node.getVarId();
+            acceptIfNotNull(varId.getTypeNode(), ctx);
+
+            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
             ASTStatement body = node.getBody();
             if (body instanceof ASTBlock) { // if it's a block then it will be set
                 body.acceptVisitor(this, ctx);
@@ -389,6 +393,11 @@ public final class SymbolTableResolver {
             return null;
         }
 
+        void acceptIfNotNull(@Nullable JavaNode node, ReferenceCtx ctx) {
+            if (node != null) {
+                node.acceptVisitor(this, ctx);
+            }
+        }
 
         @Override
         public Void visit(ASTTryStatement node, @NonNull ReferenceCtx ctx) {

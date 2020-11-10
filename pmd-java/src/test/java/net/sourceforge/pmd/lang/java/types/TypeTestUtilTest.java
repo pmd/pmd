@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
@@ -157,6 +158,22 @@ public class TypeTestUtilTest extends BaseNonParserTest {
         Assert.assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         assertIsA(klass, Annotation.class);
         assertIsA(klass, Object.class);
+    }
+
+    @Test
+    public void testIsATypeVarWithUnresolvedBound() {
+        // a type var with an unresolved bound should not be considered
+        // a subtype of everything
+
+        ASTType field =
+            java.parse("class Foo<T extends Unresolved> {\n"
+                           + "\tT field;\n"
+                           + "}")
+                .descendants(ASTFieldDeclaration.class)
+                .firstOrThrow().getTypeNode();
+
+        assertIsA(field, Object.class);
+        assertIsNot(field, String.class);
     }
 
     @Test

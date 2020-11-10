@@ -247,4 +247,26 @@ public class EnumTest {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description> [java] CompareObjectsWithEquals - false negative with type res #2880</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            import java.math.BigInteger;
+
+            public class Foo {
+                private BigInteger field = new BigInteger("10");
+                private BigInteger field2 = new BigInteger("20");
+
+                public boolean check(final BigInteger param) {
+                    final BigInteger other = new BigInteger("20");
+
+                    return (field == null
+                            || param != field   // warning expected: Use equals() to compare object references.
+                            && other != field)  // warning expected: Use equals() to compare object references.
+                            && param.testBit(field2.intValue())
+                            && other.testBit(field2.intValue());
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
