@@ -1689,4 +1689,29 @@ public class UnusedPrivateMethodFP {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] UnusedPrivateMethod false positive from inner class via external class #1189</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+            public final class OuterClass {
+
+                private static class InnerClass {
+                    private void privateMethod() {} // shadows other, truly unused
+
+                    public void callPrivateMethod() {
+                        Referrer.getOuterClass().privateMethod();
+                    }
+
+                }
+
+                private void privateMethod() {}
+
+            }
+
+            class Referrer {
+                static OuterClass getOuterClass() { return null; }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
