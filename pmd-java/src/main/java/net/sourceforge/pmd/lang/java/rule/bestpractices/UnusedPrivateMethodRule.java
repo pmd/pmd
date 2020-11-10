@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.util.Arrays;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,7 +33,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     private static final Set<String> SERIALIZATION_METHODS =
-        new HashSet<>(Arrays.asList("readObject", "writeObject", "readResolve", "writeReplace"));
+        setOf("readObject", "writeObject", "readResolve", "writeReplace");
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {

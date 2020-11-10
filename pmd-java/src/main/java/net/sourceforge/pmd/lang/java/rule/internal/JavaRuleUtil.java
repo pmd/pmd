@@ -360,7 +360,7 @@ public final class JavaRuleUtil {
             if (ifx1.getOperator().getComplement() != ifx2.getOperator()) {
                 return false;
             }
-            if (ifx1.getOperator().isEquality()) {
+            if (ifx1.getOperator().hasSamePrecedenceAs(BinaryOp.EQ)) {
                 // NOT(a == b, a != b)
                 // NOT(a == b, b != a)
                 return areEqual(ifx1.getLeftOperand(), ifx2.getLeftOperand())
