@@ -621,4 +621,21 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] False positive for rule UselessParentheses #2910</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package jls;
+
+            public final class TestStringInterned {
+
+                public static void main(String[] args) {
+                    String hello = "Hello";
+                    String lo = "lo";
+                    System.out.println(hello == ("Hel" + lo).intern());
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
