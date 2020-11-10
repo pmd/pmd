@@ -18,13 +18,12 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
- * Utilities for junit-related rules.
+ * Utilities for rules related to test frameworks (Junit, TestNG, etc).
  */
-public final class JUnitRuleUtil {
+public final class TestFrameworksUtil {
 
     private static final String JUNIT3_CLASS_NAME = "junit.framework.TestCase";
     private static final String JUNIT4_TEST_ANNOT = "org.junit.Test";
-    private static final String JUNIT5_TEST_ANNOT = "org.junit.jupiter.api.Test";
 
     private static final String TESTNG_TEST_ANNOT = "org.testng.annotations.Test";
 
@@ -42,7 +41,7 @@ public final class JUnitRuleUtil {
                                                                "org.testng.Assert",
                                                                "junit.framework.TestCase");
 
-    private JUnitRuleUtil() {
+    private TestFrameworksUtil() {
         // utility class
     }
 
@@ -148,7 +147,7 @@ public final class JUnitRuleUtil {
      */
     public static boolean isExpectAnnotated(ASTMethodDeclaration method) {
         return method.getDeclaredAnnotations()
-                     .filter(JUnitRuleUtil::isJunit4TestAnnotation)
+                     .filter(TestFrameworksUtil::isJunit4TestAnnotation)
                      .flatMap(ASTAnnotation::getMembers)
                      .any(it -> "expected".equals(it.getName()));
 
