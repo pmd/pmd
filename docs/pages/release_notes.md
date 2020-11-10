@@ -28,6 +28,9 @@ This is a {{ site.pmd.release_type }} release.
     {% jdoc !!java::lang.java.ast.ASTTypeParameter#getParameterName() %}
     and the corresponding XPath attributes. In both cases they're replaced with a new method `getName`,
     the attribute is `@Name`.
+*   {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceBody#isAnonymousInnerClass() %},
+    and {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceBody#isEnumChild() %},
+    refs [#905](https://github.com/pmd/pmd/issues/905)
 
 #### Internal API
 
