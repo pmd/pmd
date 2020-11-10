@@ -25,9 +25,21 @@ public final class JUnitRuleUtil {
     private static final String JUNIT3_CLASS_NAME = "junit.framework.TestCase";
     private static final String JUNIT4_TEST_ANNOT = "org.junit.Test";
     private static final String JUNIT5_TEST_ANNOT = "org.junit.jupiter.api.Test";
+
+    private static final String TESTNG_TEST_ANNOT = "org.testng.annotations.Test";
+
+    private static final Set<String> JUNIT5_ALL_TEST_ANNOTS =
+        setOf("org.junit.jupiter.api.Test",
+              "org.junit.jupiter.api.RepeatedTest",
+              "org.junit.jupiter.api.TestFactory",
+              "org.junit.jupiter.api.TestTemplate",
+              "org.junit.jupiter.params.ParameterizedTest"
+        );
+
     private static final Set<String> ASSERT_CONTAINERS = setOf("org.junit.Assert",
                                                                "org.junit.jupiter.api.Assertions",
                                                                "org.hamcrest.MatcherAssert",
+                                                               "org.testng.Assert",
                                                                "junit.framework.TestCase");
 
     private JUnitRuleUtil() {
@@ -49,12 +61,28 @@ public final class JUnitRuleUtil {
         return result;
     }
 
+    /**
+     * Returns true if this is either a JUnit test or a TestNG test.
+     */
+    public static boolean isTestMethod(ASTMethodDeclaration method) {
+        return isJUnitMethod(method) || isTestNgMethod(method);
+    }
+
+    private static boolean isTestNgMethod(ASTMethodDeclaration method) {
+        return method.isAnnotationPresent(TESTNG_TEST_ANNOT);
+    }
+
     private static boolean isJUnit4Method(ASTMethodDeclaration method) {
         return method.isAnnotationPresent(JUNIT4_TEST_ANNOT) && method.isPublic();
     }
 
     private static boolean isJUnit5Method(ASTMethodDeclaration method) {
-        return method.isAnnotationPresent(JUNIT5_TEST_ANNOT);
+        return method.getDeclaredAnnotations().any(
+            it -> {
+                String canonicalName = it.getTypeMirror().getSymbol().getCanonicalName();
+                return JUNIT5_ALL_TEST_ANNOTS.contains(canonicalName);
+            }
+        );
     }
 
     private static boolean isJUnit3Method(ASTMethodDeclaration method) {
@@ -98,5 +126,31 @@ public final class JUnitRuleUtil {
         JTypeDeclSymbol sym = declaring.getSymbol();
         String binaryName = !(sym instanceof JClassSymbol) ? null : ((JClassSymbol) sym).getBinaryName();
         return qualifierTypes.contains(binaryName);
+    }
+
+    public static boolean isProbableAssertCall(ASTMethodCall call) {
+        String name = call.getMethodName();
+        return name.startsWith("assert") && !isSoftAssert(call)
+            || name.startsWith("check")
+            || name.startsWith("verify")
+            || "fail".equals(name)
+            || "failWith".equals(name)
+            || isExpectExceptionCall(call);
+    }
+
+    private static boolean isSoftAssert(ASTMethodCall call) {
+        return TypeTestUtil.isA("org.assertj.core.api.AbstractSoftAssertions", call.getMethodType().getDeclaringType())
+            && !"assertAll".equals(call.getMethodName());
+    }
+
+    /**
+     * Tells if the node contains a @Test annotation with an expected exception.
+     */
+    public static boolean isExpectAnnotated(ASTMethodDeclaration method) {
+        return method.getDeclaredAnnotations()
+                     .filter(JUnitRuleUtil::isJunit4TestAnnotation)
+                     .flatMap(ASTAnnotation::getMembers)
+                     .any(it -> "expected".equals(it.getName()));
+
     }
 }

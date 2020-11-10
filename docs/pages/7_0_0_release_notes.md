@@ -98,6 +98,7 @@ The following previously deprecated rules have been finally removed:
 * java-bestpractices
     * [#342](https://github.com/pmd/pmd/issues/342): \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
     * [#807](https://github.com/pmd/pmd/issues/807): \[java] AccessorMethodGeneration false positive with overloads
+    * [#1212](https://github.com/pmd/pmd/issues/1212): \[java] Don't raise JUnitTestContainsTooManyAsserts on JUnit 5's assertAll
     * [#1422](https://github.com/pmd/pmd/issues/1422): \[java] JUnitTestsShouldIncludeAssert false positive with inherited @Rule field
     * [#1565](https://github.com/pmd/pmd/issues/1565): \[java] JUnitAssertionsShouldIncludeMessage false positive with AssertJ
     * [#1969](https://github.com/pmd/pmd/issues/1969): \[java] MissingOverride false-positive triggered by package-private method overwritten in another package by extending class
