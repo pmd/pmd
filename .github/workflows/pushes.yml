@@ -28,21 +28,14 @@ jobs:
       - name: Check Environment
         run: .ci/check-environment.sh
         shell: bash
-      - name: Setup Secrets
-        run: .ci/setup-secrets.sh
-        shell: bash
-        env:
-          PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
-      - name: Install OpenJDK
-        run: .ci/install-openjdk.sh
+      - name: Install OpenJDK 11
+        run: .ci/install-openjdk.sh 11
         shell: bash
       - name: build
         run: .ci/build.sh
         shell: bash
         env:
           PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
-          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
-          CI_SIGN_PASSPHRASE: ${{ secrets.CI_SIGN_PASSPHRASE }}
 
   windows:
     runs-on: windows-latest

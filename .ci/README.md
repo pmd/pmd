@@ -12,5 +12,9 @@ for a ssh key, which is used to copy files to sourceforge.
 * `PMD_CI_SECRET_PASSPHRASE`
 * `CI_DEPLOY_PASSWORD`
 * `CI_SIGN_PASSPHRASE`
+* ...
 
+## Encrypting
+
+    gpg --batch --symmetric --cipher-algo AES256 --passphrase="$PMD_CI_SECRET_PASSPHRASE" file.txt
 

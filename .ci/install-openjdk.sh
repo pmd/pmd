@@ -28,7 +28,7 @@ case "$(uname)" in
 esac
 
 
-OPENJDK_VERSION=11
+OPENJDK_VERSION=$1
 DOWNLOAD_URL=$(curl --silent -X GET "https://api.adoptopenjdk.net/v3/assets/feature_releases/${OPENJDK_VERSION}/ga?architecture=x64&heap_size=normal&image_type=jdk&jvm_impl=hotspot&os=${JDK_OS}&page=0&page_size=1&project=jdk&sort_method=DEFAULT&sort_order=DESC&vendor=adoptopenjdk" \
     -H "accept: application/json" \
     | jq -r ".[0].binaries[0].package.link")
@@ -65,12 +65,18 @@ case "$OPENJDK_ARCHIVE" in
         ;;
 esac
 
-cat > ${HOME}/java.env <<EOF
+if [ ! -e ${HOME}/java.env ]; then
+    cat > ${HOME}/java.env <<EOF
 export JAVA_HOME="${TARGET_DIR}"
 export PATH="${TARGET_DIR}/bin:${PATH}"
-java -version
 EOF
 
-log_info "OpenJDK can be used via ${HOME}/java.env"
-cat ${HOME}/java.env
-source ${HOME}/java.env
+    log_info "OpenJDK can be used via ${HOME}/java.env"
+    cat ${HOME}/java.env
+    source ${HOME}/java.env
+    java -version
+
+else
+    log_info "${HOME}/java.env already existed and has not been changed"
+    log_info "OpenJDK${OPENJDK_VERSION} can be used from ${TARGET_DIR}"
+fi

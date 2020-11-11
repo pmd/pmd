@@ -10,6 +10,12 @@ jobs:
     continue-on-error: false
     steps:
       - uses: actions/checkout@v2
+      - name: Check Environment
+        run: .ci/check-environment.sh
+        shell: bash
+      - name: Install OpenJDK 11
+        run: .ci/install-openjdk.sh 11
+        shell: bash
       - name: Run Release Script
         run: .ci/release.sh
         shell: bash

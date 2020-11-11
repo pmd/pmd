@@ -21,11 +21,15 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-
-      - name: Install OpenJDK
-        run: .ci/install-openjdk.sh
+      - name: Install OpenJDK 11
+        run: .ci/install-openjdk.sh 11
         shell: bash
       - name: Build with mvnw
         run: |
           source ${HOME}/java.env
           ./mvnw -V clean install
+        shell: bash
+      - name: Execute Danger
+        if: ${{ runner.os ==  'Linux' }}
+        run: echo "TODO"
         shell: bash
