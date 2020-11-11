@@ -12,7 +12,7 @@ public final class SystemProps {
     }
 
     /**
-     * In error recovery mode errors like StackOverflowError or AssetionErrors are logged
+     * In error recovery mode errors like StackOverflowError or AssertionErrors are logged
      * and the execution continues.
      * These exceptions mean, that something went really wrong while executing and
      * depending on where the error occurred, the internal state might be corrupted
