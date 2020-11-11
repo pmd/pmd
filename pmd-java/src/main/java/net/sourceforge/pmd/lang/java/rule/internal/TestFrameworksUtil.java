@@ -71,11 +71,11 @@ public final class TestFrameworksUtil {
         return method.isAnnotationPresent(TESTNG_TEST_ANNOT);
     }
 
-    private static boolean isJUnit4Method(ASTMethodDeclaration method) {
+    public static boolean isJUnit4Method(ASTMethodDeclaration method) {
         return method.isAnnotationPresent(JUNIT4_TEST_ANNOT) && method.isPublic();
     }
 
-    private static boolean isJUnit5Method(ASTMethodDeclaration method) {
+    public static boolean isJUnit5Method(ASTMethodDeclaration method) {
         return method.getDeclaredAnnotations().any(
             it -> {
                 String canonicalName = it.getTypeMirror().getSymbol().getCanonicalName();
@@ -84,7 +84,7 @@ public final class TestFrameworksUtil {
         );
     }
 
-    private static boolean isJUnit3Method(ASTMethodDeclaration method) {
+    public static boolean isJUnit3Method(ASTMethodDeclaration method) {
         return TypeTestUtil.isA("junit.framework.TestCase", method.getEnclosingType())
             && isJunit3MethodSignature(method);
     }
