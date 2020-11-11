@@ -9,4 +9,13 @@ source logger.inc
 
 set -e
 
+
+# every OS:
+# curl
+# jq
+
+# linux only
 ruby --version | grep "ruby 2.7" || (log_error "Ruby is missing"; exit 1)
+
+# windows only
+# 7zip

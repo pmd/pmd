@@ -7,31 +7,34 @@
 
 source $(dirname $0)/logger.inc
 
+set -e
 
 case "$(uname)" in
     Linux*)
         JDK_OS=linux
-        JDK_EXT=tar.gz
         COMPONENTS_TO_STRIP=1 # e.g. openjdk-11.0.3+7/bin/java
         ;;
     Darwin*)
         JDK_OS=mac
-        JDK_EXT=tar.gz
         COMPONENTS_TO_STRIP=3 # e.g. jdk-11.0.3+7/Contents/Home/bin/java
     ;;
     CYGWIN*|MINGW*)
         JDK_OS=windows
-        JDK_EXT=zip
     ;;
     *)
-        
+        log_error "Unknown OS: $(uname)"
+        exit 1
     ;;
 esac
 
 
-JDK_VERSION=11
-DOWNLOAD_URL=https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/ga/${JDK_OS}/x64/jdk/hotspot/normal/adoptopenjdk?project=jdk
-OPENJDK_ARCHIVE=openjdk-${JDK_VERSION}-${JDK_OS}.${JDK_EXT}
+OPENJDK_VERSION=11
+DOWNLOAD_URL=$(curl --silent -X GET "https://api.adoptopenjdk.net/v3/assets/feature_releases/${OPENJDK_VERSION}/ga?architecture=x64&heap_size=normal&image_type=jdk&jvm_impl=hotspot&os=${JDK_OS}&page=0&page_size=1&project=jdk&sort_method=DEFAULT&sort_order=DESC&vendor=adoptopenjdk" \
+    -H "accept: application/json" \
+    | jq -r ".[0].binaries[0].package.link")
+
+OPENJDK_ARCHIVE=$(basename ${DOWNLOAD_URL})
+log_debug "Archive name: ${OPENJDK_ARCHIVE}"
 
 CACHE_DIR=${HOME}/.cache/openjdk
 TARGET_DIR=${HOME}/openjdk${OPENJDK_VERSION}
@@ -41,19 +44,26 @@ mkdir -p ${TARGET_DIR}
 
 if [ ! -e ${CACHE_DIR}/${OPENJDK_ARCHIVE} ]; then
     log_info "Downloading from ${DOWNLOAD_URL} to ${CACHE_DIR}"
-    wget --continue --output-document=${CACHE_DIR}/${OPENJDK_ARCHIVE} ${DOWNLOAD_URL}
+    curl --location --output ${CACHE_DIR}/${OPENJDK_ARCHIVE} "${DOWNLOAD_URL}"
 else
     log_info "Skipped download, file ${CACHE_DIR}/${OPENJDK_ARCHIVE} already exists"
 fi
 
 log_info "Extracting to ${TARGET_DIR}"
 
-if [ "${JDK_EXT}" = "zip" ]; then
-    7z x ${CACHE_DIR}/${OPENJDK_ARCHIVE} -o${TARGET_DIR}
-    mv ${TARGET_DIR}/*/* ${TARGET_DIR}/
-else
-    tar --extract --file ${CACHE_DIR}/${OPENJDK_ARCHIVE} -C ${TARGET_DIR} --strip-components=${COMPONENTS_TO_STRIP}
-fi
+case "$OPENJDK_ARCHIVE" in
+    *.zip)
+        7z x ${CACHE_DIR}/${OPENJDK_ARCHIVE} -o${TARGET_DIR}
+        mv ${TARGET_DIR}/*/* ${TARGET_DIR}/
+        ;;
+    *.tar.gz)
+        tar --extract --file ${CACHE_DIR}/${OPENJDK_ARCHIVE} -C ${TARGET_DIR} --strip-components=${COMPONENTS_TO_STRIP}
+        ;;
+    *)
+        log_error "Unknown filetype: ${OPENJDK_ARCHIVE}"
+        exit 1
+        ;;
+esac
 
 cat > ${HOME}/java.env <<EOF
 export JAVA_HOME="${TARGET_DIR}"
@@ -64,4 +74,3 @@ EOF
 log_info "OpenJDK can be used via ${HOME}/java.env"
 cat ${HOME}/java.env
 source ${HOME}/java.env
-
