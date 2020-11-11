@@ -14,6 +14,7 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.internal.RulesetStageDependencyHelper;
+import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -105,9 +106,15 @@ public class SourceCodeProcessor {
         } catch (ParseException pe) {
             configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
             throw new PMDException("Error while parsing " + ctx.getSourceCodeFile(), pe);
-        } catch (Exception | StackOverflowError | AssertionError e) {
+        } catch (Exception e) {
             configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
             throw new PMDException("Error while processing " + ctx.getSourceCodeFile(), e);
+        } catch (StackOverflowError | AssertionError e) {
+            if (SystemProps.isErrorRecoveryMode()) {
+                configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
+                throw new PMDException("Error while processing " + ctx.getSourceCodeFile(), e);
+            }
+            throw e;
         } finally {
             ruleSets.end(ctx);
         }
