@@ -86,7 +86,7 @@
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.4.10</kotlin.version>
-        <kotest.version>4.3.0</kotest.version>
+        <kotest.version>4.3.1</kotest.version>
         <dokka.version>1.4.10.2</dokka.version>
 
 

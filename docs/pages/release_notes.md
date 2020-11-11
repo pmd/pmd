@@ -29,7 +29,24 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Deprecated API
 
-- {% jdoc java::ast.ASTPackageDeclaration#getPackageNameImage() %}, {% jdoc java::ast.ASTTypeParameter#getParameterName() %} and the corresponding XPath attributes. In both cases they're replaced with a new method `getName`, the attribute is `@Name`
+*   {% jdoc !!java::lang.java.ast.ASTPackageDeclaration#getPackageNameImage() %},
+    {% jdoc !!java::lang.java.ast.ASTTypeParameter#getParameterName() %}
+    and the corresponding XPath attributes. In both cases they're replaced with a new method `getName`,
+    the attribute is `@Name`.
+
+#### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   {% jdoc !!javascript::lang.ecmascript.Ecmascript3Handler %}
+*   {% jdoc !!javascript::lang.ecmascript.Ecmascript3Parser %}
+*   {% jdoc !!javascript::lang.ecmascript.ast.EcmascriptParser#parserOptions %}
+*   {% jdoc !!javascript::lang.ecmascript.ast.EcmascriptParser#getSuppressMap() %}
+*   {% jdoc !!core::lang.rule.ParametricRuleViolation %}
+*   {% jdoc !!core::lang.ParserOptions#suppressMarker %}
+*   {% jdoc !!modelica::lang.modelica.rule.ModelicaRuleViolationFactory %}
+
 
 ### External Contributions
 
