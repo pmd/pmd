@@ -78,7 +78,7 @@ function pmd_ci_build_setup_oraclejdk7() {
     mkdir -p ${TARGET_DIR}
     if [ ! -e ${LOCAL_DIR}/${ARCHIVE} ]; then
         log_info "Downloading from ${DOWNLOAD_URL} to ${LOCAL_DIR}"
-        curl --location --no-progress-meter --output ${LOCAL_DIR}/${ARCHIVE} ${DOWNLOAD_URL}
+        curl --location --output ${LOCAL_DIR}/${ARCHIVE} ${DOWNLOAD_URL}
     else
         log_info "Skipped download, file ${LOCAL_DIR}/${ARCHIVE} already exists"
     fi
