@@ -5,7 +5,7 @@
 # The API is documented at https://api.adoptopenjdk.net/swagger-ui/
 #
 
-source $(dirname $0)/logger.inc
+source $(dirname $0)/inc/logger.inc
 
 set -e
 

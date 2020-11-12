@@ -5,7 +5,7 @@
 # and are in the correct version.
 #
 
-source $(dirname $0)/logger.inc
+source $(dirname $0)/inc/logger.inc
 
 set -e
 

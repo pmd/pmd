@@ -1,33 +1,39 @@
 function pmd_ci_setup_env() {
     log_info "Setting up secrets as environment variables..."
+    local -r ENV_FILE=.ci/files/env
 
     printenv PMD_CI_SECRET_PASSPHRASE | gpg --batch --yes --decrypt \
         --passphrase-fd 0 \
-        --output .ci/env .ci/env.gpg
+        --output ${ENV_FILE} ${ENV_FILE}.gpg
 
-    source .ci/env >/dev/null 2>&1
-    rm .ci/env
+    source ${ENV_FILE} >/dev/null 2>&1
+    rm ${ENV_FILE}
 }
 
 function pmd_ci_setup_gpg_key() {
     log_info "Setting up GPG release signing key..."
+    local -r GPG_FILE=.ci/files/release-signing-key-D0BF1D737C9A1C22.gpg
 
     mkdir -p "${HOME}/.gpg"
     printenv PMD_CI_SECRET_PASSPHRASE | gpg --batch --yes --decrypt \
         --passphrase-fd 0 \
-        --output .ci/release-signing-key-D0BF1D737C9A1C22.gpg .ci/release-signing-key-D0BF1D737C9A1C22.gpg.gpg
-    gpg --batch --import .ci/release-signing-key-D0BF1D737C9A1C22.gpg
-    rm .ci/release-signing-key-D0BF1D737C9A1C22.gpg
+        --output ${GPG_FILE} ${GPG_FILE}.gpg
+    gpg --batch --import ${GPG_FILE}
+    rm ${GPG_FILE}
 }
 
 function pmd_ci_setup_ssh() {
     log_info "Setting up .ssh/id_rsa..."
-    mkdir -p ${HOME}/.ssh
-    chmod 700 "${HOME}/.ssh"
+    local -r SSH_KEY_FILE=.ci/files/id_rsa
+
     printenv PMD_CI_SECRET_PASSPHRASE | gpg --batch --yes --decrypt \
         --passphrase-fd 0 \
-        --output ${HOME}/.ssh/id_rsa .ci/id_rsa.gpg
-    chmod 600 "${HOME}/.ssh/id_rsa"
+        --output ${SSH_KEY_FILE} ${SSH_KEY_FILE}.gpg
+    chmod 600 ${SSH_KEY_FILE}
+
+    mkdir -p ${HOME}/.ssh
+    chmod 700 "${HOME}/.ssh"
+    mv ${SSH_KEY_FILE} "${HOME}/.ssh/id_rsa"
 
     log_info "Setting up .ssh/known_hosts..."
     #

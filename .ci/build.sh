@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
-source $(dirname $0)/logger.inc
-source $(dirname $0)/setup-secrets.inc
-source $(dirname $0)/sourceforge-api.inc
+source $(dirname $0)/inc/logger.inc
+source $(dirname $0)/inc/setup-secrets.inc
+source $(dirname $0)/inc/sourceforge-api.inc
+source $(dirname $0)/inc/pmd-doc.inc
+source $(dirname $0)/inc/pmd-code-api.inc
 source ${HOME}/java.env
 
 set -e
@@ -15,20 +17,42 @@ function pmd_ci_build_main() {
 
     pmd_ci_build_setup_maven
     pmd_ci_build_setup_oraclejdk7
+    pmd_ci_build_setup_bundler
+
+    VERSION=$(pmd_ci_build_get_pom_version)
+    log_info "Building PMD ${VERSION}..."
+
     pmd_ci_build_run
 
     # Deploy to sourceforge files
-    VERSION=$(pmd_ci_build_get_pom_version)
     sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-bin-${VERSION}.zip"
     sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-src-${VERSION}.zip"
 
-    #build and upload doc
+    pmd_ci_build_and_upload_doc
 
-    pmd_ci_build_setup_regression-tester
+    #pmd_ci_build_setup_regression-tester
     #regression-tester_uploadBaseline
 
-
     exit 0
+}
+
+function pmd_ci_build_and_upload_doc() {
+    pmd_doc_generate_jekyll_site
+    pmd_doc_create_archive
+
+    sourceforge_uploadFile "${VERSION}" "docs/pmd-doc-${VERSION}.zip"
+
+    # Deploy doc to https://docs.pmd-code.org/pmd-doc-${VERSION}/
+    pmd_code_uploadDocumentation "${VERSION}" "docs/pmd-doc-${VERSION}.zip"
+    # Deploy javadoc to https://docs.pmd-code.org/apidocs/*/${VERSION}/
+    pmd_code_uploadJavadoc "${VERSION}" "$(pwd)"
+
+    pmd_code_createSymlink "${VERSION}" "snapshot"
+
+    # update github pages https://pmd.github.io/pmd/
+    pmd_doc_publish_to_github_pages
+    # rsync site to https://pmd.sourceforge.io/snapshot
+    sourceforge_rsyncSnapshotDocumentation "${VERSION}" "snapshot"
 }
 
 function pmd_ci_build_get_pom_version() {
@@ -67,16 +91,19 @@ function pmd_ci_build_run() {
     MVN_BUILD_FLAGS="-e -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -V  -Djava7.home=${HOME}/oraclejdk7"
 
     log_info "This is a snapshot build"
-    ./mvnw deploy -Possrh,sign $MVN_BUILD_FLAGS
+    ./mvnw deploy -Possrh,sign,generate-rule-docs $MVN_BUILD_FLAGS
 }
 
 function pmd_ci_build_setup_regression-tester() {
     # install openjdk8 for pmd-regression-tests
     .ci/install-openjdk.sh 8
-    gem install bundler
     bundle config set --local path vendor/bundle
     bundle config set --local with release_notes_preprocessing
     bundle install
+}
+
+function pmd_ci_build_setup_bundler() {
+    gem install bundler
 }
 
 pmd_ci_build_main
