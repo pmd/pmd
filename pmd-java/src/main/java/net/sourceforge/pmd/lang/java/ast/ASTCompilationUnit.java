@@ -72,7 +72,7 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     // @NonNull
     public String getPackageName() {
         ASTPackageDeclaration pdecl = getPackageDeclaration();
-        return pdecl == null ? "" : pdecl.getPackageNameImage();
+        return pdecl == null ? "" : pdecl.getName();
     }
 
     @InternalApi

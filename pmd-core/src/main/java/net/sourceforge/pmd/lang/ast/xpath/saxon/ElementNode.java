@@ -11,6 +11,7 @@ import java.util.Map;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeOwner;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 
 import net.sf.saxon.om.Axis;
@@ -38,7 +39,7 @@ import net.sf.saxon.value.Value;
  */
 @Deprecated
 @InternalApi
-public class ElementNode extends BaseNodeInfo {
+public class ElementNode extends BaseNodeInfo implements AstNodeOwner {
 
     protected final DocumentNode document;
     protected final ElementNode parent;
@@ -94,7 +95,7 @@ public class ElementNode extends BaseNodeInfo {
     }
 
     @Override
-    public Object getUnderlyingNode() {
+    public Node getUnderlyingNode() {
         return node;
     }
 

@@ -19,7 +19,7 @@ echo "Setting up secrets..."
 # *   id_rsa
 # *   release-signing-key-D0BF1D737C9A1C22.gpg
 
-openssl aes-256-cbc -K ${encrypted_a5724fade5c6_key} -iv ${encrypted_a5724fade5c6_iv} -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
+openssl aes-256-cbc -K ${encrypted_3b9f0b9d36d1_key} -iv ${encrypted_3b9f0b9d36d1_iv} -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
 pushd .travis && tar xfv secrets.tar && popd
 mkdir -p "$HOME/.ssh"
 chmod 700 "$HOME/.ssh"

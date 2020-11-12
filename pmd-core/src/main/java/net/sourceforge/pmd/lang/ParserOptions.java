@@ -17,6 +17,10 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * {@link Object#hashCode()}.
  */
 public class ParserOptions extends AbstractPropertySource {
+    /**
+     * @deprecated Use {@link #getSuppressMarker()} instead.
+     */
+    @Deprecated
     protected String suppressMarker;
 
     /**

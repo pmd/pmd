@@ -51,6 +51,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIllegalStoreExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTInstanceOfExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTInvalidDependentCompilation;
 import net.sourceforge.pmd.lang.apex.ast.ASTJavaMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTJavaVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralCase;
@@ -390,6 +391,11 @@ public abstract class AbstractApexRule extends AbstractRule
 
     @Override
     public Object visit(ASTInstanceOfExpression node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTInvalidDependentCompilation node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
 

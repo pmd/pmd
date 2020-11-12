@@ -3184,4 +3184,127 @@ public class UnusedAssignmentNative {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Field access on something else than this</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                int field;
+                void foo(Test t) {
+                    t.field = 2 * t.field;
+                    if (t.field > 5) {
+                        t.field = 5;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment to an ignorable prefix increment</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'd' is never used (overwritten on line 6)</message>
+            <message>The value assigned to variable 'd' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                static {
+                    int b = 0;
+                    int d = 0;
+                    {
+                        d = ++b;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Static field reassignment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'b' is never used (overwritten on line 4)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                static int b = 0;
+                static {
+                    b = 2;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static field reassignment with ctor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'b' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                static int b = 0;
+                Test() {
+                    System.out.println(b); // does not count as usage
+                }
+                static {
+                    b = 2;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Branches in switch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                private int getC(int c) { return c + 1; }
+                private int use(int cc) { return cc + 2; }
+                private String readUTF(int index, final int utfLen, final char[] buf) {
+                    int endIndex = index + utfLen;
+                    int c;
+                    char cc = 0;
+                    while (index < endIndex) {
+                        c = getC(index++);
+                        switch (st) {
+                        case 0:
+                            if (c < 0xE0 && c > 0xBF) cc = 1;
+                            else cc = 0;
+                            break;
+                        case 1:
+                            use(cc); break;
+                        case 2:
+                            cc = use(cc); break;
+                        }
+                    }
+                    return "";
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This field in method</description>
+        <!-- https://chunk.io/pmd/22cd54bf483045218e268ee7580716c6/diff2/spring-framework/index.html#A33 -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                private final List<CallableProcessingInterceptor> interceptors;
+                private int preProcessIndex = -1;
+                public void applyPreProcess(NativeWebRequest request, Callable<?> task) throws Exception {
+                    for (CallableProcessingInterceptor interceptor : this.interceptors) {
+                        interceptor.preProcess(request, task);
+                        this.preProcessIndex++;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>

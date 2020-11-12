@@ -422,11 +422,11 @@ public class Foo {
     private Bar var2;
 
     //followed by many imports of unique objects
-    void ObjectC doWork() {
+    ObjectC doWork() {
         Bardo var55;
         ObjectA var44;
         ObjectZ var93;
-        return something;
+        return something();
     }
 }
 ]]>
@@ -632,7 +632,7 @@ user-specified threshold.
 <![CDATA[
 import blah.blah.Baz;
 import blah.blah.Bif;
-// 18 others from the same package elided
+// 28 others from the same package elided
 public class Foo {
     public void doWork() {}
 }
