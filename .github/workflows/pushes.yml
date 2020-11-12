@@ -38,6 +38,7 @@ jobs:
           PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
           PMD_CI_JOB_URL: "https://github.com/pmd/pmd/runs/${{ github.run_id }}"
           PMD_CI_PUSH_COMMIT_COMPARE: ${{ github.event.compare }}
+          PMD_CI_BRANCH: ${{ github.ref }}
 
   windows:
     runs-on: windows-latest

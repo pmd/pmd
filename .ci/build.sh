@@ -5,6 +5,7 @@ source $(dirname $0)/inc/setup-secrets.inc
 source $(dirname $0)/inc/sourceforge-api.inc
 source $(dirname $0)/inc/pmd-doc.inc
 source $(dirname $0)/inc/pmd-code-api.inc
+source $(dirname $0)/inc/regression-tester.inc
 source ${HOME}/java.env
 
 set -e
@@ -30,8 +31,8 @@ function pmd_ci_build_main() {
 
     pmd_ci_build_and_upload_doc
 
-    #pmd_ci_build_setup_regression-tester
-    #regression-tester_uploadBaseline
+    pmd_ci_build_setup_regression_tester
+    regression_tester_uploadBaseline
 
     exit 0
 }
@@ -94,15 +95,17 @@ function pmd_ci_build_run() {
     ./mvnw deploy -Possrh,sign,generate-rule-docs $MVN_BUILD_FLAGS
 }
 
-function pmd_ci_build_setup_regression-tester() {
+function pmd_ci_build_setup_regression_tester() {
     # install openjdk8 for pmd-regression-tests
     .ci/install-openjdk.sh 8
     bundle config set --local path vendor/bundle
     bundle config set --local with release_notes_preprocessing
+    bundle config --local gemfile Gemfile
     bundle install
 }
 
 function pmd_ci_build_setup_bundler() {
+    log_info "Installing bundler..."
     gem install bundler
 }
 
