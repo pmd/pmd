@@ -8,7 +8,7 @@ source ${HOME}/java.env
 set -e
 #set -x
 
-./mvnw -e -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -V clean verify
+./mvnw -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -V clean verify
 
 # Danger is executed only on the linux runner
 case "$(uname)" in

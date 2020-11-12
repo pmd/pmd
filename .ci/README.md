@@ -35,7 +35,11 @@ The default timeout is 4 minutes.
 Workaround as described in https://github.com/actions/virtual-environments/issues/1499 and
 https://issues.apache.org/jira/browse/WAGON-545 is applied:
 
-`-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3`
+The setting `-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3`
+doesn't seem to work.
+
+Now we disable pooling completeley, so that for downloading a artifact/dependency, always new, fresh
+connections are sued: `-Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false`.
 
 ## Hints
 
