@@ -29,3 +29,30 @@ Workaround as described in https://github.com/actions/virtual-environments/issue
 https://issues.apache.org/jira/browse/WAGON-545 is applied:
 
 `-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3`
+
+## Hints
+
+### Remote debugging
+
+Debugging remotely is possible with <https://github.com/mxschmitt/action-tmate>.
+
+Just add the following step into the job:
+
+```
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+```
+
+Note: This is dangerous for push builds, because these have access to the secrets and the SSH session
+is not protected.
+
+### Local tests
+
+You can run a local instance with docker:
+
+```
+docker run -it --mount type=bind,source=path/to/pmd,target=/workspaces/pmd/pmd ubuntu:latest
+```
+
+You'll need to install a few packages before you can start... You can verify with `check-environment.sh`
+if everything is prepared.
