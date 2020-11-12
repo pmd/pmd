@@ -40,8 +40,8 @@ public class TextRenderer extends AbstractIncrementingRenderer {
             RuleViolation rv = violations.next();
             buf.append(determineFileName(rv.getFilename()));
             buf.append(SMALL_SEPARATOR).append(rv.getBeginLine());
-            buf.append(MEDIUM_SEPARATOR).append(rv.getDescription());
-            buf.append(MEDIUM_SEPARATOR).append(rv.getRule().getName()).append(PMD.EOL);
+            buf.append(MEDIUM_SEPARATOR).append(rv.getRule().getName());
+            buf.append(MEDIUM_SEPARATOR).append(rv.getDescription()).append(PMD.EOL);
             writer.write(buf.toString());
         }
     }
