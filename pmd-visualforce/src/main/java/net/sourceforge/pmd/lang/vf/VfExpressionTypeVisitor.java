@@ -4,15 +4,19 @@
 
 package net.sourceforge.pmd.lang.vf;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttributeValue;
+import net.sourceforge.pmd.lang.vf.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.vf.ast.ASTDotExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
@@ -20,6 +24,9 @@ import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.VfParserVisitorAdapter;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * Visits {@link ASTElExpression} nodes and stores type information for all {@link ASTIdentifier} child nodes.
@@ -27,16 +34,39 @@ import net.sourceforge.pmd.lang.vf.ast.VfParserVisitorAdapter;
 public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     private static final Logger LOGGER = Logger.getLogger(VfExpressionTypeVisitor.class.getName());
 
+    static final List<String> DEFAULT_APEX_DIRECTORIES = Collections.singletonList(".." + File.separator + "classes");
+    static final List<String> DEFAULT_OBJECT_DIRECTORIES = Collections.singletonList(".." + File.separator + "objects");
+
+    /**
+     * Directory that contains Apex classes that may be referenced from a Visualforce page.
+     */
+    public static final PropertyDescriptor<List<String>> APEX_DIRECTORIES_DESCRIPTOR =
+            PropertyFactory.stringListProperty("apexDirectories")
+                    .desc("Location of Apex Class directories. Absolute or relative to the Visualforce directory.")
+                    .defaultValue(DEFAULT_APEX_DIRECTORIES)
+                    .delim(',')
+                    .build();
+
+    /**
+     * Directory that contains Object definitions that may be referenced from a Visualforce page.
+     */
+    public static final PropertyDescriptor<List<String>> OBJECTS_DIRECTORIES_DESCRIPTOR =
+            PropertyFactory.stringListProperty("objectsDirectories")
+                    .desc("Location of CustomObject directories. Absolute or relative to the Visualforce directory.")
+                    .defaultValue(DEFAULT_OBJECT_DIRECTORIES)
+                    .delim(',')
+                    .build();
+
     private static final String APEX_PAGE = "apex:page";
     private static final String CONTROLLER_ATTRIBUTE = "controller";
     private static final String STANDARD_CONTROLLER_ATTRIBUTE = "standardcontroller";
     private static final String EXTENSIONS_ATTRIBUTE = "extensions";
 
-    private ApexClassPropertyTypes apexClassPropertyTypes;
-    private ObjectFieldTypes objectFieldTypes;
-    private final String fileName;
+    private final ApexClassPropertyTypes apexClassPropertyTypes;
+    private final ObjectFieldTypes objectFieldTypes;
+
+    private String fileName;
     private String standardControllerName;
-    private final IdentityHashMap<ASTIdentifier, IdentifierType> identifierTypes;
 
     /**
      * List of all Apex Class names that the VF page might refer to. These values come from either the
@@ -46,18 +76,18 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     private final List<String> apexDirectories;
     private final List<String> objectsDirectories;
 
-    public VfExpressionTypeVisitor(String fileName, List<String> apexDirectories, List<String> objectsDirectories) {
-        this.fileName = fileName;
-        this.apexDirectories = apexDirectories;
-        this.objectsDirectories = objectsDirectories;
+    public VfExpressionTypeVisitor(PropertySource propertySource) {
+        this.apexDirectories = propertySource.getProperty(APEX_DIRECTORIES_DESCRIPTOR);
+        this.objectsDirectories = propertySource.getProperty(OBJECTS_DIRECTORIES_DESCRIPTOR);
+        this.apexClassNames = new ArrayList<>();
         this.apexClassPropertyTypes = new ApexClassPropertyTypes();
         this.objectFieldTypes = new ObjectFieldTypes();
-        this.apexClassNames = new ArrayList<>();
-        this.identifierTypes = new IdentityHashMap<>();
     }
 
-    public IdentityHashMap<ASTIdentifier, IdentifierType> getIdentifierTypes() {
-        return this.identifierTypes;
+    @Override
+    public Object visit(ASTCompilationUnit node, Object data) {
+        this.fileName = AbstractTokenManager.getFileName();
+        return super.visit(node, data);
     }
 
     /**
@@ -139,7 +169,7 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
             }
 
             if (type != null) {
-                identifierTypes.put(entry.getKey(), type);
+                entry.getKey().setIdentifierType(type);
             } else {
                 LOGGER.fine("Unable to determine type for: " + name);
             }

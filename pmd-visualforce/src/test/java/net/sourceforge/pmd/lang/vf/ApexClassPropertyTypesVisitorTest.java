@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,8 @@ public class ApexClassPropertyTypesVisitorTest {
         ParserOptions parserOptions = languageVersion.getLanguageVersionHandler().getDefaultParserOptions();
         Parser parser = languageVersion.getLanguageVersionHandler().getParser(parserOptions);
 
-        Path apexPath = VFTestContstants.SFDX_PATH.resolve(Paths.get("classes", "ApexController.cls")).toAbsolutePath();
+        Path apexPath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Apex)
+                .resolve("ApexController.cls").toAbsolutePath();
         ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
         try (BufferedReader reader = Files.newBufferedReader(apexPath, StandardCharsets.UTF_8)) {
             Node node = parser.parse(apexPath.toString(), reader);

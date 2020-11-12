@@ -7,12 +7,12 @@ package net.sourceforge.pmd.lang.vf;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,7 +41,7 @@ class ObjectFieldTypes {
     private static final Map<String, IdentifierType> STANDARD_FIELD_TYPES;
 
     static {
-        STANDARD_FIELD_TYPES = new ConcurrentHashMap<>();
+        STANDARD_FIELD_TYPES = new HashMap<>();
         STANDARD_FIELD_TYPES.put("createdbyid", IdentifierType.Lookup);
         STANDARD_FIELD_TYPES.put("createddate", IdentifierType.DateTime);
         STANDARD_FIELD_TYPES.put("id", IdentifierType.Lookup);
@@ -54,7 +54,7 @@ class ObjectFieldTypes {
     /**
      * Cache of lowercase variable names to the variable type declared in the field's metadata file.
      */
-    private final ConcurrentHashMap<String, IdentifierType> variableNameToVariableType;
+    private final Map<String, IdentifierType> variableNameToVariableType;
 
     /**
      * Keep track of which variables were already processed. Avoid processing if a page repeatedly asks for an entry
@@ -77,9 +77,9 @@ class ObjectFieldTypes {
     private final XPathExpression sfdxCustomFieldTypeExpression;
 
     ObjectFieldTypes() {
-        this.variableNameToVariableType = new ConcurrentHashMap<>();
-        this.variableNameProcessed = Collections.newSetFromMap(new ConcurrentHashMap());
-        this.objectFileProcessed = Collections.newSetFromMap(new ConcurrentHashMap());
+        this.variableNameToVariableType = new HashMap<>();
+        this.variableNameProcessed = new HashSet<>();
+        this.objectFileProcessed = new HashSet<>();
 
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -267,7 +267,7 @@ class ObjectFieldTypes {
         name = name.toLowerCase(Locale.ROOT);
         IdentifierType previousType = variableNameToVariableType.put(name, identifierType);
         if (previousType != null && !previousType.equals(identifierType)) {
-            // It should not be possible ot have conflicting types for CustomFields
+            // It should not be possible to have conflicting types for CustomFields
             throw new RuntimeException("Conflicting types for "
                     + name
                     + ". CurrentType="

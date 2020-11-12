@@ -30,9 +30,8 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.vf.VFTestContstants;
+import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.lang.vf.VfLanguageModule;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
 public class VfUnescapeElTest extends PmdRuleTst {
@@ -43,10 +42,10 @@ public class VfUnescapeElTest extends PmdRuleTst {
      */
     @Test
     public void testSfdxCustomFields() throws IOException, PMDException {
-        Path vfPagePath = VFTestContstants.SFDX_PATH.resolve(Paths.get("pages", "StandardAccount.page")).toAbsolutePath();
+        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+                .resolve("StandardAccount.page");
 
-        Report report = runRule(vfPagePath, VFTestContstants.RELATIVE_APEX_DIRECTORIES,
-                VFTestContstants.RELATIVE_OBJECTS_DIRECTORIES);
+        Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
         assertEquals(6, ruleViolations.size());
         int firstLineWithErrors = 7;
@@ -62,10 +61,9 @@ public class VfUnescapeElTest extends PmdRuleTst {
      */
     @Test
     public void testMdapiCustomFields() throws IOException, PMDException {
-        Path vfPagePath = VFTestContstants.MDAPI_PATH.resolve(Paths.get("pages", "StandardAccount.page")).toAbsolutePath();
+        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Vf).resolve("StandardAccount.page");
 
-        Report report = runRule(vfPagePath, VFTestContstants.RELATIVE_APEX_DIRECTORIES,
-                VFTestContstants.RELATIVE_OBJECTS_DIRECTORIES);
+        Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
         assertEquals(6, ruleViolations.size());
         int firstLineWithErrors = 8;
@@ -81,10 +79,9 @@ public class VfUnescapeElTest extends PmdRuleTst {
      */
     @Test
     public void testApexController() throws IOException, PMDException {
-        Path vfPagePath = VFTestContstants.SFDX_PATH.resolve(Paths.get("pages", "ApexController.page")).toAbsolutePath();
+        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("ApexController.page");
 
-        Report report = runRule(vfPagePath, VFTestContstants.RELATIVE_APEX_DIRECTORIES,
-                VFTestContstants.RELATIVE_OBJECTS_DIRECTORIES);
+        Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
         assertEquals(2, ruleViolations.size());
         int firstLineWithErrors = 9;
@@ -101,10 +98,10 @@ public class VfUnescapeElTest extends PmdRuleTst {
      */
     @Test
     public void testExtensions() throws IOException, PMDException {
-        Path vfPagePath = VFTestContstants.SFDX_PATH.resolve(Paths.get("pages", "StandardAccountWithExtensions.page")).toAbsolutePath();
+        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+                .resolve(Paths.get("StandardAccountWithExtensions.page"));
 
-        Report report = runRule(vfPagePath, VFTestContstants.RELATIVE_APEX_DIRECTORIES,
-                VFTestContstants.RELATIVE_OBJECTS_DIRECTORIES);
+        Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
         assertEquals(8, ruleViolations.size());
         int firstLineWithErrors = 9;
@@ -119,7 +116,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Runs a rule against a Visualforce page on the file system. This code is based on
      * {@link net.sourceforge.pmd.testframework.RuleTst#runTestFromString(String, Rule, Report, LanguageVersion, boolean)}
      */
-    private Report runRule(Path vfPagePath, List<String> apexDirectories, List<String> objectsDirectories) throws FileNotFoundException, PMDException {
+    private Report runRule(Path vfPagePath) throws FileNotFoundException, PMDException {
         LanguageVersion languageVersion = LanguageRegistry.getLanguage(VfLanguageModule.NAME).getDefaultVersion();
         ParserOptions parserOptions = languageVersion.getLanguageVersionHandler().getDefaultParserOptions();
         Parser parser = languageVersion.getLanguageVersionHandler().getParser(parserOptions);
@@ -146,10 +143,6 @@ public class VfUnescapeElTest extends PmdRuleTst {
         });
 
         Rule rule = findRule("category/vf/security.xml", "VfUnescapeEl");
-        PropertyDescriptor apexPropertyDescriptor = rule.getPropertyDescriptor("apexDirectories");
-        PropertyDescriptor objectPropertyDescriptor = rule.getPropertyDescriptor("objectsDirectories");
-        rule.setProperty(apexPropertyDescriptor, apexDirectories);
-        rule.setProperty(objectPropertyDescriptor, objectsDirectories);
         Report report = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);

@@ -26,12 +26,13 @@ import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.vf.ast.ASTNegationExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
+import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
 
 /**
  * @author sergey.gorbaty February 2017
  *
  */
-public class VfUnescapeElRule extends AbstractVfTypedElExpressionRule {
+public class VfUnescapeElRule extends AbstractVfRule {
     private static final String A_CONST = "a";
     private static final String APEXIFRAME_CONST = "apex:iframe";
     private static final String IFRAME_CONST = "iframe";
@@ -49,6 +50,10 @@ public class VfUnescapeElRule extends AbstractVfTypedElExpressionRule {
     private static final String FALSE = "false";
     private static final Pattern ON_EVENT = Pattern.compile("^on(\\w)+$");
     private static final Pattern PLACEHOLDERS = Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}");
+
+    public VfUnescapeElRule() {
+        this.setTypeResolution(true);
+    }
 
     @Override
     public Object visit(ASTHtmlScript node, Object data) {
@@ -411,7 +416,7 @@ public class VfUnescapeElRule extends AbstractVfTypedElExpressionRule {
             final List<ASTIdentifier> ids = expr.findChildrenOfType(ASTIdentifier.class);
 
             for (final ASTIdentifier id : ids) {
-                IdentifierType identifierType = getIdentifierType(id);
+                IdentifierType identifierType = id.getIdentifierType();
                 if (identifierType != null && !identifierType.requiresEscaping) {
                     return false;
                 }

@@ -22,11 +22,10 @@ public class ObjectFieldTypesTest {
      */
     @Test
     public void testSfdxAccountIsProperlyParsed() {
-        Path vfPagePath = VFTestContstants.SFDX_PATH.resolve(Paths.get("pages", "StandarAccountPage.page"))
-                .toAbsolutePath();
+        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
 
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
-        validateSfdxAccount(objectFieldTypes, vfPagePath, VFTestContstants.RELATIVE_OBJECTS_DIRECTORIES);
+        validateSfdxAccount(objectFieldTypes, vfPagePath, VfExpressionTypeVisitor.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
     }
 
     /**
@@ -34,11 +33,10 @@ public class ObjectFieldTypesTest {
      */
     @Test
     public void testMdapiAccountIsProperlyParsed() {
-        Path vfPagePath = VFTestContstants.MDAPI_PATH.resolve(Paths.get("pages", "StandarAccountPage.page"))
-                .toAbsolutePath();
+        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
 
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
-        validateMDAPIAccount(objectFieldTypes, vfPagePath, VFTestContstants.RELATIVE_OBJECTS_DIRECTORIES);
+        validateMDAPIAccount(objectFieldTypes, vfPagePath, VfExpressionTypeVisitor.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
     }
 
     /**
@@ -47,11 +45,11 @@ public class ObjectFieldTypesTest {
     @Test
     public void testFieldsAreFoundInMultipleDirectories() {
         ObjectFieldTypes objectFieldTypes;
-        Path vfPagePath = VFTestContstants.SFDX_PATH.resolve(Paths.get("pages", "StandarAccountPage.page"))
-                .toAbsolutePath();
+        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+            .resolve("SomePage.page");
 
-        List<String> paths = Arrays.asList(VFTestContstants.RELATIVE_OBJECTS_DIRECTORIES.get(0),
-                VFTestContstants.ABSOLUTE_MDAPI_OBJECTS_DIRECTORIES.get(0));
+        List<String> paths = Arrays.asList(VfExpressionTypeVisitor.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue().get(0),
+                VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Objects).toString());
         objectFieldTypes = new ObjectFieldTypes();
         validateSfdxAccount(objectFieldTypes, vfPagePath, paths);
         validateMDAPIAccount(objectFieldTypes, vfPagePath, paths);
@@ -64,8 +62,7 @@ public class ObjectFieldTypesTest {
 
     @Test
     public void testInvalidDirectoryDoesNotCauseAnException() {
-        Path vfPagePath = VFTestContstants.SFDX_PATH.resolve(Paths.get("pages", "StandarAccountPage.page"))
-                .toAbsolutePath();
+        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
         String vfFileName = vfPagePath.toString();
 
         List<String> paths = Arrays.asList(Paths.get("..", "objects-does-not-exist").toString());

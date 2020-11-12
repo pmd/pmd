@@ -10,11 +10,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -37,12 +38,12 @@ class ApexClassPropertyTypes {
     private static final Logger LOGGER = Logger.getLogger(ApexClassPropertyTypes.class.getName());
     private static final String APEX_CLASS_FILE_SUFFIX = ".cls";
 
-    private final ConcurrentHashMap<String, IdentifierType> variableNameToVariableType;
+    private final Map<String, IdentifierType> variableNameToVariableType;
     private final Set<String> variableNameProcessed;
 
     ApexClassPropertyTypes() {
-        this.variableNameToVariableType = new ConcurrentHashMap<>();
-        this.variableNameProcessed = Collections.newSetFromMap(new ConcurrentHashMap());
+        this.variableNameToVariableType = new HashMap<>();
+        this.variableNameProcessed = new HashSet<>();
     }
 
     /**
@@ -128,4 +129,3 @@ class ApexClassPropertyTypes {
         return languageVersion.getLanguageVersionHandler().getParser(parserOptions);
     }
 }
-

@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.lang.vf;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import apex.jorje.semantic.symbol.type.BasicType;
@@ -68,12 +68,12 @@ public enum IdentifierType {
      * A case insensitive map of the enum name to its instance. The case metadata is not guaranteed to have the correct
      * case.
      */
-    private static final Map<String, IdentifierType> CASE_INSENSITIVE_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, IdentifierType> CASE_INSENSITIVE_MAP = new HashMap<>();
 
     /**
      * Map of BasicType to IdentifierType. Multiple BasicTypes may map to one ExrpessionType.
      */
-    private static final Map<BasicType, IdentifierType> BASIC_TYPE_MAP = new ConcurrentHashMap<>();
+    private static final Map<BasicType, IdentifierType> BASIC_TYPE_MAP = new HashMap<>();
 
     static {
         for (IdentifierType identifierType : IdentifierType.values()) {
@@ -119,7 +119,7 @@ public enum IdentifierType {
 
     IdentifierType(boolean requiresEscaping, BasicType...basicTypes) {
         this.requiresEscaping = requiresEscaping;
-        this.basicTypes = Collections.newSetFromMap(new ConcurrentHashMap());
+        this.basicTypes = new HashSet<>();
         if (basicTypes != null) {
             this.basicTypes.addAll(Arrays.asList(basicTypes));
         }

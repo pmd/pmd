@@ -17,8 +17,8 @@ import org.junit.Test;
 public class ApexClassPropertyTypesTest {
     @Test
     public void testApexClassIsProperlyParsed() {
-        Path vfPagePath = VFTestContstants.SFDX_PATH.resolve(Paths.get("pages", "ApexController.page"))
-                .toAbsolutePath();
+        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+                .resolve("SomePage.page");
         String vfFileName = vfPagePath.toString();
 
         // Intentionally use the wrong case for property names to ensure that they can be found. The Apex class name
@@ -27,35 +27,35 @@ public class ApexClassPropertyTypesTest {
         ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes();
         assertEquals(IdentifierType.Lookup,
                 apexClassPropertyTypes.getVariableType("ApexController.accOuntIdProp", vfFileName,
-                        VFTestContstants.RELATIVE_APEX_DIRECTORIES));
+                        VfExpressionTypeVisitor.APEX_DIRECTORIES_DESCRIPTOR.defaultValue()));
         assertEquals(IdentifierType.Lookup,
                 apexClassPropertyTypes.getVariableType("ApexController.AcCountId", vfFileName,
-                        VFTestContstants.RELATIVE_APEX_DIRECTORIES));
+                        VfExpressionTypeVisitor.APEX_DIRECTORIES_DESCRIPTOR.defaultValue()));
         assertEquals(IdentifierType.Text,
                 apexClassPropertyTypes.getVariableType("ApexController.AcCountname", vfFileName,
-                        VFTestContstants.RELATIVE_APEX_DIRECTORIES));
+                        VfExpressionTypeVisitor.APEX_DIRECTORIES_DESCRIPTOR.defaultValue()));
 
         // InnerController
         assertEquals("The class should be parsed to Unknown. It's not a valid expression on its own.",
                 IdentifierType.Unknown,
                 apexClassPropertyTypes.getVariableType("ApexController.innErController", vfFileName,
-                        VFTestContstants.RELATIVE_APEX_DIRECTORIES));
+                        VfExpressionTypeVisitor.APEX_DIRECTORIES_DESCRIPTOR.defaultValue()));
         assertEquals(IdentifierType.Lookup,
                 apexClassPropertyTypes.getVariableType("ApexController.innErController.innErAccountIdProp",
-                        vfFileName, VFTestContstants.RELATIVE_APEX_DIRECTORIES));
+                        vfFileName, VfExpressionTypeVisitor.APEX_DIRECTORIES_DESCRIPTOR.defaultValue()));
         assertEquals(IdentifierType.Lookup,
                 apexClassPropertyTypes.getVariableType("ApexController.innErController.innErAccountid",
-                        vfFileName, VFTestContstants.RELATIVE_APEX_DIRECTORIES));
+                        vfFileName, VfExpressionTypeVisitor.APEX_DIRECTORIES_DESCRIPTOR.defaultValue()));
         assertEquals(IdentifierType.Text,
                 apexClassPropertyTypes.getVariableType("ApexController.innErController.innErAccountnAme",
-                        vfFileName, VFTestContstants.RELATIVE_APEX_DIRECTORIES));
+                        vfFileName, VfExpressionTypeVisitor.APEX_DIRECTORIES_DESCRIPTOR.defaultValue()));
 
         assertNull("Invalid class should return null",
                 apexClassPropertyTypes.getVariableType("unknownclass.invalidProperty", vfFileName,
-                        VFTestContstants.RELATIVE_APEX_DIRECTORIES));
+                        VfExpressionTypeVisitor.APEX_DIRECTORIES_DESCRIPTOR.defaultValue()));
         assertNull("Invalid class property should return null",
                 apexClassPropertyTypes.getVariableType("ApexController.invalidProperty", vfFileName,
-                        VFTestContstants.RELATIVE_APEX_DIRECTORIES));
+                        VfExpressionTypeVisitor.APEX_DIRECTORIES_DESCRIPTOR.defaultValue()));
     }
 
     /**
@@ -65,19 +65,19 @@ public class ApexClassPropertyTypesTest {
      */
     @Test
     public void testConflictingPropertyTypesMapsToUnknown() {
-        Path vfPagePath = VFTestContstants.SFDX_PATH.resolve(Paths.get("pages", "ApexController.page"))
-                .toAbsolutePath();
+        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+                .resolve("SomePage.page");
         String vfFileName = vfPagePath.toString();
         ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes();
         assertEquals(IdentifierType.Unknown,
                 apexClassPropertyTypes.getVariableType("ApexWithConflictingPropertyTypes.ConflictingProp",
-                        vfFileName, VFTestContstants.RELATIVE_APEX_DIRECTORIES));
+                        vfFileName, VfExpressionTypeVisitor.APEX_DIRECTORIES_DESCRIPTOR.defaultValue()));
     }
 
     @Test
     public void testInvalidDirectoryDoesNotCauseAnException() {
-        Path vfPagePath = VFTestContstants.SFDX_PATH.resolve(Paths.get("pages", "ApexController.page"))
-                .toAbsolutePath();
+        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+                .resolve("SomePage.page");
         String vfFileName = vfPagePath.toString();
 
         List<String> paths = Arrays.asList(Paths.get("..", "classes-does-not-exist").toString());
