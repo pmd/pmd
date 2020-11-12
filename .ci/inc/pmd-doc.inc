@@ -103,7 +103,7 @@ function pmd_doc_publish_to_github_pages() {
         MSG="Update documentation
 
 ${PMD_CI_JOB_URL}
-${PMD_CI_PUSH_COMMIT_COMPARE}
+${PMD_CI_PUSH_COMMIT_COMPARE}"
         git commit -q -m "$MSG"
         git push git@github.com:pmd/pmd.git HEAD:gh-pages
         log_success "Successfully pushed site to https://pmd.github.io/pmd/"
