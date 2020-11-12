@@ -44,6 +44,7 @@ case "$(uname)" in
         check "ssh" "ssh -V" "OpenSSH"
         check "git" "git --version" "git version"
         check "mvn" "mvn --version" "Apache Maven"
+        check "unzip" "unzip --version" "UnZip"
         #check "7z" "7z -version" "7-Zip"
         ;;
     Darwin*)
