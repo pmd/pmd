@@ -55,11 +55,25 @@ is not protected.
 
 ### Local tests
 
-You can run a local instance with docker:
+Create a local docker container:
 
 ```
-docker run -it --mount type=bind,source=path/to/pmd,target=/workspaces/pmd/pmd ubuntu:latest
+cd .ci/docker_ubuntu18.04
+docker build -t pmd-ci .
 ```
 
-You'll need to install a few packages before you can start... You can verify with `check-environment.sh`
-if everything is prepared.
+This container is based on Ubuntu 18.04, which is used for `ubuntu-latest` github actions runner
+(see <https://github.com/actions/virtual-environments>).
+
+You can run a local instance with docker and mount your local pmd checkout into the container:
+
+```
+docker run -it --mount type=bind,source=path/to/pmd,target=/workspaces/pmd/pmd pmd-ci
+```
+
+You'll be dropped into a bash. Start e.g. with
+
+```
+cd workspaces/pmd/pmd
+.ci/check-environment.sh
+```
