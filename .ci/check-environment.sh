@@ -34,6 +34,7 @@ check "ruby" "ruby --version"
 # printenv
 # rsync
 # ssh
+# git
 
 
 

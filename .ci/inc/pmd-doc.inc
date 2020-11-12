@@ -1,3 +1,9 @@
+
+# Used env vars:
+# PMD_CI_JOB_URL
+# PMD_CI_PUSH_COMMIT_COMPARE
+
+
 #
 # Executes jekyll and generates the documentation
 # The documentation will be generated in the directory "docs/_site".
@@ -42,7 +48,7 @@ function publish_release_documentation_github() {
     (
         cd pmd.github.io
         git init
-        git config user.name "Travis CI (pmd-bot)"
+        git config user.name "PMD CI (pmd-bot)"
         git config user.email "andreas.dangel+pmd-bot@adangel.org"
         git config core.sparsecheckout true
         git remote add origin git@github.com:pmd/pmd.github.io.git
@@ -91,13 +97,13 @@ function pmd_doc_publish_to_github_pages() {
     cp -a docs/pmd-doc-${VERSION}/* pmd-gh-pages/
     (
         cd pmd-gh-pages
-        git config user.name "Travis CI (pmd-bot)"
+        git config user.name "PMD CI (pmd-bot)"
         git config user.email "andreas.dangel+pmd-bot@adangel.org"
         git add -A
         MSG="Update documentation
 
-TRAVIS_JOB_NUMBER=${TRAVIS_JOB_NUMBER}
-TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}"
+${PMD_CI_JOB_URL}
+${PMD_CI_PUSH_COMMIT_COMPARE}
         git commit -q -m "$MSG"
         git push git@github.com:pmd/pmd.git HEAD:gh-pages
         log_success "Successfully pushed site to https://pmd.github.io/pmd/"
