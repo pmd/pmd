@@ -98,9 +98,9 @@ function pmd_ci_build_run() {
 function pmd_ci_build_setup_regression_tester() {
     # install openjdk8 for pmd-regression-tests
     .ci/install-openjdk.sh 8
+    rm -f .bundle/config
     bundle config set --local path vendor/bundle
     bundle config set --local with release_notes_preprocessing
-    bundle config --local gemfile Gemfile
     bundle install
 }
 
