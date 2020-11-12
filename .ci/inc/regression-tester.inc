@@ -6,6 +6,23 @@
 # PMD_SF_USER
 # PMD_CI_BRANCH
 
+function regression_tester_setup_ci() {
+    # install openjdk8 for pmd-regression-tests
+    .ci/install-openjdk.sh 8
+
+    if hash "bundler" 2>/dev/null; then
+        log_debug "Bundler is already installed"
+    else
+        log_info "Installing bundler..."
+        gem install bundler
+    fi
+
+    rm -f .bundle/config
+    bundle config set --local path vendor/bundle
+    bundle config set --local with release_notes_preprocessing
+    bundle install
+}
+
 #
 # Generate a new baseline and upload it to sourceforge
 #
@@ -58,7 +75,6 @@ function regression_tester_uploadBaseline() {
 # In that case, just a error logging is provided.
 #
 function regression_tester_executeDanger() {
-    change_ruby_version
     log_debug "$FUNCNAME"
 
     local errexitstate="$(shopt -po errexit)"
@@ -72,6 +88,10 @@ function regression_tester_executeDanger() {
         # exit subshell after trap
         set -e
         trap danger_failed ERR
+
+        PMD_CI_BRANCH=${PMD_CI_BRANCH##refs/heads/}
+        export PMD_CI_BRANCH
+        log_debug "Using modified branch name: ${PMD_CI_BRANCH}"
 
         # Create a corresponding remote branch locally
         if ! git show-ref --verify --quiet refs/heads/${PMD_CI_BRANCH}; then

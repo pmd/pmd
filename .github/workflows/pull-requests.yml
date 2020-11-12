@@ -21,15 +21,17 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-
+      - name: Set up Ruby 2.7
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
       - name: Install OpenJDK 11
         run: .ci/install-openjdk.sh 11
         shell: bash
-      - name: Build with mvnw
-        run: |
-          source ${HOME}/java.env
-          ./mvnw -e -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -V clean install
+      - name: Build
+        run: .ci/build-pr.sh
         shell: bash
-      - name: Execute Danger
-        if: ${{ runner.os ==  'Linux' }}
-        run: echo "TODO"
-        shell: bash
+        env:
+          PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
+          PMD_CI_BRANCH: ${{ github.ref }}
+          PMD_CI_PULL_REQUEST_NUMBER: ${{ github.event.number }}

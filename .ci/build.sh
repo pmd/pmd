@@ -31,7 +31,7 @@ function pmd_ci_build_main() {
 
     pmd_ci_build_and_upload_doc
 
-    pmd_ci_build_setup_regression_tester
+    regression_tester_setup_ci
     regression_tester_uploadBaseline
 
     exit 0
@@ -95,15 +95,7 @@ function pmd_ci_build_run() {
     ./mvnw deploy -Possrh,sign,generate-rule-docs $MVN_BUILD_FLAGS
 }
 
-function pmd_ci_build_setup_regression_tester() {
-    # install openjdk8 for pmd-regression-tests
-    .ci/install-openjdk.sh 8
-    rm -f .bundle/config
-    bundle config set --local path vendor/bundle
-    bundle config set --local with release_notes_preprocessing
-    bundle install
-}
-
+# Needed for doc generation and regression tester
 function pmd_ci_build_setup_bundler() {
     log_info "Installing bundler..."
     gem install bundler

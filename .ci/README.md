@@ -9,10 +9,17 @@ for a ssh key, which is used to copy files to sourceforge.
 
 ## Environment variables
 
-* `PMD_CI_SECRET_PASSPHRASE`
-* `CI_DEPLOY_PASSWORD`
-* `CI_SIGN_PASSPHRASE`
-* ...
+* PMD_CI_SECRET_PASSPHRASE
+* CI_DEPLOY_USER
+* CI_DEPLOY_PASSWORD
+* CI_SIGN_KEY
+* CI_SIGN_PASSPHRASE
+* PMD_SF_USER
+* PMD_SF_APIKEY
+* GITHUB_OAUTH_TOKEN
+* GITHUB_BASE_URL
+* DANGER_GITHUB_API_TOKEN
+* PMD_CI_CHUNK_TOKEN
 
 ## Encrypting
 
