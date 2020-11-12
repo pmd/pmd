@@ -37,7 +37,6 @@ function pmd_ci_build_get_pom_version() {
 
 function pmd_ci_build_setup_maven() {
     # configure maven
-    echo "MAVEN_OPTS='-Xms1g -Xmx1g'" > ${HOME}/.mavenrc
     mkdir -p ${HOME}/.m2
     cp .ci/maven-settings.xml ${HOME}/.m2/settings.xml
 }
@@ -65,7 +64,7 @@ function pmd_ci_build_setup_oraclejdk7() {
 }
 
 function pmd_ci_build_run() {
-    MVN_BUILD_FLAGS="-B -V  -Djava7.home=${HOME}/oraclejdk7"
+    MVN_BUILD_FLAGS="-e -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -V  -Djava7.home=${HOME}/oraclejdk7"
 
     log_info "This is a snapshot build"
     ./mvnw deploy -Possrh,sign $MVN_BUILD_FLAGS

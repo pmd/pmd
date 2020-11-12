@@ -27,7 +27,7 @@ jobs:
       - name: Build with mvnw
         run: |
           source ${HOME}/java.env
-          ./mvnw -V clean install
+          ./mvnw -e -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -V clean install
         shell: bash
       - name: Execute Danger
         if: ${{ runner.os ==  'Linux' }}
