@@ -16,7 +16,7 @@ import net.sourceforge.pmd.RuleViolation;
  */
 public class TextRenderer extends AbstractIncrementingRenderer {
 
-    private static final Character SMALL_SEPARATOR = ':';
+    private static final char SMALL_SEPARATOR = ':';
     private static final String MEDIUM_SEPARATOR = ":\t";
     private static final String LARGE_SEPARATOR = "\t-\t";
 
