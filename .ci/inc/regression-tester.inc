@@ -35,16 +35,16 @@ function regression_tester_uploadBaseline() {
         log_info "Generating and uploading baseline for pmdtester..."
         cd ..
         bundle config --local gemfile pmd/Gemfile
-        pmd/.travis/travis_wait "bundle exec pmdtester
+        pmd/.ci/travis_wait "bundle exec pmdtester
             --mode single
             --local-git-repo ./pmd
             --patch-branch ${PMD_CI_BRANCH}
-            --patch-config ./pmd/.travis/all-java.xml
-            --list-of-project ./pmd/.travis/project-list.xml --html-flag"
+            --patch-config ./pmd/.ci/files/all-java.xml
+            --list-of-project ./pmd/.ci/files/project-list.xml --html-flag"
         cd target/reports
         BRANCH_FILENAME="${PMD_CI_BRANCH/\//_}"
         zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
-        ../../pmd/.travis/travis_wait "rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/"
+        ../../pmd/.ci/travis_wait "rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/"
         log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${targetUrl}"
     )
     # restore errexit state
