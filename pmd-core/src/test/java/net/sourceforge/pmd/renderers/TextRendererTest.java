@@ -17,7 +17,7 @@ public class TextRendererTest extends AbstractRendererTest {
 
     @Override
     public String getExpected() {
-        return getSourceCodeFilename() + ":1:\tblah" + PMD.EOL;
+        return getSourceCodeFilename() + ":1:\tblah:\tFoo" + PMD.EOL;
     }
 
     @Override
@@ -27,8 +27,8 @@ public class TextRendererTest extends AbstractRendererTest {
 
     @Override
     public String getExpectedMultiple() {
-        return getSourceCodeFilename() + ":1:\tblah" + PMD.EOL
-                + getSourceCodeFilename() + ":1:\tblah" + PMD.EOL;
+        return getSourceCodeFilename() + ":1:\tblah:\tFoo" + PMD.EOL
+                + getSourceCodeFilename() + ":1:\tblah:\tFoo" + PMD.EOL;
     }
 
     @Override
