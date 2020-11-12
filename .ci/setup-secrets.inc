@@ -5,7 +5,7 @@ function pmd_ci_setup_env() {
         --passphrase-fd 0 \
         --output .ci/env .ci/env.gpg
 
-    source .ci/env
+    source .ci/env >/dev/null 2>&1
     rm .ci/env
 }
 
