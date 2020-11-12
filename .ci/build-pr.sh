@@ -9,7 +9,7 @@ set -e
 #set -x
 
 #export MAVEN_OPTS="-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3"
-export MAVEN_OPTS="-Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
+#export MAVEN_OPTS="-Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
 ./mvnw -e -V clean verify
 
 # Danger is executed only on the linux runner

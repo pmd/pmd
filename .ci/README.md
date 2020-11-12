@@ -38,8 +38,10 @@ https://issues.apache.org/jira/browse/WAGON-545 is applied:
 The setting `-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3`
 doesn't seem to work.
 
-Now we disable pooling completeley, so that for downloading a artifact/dependency, always new, fresh
-connections are sued: `-Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false`.
+Now we disable pooling completely, so that for downloading a artifact/dependency, always new, fresh
+connections are used: `-Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false`.
+
+Not working either.
 
 ## Hints
 
@@ -54,8 +56,8 @@ Just add the following step into the job:
         uses: mxschmitt/action-tmate@v3
 ```
 
-Note: This is dangerous for push builds, because these have access to the secrets and the SSH session
-is not protected.
+**Note**: This is dangerous for push/pull builds, because these have access to the secrets and the SSH session
+is not protected...
 
 ### Local tests
 

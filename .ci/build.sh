@@ -89,10 +89,10 @@ function pmd_ci_build_setup_oraclejdk7() {
 }
 
 function pmd_ci_build_run() {
-    MVN_BUILD_FLAGS="-e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -V  -Djava7.home=${HOME}/oraclejdk7"
-
     log_info "This is a snapshot build"
-    ./mvnw deploy -Possrh,sign,generate-rule-docs $MVN_BUILD_FLAGS
+    #export MAVEN_OPTS="-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3"
+    #export MAVEN_OPTS="-Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
+    ./mvnw deploy -Possrh,sign,generate-rule-docs -e -V -Djava7.home=${HOME}/oraclejdk7
 }
 
 # Needed for doc generation and regression tester
