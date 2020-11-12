@@ -1426,7 +1426,25 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h4 id="deprecated-api">Deprecated API</h4>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.30.0-SNAPSHOT/net/sourceforge/pmd/ast/ASTPackageDeclaration.html#getPackageNameImage()"><code>getPackageNameImage</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.30.0-SNAPSHOT/net/sourceforge/pmd/ast/ASTTypeParameter.html#getParameterName()"><code>getParameterName</code></a> and the corresponding XPath attributes. In both cases they’re replaced with a new method <code class="language-plaintext highlighter-rouge">getName</code>, the attribute is <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.30.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPackageDeclaration.html#getPackageNameImage()"><code>ASTPackageDeclaration#getPackageNameImage</code></a>,
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/6.30.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeParameter.html#getParameterName()"><code>ASTTypeParameter#getParameterName</code></a>
+and the corresponding XPath attributes. In both cases they’re replaced with a new method <code class="language-plaintext highlighter-rouge">getName</code>,
+the attribute is <code class="language-plaintext highlighter-rouge">@Name</code>.</li>
+</ul>
+
+<h4 id="internal-api">Internal API</h4>
+
+<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.30.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/Ecmascript3Handler.html#"><code>net.sourceforge.pmd.lang.ecmascript.Ecmascript3Handler</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.30.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/Ecmascript3Parser.html#"><code>net.sourceforge.pmd.lang.ecmascript.Ecmascript3Parser</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.30.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/EcmascriptParser.html#parserOptions"><code>EcmascriptParser#parserOptions</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.30.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/EcmascriptParser.html#getSuppressMap()"><code>EcmascriptParser#getSuppressMap</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/ParametricRuleViolation.html#"><code>net.sourceforge.pmd.lang.rule.ParametricRuleViolation</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0-SNAPSHOT/net/sourceforge/pmd/lang/ParserOptions.html#suppressMarker"><code>ParserOptions#suppressMarker</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/6.30.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/rule/ModelicaRuleViolationFactory.html#"><code>net.sourceforge.pmd.lang.modelica.rule.ModelicaRuleViolationFactory</code></a></li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1447,7 +1465,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Nov 3, 2020 <br />
+ Site last generated: Nov 12, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
