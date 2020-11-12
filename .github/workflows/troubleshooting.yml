@@ -1,7 +1,6 @@
-name: Pull Requests
+name: troubleshooting
 
-#on: pull_request
-on: workflow_dispatch
+on: pull_request
 
 jobs:
   build:
@@ -11,7 +10,7 @@ jobs:
     strategy:
       matrix:
         #os: [ ubuntu-latest, windows-latest, macos-latest ]
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ ubuntu-latest ]
 
     steps:
       - uses: actions/checkout@v2
@@ -30,10 +29,5 @@ jobs:
       - name: Install OpenJDK 11
         run: .ci/install-openjdk.sh 11
         shell: bash
-      - name: Build
-        run: .ci/build-pr.sh
-        shell: bash
-        env:
-          PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
-          PMD_CI_BRANCH: ${{ github.ref }}
-          PMD_CI_PULL_REQUEST_NUMBER: ${{ github.event.number }}
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
