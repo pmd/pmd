@@ -50,6 +50,11 @@ public class BaseXPathFunctionTest extends BaseNonParserTest {
     }
 
 
+    protected void assertFinds(Rule rule, int numViolations, String code) {
+        assertReportSize(rule, code, numViolations);
+    }
+
+
     protected void testWithExpectedException(String xpath,
                                              String code,
                                              Consumer<? super PmdXPathException> exceptionSpec) {

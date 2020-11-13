@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.util.OptionalBool;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Public utilities to test the type of nodes.
@@ -455,7 +456,15 @@ public final class TypeTestUtil {
             if (isChar(source, i, c)) {
                 return i + 1;
             }
-            throw new IllegalArgumentException("Expected " + c + " at index " + i);
+            throw newParseException(source, i, "character '" + c + "'");
+        }
+
+        private static RuntimeException newParseException(String source, int i, String expectedWhat) {
+            final String indent = "    ";
+            String message = "Expected " + expectedWhat + " at index " + i + ":\n";
+            message += indent + "\"" + StringUtil.escapeJava(source) + "\"\n";
+            message += indent + StringUtils.repeat(' ', i + 1) + '^' + "\n";
+            return new IllegalArgumentException(message);
         }
 
         private static boolean isChar(String source, int i, char c) {
@@ -475,6 +484,10 @@ public final class TypeTestUtil {
                 || source.charAt(i) == '.')) {
                 i++;
             }
+            if (i == start) {
+                throw newParseException(source, i, "type");
+            }
+
             AssertionUtil.assertValidJavaBinaryName(source.substring(start, i));
             // array dimensions
             while (isChar(source, i, '[')) {

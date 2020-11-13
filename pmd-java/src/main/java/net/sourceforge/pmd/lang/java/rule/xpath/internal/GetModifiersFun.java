@@ -64,7 +64,6 @@ public final class GetModifiersFun extends BaseJavaXPathFunction {
             public Sequence call(XPathContext context, Sequence[] arguments) {
                 Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
 
-
                 if (contextNode instanceof AccessNode) {
                     ASTModifierList modList = ((AccessNode) contextNode).getModifiers();
                     Set<JModifier> mods = explicit ? modList.getExplicitModifiers()

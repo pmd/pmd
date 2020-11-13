@@ -80,8 +80,8 @@ abstract class BaseRewrittenFunction<S, N extends JavaNode> extends BaseJavaXPat
             public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
                 Node node = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
                 if (!contextNodeType.isInstance(node)) {
-                    throw new XPathException(
-                        "Invalid node type: " + node.getXPathNodeName() + ", expected " + contextNodeType);
+                    // we could report that as an error
+                    return BooleanValue.FALSE;
                 }
 
                 String arg = arguments[0].head().getStringValue();
