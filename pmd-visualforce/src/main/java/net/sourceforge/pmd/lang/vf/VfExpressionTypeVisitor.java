@@ -86,6 +86,10 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
+        if (apexDirectories.isEmpty() && objectsDirectories.isEmpty()) {
+            // Skip visiting if there aren't any directories to look in
+            return data;
+        }
         this.fileName = AbstractTokenManager.getFileName();
         return super.visit(node, data);
     }

@@ -6,20 +6,24 @@ package net.sourceforge.pmd.lang;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.test.lang.DummyLanguageModule;
 
+/**
+ * Unit tests for {@link ParserOptions}.
+ * This class is located in the pmd-test project instead of pmd-core so that it can invoke
+ * {@link ParserOptionsTestUtils#verifyOptionsEqualsHashcode}
+ */
 public class ParserOptionsTest {
     private static final List<String> DEFAULT_LIST = Arrays.asList("value1", "value2");
     private static final String DEFAULT_STRING = "value3";
@@ -46,6 +50,17 @@ public class ParserOptionsTest {
             definePropertyDescriptor(STRING_DESCRIPTOR);
             overridePropertiesFromEnv();
         }
+    }
+
+    /**
+     * SuppressMarker should be initially null and changeable.
+     */
+    @Test
+    public void testSuppressMarker() {
+        ParserOptions parserOptions = new ParserOptions();
+        Assert.assertNull(parserOptions.getSuppressMarker());
+        parserOptions.setSuppressMarker("foo");
+        Assert.assertEquals("foo", parserOptions.getSuppressMarker());
     }
 
     @Test
@@ -104,37 +119,81 @@ public class ParserOptionsTest {
         assertEquals("", vfParserOptions.getProperty(TestParserOptions.STRING_DESCRIPTOR));
     }
 
+    /**
+     * Verify that the equals and hashCode methods work as expected.
+     * TODO: Consider using Guava's EqualsTester
+     */
     @Test
-    public void testEqualsAndHashCode() {
-        ParserOptions parserOptions = new ParserOptions();
-        TestParserOptions testParserOptions1 = new TestParserOptions();
-        TestParserOptions testParserOptions2 = new TestParserOptions();
+    public void testSuppressMarkerEqualsHashCode() {
+        ParserOptions options1;
+        ParserOptions options2;
+        ParserOptions options3;
+        ParserOptions options4;
 
-        // Differences based on Language
-        assertNotNull(parserOptions.hashCode());
-        assertFalse(parserOptions.equals(testParserOptions1));
-        assertNotEquals(parserOptions.hashCode(), testParserOptions1.hashCode());
+        // SuppressMarker
+        options1 = new ParserOptions();
+        options2 = new ParserOptions();
+        options3 = new ParserOptions();
+        options4 = new ParserOptions();
+        options1.setSuppressMarker("foo");
+        options2.setSuppressMarker("bar");
+        options3.setSuppressMarker("foo");
+        options4.setSuppressMarker("bar");
+        ParserOptionsTestUtils.verifyOptionsEqualsHashcode(options1, options2, options3, options4);
 
-        // Differences based on Properties
-        assertNotNull(testParserOptions1.hashCode());
-        assertTrue(testParserOptions1.equals(testParserOptions2));
-        assertEquals(testParserOptions1.hashCode(), testParserOptions2.hashCode());
+        // PropertyDescriptor
+        options1 = new ParserOptions();
+        options2 = new ParserOptions();
+        options3 = new ParserOptions();
+        options4 = new ParserOptions();
+        options1.definePropertyDescriptor(TestParserOptions.LIST_DESCRIPTOR);
+        options2.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options3.definePropertyDescriptor(TestParserOptions.LIST_DESCRIPTOR);
+        options4.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        ParserOptionsTestUtils.verifyOptionsEqualsHashcode(options1, options2, options3, options4);
 
-        testParserOptions1.setProperty(TestParserOptions.LIST_DESCRIPTOR, OVERRIDDEN_LIST);
-        assertFalse(testParserOptions1.equals(testParserOptions2));
-        assertNotEquals(testParserOptions1.hashCode(), testParserOptions2.hashCode());
+        // PropertyValue
+        options1 = new ParserOptions();
+        options2 = new ParserOptions();
+        options3 = new ParserOptions();
+        options4 = new ParserOptions();
+        options1.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options1.setProperty(TestParserOptions.STRING_DESCRIPTOR, DEFAULT_STRING);
+        options2.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options2.setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
+        options3.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options3.setProperty(TestParserOptions.STRING_DESCRIPTOR, DEFAULT_STRING);
+        options4.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options4.setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
+        ParserOptionsTestUtils.verifyOptionsEqualsHashcode(options1, options2, options3, options4);
 
-        testParserOptions1.setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
-        assertFalse(testParserOptions1.equals(testParserOptions2));
-        assertNotEquals(testParserOptions1.hashCode(), testParserOptions2.hashCode());
+        // Language
+        options1 = new ParserOptions(new DummyLanguageModule());
+        options2 = new ParserOptions();
+        options3 = new ParserOptions(new DummyLanguageModule());
+        options4 = new ParserOptions();
+        ParserOptionsTestUtils.verifyOptionsEqualsHashcode(options1, options2, options3, options4);
 
-        testParserOptions2.setProperty(TestParserOptions.LIST_DESCRIPTOR, OVERRIDDEN_LIST);
-        assertFalse(testParserOptions1.equals(testParserOptions2));
-        assertNotEquals(testParserOptions1.hashCode(), testParserOptions2.hashCode());
+        // SuppressMarker, PropertyDescriptor, PropertyValue, Language
+        options1 = new ParserOptions(new DummyLanguageModule());
+        options2 = new ParserOptions();
+        options3 = new ParserOptions(new DummyLanguageModule());
+        options4 = new ParserOptions();
+        options1.setSuppressMarker("foo");
+        options2.setSuppressMarker("bar");
+        options3.setSuppressMarker("foo");
+        options4.setSuppressMarker("bar");
+        options1.definePropertyDescriptor(TestParserOptions.LIST_DESCRIPTOR);
+        options1.setProperty(TestParserOptions.LIST_DESCRIPTOR, DEFAULT_LIST);
+        options2.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options2.setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
+        options3.definePropertyDescriptor(TestParserOptions.LIST_DESCRIPTOR);
+        options3.setProperty(TestParserOptions.LIST_DESCRIPTOR, DEFAULT_LIST);
+        options4.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options4.setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
+        ParserOptionsTestUtils.verifyOptionsEqualsHashcode(options1, options2, options3, options4);
 
-        testParserOptions2.setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
-        assertTrue(testParserOptions1.equals(testParserOptions2));
-        assertEquals(testParserOptions1.hashCode(), testParserOptions2.hashCode());
+        assertFalse(options1.equals(null));
     }
 
     @Test

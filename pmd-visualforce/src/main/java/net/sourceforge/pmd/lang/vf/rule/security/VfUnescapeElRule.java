@@ -51,10 +51,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final Pattern ON_EVENT = Pattern.compile("^on(\\w)+$");
     private static final Pattern PLACEHOLDERS = Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}");
 
-    public VfUnescapeElRule() {
-        this.setTypeResolution(true);
-    }
-
     @Override
     public Object visit(ASTHtmlScript node, Object data) {
         checkIfCorrectlyEscaped(node, data);

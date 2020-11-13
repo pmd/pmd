@@ -5,38 +5,9 @@
 package net.sourceforge.pmd.lang;
 
 import org.junit.Assert;
-import org.junit.Test;
 
-/**
- * Unit tests for {@link ParserOptions}.
- */
-public class ParserOptionsTest {
-
-    /**
-     * SuppressMarker should be initially null and changeable.
-     */
-    @Test
-    public void testSuppressMarker() {
-        ParserOptions parserOptions = new ParserOptions();
-        Assert.assertNull(parserOptions.getSuppressMarker());
-        parserOptions.setSuppressMarker("foo");
-        Assert.assertEquals("foo", parserOptions.getSuppressMarker());
-    }
-
-    /**
-     * Verify that the equals and hashCode methods work as expected.
-     */
-    @Test
-    public void testEqualsHashcode() {
-        ParserOptions options1 = new ParserOptions();
-        options1.setSuppressMarker("foo");
-        ParserOptions options2 = new ParserOptions();
-        options2.setSuppressMarker("bar");
-        ParserOptions options3 = new ParserOptions();
-        options3.setSuppressMarker("foo");
-        ParserOptions options4 = new ParserOptions();
-        options4.setSuppressMarker("bar");
-        verifyOptionsEqualsHashcode(options1, options2, options3, options4);
+public final class ParserOptionsTestUtils {
+    private ParserOptionsTestUtils() {
     }
 
     /**
