@@ -19,6 +19,7 @@ public class PmdXPathException extends ContextedRuntimeException {
     private static final String EXPR = "Expression";
     private static final String VERSION = "Version";
     private static final String RULE_NAME = "Rule";
+    private static final String LOCATION = "Location in expr";
 
     public PmdXPathException(XPathException e, Phase phase, String expression, XPathVersion version) {
         super(e);
@@ -26,6 +27,7 @@ public class PmdXPathException extends ContextedRuntimeException {
         setContextValue(ERROR_PHASE, phase);
         setContextValue(EXPR, expression);
         setContextValue(VERSION, version);
+        setContextValue(LOCATION, e.getLocationAsString());
     }
 
     public Phase getPhase() {
