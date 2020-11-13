@@ -3,13 +3,14 @@
 source $(dirname $0)/inc/logger.inc
 source $(dirname $0)/inc/setup-secrets.inc
 source $(dirname $0)/inc/regression-tester.inc
+source $(dirname $0)/inc/maven-dependencies.inc
 source ${HOME}/java.env
 
 set -e
 #set -x
 
-export MAVEN_OPTS="-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3"
-#export MAVEN_OPTS="-Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
+maven_dependencies_resolve
+
 ./mvnw -e -V clean verify
 
 # Danger is executed only on the linux runner

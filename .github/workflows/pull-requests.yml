@@ -7,6 +7,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     continue-on-error: false
+    timeout-minutes: 30
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     strategy:
       matrix:
@@ -34,6 +35,7 @@ jobs:
         run: .ci/build-pr.sh
         shell: bash
         env:
+          MAVEN_OPTS: -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3
           PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
           PMD_CI_BRANCH: ${{ github.ref }}
           PMD_CI_PULL_REQUEST_NUMBER: ${{ github.event.number }}
