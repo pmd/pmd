@@ -1,5 +1,9 @@
 
 #
+# needs "inc/logger.inc"
+#
+
+#
 # On azure, outgoing idle connection are dropped after 4 minutes.
 # Usually, you can configure wagon with ttl. But these settings are
 # ignored, as soon as dokka-maven-plugin is loaded.
@@ -13,6 +17,8 @@
 # execpt for dokka-maven-plugin, as it does not play well with dependency-plugin.
 #
 function maven_dependencies_resolve() {
+    log_group_start "Downloading maven dependencies"
+
     dokka_version=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${dokka.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec)
 
     ./mvnw dependency:resolve
@@ -22,4 +28,6 @@ function maven_dependencies_resolve() {
            -Dpackaging=jar \
            -DremoteRepositories=jcenter::default::https://jcenter.bintray.com/
     ./mvnw dependency:resolve-plugins -DexcludeGroupIds=org.jetbrains.dokka
+
+    log_group_end
 }

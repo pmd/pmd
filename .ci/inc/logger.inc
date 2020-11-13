@@ -19,3 +19,12 @@ function log_debug() {
     #true
     echo -e "[DEBUG  ] $*"
 }
+
+function log_group_start() {
+    echo "::group::$*"
+    log_info $*
+}
+
+function log_group_end() {
+    echo "::endgroup::"
+}
