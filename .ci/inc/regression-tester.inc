@@ -97,7 +97,7 @@ function regression_tester_executeDanger() {
 
         # Create a corresponding remote branch locally
         if ! git show-ref --verify --quiet refs/heads/${PMD_CI_BRANCH}; then
-            git fetch --no-tags origin +refs/heads/${PMD_CI_BRANCH}:refs/remotes/origin/${PMD_CI_BRANCH}
+            git fetch --no-tags --depth=5 origin +refs/heads/${PMD_CI_BRANCH}:refs/remotes/origin/${PMD_CI_BRANCH}
             git branch ${PMD_CI_BRANCH} origin/${PMD_CI_BRANCH}
             log_debug "Created local branch ${PMD_CI_BRANCH}"
         fi
