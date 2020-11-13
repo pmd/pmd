@@ -9,7 +9,6 @@
 
 function install_openjdk() {
     OPENJDK_VERSION=$1
-    log_group_start "Installing OpenJDK ${OPENJDK_VERSION}"
 
     case "$(uname)" in
         Linux*)
@@ -65,8 +64,6 @@ function install_openjdk() {
             exit 1
             ;;
     esac
-
-    log_group_end
 }
 
 function install_openjdk_setdefault() {

@@ -11,7 +11,7 @@
 # PMD_CI_CHUNK_TOKEN
 
 function regression_tester_setup_ci() {
-    # install openjdk8 for pmd-regression-tests
+    log_info "Install openjdk8 for pmd-regression-tests"
     install_openjdk 8
 
     gpg --batch --yes --decrypt --passphrase="GnxdjywUEPveyCD1RLiTd7t8CImnefYr" \

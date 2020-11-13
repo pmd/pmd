@@ -6,13 +6,17 @@ source $(dirname $0)/inc/regression-tester.inc
 source $(dirname $0)/inc/maven-dependencies.inc
 
 set -e
-#set -x
 
-install_openjdk_setdefault 11
-maven_dependencies_resolve
+log_group_start "Installing OpenJDK 11"
+    install_openjdk_setdefault 11
+log_group_end
+
+log_group_start "Downloading maven dependencies"
+    maven_dependencies_resolve
+log_group_end
 
 log_group_start "Building with maven"
-./mvnw -e -V clean verify
+    ./mvnw -e -V clean verify -Pgenerate-rule-docs
 log_group_end
 
 
@@ -20,8 +24,8 @@ log_group_end
 case "$(uname)" in
     Linux*)
         log_group_start "Executing danger"
-        regression_tester_setup_ci
-        regression_tester_executeDanger
+            regression_tester_setup_ci
+            regression_tester_executeDanger
         log_group_end
         ;;
 esac

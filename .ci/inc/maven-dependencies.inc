@@ -17,9 +17,8 @@
 # execpt for dokka-maven-plugin, as it does not play well with dependency-plugin.
 #
 function maven_dependencies_resolve() {
-    log_group_start "Downloading maven dependencies"
-
-    dokka_version=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${dokka.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec)
+    dokka_version=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${dokka.version}'
+                      --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec)
 
     ./mvnw dependency:resolve
     ./mvnw dependency:get -DgroupId=org.jetbrains.dokka \
@@ -27,7 +26,5 @@ function maven_dependencies_resolve() {
            -Dversion=${dokka_version} \
            -Dpackaging=jar \
            -DremoteRepositories=jcenter::default::https://jcenter.bintray.com/
-    ./mvnw dependency:resolve-plugins -DexcludeGroupIds=org.jetbrains.dokka
-
-    log_group_end
+    ./mvnw dependency:resolve-plugins -DexcludeGroupIds=org.jetbrains.dokka -Psign
 }

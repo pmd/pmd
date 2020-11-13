@@ -72,7 +72,7 @@ function publish_release_documentation_github() {
         git commit -q -m "Copying pmd-${VERSION} to latest"
 
         log_info "Generating sitemap.xml"
-        ../.travis/sitemap_generator.sh > sitemap.xml
+        ../docs/sitemap_generator.sh > sitemap.xml
         echo "Executing: git add sitemap.xml"
         git add sitemap.xml
         echo "Executing: git commit..."
