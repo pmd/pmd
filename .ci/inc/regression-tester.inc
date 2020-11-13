@@ -1,6 +1,7 @@
 #
 # The functions here require the following scripts:
-# inc/logger
+# inc/logger.inc
+# inc/install-openjdk.inc
 #
 # The functions here require the following environment variables:
 # PMD_SF_USER
@@ -11,7 +12,7 @@
 
 function regression_tester_setup_ci() {
     # install openjdk8 for pmd-regression-tests
-    .ci/install-openjdk.sh 8
+    install_openjdk 8
 
     gpg --batch --yes --decrypt --passphrase="GnxdjywUEPveyCD1RLiTd7t8CImnefYr" \
         --output .ci/files/public-env .ci/files/public-env.gpg

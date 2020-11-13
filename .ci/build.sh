@@ -6,7 +6,6 @@ source $(dirname $0)/inc/sourceforge-api.inc
 source $(dirname $0)/inc/pmd-doc.inc
 source $(dirname $0)/inc/pmd-code-api.inc
 source $(dirname $0)/inc/regression-tester.inc
-source ${HOME}/java.env
 
 set -e
 #set -x
@@ -16,6 +15,7 @@ function pmd_ci_build_main() {
     pmd_ci_setup_gpg_key
     pmd_ci_setup_ssh
 
+    install_openjdk_setdefault 11
     pmd_ci_build_setup_maven
     pmd_ci_build_setup_oraclejdk7
     pmd_ci_build_setup_bundler

@@ -26,8 +26,8 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: 2.7
-      - name: Install OpenJDK 11
-        run: .ci/install-openjdk.sh 11
+      - name: Check Environment
+        run: .ci/check-environment.sh
         shell: bash
       - name: Build
         run: .ci/build-pr.sh

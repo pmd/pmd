@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
 source $(dirname $0)/inc/logger.inc
+source $(dirname $0)/inc/install-openjdk.inc
 source $(dirname $0)/inc/regression-tester.inc
 source $(dirname $0)/inc/maven-dependencies.inc
-source ${HOME}/java.env
 
 set -e
 #set -x
 
+install_openjdk_setdefault 11
 maven_dependencies_resolve
 
 log_group_start "Building with maven"

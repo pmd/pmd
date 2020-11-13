@@ -28,9 +28,6 @@ jobs:
       - name: Check Environment
         run: .ci/check-environment.sh
         shell: bash
-      - name: Install OpenJDK 11
-        run: .ci/install-openjdk.sh 11
-        shell: bash
       - name: build
         run: .ci/build.sh
         shell: bash
