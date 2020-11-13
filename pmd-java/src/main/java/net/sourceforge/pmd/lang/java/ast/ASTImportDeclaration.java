@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * Represents an import declaration in a Java file.
  *
@@ -66,7 +68,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
      * Returns the full name of the import. For on-demand imports, this is the name without
      * the final dot and asterisk.
      */
-    public String getImportedName() {
+    public @NonNull String getImportedName() {
         return super.getImage();
     }
 
