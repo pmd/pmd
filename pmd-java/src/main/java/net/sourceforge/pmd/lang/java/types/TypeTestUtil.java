@@ -310,7 +310,9 @@ public final class TypeTestUtil {
      * an overload that does not exist (the char is widened to an int,
      * so the int overload is selected).
      *
-     * <p>Full EBNF grammar (no whitespace is tolerated anywhere):
+     * <h5 id='ebnf'>Full EBNF grammar</h5>
+     *
+     * <p>(no whitespace is tolerated anywhere):
      * <pre>{@code
      * sig         ::= type '#' method_name param_list
      * type        ::= qname ( '[]' )* | '_'
@@ -399,8 +401,8 @@ public final class TypeTestUtil {
          *
          * @return A sig matcher
          *
-         * @throws IllegalArgumentException If the parameters are malformed
-         * @throws NullPointerException     If the parameters are null
+         * @throws IllegalArgumentException If the signature is malformed (see <a href='#ebnf'>EBNF</a>)
+         * @throws NullPointerException     If the signature is null
          */
         public static InvocationMatcher parse(String sig) {
             int i = parseType(sig, 0);

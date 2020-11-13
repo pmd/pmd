@@ -70,7 +70,11 @@ abstract class BaseRewrittenFunction<S, N extends JavaNode> extends BaseJavaXPat
                 Expression firstArg = arguments[0]; // this expression has been type checked so there is an argument
                 if (firstArg instanceof StringLiteral) {
                     String name = ((StringLiteral) firstArg).getStringValue();
-                    constantState = parseArgument(name);
+                    try {
+                        constantState = parseArgument(name);
+                    } catch (XPathException e) {
+                        e.setIsStaticError(true);
+                    }
                     isConstant = true;
                 }
                 return null;
