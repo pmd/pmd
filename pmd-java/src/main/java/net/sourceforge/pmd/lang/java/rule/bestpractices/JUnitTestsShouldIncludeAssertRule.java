@@ -4,13 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JUnitRuleUtil;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 
 public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule {
 
@@ -23,39 +21,13 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule
     public Object visit(ASTMethodDeclaration method, Object data) {
         ASTBlock body = method.getBody();
         if (body != null
-            && JUnitRuleUtil.isJUnitMethod(method)
-            && !isExpectAnnotated(method)
+            && TestFrameworksUtil.isJUnitMethod(method)
+            && !TestFrameworksUtil.isExpectAnnotated(method)
             && body.descendants(ASTMethodCall.class)
-                   .none(JUnitTestsShouldIncludeAssertRule::isProbableAssertCall)) {
+                   .none(TestFrameworksUtil::isProbableAssertCall)) {
             addViolation(data, method);
         }
         return data;
-    }
-
-    private static boolean isProbableAssertCall(ASTMethodCall call) {
-        String name = call.getMethodName();
-        return name.startsWith("assert") && !isSoftAssert(call)
-            || name.startsWith("check")
-            || name.startsWith("verify")
-            || "fail".equals(name)
-            || "failWith".equals(name)
-            || JUnitRuleUtil.isExpectExceptionCall(call);
-    }
-
-    private static boolean isSoftAssert(ASTMethodCall call) {
-        return TypeTestUtil.isA("org.assertj.core.api.AbstractSoftAssertions", call.getMethodType().getDeclaringType())
-            && !"assertAll".equals(call.getMethodName());
-    }
-
-    /**
-     * Tells if the node contains a Test annotation with an expected exception.
-     */
-    private boolean isExpectAnnotated(ASTMethodDeclaration method) {
-        return method.getDeclaredAnnotations()
-                     .filter(JUnitRuleUtil::isJunit4TestAnnotation)
-                     .flatMap(ASTAnnotation::getMembers)
-                     .any(it -> "expected".equals(it.getName()));
-
     }
 
 }

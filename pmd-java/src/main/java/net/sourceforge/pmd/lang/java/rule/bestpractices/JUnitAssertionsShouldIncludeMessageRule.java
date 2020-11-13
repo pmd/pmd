@@ -10,7 +10,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JUnitRuleUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil.InvocationMatcher;
 
 public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJavaRulechainRule {
@@ -37,7 +37,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJavaRulecha
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        if (JUnitRuleUtil.isCallOnAssertionContainer(node)) {
+        if (TestFrameworksUtil.isCallOnAssertionContainer(node)) {
             for (InvocationMatcher check : checks) {
                 if (check.matchesCall(node)) {
                     addViolation(data, node);

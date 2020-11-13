@@ -92,4 +92,16 @@ public class FlasePositive {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java]UseNotifyAllInsteadOfNotify falsely detect a special case with argument: foo.notify(bar) #2577</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FalsePositive {
+    public static void main(Injector injector) {
+        // unresolved method
+        injector.notify(getCanonicalName(), e.getMessage(), e);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

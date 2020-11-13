@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JUnitRuleUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 
 public class JUnitSpellingRule extends AbstractJavaRulechainRule {
 
@@ -18,7 +18,7 @@ public class JUnitSpellingRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (JUnitRuleUtil.isJUnit3Class(node)) {
+        if (TestFrameworksUtil.isJUnit3Class(node)) {
             node.getDeclarations(ASTMethodDeclaration.class)
                 .filter(this::isViolation)
                 .forEach(it -> addViolation(data, it));

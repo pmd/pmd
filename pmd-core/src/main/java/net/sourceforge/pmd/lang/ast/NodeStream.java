@@ -129,7 +129,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *
  * @since 7.0.0
  */
-public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
+public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T> {
 
     /**
      * Returns a node stream consisting of the results of replacing each
