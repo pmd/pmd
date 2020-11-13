@@ -12,7 +12,7 @@ set -e
 #set -x
 
 function pmd_ci_build_main() {
-    pmd_ci_setup_env
+    pmd_ci_setup_private_env
     pmd_ci_setup_gpg_key
     pmd_ci_setup_ssh
 

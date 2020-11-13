@@ -1,6 +1,6 @@
-function pmd_ci_setup_env() {
+function pmd_ci_setup_private_env() {
     log_info "Setting up secrets as environment variables..."
-    local -r ENV_FILE=.ci/files/env
+    local -r ENV_FILE=.ci/files/private-env
 
     printenv PMD_CI_SECRET_PASSPHRASE | gpg --batch --yes --decrypt \
         --passphrase-fd 0 \

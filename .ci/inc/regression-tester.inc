@@ -5,10 +5,18 @@
 # The functions here require the following environment variables:
 # PMD_SF_USER
 # PMD_CI_BRANCH
+#
+# DANGER_GITHUB_API_TOKEN
+# PMD_CI_CHUNK_TOKEN
 
 function regression_tester_setup_ci() {
     # install openjdk8 for pmd-regression-tests
     .ci/install-openjdk.sh 8
+
+    gpg --batch --yes --decrypt --passphrase="GnxdjywUEPveyCD1RLiTd7t8CImnefYr" \
+        --output .ci/files/public-env .ci/files/public-env.gpg
+    source .ci/files/public-env >/dev/null 2>&1
+    rm .ci/files/public-env
 
     if hash "bundler" 2>/dev/null; then
         log_debug "Bundler is already installed"
@@ -16,11 +24,6 @@ function regression_tester_setup_ci() {
         log_info "Installing bundler..."
         gem install bundler
     fi
-
-    # Token for danger to add comments to PRs
-    export DANGER_GITHUB_API_TOKEN=f2f658fd5e72410e465104b65805dd7245479666
-    # Token for uploading reports to chunk.io
-    export PMD_CI_CHUNK_TOKEN="pmd:dMvJ1TH3oOl76QHf04EJ"
 
     rm -f .bundle/config
     bundle config set --local path vendor/bundle
@@ -37,9 +40,6 @@ function regression_tester_setup_ci() {
 function regression_tester_uploadBaseline() {
     log_debug "$FUNCNAME branch=${PMD_CI_BRANCH}"
     local targetUrl="https://sourceforge.net/projects/pmd/files/pmd-regression-tester/"
-
-    PMD_CI_BRANCH=${PMD_CI_BRANCH##refs/heads/}
-    log_debug "Using modified branch name: ${PMD_CI_BRANCH}"
 
     local errexitstate="$(shopt -po errexit)"
     set +e # disable errexit
@@ -93,10 +93,6 @@ function regression_tester_executeDanger() {
         # exit subshell after trap
         set -e
         trap danger_failed ERR
-
-        PMD_CI_BRANCH=${PMD_CI_BRANCH##refs/heads/}
-        export PMD_CI_BRANCH
-        log_debug "Using modified branch name: ${PMD_CI_BRANCH}"
 
         # Create a corresponding remote branch locally
         if ! git show-ref --verify --quiet refs/heads/${PMD_CI_BRANCH}; then

@@ -12,7 +12,7 @@
   <servers>
     <server>
       <id>ossrh</id>
-      <username>${env.CI_DEPLY_USER}</username>
+      <username>${env.CI_DEPLOY_USER}</username>
       <password>${env.CI_DEPLOY_PASSWORD}</password>
     </server>
   </servers>
