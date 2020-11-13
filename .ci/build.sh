@@ -8,6 +8,7 @@ source $(dirname $0)/inc/pmd-code-api.inc
 source $(dirname $0)/inc/regression-tester.inc
 source $(dirname $0)/inc/github-releases-api.inc
 source $(dirname $0)/inc/maven-dependencies.inc
+source $(dirname $0)/inc/install-openjdk.inc
 
 set -e
 
