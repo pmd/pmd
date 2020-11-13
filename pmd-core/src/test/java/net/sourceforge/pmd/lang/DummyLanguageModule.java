@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.ast.DummyAstStages;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
@@ -36,6 +37,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.6", new Handler(), "6");
         addDefaultVersion("1.7", new Handler(), "7");
         addVersion("1.8", new Handler(), "8");
+        addVersion("1.9-throws", new HandlerWithParserThatThrows());
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
@@ -60,6 +62,18 @@ public class DummyLanguageModule extends BaseLanguageModule {
                     return node;
                 }
 
+            };
+        }
+    }
+
+    public static class HandlerWithParserThatThrows extends Handler {
+        @Override
+        public Parser getParser(ParserOptions parserOptions) {
+            return new AbstractParser(parserOptions) {
+                @Override
+                public RootNode parse(String fileName, Reader source) throws ParseException {
+                    throw new AssertionError("test error while parsing");
+                }
             };
         }
     }

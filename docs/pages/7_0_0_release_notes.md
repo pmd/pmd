@@ -46,6 +46,25 @@ Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath
  * The deprecated support for sequence-valued attributes is removed. Sequence-valued properties are still supported.
  * Refer to [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html) for an introduction to new features in XPath 3.1.
 
+
+#### Node stream API
+
+This version includes a powerful API to navigate trees, similar in usage to the Java 8 Stream API:
+```java
+node.descendants(ASTMethodCall.class)
+    .filter(m -> "toString".equals(m.getMethodName()))
+    .map(m -> m.getQualifier())
+    .filter(q -> TypeTestUtil.isA(String.class, q))
+    .foreach(System.out::println);
+```
+
+A pipeline like shown here traverses the tree lazily, which is more efficient than traversing eagerly to put all descendants in a list. It is also much easier to change than the old imperative way.
+
+To make this API as accessible as possible, the {% jdoc core::lang.ast.Node %} interface has been fitted with new methods producing node streams. Those methods replace previous tree traversal methods like `Node#findDescendantsOfType`. In all cases, they should be more efficient and more convenient.
+
+See {% jdoc core::lang.ast.NodeStream %} for more details.
+
+
 #### JavaScript support
 
 The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
