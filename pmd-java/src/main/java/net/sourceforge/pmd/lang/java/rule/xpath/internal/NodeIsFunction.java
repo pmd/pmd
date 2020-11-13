@@ -21,7 +21,9 @@ public final class NodeIsFunction extends BaseRewrittenFunction<Class<?>, JavaNo
         try {
             return Class.forName("net.sourceforge.pmd.lang.java.ast.AST" + constantArg);
         } catch (ClassNotFoundException e) {
-            throw new XPathException("No class named AST" + constantArg);
+            XPathException xpathE = new XPathException("No class named AST" + constantArg);
+            xpathE.setIsStaticError(true);
+            throw xpathE;
         }
     }
 

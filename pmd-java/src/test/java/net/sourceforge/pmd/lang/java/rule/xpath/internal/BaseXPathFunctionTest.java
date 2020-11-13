@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.function.Consumer;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -16,6 +19,7 @@ import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**
@@ -25,6 +29,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 public class BaseXPathFunctionTest extends BaseNonParserTest {
 
     private static final String VIOLATION_MESSAGE = "violation";
+    private static final String RULE_NAME_PLACEHOLDER = "$rule_name";
 
 
     private @NonNull Report executeRule(Rule rule, String code) {
@@ -33,6 +38,7 @@ public class BaseXPathFunctionTest extends BaseNonParserTest {
 
     protected Rule makeXpathRuleFromXPath(String xpath) {
         XPathRule rule = new XPathRule(XPathVersion.DEFAULT, xpath);
+        rule.setName("$rule_name");
         rule.setMessage(VIOLATION_MESSAGE);
         rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
         return rule;
@@ -44,25 +50,16 @@ public class BaseXPathFunctionTest extends BaseNonParserTest {
     }
 
 
-    protected <E extends Throwable> void testWithExpectedException(String xpath,
-                                                                   String code,
-                                                                   Class<? extends E> exceptionClass,
-                                                                   Consumer<? super E> exceptionSpec) {
+    protected void testWithExpectedException(String xpath,
+                                             String code,
+                                             Consumer<? super PmdXPathException> exceptionSpec) {
 
         Rule rule = makeXpathRuleFromXPath(xpath);
 
-        E thrown = Assert.assertThrows(exceptionClass, () -> executeRule(rule, code));
+        PmdXPathException thrown = Assert.assertThrows(PmdXPathException.class, () -> executeRule(rule, code));
 
         exceptionSpec.accept(thrown);
-    }
-
-
-    protected <E extends Throwable> void testWithExpectedException(String xpath,
-                                                                   String code,
-                                                                   Class<? extends E> exceptionClass,
-                                                                   String expectMessage) {
-
-        testWithExpectedException(xpath, code, exceptionClass, thrown -> Assert.assertEquals("Wrong message", expectMessage, thrown.getMessage()));
+        assertThat(thrown.getRuleName(), equalTo(RULE_NAME_PLACEHOLDER));
     }
 
 

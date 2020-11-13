@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.Rule;
@@ -45,8 +48,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
     public void testNonexistentMetric() {
         testWithExpectedException("//ConstructorDeclaration[pmd-java:metric('FOOBAR') > 1]",
                                   "class Joo { Joo() {if(true){}} }",
-                                  IllegalArgumentException.class,
-                                  MetricFunction.badOperationMetricKeyMessage());
+                                  e -> assertThat(e.getMessage(), containsString(MetricFunction.badOperationMetricKeyMessage("FOOBAR"))));
     }
 
 
@@ -54,8 +56,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
     public void testWrongNodeTypeGeneric() {
         testWithExpectedException("//IfStatement[pmd-java:metric('NCSS') > 1]",
                                   "class Koo { Koo() {if(true){}} }",
-                                  IllegalStateException.class,
-                                  MetricFunction.genericBadNodeMessage());
+                                  e -> assertThat(e.getMessage(), containsString(MetricFunction.genericBadNodeMessage())));
     }
 
 
@@ -63,8 +64,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
     public void testWrongMetricKeyForTypeDeclaration() {
         testWithExpectedException("//EnumDeclaration[pmd-java:metric('CYCLO') > 1]",
                                   "enum Loo { FOO; }",
-                                  IllegalArgumentException.class,
-                                  MetricFunction.badClassMetricKeyMessage());
+                                  e -> assertThat(e.getMessage(), containsString(MetricFunction.badClassMetricKeyMessage("CYCLO"))));
     }
 
 
@@ -72,8 +72,8 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
     public void testWrongMetricKeyForOperationDeclaration() {
         testWithExpectedException("//MethodDeclaration[pmd-java:metric('WMC') > 1]",
                                   "class Moo { void foo() {if(true){}} }",
-                                  IllegalArgumentException.class,
-                                  MetricFunction.badOperationMetricKeyMessage());
+                                  e -> assertThat(e.getMessage(), containsString(MetricFunction.badOperationMetricKeyMessage("WMC"))));
+
     }
 
 
