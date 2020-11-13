@@ -17,7 +17,7 @@
 # execpt for dokka-maven-plugin, as it does not play well with dependency-plugin.
 #
 function maven_dependencies_resolve() {
-    dokka_version=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${dokka.version}'
+    dokka_version=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${dokka.version}' \
                       --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec)
 
     ./mvnw dependency:resolve
