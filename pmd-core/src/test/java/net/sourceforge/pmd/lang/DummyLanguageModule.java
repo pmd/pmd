@@ -33,6 +33,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.6", new Handler(), "6");
         addDefaultVersion("1.7", new Handler(), "7");
         addVersion("1.8", new Handler(), "8");
+        addVersion("1.9-throws", new HandlerWithParserThatThrows());
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
@@ -54,6 +55,15 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 node.setImage("Foo");
                 node.withFileName(task.getFileDisplayName());
                 return node;
+            };
+        }
+    }
+
+    public static class HandlerWithParserThatThrows extends Handler {
+        @Override
+        public Parser getParser(ParserOptions parserOptions) {
+            return task ->  {
+                throw new AssertionError("test error while parsing");
             };
         }
     }

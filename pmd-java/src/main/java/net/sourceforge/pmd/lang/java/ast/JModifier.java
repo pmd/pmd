@@ -9,6 +9,8 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Locale;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 
 /**
@@ -98,6 +100,15 @@ public enum JModifier {
             res |= mod.getReflectMod();
         }
         return res;
+    }
+
+    /**
+     * Gets a modifier from its name.
+     *
+     * @throws IllegalArgumentException if the name is incorrect
+     */
+    public static @NonNull JModifier fromToken(@NonNull String token) {
+        return valueOf(token.toLowerCase(Locale.ROOT));
     }
 
 }

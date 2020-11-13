@@ -46,7 +46,7 @@ final class AstTypeParamSym
     @NonNull
     @Override
     public String getSimpleName() {
-        return node.getParameterName();
+        return node.getName();
     }
 
 }

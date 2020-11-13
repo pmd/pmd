@@ -16,23 +16,25 @@ import org.mozilla.javascript.ast.Comment;
 import org.mozilla.javascript.ast.ErrorCollector;
 import org.mozilla.javascript.ast.ParseProblem;
 
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class EcmascriptParser {
-    protected final EcmascriptParserOptions parserOptions;
+public final class EcmascriptParser implements net.sourceforge.pmd.lang.Parser {
+    private final int esVersion;
+    private final String suppressMarker;
 
-    public EcmascriptParser(EcmascriptParserOptions parserOptions) {
-        this.parserOptions = parserOptions;
+    public EcmascriptParser(int version, String suppressMarker) {
+        this.esVersion = version;
+        this.suppressMarker = AssertionUtil.requireParamNotNull("suppression marker", suppressMarker);
     }
 
-    protected AstRoot parseEcmascript(final String sourceCode, final List<ParseProblem> parseProblems)
-            throws ParseException {
+    private AstRoot parseEcmascript(final String sourceCode, final List<ParseProblem> parseProblems) throws ParseException {
         final CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        compilerEnvirons.setRecordingComments(parserOptions.isRecordingComments());
-        compilerEnvirons.setRecordingLocalJsDocComments(parserOptions.isRecordingLocalJsDocComments());
-        compilerEnvirons.setLanguageVersion(parserOptions.getRhinoLanguageVersion().getVersion());
+        compilerEnvirons.setRecordingComments(true);
+        compilerEnvirons.setRecordingLocalJsDocComments(true);
+        compilerEnvirons.setLanguageVersion(esVersion);
         // Scope's don't appear to get set right without this
         compilerEnvirons.setIdeMode(true);
         compilerEnvirons.setWarnTrailingComma(true);
@@ -50,15 +52,14 @@ public class EcmascriptParser {
         return astRoot;
     }
 
-    public ASTAstRoot parse(final ParserTask task) {
+    @Override
+    public RootNode parse(ParserTask task) throws FileAnalysisException {
         final List<ParseProblem> parseProblems = new ArrayList<>();
         final String sourceCode = task.getSourceText();
         final AstRoot astRoot = parseEcmascript(sourceCode, parseProblems);
         final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(sourceCode, parseProblems);
-        ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
-        tree.addTaskInfo(task);
+        final ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
 
-        String suppressMarker = task.getCommentMarker();
         Map<Integer, String> suppressMap = new HashMap<>();
         if (astRoot.getComments() != null) {
             for (Comment comment : astRoot.getComments()) {

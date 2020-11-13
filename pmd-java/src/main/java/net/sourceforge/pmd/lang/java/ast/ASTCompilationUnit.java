@@ -90,7 +90,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
     @NonNull
     public String getPackageName() {
         ASTPackageDeclaration pack = getPackageDeclaration();
-        return pack == null ? "" : pack.getPackageNameImage();
+        return pack == null ? "" : pack.getName();
     }
 
     /**

@@ -15,6 +15,7 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.internal.RulesetStageDependencyHelper;
+import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.Parser.ParserTask;
@@ -77,6 +78,9 @@ abstract class PmdRunnable implements Runnable {
                     try {
                         processSource(listener, langVersion, ruleSets);
                     } catch (Exception | StackOverflowError | AssertionError e) {
+                        if (e instanceof Error && !SystemProps.isErrorRecoveryMode()) {
+                            throw e;
+                        }
                         configuration.getAnalysisCache().analysisFailed(file);
 
                         // The listener handles logging if needed,
