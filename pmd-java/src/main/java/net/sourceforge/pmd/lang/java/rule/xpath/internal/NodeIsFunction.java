@@ -1,0 +1,35 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.java.rule.xpath.internal;
+
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+
+import net.sf.saxon.trans.XPathException;
+
+public final class NodeIsFunction extends BaseRewrittenFunction<Class<?>, JavaNode> {
+
+    public static final NodeIsFunction INSTANCE = new NodeIsFunction();
+
+    private NodeIsFunction() {
+        super("nodeIs", JavaNode.class);
+    }
+
+    @Override
+    protected Class<?> parseArgument(String constantArg) throws XPathException {
+        try {
+            return Class.forName("net.sourceforge.pmd.lang.java.ast.AST" + constantArg);
+        } catch (ClassNotFoundException e) {
+            XPathException xpathE = new XPathException("No class named AST" + constantArg);
+            xpathE.setIsStaticError(true);
+            throw xpathE;
+        }
+    }
+
+    @Override
+    protected boolean matches(JavaNode contextNode, String arg, Class<?> parsedArg, boolean isConstant) throws XPathException {
+        return parsedArg.isInstance(contextNode);
+    }
+
+}
