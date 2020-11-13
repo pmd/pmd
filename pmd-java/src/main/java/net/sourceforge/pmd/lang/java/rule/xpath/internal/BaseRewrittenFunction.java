@@ -74,6 +74,7 @@ abstract class BaseRewrittenFunction<S, N extends JavaNode> extends BaseJavaXPat
                         constantState = parseArgument(name);
                     } catch (XPathException e) {
                         e.setIsStaticError(true);
+                        throw e;
                     }
                     isConstant = true;
                 }

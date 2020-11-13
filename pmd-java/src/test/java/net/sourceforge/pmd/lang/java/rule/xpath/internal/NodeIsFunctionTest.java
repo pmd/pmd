@@ -48,6 +48,8 @@ public class NodeIsFunctionTest extends BaseXPathFunctionTest {
 
     @Test
     public void testNonExistentNodeName() {
+        // note that this would fail with a type error (boolean > integer)
+        // if nodeIs fails to fail
         testWithExpectedException(
             "//MethodDeclaration[pmd-java:nodeIs('ohio') > 1]",
             "class Moo { void foo() {if(true){}} }",
