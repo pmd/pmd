@@ -27,21 +27,33 @@ for a ssh key, which is used to copy files to sourceforge.
 
 ## Known Issues
 
-Intermittent build failures while downloading dependencies from maven central.
-Root issue seems to be SNAT configs in Azure, which closes long running TCP connections
-only on one side: https://docs.microsoft.com/en-us/azure/load-balancer/troubleshoot-outbound-connection#idletimeout
-The default timeout is 4 minutes.
+### Intermittent connection resets or timeouts while downloading dependencies from maven central
 
-Workaround as described in https://github.com/actions/virtual-environments/issues/1499 and
-https://issues.apache.org/jira/browse/WAGON-545 is applied:
+Root issue seems to be SNAT Configs in Azure, which closes long running [idle TCP connections
+after 4 minutes](https://docs.microsoft.com/en-us/azure/load-balancer/troubleshoot-outbound-connection#idletimeout).
+
+The workaround is described in [actions/virtual-environments#1499](https://github.com/actions/virtual-environments/issues/1499)
+and [WAGON-545](https://issues.apache.org/jira/browse/WAGON-545)
+and [WAGON-486](https://issues.apache.org/jira/browse/WAGON-486):
 
 The setting `-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3`
-doesn't seem to work.
+makes sure, that Maven doesn't try to use pooled connections that have been unused for more than 180 seconds.
+These settings are placed as environment variable `MAVEN_OPTS` in all workflows, so that they are active for
+all Maven executions (including builds done by regression tester).
 
-Now we disable pooling completely, so that for downloading a artifact/dependency, always new, fresh
-connections are used: `-Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false`.
+Alternatively, pooling could be disabled completely via `-Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false`.
+This has the consequence, that for each dependency, that is being downloaded, a new https connection is
+established.
 
-Not working either.
+More information about configuring this can be found at [wagon-http](https://maven.apache.org/wagon/wagon-providers/wagon-http/).
+
+However, this doesn't work when [dokka-maven-plugin](https://github.com/Kotlin/dokka) is used: This plugin
+downloads additional dokka plugins at runtime and reconfigures somehow Maven. After this plugin is loaded,
+the above system properties have no effect anymore.
+See [dokka/dokka-maven-plugin#1625](https://github.com/Kotlin/dokka/issues/1625) and
+[dokka/dokka-maven-plugin#1626](https://github.com/Kotlin/dokka/issues/1626).
+
+The workaround now in place is, to download all the dependencies first, see `inc/maven-dependencies.inc`.
 
 ## Hints
 
@@ -56,10 +68,12 @@ Just add the following step into the job:
         uses: mxschmitt/action-tmate@v3
 ```
 
-**Note**: This is dangerous for push/pull builds, because these have access to the secrets and the SSH session
-is not protected...
+The workflow `troubleshooting` can be started manually, which already contains the tmate action.
 
-### Local tests
+**Note**: This is dangerous for push/pull builds on pmd/pmd, because these have access to the secrets and the SSH session
+is not protected. Builds triggered by pull requests from forked repositories don't have access to the secrets.
+
+### Local tests with docker
 
 Create a local docker container:
 
@@ -68,8 +82,8 @@ cd .ci/docker_ubuntu18.04
 docker build -t pmd-ci .
 ```
 
-This container is based on Ubuntu 18.04, which is used for `ubuntu-latest` github actions runner
-(see <https://github.com/actions/virtual-environments>).
+This container is based on Ubuntu 18.04, which is used for `ubuntu-latest` github actions runner,
+see [Virtual Environment](https://github.com/actions/virtual-environments).
 
 You can run a local instance with docker and mount your local pmd checkout into the container:
 
@@ -82,4 +96,5 @@ You'll be dropped into a bash. Start e.g. with
 ```
 cd workspaces/pmd/pmd
 .ci/check-environment.sh
+.ci/build-pr.sh
 ```
