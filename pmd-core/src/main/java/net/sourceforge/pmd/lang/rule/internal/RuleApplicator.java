@@ -16,6 +16,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /** Applies a set of rules to a set of ASTs. */
@@ -60,8 +61,19 @@ public class RuleApplicator {
                 try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
                     rule.apply(node, ctx);
                     rcto.close(1);
-                } catch (RuntimeException | StackOverflowError | AssertionError e) {
+                } catch (RuntimeException e) {
                     if (ctx.isIgnoreExceptions()) {
+                        ctx.getReport().addError(new ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
+
+                        if (LOG.isLoggable(Level.WARNING)) {
+                            LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
+                                + ctx.getSourceCodeFile() + ", continuing with next rule", e);
+                        }
+                    } else {
+                        throw e;
+                    }
+                } catch (StackOverflowError | AssertionError e) {
+                    if (SystemProps.isErrorRecoveryMode()) {
                         ctx.getReport().addError(new ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
 
                         if (LOG.isLoggable(Level.WARNING)) {
