@@ -16,7 +16,7 @@ log_group_start "Downloading maven dependencies"
 log_group_end
 
 log_group_start "Building with maven"
-    ./mvnw -e -V clean verify -Pgenerate-rule-docs
+    ./mvnw -e -V clean verify
 log_group_end
 
 
