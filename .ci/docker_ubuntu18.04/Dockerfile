@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get upgrade --yes && \
     apt-get install --yes curl jq gpg rsync ssh git p7zip-full openjdk-8-jdk \
                       libgdbm-dev libncurses5-dev automake libtool bison libffi-dev \
-                      sudo nano bash tzdata unzip && \
+                      sudo nano bash tzdata unzip zip && \
     apt-get clean
 RUN cd opt && \
     curl https://mirror.checkdomain.de/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz | tar xz && \
