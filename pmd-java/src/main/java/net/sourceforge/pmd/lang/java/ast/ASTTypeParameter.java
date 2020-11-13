@@ -35,7 +35,7 @@ public final class ASTTypeParameter extends AbstractTypedSymbolDeclarator<JTypeP
     /**
      * Returns the name of the type variable introduced by this declaration.
      */
-    public String getParameterName() {
+    public String getName() {
         return getImage();
     }
 

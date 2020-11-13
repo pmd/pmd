@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
@@ -49,6 +50,22 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return visitor.visit(this, data);
     }
 
+
+    /**
+     * Returns true if this method is overridden.
+     * TODO for now, this just checks for an @Override annotation,
+     *   but this should definitely do what MissingOverride does.
+     *   This could be useful in UnusedPrivateMethod (to check not only private methods),
+     *   and also UselessOverridingMethod, and overall many many rules.
+     */
+    public boolean isOverridden() {
+        return isAnnotationPresent(Override.class);
+    }
+
+    @Override
+    protected @Nullable JavaccToken getPreferredReportLocation() {
+        return TokenUtils.nthPrevious(getModifiers().getLastToken(), getFormalParameters().getFirstToken(), 1);
+    }
 
     /**
      * Returns the simple name of the method.

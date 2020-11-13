@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
+import org.junit.Ignore;
+
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-@org.junit.Ignore("Rule has not been updated yet")
+@Ignore("Ignored until modifiers (@Private, etc) are made accessible "
+            + "to XPath rules without deprecation warning")
 public class UncommentedEmptyConstructorTest extends PmdRuleTst {
     // no additional unit tests
 }

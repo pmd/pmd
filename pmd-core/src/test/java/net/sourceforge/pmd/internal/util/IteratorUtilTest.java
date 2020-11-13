@@ -250,6 +250,16 @@ public class IteratorUtilTest {
     }
 
     @Test
+    public void testTakeWhileWithEmpty() {
+        Iterator<String> iter = iterOf();
+        Predicate<String> predicate = Objects::nonNull;
+
+        Iterator<String> mapped = IteratorUtil.takeWhile(iter, predicate);
+
+        assertExhausted(mapped);
+    }
+
+    @Test
     public void testPeek() {
         Iterator<String> iter = iterOf("ab", null, "c");
         List<String> seen = new ArrayList<>();

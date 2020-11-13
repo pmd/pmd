@@ -8,7 +8,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
@@ -17,7 +16,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-@org.junit.Ignore("Rule has not been updated yet")
 public class CommentRequiredTest extends PmdRuleTst {
     @Test
     public void allCommentTypesIgnored() {
@@ -26,12 +24,7 @@ public class CommentRequiredTest extends PmdRuleTst {
 
         List<PropertyDescriptor<?>> propertyDescriptors = getProperties(rule);
         // remove  deprecated properties
-        for (Iterator<PropertyDescriptor<?>> it = propertyDescriptors.iterator(); it.hasNext();) {
-            PropertyDescriptor<?> property = it.next();
-            if (property.description().startsWith("Deprecated!")) {
-                it.remove();
-            }
-        }
+        propertyDescriptors.removeIf(property -> property.description().startsWith("Deprecated!"));
 
         for (PropertyDescriptor<?> property : propertyDescriptors) {
             setPropertyValue(rule, property, "Ignored");

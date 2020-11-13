@@ -39,7 +39,7 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode implements Inter
      * Returns the name of the declared variable.
      */
     public String getName() {
-        return getVarId().getVariableName();
+        return getVarId().getName();
     }
 
 

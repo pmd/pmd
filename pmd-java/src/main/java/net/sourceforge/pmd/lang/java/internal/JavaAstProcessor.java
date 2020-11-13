@@ -142,6 +142,7 @@ public final class JavaAstProcessor {
 
         bench("2. Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
         bench("3. AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
+        bench("4. Comment assignment", () -> InternalApiBridge.assignComments(acu));
     }
 
     public TypeSystem getTypeSystem() {

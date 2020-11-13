@@ -1561,7 +1561,7 @@ public class Foo {
           language="java"
           since="5.0"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameRule"
-          message="Unnecessary use of fully qualified name ''{0}'' due to existing {2}import ''{1}''"
+          message="Unnecessary qualifier ''{0}'': ''{1}'' is already in scope{2}"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">
         <description>
 Import statements allow the use of non-fully qualified names.  The use of a fully qualified name
@@ -1715,82 +1715,42 @@ List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operat
           language="java"
           since="5.0"
           message="Useless parentheses."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#uselessparentheses">
-        <description>Useless parentheses should be removed.</description>
+        <description>
+            Parenthesized expressions are used to override the default operator precedence
+            rules. Parentheses whose removal would not change the relative nesting of operators
+            are unnecessary, because they don't change the semantics of the enclosing expression.
+
+            Some parentheses that strictly speaking are unnecessary, may still be considered useful
+            for readability. This rule allows to ignore violations on two kinds of unnecessary parentheses:
+            - "Clarifying" parentheses, which separate operators of difference precedence. While
+            unnecessary, they make precedence rules explicit, which may be useful for rarely used
+            operators. For example:
+            ```java
+                (a + b) &amp; c // is equivalent to `a + b &amp; c`, but probably clearer
+            ```
+            Unset the property `ignoreClarifying` to report them.
+
+            - "Balancing" parentheses, which are unnecessary but visually balance out another pair
+            of parentheses around an equality operator. For example, those two expressions are equivalent:
+            ```java
+                (a == null) != (b == null)
+                a == null != (b == null)
+            ```
+            The parentheses on the right are required, and the parentheses on the left are
+            just more visually pleasing. Unset the property `ignoreBalancing` to report them.
+
+        </description>
         <priority>4</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)>1]
-  /PrimaryPrefix/Expression
-    [not(./CastExpression)]
-    [not(./ConditionalExpression)]
-    [not(./AdditiveExpression)]
-    [not(./AssignmentOperator)]
-|
-//Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)=1]
-  /PrimaryPrefix/Expression
-|
-//Expression/ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Expression[
-    count(*)=1 and
-    not(./CastExpression) and
-    not(./EqualityExpression/MultiplicativeExpression) and
-    not(./ConditionalExpression) and
-    not(./ConditionalOrExpression)]
-|
-//Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
-    count(*)=1 and
-    not(./CastExpression) and
-    not(./ConditionalExpression) and
-    not(./EqualityExpression/MultiplicativeExpression)]
-|
-//Expression/ConditionalExpression/PrimaryExpression/PrimaryPrefix/Expression[
-    count(*)=1 and
-    not(./CastExpression) and
-    not(./EqualityExpression)]
-|
-//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral= true()])]
-  /PrimaryExpression[1]/PrimaryPrefix/Expression[
-    count(*)=1 and
-    not(./CastExpression) and
-    not(./AdditiveExpression[@Operator = '-']) and
-    not(./ShiftExpression) and
-    not(./RelationalExpression) and
-    not(./InstanceOfExpression) and
-    not(./EqualityExpression) and
-    not(./AndExpression) and
-    not(./ExclusiveOrExpression) and
-    not(./InclusiveOrExpression) and
-    not(./ConditionalAndExpression) and
-    not(./ConditionalOrExpression) and
-    not(./ConditionalExpression)]
-|
-//Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Expression[
-    count(*)=1 and
-    not(./CastExpression) and
-    not(./AndExpression) and
-    not(./InclusiveOrExpression) and
-    not(./ExclusiveOrExpression) and
-    not(./ConditionalExpression) and
-    not(./ConditionalAndExpression) and
-    not(./ConditionalOrExpression) and
-    not(./EqualityExpression)]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public class Foo {
-
-    private int _bar1;
-    private Integer _bar2;
-
-    public void setBar(int n) {
-        _bar1 = Integer.valueOf((n)); // here
-        _bar2 = (n); // and here
+    {
+        int n = 0;
+        n = (n);         // here
+        n = (n * 2) * 3; // and here
+        n = n * (2 * 3); // and here
     }
 }
 ]]>
