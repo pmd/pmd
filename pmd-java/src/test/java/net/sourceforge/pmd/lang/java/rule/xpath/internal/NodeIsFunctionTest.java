@@ -24,7 +24,7 @@ public class NodeIsFunctionTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:nodeIs('ClassOrInterfaceDeclaration')]");
         String code = "class Foo { Foo() {} void bar() {}}";
 
-        assertReportSize(rule, code, 1);
+        assertFinds(rule, 1, code);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class NodeIsFunctionTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:nodeIs(name())]");
         String code = "class Foo { Foo() {} void bar() {}}";
 
-        assertReportSize(rule, code, 1);
+        assertFinds(rule, 1, code);
     }
 
 
@@ -41,31 +41,33 @@ public class NodeIsFunctionTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:nodeIs('AnyTypeDeclaration')]");
         String code = "class Foo { Foo() {} void bar() {}}";
 
-        assertReportSize(rule, code, 1);
+        assertFinds(rule, 1, code);
     }
 
 
 
     @Test
     public void testNonExistentNodeName() {
-        testWithExpectedException("//MethodDeclaration[pmd-java:nodeIs('ohio') > 1]",
-                                  "class Moo { void foo() {if(true){}} }",
-                                  e -> {
-                                      assertThat(e.getMessage(), containsString("ASTohio"));
-                                      assertThat(e.getPhase(), equalTo(Phase.INITIALIZATION));
-                                  });
+        testWithExpectedException(
+            "//MethodDeclaration[pmd-java:nodeIs('ohio') > 1]",
+            "class Moo { void foo() {if(true){}} }",
+            e -> {
+                assertThat(e.getMessage(), containsString("ASTohio"));
+                assertThat(e.getPhase(), equalTo(Phase.INITIALIZATION));
+            });
 
     }
 
 
     @Test
     public void testNonExistentNodeNameStaticallyUnknown() {
-        testWithExpectedException("//MethodDeclaration[pmd-java:nodeIs(name() || 'qqq')]",
-                                  "class Moo { void foo() {if(true){}} }",
-                                  e -> {
-                                      assertThat(e.getMessage(), containsString("MethodDeclarationqqq"));
-                                      assertThat(e.getPhase(), equalTo(Phase.EVALUATION));
-                                  });
+        testWithExpectedException(
+            "//MethodDeclaration[pmd-java:nodeIs(name() || 'qqq')]",
+            "class Moo { void foo() {if(true){}} }",
+            e -> {
+                assertThat(e.getMessage(), containsString("MethodDeclarationqqq"));
+                assertThat(e.getPhase(), equalTo(Phase.EVALUATION));
+            });
 
     }
 

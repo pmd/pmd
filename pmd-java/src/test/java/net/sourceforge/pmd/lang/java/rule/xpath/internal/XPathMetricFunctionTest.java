@@ -22,7 +22,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:metric('NCSS') > 0]");
         String code = "class Foo { Foo() {} void bar() {}}";
 
-        assertReportSize(rule, code, 1);
+        assertFinds(rule, 1, code);
     }
 
 
@@ -31,7 +31,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[pmd-java:metric('CYCLO') > 1]");
         String code = "class Goo { Goo() {if(true){}} }";
 
-        assertReportSize(rule, code, 1);
+        assertFinds(rule, 1, code);
     }
 
 
@@ -40,39 +40,43 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[pmd-java:metric('cYclo') > 1]");
         String code = "class Hoo { Hoo() {if(true){}} }";
 
-        assertReportSize(rule, code, 1);
+        assertFinds(rule, 1, code);
     }
 
 
     @Test
     public void testNonexistentMetric() {
-        testWithExpectedException("//ConstructorDeclaration[pmd-java:metric('FOOBAR') > 1]",
-                                  "class Joo { Joo() {if(true){}} }",
-                                  e -> assertThat(e.getMessage(), containsString(MetricFunction.badOperationMetricKeyMessage("FOOBAR"))));
+        testWithExpectedException(
+            "//ConstructorDeclaration[pmd-java:metric('FOOBAR') > 1]",
+            "class Joo { Joo() {if(true){}} }",
+            e -> assertThat(e.getMessage(), containsString(MetricFunction.badOperationMetricKeyMessage("FOOBAR"))));
     }
 
 
     @Test
     public void testWrongNodeTypeGeneric() {
-        testWithExpectedException("//IfStatement[pmd-java:metric('NCSS') > 1]",
-                                  "class Koo { Koo() {if(true){}} }",
-                                  e -> assertThat(e.getMessage(), containsString(MetricFunction.genericBadNodeMessage())));
+        testWithExpectedException(
+            "//IfStatement[pmd-java:metric('NCSS') > 1]",
+            "class Koo { Koo() {if(true){}} }",
+            e -> assertThat(e.getMessage(), containsString(MetricFunction.genericBadNodeMessage())));
     }
 
 
     @Test
     public void testWrongMetricKeyForTypeDeclaration() {
-        testWithExpectedException("//EnumDeclaration[pmd-java:metric('CYCLO') > 1]",
-                                  "enum Loo { FOO; }",
-                                  e -> assertThat(e.getMessage(), containsString(MetricFunction.badClassMetricKeyMessage("CYCLO"))));
+        testWithExpectedException(
+            "//EnumDeclaration[pmd-java:metric('CYCLO') > 1]",
+            "enum Loo { FOO; }",
+            e -> assertThat(e.getMessage(), containsString(MetricFunction.badClassMetricKeyMessage("CYCLO"))));
     }
 
 
     @Test
     public void testWrongMetricKeyForOperationDeclaration() {
-        testWithExpectedException("//MethodDeclaration[pmd-java:metric('WMC') > 1]",
-                                  "class Moo { void foo() {if(true){}} }",
-                                  e -> assertThat(e.getMessage(), containsString(MetricFunction.badOperationMetricKeyMessage("WMC"))));
+        testWithExpectedException(
+            "//MethodDeclaration[pmd-java:metric('WMC') > 1]",
+            "class Moo { void foo() {if(true){}} }",
+            e -> assertThat(e.getMessage(), containsString(MetricFunction.badOperationMetricKeyMessage("WMC"))));
 
     }
 

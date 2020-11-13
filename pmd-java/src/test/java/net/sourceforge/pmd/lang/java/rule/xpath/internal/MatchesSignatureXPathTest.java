@@ -13,11 +13,6 @@ import net.sourceforge.pmd.Rule;
  * @since 6.0.0
  */
 public class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
-/*
-          - code: '//ConstructorCall[pmd-java:matchesSig("java.util.ArrayList#new(int)")]'
-            outcome: "Matches constructors calls of ArrayList with a single int parameter"
-
- */
 
     @Test
     public void testMatchSig1() {

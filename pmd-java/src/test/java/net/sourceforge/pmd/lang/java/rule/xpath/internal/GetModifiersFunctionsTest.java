@@ -25,7 +25,7 @@ public class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:modifiers() = ('public', 'abstract')]");
         String code = "interface O { class Foo { } }";
 
-        assertReportSize(rule, code, 2);
+        assertFinds(rule, 2, code);
     }
 
     @Test
@@ -33,7 +33,7 @@ public class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:explicitModifiers() = ('public', 'abstract')]");
         String code = "interface O { class Foo { } }";
 
-        assertReportSize(rule, code, 0);
+        assertFinds(rule, 0, code);
     }
 
 
@@ -42,18 +42,19 @@ public class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceBody[pmd-java:modifiers()]");
         String code = "interface O { class Foo { } }";
 
-        assertReportSize(rule, code, 0);
+        assertFinds(rule, 0, code);
     }
 
 
     @Test
     public void testStaticTypeError() {
-        testWithExpectedException("//MethodDeclaration[(., .) is pmd-java:modifiers()]",
-                                  "class Moo { void foo() {if(true){}} }",
-                                  e -> {
-                                      assertThat(e.getMessage(), containsString("Type error"));
-                                      assertThat(e.getPhase(), equalTo(Phase.INITIALIZATION));
-                                  });
+        testWithExpectedException(
+            "//MethodDeclaration[(., .) is pmd-java:modifiers()]",
+            "class Moo { void foo() {if(true){}} }",
+            e -> {
+                assertThat(e.getMessage(), containsString("Type error"));
+                assertThat(e.getPhase(), equalTo(Phase.INITIALIZATION));
+            });
 
     }
 

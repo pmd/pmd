@@ -20,7 +20,7 @@ public class HasAnnotationXPathTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//MethodDeclaration[pmd-java:hasAnnotation('java.lang.Override')]");
         String code = "interface O { @Override void foo(); }";
 
-        assertReportSize(rule, code, 1);
+        assertFinds(rule, 1, code);
     }
 
 
@@ -29,7 +29,8 @@ public class HasAnnotationXPathTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//MethodDeclaration[pmd-java:hasAnnotation('Override')]");
         String code = "interface O { @Override void foo(); }";
 
-        assertReportSize(rule, code, 0); //does not match
+        //does not match
+        assertFinds(rule, 0, code);
     }
 
     @Test
@@ -37,7 +38,7 @@ public class HasAnnotationXPathTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceBody[pmd-java:hasAnnotation('java.lang.Override')]");
         String code = "interface O { @Override void foo(); }";
 
-        assertReportSize(rule, code, 0);
+        assertFinds(rule, 0, code);
     }
 
 }

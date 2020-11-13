@@ -44,14 +44,10 @@ public class BaseXPathFunctionTest extends BaseNonParserTest {
         return rule;
     }
 
-    protected void assertReportSize(Rule rule, String code, int numViolations) {
-        Report report = executeRule(rule, code);
-        TestUtilsKt.assertSize(report, numViolations);
-    }
-
 
     protected void assertFinds(Rule rule, int numViolations, String code) {
-        assertReportSize(rule, code, numViolations);
+        Report report = executeRule(rule, code);
+        TestUtilsKt.assertSize(report, numViolations);
     }
 
 
