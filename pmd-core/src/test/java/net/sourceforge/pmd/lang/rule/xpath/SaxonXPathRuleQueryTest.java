@@ -9,10 +9,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -21,6 +25,9 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sf.saxon.expr.Expression;
 
 public class SaxonXPathRuleQueryTest {
+
+    @Rule
+    public final ExpectedException expected = ExpectedException.none();
 
     @Test
     public void testListAttribute() {
@@ -35,6 +42,44 @@ public class SaxonXPathRuleQueryTest {
         assertQuery(1, "//dummyNode[@EnumList = \"BAR\"]", dummy);
         assertQuery(1, "//dummyNode[@EnumList = (\"FOO\", \"BAR\")]", dummy);
         assertQuery(0, "//dummyNode[@EmptyList = (\"A\")]", dummy);
+    }
+
+    @Test
+    public void testInvalidReturn() {
+        DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
+
+
+        expected.expect(RuntimeException.class);
+        expected.expectMessage(CoreMatchers.containsString("XPath rule expression returned a non-node"));
+        expected.expectMessage(CoreMatchers.containsString("Int64Value"));
+
+        createQuery("1+2").evaluate(dummy, new RuleContext());
+    }
+
+    @Test
+    public void testRootExpression() {
+        DummyNode dummy = new DummyNode(); // todo in pmd 7 this should be a RootNode
+
+        List<Node> result = assertQuery(1, "/", dummy);
+        Assert.assertEquals(dummy, result.get(0));
+    }
+
+    @Test
+    public void testRootExpressionIsADocumentNode() {
+        DummyNode dummy = new DummyNode(); // todo in pmd 7 this should be a RootNode
+
+        List<Node> result = assertQuery(1, "(/)[self::document-node()]", dummy);
+        Assert.assertEquals(dummy, result.get(0));
+    }
+
+    @Test
+    public void testRootExpressionWithName() {
+        DummyNode dummy = new DummyNode(0, false, "DummyNodeA"); // todo in pmd 7 this should be a RootNode
+
+        List<Node> result = assertQuery(1, "(/)[self::document-node(element(DummyNodeA))]", dummy);
+        Assert.assertEquals(dummy, result.get(0));
+
+        assertQuery(0, "(/)[self::document-node(element(DummyNodeX))]", dummy);
     }
 
     @Test
@@ -175,10 +220,11 @@ public class SaxonXPathRuleQueryTest {
         assertExpression("((DocumentSorter(((((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Image, xs:anyAtomicType)), ($qq:qq692331943 singleton eq \"baz\"))])/child::element(foo, xs:anyType))) | (((/)/descendant::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq2127036371 singleton eq \"true\"))])) | (((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq1529060733 singleton eq \"false\"))]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
 
-    private static void assertQuery(int resultSize, String xpath, Node node) {
+    private static List<Node> assertQuery(int resultSize, String xpath, Node node) {
         SaxonXPathRuleQuery query = createQuery(xpath);
         List<Node> result = query.evaluate(node, new RuleContext());
         Assert.assertEquals(resultSize, result.size());
+        return result;
     }
 
     private static SaxonXPathRuleQuery createQuery(String xpath, PropertyDescriptor<?> ...descriptors) {

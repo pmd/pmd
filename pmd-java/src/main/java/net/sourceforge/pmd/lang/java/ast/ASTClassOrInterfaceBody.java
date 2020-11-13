@@ -35,10 +35,20 @@ public class ASTClassOrInterfaceBody extends AbstractJavaNode {
         return visitor.visit(this, data);
     }
 
+    /**
+     * @deprecated Test the parent for {@link ASTAllocationExpression}.
+     * This will be removed in pmd 7 as unnecessary (refs <a href="https://github.com/pmd/pmd/issues/905">#905</a>)
+     */
+    @Deprecated
     public boolean isAnonymousInnerClass() {
         return getParent() instanceof ASTAllocationExpression;
     }
 
+    /**
+     * @deprecated Test the parent for {@link ASTEnumConstant}.
+     * This will be removed in pmd 7 as unnecessary (refs <a href="https://github.com/pmd/pmd/issues/905">#905</a>)
+     */
+    @Deprecated
     public boolean isEnumChild() {
         return getParent() instanceof ASTEnumConstant;
     }

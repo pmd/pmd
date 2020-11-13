@@ -7,6 +7,7 @@ require 'logger'
 def run_pmdtester
   Dir.chdir('..') do
     argv = ['--local-git-repo', './pmd',
+            '--list-of-project', './pmd/.travis/project-list.xml',
             '--base-branch', "#{ENV['TRAVIS_BRANCH']}",
             '--patch-branch', 'HEAD',
             '--patch-config', './pmd/.travis/all-java.xml',

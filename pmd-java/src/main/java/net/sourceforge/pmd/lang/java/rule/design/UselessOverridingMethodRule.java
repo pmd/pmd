@@ -97,7 +97,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTPackageDeclaration node, Object data) {
-        packageName = node.getPackageNameImage();
+        packageName = node.getName();
         return super.visit(node, data);
     }
 

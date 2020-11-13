@@ -11,6 +11,10 @@ package net.sourceforge.pmd.lang;
  * {@link Object#hashCode()}.
  */
 public class ParserOptions {
+    /**
+     * @deprecated Use {@link #getSuppressMarker()} instead.
+     */
+    @Deprecated
     protected String suppressMarker;
 
     public String getSuppressMarker() {
