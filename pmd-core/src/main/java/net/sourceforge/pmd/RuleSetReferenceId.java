@@ -80,7 +80,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * </tbody>
  * </table>
  *
- * @deprecated This is part of the internals of the {@link RuleSetParser}.
+ * @deprecated This is part of the internals of the {@link RuleSetLoader}.
  */
 @Deprecated
 @InternalApi

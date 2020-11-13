@@ -26,6 +26,8 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetLoader;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
@@ -100,8 +102,8 @@ public class PMDTaskImpl {
         setupClassLoader();
 
         // Setup RuleSetFactory and validate RuleSets
-        final ResourceLoader rl = setupResourceLoader();
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, rl);
+        RuleSetLoader rulesetLoader = RuleSetLoader.fromPmdConfig(configuration)
+                                                   .loadResourcesWith(setupResourceLoader());
 
         List<RuleSet> rules;
         try {
