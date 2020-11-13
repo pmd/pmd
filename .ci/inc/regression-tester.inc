@@ -97,10 +97,12 @@ function regression_tester_executeDanger() {
 
         # Create a corresponding remote branch locally
         if ! git show-ref --verify --quiet refs/heads/${PMD_CI_BRANCH}; then
-            git fetch --no-tags --depth=5 origin +refs/heads/${PMD_CI_BRANCH}:refs/remotes/origin/${PMD_CI_BRANCH}
+            git fetch --no-tags --depth=1 origin +refs/heads/${PMD_CI_BRANCH}:refs/remotes/origin/${PMD_CI_BRANCH}
             git branch ${PMD_CI_BRANCH} origin/${PMD_CI_BRANCH}
             log_debug "Created local branch ${PMD_CI_BRANCH}"
         fi
+        # Fetch more commits of the PR for danger
+        git fetch --no-tags --depth=50 origin +$(git rev-parse HEAD^2):
 
         log_info "Running danger on branch ${PMD_CI_BRANCH}"
         bundle exec danger --verbose
