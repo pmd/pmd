@@ -421,9 +421,6 @@ public class RuleSetFactory {
             ruleSetBuilder.filterRulesByPriority(minimumPriority);
 
             return ruleSetBuilder.build();
-        } catch (ReflectiveOperationException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException("Couldn't find the class " + ex.getMessage(), ex);
         } catch (ParserConfigurationException | IOException | SAXException ex) {
             ex.printStackTrace();
             throw new RuntimeException("Couldn't read the ruleset " + ruleSetReferenceId + ": " + ex.getMessage(), ex);
@@ -495,7 +492,7 @@ public class RuleSetFactory {
      */
     private void parseRuleNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder, Node ruleNode,
             boolean withDeprecatedRuleReferences, Set<String> rulesetReferences)
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException, RuleSetNotFoundException {
+            throws RuleSetNotFoundException {
         Element ruleElement = (Element) ruleNode;
         String ref = ruleElement.getAttribute("ref");
         if (ref.endsWith("xml")) {
@@ -603,7 +600,7 @@ public class RuleSetFactory {
      *            Must be a rule element node.
      */
     private void parseSingleRuleNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder,
-            Node ruleNode) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+            Node ruleNode) {
         Element ruleElement = (Element) ruleNode;
 
         // Stop if we're looking for a particular Rule, and this element is not
