@@ -376,9 +376,7 @@ public final class TypeSystem {
             return getPrimitive(kind).getSymbol();
         }
 
-        if (!AssertionUtil.isJavaBinaryName(name)) {
-            throw new IllegalArgumentException("Not a binary name '" + name + "'");
-        }
+        AssertionUtil.assertValidJavaBinaryName(name);
 
         return isCanonical ? resolver.resolveClassFromCanonicalName(name)
                            : resolver.resolveClassFromBinaryName(name);
