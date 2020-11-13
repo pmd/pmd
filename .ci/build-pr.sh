@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 source $(dirname $0)/inc/logger.inc
-source $(dirname $0)/inc/setup-secrets.inc
 source $(dirname $0)/inc/regression-tester.inc
 source $(dirname $0)/inc/maven-dependencies.inc
 source ${HOME}/java.env
@@ -17,7 +16,6 @@ maven_dependencies_resolve
 case "$(uname)" in
     Linux*)
         log_info "Executing danger..."
-        pmd_ci_setup_env
         regression_tester_setup_ci
         regression_tester_executeDanger
         ;;

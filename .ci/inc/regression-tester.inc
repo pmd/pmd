@@ -17,6 +17,11 @@ function regression_tester_setup_ci() {
         gem install bundler
     fi
 
+    # Token for danger to add comments to PRs
+    export DANGER_GITHUB_API_TOKEN=f2f658fd5e72410e465104b65805dd7245479666
+    # Token for uploading reports to chunk.io
+    export PMD_CI_CHUNK_TOKEN="pmd:dMvJ1TH3oOl76QHf04EJ"
+
     rm -f .bundle/config
     bundle config set --local path vendor/bundle
     bundle config set --local with release_notes_preprocessing
