@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Index of the code metrics available out of the box to Java rule developers.">
+<meta name="keywords" content="extendingmetrics,  ">
+<title>Index of Java code metrics | PMD Source Code Analyzer</title>
+<link rel="stylesheet" href="css/syntax.css">
+
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
+<link rel="stylesheet" href="css/modern-business.css">
+<link rel="stylesheet" href="css/lavish-bootstrap.css">
+<link rel="stylesheet" href="css/customstyles.css">
+<link rel="stylesheet" href="css/theme-blue.css">
+<link rel="stylesheet" href="css/pmd-customstyles.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="js/jquery.navgoco.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
+<script src="js/toc.js"></script>
+<script src="js/customscripts.js"></script>
+
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<link rel="alternate" type="application/rss+xml" title="" href="https://pmd.github.io/pmd/feed.xml">
+
+    <script>
+        $(document).ready(function() {
+            // Initialize navgoco with default options
+            $("#mysidebar").navgoco({
+                caretHtml: '',
+                accordion: true,
+                openClass: 'active', // open
+                save: false, // leave false or nav highlighting doesn't work right
+                cookie: {
+                    name: 'navgoco',
+                    expires: false,
+                    path: '/'
+                },
+                slide: {
+                    duration: 400,
+                    easing: 'swing'
+                }
+            });
+
+            $("#collapseAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', false);
+            });
+
+            $("#expandAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', true);
+            });
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#tg-sb-link").click(function() {
+                $("#tg-sb-sidebar").toggle();
+                $("#tg-sb-content").toggleClass('col-md-9');
+                $("#tg-sb-content").toggleClass('col-md-12');
+                $("#tg-sb-icon").toggleClass('fa-toggle-on');
+                $("#tg-sb-icon").toggleClass('fa-toggle-off');
+            });
+        });
+    </script>
+    
+
+</head>
+<body>
+<!-- Content is offset by the height of the topnav bar. -->
+<!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
+<div id="topbar-content-offset">
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container topnavlinks">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="fa fa-home fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- toggle sidebar button -->
+                <li><a id="tg-sb-link" href="#"><i id="tg-sb-icon" class="fa fa-toggle-on"></i> Nav</a></li>
+                <!-- entries without drop-downs appear here -->
+                
+                
+                
+                <li><a href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
+                
+                
+                
+                <li><a href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
+                
+                
+                
+                <!-- entries with drop-downs appear here -->
+                <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
+                
+                
+                <!--comment out this block if you want to hide search-->
+                <li>
+                    <!--start search-->
+                    <div id="search-demo-container">
+                        <input type="text" id="search-input" placeholder="search...">
+                        <ul id="results-container"></ul>
+                    </div>
+                    <script src="js/jekyll-search.js" type="text/javascript"></script>
+                    <script type="text/javascript">
+                            SimpleJekyllSearch.init({
+                                searchInput: document.getElementById('search-input'),
+                                resultsContainer: document.getElementById('results-container'),
+                                dataSource: 'search.json',
+                                searchResultTemplate: '<li><a href="{url}" title="Index of Java code metrics">{title}</a></li>',
+                    noResultsText: 'No results found.',
+                            limit: 10,
+                            fuzzy: true,
+                    })
+                    </script>
+                    <!--end search-->
+                </li>
+            </ul>
+        </div>
+        </div>
+        <!-- /.container -->
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="col-lg-12">&nbsp;</div>
+    <!-- Content Row -->
+    <div class="row">
+        
+        
+        <!-- Sidebar Column -->
+        <div class="col-md-3" id="tg-sb-sidebar">
+            
+
+
+
+
+
+
+
+
+<ul id="mysidebar" class="nav">
+    <li class="sidebarTitle">PMD 6.30.0-SNAPSHOT</li>
+    
+    
+    
+        
+    
+    <li>
+        
+        <a href="#">About</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="index.html">Home</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_release_notes.html">Release notes</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_next_major_development.html">PMD 7.0.0 development</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_about_help.html">Getting help</a></li>
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">User Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_installation.html">Installation and basic CLI usage</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_making_rulesets.html">Making rulesets</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_configuring_rules.html">Configuring rules</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_best_practices.html">Best practices</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_suppressing_warnings.html">Suppressing warnings</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_incremental_analysis.html">Incremental analysis</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_cli_reference.html">PMD CLI reference</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_report_formats.html">PMD Report formats</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">CPD reference</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd.html">Copy-paste detection</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd_report_formats.html">CPD Report formats</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Extending PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_designer_reference.html">Rule designer reference</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_defining_properties.html">Defining rule properties</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_rule_guidelines.html">Rule guidelines</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_testing.html">Testing your rules</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Tools / Integrations</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_maven.html">Maven PMD Plugin</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_gradle.html">Gradle</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_ant.html">Ant</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_java_api.html">PMD Java API</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_ci.html">CI integrations</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools.html">Other Tools / Integrations</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Rule Reference</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Apex Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_documentation.html">Documentation</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_performance.html">Performance</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Ecmascript Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Java Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_documentation.html">Documentation</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_multithreading.html">Multithreading</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_performance.html">Performance</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Java Server Pages Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Maven POM Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_pom.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_pom_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Modelica Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">PLSQL Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Salesforce VisualForce Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vf.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vf_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">VM Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">XML Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xml.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xml_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">XSL Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl_performance.html">Performance</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Language Specific Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_jsp.html">JSP Support</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li class="active"><a href="pmd_java_metrics_index.html">Java code metrics</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_apex_metrics_index.html">Apex code metrics</a></li>
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Developer Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_development.html">Developer resources</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_writing_documentation.html">Writing documentation</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_roadmap.html">Roadmap</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_how_pmd_works.html">How PMD works</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_pmdtester.html">Pmdtester</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_rule_deprecation_policy.html">Rule Deprecation Policy</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Major contributions</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_language.html">Adding a new language</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_cpd_language.html">Adding a new CPD language</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_metrics_framework.html">Adding metrics support to a language</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+                
+                <li class="subfolders">
+                    <a href="#">Experimental features</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_experimental_ast_dump.html">Creating (XML) dump of the AST</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Project documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Trivia about PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_news.html">PMD in the press</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_products.html">Products & books related to PMD</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_similarprojects.html">Similar projects</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_meaning.html">What does 'PMD' mean?</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_faq.html">FAQ</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="license.html">License</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_credits.html">Credits</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_release_notes_old.html">Old release notes</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Project management</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_releasing.html">Release process</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_merging_pull_requests.html">Merging pull requests</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_main_landing_page.html">Main Landing page</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+        
+        <!-- if you aren't using the accordion, uncomment this block:
+           <p class="external">
+               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+           </p>
+           -->
+</ul>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+        </div>
+        
+        
+
+        <!-- Content Column -->
+        <div class="col-md-9" id="tg-sb-content">
+            <div class="post-header">
+   <h1 class="post-title-main">Index of Java code metrics</h1>
+</div>
+
+
+
+<div class="post-content">
+
+   
+    <div class="summary">Index of the code metrics available out of the box to Java rule developers.</div>
+   
+
+    
+    
+<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
+<script>
+$( document ).ready(function() {
+  // Handler for .ready() called.
+
+$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
+
+});
+</script>
+
+<div id="toc"></div>
+
+    
+
+
+    
+
+        
+        
+
+    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/languages/java_metrics_index.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+
+    
+
+  <h1 id="index-of-code-metrics">Index of code metrics</h1>
+
+<h2 id="access-to-foreign-data-atfd">Access to Foreign Data (ATFD)</h2>
+
+<p><em>Operation metric, class metric.</em> Can be computed on classes, enums and 
+concrete operations.</p>
+
+<h3 id="description">Description</h3>
+
+<p>Number of usages of foreign attributes, both directly and through accessors. 
+High values of ATFD (&gt; 3 for an operation) may suggest that the class or operation
+breaks encapsulation by relying on the internal representation of the classes
+it uses instead of the services they provide.</p>
+
+<p>ATFD can be used to detect God Classes and Feature Envy. [<a href="#Lanza05">Lanza05</a>]</p>
+
+<h2 id="class-fan-out-complexity-class_fan_out">Class Fan Out Complexity (CLASS_FAN_OUT)</h2>
+
+<p><em>Operation metric, class metric.</em> Can be computed on classes, enums and 
+concrete operations.</p>
+
+<h3 id="description-1">Description</h3>
+<p>This counts the number of other classes a given class or operation relies on.
+Classes from the package <code class="language-plaintext highlighter-rouge">java.lang</code> are ignored by default (can be changed via options).
+Also primitives are not included into the count.</p>
+
+<h3 id="code-example">Code example</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span> <span class="c1">// total 8</span>
+    <span class="kd">public</span> <span class="nc">Set</span> <span class="n">set</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashSet</span><span class="o">();</span> <span class="c1">// +2</span>
+    <span class="kd">public</span> <span class="nc">Map</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">();</span> <span class="c1">// +2</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="n">string</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
+    <span class="kd">public</span> <span class="nc">Double</span> <span class="n">number</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">;</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
+    <span class="kd">public</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">intArray</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">3</span><span class="o">];</span> <span class="c1">// primitive -&gt; does not count</span>
+
+    <span class="nd">@Deprecated</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
+    <span class="nd">@Override</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="nc">List</span> <span class="n">list</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span> <span class="c1">// +1 (Exception is from java.lang)</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">IOException</span><span class="o">();</span> <span class="c1">// +1</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getMapSize</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">map</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="c1">// +1 because it uses the Class from the 'map' field</span>
+    <span class="o">}</span>   
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="options">Options</h3>
+
+<ul>
+  <li>Option <code class="language-plaintext highlighter-rouge">includeJavaLang</code>: Also include classes from the package <code class="language-plaintext highlighter-rouge">java.lang</code></li>
+</ul>
+
+<h2 id="cyclomatic-complexity-cyclo">Cyclomatic Complexity (CYCLO)</h2>
+
+<p><em>Operation metric.</em> Can be calculated on any non-abstract operation.</p>
+
+<h3 id="description-2">Description</h3>
+
+<p>Number of independent paths through a block of code [<a href="#Lanza05">Lanza05</a>]. 
+Formally, given that the control flow graph of the block has <code class="language-plaintext highlighter-rouge">n</code> vertices, <code class="language-plaintext highlighter-rouge">e</code> 
+edges and <code class="language-plaintext highlighter-rouge">p</code> connected components, the cyclomatic complexity of the block is 
+given by <code class="language-plaintext highlighter-rouge">CYCLO = e - n + 2p</code> [<a href="#McCabe76">McCabe76</a>]. In practice it can be 
+calculated by counting control flow statements following the standard rules given 
+below.</p>
+
+<p>The standard version of the metric complies with McCabe’s original definition:</p>
+
+<ul>
+  <li>Methods have a base complexity of 1.</li>
+  <li>+1 for every control flow statement (<code class="language-plaintext highlighter-rouge">if</code>, <code class="language-plaintext highlighter-rouge">case</code>, <code class="language-plaintext highlighter-rouge">catch</code>, <code class="language-plaintext highlighter-rouge">throw</code>, <code class="language-plaintext highlighter-rouge">do</code>, 
+<code class="language-plaintext highlighter-rouge">while</code>, <code class="language-plaintext highlighter-rouge">for</code>, <code class="language-plaintext highlighter-rouge">break</code>, <code class="language-plaintext highlighter-rouge">continue</code>) and conditional expression (<code class="language-plaintext highlighter-rouge">?:</code>) 
+[<a href="#Sonarqube">Sonarqube</a>]. Notice switch cases count as one, but not the 
+switch itself: the point is that a switch should have the same complexity 
+value as the equivalent series of <code class="language-plaintext highlighter-rouge">if</code> statements.</li>
+  <li><code class="language-plaintext highlighter-rouge">else</code>, <code class="language-plaintext highlighter-rouge">finally</code> and <code class="language-plaintext highlighter-rouge">default</code> don’t count;</li>
+  <li>+1 for every boolean operator (<code class="language-plaintext highlighter-rouge">&amp;&amp;</code>, <code class="language-plaintext highlighter-rouge">||</code>) in the guard condition of a control 
+flow statement. That’s because Java has short-circuit evaluation semantics for 
+boolean operators, which makes every boolean operator kind of a control flow 
+statement in itself.</li>
+</ul>
+
+<h3 id="code-examples">Code examples</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">baseCyclo</span><span class="o">()</span> <span class="o">{</span>                <span class="c1">// Cyclo = 1</span>
+    <span class="n">highCyclo</span><span class="o">();</span>
+  <span class="o">}</span>
+  
+  <span class="kt">void</span> <span class="nf">highCyclo</span><span class="o">()</span> <span class="o">{</span>                <span class="c1">// Cyclo = 10</span>
+    <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
+    <span class="kt">boolean</span> <span class="n">a</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">b</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    
+    <span class="k">if</span> <span class="o">(</span><span class="n">a</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">?</span> <span class="n">b</span> <span class="o">:</span> <span class="kc">true</span><span class="o">))</span> <span class="o">{</span> <span class="c1">// +3</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>                 <span class="c1">// +1</span>
+        <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>              <span class="c1">// +1</span>
+          <span class="k">if</span> <span class="o">(</span><span class="n">x</span><span class="o">++</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="o">)</span> <span class="o">{</span>           <span class="c1">// +1</span>
+            <span class="k">break</span><span class="o">;</span>                  <span class="c1">// +1</span>
+          <span class="o">}</span>
+        <span class="o">}</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">t</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">d</span><span class="o">)</span> <span class="o">{</span>    <span class="c1">// +2</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">a</span> <span class="o">?</span> <span class="n">y</span> <span class="o">:</span> <span class="n">x</span><span class="o">;</span>              <span class="c1">// +1</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
+      <span class="o">}</span>
+    <span class="o">}</span>  
+  <span class="o">}</span>     
+<span class="o">}</span>
+</code></pre></div></div>
+<h3 id="options-1">Options</h3>
+
+<ul>
+  <li>Option <code class="language-plaintext highlighter-rouge">CycloVersion#IGNORE_BOOLEAN_PATHS</code>: Boolean operators are not counted,
+nor are empty fall-through cases in <code class="language-plaintext highlighter-rouge">switch</code> statements. You can use this 
+option to get results similar to those of the old <code class="language-plaintext highlighter-rouge">StdCyclomaticComplexityRule</code>, 
+which is to be replaced.</li>
+  <li>Option <code class="language-plaintext highlighter-rouge">CycloVersion#CONSIDER_ASSERTS</code>: Assert statements are counted as if 
+they were <code class="language-plaintext highlighter-rouge">if (..) throw new AssertionError(..)</code>. Compatible with 
+<code class="language-plaintext highlighter-rouge">IGNORE_BOOLEAN_PATHS</code>.</li>
+</ul>
+
+<h2 id="lines-of-code-loc">Lines of Code (LoC)</h2>
+
+<p><em>Operation metric, class metric.</em> Can be calculated on any of those nodes.</p>
+
+<h3 id="description-3">Description</h3>
+
+<p>Simply counts the number of lines of code the operation or class takes up in 
+the source. This metric doesn’t discount comments or blank lines. See also 
+<a href="#non-commenting-source-statements-ncss">NCSS</a>.</p>
+
+<h2 id="non-commenting-source-statements-ncss">Non-commenting source statements (NCSS)</h2>
+
+<p><em>Operation metric, class metric.</em> Can be calculated on any of those nodes.</p>
+
+<h3 id="description-4">Description</h3>
+
+<p>Number of statements in a class or operation. That’s roughly equivalent to 
+counting the number of semicolons and opening braces in the program. Comments 
+and blank lines are ignored, and statements spread on multiple lines count as 
+only one (e.g. <code class="language-plaintext highlighter-rouge">int\n a;</code> counts a single statement).</p>
+
+<p>The standard version of the metric is based off JavaNCSS’s version<br />
+[<a href="#JavaNcss">JavaNcss</a>]:</p>
+
+<ul>
+  <li>+1 for any of the following statements: <code class="language-plaintext highlighter-rouge">if</code>, <code class="language-plaintext highlighter-rouge">else</code>, <code class="language-plaintext highlighter-rouge">while</code>, <code class="language-plaintext highlighter-rouge">do</code>, <code class="language-plaintext highlighter-rouge">for</code>, 
+<code class="language-plaintext highlighter-rouge">switch</code>, <code class="language-plaintext highlighter-rouge">break</code>, <code class="language-plaintext highlighter-rouge">continue</code>, <code class="language-plaintext highlighter-rouge">return</code>, <code class="language-plaintext highlighter-rouge">throw</code>, <code class="language-plaintext highlighter-rouge">synchronized</code>, <code class="language-plaintext highlighter-rouge">catch</code>, 
+<code class="language-plaintext highlighter-rouge">finally</code>.</li>
+  <li>+1 for each assignment, variable declaration (except <code class="language-plaintext highlighter-rouge">for</code> loop initializers) 
+or statement expression. We count variables  declared on the same line (e.g. 
+<code class="language-plaintext highlighter-rouge">int a, b, c;</code>) as a single statement.</li>
+  <li>Contrary to Sonarqube, but as JavaNCSS, we count type declarations (class, 
+interface, enum, annotation), and method and field declarations 
+[<a href="#Sonarqube">Sonarqube</a>].</li>
+  <li>Contrary to JavaNCSS, but as Sonarqube, we do not count package declaration 
+and import declarations as statements. This makes it easier to compare nested 
+classes to outer classes. Besides, it makes for class metric results that 
+actually represent the size of the class and not of the file. If you don’t 
+like that behaviour, use the <code class="language-plaintext highlighter-rouge">COUNT_IMPORTS</code> option.</li>
+</ul>
+
+<h3 id="code-example-1">Code example</h3>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Collections</span><span class="o">;</span>       <span class="c1">// +0</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>         <span class="c1">// +0</span>
+
+<span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>                         <span class="c1">// +1, total Ncss = 12</span>
+  
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bigMethod</span><span class="o">()</span>           <span class="c1">// +1</span>
+      <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>     
+    <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>               <span class="c1">// +1</span>
+    <span class="kt">boolean</span> <span class="n">a</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">b</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>    <span class="c1">// +1</span>
+    
+    <span class="k">if</span> <span class="o">(</span><span class="n">a</span> <span class="o">||</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>                   <span class="c1">// +1</span>
+      <span class="k">try</span> <span class="o">{</span>                         <span class="c1">// +1</span>
+        <span class="k">do</span> <span class="o">{</span>                        <span class="c1">// +1</span>
+          <span class="n">x</span> <span class="o">+=</span> <span class="mi">2</span><span class="o">;</span>                   <span class="c1">// +1</span>
+        <span class="o">}</span> <span class="k">while</span> <span class="o">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">12</span><span class="o">);</span>
+          
+        <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>             <span class="c1">// +1</span>
+      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>   <span class="c1">// +1</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">PatheticFailException</span><span class="o">(</span><span class="n">ioe</span><span class="o">);</span> <span class="c1">// +1</span>
+      <span class="o">}</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="k">assert</span> <span class="kc">false</span><span class="o">;</span>                 <span class="c1">// +1</span>
+    <span class="o">}</span>
+  <span class="o">}</span>     
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="options-2">Options</h3>
+
+<ul>
+  <li>Option <code class="language-plaintext highlighter-rouge">NcssVersion#COUNT_IMPORTS</code>: Import and package statements are counted 
+as well. This version fully complies with JavaNCSS.</li>
+</ul>
+
+<h2 id="npath-complexity-npath">NPath complexity (NPath)</h2>
+
+<p><em>Operation metric.</em> Can be computed on any non-abstract operation.</p>
+
+<h3 id="description-5">Description</h3>
+
+<p>Number of acyclic execution paths through a piece of code. This is related to 
+cyclomatic complexity, but the two metrics don’t count the same thing: NPath 
+counts the number of distinct <em>full</em> paths from the beginning to the end of the 
+method, while Cyclo only counts the number of decision points. NPath is not 
+computed as simply as Cyclo. With NPath, two decision points appearing sequentially 
+have their complexity multiplied.</p>
+
+<p>The fact that NPath multiplies the complexity of statements makes it grow 
+exponentially: 10 <code class="language-plaintext highlighter-rouge">if</code> - <code class="language-plaintext highlighter-rouge">else</code> statements in a row would give an NPath of 1024, 
+while Cyclo would evaluate to 20. Methods with an NPath complexity over 200 are 
+generally considered too complex.</p>
+
+<p>We compute NPath recursively, with the following set of rules:</p>
+<ul>
+  <li>An empty block has a complexity of 1.</li>
+  <li>The complexity of a block is the product of the NPath complexity of its 
+statements, calculated as follows:
+    <ul>
+      <li>The complexity of <code class="language-plaintext highlighter-rouge">for</code>, <code class="language-plaintext highlighter-rouge">do</code> and <code class="language-plaintext highlighter-rouge">while</code> statements is 1, plus the 
+complexity of the block, plus the complexity of the guard condition.</li>
+      <li>The complexity of a cascading <code class="language-plaintext highlighter-rouge">if</code> statement (<code class="language-plaintext highlighter-rouge">if .. else if ..</code>) is the 
+number of <code class="language-plaintext highlighter-rouge">if</code> statements in the chain, plus the complexity of their guard 
+condition, plus the complexity of the unguarded <code class="language-plaintext highlighter-rouge">else</code> block (or 1 if there 
+is none).</li>
+      <li>The complexity of a <code class="language-plaintext highlighter-rouge">switch</code> statement is the number of cases, plus the 
+complexity of each <code class="language-plaintext highlighter-rouge">case</code> block. It’s equivalent to the complexity of the 
+equivalent cascade of <code class="language-plaintext highlighter-rouge">if</code> statements.</li>
+      <li>The complexity of a ternary expression (<code class="language-plaintext highlighter-rouge">?:</code>) is the complexity of the guard
+condition, plus the complexity of both expressions. It’s equivalent to the 
+complexity of the equivalent <code class="language-plaintext highlighter-rouge">if .. else</code> construct.</li>
+      <li>The complexity of a <code class="language-plaintext highlighter-rouge">try .. catch</code> statement is the complexity of the <code class="language-plaintext highlighter-rouge">try</code> 
+block, plus the complexity of each catch block.</li>
+      <li>The complexity of a <code class="language-plaintext highlighter-rouge">return</code> statement is the complexity of the expression 
+(or 1 if there is none).</li>
+      <li>All other statements have a complexity of 1 and are discarded from the product.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="code-example-2">Code example</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">fun</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">a</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">b</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">c</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// NPath = 6</span>
+    
+  <span class="c1">// block #0</span>
+  
+  <span class="k">if</span> <span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// block #1</span>
+  <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+    <span class="c1">// block #2</span>
+  <span class="o">}</span>
+  
+  <span class="c1">// block #3</span>
+  
+  <span class="k">if</span> <span class="o">(</span><span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// block #4</span>
+  <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">c</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// block #5  </span>
+  <span class="o">}</span>
+  
+  <span class="c1">// block #6</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>After block 0, the control flow can either execute block 1 or 2 before jumping 
+to block 3. From block three, the control flow will again have the choice 
+between blocks 4 and 5 before jumping to block 6. The first <code class="language-plaintext highlighter-rouge">if</code> offers 2 
+choices, the second offers 3, so the cyclomatic complexity of this method is 
+2 + 3 = 5. NPath, however, sees 2 * 3 = 6 full paths from the beginning to the end.</p>
+
+<h2 id="number-of-public-attributes-nopa">Number Of Public Attributes (NOPA)</h2>
+<p><em>Class metric.</em> Can be computed on classes.</p>
+
+<h2 id="number-of-accessor-methods-noam">Number Of Accessor Methods (NOAM)</h2>
+<p><em>Class metric.</em> Can be computed on classes.</p>
+
+<h2 id="tight-class-cohesion-tcc">Tight Class Cohesion (TCC)</h2>
+
+<p><em>Class metric.</em> Can be computed on classes and enums.</p>
+
+<h3 id="description-6">Description</h3>
+
+<p>The relative number of method pairs of a class that access in common at
+least one attribute of the measured class. TCC only counts
+direct attribute accesses, that is, only those attributes that are accessed in
+the body of the method [<a href="#BK95">BK95</a>].</p>
+
+<p>TCC is taken to be a reliable cohesion metric for a class. High values (&gt;70%)
+indicate a class with one basic function, which is hard to break into subcomponents.
+On the other hand, low values (&lt;50%) may indicate that the class tries to do too much and
+defines several unrelated services, which is undesirable.</p>
+
+<p>TCC can be used to detect God Classes and Brain Classes [<a href="#Lanza05">Lanza05</a>].</p>
+
+<h2 id="weighted-method-count-wmc">Weighted Method Count (WMC)</h2>
+
+<p><em>Class metric.</em> Can be computed on classes and enums.</p>
+
+<h3 id="description-7">Description</h3>
+
+<p>Sum of the statistical complexity of the operations in the class. We use 
+<a href="#cyclomatic-complexity-cyclo">CYCLO</a> to quantify the complexity of an operation 
+[<a href="#Lanza05">Lanza05</a>].</p>
+
+<h3 id="options-3">Options</h3>
+
+<p>WMC uses the same options as CYCLO, which are provided to CYCLO when 
+computing it.</p>
+
+<h2 id="weight-of-class-woc">Weight Of Class (WOC)</h2>
+
+<p><em>Class metric.</em> Can be computed on classes.</p>
+
+<h3 id="description-8">Description</h3>
+
+<p>Number of “functional” public methods divided by the total number of
+public methods. Our definition of “functional method” excludes
+constructors, getters, and setters.</p>
+
+<p>This metric tries to quantify whether the measured class’ interface reveals
+more data than behaviour. Low values (less than 30%) indicate that the class
+reveals much more data than behaviour, which is a sign of poor encapsulation.</p>
+
+<p>This metric is used to detect Data Classes, in conjunction with <a href="#weighted-method-count-wmc">WMC</a>,
+<a href="#number-of-public-attributes-nopa">NOPA</a> and <a href="#number-of-accessor-methods-noam">NOAM</a>.</p>
+
+<h1 id="references">References</h1>
+
+<p><a name="BK95">BK95:</a> Bieman, Kang; Cohesion and reuse in an object-oriented system. 
+In Proceedings ACM Symposium on Software Reusability, 1995.</p>
+
+<p><a name="Lanza05">Lanza05:</a> Lanza, Marinescu; Object-Oriented Metrics in Practice, 2005.</p>
+
+<p><a name="McCabe76">McCabe76:</a> McCabe, A Complexity Measure, in Proceedings of the 2nd ICSE (1976).</p>
+
+<p><a name="Sonarqube">Sonarqube:</a> <a href="https://docs.sonarqube.org/display/SONAR/Metric+Definitions">Sonarqube online documentation.</a></p>
+
+<p><a name="JavaNcss">JavaNcss:</a> <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS online documentation.</a></p>
+
+
+    <div class="tags">
+        
+        <b>Tags: </b>
+        
+        
+        
+        <a href="tag_extending.html" class="btn btn-default navbar-btn cursorNorm" role="button">extending</a>
+        
+        
+        
+        <a href="tag_metrics.html" class="btn btn-default navbar-btn cursorNorm" role="button">metrics</a>
+        
+        
+        
+    </div>
+
+
+
+</div>
+
+<hr class="shaded"/>
+
+<footer>
+            <div class="row">
+                <div class="col-lg-12 footer">
+               &copy;2020 PMD Open Source Project. All rights reserved. <br />
+<span>Page last updated:</span> July 20, 2017<br/> Site last generated: Nov 14, 2020 <br />
+<p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
+                </div>
+            </div>
+</footer>
+
+
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,2569 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Rules that flag suboptimal code.">
+<meta name="keywords" content=" Performance, AddEmptyString, AppendCharacterWithChar, AvoidArrayLoops, AvoidCalendarDateCreation, AvoidFileStream, AvoidInstantiatingObjectsInLoops, AvoidUsingShortType, BigIntegerInstantiation, BooleanInstantiation, ByteInstantiation, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, InefficientEmptyStringCheck, InefficientStringBuffering, InsufficientStringBufferDeclaration, IntegerInstantiation, LongInstantiation, OptimizableToArrayCall, RedundantFieldInitializer, SimplifyStartsWith, ShortInstantiation, StringInstantiation, StringToString, TooFewBranchesForASwitchStatement, UnnecessaryWrapperObjectCreation, UseArrayListInsteadOfVector, UseArraysAsList, UseIndexOfChar, UseIOStreamsWithApacheCommonsFileItem, UselessStringValueOf, UseStringBufferForStringAppends, UseStringBufferLength">
+<title>Performance | PMD Source Code Analyzer</title>
+<link rel="stylesheet" href="css/syntax.css">
+
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
+<link rel="stylesheet" href="css/modern-business.css">
+<link rel="stylesheet" href="css/lavish-bootstrap.css">
+<link rel="stylesheet" href="css/customstyles.css">
+<link rel="stylesheet" href="css/theme-blue.css">
+<link rel="stylesheet" href="css/pmd-customstyles.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="js/jquery.navgoco.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
+<script src="js/toc.js"></script>
+<script src="js/customscripts.js"></script>
+
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<link rel="alternate" type="application/rss+xml" title="" href="https://pmd.github.io/pmd/feed.xml">
+
+    <script>
+        $(document).ready(function() {
+            // Initialize navgoco with default options
+            $("#mysidebar").navgoco({
+                caretHtml: '',
+                accordion: true,
+                openClass: 'active', // open
+                save: false, // leave false or nav highlighting doesn't work right
+                cookie: {
+                    name: 'navgoco',
+                    expires: false,
+                    path: '/'
+                },
+                slide: {
+                    duration: 400,
+                    easing: 'swing'
+                }
+            });
+
+            $("#collapseAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', false);
+            });
+
+            $("#expandAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', true);
+            });
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#tg-sb-link").click(function() {
+                $("#tg-sb-sidebar").toggle();
+                $("#tg-sb-content").toggleClass('col-md-9');
+                $("#tg-sb-content").toggleClass('col-md-12');
+                $("#tg-sb-icon").toggleClass('fa-toggle-on');
+                $("#tg-sb-icon").toggleClass('fa-toggle-off');
+            });
+        });
+    </script>
+    
+
+</head>
+<body>
+<!-- Content is offset by the height of the topnav bar. -->
+<!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
+<div id="topbar-content-offset">
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container topnavlinks">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="fa fa-home fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- toggle sidebar button -->
+                <li><a id="tg-sb-link" href="#"><i id="tg-sb-icon" class="fa fa-toggle-on"></i> Nav</a></li>
+                <!-- entries without drop-downs appear here -->
+                
+                
+                
+                <li><a href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
+                
+                
+                
+                <li><a href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
+                
+                
+                
+                <!-- entries with drop-downs appear here -->
+                <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
+                
+                
+                <!--comment out this block if you want to hide search-->
+                <li>
+                    <!--start search-->
+                    <div id="search-demo-container">
+                        <input type="text" id="search-input" placeholder="search...">
+                        <ul id="results-container"></ul>
+                    </div>
+                    <script src="js/jekyll-search.js" type="text/javascript"></script>
+                    <script type="text/javascript">
+                            SimpleJekyllSearch.init({
+                                searchInput: document.getElementById('search-input'),
+                                resultsContainer: document.getElementById('results-container'),
+                                dataSource: 'search.json',
+                                searchResultTemplate: '<li><a href="{url}" title="Performance">{title}</a></li>',
+                    noResultsText: 'No results found.',
+                            limit: 10,
+                            fuzzy: true,
+                    })
+                    </script>
+                    <!--end search-->
+                </li>
+            </ul>
+        </div>
+        </div>
+        <!-- /.container -->
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="col-lg-12">&nbsp;</div>
+    <!-- Content Row -->
+    <div class="row">
+        
+        
+        <!-- Sidebar Column -->
+        <div class="col-md-3" id="tg-sb-sidebar">
+            
+
+
+
+
+
+
+
+
+<ul id="mysidebar" class="nav">
+    <li class="sidebarTitle">PMD 6.30.0-SNAPSHOT</li>
+    
+    
+    
+        
+    
+    <li>
+        
+        <a href="#">About</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="index.html">Home</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_release_notes.html">Release notes</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_next_major_development.html">PMD 7.0.0 development</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_about_help.html">Getting help</a></li>
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">User Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_installation.html">Installation and basic CLI usage</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_making_rulesets.html">Making rulesets</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_configuring_rules.html">Configuring rules</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_best_practices.html">Best practices</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_suppressing_warnings.html">Suppressing warnings</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_incremental_analysis.html">Incremental analysis</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_cli_reference.html">PMD CLI reference</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_report_formats.html">PMD Report formats</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">CPD reference</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd.html">Copy-paste detection</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd_report_formats.html">CPD Report formats</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Extending PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_designer_reference.html">Rule designer reference</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_defining_properties.html">Defining rule properties</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_rule_guidelines.html">Rule guidelines</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_testing.html">Testing your rules</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Tools / Integrations</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_maven.html">Maven PMD Plugin</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_gradle.html">Gradle</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_ant.html">Ant</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_java_api.html">PMD Java API</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_ci.html">CI integrations</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools.html">Other Tools / Integrations</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Rule Reference</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Apex Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_documentation.html">Documentation</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_performance.html">Performance</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Ecmascript Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Java Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_documentation.html">Documentation</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_multithreading.html">Multithreading</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li class="active"><a href="pmd_rules_java_performance.html">Performance</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Java Server Pages Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Maven POM Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_pom.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_pom_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Modelica Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">PLSQL Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Salesforce VisualForce Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vf.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vf_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">VM Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">XML Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xml.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xml_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">XSL Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl_performance.html">Performance</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Language Specific Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_jsp.html">JSP Support</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_java_metrics_index.html">Java code metrics</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_apex_metrics_index.html">Apex code metrics</a></li>
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Developer Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_development.html">Developer resources</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_writing_documentation.html">Writing documentation</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_roadmap.html">Roadmap</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_how_pmd_works.html">How PMD works</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_pmdtester.html">Pmdtester</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_rule_deprecation_policy.html">Rule Deprecation Policy</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Major contributions</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_language.html">Adding a new language</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_cpd_language.html">Adding a new CPD language</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_metrics_framework.html">Adding metrics support to a language</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+                
+                <li class="subfolders">
+                    <a href="#">Experimental features</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_experimental_ast_dump.html">Creating (XML) dump of the AST</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Project documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Trivia about PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_news.html">PMD in the press</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_products.html">Products & books related to PMD</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_similarprojects.html">Similar projects</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_meaning.html">What does 'PMD' mean?</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_faq.html">FAQ</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="license.html">License</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_credits.html">Credits</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_release_notes_old.html">Old release notes</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Project management</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_releasing.html">Release process</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_merging_pull_requests.html">Merging pull requests</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_main_landing_page.html">Main Landing page</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+        
+        <!-- if you aren't using the accordion, uncomment this block:
+           <p class="external">
+               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+           </p>
+           -->
+</ul>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+        </div>
+        
+        
+
+        <!-- Content Column -->
+        <div class="col-md-9" id="tg-sb-content">
+            <div class="post-header">
+   <h1 class="post-title-main">Performance</h1>
+</div>
+
+
+
+<div class="post-content">
+
+   
+    <div class="summary">Rules that flag suboptimal code.</div>
+   
+
+    
+    
+<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
+<script>
+$( document ).ready(function() {
+  // Handler for .ready() called.
+
+$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
+
+});
+</script>
+
+<div id="toc"></div>
+
+    
+
+
+    
+
+        
+        
+
+    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/../pmd-java/src/main/resources/category/java/performance.xml" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+
+    
+
+  <!-- DO NOT EDIT THIS FILE. This file is generated from file ../pmd-java/src/main/resources/category/java/performance.xml. -->
+<h2 id="addemptystring">AddEmptyString</h2>
+
+<p><strong>Since:</strong> PMD 4.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>The conversion of literals to strings by concatenating them with empty strings is inefficient.
+It is much better to use one of the type-specific toString() methods instead.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AdditiveExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'""'</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">""</span> <span class="o">+</span> <span class="mi">123</span><span class="o">;</span>                <span class="c1">// inefficient</span>
+<span class="nc">String</span> <span class="n">t</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="mi">456</span><span class="o">);</span>   <span class="c1">// preferred approach</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/AddEmptyString"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="appendcharacterwithchar">AppendCharacterWithChar</h2>
+
+<p><strong>Since:</strong> PMD 3.5</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Avoid concatenating characters as strings in StringBuffer/StringBuilder.append methods.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/AppendCharacterWithCharRule.java">net.sourceforge.pmd.lang.java.rule.performance.AppendCharacterWithCharRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"a"</span><span class="o">);</span>     <span class="c1">// avoid this</span>
+
+<span class="nc">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="sc">'a'</span><span class="o">);</span>     <span class="c1">// use this instead</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/AppendCharacterWithChar"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="avoidarrayloops">AvoidArrayLoops</h2>
+
+<p><strong>Since:</strong> PMD 3.5</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Instead of manually copying data between two arrays, use the efficient Arrays.copyOf or System.arraycopy method instead.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Statement</span><span class="p">[(</span><span class="nt">ForStatement</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">WhileStatement</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w">
+</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="o">//</span><span class="nt">AssignmentOperator</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'='</span><span class="p">])</span><span class="err">=</span><span class="m">1</span><span class="w">
+</span><span class="ow">and</span><span class="w">
+</span><span class="err">*</span><span class="o">/</span><span class="nt">Statement</span><span class="w">
+</span><span class="p">[</span><span class="w">
+</span><span class="p">.</span><span class="o">/</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="w">
+</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Expression</span><span class="w">
+</span><span class="p">[(</span><span class="nt">PrimaryExpression</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">AdditiveExpression</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nf">count</span><span class="w">
+</span><span class="p">(.</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="p">]</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="na">@Image</span><span class="w">
+</span><span class="ow">and</span><span class="w">
+</span><span class="p">.</span><span class="o">/</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="w">
+</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="nf">count</span><span class="w">
+</span><span class="p">(..</span><span class="o">//</span><span class="nt">PrimarySuffix</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="p">]</span><span class="o">/</span><span class="nt">Expression</span><span class="p">[(</span><span class="nt">PrimaryExpression</span><span class="w">
+</span><span class="ow">or</span><span class="w"> </span><span class="nt">AdditiveExpression</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nf">count</span><span class="p">(.</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="p">]</span><span class="w">
+</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="na">@Image</span><span class="w">
+</span><span class="p">]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">int</span><span class="o">[]</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">10</span><span class="o">];</span>
+        <span class="kt">int</span><span class="o">[]</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">10</span><span class="o">];</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">b</span><span class="o">[</span><span class="n">i</span><span class="o">]=</span><span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+        <span class="o">}</span>
+
+        <span class="kt">int</span><span class="o">[]</span> <span class="n">c</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">10</span><span class="o">];</span>
+        <span class="c1">// this will trigger the rule</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">b</span><span class="o">[</span><span class="n">i</span><span class="o">]=</span><span class="n">a</span><span class="o">[</span><span class="n">c</span><span class="o">[</span><span class="n">i</span><span class="o">]];</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/AvoidArrayLoops"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="avoidcalendardatecreation">AvoidCalendarDateCreation</h2>
+
+<p><strong>Since:</strong> PMD 6.25.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Problem: A Calendar is a heavyweight object and expensive to create.</p>
+
+<p>Solution: Use <code class="language-plaintext highlighter-rouge">new Date()</code>, Java 8+ <code class="language-plaintext highlighter-rouge">java.time.LocalDateTime.now()</code> or <code class="language-plaintext highlighter-rouge">ZonedDateTime.now()</code>.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="nt">Name</span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'Calendar.getInstance'</span><span class="p">)]]</span><span class="w"> </span><span class="p">[</span><span class="nf">count</span><span class="p">(..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="nf">last</span><span class="p">()</span><span class="o">-</span><span class="m">1</span><span class="p">][</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'getTime'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="err">=</span><span class="s1">'getTimeInMillis'</span><span class="p">]]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">MethodDeclarator</span><span class="o">/</span><span class="nt">FormalParameters</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Calendar'</span><span class="p">)])]</span><span class="w">
+  </span><span class="o">/</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="w">
+  </span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="w">
+    </span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Calendar'</span><span class="p">)]</span><span class="w">
+    </span><span class="p">[</span><span class="kr">every</span><span class="w"> </span><span class="nv">$var</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="na">@Image</span><span class="w"> </span><span class="kr">satisfies</span><span class="w"> </span><span class="p">(</span><span class="w">
+       </span><span class="p">(</span><span class="nf">ends-with</span><span class="p">(</span><span class="nv">$var</span><span class="p">,</span><span class="w"> </span><span class="s1">'.getTime'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">ends-with</span><span class="p">(</span><span class="nv">$var</span><span class="p">,</span><span class="w"> </span><span class="s1">'.getTimeInMillis'</span><span class="p">))</span><span class="w">
+       </span><span class="ow">and</span><span class="w">
+       </span><span class="c">(: ignore if .set* or .add* or .clear is called on the variable :)</span><span class="w">
+       </span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">//</span><span class="nt">Name</span><span class="p">[</span><span class="w">
+          </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nf">concat</span><span class="p">((</span><span class="kr">to</span><span class="nf">kenize</span><span class="p">(</span><span class="nv">$var</span><span class="p">,</span><span class="w"> </span><span class="s1">'\.'</span><span class="p">),</span><span class="w"> </span><span class="nv">$var</span><span class="p">)[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="s1">'.set'</span><span class="p">))</span><span class="w">
+          </span><span class="ow">or</span><span class="w">
+          </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nf">concat</span><span class="p">((</span><span class="kr">to</span><span class="nf">kenize</span><span class="p">(</span><span class="nv">$var</span><span class="p">,</span><span class="w"> </span><span class="s1">'\.'</span><span class="p">),</span><span class="w"> </span><span class="nv">$var</span><span class="p">)[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="s1">'.add'</span><span class="p">))</span><span class="w">
+          </span><span class="ow">or</span><span class="w">
+          </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nf">concat</span><span class="p">((</span><span class="kr">to</span><span class="nf">kenize</span><span class="p">(</span><span class="nv">$var</span><span class="p">,</span><span class="w"> </span><span class="s1">'\.'</span><span class="p">),</span><span class="w"> </span><span class="nv">$var</span><span class="p">)[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="s1">'.clear'</span><span class="p">))</span><span class="w">
+       </span><span class="p">])</span><span class="w">
+    </span><span class="p">)]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.joda.time.DateTime'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.joda.time.LocalDateTime'</span><span class="p">)][..</span><span class="o">/</span><span class="nt">Arguments</span><span class="o">/</span><span class="nt">ArgumentList</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'Calendar.getInstance'</span><span class="p">)]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.time.LocalDateTime</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Calendar</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DateStuff</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="nf">bad1</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getTime</span><span class="o">();</span> <span class="c1">// now</span>
+    <span class="o">}</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="nf">good1a</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">Date</span><span class="o">();</span> <span class="c1">// now</span>
+    <span class="o">}</span>
+    <span class="kd">private</span> <span class="nc">LocalDateTime</span> <span class="nf">good1b</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">LocalDateTime</span><span class="o">.</span><span class="na">now</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">private</span> <span class="kt">long</span> <span class="nf">bad2</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getTimeInMillis</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">private</span> <span class="kt">long</span> <span class="nf">good2</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/AvoidCalendarDateCreation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="avoidfilestream">AvoidFileStream</h2>
+
+<p><strong>Since:</strong> PMD 6.0.0</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p><strong>Minimum Language Version:</strong> Java 1.7</p>
+
+<p>The FileInputStream and FileOutputStream classes contains a finalizer method which will cause garbage
+collection pauses.
+See <a href="https://bugs.openjdk.java.net/browse/JDK-8080225">JDK-8080225</a> for details.</p>
+
+<p>The FileReader and FileWriter constructors instantiate FileInputStream and FileOutputStream,
+again causing garbage collection issues while finalizer methods are called.</p>
+
+<ul>
+  <li>Use <code class="language-plaintext highlighter-rouge">Files.newInputStream(Paths.get(fileName))</code> instead of <code class="language-plaintext highlighter-rouge">new FileInputStream(fileName)</code>.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">Files.newOutputStream(Paths.get(fileName))</code> instead of <code class="language-plaintext highlighter-rouge">new FileOutputStream(fileName)</code>.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">Files.newBufferedReader(Paths.get(fileName))</code> instead of <code class="language-plaintext highlighter-rouge">new FileReader(fileName)</code>.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">Files.newBufferedWriter(Paths.get(fileName))</code> instead of <code class="language-plaintext highlighter-rouge">new FileWriter(fileName)</code>.</li>
+</ul>
+
+<p>Please note, that the <code class="language-plaintext highlighter-rouge">java.nio</code> API does not throw a <code class="language-plaintext highlighter-rouge">FileNotFoundException</code> anymore, instead
+it throws a <code class="language-plaintext highlighter-rouge">NoSuchFileException</code>. If your code dealt explicitly with a <code class="language-plaintext highlighter-rouge">FileNotFoundException</code>,
+then this needs to be adjusted. Both exceptions are subclasses of <code class="language-plaintext highlighter-rouge">IOException</code>, so catching
+that one covers both.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="w">
+       </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.FileInputStream'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.FileOutputStream'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.FileReader'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.io.FileWriter'</span><span class="p">)</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// these instantiations cause garbage collection pauses, even if properly closed</span>
+
+    <span class="nc">FileInputStream</span> <span class="n">fis</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileInputStream</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
+    <span class="nc">FileOutputStream</span> <span class="n">fos</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileOutputStream</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
+    <span class="nc">FileReader</span> <span class="n">fr</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileReader</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
+    <span class="nc">FileWriter</span> <span class="n">fw</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileWriter</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
+
+    <span class="c1">// the following instantiations help prevent Garbage Collection pauses, no finalization</span>
+
+    <span class="k">try</span><span class="o">(</span><span class="nc">InputStream</span> <span class="n">is</span> <span class="o">=</span> <span class="nc">Files</span><span class="o">.</span><span class="na">newInputStream</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fileName</span><span class="o">)))</span> <span class="o">{</span>
+    <span class="o">}</span>
+    <span class="k">try</span><span class="o">(</span><span class="nc">OutputStream</span> <span class="n">os</span> <span class="o">=</span> <span class="nc">Files</span><span class="o">.</span><span class="na">newOutputStream</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fileName</span><span class="o">)))</span> <span class="o">{</span>
+    <span class="o">}</span>
+    <span class="k">try</span><span class="o">(</span><span class="nc">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="nc">Files</span><span class="o">.</span><span class="na">newBufferedReader</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fileName</span><span class="o">),</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">))</span> <span class="o">{</span>
+    <span class="o">}</span>
+    <span class="k">try</span><span class="o">(</span><span class="nc">BufferedWriter</span> <span class="n">wr</span> <span class="o">=</span> <span class="nc">Files</span><span class="o">.</span><span class="na">newBufferedWriter</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fileName</span><span class="o">),</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">))</span> <span class="o">{</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/AvoidFileStream"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="avoidinstantiatingobjectsinloops">AvoidInstantiatingObjectsInLoops</h2>
+
+<p><strong>Since:</strong> PMD 2.2</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>New objects created within loops should be checked to see if they can created outside them and reused.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/AvoidInstantiatingObjectsInLoopsRule.java">net.sourceforge.pmd.lang.java.rule.performance.AvoidInstantiatingObjectsInLoopsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Something</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="nc">String</span> <span class="n">as</span><span class="o">[]</span> <span class="o">)</span> <span class="o">{</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="nc">Foo</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">();</span> <span class="c1">// Avoid this whenever you can it's really expensive</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/AvoidInstantiatingObjectsInLoops"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="avoidusingshorttype">AvoidUsingShortType</h2>
+
+<p><strong>Since:</strong> PMD 4.1</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>Java uses the ‘short’ type to reduce memory usage, not to optimize calculation. In fact, the JVM does not have any
+arithmetic capabilities for the short type: the JVM must convert the short into an int, do the proper calculation
+and convert the int back to a short. Thus any storage gains found through use of the ‘short’ type may be offset by
+adverse impacts on performance.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'short'</span><span class="p">]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Override'</span><span class="p">)])]</span><span class="w">
+    </span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="o">/</span><span class="nt">ResultType</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'short'</span><span class="p">]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Override'</span><span class="p">)])]</span><span class="w">
+    </span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="o">/</span><span class="nt">MethodDeclarator</span><span class="o">/</span><span class="nt">FormalParameters</span><span class="o">/</span><span class="nt">FormalParameter</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'short'</span><span class="p">]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'short'</span><span class="p">]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">AnnotationMethodDeclaration</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'short'</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UsingShort</span> <span class="o">{</span>
+   <span class="kd">private</span> <span class="kt">short</span> <span class="n">doNotUseShort</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+
+   <span class="kd">public</span> <span class="nf">UsingShort</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kt">short</span> <span class="n">shouldNotBeUsed</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+    <span class="n">doNotUseShort</span> <span class="o">+=</span> <span class="n">shouldNotBeUsed</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/AvoidUsingShortType"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="bigintegerinstantiation">BigIntegerInstantiation</h2>
+
+<p><strong>Since:</strong> PMD 3.9</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Don’t create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and
+for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN)</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/BigIntegerInstantiationRule.java">net.sourceforge.pmd.lang.java.rule.performance.BigIntegerInstantiationRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">BigInteger</span> <span class="n">bi</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BigInteger</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>       <span class="c1">// reference BigInteger.ONE instead</span>
+<span class="nc">BigInteger</span> <span class="n">bi2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BigInteger</span><span class="o">(</span><span class="s">"0"</span><span class="o">);</span>    <span class="c1">// reference BigInteger.ZERO instead</span>
+<span class="nc">BigInteger</span> <span class="n">bi3</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BigInteger</span><span class="o">(</span><span class="mf">0.0</span><span class="o">);</span>    <span class="c1">// reference BigInteger.ZERO instead</span>
+<span class="nc">BigInteger</span> <span class="n">bi4</span><span class="o">;</span>
+<span class="n">bi4</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BigInteger</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>                 <span class="c1">// reference BigInteger.ZERO instead</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/BigIntegerInstantiation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="booleaninstantiation">BooleanInstantiation</h2>
+
+<p><strong>Since:</strong> PMD 1.2</p>
+
+<p><strong>Priority:</strong> Medium High (2)</p>
+
+<p>Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
+Note that new Boolean() is deprecated since JDK 9 for that reason.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/BooleanInstantiationRule.java">net.sourceforge.pmd.lang.java.rule.performance.BooleanInstantiationRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Boolean</span> <span class="n">bar</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Boolean</span><span class="o">(</span><span class="s">"true"</span><span class="o">);</span>        <span class="c1">// unnecessary creation, just reference Boolean.TRUE;</span>
+<span class="nc">Boolean</span> <span class="n">buz</span> <span class="o">=</span> <span class="nc">Boolean</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>    <span class="c1">// ...., just reference Boolean.FALSE;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/BooleanInstantiation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="byteinstantiation">ByteInstantiation</h2>
+
+<p><strong>Since:</strong> PMD 4.0</p>
+
+<p><strong>Priority:</strong> Medium High (2)</p>
+
+<p>Calling new Byte() causes memory allocation that can be avoided by the static Byte.valueOf().
+It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Byte() is deprecated since JDK 9 for that reason.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
+</span><span class="p">[</span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="nt">ArrayDimsAndInits</span><span class="p">)</span><span class="w">
+</span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Byte'</span><span class="p">)]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Byte</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Byte</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// change to Byte i = Byte.valueOf(0);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/ByteInstantiation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="consecutiveappendsshouldreuse">ConsecutiveAppendsShouldReuse</h2>
+
+<p><strong>Since:</strong> PMD 5.1</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Consecutive calls to StringBuffer/StringBuilder .append should be chained, reusing the target object. This can improve the performance
+by producing a smaller bytecode, reducing overhead and improving inlining. A complete analysis can be found <a href="https://github.com/pmd/pmd/issues/202#issuecomment-274349067">here</a></p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/ConsecutiveAppendsShouldReuseRule.java">net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveAppendsShouldReuseRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">String</span> <span class="n">foo</span> <span class="o">=</span> <span class="s">" "</span><span class="o">;</span>
+
+<span class="nc">StringBuffer</span> <span class="n">buf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+<span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"Hello"</span><span class="o">);</span> <span class="c1">// poor</span>
+<span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
+<span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"World"</span><span class="o">);</span>
+
+<span class="nc">StringBuffer</span> <span class="n">buf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+<span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"Hello"</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">foo</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">"World"</span><span class="o">);</span> <span class="c1">// good</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/ConsecutiveAppendsShouldReuse"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="consecutiveliteralappends">ConsecutiveLiteralAppends</h2>
+
+<p><strong>Since:</strong> PMD 3.5</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Consecutively calling StringBuffer/StringBuilder.append(…) with literals should be avoided.
+Since the literals are constants, they can already be combined into a single String literal and this String
+can be appended in a single method call.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/ConsecutiveLiteralAppendsRule.java">net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveLiteralAppendsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">StringBuilder</span> <span class="n">buf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">();</span>
+<span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"Hello"</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">" "</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">"World"</span><span class="o">);</span>    <span class="c1">// poor</span>
+<span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>                          <span class="c1">// good</span>
+
+<span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="sc">'h'</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="sc">'e'</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="sc">'l'</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="sc">'l'</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="sc">'o'</span><span class="o">);</span> <span class="c1">// poor</span>
+<span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"hello"</span><span class="o">);</span>                                             <span class="c1">// good</span>
+
+<span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="sc">'m'</span><span class="o">);</span>  <span class="c1">// poor</span>
+<span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"1m"</span><span class="o">);</span>           <span class="c1">// good</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>threshold</td>
+      <td>1</td>
+      <td>Max consecutive appends</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/ConsecutiveLiteralAppends"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/ConsecutiveLiteralAppends"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"threshold"</span> <span class="na">value=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="inefficientemptystringcheck">InefficientEmptyStringCheck</h2>
+
+<p><strong>Since:</strong> PMD 3.6</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>String.trim().length() == 0 (or String.trim().isEmpty() for the same reason) is an inefficient
+way to check if a String is really blank, as it creates a new String object just to check its size.
+Consider creating a static function that loops through a string, checking Character.isWhitespace()
+on each character and returning false if a non-whitespace character is found. A Smarter code to
+check for an empty string would be:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">checkTrimEmpty</span><span class="o">(</span><span class="nc">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">str</span><span class="o">.</span><span class="na">length</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(!</span><span class="nc">Character</span><span class="o">.</span><span class="na">isWhitespace</span><span class="o">(</span><span class="n">str</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">i</span><span class="o">)))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>You can refer to Apache’s StringUtils#isBlank (in commons-lang),
+Spring’s StringUtils#hasText (in the Spring framework) or Google’s
+CharMatcher#whitespace (in Guava) for existing implementations (some might
+include the check for != null).</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InefficientEmptyStringCheckRule.java">net.sourceforge.pmd.lang.java.rule.performance.InefficientEmptyStringCheckRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="nc">String</span> <span class="n">string</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">string</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">string</span><span class="o">.</span><span class="na">trim</span><span class="o">().</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">doSomething</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/InefficientEmptyStringCheck"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="inefficientstringbuffering">InefficientStringBuffering</h2>
+
+<p><strong>Since:</strong> PMD 3.4</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Avoid concatenating non-literals in a StringBuffer constructor or append() since intermediate buffers will
+need to be be created and destroyed by the JVM.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InefficientStringBufferingRule.java">net.sourceforge.pmd.lang.java.rule.performance.InefficientStringBufferingRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Avoid this, two buffers are actually being created here</span>
+<span class="nc">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">(</span><span class="s">"tmp = "</span><span class="o">+</span><span class="nc">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"java.io.tmpdir"</span><span class="o">));</span>
+
+<span class="c1">// do this instead</span>
+<span class="nc">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">(</span><span class="s">"tmp = "</span><span class="o">);</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"java.io.tmpdir"</span><span class="o">));</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/InefficientStringBuffering"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="insufficientstringbufferdeclaration">InsufficientStringBufferDeclaration</h2>
+
+<p><strong>Since:</strong> PMD 3.6</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Failing to pre-size a StringBuffer or StringBuilder properly could cause it to re-size many times
+during runtime. This rule attempts to determine the total number the characters that are actually
+passed into StringBuffer.append(), but represents a best guess "worst case" scenario. An empty
+StringBuffer/StringBuilder constructor initializes the object to 16 characters. This default
+is assumed if the length of the constructor can not be determined.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InsufficientStringBufferDeclarationRule.java">net.sourceforge.pmd.lang.java.rule.performance.InsufficientStringBufferDeclarationRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">StringBuffer</span> <span class="n">bad</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+<span class="n">bad</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"This is a long string that will exceed the default 16 characters"</span><span class="o">);</span>
+
+<span class="nc">StringBuffer</span> <span class="n">good</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">(</span><span class="mi">41</span><span class="o">);</span>
+<span class="n">good</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"This is a long string, which is pre-sized"</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/InsufficientStringBufferDeclaration"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="integerinstantiation">IntegerInstantiation</h2>
+
+<p><strong>Since:</strong> PMD 3.5</p>
+
+<p><strong>Priority:</strong> Medium High (2)</p>
+
+<p>Calling new Integer() causes memory allocation that can be avoided by the static Integer.valueOf().
+It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Integer() is deprecated since JDK 9 for that reason.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
+  </span><span class="p">[</span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="nt">ArrayDimsAndInits</span><span class="p">)</span><span class="w">
+   </span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Integer'</span><span class="p">)]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Integer</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// change to Integer i = Integer.valueOf(0);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/IntegerInstantiation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="longinstantiation">LongInstantiation</h2>
+
+<p><strong>Since:</strong> PMD 4.0</p>
+
+<p><strong>Priority:</strong> Medium High (2)</p>
+
+<p>Calling new Long() causes memory allocation that can be avoided by the static Long.valueOf().
+It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Long() is deprecated since JDK 9 for that reason.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
+</span><span class="p">[</span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="nt">ArrayDimsAndInits</span><span class="p">)</span><span class="w">
+</span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Long'</span><span class="p">)]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Long</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// change to Long i = Long.valueOf(0);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/LongInstantiation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="optimizabletoarraycall">OptimizableToArrayCall</h2>
+
+<p><strong>Since:</strong> PMD 1.8</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p><strong>Minimum Language Version:</strong> Java 1.6</p>
+
+<p>Calls to a collection’s <code class="language-plaintext highlighter-rouge">toArray(E[])</code> method should specify a target array of zero size. This allows the JVM
+to optimize the memory allocation and copying as much as possible.</p>
+
+<p>Previous versions of this rule (pre PMD 6.0.0) suggested the opposite, but current JVM implementations
+perform always better, when they have full control over the target array. And allocation an array via
+reflection is nowadays as fast as the direct allocation.</p>
+
+<p>See also <a href="https://shipilev.net/blog/2016/arrays-wisdom-ancients/">Arrays of Wisdom of the Ancients</a></p>
+
+<p>Note: If you don’t need an array of the correct type, then the simple <code class="language-plaintext highlighter-rouge">toArray()</code> method without an array
+is faster, but returns only an array of type <code class="language-plaintext highlighter-rouge">Object[]</code>.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="w">
+</span><span class="p">[</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'toArray'</span><span class="p">)]]</span><span class="w">
+</span><span class="p">[</span><span class="w">
+</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="o">/</span><span class="nt">ArgumentList</span><span class="o">/</span><span class="nt">Expression</span><span class="w">
+ </span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">AllocationExpression</span><span class="w">
+ </span><span class="o">/</span><span class="nt">ArrayDimsAndInits</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Literal</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'0'</span><span class="p">])]</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Foo</span><span class="o">&gt;</span> <span class="n">foos</span> <span class="o">=</span> <span class="n">getFoos</span><span class="o">();</span>
+
+<span class="c1">// much better; this one allows the jvm to allocate an array of the correct size and effectively skip</span>
+<span class="c1">// the zeroing, since each array element will be overridden anyways</span>
+<span class="nc">Foo</span><span class="o">[]</span> <span class="n">fooArray</span> <span class="o">=</span> <span class="n">foos</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span><span class="k">new</span> <span class="nc">Foo</span><span class="o">[</span><span class="mi">0</span><span class="o">]);</span>
+
+<span class="c1">// inefficient, the array needs to be zeroed out by the jvm before it is handed over to the toArray method</span>
+<span class="nc">Foo</span><span class="o">[]</span> <span class="n">fooArray</span> <span class="o">=</span> <span class="n">foos</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span><span class="k">new</span> <span class="nc">Foo</span><span class="o">[</span><span class="n">foos</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/OptimizableToArrayCall"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="redundantfieldinitializer">RedundantFieldInitializer</h2>
+
+<p><strong>Since:</strong> PMD 5.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Java will initialize fields with known default values so any explicit initialization of those same defaults
+is redundant and results in a larger class file (approximately three additional bytecode instructions per field).</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/RedundantFieldInitializerRule.java">net.sourceforge.pmd.lang.java.rule.performance.RedundantFieldInitializerRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">C</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="n">b</span>   <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>    <span class="c1">// examples of redundant initializers</span>
+    <span class="kt">byte</span> <span class="n">by</span>     <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="kt">short</span> <span class="n">s</span>     <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="kt">char</span> <span class="n">c</span>      <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">i</span>       <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="kt">long</span> <span class="n">l</span>      <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+
+    <span class="kt">float</span> <span class="n">f</span>     <span class="o">=</span> <span class="o">.</span><span class="mi">0</span><span class="n">f</span><span class="o">;</span>    <span class="c1">// all possible float literals</span>
+    <span class="n">doable</span> <span class="n">d</span>    <span class="o">=</span> <span class="mi">0</span><span class="n">d</span><span class="o">;</span>     <span class="c1">// all possible double literals</span>
+    <span class="nc">Object</span> <span class="n">o</span>    <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+    <span class="nc">MyClass</span> <span class="n">mca</span><span class="o">[]</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">i1</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">ia1</span><span class="o">[]</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+    <span class="kd">class</span> <span class="nc">Nested</span> <span class="o">{</span>
+        <span class="kt">boolean</span> <span class="n">b</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/RedundantFieldInitializer"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="shortinstantiation">ShortInstantiation</h2>
+
+<p><strong>Since:</strong> PMD 4.0</p>
+
+<p><strong>Priority:</strong> Medium High (2)</p>
+
+<p>Calling new Short() causes memory allocation that can be avoided by the static Short.valueOf().
+It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+Note that new Short() is deprecated since JDK 9 for that reason.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
+</span><span class="p">[</span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="nt">ArrayDimsAndInits</span><span class="p">)</span><span class="w">
+</span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Short'</span><span class="p">)]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Short</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Short</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// change to Short i = Short.valueOf(0);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/ShortInstantiation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="simplifystartswith">SimplifyStartsWith</h2>
+
+<p><strong>Since:</strong> PMD 3.1</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Calls to <code class="language-plaintext highlighter-rouge">string.startsWith("x")</code> with a string literal of length 1 can be rewritten using <code class="language-plaintext highlighter-rouge">string.charAt(0)</code>,
+at the expense of some readability. To prevent <code class="language-plaintext highlighter-rouge">IndexOutOfBoundsException</code> being thrown by the <code class="language-plaintext highlighter-rouge">charAt</code> method,
+ensure that the string is not empty by making an additional check first.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="w">
+ </span><span class="p">[</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="w">
+  </span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'.startsWith'</span><span class="p">)]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'startsWith'</span><span class="p">]]</span><span class="w">
+ </span><span class="p">[</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="o">/</span><span class="nt">ArgumentList</span><span class="w">
+  </span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="w">
+  </span><span class="o">/</span><span class="nt">Literal</span><span class="w">
+   </span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="err">=</span><span class="m">3</span><span class="p">]</span><span class="w">
+   </span><span class="p">[</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'"'</span><span class="p">)]</span><span class="w">
+   </span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'"'</span><span class="p">)]</span><span class="w">
+ </span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+
+    <span class="kt">boolean</span> <span class="nf">checkIt</span><span class="o">(</span><span class="nc">String</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"a"</span><span class="o">);</span>   <span class="c1">// suboptimal</span>
+    <span class="o">}</span>
+
+    <span class="kt">boolean</span> <span class="nf">fasterCheckIt</span><span class="o">(</span><span class="nc">String</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="o">!</span><span class="n">x</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">x</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">==</span> <span class="sc">'a'</span><span class="o">;</span>  <span class="c1">// faster approach</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/SimplifyStartsWith"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="stringinstantiation">StringInstantiation</h2>
+
+<p><strong>Since:</strong> PMD 1.0</p>
+
+<p><strong>Priority:</strong> Medium High (2)</p>
+
+<p>Avoid instantiating String objects; this is usually unnecessary since they are immutable and can be safely shared.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/StringInstantiationRule.java">net.sourceforge.pmd.lang.java.rule.performance.StringInstantiationRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">String</span> <span class="n">bar</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="s">"bar"</span><span class="o">);</span> <span class="c1">// just do a String bar = "bar";</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/StringInstantiation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="stringtostring">StringToString</h2>
+
+<p><strong>Since:</strong> PMD 1.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Avoid calling toString() on objects already known to be string instances; this is unnecessary.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/StringToStringRule.java">net.sourceforge.pmd.lang.java.rule.performance.StringToStringRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">String</span> <span class="nf">baz</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="n">bar</span> <span class="o">=</span> <span class="s">"howdy"</span><span class="o">;</span>
+    <span class="k">return</span> <span class="n">bar</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/StringToString"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="toofewbranchesforaswitchstatement">TooFewBranchesForASwitchStatement</h2>
+
+<p><strong>Since:</strong> PMD 4.2</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Switch statements are intended to be used to support complex branching behaviour. Using a switch for only a few
+cases is ill-advised, since switches are not as easy to understand as if-then statements. In these cases use the
+if-then statement to increase code readability.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="p">[</span><span class="w">
+    </span><span class="p">(</span><span class="nf">count</span><span class="p">(.</span><span class="o">//</span><span class="nt">SwitchLabel</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimumNumberCaseForASwitch</span><span class="p">)</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// With a minimumNumberCaseForASwitch of 3</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">switch</span> <span class="o">(</span><span class="n">condition</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nl">ONE:</span>
+                <span class="n">instruction</span><span class="o">;</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">default</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span> <span class="c1">// not enough for a 'switch' stmt, a simple 'if' stmt would have been more appropriate</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>minimumNumberCaseForASwitch</td>
+      <td>3</td>
+      <td>Minimum number of branches for a switch</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/TooFewBranchesForASwitchStatement"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/TooFewBranchesForASwitchStatement"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"minimumNumberCaseForASwitch"</span> <span class="na">value=</span><span class="s">"3"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unnecessarywrapperobjectcreation">UnnecessaryWrapperObjectCreation</h2>
+
+<p><strong>Since:</strong> PMD 3.8</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Most wrapper classes provide static conversion methods that avoid the need to create intermediate objects
+just to create the primitive forms. Using these avoids the cost of creating objects that also need to be
+garbage-collected later.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UnnecessaryWrapperObjectCreationRule.java">net.sourceforge.pmd.lang.java.rule.performance.UnnecessaryWrapperObjectCreationRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">int</span> <span class="nf">convert</span><span class="o">(</span><span class="nc">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="n">i2</span><span class="o">;</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">s</span><span class="o">).</span><span class="na">intValue</span><span class="o">();</span>  <span class="c1">// this wastes an object</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>            <span class="c1">// this is better</span>
+
+    <span class="n">i2</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">intValue</span><span class="o">();</span> <span class="c1">// this wastes an object</span>
+    <span class="n">i2</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>                             <span class="c1">// this is better</span>
+
+    <span class="nc">String</span> <span class="n">s3</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">i2</span><span class="o">).</span><span class="na">toString</span><span class="o">();</span> <span class="c1">// this wastes an object</span>
+    <span class="n">s3</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">i2</span><span class="o">);</span>                  <span class="c1">// this is better</span>
+
+    <span class="k">return</span> <span class="n">i2</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/UnnecessaryWrapperObjectCreation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="usearraylistinsteadofvector">UseArrayListInsteadOfVector</h2>
+
+<p><strong>Since:</strong> PMD 3.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CompilationUnit</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ImportDeclaration</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">ImportDeclaration</span><span class="p">[</span><span class="na">@ImportedName</span><span class="err">=</span><span class="s1">'java.util.Vector'</span><span class="p">]]</span><span class="w">
+  </span><span class="o">//</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="w">
+    </span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'Vector'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="err">=</span><span class="s1">'java.util.Vector'</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleTest</span> <span class="kd">extends</span> <span class="nc">TestCase</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testX</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">Collection</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Vector</span><span class="o">();</span>
+    <span class="nc">Collection</span> <span class="n">c2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>    <span class="c1">// achieves the same with much better performance</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/UseArrayListInsteadOfVector"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="usearraysaslist">UseArraysAsList</h2>
+
+<p><strong>Since:</strong> PMD 3.5</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>The java.util.Arrays class has a "asList" method that should be used when you want to create a new List from
+an array of objects. It is faster than executing a loop to copy all the elements of the array one by one.</p>
+
+<p>Note that the result of Arrays.asList() is backed by the specified array,
+changes in the returned list will result in the array to be modified.
+For that reason, it is not possible to add new elements to the returned list of Arrays.asList() (UnsupportedOperationException).
+You must use new ArrayList&lt;&gt;(Arrays.asList(…)) if that is inconvenient for you (e.g. because of concurrent access).</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Statement</span><span class="p">[</span><span class="w">
+    </span><span class="p">(</span><span class="nt">ForStatement</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">(</span><span class="nt">ForStatement</span><span class="o">//</span><span class="nt">VariableInitializer</span><span class="o">//</span><span class="nt">Literal</span><span class="p">[</span><span class="na">@IntLiteral</span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Image</span><span class="err">=</span><span class="s1">'0'</span><span class="p">])</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">(</span><span class="ow">not</span><span class="p">(.</span><span class="o">//</span><span class="nt">IfStatement</span><span class="p">))</span><span class="w">
+   </span><span class="p">]</span><span class="w">
+   </span><span class="o">//</span><span class="nt">StatementExpression</span><span class="p">[</span><span class="w">
+    </span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
+     </span><span class="nf">substring-before</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'.add'</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">MethodDeclaration</span><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="w">
+      </span><span class="p">.</span><span class="o">/</span><span class="nt">Type</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="w">
+       </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'Collection'</span><span class="w"> </span><span class="ow">or</span><span class="w">
+       </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'List'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="err">=</span><span class="s1">'ArrayList'</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+     </span><span class="p">]</span><span class="w">
+     </span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="w">
+      </span><span class="nf">count</span><span class="p">(..</span><span class="o">//</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="w">
+       </span><span class="na">@Image</span><span class="err">=</span><span class="s2">"ArrayList"</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+      </span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="w">
+     </span><span class="p">]</span><span class="err">/</span><span class="na">@Name</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+   </span><span class="ow">and</span><span class="w">
+   </span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="o">/</span><span class="nt">ArgumentList</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="w">
+   </span><span class="p">[</span><span class="w">
+     </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@ArrayType</span><span class="err">=</span><span class="nf">true</span><span class="p">()]</span><span class="err">/</span><span class="na">@Name</span><span class="w">
+     </span><span class="ow">or</span><span class="w">
+     </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="o">//</span><span class="nt">FormalParameter</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="err">/</span><span class="na">@Name</span><span class="w">
+   </span><span class="p">]</span><span class="w">
+   </span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..[</span><span class="nf">count</span><span class="p">(.</span><span class="o">//</span><span class="nt">PrimarySuffix</span><span class="p">)</span><span class="w">
+   </span><span class="err">=</span><span class="m">1</span><span class="p">]</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="w">
+   </span><span class="o">/</span><span class="nt">Name</span><span class="w">
+   </span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="nc">Integer</span><span class="o">[]</span> <span class="n">ints</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// could just use Arrays.asList(ints)</span>
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">l</span><span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;(</span><span class="mi">100</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span> <span class="mi">100</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">l</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">ints</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+        <span class="o">}</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span> <span class="mi">100</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">l</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">toString</span><span class="o">());</span> <span class="c1">// won't trigger the rule</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/UseArraysAsList"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="useindexofchar">UseIndexOfChar</h2>
+
+<p><strong>Since:</strong> PMD 3.5</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Use String.indexOf(char) when checking for the index of a single character; it executes faster.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UseIndexOfCharRule.java">net.sourceforge.pmd.lang.java.rule.performance.UseIndexOfCharRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">"hello world"</span><span class="o">;</span>
+<span class="c1">// avoid this</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="s">"d"</span><span class="o">)</span> <span class="o">{}</span>
+<span class="c1">// instead do this</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="sc">'d'</span><span class="o">)</span> <span class="o">{}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/UseIndexOfChar"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="useiostreamswithapachecommonsfileitem">UseIOStreamsWithApacheCommonsFileItem</h2>
+
+<p><strong>Since:</strong> PMD 6.25.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Problem: Use of <a href="https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#get--">FileItem.get()</a>
+and <a href="https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getString--">FileItem.getString()</a>
+could exhaust memory since they load the entire file into memory.</p>
+
+<p>Solution: Use <a href="https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getInputStream--">FileItem.getInputStream()</a>
+and buffering.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="w">
+</span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'.get'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'.getString'</span><span class="p">)]</span><span class="w">
+</span><span class="p">[</span><span class="w">
+    </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nf">concat</span><span class="p">(</span><span class="w">
+        </span><span class="kn">ancestor::</span><span class="nt">MethodDeclaration</span><span class="o">//</span><span class="nt">FormalParameter</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.apache.commons.fileupload.FileItem'</span><span class="p">)]</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="err">/</span><span class="na">@Name</span><span class="p">,</span><span class="w">
+        </span><span class="s1">'.'</span><span class="p">)</span><span class="w">
+    </span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
+    </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nf">concat</span><span class="p">(</span><span class="w">
+        </span><span class="kn">ancestor::</span><span class="nt">MethodDeclaration</span><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.apache.commons.fileupload.FileItem'</span><span class="p">)]</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="err">/</span><span class="na">@Name</span><span class="p">,</span><span class="w">
+        </span><span class="s1">'.'</span><span class="p">)</span><span class="w">
+    </span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
+    </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nf">concat</span><span class="p">(</span><span class="w">
+        </span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.apache.commons.fileupload.FileItem'</span><span class="p">)]</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="err">/</span><span class="na">@Name</span><span class="p">,</span><span class="w">
+        </span><span class="s1">'.'</span><span class="p">)</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.apache.commons.fileupload.FileItem</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileStuff</span> <span class="o">{</span>
+   <span class="kd">private</span> <span class="nc">String</span> <span class="nf">bad</span><span class="o">(</span><span class="nc">FileItem</span> <span class="n">fileItem</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">fileItem</span><span class="o">.</span><span class="na">getString</span><span class="o">();</span>
+   <span class="o">}</span>
+
+   <span class="kd">private</span> <span class="nc">InputStream</span> <span class="nf">good</span><span class="o">(</span><span class="nc">FileItem</span> <span class="n">fileItem</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">fileItem</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
+   <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/UseIOStreamsWithApacheCommonsFileItem"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="uselessstringvalueof">UselessStringValueOf</h2>
+
+<p><strong>Since:</strong> PMD 3.8</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>No need to call String.valueOf to append to a string; just use the valueOf() argument directly.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UselessStringValueOfRule.java">net.sourceforge.pmd.lang.java.rule.performance.UselessStringValueOfRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">String</span> <span class="nf">convert</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="n">s</span><span class="o">;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">"a"</span> <span class="o">+</span> <span class="nc">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>    <span class="c1">// not required</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">"a"</span> <span class="o">+</span> <span class="n">i</span><span class="o">;</span>                    <span class="c1">// preferred approach</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/UselessStringValueOf"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="usestringbufferforstringappends">UseStringBufferForStringAppends</h2>
+
+<p><strong>Since:</strong> PMD 3.1</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>The use of the ‘+=’ operator for appending strings causes the JVM to create and use an internal StringBuffer.
+If a non-trivial number of these concatenations are being used then the explicit use of a StringBuilder or
+threadsafe StringBuffer is recommended to avoid this.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UseStringBufferForStringAppendsRule.java">net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">a</span><span class="o">;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="s">"foo"</span><span class="o">;</span>
+        <span class="n">a</span> <span class="o">+=</span> <span class="s">" bar"</span><span class="o">;</span>
+        <span class="c1">// better would be:</span>
+        <span class="c1">// StringBuilder a = new StringBuilder("foo");</span>
+        <span class="c1">// a.append(" bar");</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/UseStringBufferForStringAppends"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="usestringbufferlength">UseStringBufferLength</h2>
+
+<p><strong>Since:</strong> PMD 3.4</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
+or StringBuffer.toString().length() == …</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UseStringBufferLengthRule.java">net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferLengthRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+
+<span class="k">if</span> <span class="o">(</span><span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">""</span><span class="o">))</span> <span class="o">{}</span>        <span class="c1">// inefficient</span>
+
+<span class="k">if</span> <span class="o">(</span><span class="n">sb</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{}</span>                <span class="c1">// preferred</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/UseStringBufferLength"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+
+
+    <div class="tags">
+        
+    </div>
+
+
+
+</div>
+
+<hr class="shaded"/>
+
+<footer>
+            <div class="row">
+                <div class="col-lg-12 footer">
+               &copy;2020 PMD Open Source Project. All rights reserved. <br />
+ Site last generated: Nov 14, 2020 <br />
+<p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
+                </div>
+            </div>
+</footer>
+
+
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</div>
+</div>
+</body>
+
+</html>

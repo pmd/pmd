@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Overview of the built-in report formats for CPD">
+<meta name="keywords" content="cpduserdocs,  formatsrenderers">
+<title>Report formats for CPD | PMD Source Code Analyzer</title>
+<link rel="stylesheet" href="css/syntax.css">
+
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
+<link rel="stylesheet" href="css/modern-business.css">
+<link rel="stylesheet" href="css/lavish-bootstrap.css">
+<link rel="stylesheet" href="css/customstyles.css">
+<link rel="stylesheet" href="css/theme-blue.css">
+<link rel="stylesheet" href="css/pmd-customstyles.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="js/jquery.navgoco.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
+<script src="js/toc.js"></script>
+<script src="js/customscripts.js"></script>
+
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<link rel="alternate" type="application/rss+xml" title="" href="https://pmd.github.io/pmd/feed.xml">
+
+    <script>
+        $(document).ready(function() {
+            // Initialize navgoco with default options
+            $("#mysidebar").navgoco({
+                caretHtml: '',
+                accordion: true,
+                openClass: 'active', // open
+                save: false, // leave false or nav highlighting doesn't work right
+                cookie: {
+                    name: 'navgoco',
+                    expires: false,
+                    path: '/'
+                },
+                slide: {
+                    duration: 400,
+                    easing: 'swing'
+                }
+            });
+
+            $("#collapseAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', false);
+            });
+
+            $("#expandAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', true);
+            });
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#tg-sb-link").click(function() {
+                $("#tg-sb-sidebar").toggle();
+                $("#tg-sb-content").toggleClass('col-md-9');
+                $("#tg-sb-content").toggleClass('col-md-12');
+                $("#tg-sb-icon").toggleClass('fa-toggle-on');
+                $("#tg-sb-icon").toggleClass('fa-toggle-off');
+            });
+        });
+    </script>
+    
+
+</head>
+<body>
+<!-- Content is offset by the height of the topnav bar. -->
+<!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
+<div id="topbar-content-offset">
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container topnavlinks">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="fa fa-home fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- toggle sidebar button -->
+                <li><a id="tg-sb-link" href="#"><i id="tg-sb-icon" class="fa fa-toggle-on"></i> Nav</a></li>
+                <!-- entries without drop-downs appear here -->
+                
+                
+                
+                <li><a href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
+                
+                
+                
+                <li><a href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
+                
+                
+                
+                <!-- entries with drop-downs appear here -->
+                <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
+                
+                
+                <!--comment out this block if you want to hide search-->
+                <li>
+                    <!--start search-->
+                    <div id="search-demo-container">
+                        <input type="text" id="search-input" placeholder="search...">
+                        <ul id="results-container"></ul>
+                    </div>
+                    <script src="js/jekyll-search.js" type="text/javascript"></script>
+                    <script type="text/javascript">
+                            SimpleJekyllSearch.init({
+                                searchInput: document.getElementById('search-input'),
+                                resultsContainer: document.getElementById('results-container'),
+                                dataSource: 'search.json',
+                                searchResultTemplate: '<li><a href="{url}" title="Report formats for CPD">{title}</a></li>',
+                    noResultsText: 'No results found.',
+                            limit: 10,
+                            fuzzy: true,
+                    })
+                    </script>
+                    <!--end search-->
+                </li>
+            </ul>
+        </div>
+        </div>
+        <!-- /.container -->
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="col-lg-12">&nbsp;</div>
+    <!-- Content Row -->
+    <div class="row">
+        
+        
+        <!-- Sidebar Column -->
+        <div class="col-md-3" id="tg-sb-sidebar">
+            
+
+
+
+
+
+
+
+
+<ul id="mysidebar" class="nav">
+    <li class="sidebarTitle">PMD 6.30.0-SNAPSHOT</li>
+    
+    
+    
+        
+    
+    <li>
+        
+        <a href="#">About</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="index.html">Home</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_release_notes.html">Release notes</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_next_major_development.html">PMD 7.0.0 development</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_about_help.html">Getting help</a></li>
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">User Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_installation.html">Installation and basic CLI usage</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_making_rulesets.html">Making rulesets</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_configuring_rules.html">Configuring rules</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_best_practices.html">Best practices</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_suppressing_warnings.html">Suppressing warnings</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_incremental_analysis.html">Incremental analysis</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_cli_reference.html">PMD CLI reference</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_report_formats.html">PMD Report formats</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">CPD reference</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd.html">Copy-paste detection</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li class="active"><a href="pmd_userdocs_cpd_report_formats.html">CPD Report formats</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Extending PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_designer_reference.html">Rule designer reference</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_defining_properties.html">Defining rule properties</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_rule_guidelines.html">Rule guidelines</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_testing.html">Testing your rules</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Tools / Integrations</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_maven.html">Maven PMD Plugin</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_gradle.html">Gradle</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_ant.html">Ant</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_java_api.html">PMD Java API</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_ci.html">CI integrations</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools.html">Other Tools / Integrations</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Rule Reference</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Apex Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_documentation.html">Documentation</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_performance.html">Performance</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Ecmascript Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Java Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_documentation.html">Documentation</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_multithreading.html">Multithreading</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_performance.html">Performance</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Java Server Pages Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Maven POM Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_pom.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_pom_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Modelica Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">PLSQL Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Salesforce VisualForce Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vf.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vf_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">VM Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">XML Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xml.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xml_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">XSL Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl_performance.html">Performance</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Language Specific Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_jsp.html">JSP Support</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_java_metrics_index.html">Java code metrics</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_apex_metrics_index.html">Apex code metrics</a></li>
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Developer Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_development.html">Developer resources</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_writing_documentation.html">Writing documentation</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_roadmap.html">Roadmap</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_how_pmd_works.html">How PMD works</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_pmdtester.html">Pmdtester</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_rule_deprecation_policy.html">Rule Deprecation Policy</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Major contributions</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_language.html">Adding a new language</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_cpd_language.html">Adding a new CPD language</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_metrics_framework.html">Adding metrics support to a language</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+                
+                <li class="subfolders">
+                    <a href="#">Experimental features</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_experimental_ast_dump.html">Creating (XML) dump of the AST</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Project documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Trivia about PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_news.html">PMD in the press</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_products.html">Products & books related to PMD</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_similarprojects.html">Similar projects</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_meaning.html">What does 'PMD' mean?</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_faq.html">FAQ</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="license.html">License</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_credits.html">Credits</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_release_notes_old.html">Old release notes</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Project management</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_releasing.html">Release process</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_merging_pull_requests.html">Merging pull requests</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_main_landing_page.html">Main Landing page</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+        
+        <!-- if you aren't using the accordion, uncomment this block:
+           <p class="external">
+               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+           </p>
+           -->
+</ul>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+        </div>
+        
+        
+
+        <!-- Content Column -->
+        <div class="col-md-9" id="tg-sb-content">
+            <div class="post-header">
+   <h1 class="post-title-main">Report formats for CPD</h1>
+</div>
+
+
+
+<div class="post-content">
+
+   
+    <div class="summary">Overview of the built-in report formats for CPD</div>
+   
+
+    
+    
+<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
+<script>
+$( document ).ready(function() {
+  // Handler for .ready() called.
+
+$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
+
+});
+</script>
+
+<div id="toc"></div>
+
+    
+
+
+    
+
+        
+        
+
+    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/cpd/cpd_report_formats.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+
+    
+
+  <h2 id="overview">Overview</h2>
+
+<p>CPD collects occurrences of found duplications and provides them to the selected report format.
+Each found code duplication appears in one or more other files, so that each code duplication can
+have multiple locations. Not all report formats display all locations.</p>
+
+<p>The following examples always describe the same duplications:</p>
+
+<ol>
+  <li>a code block of 239 tokens spanning 33 lines in RuleReferenceTest. This is a duplication within the same file.</li>
+  <li>a code block of 110 tokens spanning 16 lines in JaxenXPathRuleQueryTest. This is a duplication that appears
+3 times within the same file.</li>
+</ol>
+
+<h2 id="text">text</h2>
+
+<p>This is the default format.</p>
+
+<p>All duplications are reported one after another. For each duplication, the complete code snippet is output.
+Each duplication is separated by <code class="language-plaintext highlighter-rouge">======</code>.</p>
+
+<p>Example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Found a 33 line (239 tokens) duplication in the following files: 
+Starting at line 32 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+Starting at line 68 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+
+    public void testOverride() {
+        final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
+        MockRule rule = new MockRule();
+        rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
+        rule.setLanguage(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME));
+        rule.setName("name1");
+        rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
+        rule.setMessage("message1");
+        rule.setDescription("description1");
+        rule.addExample("example1");
+        rule.setExternalInfoUrl("externalInfoUrl1");
+        rule.setPriority(RulePriority.HIGH);
+
+        final StringProperty PROPERTY2_DESCRIPTOR = new StringProperty("property2", "Test property", null, 0f);
+        RuleReference ruleReference = new RuleReference();
+        ruleReference.setRule(rule);
+        ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
+        ruleReference.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        ruleReference
+                .setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"));
+        ruleReference
+                .setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"));
+        ruleReference.setDeprecated(true);
+        ruleReference.setName("name2");
+        ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value2");
+        ruleReference.setProperty(PROPERTY2_DESCRIPTOR, "value3");
+        ruleReference.setMessage("message2");
+        ruleReference.setDescription("description2");
+        ruleReference.addExample("example2");
+        ruleReference.setExternalInfoUrl("externalInfoUrl2");
+        ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
+
+        validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
+=====================================================================
+Found a 16 line (110 tokens) duplication in the following files: 
+Starting at line 66 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+Starting at line 88 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+
+        JaxenXPathRuleQuery query = createQuery(xpath);
+        List&lt;String&gt; ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(2, ruleChainVisits.size());
+        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        // Note: Having AST_ROOT in the rule chain visits is probably a mistake. But it doesn't hurt, it shouldn't
+        // match a real node name.
+        Assert.assertTrue(ruleChainVisits.contains(JaxenXPathRuleQuery.AST_ROOT));
+
+        DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
+        RuleContext data = new RuleContext();
+        data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+
+        query.evaluate(dummy, data);
+        // note: the actual xpath queries are only available after evaluating
+        Assert.assertEquals(2, query.nodeNameToXPaths.size());
+        Assert.assertEquals("self::node()[(attribute::Test1 = \"false\")][(attribute::Test2 = \"true\")]", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
+</code></pre></div></div>
+
+<h2 id="xml">xml</h2>
+
+<p>This format uses XML to output the duplications in a more structured format.</p>
+
+<p>Example:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;pmd-cpd&gt;</span>
+   <span class="nt">&lt;duplication</span> <span class="na">lines=</span><span class="s">"33"</span> <span class="na">tokens=</span><span class="s">"239"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;file</span> <span class="na">column=</span><span class="s">"29"</span> <span class="na">endcolumn=</span><span class="s">"75"</span> <span class="na">endline=</span><span class="s">"64"</span> <span class="na">line=</span><span class="s">"32"</span>
+            <span class="na">path=</span><span class="s">"/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;file</span> <span class="na">column=</span><span class="s">"37"</span> <span class="na">endcolumn=</span><span class="s">"75"</span> <span class="na">endline=</span><span class="s">"100"</span> <span class="na">line=</span><span class="s">"68"</span>
+            <span class="na">path=</span><span class="s">"/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;codefragment&gt;</span><span class="cp">&lt;![CDATA[    public void testOverride() {
+        final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
+        MockRule rule = new MockRule();
+        rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
+        rule.setLanguage(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME));
+        rule.setName("name1");
+        rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
+        rule.setMessage("message1");
+        rule.setDescription("description1");
+        rule.addExample("example1");
+        rule.setExternalInfoUrl("externalInfoUrl1");
+        rule.setPriority(RulePriority.HIGH);
+
+        final StringProperty PROPERTY2_DESCRIPTOR = new StringProperty("property2", "Test property", null, 0f);
+        RuleReference ruleReference = new RuleReference();
+        ruleReference.setRule(rule);
+        ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
+        ruleReference.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        ruleReference
+                .setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"));
+        ruleReference
+                .setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"));
+        ruleReference.setDeprecated(true);
+        ruleReference.setName("name2");
+        ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value2");
+        ruleReference.setProperty(PROPERTY2_DESCRIPTOR, "value3");
+        ruleReference.setMessage("message2");
+        ruleReference.setDescription("description2");
+        ruleReference.addExample("example2");
+        ruleReference.setExternalInfoUrl("externalInfoUrl2");
+        ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
+
+        validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);]]&gt;</span><span class="nt">&lt;/codefragment&gt;</span>
+   <span class="nt">&lt;/duplication&gt;</span>
+   <span class="nt">&lt;duplication</span> <span class="na">lines=</span><span class="s">"16"</span> <span class="na">tokens=</span><span class="s">"110"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;file</span> <span class="na">column=</span><span class="s">"9"</span> <span class="na">endcolumn=</span><span class="s">"28"</span> <span class="na">endline=</span><span class="s">"81"</span> <span class="na">line=</span><span class="s">"66"</span>
+            <span class="na">path=</span><span class="s">"/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;file</span> <span class="na">column=</span><span class="s">"9"</span> <span class="na">endcolumn=</span><span class="s">"28"</span> <span class="na">endline=</span><span class="s">"103"</span> <span class="na">line=</span><span class="s">"88"</span>
+            <span class="na">path=</span><span class="s">"/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;file</span> <span class="na">column=</span><span class="s">"9"</span> <span class="na">endcolumn=</span><span class="s">"28"</span> <span class="na">endline=</span><span class="s">"125"</span> <span class="na">line=</span><span class="s">"110"</span>
+            <span class="na">path=</span><span class="s">"/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;codefragment&gt;</span><span class="cp">&lt;![CDATA[        JaxenXPathRuleQuery query = createQuery(xpath);
+        List&lt;String&gt;</span> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(2, ruleChainVisits.size());
+        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        // Note: Having AST_ROOT in the rule chain visits is probably a mistake. But it doesn't hurt, it shouldn't
+        // match a real node name.
+        Assert.assertTrue(ruleChainVisits.contains(JaxenXPathRuleQuery.AST_ROOT));
+
+        DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
+        RuleContext data = new RuleContext();
+        data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+
+        query.evaluate(dummy, data);
+        // note: the actual xpath queries are only available after evaluating
+        Assert.assertEquals(2, query.nodeNameToXPaths.size());
+        Assert.assertEquals("self::node()[(attribute::Test1 = \"false\")][(attribute::Test2 = \"true\")]", query.nodeNameToXPaths.get("dummyNode").get(0).toString());]]&gt;<span class="nt">&lt;/codefragment&gt;</span>
+   <span class="nt">&lt;/duplication&gt;</span>
+<span class="nt">&lt;/pmd-cpd&gt;</span>
+</code></pre></div></div>
+
+<h2 id="csv">csv</h2>
+
+<p>This outputs the duplication as comma separated values. It only reports the duplication size (number
+of lines and tokens) and the number of occurrences. After that, the begin lines and filenames are reported on
+after another.</p>
+
+<p>Example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lines,tokens,occurrences
+33,239,2,32,/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java,68,/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+16,110,3,66,/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java,88,/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java,110,/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+</code></pre></div></div>
+
+<h2 id="csv_with_linecount_per_file">csv_with_linecount_per_file</h2>
+
+<p>This format is similar to “csv”, but it has one difference: The duplication size in number of lines is reported
+for each occurrence separately. While the tokens are the same, due to formatting or comments, the code blocks might be
+different. Whitespace and comments are usually ignored when finding duplicated code.</p>
+
+<p>In each line, the duplication size in tokens is reported, then the number of occurrences. And after that, for each
+file, the begin line, the number of duplicated lines and the filename.</p>
+
+<p>Example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tokens,occurrences
+239,2,32,33,/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java,68,33,/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenc
+eTest.java
+110,3,66,16,/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java,88,16,/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java,110,16,/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+</code></pre></div></div>
+
+<h2 id="vs">vs</h2>
+
+<p>This outputs the duplication in a format, that Visual Studio. CPD can be added as a external tool and the output
+is shown in the console. You can then click on the filenames to jump to the source where the duplication is located.</p>
+
+<p>Each occurrence of a duplication is reported in a separate line, that’s why in this example, we have 5 lines.</p>
+
+<p>Example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java(32): Between lines 32 and 65
+/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java(68): Between lines 68 and 101
+/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java(66): Between lines 66 and 82
+/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java(88): Between lines 88 and 104
+/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java(110): Between lines 110 and 126
+</code></pre></div></div>
+
+
+    <div class="tags">
+        
+        <b>Tags: </b>
+        
+        
+        
+        
+        
+        <a href="tag_userdocs.html" class="btn btn-default navbar-btn cursorNorm" role="button">userdocs</a>
+        
+        
+        
+    </div>
+
+
+
+</div>
+
+<hr class="shaded"/>
+
+<footer>
+            <div class="row">
+                <div class="col-lg-12 footer">
+               &copy;2020 PMD Open Source Project. All rights reserved. <br />
+ Site last generated: Nov 14, 2020 <br />
+<p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
+                </div>
+            </div>
+</footer>
+
+
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</div>
+</div>
+</body>
+
+</html>

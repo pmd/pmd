@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Rules that flag issues when dealing with multiple threads of execution.">
+<meta name="keywords" content=" Multithreading, AvoidSynchronizedAtMethodLevel, AvoidThreadGroup, AvoidUsingVolatile, DoNotUseThreads, DontCallThreadRun, DoubleCheckedLocking, NonThreadSafeSingleton, UnsynchronizedStaticDateFormatter, UnsynchronizedStaticFormatter, UseConcurrentHashMap, UseNotifyAllInsteadOfNotify">
+<title>Multithreading | PMD Source Code Analyzer</title>
+<link rel="stylesheet" href="css/syntax.css">
+
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
+<link rel="stylesheet" href="css/modern-business.css">
+<link rel="stylesheet" href="css/lavish-bootstrap.css">
+<link rel="stylesheet" href="css/customstyles.css">
+<link rel="stylesheet" href="css/theme-blue.css">
+<link rel="stylesheet" href="css/pmd-customstyles.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="js/jquery.navgoco.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
+<script src="js/toc.js"></script>
+<script src="js/customscripts.js"></script>
+
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<link rel="alternate" type="application/rss+xml" title="" href="https://pmd.github.io/pmd/feed.xml">
+
+    <script>
+        $(document).ready(function() {
+            // Initialize navgoco with default options
+            $("#mysidebar").navgoco({
+                caretHtml: '',
+                accordion: true,
+                openClass: 'active', // open
+                save: false, // leave false or nav highlighting doesn't work right
+                cookie: {
+                    name: 'navgoco',
+                    expires: false,
+                    path: '/'
+                },
+                slide: {
+                    duration: 400,
+                    easing: 'swing'
+                }
+            });
+
+            $("#collapseAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', false);
+            });
+
+            $("#expandAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', true);
+            });
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#tg-sb-link").click(function() {
+                $("#tg-sb-sidebar").toggle();
+                $("#tg-sb-content").toggleClass('col-md-9');
+                $("#tg-sb-content").toggleClass('col-md-12');
+                $("#tg-sb-icon").toggleClass('fa-toggle-on');
+                $("#tg-sb-icon").toggleClass('fa-toggle-off');
+            });
+        });
+    </script>
+    
+
+</head>
+<body>
+<!-- Content is offset by the height of the topnav bar. -->
+<!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
+<div id="topbar-content-offset">
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container topnavlinks">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="fa fa-home fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- toggle sidebar button -->
+                <li><a id="tg-sb-link" href="#"><i id="tg-sb-icon" class="fa fa-toggle-on"></i> Nav</a></li>
+                <!-- entries without drop-downs appear here -->
+                
+                
+                
+                <li><a href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
+                
+                
+                
+                <li><a href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
+                
+                
+                
+                <!-- entries with drop-downs appear here -->
+                <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
+                
+                
+                <!--comment out this block if you want to hide search-->
+                <li>
+                    <!--start search-->
+                    <div id="search-demo-container">
+                        <input type="text" id="search-input" placeholder="search...">
+                        <ul id="results-container"></ul>
+                    </div>
+                    <script src="js/jekyll-search.js" type="text/javascript"></script>
+                    <script type="text/javascript">
+                            SimpleJekyllSearch.init({
+                                searchInput: document.getElementById('search-input'),
+                                resultsContainer: document.getElementById('results-container'),
+                                dataSource: 'search.json',
+                                searchResultTemplate: '<li><a href="{url}" title="Multithreading">{title}</a></li>',
+                    noResultsText: 'No results found.',
+                            limit: 10,
+                            fuzzy: true,
+                    })
+                    </script>
+                    <!--end search-->
+                </li>
+            </ul>
+        </div>
+        </div>
+        <!-- /.container -->
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="col-lg-12">&nbsp;</div>
+    <!-- Content Row -->
+    <div class="row">
+        
+        
+        <!-- Sidebar Column -->
+        <div class="col-md-3" id="tg-sb-sidebar">
+            
+
+
+
+
+
+
+
+
+<ul id="mysidebar" class="nav">
+    <li class="sidebarTitle">PMD 6.30.0-SNAPSHOT</li>
+    
+    
+    
+        
+    
+    <li>
+        
+        <a href="#">About</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="index.html">Home</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_release_notes.html">Release notes</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_next_major_development.html">PMD 7.0.0 development</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_about_help.html">Getting help</a></li>
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">User Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_installation.html">Installation and basic CLI usage</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_making_rulesets.html">Making rulesets</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_configuring_rules.html">Configuring rules</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_best_practices.html">Best practices</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_suppressing_warnings.html">Suppressing warnings</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_incremental_analysis.html">Incremental analysis</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_cli_reference.html">PMD CLI reference</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_report_formats.html">PMD Report formats</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">CPD reference</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd.html">Copy-paste detection</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd_report_formats.html">CPD Report formats</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Extending PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_designer_reference.html">Rule designer reference</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_defining_properties.html">Defining rule properties</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_rule_guidelines.html">Rule guidelines</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_testing.html">Testing your rules</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Tools / Integrations</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_maven.html">Maven PMD Plugin</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_gradle.html">Gradle</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_ant.html">Ant</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_java_api.html">PMD Java API</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_ci.html">CI integrations</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools.html">Other Tools / Integrations</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Rule Reference</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Apex Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_documentation.html">Documentation</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_performance.html">Performance</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Ecmascript Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Java Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_documentation.html">Documentation</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li class="active"><a href="pmd_rules_java_multithreading.html">Multithreading</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_performance.html">Performance</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Java Server Pages Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Maven POM Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_pom.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_pom_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Modelica Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">PLSQL Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Salesforce VisualForce Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vf.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vf_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">VM Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">XML Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xml.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xml_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">XSL Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl_performance.html">Performance</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Language Specific Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_jsp.html">JSP Support</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_java_metrics_index.html">Java code metrics</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_apex_metrics_index.html">Apex code metrics</a></li>
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Developer Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_development.html">Developer resources</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_writing_documentation.html">Writing documentation</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_roadmap.html">Roadmap</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_how_pmd_works.html">How PMD works</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_pmdtester.html">Pmdtester</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_rule_deprecation_policy.html">Rule Deprecation Policy</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Major contributions</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_language.html">Adding a new language</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_cpd_language.html">Adding a new CPD language</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_metrics_framework.html">Adding metrics support to a language</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+                
+                <li class="subfolders">
+                    <a href="#">Experimental features</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_experimental_ast_dump.html">Creating (XML) dump of the AST</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Project documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Trivia about PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_news.html">PMD in the press</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_products.html">Products & books related to PMD</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_similarprojects.html">Similar projects</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_meaning.html">What does 'PMD' mean?</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_faq.html">FAQ</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="license.html">License</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_credits.html">Credits</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_release_notes_old.html">Old release notes</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Project management</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_releasing.html">Release process</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_merging_pull_requests.html">Merging pull requests</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_main_landing_page.html">Main Landing page</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+        
+        <!-- if you aren't using the accordion, uncomment this block:
+           <p class="external">
+               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+           </p>
+           -->
+</ul>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+        </div>
+        
+        
+
+        <!-- Content Column -->
+        <div class="col-md-9" id="tg-sb-content">
+            <div class="post-header">
+   <h1 class="post-title-main">Multithreading</h1>
+</div>
+
+
+
+<div class="post-content">
+
+   
+    <div class="summary">Rules that flag issues when dealing with multiple threads of execution.</div>
+   
+
+    
+    
+<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
+<script>
+$( document ).ready(function() {
+  // Handler for .ready() called.
+
+$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
+
+});
+</script>
+
+<div id="toc"></div>
+
+    
+
+
+    
+
+        
+        
+
+    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/../pmd-java/src/main/resources/category/java/multithreading.xml" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+
+    
+
+  <!-- DO NOT EDIT THIS FILE. This file is generated from file ../pmd-java/src/main/resources/category/java/multithreading.xml. -->
+<h2 id="avoidsynchronizedatmethodlevel">AvoidSynchronizedAtMethodLevel</h2>
+
+<p><strong>Since:</strong> PMD 3.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Method-level synchronization can cause problems when new code is added to the method.
+Block-level synchronization helps to ensure that only the code that needs synchronization
+gets it.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Synchronized</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="c1">// Try to avoid this:</span>
+    <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// code, that doesn't need synchronization</span>
+        <span class="c1">// ...</span>
+        <span class="c1">// code, that requires synchronization</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">sharedData</span><span class="o">.</span><span class="na">has</span><span class="o">(</span><span class="s">"bar"</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">sharedData</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"bar"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="c1">// more code, that doesn't need synchronization</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
+    <span class="c1">// Prefer this:</span>
+    <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// code, that doesn't need synchronization</span>
+        <span class="c1">// ...</span>
+        <span class="kd">synchronized</span><span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(!</span><span class="n">sharedData</span><span class="o">.</span><span class="na">has</span><span class="o">(</span><span class="s">"bar"</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">sharedData</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"bar"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="c1">// more code, that doesn't need synchronization</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Try to avoid this for static methods:</span>
+    <span class="kd">static</span> <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">fooStatic</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Prefer this:</span>
+    <span class="kd">static</span> <span class="kt">void</span> <span class="nf">barStatic</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// code, that doesn't need synchronization</span>
+        <span class="c1">// ...</span>
+        <span class="kd">synchronized</span><span class="o">(</span><span class="nc">Foo</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// code, that requires synchronization</span>
+        <span class="o">}</span>
+        <span class="c1">// more code, that doesn't need synchronization</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/AvoidSynchronizedAtMethodLevel"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="avoidthreadgroup">AvoidThreadGroup</h2>
+
+<p><strong>Since:</strong> PMD 3.6</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment
+it contains methods that are not thread-safe.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.ThreadGroup'</span><span class="p">)]|</span><span class="w">
+</span><span class="o">//</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'getThreadGroup'</span><span class="p">)]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">buz</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">ThreadGroup</span> <span class="n">tg</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ThreadGroup</span><span class="o">(</span><span class="s">"My threadgroup"</span><span class="o">);</span>
+        <span class="n">tg</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ThreadGroup</span><span class="o">(</span><span class="n">tg</span><span class="o">,</span> <span class="s">"my thread group"</span><span class="o">);</span>
+        <span class="n">tg</span> <span class="o">=</span> <span class="nc">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">();</span>
+        <span class="n">tg</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">getSecurityManager</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/AvoidThreadGroup"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="avoidusingvolatile">AvoidUsingVolatile</h2>
+
+<p><strong>Since:</strong> PMD 4.1</p>
+
+<p><strong>Priority:</strong> Medium High (2)</p>
+
+<p>Use of the keyword ‘volatile’ is generally used to fine tune a Java application, and therefore, requires
+a good expertise of the Java Memory Model. Moreover, its range of action is somewhat misknown. Therefore,
+the volatile keyword should not be used for maintenance purpose and portability.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="na">@Volatile</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ThrDeux</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="kd">volatile</span> <span class="nc">String</span> <span class="n">var1</span><span class="o">;</span> <span class="c1">// not suggested</span>
+  <span class="kd">private</span>          <span class="nc">String</span> <span class="n">var2</span><span class="o">;</span> <span class="c1">// preferred</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/AvoidUsingVolatile"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="donotusethreads">DoNotUseThreads</h2>
+
+<p><strong>Since:</strong> PMD 4.1</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>The J2EE specification explicitly forbids the use of threads. Threads are resources, that should be managed and monitored by the J2EE server.
+If the application creates threads on its own or uses own custom thread pools, then these threads are not managed, which could lead to resource exhaustion.
+Also EJB’s might be moved between machines in a cluster and only managed resources can be moved along.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.ExecutorService'</span><span class="p">)]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.Executors'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.ExecutorService'</span><span class="p">)]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// This is not allowed</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UsingThread</span> <span class="kd">extends</span> <span class="nc">Thread</span> <span class="o">{</span>
+
+<span class="o">}</span>
+
+<span class="c1">// Neither this,</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UsingExecutorService</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methodX</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">ExecutorService</span> <span class="n">executorService</span> <span class="o">=</span> <span class="nc">Executors</span><span class="o">.</span><span class="na">newFixedThreadPool</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Nor this,</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="kd">implements</span> <span class="nc">ExecutorService</span> <span class="o">{</span>
+
+<span class="o">}</span>
+
+<span class="c1">// Nor this,</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="kd">extends</span> <span class="nc">AbstractExecutorService</span> <span class="o">{</span>
+
+<span class="o">}</span>
+
+<span class="c1">// Nor this</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UsingExecutors</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methodX</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Executors</span><span class="o">.</span><span class="na">newSingleThreadExecutor</span><span class="o">().</span><span class="na">submit</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello!"</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/DoNotUseThreads"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="dontcallthreadrun">DontCallThreadRun</h2>
+
+<p><strong>Since:</strong> PMD 4.3</p>
+
+<p><strong>Priority:</strong> Medium Low (4)</p>
+
+<p>Explicitly calling Thread.run() method will execute in the caller’s thread of control.  Instead, call Thread.start() for the intended behavior.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="w">
+</span><span class="p">[</span><span class="w">
+    </span><span class="nt">PrimaryPrefix</span><span class="w">
+    </span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)]</span><span class="w">
+    </span><span class="p">[</span><span class="w">
+            </span><span class="p">.</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'.run'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'run'</span><span class="p">]</span><span class="w">
+        </span><span class="ow">or</span><span class="w">
+            </span><span class="p">.</span><span class="o">/</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)]</span><span class="w">
+            </span><span class="ow">and</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'run'</span><span class="p">]</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Thread</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Thread</span><span class="o">();</span>
+<span class="n">t</span><span class="o">.</span><span class="na">run</span><span class="o">();</span>            <span class="c1">// use t.start() instead</span>
+<span class="k">new</span> <span class="nf">Thread</span><span class="o">().</span><span class="na">run</span><span class="o">();</span> <span class="c1">// same violation</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/DontCallThreadRun"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="doublecheckedlocking">DoubleCheckedLocking</h2>
+
+<p><strong>Since:</strong> PMD 1.04</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
+An optimizing JRE may assign a reference to the baz variable before it calls the constructor of the object the
+reference points to.</p>
+
+<p>Note: With Java 5, you can make Double checked locking work, if you declare the variable to be <code class="language-plaintext highlighter-rouge">volatile</code>.</p>
+
+<p>For more details refer to: <a href="http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html">http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html</a>
+or <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html">http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html</a></p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/DoubleCheckedLockingRule.java">net.sourceforge.pmd.lang.java.rule.multithreading.DoubleCheckedLockingRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="cm">/*volatile */</span> <span class="nc">Object</span> <span class="n">baz</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span> <span class="c1">// fix for Java5 and later: volatile</span>
+    <span class="nc">Object</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">baz</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// baz may be non-null yet not fully created</span>
+            <span class="kd">synchronized</span><span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">baz</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">baz</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">();</span>
+                <span class="o">}</span>
+              <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">baz</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/DoubleCheckedLocking"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="nonthreadsafesingleton">NonThreadSafeSingleton</h2>
+
+<p><strong>Since:</strong> PMD 3.4</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Non-thread safe singletons can result in bad state changes. Eliminate
+static singletons if possible by instantiating the object directly. Static
+singletons are usually not needed as only a single instance exists anyway.
+Other possible fixes are to synchronize the entire method or to use an
+<a href="https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom">initialize-on-demand holder class</a>.</p>
+
+<p>Refrain from using the double-checked locking pattern. The Java Memory Model doesn’t
+guarantee it to work unless the variable is declared as <code class="language-plaintext highlighter-rouge">volatile</code>, adding an uneeded
+performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html">Reference</a></p>
+
+<p>See Effective Java, item 48.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/NonThreadSafeSingletonRule.java">net.sourceforge.pmd.lang.java.rule.multithreading.NonThreadSafeSingletonRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">static</span> <span class="nc">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+<span class="c1">//multiple simultaneous callers may see partially initialized objects</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="nc">Foo</span> <span class="nf">getFoo</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">foo</span><span class="o">==</span><span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>checkNonStaticMethods</td>
+      <td>true</td>
+      <td>Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>checkNonStaticFields</td>
+      <td>false</td>
+      <td>Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/NonThreadSafeSingleton"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/NonThreadSafeSingleton"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkNonStaticMethods"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkNonStaticFields"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unsynchronizedstaticdateformatter">UnsynchronizedStaticDateFormatter</h2>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p><strong>Since:</strong> PMD 3.6</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
+for each thread. If multiple threads must access a static formatter, the formatter must be
+synchronized on block level.</p>
+
+<p>This rule has been deprecated in favor of the rule <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="language-plaintext highlighter-rouge">UnsynchronizedStaticFormatter</code></a>.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/UnsynchronizedStaticDateFormatterRule.java">net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticDateFormatterRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">SimpleDateFormat</span> <span class="n">sdf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SimpleDateFormat</span><span class="o">();</span>
+    <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span> <span class="c1">// poor, no thread-safety</span>
+    <span class="o">}</span>
+    <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sdf</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// preferred</span>
+            <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>allowMethodLevelSynchronization</td>
+      <td>false</td>
+      <td>If true, method level synchronization is allowed as well as synchronized block. Otherwise only synchronized blocks are allowed.</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UnsynchronizedStaticDateFormatter"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UnsynchronizedStaticDateFormatter"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowMethodLevelSynchronization"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unsynchronizedstaticformatter">UnsynchronizedStaticFormatter</h2>
+
+<p><strong>Since:</strong> PMD 6.11.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Instances of <code class="language-plaintext highlighter-rouge">java.text.Format</code> are generally not synchronized.
+Sun recommends using separate format instances for each thread.
+If multiple threads must access a static formatter, the formatter must be
+synchronized on block level.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/UnsynchronizedStaticFormatterRule.java">net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticFormatterRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">SimpleDateFormat</span> <span class="n">sdf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SimpleDateFormat</span><span class="o">();</span>
+    <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span> <span class="c1">// poor, no thread-safety</span>
+    <span class="o">}</span>
+    <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sdf</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// preferred</span>
+            <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>allowMethodLevelSynchronization</td>
+      <td>false</td>
+      <td>If true, method level synchronization is allowed as well as synchronized block. Otherwise only synchronized blocks are allowed.</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UnsynchronizedStaticFormatter"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UnsynchronizedStaticFormatter"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowMethodLevelSynchronization"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="useconcurrenthashmap">UseConcurrentHashMap</h2>
+
+<p><strong>Since:</strong> PMD 4.2.6</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p><strong>Minimum Language Version:</strong> Java 1.5</p>
+
+<p>Since Java5 brought a new implementation of the Map designed for multi-threaded access, you can
+perform efficient map reads without blocking other threads.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Type</span><span class="p">[..</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">VariableInitializer</span><span class="o">//</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="s1">'ConcurrentHashMap'</span><span class="p">]]</span><span class="w">
+</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'Map'</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConcurrentApp</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getMyInstance</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">Map</span> <span class="n">map1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">();</span>           <span class="c1">// fine for single-threaded access</span>
+    <span class="nc">Map</span> <span class="n">map2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ConcurrentHashMap</span><span class="o">();</span> <span class="c1">// preferred for use with multiple threads</span>
+
+    <span class="c1">// the following case will be ignored by this rule</span>
+    <span class="nc">Map</span> <span class="n">map3</span> <span class="o">=</span> <span class="n">someModule</span><span class="o">.</span><span class="na">methodThatReturnMap</span><span class="o">();</span> <span class="c1">// might be OK, if the returned map is already thread-safe</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UseConcurrentHashMap"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="usenotifyallinsteadofnotify">UseNotifyAllInsteadOfNotify</h2>
+
+<p><strong>Since:</strong> PMD 3.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
+one is chosen.  The thread chosen is arbitrary; thus its usually safer to call notifyAll() instead.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="w">
+</span><span class="p">[</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="p">[</span><span class="na">@Size</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]]</span><span class="w">
+</span><span class="p">[</span><span class="w">
+    </span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="w">
+        </span><span class="p">.</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'notify'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'.notify'</span><span class="p">)]</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="err">/</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'notify'</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="p">(.</span><span class="o">/</span><span class="nt">AllocationExpression</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'notify'</span><span class="p">])</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">x</span><span class="o">.</span><span class="na">notify</span><span class="o">();</span>
+    <span class="c1">// If many threads are monitoring x, only one (and you won't know which) will be notified.</span>
+    <span class="c1">// use instead:</span>
+    <span class="n">x</span><span class="o">.</span><span class="na">notifyAll</span><span class="o">();</span>
+  <span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UseNotifyAllInsteadOfNotify"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+
+
+    <div class="tags">
+        
+    </div>
+
+
+
+</div>
+
+<hr class="shaded"/>
+
+<footer>
+            <div class="row">
+                <div class="col-lg-12 footer">
+               &copy;2020 PMD Open Source Project. All rights reserved. <br />
+ Site last generated: Nov 14, 2020 <br />
+<p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
+                </div>
+            </div>
+</footer>
+
+
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</div>
+</div>
+</body>
+
+</html>

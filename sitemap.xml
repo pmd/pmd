@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+
+
+  
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_major_adding_new_cpd_language.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_major_adding_new_language.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_major_adding_new_metrics_framework.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_tools_ant.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_apex.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_apex_metrics_index.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_experimental_ast_dump.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_best_practices.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_jsp_bestpractices.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_ecmascript_bestpractices.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_apex_bestpractices.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_vm_bestpractices.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_plsql_bestpractices.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_modelica_bestpractices.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_java_bestpractices.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_building.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_tools_ci.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_cli_reference.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_jsp_codestyle.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_ecmascript_codestyle.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_apex_codestyle.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_plsql_codestyle.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_java_codestyle.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_xsl_codestyle.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_configuring_rules.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_cpd.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_cpd_report_formats.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_credits.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_defining_properties.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_jsp_design.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_apex_design.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_vm_design.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_plsql_design.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_java_design.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_designer_reference.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_development.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_apex_documentation.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_java_documentation.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_ecmascript.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_jsp_errorprone.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_ecmascript_errorprone.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_apex_errorprone.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_vm_errorprone.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_plsql_errorprone.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_java_errorprone.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_pom_errorprone.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_xml_errorprone.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_faq.html</loc>
+  </url>
+  
+  
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_tools_gradle.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_about_help.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_how_pmd_works.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_incremental_analysis.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/index.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_installation.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_tools_java_api.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_java.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_java_metrics_index.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_languages_jsp.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_jsp.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/license.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_committers_main_landing_page.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_making_rulesets.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_tools_maven.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_trivia_meaning.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_committers_merging_pull_requests.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_metrics_howto.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_modelica.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_java_multithreading.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/js/mydoc_scroll.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/news.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_trivia_news.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/news_archive.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_next_major_development.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_apex_performance.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_java_performance.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_xsl_performance.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_plsql.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_report_formats.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_pmdtester.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_pom.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_trivia_products.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_release_notes.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_release_notes_old.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_committers_releasing.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_roadmap.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_rule_deprecation_policy.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_rule_guidelines.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_scala.html</loc>
+  </url>
+  
+  
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_jsp_security.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_apex_security.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_vf_security.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_java_security.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_trivia_similarprojects.html</loc>
+  </url>
+  
+  
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_suppressing_warnings.html</loc>
+  </url>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_testing.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_tools.html</loc>
+  </url>
+  
+  
+  
+  
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_vf.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_vm.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_writing_documentation.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_writing_java_rules.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_writing_pmd_rules.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_writing_rules_intro.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_writing_xpath_rules.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_xml.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_xsl.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_your_first_rule.html</loc>
+  </url>
+  
+  
+</urlset>

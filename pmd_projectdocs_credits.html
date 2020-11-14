@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="keywords" content=" ">
+<title>Credits | PMD Source Code Analyzer</title>
+<link rel="stylesheet" href="css/syntax.css">
+
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
+<link rel="stylesheet" href="css/modern-business.css">
+<link rel="stylesheet" href="css/lavish-bootstrap.css">
+<link rel="stylesheet" href="css/customstyles.css">
+<link rel="stylesheet" href="css/theme-blue.css">
+<link rel="stylesheet" href="css/pmd-customstyles.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="js/jquery.navgoco.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
+<script src="js/toc.js"></script>
+<script src="js/customscripts.js"></script>
+
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<link rel="alternate" type="application/rss+xml" title="" href="https://pmd.github.io/pmd/feed.xml">
+
+    <script>
+        $(document).ready(function() {
+            // Initialize navgoco with default options
+            $("#mysidebar").navgoco({
+                caretHtml: '',
+                accordion: true,
+                openClass: 'active', // open
+                save: false, // leave false or nav highlighting doesn't work right
+                cookie: {
+                    name: 'navgoco',
+                    expires: false,
+                    path: '/'
+                },
+                slide: {
+                    duration: 400,
+                    easing: 'swing'
+                }
+            });
+
+            $("#collapseAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', false);
+            });
+
+            $("#expandAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', true);
+            });
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#tg-sb-link").click(function() {
+                $("#tg-sb-sidebar").toggle();
+                $("#tg-sb-content").toggleClass('col-md-9');
+                $("#tg-sb-content").toggleClass('col-md-12');
+                $("#tg-sb-icon").toggleClass('fa-toggle-on');
+                $("#tg-sb-icon").toggleClass('fa-toggle-off');
+            });
+        });
+    </script>
+    
+
+</head>
+<body>
+<!-- Content is offset by the height of the topnav bar. -->
+<!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
+<div id="topbar-content-offset">
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container topnavlinks">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="fa fa-home fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- toggle sidebar button -->
+                <li><a id="tg-sb-link" href="#"><i id="tg-sb-icon" class="fa fa-toggle-on"></i> Nav</a></li>
+                <!-- entries without drop-downs appear here -->
+                
+                
+                
+                <li><a href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
+                
+                
+                
+                <li><a href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
+                
+                
+                
+                <!-- entries with drop-downs appear here -->
+                <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
+                
+                
+                <!--comment out this block if you want to hide search-->
+                <li>
+                    <!--start search-->
+                    <div id="search-demo-container">
+                        <input type="text" id="search-input" placeholder="search...">
+                        <ul id="results-container"></ul>
+                    </div>
+                    <script src="js/jekyll-search.js" type="text/javascript"></script>
+                    <script type="text/javascript">
+                            SimpleJekyllSearch.init({
+                                searchInput: document.getElementById('search-input'),
+                                resultsContainer: document.getElementById('results-container'),
+                                dataSource: 'search.json',
+                                searchResultTemplate: '<li><a href="{url}" title="Credits">{title}</a></li>',
+                    noResultsText: 'No results found.',
+                            limit: 10,
+                            fuzzy: true,
+                    })
+                    </script>
+                    <!--end search-->
+                </li>
+            </ul>
+        </div>
+        </div>
+        <!-- /.container -->
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="col-lg-12">&nbsp;</div>
+    <!-- Content Row -->
+    <div class="row">
+        
+        
+        <!-- Sidebar Column -->
+        <div class="col-md-3" id="tg-sb-sidebar">
+            
+
+
+
+
+
+
+
+
+<ul id="mysidebar" class="nav">
+    <li class="sidebarTitle">PMD 6.30.0-SNAPSHOT</li>
+    
+    
+    
+        
+    
+    <li>
+        
+        <a href="#">About</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="index.html">Home</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_release_notes.html">Release notes</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_next_major_development.html">PMD 7.0.0 development</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_about_help.html">Getting help</a></li>
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">User Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_installation.html">Installation and basic CLI usage</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_making_rulesets.html">Making rulesets</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_configuring_rules.html">Configuring rules</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_best_practices.html">Best practices</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_suppressing_warnings.html">Suppressing warnings</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_incremental_analysis.html">Incremental analysis</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_cli_reference.html">PMD CLI reference</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_userdocs_report_formats.html">PMD Report formats</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">CPD reference</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd.html">Copy-paste detection</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd_report_formats.html">CPD Report formats</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Extending PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_designer_reference.html">Rule designer reference</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_defining_properties.html">Defining rule properties</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_rule_guidelines.html">Rule guidelines</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_testing.html">Testing your rules</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Tools / Integrations</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_maven.html">Maven PMD Plugin</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_gradle.html">Gradle</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_ant.html">Ant</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_java_api.html">PMD Java API</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools_ci.html">CI integrations</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_tools.html">Other Tools / Integrations</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Rule Reference</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Apex Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_documentation.html">Documentation</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_performance.html">Performance</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Ecmascript Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Java Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_documentation.html">Documentation</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_multithreading.html">Multithreading</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_performance.html">Performance</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_java_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Java Server Pages Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_jsp_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Maven POM Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_pom.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_pom_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Modelica Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">PLSQL Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_plsql_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Salesforce VisualForce Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vf.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vf_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">VM Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_vm_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">XML Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xml.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xml_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">XSL Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_xsl_performance.html">Performance</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Language Specific Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_jsp.html">JSP Support</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_java_metrics_index.html">Java code metrics</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_apex_metrics_index.html">Apex code metrics</a></li>
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Developer Documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_development.html">Developer resources</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_writing_documentation.html">Writing documentation</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_roadmap.html">Roadmap</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_how_pmd_works.html">How PMD works</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_pmdtester.html">Pmdtester</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_devdocs_rule_deprecation_policy.html">Rule Deprecation Policy</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Major contributions</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_language.html">Adding a new language</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_cpd_language.html">Adding a new CPD language</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_metrics_framework.html">Adding metrics support to a language</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+                
+                <li class="subfolders">
+                    <a href="#">Experimental features</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_experimental_ast_dump.html">Creating (XML) dump of the AST</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+    
+    <li>
+        
+        <a href="#">Project documentation</a>
+        
+        <ul>
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Trivia about PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_news.html">PMD in the press</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_products.html">Products & books related to PMD</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_similarprojects.html">Similar projects</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_trivia_meaning.html">What does 'PMD' mean?</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_faq.html">FAQ</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="license.html">License</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li class="active"><a href="pmd_projectdocs_credits.html">Credits</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_release_notes_old.html">Old release notes</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Project management</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_releasing.html">Release process</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_merging_pull_requests.html">Merging pull requests</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_main_landing_page.html">Main Landing page</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+        </ul>
+     </li>
+       
+        
+        
+        <!-- if you aren't using the accordion, uncomment this block:
+           <p class="external">
+               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+           </p>
+           -->
+</ul>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+        </div>
+        
+        
+
+        <!-- Content Column -->
+        <div class="col-md-9" id="tg-sb-content">
+            <div class="post-header">
+   <h1 class="post-title-main">Credits</h1>
+</div>
+
+
+
+<div class="post-content">
+
+   
+
+    
+    
+<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
+<script>
+$( document ).ready(function() {
+  // Handler for .ready() called.
+
+$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
+
+});
+</script>
+
+<div id="toc"></div>
+
+    
+
+
+    
+
+        
+        
+
+    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/projectdocs/credits.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+
+    
+
+  <h2 id="committers">Committers</h2>
+
+<ul>
+  <li>David Dixon-Peugh - PMD core, much of the early work on the grammar, initial Emacs plugin</li>
+  <li>Philippe Herlin - Eclipse plugin, fixed bugs in RuleSetFactory</li>
+  <li>Nascif Abousalh Neto - Emacs plugin</li>
+  <li><a href="http://tomcopeland.blogs.com/">Tom Copeland</a> - PMD core, lead developer, JDeveloper plugin, initial Gel plugin,
+initial jEdit plugin, IDEAJ integration, BlueJ extension</li>
+  <li>Jiger Patel - jEdit plugin</li>
+  <li>Alan Ezust - jEdit plugin</li>
+  <li>Ole-Martin Mork - NetBeans plugin</li>
+  <li>Miguel Griffa - PMD core, over a dozen rules, lots of documentation, and other improvements all over the place</li>
+  <li>Allan Caplan - PMD core, six rules, lots of bugfixes and improvements to the PMD core</li>
+  <li>Radim Kubacki - Netbeans plugin, OptimizableToArrayCallRule suggestion, bug reports</li>
+  <li>Tomasz Slota - Netbeans plugin</li>
+  <li>Andrey Lumyanski - Gel plugin</li>
+  <li>Johan Nagels - PMD core, JSP support</li>
+  <li>Brian Remedios - PMD core, properties subsystem, lots of CPD UI improvements, Eclipse plugin improvements</li>
+  <li>Xavier Le Vourch - PMD core, numerous bug fixes, UselessStringValueOf, UnnecessaryWrapperObjectCreation,
+SimplifyBooleanAssertion</li>
+  <li>Sven Jacob - DFA subsystem, Eclipse plugin</li>
+  <li>Wouter Zelle - Lots of bugfixes and cleanups, JUnit test XML design, introduced java.util.logging, BrokenNullCheck,
+NonThreadSafeSingleton, DefaultPackage rule, UselessOverridingMethod, ProperLogger, AvoidPrintStackTrace,
+SimplifyConditional</li>
+  <li>Ryan Gustafson - PMD core, assists with Eclipse plugin</li>
+  <li>Torsten Kleiber - JDeveloper plugin</li>
+  <li>Romain Pelisse - Various bugfix patches, restructured CPD tokenizers, patch to remove redundant rule,
+added Fortran tokenizer, DoNotExtendJavaLangError, JspEncoding, MDBAndSessionBeanNamingConvention,
+RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention,
+RemoteInterfaceNamingConvention, AvoidFinalLocalVariable, ClassWithOnlyPrivateConstructorsShouldBeFinal,
+TooManyStaticImports, DoNotCallSystemExit, StaticEJBFieldShouldBeFinal</li>
+</ul>
+
+<h2 id="committers-emeritus">Committers emeritus</h2>
+
+<ul>
+  <li>Gunnlaugur Thor Briem - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser’s use
+of java.lang.Error</li>
+  <li><a href="http://dcraine.blogspot.com/">David Craine</a> - JBuilder plugin</li>
+  <li>Tom Burke - Eclipse plugin</li>
+  <li>Alex Chaffee - various bugfixes and features</li>
+  <li>Siegfried Goeschl - original Maven plugin, various bugfixes and features</li>
+  <li>Don Leckie - The PMD GUI</li>
+  <li><a href="http://richkilmer.blogs.com/">Rich Kilmer</a> - logo design</li>
+  <li>Paul Kendall - various bugfixes and features</li>
+  <li>Colin Wilson-Salt - NetBeans plugin team</li>
+  <li><a href="http://gurganus.name/brant/">Brant Gurganus</a> - JCreator integration, Swing GUI work</li>
+</ul>
+
+<h2 id="significant-contributors">Significant contributors</h2>
+
+<ul>
+  <li>Pieter Vanraemdonck - JSP grammar/integration/documentation, DontNestJsfInJstlIteration, NoLongScripts,
+NoScriptlets, NoInlineStyleInformation, NoClassAttribute, NoJspForward</li>
+  <li>Raik Schroeder - data flow analysis layer, YAHTMLRenderer</li>
+  <li>Steve Hawkins - rewrite of CPD based on Karp-Rabin string matching</li>
+  <li>Daniel Sheppard - XPath engine integration concept and implementation, advice on Jaxen extension function naming</li>
+  <li>Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform, fixed DocumentNavigator bug</li>
+</ul>
+
+<h2 id="contributors">Contributors</h2>
+
+<ul>
+  <li>Andy Throgmorton - New XPath getCommentOn function, new rule DontCallThreadRun, fix for rule UseArraysAsList</li>
+  <li>Nicolas Dordet - Fixed an issue on CloseResource</li>
+  <li>Juan Jesús García de Soria - Rework CPD algorithm</li>
+  <li>Sergey Pariev - Fixed an ugly ArrayIndexOutOfBoundsException in CPD for Ruby</li>
+  <li>Chris Heister - Reported and noted proper fix for bug in IDEAJ renderer operations</li>
+  <li>Ralf Wagner - Reported bug in UselessOperationOnImmutable, reported and noted proper fix for broken XSLT</li>
+  <li>Caroline Rioux - Reported bug in ImmutableField</li>
+  <li>Miroslav Šulc - Reported bug in CloneMethodMustImplementCloneable</li>
+  <li>Thomas Steininger - Noticed redundant rule</li>
+  <li>Thomas Leplus - Contributed new rules LogicInversion, ExtendsObject, UselessParentheses, EmptyInitializer,
+EmptyStatementBlock, CheckSkipResult.Rewrote UselessStringValueOf, nice patch for ClassCastExceptionWithToArray</li>
+  <li>Paul Sundling - A nice documentation patch for ruleset links</li>
+  <li>Matt Koch - Added more detail to PMD XML report</li>
+  <li>Richard Hands - Fixed CPD symlink confusion</li>
+  <li>Oleg Skrypnyuk - reported a Java 1.5 grammar bug</li>
+  <li>Jeff Campbell - Found bug and suggested fix for problem with XMLRenderer and SuppressWarnings(“PMD”) annotations</li>
+  <li>Kris Jurka - CPD patch to accept “.C” as a filename extension for C/C++ files</li>
+  <li>Florian Deissenboeck - reported several Java 1.5 grammar bugs</li>
+  <li>Maarten ter Huurne - BooleanGetMethodName, AddEmptyString, Noticed misspelling in AvoidArrayLoops rule</li>
+  <li>Lukas Theussl - Patch to bring Maven configuration files up to date</li>
+  <li>Jason Bennett - Rewrite of annotation-based warning suppression to allow for rule-specific suppression,
+noticed useless line in XSLT scripts, fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule,
+patches to improve CyclomaticComplexity rule, Implemented: UseCollectionIsEmpty, NcssTypeCount, NcssMethodCount,
+NcssConstructor, Patch to detect comparison with new Object</li>
+  <li>Brent Fisher - Fixed report backslash bug, SummaryHTML report improvements</li>
+  <li>Larry Brigman - Reported symlink bug in CPD</li>
+  <li>Harald Rohan - Reported bug in CPD GUI</li>
+  <li>Stephan Classens - Patch for file closing bug, noted missing varargs setting in ASTFormalParameter</li>
+  <li>piair - Implemented StringBufferInstantiationWithChar, AvoidUsingOctalValues</li>
+  <li>Christopher Eagan - Reported bug in VariableNamingConventions</li>
+  <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - Improvement for UseArraysAsList,
+UnusedNullCheckInEquals, MisplacedNullCheck, UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList,
+AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray,
+BigIntegerInstantiation</li>
+  <li>Stefan Seidel - Reported Java 1.5 parsing bug</li>
+  <li>Aaron Optimizer Digulla - Tweaks to pmd.bat</li>
+  <li>Peter Van de Voorde - Rewrote the ‘create rule XML’ functionality in the designer utility</li>
+  <li>Josh Devins - Reported bug with annotation parsing</li>
+  <li>Alan Berg - Reported bug in Ant task</li>
+  <li>George Thomas - Wrote AvoidRethrowingException rule, new AvoidLosingExceptionInformation rule</li>
+  <li>Robert Simmons - Reported bug in optimizations package along with suggestions for fix</li>
+  <li>Brian Remedios - display cleanup of CPD GUI, code cleanup of StringUtil and various rules,
+cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java,
+code improvements to Eclipse plugin, created AbstractPoorMethodCall and refactored UseIndexOfChar</li>
+  <li>Max Tardiveau - A nice XML to HTML stylesheet for CPD.</li>
+  <li>Ernst Reissner - reported IdempotentOperations bug, reported CloneThrowsCloneNotSupportedException bug,
+reported Java 1.5 parsing bug, suggested InstantiationToGetClass, bug reports for
+UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule,
+and bug report and documentation suggestions for UseSingletonRule</li>
+  <li>Maarten Coene - bug report for UnnecessaryConversionTemporary</li>
+  <li>Jorn Stampehl - Reported bug in UnusedModifier, reported and fixed bugs in
+JUnitTestsShouldContainAsserts/CyclomaticComplexity/TooManyFields, noticed redundancy of ExplicitCallToFinalize,
+reported bug in AvoidCallingFinalize, reported bug in JUnitAssertionsShouldIncludeMessage,
+reported bug in bug report on JUnitTestsShouldContainAsserts</li>
+  <li>Ulrich Kriegel - reported Ant task documentation bug</li>
+  <li>Jarkko Hietaniemin - rewrote most of cpd.sh, many C grammar improvements, several CPD documentation suggestions,
+noted missing CPD scripts in binary release</li>
+  <li>Adam Zell - Reported bug in UselessOverridingMethod</li>
+  <li>Daniel Serodio - Reported bug in ExceptionSignatureDeclaration</li>
+  <li>John Redford - Reported bug in AvoidProtectedFieldInFinalClass</li>
+  <li>D’Arcy Smith - Reported bug in UncommentedEmptyConstructor, reported missing RuleViolation methods</li>
+  <li>Paul Field - Fixed bug in MissingBreakInSwitch, reported a bug in DontImportJavaLang</li>
+  <li>Attila Korompai - A nice patch to add messages to the NOPMD feature</li>
+  <li>Levent Gurses - Suggested JSP support for the copy/paste detector</li>
+  <li>Neil Cafferkey - Reported a typo in AssignmentInOperand</li>
+  <li>Noel Grandin - bug report for ImmutableField, bug report for MissingStaticMethodInNonInstantiatableClass,
+bug report for MissingBreakInSwitch, EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
+  <li>Olaf Heimburger - wrote the UseProperClassLoader rule, code changes to get JDeveloper plugin working
+under JDev 10.1.3 EA, reported a possible NPE in ReportTree</li>
+  <li>Mohammad Farooq - Reported new JavaNCSS URL</li>
+  <li>Jeff Jensen - Reported missing XML schema references in documentation, wrote new XML schema, reported missing
+schema refs in example rulesets, suggested posting XML schema on PMD site, discussion of
+‘comments in catch block’ feature, suggested description attribute in property element</li>
+  <li>Christopher Stach - bug report for VariableNamingConventions, bug report for CallSuperInConstructor,
+many bug reports for rules that didn’t handle Java 1.5 constructs</li>
+  <li>Matthew Harrah - noticed missing element in UseCorrectExceptionLogging definition, script bug report</li>
+  <li>Mike Kaufman - Reported abug in UnnecessaryCaseChange</li>
+  <li><a href="http://www.cafeaulait.org/">Elliotte Rusty Harold</a> - reported bug in UseAssertSameInsteadOfAssertTrue,
+suggested creating a new ruleset containing rules in each release, UncommentedEmptyConstructor suggestions,
+noted missed case for UnusedFormalParameter, documentation suggestions,
+reported mistake in UnnecessaryLocalBeforeReturn message,
+bug report 1371757 for misleading AvoidSynchronizedAtMethodLevel example,
+bug report 1293277 for duplicated rule messages, bug report for ConstructorCallsOverridableMethod,
+suggestion for improving command line interface, misspelling report, suggestion for improving Designer
+startup script, “how to make a ruleset” documentation suggestions, noticed outdated Xerces jars,
+script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
+  <li>David Karr - reported stale XPath documentation</li>
+  <li>Dawid Weiss - Reported bug in UnusedPrivateMethod</li>
+  <li>Shao Lo - Reported bug in CPD</li>
+  <li>Mathieu Champlon - Added language support to the CPD Ant task</li>
+  <li>Uroshnor - Reported bug in UseNotifyAllInsteadOfNotify</li>
+  <li>Jan Koops - Noted missing data in MemberValuePair nodes, bug report for JBuilder plugin</li>
+  <li><a href="http://tersesystems.com/">Will Sargent</a> - Implemented AvoidThreadGroup, AvoidThrowingCertainExceptionTypesRule,
+AvoidCatchingNPERule, ExceptionAsFlowControlRule, URL updates for ‘Similar projects’ page</li>
+  <li>Benoit Xhenseval - noted Maven plugin bug (http://jira.codehaus.org/browse/MPPMD-24),
+bug report for UnusedPrivateMethod, suggestion to add elapsed time to XML report,
+bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report,
+XSLT patch, suggestion for improving XML report</li>
+  <li>Barak Naveh - Reported and fixed bug in CallSuperInConstructor</li>
+  <li>Bhatia Saurabh - Reported a grammar bug, reported a bug in UseStringBufferLength</li>
+  <li>Chris Erskine - found bad link, documentation suggestions</li>
+  <li>mhilpert - Reported bugs in UseIndexOfChar and LoggerIsNotStaticFinal</li>
+  <li>David Corley - Priority filtering XSLT, reported release packaging problem, implemented nifty
+Javascript folding for XML report, <a href="http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html">demo is here</a>,
+suggestion for min priority on the command line</li>
+  <li>Jon Doh - Reported parser bug</li>
+  <li>Brian R - suggestions for improving UseIndexOfChar, documentation suggestion</li>
+  <li>Didier Duquennoy - bug reports for InefficientStringBuffering/ConsecutiveLiteralAppends/AppendCharacterWithChar,
+several bug reports for InefficientStringBuffering, bug report for ImmutableField, suggestions for
+improving Benchmark utility, bug report for InefficientStringBuffering, bug report for
+AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for
+MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
+  <li>Paul Smith - patch to fix Ant task ‘minimum priority’ attribute</li>
+  <li>Erik Thauvin - reported IDEA integration problem</li>
+  <li>John Kenny - reported bug in ConsecutiveLiteralAppends</li>
+  <li>Tom Judge - patch for fix to C/C++ multiline literal support for CPD, patch for including .cc files in
+C++ CPD checks, patch for JDK compatibility problems</li>
+  <li>Sean Mountcastle - reported documentation bug</li>
+  <li>Greg Broderick - provided patch for ‘minimum priority’ support</li>
+  <li>George Sexton - Bug report 1379701 for CompareObjectsWithEquals, suggested new rule for Additional String
+Concatenation Warnings in StringBuffer.</li>
+  <li>Johan Stuyts - improvements to UncommentedEmptyConstructor, nice patch for UncommentedEmptyConstructor and
+UncommentedEmptyMethod, patch to allow empty catch blocks with comments in them, patch to clean up build environment</li>
+  <li>Bruce Kelly - bug report 1378358 for StringInstantiation, bug report 1376756 for UselessOverridingMethod,
+bug report 1376760 for InefficientStringBuffering</li>
+  <li>Isaac Babsky - tweak for pmd.bat</li>
+  <li>Hendrik Maryns - reported bug 1375290 for SuppressWarnings facility</li>
+  <li>Wim Deblauwe - suggested UseAssertNullInsteadOfAssertTrue,
+bug report 1373510 for UseAssertSameInsteadOfAssertTrue, suggested putting property names/values in generated docs,
+UselessOverridingMethod, reported bug in JUnitTestsShouldContainAsserts,
+front page and “how to make a ruleset” patches, noted problems with web site rule index,
+bug report for JUnitTestsShouldContainAsserts, Clover license coordination and implementation,
+UseCorrectExceptionLogging, coordinated and coded a much nicer asXML() implementation,
+suggested cleanup of UnusedFormalParameter, Javadoc patch, SystemPrintln bug report,
+helped get Ant task and CLI squared away with Java 1.5 params, Java 1.5-specific bug reports,
+suggested improvements for ExceptionSignatureDeclaration</li>
+  <li>Sean Montgomery - bug report 1371980 for InefficientStringBuffering</li>
+  <li>Jean-Marc Vanel - suggested enhancements to the PMD scoreboard</li>
+  <li>Andriy Rozeluk - suggested UseStringBufferLength, bug report 1306180 for
+AvoidConcatenatingNonLiteralsInStringBuffer, reported bug 1293157 for UnusedPrivateMethod,
+suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn,
+suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports,
+various other RFEs and thoughtful discussions as well</li>
+  <li>Bruno Juillet - suggested reporting suppressed warnings, bug report for missing package/class/method names,
+patch for Ant task’s excludeMarker attribute, bug report on ruleset overrides</li>
+  <li>Derek Hofmann - suggestion for adding –skip-duplicate-files option for CPD, bug report for CPD skipping header
+files when in C/C++ mode</li>
+  <li>Mark Holczhammer - bug report for InefficientStringBuffering</li>
+  <li>Raja Rajan - 2 bug reports for CompareObjectswithEquals</li>
+  <li>Jeff Chamblee - suggested better message for UnnecessaryCaseChange, bug report for CompareObjectsWithEquals</li>
+  <li>Dave Brosius - suggested MisleadingVariableName rule, a couple of nice patches to clean up some string handling
+inefficiencies, non-static class usages, and unclosed streams/readers - found with Findbugs, I daresay :-)</li>
+  <li>Chris Grindstaff - fixed SWTException when Eclipse plugin is run on a file with syntax error</li>
+  <li>Eduard Naum - fixed JDK 1.3 runtime problems in Eclipse plugin</li>
+  <li>Jacques Lebourgeois - fix for UTF8 characters in Eclipse plugin</li>
+  <li>dvholten - suggestions for improving OverrideBothEqualsAndHashcode, formatting suggestions for HTML report,
+test cases for ConstructorCallsOverridableMethod, reported several NullAssignment bugs</li>
+  <li>Brian Duff - helped get Oracle JDeveloper plugin working</li>
+  <li>Sivakumar Mambakkam - bug report 1314086 for missing name in SimpleRuleSetNameMapper</li>
+  <li>Rodrigo Ruiz - bug report 1312723 for FieldDeclaration nodes inside interfaces, bug report 1312754 for
+pmd.bat option handling, bug report 1312720 (and code fix!) for DefaultPackage, bug report 1309235 for TooManyFields</li>
+  <li>Lori Olson - JBuilder plugin suggestions and prerelease tests,
+found copy/paste bug in rule descriptions</li>
+  <li>Thomas Dudziak - bug report 1304739 for StringInstantiation</li>
+  <li>Pieter Bloemendaal - reported JDK 1.3 parsing bug 1292609, command line docs bug report,
+bug report for UnusedPrivateMethod, found typo in ArrayIsStoredDirectly, bug report for
+AvoidReassigningParametersRule</li>
+  <li>shawn2005 - documentation bug report</li>
+  <li>Andrew Taylor - bug report for StringInstantiation</li>
+  <li>S. David Pullara - bug report for AvoidConcateningNonLiteralsInStringBuffer, bug report for ImmutableField</li>
+  <li>Maarten Bodewes - bug report for ImmutableField</li>
+  <li>Peter Frandsen - PackageCase rule, NoPackage rule</li>
+  <li>Noureddine Bekrar - French translation of some PMD documentation</li>
+  <li>Martin Jost - bug report for JDeveloper plugin</li>
+  <li>Guillaume Boudreau - patches to fix problems with CPD’s FileFinder and NTFS and SCCS</li>
+  <li>Sylvain Veyrie - bug report for MethodReturnsInternalArray</li>
+  <li>Randy Ray - bug report for ArrayIsStoredDirectly</li>
+  <li>Klaus - Suggestion for improving UseSingleton</li>
+  <li>Nicolai Czempin - Bug report for UnnecessaryParentheses, various rule suggestions, additional PMD backronyms</li>
+  <li>Kevin Routley - reported Ant task dependency problem, reported problems with RuleSetFactory unit tests</li>
+  <li>Dennis Klemann - noted that errors were missing from text report, reported Java 1.5 parsing bug with
+ExceptionSignatureDeclaration, reported fix for pmd.bat problem</li>
+  <li>Tor Norbye - Suggested CompareObjectsWithEquals</li>
+  <li>Thomas Skariah - bug reports for MethodArgumentCouldBeFinal and AvoidReassigningParameters</li>
+  <li>Tom Parker - bug report for MethodReturnsInternalArray, found missed case in NullAssignment, suggested addition
+to UnnecessaryBooleanAssertion, suggested splitting up AvoidThrowingCertainExceptionTypes,
+AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>
+  <li>Ian Flanigan - reported CPD JNLP breakage</li>
+  <li>Glen Cordrey - Reported bug involved JavaCC string handling</li>
+  <li>Oto ‘tapik’ Buchta - Patched XMLRenderer for UTF8 support</li>
+  <li>Arent-Jan Banck - Reported bug with Java 1.5 annotation handling</li>
+  <li>Fred Hartman - Reported exact location of bug in TooManyFields, fixed bug in UnnecessaryBooleanAssertion</li>
+  <li>Andreas Ehn - Reported bug with Java 1.5 generics parsing</li>
+  <li>Eric Olander - SingularField, SimplifyConditional fix, UseStringBufferForStringAppends, CollapsibleIfStatements,
+AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
+  <li><a href="http://sourceforge.net/users/anatom/">Tomas Gustavsson</a> - reported pmd-web breakage</li>
+  <li>Payal Subhash - Tweaks to CSVRenderer</li>
+  <li>Christophe Mourette - Reported JDK 1.3 problem with XMLRenderer</li>
+  <li>Alex Givant - caught documentation bug</li>
+  <li><a href="http://justlooking.recursion.org/">Luke Francl</a> - suggested UnnecessaryParentheses rule, numerous <strong>high quality</strong>
+feature suggestions and bug reports</li>
+  <li>David Hovemeyer - reported missing labelled stmt images, a nice patch to let PMD process code in jar/zip files</li>
+  <li>Peter ‘Bruno’ Kofler - reported bug #1146116 for JUnitTestsShouldIncludeAssert</li>
+  <li>Zev Blut - nice patch to add Ruby support to CPD</li>
+  <li>Christopher Judd - a nice patch to the XSLT that adds a summary</li>
+  <li>John Meagher - suggested the rule ‘MissingSerialVersionUID’ and provided the implementation for it</li>
+  <li>John Austin - patch to fix mispeling in Eclipse plugin message</li>
+  <li>Paddy Fagan - reported bug in StatisticalRule</li>
+  <li>Leszek Migdal - reported documentation mistake for Eclipse plugin</li>
+  <li>Hakan Civelek - an order-of-magnitude optimization to the SystemOutPrintln rule</li>
+  <li>John Heintz - Added “any language” support to CPD.</li>
+  <li>Harald Gurres - cleaned up the symbol table code with a very nice patch</li>
+  <li>Matthias Kerkhoff - CPD suggestions, several bug reports</li>
+  <li>Chris Riesbeck - identified some dead code in RuleSet</li>
+  <li>Lars Gregori - reported a bug in the Ant task docs</li>
+  <li>Todd Wright - reported bug in EmptyStatementNotInLoop, XPath port of
+AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
+  <li><a href="http://derupe.blogspot.com/">Conrad Roche</a> - UnusedModifier bug report, other bug reports</li>
+  <li>Mike Thome - NOPMD implementation concept, BadComparisonRule suggestion</li>
+  <li>Ken Foskey - C++ parser bug report, cpd.sh</li>
+  <li>ehowe - a nice patch to include rule priority in the XML report</li>
+  <li>aryanto - reported a broken reference in the ‘favorites’ ruleset.</li>
+  <li>Archimedes Trajano - suggested SimpleDateFormatNeedsLocale</li>
+  <li>Joerg Kurt Wegner - bug report for UnusedLocalVariable</li>
+  <li>Bruno - Reported bug with TooManyFields, SuspiciousEqualsMethodName</li>
+  <li>Philippe Couton - bug report for ExceptionAsFlowControl, OverrideBothEqualsAndHashcodeRule bug report,
+UseSingletonRule improvements, JUnitStaticSuiteRule improvements</li>
+  <li>Paul Rowe - suggestion for improving MethodWithSameNameAsEnclosingClass, bug reports for
+SimplifyBooleanExpressions and UnusedLocalVariable</li>
+  <li>Enno Derksen - enhancements to VariableNamingConventionsRule</li>
+  <li>Michael Haggerty - bug reports for FinalizeDoesNotCallSuperFinalize and UnusedModifier</li>
+  <li>Phil Shaw - documentation suggestions</li>
+  <li>Sreenivasa Viswanadha - reminded me to use BufferedInputStreams, grammar cleanup for Ctrl-Z problem</li>
+  <li>Austin Moore - Integration with Omnicore’s CodeGuide IDE</li>
+  <li>Matt Inger - CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException</li>
+  <li>Morgan Schweers - Javascript highlighter for the PMD scoreboard</li>
+  <li>Brandon Franklin - bug report for BeanMembersShouldSerializeRule, many PMD scoreboard ideas</li>
+  <li>Bertrand Mollinier Toublet - Bug report which led to platform character set encoding enhancement</li>
+  <li>Choi Ki Soo - Found bug in XMLRenderer</li>
+  <li><a href="http://www.fh-stralsund.de/mitarbeiter/powerslave,id,264,nodeid,75.html">Gero Wedemann</a> - Found bug in
+RuleSetFactory XPath message variable substitution</li>
+  <li>Adrian Papari - Wrote the PapariTextRenderer</li>
+  <li>Curt Cox -   some additions to the ‘Similar Projects’ page</li>
+  <li>Michael Griffel - bug fix for XMLRenderer</li>
+  <li>Doug Tillman - correction to finalizers.xml examples</li>
+  <li>Luis Alberto Domínguez Ruiz - bug report for IfElseStmtsMustUseBracesRule</li>
+  <li>Chad Loder - SuspiciousOctalEscapeRule, EmptyStatementNotInLoop, SuspiciousHashcodeMethodName,
+NonCaseLabelInSwitchStatement, DefaultLabelNotLastInSwitchStmt, NonStaticInitializer, ExplicitCallToFinalize,
+MethodWithSameNameAsEnclosingClassRuleTest, FinalizeDoesNotCallSuperFinalize, FinalizeOverloaded,
+FinalizeOnlyCallsSuperFinalize, UnconditionalIfStatement, AvoidDollarSigns, EmptyStaticInitializer,
+EmptyFinalizerMethod rule, DontImportSun rule, improvements to ASTBooleanLiteral</li>
+  <li>Maik Schreiber - AccessNode bug report, other bug reports</li>
+  <li>Lokesh Gupta - improvements to the AST viewer</li>
+  <li><a href="http://www.oreillynet.com/cs/catalog/view/au/960?x-t=book.view">Jesse Glick</a> - improvements to
+VariableNamingConventionsRule, patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule,
+an excellent discussion on the UnnecessaryConstructorRule</li>
+  <li>Nicolas Liochon - CloneShouldCallSuperCloneRule implementation</li>
+  <li><a href="http://factor-language.blogspot.com/">Slava Pestov</a> -  Suggestions for jEdit plugin enhancements.</li>
+  <li>Olivier Mengué - Diagnosed and patched XML report character encoding problems</li>
+  <li>Hariolf Häfele - PMD-JDeveloper plugin bug reports</li>
+  <li>Vladimir Bossicard - suggested AbstractNamingRule, test package
+organization suggestions, VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions
+derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
+  <li>Ken Foskey - noticed bad link</li>
+  <li><a href="http://www.bejug.org/confluenceBeJUG/display/BeJUG/Stephan+Janssen">Stephan Janssen</a> -
+promoted PMD for <a href="http://web.archive.org/web/20070701124257/https://jjguidelines.dev.java.net/">JJGuidelines</a></li>
+  <li>Ron Sidi - bug reports</li>
+  <li>David Koontz - suggestions for tweaking PMD command line options</li>
+  <li>Jeff Epstein - TextPad integration and tests</li>
+  <li>Gabe Johnson - CloseConnectionRule</li>
+  <li>Roelof Vuurboom - posted report of QStudio analysis of PMD</li>
+  <li>Jeff Anderson - node finding utility code</li>
+  <li>Boris Gruschko - regression test suites, nifty AST/XPath viewer</li>
+  <li>Trevor Harmon - rewrote XSLT script</li>
+  <li><a href="http://philip.greenspun.com/shared/community-member?user_id=174176">Vadim Nasardinov</a> - xdocs cleanup,
+run.sh cleanup</li>
+  <li>Sigiswald Madou - bug report</li>
+  <li>Dan Tullis - bug report</li>
+  <li>George Menhorn - CPD bug reports and suggestions</li>
+  <li>Paul Roebuck - Ant build improvement, several bug reports</li>
+  <li>Jon A. Maxwell - Bug report</li>
+  <li>Erik Lee - Bug report</li>
+  <li>Joerg K. Wegner - PMD scoreboard suggestions</li>
+  <li>Chris Webster - fix (and test) for UnnecessaryConstructorRule, BooleanInstantiation rule</li>
+  <li>Colin Simmonds - detailed bug reports</li>
+  <li><a href="http://reassess.blogspot.com/">Trond Andersen</a> - AvoidCatchingThrowable, ExceptionSignatureDeclaration,
+ExceptionTypeChecking</li>
+  <li>Bernd Jansen - grammer modification</li>
+  <li>Jarle Naess - bug report</li>
+  <li>Jeff Anderson - VariableNamingConventionsRule, MethodNamingConventionsRule, ClassNamingConventionsRule</li>
+  <li>Frank van Puffelen - documentation suggestions</li>
+  <li>mcclain looney - patch for CPD GUI, bug reports</li>
+  <li>Ralf Hauser - Various documentation suggestions, cygwin-run.sh</li>
+  <li>Pablo Casado - Bug report for UseSingletonRule</li>
+  <li>Frank Hardisty - BeanMembersShouldSerializeRule</li>
+  <li>Randall Schulz - bug report for LooseCouplingRule</li>
+  <li>Wim Bervoets - bug report for the PMD Ant task</li>
+  <li>Niels Peter Strandberg - various tweaks to the PMD Swing UI</li>
+  <li>Ian Shef - documentation updates, bug reports on the Gel IDE plugin</li>
+  <li>Astro Jetson Jr - a tweak for the ShortVariableNameRule</li>
+  <li>Paul King - a complete rewrite of the Gel plugin</li>
+  <li>Gael Marziou - “exclude” rule feature request, bug reports</li>
+  <li>Philippe T’Seyen - refactoring and cleanup of the CPD Ant task, an XML renderer (with unit tests!) for CPD</li>
+  <li>Michael Montuori - bug reports on the Gel IDE plugin</li>
+  <li>Michael Hosier - bug reports on the Gel IDE plugin</li>
+  <li>Richard Jenson - CPD on Win32 troubleshooting</li>
+  <li>Daniel Bruguier - CPD on Win32 troubleshooting</li>
+  <li>Mario Claerhout - CPD optimizations and suggestions</li>
+  <li>Sameer Nanda - CPD Ant task bug report</li>
+  <li>Nanne Baars - grammar suggestions, rule suggestions</li>
+  <li>Adam Nemeth - bug fixes for UnnecessaryConstructorRule</li>
+  <li><a href="http://www.oreillynet.com/pub/au/1425">Andrew Glover</a> - the CPDTask, ExcessivePublicCountRule,
+CouplingBetweenObjectsRule, ExcessiveImportsRule, documentation tweaks</li>
+  <li>Robert Leland - bug report</li>
+  <li>Carl Gilbert - AccessorClassGenerationRule, DoubleCheckedLockingRule, ConstructorCallsOverridableMethodRule,
+bug reports, feature requests, and documentation improvements</li>
+  <li>Dave Fuller - improved resource loading code (packaged in a nice diff, too!)</li>
+  <li>David Whitmore - parser bug report</li>
+  <li>David Campbell - detailed bugs reports, Ant task refactoring, documentation tweaks</li>
+  <li>Michael Sutherland - bug report in IfStmtMustUseBracesRule</li>
+  <li>Egon Willighagen - PMD scoreboard suggestion</li>
+  <li>Adam Nemeth - bug report on missing final attribute for local variable declarations</li>
+  <li>Frederic Harper - bug report and subsequent troubleshooting</li>
+  <li><a href="http://www.henricson.se/mats/">Mats Henricson</a> - an XSLT script and several bug reports</li>
+  <li>Martin Cooper - feature suggestions</li>
+  <li>Bruce Mayhew - feedback on the jEdit plugin</li>
+  <li>Juergen Ebert - feature suggestions and pmd-netbeans feedback</li>
+  <li>J.D. Fagan - feature suggestions</li>
+  <li>William McArthur - ForLoopShouldBeWhileLoop rule</li>
+  <li>Ales Bukovsky - pmd-netbeans feedback</li>
+  <li><a href="http://stefan.samaflost.de/blog">Stefan Bodewig</a> - bug report</li>
+  <li>Sean Sullivan - rule suggestions</li>
+  <li>Dale Vissar - rule suggestions</li>
+  <li><a href="http://www.informatik.uni-trier.de/~ley/db/indices/a-tree/c/Copeland:Alina.html">Alina Copeland</a> -
+PMD scoreboard formulas, pmd-dcpd optimizations</li>
+  <li>Vincent Massol - bug reports, design suggestions, feature suggestions, Maven guidance</li>
+  <li>Peter Donald - design suggestions</li>
+  <li>Liam Holohan - bug reports</li>
+  <li>Ralph Schaer - bug reports and verification</li>
+  <li>Damian O’Neill - Ant task patches</li>
+  <li>Sebastian Raffel - Great job on the Eclipse PMD perspective, new views and dataflow analysis support</li>
+  <li>Ebu - Eclipse smoothed icons</li>
+  <li>Jacques Lebourgeois - Eclipse fix malformed UTF-8 characters</li>
+  <li>Chris Grindstaff - Eclipse fix SWTException when PMD is run on a file with syntax error</li>
+  <li>jmichelberger - wrote Byte/Short/Long Instantiation migration rules</li>
+  <li>Edwin Chan - Support for -auxclasspath for use with Type Resolution</li>
+  <li>Jared Bunting - Patch to add ASTAnnotationMethodDeclaration to Java AST</li>
+  <li>Lucian Ciufudean - RedundantFieldInitializerRule</li>
+  <li>Andreas Dangel - GodClass and LawOfDemeter rules, several bugfixes and cleanup</li>
+  <li>Riku Nykanen - patch improving TooManyMethods rule</li>
+  <li>Tammo van Lessen - new rule GuardDebugLogging for Jakarta Commons Logging ruleset.</li>
+  <li>Steven Christou - patch improving DoNotCallSystemExit rule</li>
+  <li>Cd-Man - patch to improve CPD performance</li>
+  <li>Suresh - new rule DontUseFloatTypeForLoopIndices</li>
+  <li>Dinesh Bolkensteyn and SonarSource - Java 7 grammar support</li>
+  <li>Tom Wheeler - contribute a launch script for CPD GUI</li>
+  <li>Remi Delmas - change CPD CLI to return a non null value when code duplication is found.</li>
+  <li>Victor Bucutea - Improved JSP parser to be less strict with not valid XML documents (like HTML).</li>
+  <li>Prabhjot Singh - Fixed bug 3484404: Invalid NPath calculation in return statement.</li>
+  <li>Roman - Fixed bug 3546093: Type resolution very slow for big project.</li>
+  <li>Florian Bauer - Add C# support for CPD.</li>
+  <li>Matthew Short - Support in CPD for IgnoreAnnotations and SuppressWarnings(“CPD-START”).</li>
+  <li>Simon Gijsen - contributing a PMD logo with a modern look.</li>
+  <li>Yiannis Paschalidis - Fixed bug #968 Issues with JUnit4 @Test annotation with expected exception</li>
+  <li>Jaroslav Snajberk - Make the comment required rule working.</li>
+  <li>Mat Booth - #1109 Patch to build with Javacc 5.0</li>
+  <li>Stuart Turton - for PLSQL support. See also <a href="http://pldoc.sourceforge.net/">pldoc</a></li>
+  <li>Andrey Utis - for adding Apache Velocity as a new language and writing up a
+<a href="pmd_devdocs_major_adding_new_language.html">howto for adding new languages</a>.</li>
+  <li>Alan Hohn - for adding Standard and modified cyclomatic complexity rules</li>
+  <li>Jan van Nunen - for adding CPD support for Matlab, Objective-C, Python, Scala and various bug fixes</li>
+  <li>Juan Martín Sotuyo Dodero - for many bugfixes/pull requests improving Java grammar and performance</li>
+</ul>
+
+<h2 id="organizations">Organizations</h2>
+
+<table>
+    <tr>
+        <td><center><img src="images/credits/MD_logo4c_120x120.png" /></center></td>
+        <td>
+            <a href="https://www.microdoc.com">MicroDoc</a> for sponsoring PMD development.
+            MicroDoc is a software business serving an international customer base. Since 1991 MicroDoc
+            has grown into a technology oriented software engineering and professional services company.
+            Our focus on complex software technology and software infrastructure made us a well
+            respected partner for large corporations and even for other software businesses.
+        </td>
+    </tr>
+    <tr>
+        <td><center><img src="images/credits/ae-logo.gif" /></center></td>
+        <td>
+            <a href="http://www.ae.be/">AE</a> for the JSP integration and especially for writing the JSP grammar.
+        </td>
+    </tr>
+    <tr>
+        <td><center><img src="images/credits/darpa.jpg" /></center></td>
+        <td>
+            <a href="http://www.darpa.mil/">DARPA</a> for funding
+            the Ultra*Log and <a href="http://cougaar.org/">Cougaar</a>
+            effort which spawned PMD.
+        </td>
+    </tr>
+    <tr>
+        <td><center><img src="http://sourceforge.net/sflogo.php?group_id=56262" /></center></td>
+        <td>
+            <a href="http://sourceforge.net/">SourceForge</a> for providing hosting services for PMD.
+        </td>
+    </tr>
+    <tr>
+        <td><center><img src="images/credits/refactorit_logo.gif" /></center></td>
+        <td>
+            <a href="http://www.refactorit.com/">RefactorIT</a> for letting
+            their software be used free-of-charge on PMD code
+            (<a href="http://www.refactorit.com/index.html?id=649">OpenSource
+            Community License</a>)
+        </td>
+    </tr>
+    <tr>
+        <td><center><img src="images/credits/qasystems_logo.jpg" /></center></td>
+        <td>
+            <a href="http://www.qa-systems.com/products/qstudioforjava/">QA-Systems</a> for sending in some
+            handy utilities for PMD and shipping PMD inside their QStudio product
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <a href="http://www.vanwardtechnologies.com/products.php">Vanward Technologies</a> for
+            using PMD inside their Convergence product
+        </td>
+    </tr>
+    <tr>
+        <td><center><img src="images/credits/atlassian-cenqua-logo.png" /></center></td>
+        <td>
+            <a href="http://www.cenqua.com/">Cenqua</a> for
+            giving us a free Clover license and doing a nice <a href="http://fisheye3.atlassian.com/browse/pmd">FishEye</a> run.
+        </td>
+    </tr>
+    <tr>
+        <td><center><img src="images/credits/yjp.gif" /></center></td>
+        <td>
+            YourKit is kindly supporting open source projects with its full-featured Java Profiler.
+            YourKit, LLC is creator of innovative and intelligent tools for profiling
+            Java and .NET applications. Take a look at YourKit's leading software products:
+            <a href="http://www.yourkit.com/java/profiler/index.jsp">YourKit Java Profiler</a> and
+            <a href="http://www.yourkit.com/.net/profiler/index.jsp">YourKit .NET Profiler</a>.
+        </td>
+    </tr>
+    <tr>
+        <td><center><img src="images/credits/bb-pmd.png" /></center></td>
+        <td>
+            <a href="http://www.bijzonderbezig.nl/">Bijzonder Bezig</a> for giving the PMD logo a modern look.
+        </td>
+    </tr>
+</table>
+
+
+    <div class="tags">
+        
+    </div>
+
+
+
+</div>
+
+<hr class="shaded"/>
+
+<footer>
+            <div class="row">
+                <div class="col-lg-12 footer">
+               &copy;2020 PMD Open Source Project. All rights reserved. <br />
+ Site last generated: Nov 14, 2020 <br />
+<p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
+                </div>
+            </div>
+</footer>
+
+
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</div>
+</div>
+</body>
+
+</html>
