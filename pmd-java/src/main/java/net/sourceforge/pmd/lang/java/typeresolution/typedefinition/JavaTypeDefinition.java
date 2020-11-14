@@ -16,7 +16,10 @@ import org.apache.commons.lang3.ArrayUtils;
 
 
 public abstract class JavaTypeDefinition implements TypeDefinition {
-    // contains non-generic and raw EXACT types
+    // Contains non-generic and raw EXACT types
+    // Only contains classes loaded by the bootstrap classloader so as not to
+    // keep references to the user classloader alive
+    // This is enough to cache eg Object, String, and other common types
     private static final Map<Class<?>, JavaTypeDefinition> CLASS_EXACT_TYPE_DEF_CACHE = new ConcurrentHashMap<>();
 
     private final TypeDefinitionType definitionType;
@@ -76,7 +79,10 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
             return null; // Can happen if a parent class references a class not in classpath
         }
 
-        CLASS_EXACT_TYPE_DEF_CACHE.put(clazz, newDef);
+        if (clazz.getClassLoader() == null) {
+            // loaded by the bootstrap classloader
+            CLASS_EXACT_TYPE_DEF_CACHE.put(clazz, newDef);
+        }
 
         return newDef;
     }
