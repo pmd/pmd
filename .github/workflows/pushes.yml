@@ -41,8 +41,11 @@ jobs:
           PMD_CI_PUSH_COMMIT_COMPARE: ${{ github.event.compare }}
           PMD_CI_GIT_REF: ${{ github.ref }}
 
-  windows:
-    runs-on: windows-latest
+  windows-macos:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ windows-latest, macos-latest ]
     needs: linux
     steps:
       - uses: actions/checkout@v2
@@ -58,42 +61,15 @@ jobs:
       - name: Check Environment
         run: .ci/check-environment.sh
         shell: bash
-      - name: Build with mvnw
-        run: |
-          source .ci/inc/logger.inc
-          source .ci/inc/install-openjdk.inc
-          install_openjdk_setdefault 11
-          ./mvnw -V clean verify
+      - name: Build
+        run: .ci/build-pr-win-macos.sh
         shell: bash
-
-  macos:
-    runs-on: macos-latest
-    needs: linux
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.m2/repository
-            ~/.cache
-            vendor/bundle
-          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-
-      - name: Check Environment
-        run: .ci/check-environment.sh
-        shell: bash
-      - name: Build with mvnw
-        run: |
-          source .ci/inc/logger.inc
-          source .ci/inc/install-openjdk.inc
-          install_openjdk_setdefault 11
-          ./mvnw -V clean verify
-        shell: bash
+        env:
+          MAVEN_OPTS: -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3
 
   coveralls:
     runs-on: ubuntu-latest
-    needs: [linux, windows, macos]
+    needs: [linux]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -118,7 +94,7 @@ jobs:
 
   sonar:
     runs-on: ubuntu-latest
-    needs: [linux, windows, macos]
+    needs: [linux]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2

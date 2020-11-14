@@ -78,3 +78,26 @@ function install_openjdk_setdefault() {
 
     java -version
 }
+
+#
+# Installs jdk7 for integration test
+#
+function install_oraclejdk7() {
+    local local_dir="${HOME}/.cache/jdk7"
+    local target_dir="${HOME}/oraclejdk7"
+    local download_url="https://pmd-code.org/oraclejdk/jdk-7u80-linux-x64.tar.gz"
+    local archive=$(basename $download_url)
+
+    mkdir -p ${local_dir}
+    mkdir -p ${target_dir}
+    if [ ! -e ${local_dir}/${archive} ]; then
+        log_info "Downloading from ${download_url} to ${local_dir}"
+        curl --location --output ${local_dir}/${archive} ${download_url}
+    else
+        log_info "Skipped download, file ${local_dir}/${archive} already exists"
+    fi
+    log_info "Extracting to ${target_dir}"
+    tar --extract --file ${local_dir}/${archive} -C ${target_dir} --strip-components=1
+
+    log_info "OracleJDK7 can be used via -Djava7.home=${HOME}/oraclejdk7"
+}

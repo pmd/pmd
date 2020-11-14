@@ -7,8 +7,9 @@ source $(dirname $0)/inc/maven-dependencies.inc
 
 set -e
 
-log_group_start "Installing OpenJDK 11"
+log_group_start "Installing Java 7+11"
     install_openjdk_setdefault 11
+    install_oraclejdk7
 log_group_end
 
 log_group_start "Downloading maven dependencies"
@@ -16,7 +17,7 @@ log_group_start "Downloading maven dependencies"
 log_group_end
 
 log_group_start "Building with maven"
-    ./mvnw -e -V clean verify
+    ./mvnw -e -V clean verify -Djava7.home=${HOME}/oraclejdk7
 log_group_end
 
 
