@@ -1,6 +1,7 @@
 # PMD
 
 [![Join the chat at https://gitter.im/pmd/pmd](https://badges.gitter.im/pmd/pmd.svg)](https://gitter.im/pmd/pmd?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://github.com/pmd/pmd/workflows/.github/workflows/pushes.yml/badge.svg?branch=master)](https://github.com/pmd/pmd/actions)
 [![Build Status](https://travis-ci.com/pmd/pmd.svg?branch=master)](https://travis-ci.com/pmd/pmd)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.pmd/pmd/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.pmd/pmd)
 [![Reproducible Builds](https://img.shields.io/badge/Reproducible_Builds-ok-green?labelColor=blue)](https://github.com/jvm-repo-rebuild/reproducible-central#net.sourceforge.pmd:pmd)
