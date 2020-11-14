@@ -18,6 +18,8 @@ for a ssh key, which is used to copy files to sourceforge.
 * PMD_SF_APIKEY
 * GITHUB_OAUTH_TOKEN
 * GITHUB_BASE_URL
+* COVERALLS_REPO_TOKEN
+* SONAR_TOKEN
 * DANGER_GITHUB_API_TOKEN
 * PMD_CI_CHUNK_TOKEN
 

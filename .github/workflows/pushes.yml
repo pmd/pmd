@@ -11,6 +11,8 @@ on:
 jobs:
   linux:
     runs-on: ubuntu-latest
+    continue-on-error: false
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -40,6 +42,7 @@ jobs:
 
   windows:
     runs-on: windows-latest
+    needs: linux
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -50,16 +53,19 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-
-      - name: Install OpenJDK
-        run: .ci/install-openjdk.sh
+      - name: Check Environment
+        run: .ci/check-environment.sh
         shell: bash
       - name: Build with mvnw
         run: |
-          source ${HOME}/java.env
-          ./mvnw -V clean install
+          source .ci/inc/install-openjdk.inc
+          install_openjdk_setdefault 11
+          ./mvnw -V clean verify
+        shell: bash
 
   macos:
     runs-on: macos-latest
+    needs: linux
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -70,10 +76,59 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-
-      - name: Install OpenJDK
-        run: .ci/install-openjdk.sh
+      - name: Check Environment
+        run: .ci/check-environment.sh
         shell: bash
       - name: Build with mvnw
         run: |
-          source ${HOME}/java.env
-          ./mvnw -V clean install
+          source .ci/inc/install-openjdk.inc
+          install_openjdk_setdefault 11
+          ./mvnw -V clean verify
+        shell: bash
+
+  coveralls:
+    runs-on: ubuntu-latest
+    needs: [linux, windows, macos]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.cache
+          key: ${{ runner.os }}-coveralls-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-coveralls-
+      - name: Check Environment
+        run: .ci/check-environment.sh
+        shell: bash
+      - name: Build
+        run: .ci/build-coveralls.sh
+        shell: bash
+        env:
+          MAVEN_OPTS: -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3
+          PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
+          PMD_CI_JOB_URL: "https://github.com/pmd/pmd/runs/${{ github.run_id }}"
+
+  sonar:
+    runs-on: ubuntu-latest
+    needs: [linux, windows, macos]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.cache
+          key: ${{ runner.os }}-sonar-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-sonar-
+      - name: Check Environment
+        run: .ci/check-environment.sh
+        shell: bash
+      - name: Build
+        run: .ci/build-sonar.sh
+        shell: bash
+        env:
+          MAVEN_OPTS: -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3
+          PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
