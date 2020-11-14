@@ -7,9 +7,16 @@ source $(dirname $0)/inc/maven-dependencies.inc
 
 set -e
 
-log_group_start "Installing Java 7+11"
+log_group_start "Installing Java"
+    log_info "Install openjdk11 as default"
     install_openjdk_setdefault 11
-    install_oraclejdk7
+
+    PMD_EXTRA_OPT=""
+    if [[ "$(uname)" == Linux* ]]; then
+        log_info "Install oracle7 for integration tests"
+        install_oraclejdk7
+        PMD_EXTRA_OPT="-Djava7.home=${HOME}/oraclejdk7"
+    fi
 log_group_end
 
 log_group_start "Downloading maven dependencies"
@@ -17,7 +24,7 @@ log_group_start "Downloading maven dependencies"
 log_group_end
 
 log_group_start "Building with maven"
-    ./mvnw -e -V clean verify -Djava7.home=${HOME}/oraclejdk7
+    ./mvnw -e -V clean verify ${PMD_EXTRA_OPT}
 log_group_end
 
 
