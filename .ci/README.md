@@ -85,16 +85,97 @@ docker build -t pmd-ci .
 This container is based on Ubuntu 18.04, which is used for `ubuntu-latest` github actions runner,
 see [Virtual Environment](https://github.com/actions/virtual-environments).
 
-You can run a local instance with docker and mount your local pmd checkout into the container:
+You can run a local instance with docker:
 
 ```
-docker run -it --mount type=bind,source=path/to/pmd,target=/workspaces/pmd/pmd pmd-ci
+docker run -it pmd-ci
 ```
 
-You'll be dropped into a bash. Start e.g. with
+You'll be dropped into a bash.
+
+#### Testing a push build (snapshot)
+
+Start docker without binding to local directory, so that we can do a fresh checkout: `docker run -it pmd-ci`.
+You'll be dropped into a bash. Use the following script, to setup and start the build:
 
 ```
-cd workspaces/pmd/pmd
+MAIN_BRANCH="master"
+export MAVEN_OPTS="-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3"
+export PMD_CI_JOB_URL="manual job execution in docker"
+export PMD_CI_PUSH_COMMIT_COMPARE=""
+export PMD_CI_GIT_REF="refs/heads/${MAIN_BRANCH}"
+
+export PMD_CI_SECRET_PASSPHRASE="xyz"
+
+cd /workspace/pmd
+rmdir pmd && mkdir pmd
+cd pmd
+git init
+git remote add origin https://github.com/pmd/pmd
+git fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +refs/heads/${MAIN_BRANCH}:refs/remotes/origin/${MAIN_BRANCH}
+git checkout --progress --force -B master refs/remotes/origin/${MAIN_BRANCH}
+
 .ci/check-environment.sh
+
+.ci/build.sh
+```
+
+#### Performing a release (push) build
+
+Start docker without binding to local directory, so that we can do a fresh checkout: `docker run -it pmd-ci`.
+You'll be dropped into a bash. Use the following script, to setup and start the build:
+
+```
+TAG_NAME="pmd_releases/0.0.0_release_test"
+export MAVEN_OPTS="-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3"
+export PMD_CI_JOB_URL="manual job execution in docker"
+export PMD_CI_PUSH_COMMIT_COMPARE=""
+export PMD_CI_GIT_REF="refs/tags/${TAG_NAME}"
+
+export PMD_CI_SECRET_PASSPHRASE="xyz"
+
+cd /workspace/pmd
+rmdir pmd && mkdir pmd
+cd pmd
+git init
+git remote add origin https://github.com/pmd/pmd
+git fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +refs/tags/${TAG_NAME}:refs/tags/${TAG_NAME}
+git checkout --progress --force refs/tags/${TAG_NAME}
+
+.ci/check-environment.sh
+
+.ci/build.sh
+```
+
+**Warning:** This will build and upload to maven central!
+
+
+#### Testing a pull request
+
+Start docker without binding to local directory, so that we can do a fresh checkout: `docker run -it pmd-ci`.
+You'll be dropped into a bash. Use the following script, to setup and start the build:
+
+```
+export MAVEN_OPTS="-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3"
+export PMD_CI_BRANCH="master" # base branch
+export PMD_CI_PULL_REQUEST_NUMBER=2913
+
+# these are used by danger
+export GITHUB_EVENT_PATH=/workspaces/event.json
+export GITHUB_REPOSITORY=pmd/pmd
+export GITHUB_ACTION=run1
+export GITHUB_EVENT_NAME=pull_request
+/home/pmd-ci/create-gh-pull-request-event.sh
+
+cd /workspace/pmd
+rmdir pmd && mkdir pmd
+cd pmd
+git init
+git remote add origin https://github.com/pmd/pmd
+git fetch --no-tags --prune --progress --no-recurse-submodules --depth=2 origin +refs/pull/${PMD_CI_PULL_REQUEST_NUMBER}/merge:refs/remotes/pull/${PMD_CI_PULL_REQUEST_NUMBER}/merge
+git checkout --progress --force refs/remotes/pull/${PMD_CI_PULL_REQUEST_NUMBER}/merge
+
+.ci/check-environment.sh
+
 .ci/build-pr.sh
 ```

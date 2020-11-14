@@ -19,16 +19,9 @@ RUN mkdir -p /workspaces/pmd/pmd && chown -R pmd-ci:pmd-ci /workspaces && ln -sf
 
 USER pmd-ci:pmd-ci
 WORKDIR /home/pmd-ci
-ENV GITHUB_EVENT_PATH=/workspaces/event.json
-ENV GITHUB_REPOSITORY=pmd/pmd
-ENV GITHUB_ACTION=run1
-ENV GITHUB_EVENT_NAME=pull_request
-ENV PMD_CI_BRANCH=master
-ENV PMD_CI_PULL_REQUEST_NUMBER=2913
 COPY create-gh-pull-request-event.sh .
 COPY install-ruby.sh .
 RUN ./install-ruby.sh
-RUN ./create-gh-pull-request-event.sh
 
 CMD ["/bin/bash", "--login"]
 
