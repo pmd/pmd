@@ -12,7 +12,6 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDe
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -33,7 +32,6 @@ import java.util.logging.Logger;
     // cached because calling clazz.getTypeParameters().length create a new array every time
     private int typeParameterCount = -1;
     private final int typeArgumentCount;
-    private final JavaTypeDefinition enclosingClass;
 
     private static final Logger LOG = Logger.getLogger(JavaTypeDefinitionSimple.class.getName());
 
@@ -45,23 +43,17 @@ import java.util.logging.Logger;
         if (boundGenerics.length > 0) {
             genericArgs = Arrays.copyOf(boundGenerics, boundGenerics.length);
         } // otherwise stays null
-
-        enclosingClass = forClass(loadEnclosing(clazz));
     }
 
     private Class<?> loadEnclosing(Class<?> clazz) {
-        if (Modifier.isStatic(clazz.getModifiers())) {
-            return null;
-        }
-        Class<?> enclosing = null;
         try {
-            enclosing = clazz.getEnclosingClass();
+            return clazz.getEnclosingClass();
         } catch (LinkageError e) {
             if (LOG.isLoggable(Level.WARNING)) {
                 LOG.log(Level.WARNING, "Could not load enclosing class of " + clazz.getName() + ", due to: " + e);
             }
+            return null;
         }
-        return enclosing;
     }
 
     private TypeVariable<?>[] getTypeParameters(Class<?> clazz) {
@@ -87,7 +79,7 @@ import java.util.logging.Logger;
 
     @Override
     public JavaTypeDefinition getEnclosingClass() {
-        return enclosingClass;
+        return JavaTypeDefinition.forClass(loadEnclosing(clazz));
     }
 
     @Override
