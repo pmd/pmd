@@ -31,7 +31,7 @@ import java.util.logging.Logger;
     private final Class<?> clazz;
     private JavaTypeDefinition[] genericArgs;
     // cached because calling clazz.getTypeParameters().length create a new array every time
-    private int typeParameterCount;
+    private int typeParameterCount = -1;
     private final int typeArgumentCount;
     private final JavaTypeDefinition enclosingClass;
 
@@ -294,15 +294,12 @@ import java.util.logging.Logger;
                 .append(", genericArgs=[");
 
         // Forcefully resolve all generic types
-        for (int i = 0; i < genericArgs.length; i++) {
-            getGenericType(i);
-        }
-
-        for (final JavaTypeDefinition jtd : genericArgs) {
+        for (int i = 0; i < getTypeParameterCount(); i++) {
+            JavaTypeDefinition jtd = getGenericType(i);
             sb.append(jtd.shallowString()).append(", ");
         }
 
-        if (genericArgs.length != 0) {
+        if (getTypeParameterCount() != 0) {
             sb.replace(sb.length() - 3, sb.length() - 1, "");   // remove last comma
         }
 
@@ -339,6 +336,10 @@ import java.util.logging.Logger;
 
         if (clazz != otherTypeDef.clazz) {
             return false;
+        }
+
+        if (isRawType() || otherTypeDef.isRawType()) {
+            return this.isRawType() == otherTypeDef.isRawType();
         }
 
         for (int i = 0; i < getTypeParameterCount(); ++i) {

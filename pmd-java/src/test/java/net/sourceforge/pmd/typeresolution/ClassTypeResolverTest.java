@@ -1703,8 +1703,8 @@ public class ClassTypeResolverTest {
         a = forClass(JavaTypeDefinitionEquals.class);
         b = forClass(JavaTypeDefinitionEquals.class,
                                         forClass(List.class, a));
-        assertEquals(a, b);
-        assertEquals(b, a);
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
     }
 
     @Test
