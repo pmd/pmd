@@ -12,6 +12,7 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDe
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -26,21 +27,44 @@ import java.util.logging.Logger;
 
 
 /* default */ class JavaTypeDefinitionSimple extends JavaTypeDefinition {
+
     private final Class<?> clazz;
-    private final JavaTypeDefinition[] genericArgs;
+    private JavaTypeDefinition[] genericArgs;
     // cached because calling clazz.getTypeParameters().length create a new array every time
-    private final int typeParameterCount;
-    private final boolean isGeneric;
-    private final boolean isRawType;
+    private int typeParameterCount;
+    private final int typeArgumentCount;
     private final JavaTypeDefinition enclosingClass;
 
     private static final Logger LOG = Logger.getLogger(JavaTypeDefinitionSimple.class.getName());
-    private static final JavaTypeDefinition[] NO_GENERICS = {};
 
     protected JavaTypeDefinitionSimple(Class<?> clazz, JavaTypeDefinition... boundGenerics) {
         super(EXACT);
         this.clazz = clazz;
 
+        typeArgumentCount = boundGenerics.length;
+        if (boundGenerics.length > 0) {
+            genericArgs = Arrays.copyOf(boundGenerics, boundGenerics.length);
+        } // otherwise stays null
+
+        enclosingClass = forClass(loadEnclosing(clazz));
+    }
+
+    private Class<?> loadEnclosing(Class<?> clazz) {
+        if (Modifier.isStatic(clazz.getModifiers())) {
+            return null;
+        }
+        Class<?> enclosing = null;
+        try {
+            enclosing = clazz.getEnclosingClass();
+        } catch (LinkageError e) {
+            if (LOG.isLoggable(Level.WARNING)) {
+                LOG.log(Level.WARNING, "Could not load enclosing class of " + clazz.getName() + ", due to: " + e);
+            }
+        }
+        return enclosing;
+    }
+
+    private TypeVariable<?>[] getTypeParameters(Class<?> clazz) {
         final TypeVariable<?>[] typeParameters;
         // the anonymous class can't have generics, but we may be binding generics from super classes
         if (clazz.isAnonymousClass()) {
@@ -53,27 +77,7 @@ import java.util.logging.Logger;
         } else {
             typeParameters = clazz.getTypeParameters();
         }
-
-        typeParameterCount = typeParameters.length;
-        isGeneric = typeParameters.length != 0;
-        isRawType = isGeneric && boundGenerics.length == 0;
-
-        if (isGeneric) {
-            // Generics will be lazily loaded if not already known
-            this.genericArgs = Arrays.copyOf(boundGenerics, typeParameterCount);
-        } else {
-            this.genericArgs = NO_GENERICS;
-        }
-
-        Class<?> enclosing = null;
-        try {
-            enclosing = clazz.getEnclosingClass();
-        } catch (LinkageError e) {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.log(Level.WARNING, "Could not load enclosing class of " + clazz.getName() + ", due to: " + e);
-            }
-        }
-        enclosingClass = forClass(enclosing);
+        return typeParameters;
     }
 
     @Override
@@ -87,8 +91,21 @@ import java.util.logging.Logger;
     }
 
     @Override
+    public boolean isRawType() {
+        return isGeneric() && typeArgumentCount == 0;
+    }
+
+    @Override
     public boolean isGeneric() {
-        return isGeneric;
+        return getTypeParameterCount() != 0;
+    }
+
+    @Override
+    public int getTypeParameterCount() {
+        if (typeParameterCount == -1) {
+            typeParameterCount = getTypeParameters(clazz).length;
+        }
+        return typeParameterCount;
     }
 
     private JavaTypeDefinition getGenericType(final String parameterName, Method method,
@@ -131,6 +148,10 @@ import java.util.logging.Logger;
 
     @Override
     public JavaTypeDefinition getGenericType(final int index) {
+        if (genericArgs == null) {
+            genericArgs = new JavaTypeDefinition[getTypeParameterCount()];
+        }
+
         // Check if it has been lazily initialized first
         final JavaTypeDefinition cachedDefinition = genericArgs[index];
         if (cachedDefinition != null) {
@@ -265,11 +286,6 @@ import java.util.logging.Logger;
         return clazz == def.getType();
     }
 
-    @Override
-    public int getTypeParameterCount() {
-        return typeParameterCount;
-    }
-
 
     @Override
     public String toString() {
@@ -290,7 +306,7 @@ import java.util.logging.Logger;
             sb.replace(sb.length() - 3, sb.length() - 1, "");   // remove last comma
         }
 
-        return sb.append("], isGeneric=").append(isGeneric)
+        return sb.append("], isGeneric=").append(isGeneric())
             .append("]\n").toString();
     }
 
@@ -298,7 +314,7 @@ import java.util.logging.Logger;
     public String shallowString() {
         return new StringBuilder("JavaTypeDefinition [clazz=").append(clazz)
                 .append(", definitionType=").append(getDefinitionType())
-                .append(", isGeneric=").append(isGeneric)
+                .append(", isGeneric=").append(isGeneric())
                 .append("]\n").toString();
     }
 
@@ -409,11 +425,6 @@ import java.util.logging.Logger;
     @Override
     public int getJavaTypeCount() {
         return 1;
-    }
-
-    @Override
-    public boolean isRawType() {
-        return isRawType;
     }
 
     @Override
