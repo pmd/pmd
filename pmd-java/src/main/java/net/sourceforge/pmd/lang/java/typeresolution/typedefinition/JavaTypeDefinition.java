@@ -8,19 +8,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 
 public abstract class JavaTypeDefinition implements TypeDefinition {
-    // Contains non-generic and raw EXACT types
-    // Only contains classes loaded by the bootstrap classloader so as not to
-    // keep references to the user classloader alive
-    // This is enough to cache eg Object, String, and other common types
-    private static final Map<Class<?>, JavaTypeDefinition> CLASS_EXACT_TYPE_DEF_CACHE = new ConcurrentHashMap<>();
+
     private static final JavaTypeDefinition[] NO_GENERICS = {};
 
 
@@ -58,31 +52,9 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
     }
 
     public static JavaTypeDefinition forClass(final Class<?> clazz) {
-        if (clazz == null) {
-            return null;
-        }
+        return clazz == Object.class ? JavaTypeDefinitionSimple.OBJECT_DEFINITION
+                                     : forClass(clazz, NO_GENERICS); // very common
 
-        if (clazz.getClassLoader() == null) {
-            // loaded by the bootstrap classloader
-            JavaTypeDefinition typeDef = CLASS_EXACT_TYPE_DEF_CACHE.get(clazz);
-
-            if (typeDef != null) {
-                return typeDef;
-            }
-            typeDef = makeWithNoCache(clazz);
-            CLASS_EXACT_TYPE_DEF_CACHE.put(clazz, typeDef);
-            return typeDef;
-        }
-
-        return makeWithNoCache(clazz);
-    }
-
-    private static JavaTypeDefinitionSimple makeWithNoCache(Class<?> clazz) {
-        try {
-            return new JavaTypeDefinitionSimple(clazz, JavaTypeDefinition.NO_GENERICS);
-        } catch (final NoClassDefFoundError e) {
-            return null; // Can happen if a parent class references a class not in classpath
-        }
     }
 
     public static JavaTypeDefinition forClass(final Class<?> clazz, JavaTypeDefinition... boundGenerics) {
@@ -90,13 +62,11 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
             return null;
         }
 
-        // deal with generic types
-        if (boundGenerics.length != 0) {
-            // With generics there is no cache
+        try {
             return new JavaTypeDefinitionSimple(clazz, boundGenerics);
+        } catch (final LinkageError e) {
+            return null; // Can happen if a parent class references a class not in classpath
         }
-
-        return forClass(clazz);
     }
 
     @Override

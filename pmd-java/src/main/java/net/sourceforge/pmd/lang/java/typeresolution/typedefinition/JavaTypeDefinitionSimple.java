@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 /* default */ class JavaTypeDefinitionSimple extends JavaTypeDefinition {
 
+    static final JavaTypeDefinitionSimple OBJECT_DEFINITION = new JavaTypeDefinitionSimple(Object.class);
     private final Class<?> clazz;
     private JavaTypeDefinition[] genericArgs;
     // cached because calling clazz.getTypeParameters().length create a new array every time
