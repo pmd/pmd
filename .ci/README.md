@@ -109,7 +109,7 @@ export PMD_CI_GIT_REF="refs/heads/${MAIN_BRANCH}"
 
 export PMD_CI_SECRET_PASSPHRASE="xyz"
 
-cd /workspace/pmd
+cd /workspaces/pmd
 rmdir pmd && mkdir pmd
 cd pmd
 git init
