@@ -7,11 +7,16 @@ source $(dirname $0)/inc/maven-dependencies.inc
 
 set -e
 
-log_group_start "Installing Java 8+11"
+log_group_start "Installing Java"
     log_info "Install openjdk11 as default"
     install_openjdk_setdefault 11
-    log_info "Install openjdk8 for integration tests and pmd-regression-tests"
-    install_openjdk 8
+
+    PMD_EXTRA_OPT=""
+    if [[ "$(uname)" == Linux* ]]; then
+        log_info "Install openjdk8 for integration tests and pmd-regression-tests"
+        install_openjdk 8
+        PMD_EXTRA_OPT="-Djava8.home=${HOME}/openjdk8"
+    fi
 log_group_end
 
 log_group_start "Downloading maven dependencies"
@@ -19,7 +24,7 @@ log_group_start "Downloading maven dependencies"
 log_group_end
 
 log_group_start "Building with maven"
-    ./mvnw -e -V clean verify -Djava8.home=${HOME}/openjdk8
+    ./mvnw -e -V clean verify ${PMD_EXTRA_OPT}
 log_group_end
 
 
