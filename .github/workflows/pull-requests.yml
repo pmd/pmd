@@ -1,0 +1,40 @@
+name: Pull Requests
+
+on: pull_request
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: false
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.cache
+            vendor/bundle
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Set up Ruby 2.7
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - name: Check Environment
+        run: .ci/check-environment.sh
+        shell: bash
+      - name: Build
+        run: .ci/build-pr.sh
+        shell: bash
+        env:
+          MAVEN_OPTS: -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3
+          PMD_CI_BRANCH: ${{ github.event.pull_request.base.ref }}
+          PMD_CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}

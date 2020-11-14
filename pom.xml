@@ -19,7 +19,7 @@
 
     <url>https://pmd.github.io/</url>
     <ciManagement>
-        <url>https://travis-ci.com/pmd/pmd</url>
+        <url>https://github.com/pmd/pmd/actions</url>
     </ciManagement>
     <inceptionYear>2002</inceptionYear>
     <licenses>
@@ -1028,6 +1028,7 @@
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
                 <sonar.organization>pmd</sonar.organization>
+                <sonar.java.source>1.8</sonar.java.source>
             </properties>
             <build>
                 <pluginManagement>
