@@ -16,8 +16,8 @@ function log_success() {
 }
 
 function log_debug() {
-    #true
-    echo -e "[DEBUG  ] $*"
+    true
+    #echo -e "[DEBUG  ] $*"
 }
 
 function log_group_start() {
