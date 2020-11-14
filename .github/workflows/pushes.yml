@@ -20,6 +20,7 @@ jobs:
           path: |
             ~/.m2/repository
             ~/.cache
+            vendor/bundle
           key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-
@@ -50,6 +51,7 @@ jobs:
           path: |
             ~/.m2/repository
             ~/.cache
+            vendor/bundle
           key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-
@@ -73,6 +75,7 @@ jobs:
           path: |
             ~/.m2/repository
             ~/.cache
+            vendor/bundle
           key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-
@@ -96,6 +99,7 @@ jobs:
           path: |
             ~/.m2/repository
             ~/.cache
+            vendor/bundle
           key: ${{ runner.os }}-coveralls-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-coveralls-
@@ -120,6 +124,7 @@ jobs:
           path: |
             ~/.m2/repository
             ~/.cache
+            vendor/bundle
           key: ${{ runner.os }}-sonar-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-sonar-
