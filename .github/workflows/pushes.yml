@@ -60,6 +60,7 @@ jobs:
         shell: bash
       - name: Build with mvnw
         run: |
+          source .ci/inc/logger.inc
           source .ci/inc/install-openjdk.inc
           install_openjdk_setdefault 11
           ./mvnw -V clean verify
@@ -84,6 +85,7 @@ jobs:
         shell: bash
       - name: Build with mvnw
         run: |
+          source .ci/inc/logger.inc
           source .ci/inc/install-openjdk.inc
           install_openjdk_setdefault 11
           ./mvnw -V clean verify

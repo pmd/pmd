@@ -28,6 +28,7 @@ jobs:
           ruby-version: 2.7
       - name: Install OpenJDK 11
         run: |
+          source .ci/inc/logger.inc
           source .ci/inc/install-openjdk.inc
           install_openjdk 11
         shell: bash
