@@ -21,6 +21,8 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
     // keep references to the user classloader alive
     // This is enough to cache eg Object, String, and other common types
     private static final Map<Class<?>, JavaTypeDefinition> CLASS_EXACT_TYPE_DEF_CACHE = new ConcurrentHashMap<>();
+    private static final JavaTypeDefinition[] NO_GENERICS = {};
+
 
     private final TypeDefinitionType definitionType;
 
@@ -55,6 +57,34 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
         }
     }
 
+    public static JavaTypeDefinition forClass(final Class<?> clazz) {
+        if (clazz == null) {
+            return null;
+        }
+
+        if (clazz.getClassLoader() == null) {
+            // loaded by the bootstrap classloader
+            JavaTypeDefinition typeDef = CLASS_EXACT_TYPE_DEF_CACHE.get(clazz);
+
+            if (typeDef != null) {
+                return typeDef;
+            }
+            typeDef = makeWithNoCache(clazz);
+            CLASS_EXACT_TYPE_DEF_CACHE.put(clazz, typeDef);
+            return typeDef;
+        }
+
+        return makeWithNoCache(clazz);
+    }
+
+    private static JavaTypeDefinitionSimple makeWithNoCache(Class<?> clazz) {
+        try {
+            return new JavaTypeDefinitionSimple(clazz, JavaTypeDefinition.NO_GENERICS);
+        } catch (final NoClassDefFoundError e) {
+            return null; // Can happen if a parent class references a class not in classpath
+        }
+    }
+
     public static JavaTypeDefinition forClass(final Class<?> clazz, JavaTypeDefinition... boundGenerics) {
         if (clazz == null) {
             return null;
@@ -66,25 +96,7 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
             return new JavaTypeDefinitionSimple(clazz, boundGenerics);
         }
 
-        final JavaTypeDefinition typeDef = CLASS_EXACT_TYPE_DEF_CACHE.get(clazz);
-
-        if (typeDef != null) {
-            return typeDef;
-        }
-
-        final JavaTypeDefinition newDef;
-        try {
-            newDef = new JavaTypeDefinitionSimple(clazz);
-        } catch (final NoClassDefFoundError e) {
-            return null; // Can happen if a parent class references a class not in classpath
-        }
-
-        if (clazz.getClassLoader() == null) {
-            // loaded by the bootstrap classloader
-            CLASS_EXACT_TYPE_DEF_CACHE.put(clazz, newDef);
-        }
-
-        return newDef;
+        return forClass(clazz);
     }
 
     @Override
