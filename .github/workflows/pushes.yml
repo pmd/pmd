@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - master
+      - pmd/7.0.x
   schedule:
     # build it monthly: At 04:00 on day-of-month 1.
     - cron:  '0 4 1 * *'
