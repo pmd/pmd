@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   pmd-core
     * [#1939](https://github.com/pmd/pmd/issues/1939): \[core] XPath expressions return handling
+*   pmd-java
+    * [#2911](https://github.com/pmd/pmd/issues/2911): \[java] `ClassTypeResolver#searchNodeNameForClass` leaks memory
 
 
 ### API Changes
