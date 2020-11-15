@@ -7,10 +7,10 @@ require 'fileutils'
 
 def get_args(base_branch)
   ['--local-git-repo', './pmd',
-   '--list-of-project', './pmd/.travis/project-list.xml',
+   '--list-of-project', './pmd/.ci/files/project-list.xml',
    '--base-branch', base_branch,
    '--patch-branch', 'HEAD',
-   '--patch-config', './pmd/.travis/all-java.xml',
+   '--patch-config', './pmd/.ci/files/all-java.xml',
    '--mode', 'online',
    '--auto-gen-config',
    '--keep-reports',
@@ -78,10 +78,10 @@ end
 
 def upload_report
   Dir.chdir('target') do
-    tar_filename = "pr-#{ENV['TRAVIS_PULL_REQUEST']}-diff-report-#{Time.now.strftime("%Y-%m-%dT%H-%M-%SZ")}.tar"
+    tar_filename = "pr-#{ENV['PMD_CI_PULL_REQUEST_NUMBER']}-diff-report-#{Time.now.strftime("%Y-%m-%dT%H-%M-%SZ")}.tar"
 
     `tar -cf #{tar_filename} diff1/ diff2/`
-    report_url = `curl -u #{ENV['CHUNK_TOKEN']} -T #{tar_filename} https://chunk.io`
+    report_url = `curl -u #{ENV['PMD_CI_CHUNK_TOKEN']} -T #{tar_filename} https://chunk.io`
     if $?.success?
       @logger.info "Successfully uploaded #{tar_filename} to chunk.io"
       report_url.chomp

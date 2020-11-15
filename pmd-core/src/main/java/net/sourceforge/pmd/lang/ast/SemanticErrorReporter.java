@@ -29,7 +29,8 @@ public interface SemanticErrorReporter {
 
     /**
      * Report an error at the given location. Errors abort subsequent analysis.
-     * The produced error can be thrown by the caller.
+     * The produced error can be thrown by the caller if it cannot be recovered
+     * from.
      *
      * @param location   Location where the error should be reported
      * @param message    Message (rendered using a {@link MessageFormat})

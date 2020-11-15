@@ -12,7 +12,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
- * @deprecated Use a {@link RuleSetParser} instead
+ * @deprecated Use a {@link RuleSetLoader} instead
  */
 @Deprecated
 public final class RulesetsFactoryUtils {
@@ -38,10 +38,10 @@ public final class RulesetsFactoryUtils {
      */
     @InternalApi
     @Deprecated
-    public static List<RuleSet> getRuleSets(String rulesets, RuleSetParser factory) {
+    public static List<RuleSet> getRuleSets(String rulesets, RuleSetLoader factory) {
         List<RuleSet> ruleSets;
         try {
-            ruleSets = factory.parseFromResources(rulesets.split(","));
+            ruleSets = factory.loadFromResources(rulesets.split(","));
             printRuleNamesInDebug(ruleSets);
             if (ruleSets.stream().mapToInt(RuleSet::size).sum() == 0) {
                 String msg = "No rules found. Maybe you misspelled a rule name? (" + rulesets + ')';
@@ -56,7 +56,7 @@ public final class RulesetsFactoryUtils {
     }
 
     /**
-     * @deprecated Use a {@link RuleSetParser}
+     * @deprecated Use a {@link RuleSetLoader}
      */
     @InternalApi
     @Deprecated
@@ -77,7 +77,7 @@ public final class RulesetsFactoryUtils {
      *
      * @see #createFactory(PMDConfiguration, ClassLoader)
      *
-     * @deprecated Use {@link RuleSetParser#fromPmdConfig(PMDConfiguration)}
+     * @deprecated Use {@link RuleSetLoader#fromPmdConfig(PMDConfiguration)}
      */
     @Deprecated
     public static RuleSetFactory createFactory(final PMDConfiguration configuration) {
@@ -90,7 +90,7 @@ public final class RulesetsFactoryUtils {
      *
      * @return A ruleset factory
      *
-     * @see RuleSetParser
+     * @see RuleSetLoader
      */
     public static RuleSetFactory defaultFactory() {
         return new RuleSetFactory();
@@ -108,7 +108,7 @@ public final class RulesetsFactoryUtils {
      *
      * @see #createFactory(PMDConfiguration)
      *
-     * @deprecated Use a {@link RuleSetParser}
+     * @deprecated Use a {@link RuleSetLoader}
      */
     @Deprecated
     public static RuleSetFactory createFactory(final PMDConfiguration configuration, ClassLoader classLoader) {
@@ -132,7 +132,7 @@ public final class RulesetsFactoryUtils {
      *
      * @see #createFactory(PMDConfiguration)
      *
-     * @deprecated Use a {@link RuleSetParser}
+     * @deprecated Use a {@link RuleSetLoader}
      */
     @Deprecated
     public static RuleSetFactory createFactory(ClassLoader classLoader,
@@ -156,7 +156,7 @@ public final class RulesetsFactoryUtils {
      *
      * @see #createFactory(PMDConfiguration)
      *
-     * @deprecated Use a {@link RuleSetParser}
+     * @deprecated Use a {@link RuleSetLoader}
      */
     @Deprecated
     public static RuleSetFactory createFactory(RulePriority minimumPriority,
@@ -181,7 +181,7 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration)
-     * @deprecated Use a {@link RuleSetParser}
+     * @deprecated Use a {@link RuleSetLoader}
      */
     @Deprecated
     public static RuleSetFactory createFactory(RulePriority minimumPriority,

@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.Collections;
 import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.TextRegion;
@@ -19,19 +19,20 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 
 public final class ASTApexFile extends AbstractApexNode<AstNode> implements RootNode {
 
-    private Map<Integer, String> suppressMap = Collections.emptyMap();
-    private final TextDocument textDocument;
+    private final AstInfo<ASTApexFile> astInfo;
 
-    ASTApexFile(ParserTask task, AbstractApexNode<? extends Compilation> child) {
+    ASTApexFile(ParserTask task,
+                AbstractApexNode<? extends Compilation> child,
+                Map<Integer, String> suppressMap) {
         super(child.getNode());
-        this.textDocument = task.getTextDocument();
+        this.astInfo = new AstInfo<>(task, this, suppressMap);
         addChild(child, 0);
         this.setRegion(TextRegion.fromOffsetLength(0, task.getTextDocument().getLength()));
     }
 
     @Override
-    public @NonNull TextDocument getTextDocument() {
-        return textDocument;
+    public AstInfo<ASTApexFile> getAstInfo() {
+        return astInfo;
     }
 
     @Override
@@ -54,12 +55,4 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
         return visitor.visit(this, data);
     }
 
-    @Override
-    public Map<Integer, String> getNoPmdComments() {
-        return suppressMap;
-    }
-
-    void setNoPmdComments(Map<Integer, String> suppressMap) {
-        this.suppressMap = suppressMap;
-    }
 }

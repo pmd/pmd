@@ -5,10 +5,9 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.Parser;
 
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.Compilation;
@@ -22,7 +21,7 @@ public final class ApexParser implements Parser {
     }
 
     @Override
-    public RootNode parse(final ParserTask task) {
+    public ASTApexFile parse(final ParserTask task) {
         try {
 
             final Compilation astRoot = CompilerService.INSTANCE.parseApex(task.getTextDocument());
@@ -33,9 +32,7 @@ public final class ApexParser implements Parser {
 
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task.getTextDocument(), task.getCommentMarker());
             AbstractApexNode<Compilation> treeRoot = treeBuilder.build(astRoot);
-            ASTApexFile fileNode = new ASTApexFile(task, treeRoot);
-            fileNode.setNoPmdComments(treeBuilder.getSuppressMap());
-            return fileNode;
+            return new ASTApexFile(task, treeRoot, treeBuilder.getSuppressMap());
         } catch (apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);
         }

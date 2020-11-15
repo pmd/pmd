@@ -42,6 +42,15 @@ public final class AssertionUtil {
         return PACKAGE_PATTERN.matcher(name).matches();
     }
 
+    /**
+     * @throws IllegalArgumentException if the name is not a binary name
+     */
+    public static void assertValidJavaBinaryName(CharSequence name) {
+        if (!isJavaBinaryName(name)) {
+            throw new IllegalArgumentException("Not a Java binary name '" + name + "'");
+        }
+    }
+
     public static boolean isJavaBinaryName(CharSequence name) {
         return name.length() > 0 && PACKAGE_PATTERN.matcher(name).matches();
     }

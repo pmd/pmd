@@ -6,10 +6,16 @@ package net.sourceforge.pmd.lang.rule;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
+/**
+ * @deprecated This is internal. Clients should exclusively use {@link RuleViolation}.
+ */
+@Deprecated
+@InternalApi
 public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     // todo move to package reporting
 

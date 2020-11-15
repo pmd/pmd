@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser;
 
 import scala.meta.Dialect;
 import scala.meta.Source;

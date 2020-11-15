@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.rule.xpath.impl;
 
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -14,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -37,13 +39,13 @@ public class AttributeAxisIteratorTest {
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
         Map<String, Attribute> atts = toMap(it);
-        assertEquals(6, atts.size());
-        assertTrue(atts.containsKey("BeginColumn"));
-        assertTrue(atts.containsKey("BeginLine"));
-        assertTrue(atts.containsKey("FindBoundary"));
-        assertTrue(atts.containsKey("Image"));
-        assertTrue(atts.containsKey("EndColumn"));
-        assertTrue(atts.containsKey("EndLine"));
+        Set<String> expected = setOf("BeginColumn",
+                                     "BeginLine",
+                                     "FindBoundary",
+                                     "Image",
+                                     "EndColumn",
+                                     "EndLine");
+        assertEquals(expected, atts.keySet());
     }
 
     @Test

@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.document.TextDocument;

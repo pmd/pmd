@@ -14,6 +14,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -61,6 +62,9 @@ public class RuleApplicator {
                         rule.apply(node, ctx);
                         rcto.close(1);
                     } catch (RuntimeException | StackOverflowError | AssertionError e) {
+                        if (e instanceof Error && !SystemProps.isErrorRecoveryMode()) {
+                            throw e;
+                        }
                         // The listener handles logging if needed,
                         // it may also rethrow the error.
                         listener.onError(new ProcessingError(e, node.getTextDocument().getDisplayName()));

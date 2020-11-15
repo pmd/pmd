@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
@@ -45,8 +46,7 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
         parser.setPreview(checker.isPreviewEnabled());
 
         ASTCompilationUnit acu = parser.CompilationUnit();
-        acu.setNoPmdComments(parser.getSuppressMap());
-        acu.addTaskInfo(task);
+        acu.setAstInfo(new AstInfo<>(task, acu, parser.getSuppressMap()));
         checker.check(acu);
         return acu;
     }

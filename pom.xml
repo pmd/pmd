@@ -19,7 +19,7 @@
 
     <url>https://pmd.github.io/</url>
     <ciManagement>
-        <url>https://travis-ci.com/pmd/pmd</url>
+        <url>https://github.com/pmd/pmd/actions</url>
     </ciManagement>
     <inceptionYear>2002</inceptionYear>
     <licenses>
@@ -86,7 +86,7 @@
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.4.10</kotlin.version>
-        <kotest.version>4.3.0</kotest.version>
+        <kotest.version>4.3.1</kotest.version>
         <dokka.version>1.4.10.2</dokka.version>
 
 
@@ -1029,6 +1029,7 @@
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
                 <sonar.organization>pmd</sonar.organization>
+                <sonar.java.source>1.8</sonar.java.source>
             </properties>
             <build>
                 <pluginManagement>

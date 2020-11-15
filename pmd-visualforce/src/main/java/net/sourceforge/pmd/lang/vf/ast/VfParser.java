@@ -29,7 +29,7 @@ public final class VfParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
     @Override
     protected ASTCompilationUnit parseImpl(CharStream cs, ParserTask task) throws ParseException {
-        return new VfParserImpl(cs).CompilationUnit().addTaskInfo(task);
+        return new VfParserImpl(cs).CompilationUnit().makeTaskInfo(task);
     }
 
 }

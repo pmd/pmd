@@ -24,7 +24,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSetParser;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 
@@ -67,7 +67,7 @@ public final class GenerateRuleDocsCmd {
      */
     private static Iterable<RuleSet> getRegisteredRuleSets() throws RuleSetNotFoundException {
         String rulesetsProperties;
-        RuleSetParser parser = new RuleSetParser().warnDeprecated(false).includeDeprecatedRuleReferences(true);
+        RuleSetLoader parser = new RuleSetLoader().warnDeprecated(false).includeDeprecatedRuleReferences(true);
 
         List<RuleSet> ruleSets = new ArrayList<>();
         for (Language language : LanguageRegistry.getLanguages()) {
@@ -86,7 +86,7 @@ public final class GenerateRuleDocsCmd {
 
                 if (rulesetFilenames != null) {
 
-                    ruleSets.addAll(parser.parseFromResources(rulesetFilenames.split(",")));
+                    ruleSets.addAll(parser.loadFromResources(rulesetFilenames.split(",")));
 
                 }
             } catch (IOException ioe) {

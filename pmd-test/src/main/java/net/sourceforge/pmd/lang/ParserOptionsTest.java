@@ -13,17 +13,6 @@ import org.junit.Test;
 public class ParserOptionsTest {
 
     /**
-     * SuppressMarker should be initially null and changeable.
-     */
-    @Test
-    public void testSuppressMarker() {
-        ParserOptions parserOptions = new ParserOptions();
-        Assert.assertNull(parserOptions.getSuppressMarker());
-        parserOptions.setSuppressMarker("foo");
-        Assert.assertEquals("foo", parserOptions.getSuppressMarker());
-    }
-
-    /**
      * Verify that the equals and hashCode methods work as expected.
      */
     @Test

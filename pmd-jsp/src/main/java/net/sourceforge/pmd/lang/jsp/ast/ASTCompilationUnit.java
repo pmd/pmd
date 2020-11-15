@@ -4,27 +4,26 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 public final class ASTCompilationUnit extends AbstractJspNode implements RootNode {
 
-    private TextDocument textDocument;
+    private AstInfo<ASTCompilationUnit> astInfo;
 
     ASTCompilationUnit(int id) {
         super(id);
     }
 
     @Override
-    public @NonNull TextDocument getTextDocument() {
-        return textDocument;
+    public AstInfo<ASTCompilationUnit> getAstInfo() {
+        return astInfo;
     }
 
-    ASTCompilationUnit addTaskInfo(ParserTask task) {
-        this.textDocument = task.getTextDocument();
+    ASTCompilationUnit makeTaskInfo(ParserTask task) {
+        this.astInfo = new AstInfo<>(task, this);
         return this;
     }
 

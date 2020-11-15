@@ -10,4 +10,8 @@ public class RuleSetNotFoundException extends Exception {
     public RuleSetNotFoundException(String msg) {
         super(msg);
     }
+
+    public RuleSetNotFoundException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }
