@@ -21,9 +21,9 @@ public final class ASTCompilationUnit extends AbstractJspNode implements RootNod
         return astInfo;
     }
 
-    AstInfo<ASTCompilationUnit> makeTaskInfo(ParserTask task) {
+    ASTCompilationUnit makeTaskInfo(ParserTask task) {
         this.astInfo = new AstInfo<>(task, this);
-        return astInfo;
+        return this;
     }
 
     @Override

@@ -29,9 +29,10 @@ abstract class SwiftRootNode extends SwiftInnerNode implements RootNode {
         return astInfo;
     }
 
-    AstInfo<SwTopLevel> makeAstInfo(ParserTask task) {
-        this.astInfo = new AstInfo<>(task, (SwTopLevel) this);
-        return astInfo;
+    SwTopLevel makeAstInfo(ParserTask task) {
+        SwTopLevel me = (SwTopLevel) this;
+        this.astInfo = new AstInfo<>(task, me);
+        return me;
     }
 
 }

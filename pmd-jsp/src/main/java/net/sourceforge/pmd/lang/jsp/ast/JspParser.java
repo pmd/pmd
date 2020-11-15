@@ -28,7 +28,7 @@ public final class JspParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     }
 
     @Override
-    protected AstInfo<ASTCompilationUnit> parseImpl(CharStream cs, ParserTask task) throws ParseException {
+    protected ASTCompilationUnit parseImpl(CharStream cs, ParserTask task) throws ParseException {
         return new JspParserImpl(cs).CompilationUnit().makeTaskInfo(task);
     }
 

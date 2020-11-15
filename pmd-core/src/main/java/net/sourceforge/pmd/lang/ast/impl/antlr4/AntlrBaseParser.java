@@ -8,9 +8,8 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Lexer;
 
-import net.sourceforge.pmd.lang.ast.AstInfo;
-import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
@@ -26,12 +25,12 @@ public abstract class AntlrBaseParser<
     > implements Parser {
 
     @Override
-    public AstInfo<R> parse(ParserTask task) throws ParseException {
+    public R parse(ParserTask task) throws ParseException {
         CharStream cs = CharStreams.fromString(task.getSourceText(), task.getFileDisplayName());
         return parse(getLexer(cs), task);
     }
 
-    protected abstract AstInfo<R> parse(Lexer parser, ParserTask task);
+    protected abstract R parse(Lexer parser, ParserTask task);
 
     protected abstract Lexer getLexer(CharStream source);
 }

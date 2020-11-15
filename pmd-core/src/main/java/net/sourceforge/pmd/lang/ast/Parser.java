@@ -34,7 +34,7 @@ public interface Parser {
      *                                  parsing task is for an incorrect language
      * @throws FileAnalysisException    If any error occurs
      */
-    AstInfo<? extends RootNode> parse(ParserTask task) throws FileAnalysisException;
+    RootNode parse(ParserTask task) throws FileAnalysisException;
 
 
     /**

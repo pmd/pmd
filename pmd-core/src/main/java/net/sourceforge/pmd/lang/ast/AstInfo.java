@@ -12,6 +12,8 @@ import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 
 /**
  * The output of {@link Parser#parse(ParserTask)}.
+ *
+ * @param <T> Type of root nodes
  */
 public final class AstInfo<T extends RootNode> {
     private final String filename;

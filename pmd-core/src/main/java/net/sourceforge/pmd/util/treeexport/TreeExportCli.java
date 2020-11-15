@@ -183,7 +183,8 @@ public class TreeExportCli {
 
         try {
             String fullSource = IOUtils.toString(source);
-            RootNode root = parser.parse(new ParserTask(langVersion, filename, fullSource, SemanticErrorReporter.noop()));
+            ParserTask task = new ParserTask(langVersion, filename, fullSource, SemanticErrorReporter.noop());
+            RootNode root = parser.parse(task);
 
             AstAnalysisContext ctx = new AstAnalysisContext() {
                 @Override
