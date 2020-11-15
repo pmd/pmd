@@ -257,6 +257,9 @@ final class SymTableFactory {
                 // types, fields or methods having the same name
 
                 int idx = name.lastIndexOf('.');
+                if (idx < 0) {
+                    continue; // invalid syntax
+                }
                 String className = name.substring(0, idx);
 
                 JClassSymbol containerClass = loadClassReportFailure(anImport, className);

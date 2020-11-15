@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
 public final class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode, GenericNode<JavaNode>, RootNode {
@@ -46,6 +47,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
 
 
     @Override
+    @NoAttribute
     public String getSourceCodeFile() {
         return filename;
     }

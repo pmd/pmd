@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.Compilation;
@@ -43,6 +44,7 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     }
 
     @Override
+    @NoAttribute
     public String getSourceCodeFile() {
         return file;
     }

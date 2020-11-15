@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
  * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public interface Parser {
-
 
     /**
      * Parses an entire tree for this language. This may perform some

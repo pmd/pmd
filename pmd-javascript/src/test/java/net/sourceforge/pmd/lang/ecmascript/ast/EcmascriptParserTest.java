@@ -68,7 +68,9 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
             }
         }
 
-        Report report = js.executeRule(new MyEcmascriptRule(), source);
+        MyEcmascriptRule rule = new MyEcmascriptRule();
+        rule.setLanguage(js.getLanguage());
+        Report report = js.executeRule(rule, source);
 
         assertEquals("Expecting 2 violations", 2, report.getViolations().size());
         assertEquals("Scope from 2 to 4", report.getViolations().get(0).getDescription());

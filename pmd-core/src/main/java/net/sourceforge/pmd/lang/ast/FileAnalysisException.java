@@ -19,6 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public class FileAnalysisException extends RuntimeException {
 
+    /** Default value of {@link #getFileName()}. */
     public static final @NonNull String NO_FILE_NAME = "(unknown file)";
     private String filename = NO_FILE_NAME;
 

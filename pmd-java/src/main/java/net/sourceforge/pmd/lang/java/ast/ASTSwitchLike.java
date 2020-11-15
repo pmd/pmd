@@ -7,9 +7,12 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.lang3.EnumUtils;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -38,8 +41,7 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
      * Returns true if this switch has a {@code default} case.
      */
     default boolean hasDefaultCase() {
-        ASTSwitchBranch last = getBranches().last();
-        return last != null && last.getLabel().isDefault();
+        return getBranches().any(it -> it.getLabel().isDefault());
     }
 
 
@@ -67,29 +69,30 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
      * the tested expression could not be resolved.
      */
     default boolean isExhaustiveEnumSwitch() {
-        ASTExpression expression = getTestedExpression();
+        JTypeDeclSymbol type = getTestedExpression().getTypeMirror().getSymbol();
 
-        if (expression.getType() == null) {
+        if (!(type instanceof JClassSymbol)) {
             return false;
         }
 
-        if (Enum.class.isAssignableFrom(expression.getType())) {
-
-            @SuppressWarnings("unchecked")
-            Set<String> constantNames = EnumUtils.getEnumMap((Class<? extends Enum>) expression.getType()).keySet();
+        if (((JClassSymbol) type).isEnum() && !type.isUnresolved()) {
+            Set<String> enumConstantNames = ((JClassSymbol) type).getDeclaredFields()
+                                                                 .stream()
+                                                                 .filter(JFieldSymbol::isEnumConstant)
+                                                                 .map(JElementSymbol::getSimpleName)
+                                                                 .collect(CollectionUtil.toMutableSet());
 
             for (ASTSwitchBranch branch : this) {
                 // since this is an enum switch, the labels are necessarily
                 // the simple name of some enum constant.
-
-                // descendant can be null for default case
-                ASTName name = branch.getLabel().getFirstDescendantOfType(ASTName.class);
-                if (name != null) {
-                    constantNames.remove(name.getImage());
+                for (ASTExpression expr : branch.getLabel().getExprList()) {
+                    if (expr instanceof ASTVariableAccess) {
+                        enumConstantNames.remove(((ASTVariableAccess) expr).getName());
+                    }
                 }
             }
 
-            return constantNames.isEmpty();
+            return enumConstantNames.isEmpty();
         }
 
         return false;
