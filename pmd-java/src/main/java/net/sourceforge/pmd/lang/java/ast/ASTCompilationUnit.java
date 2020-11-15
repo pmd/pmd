@@ -12,12 +12,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
 public final class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode, GenericNode<JavaNode>, RootNode {
@@ -25,6 +28,8 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
     private LazyTypeResolver lazyTypeResolver;
     private List<Comment> comments;
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
+    private LanguageVersion languageVersion;
+    private String filename;
 
     ASTCompilationUnit(int id) {
         super(id);
@@ -32,6 +37,24 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
 
     public List<Comment> getComments() {
         return comments;
+    }
+
+
+    @Override
+    public LanguageVersion getLanguageVersion() {
+        return languageVersion;
+    }
+
+
+    @Override
+    @NoAttribute
+    public String getSourceCodeFile() {
+        return filename;
+    }
+
+    void addTaskInfo(ParserTask languageVersion) {
+        this.languageVersion = languageVersion.getLanguageVersion();
+        this.filename = languageVersion.getFileDisplayName();
     }
 
     void setComments(List<Comment> comments) {

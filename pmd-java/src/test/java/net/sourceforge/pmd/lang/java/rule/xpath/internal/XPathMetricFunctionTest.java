@@ -6,24 +6,19 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.StringReader;
 import java.util.Iterator;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
@@ -47,21 +42,13 @@ public class XPathMetricFunctionTest {
     }
 
 
-    private Iterator<RuleViolation> getViolations(Rule rule, String code) throws PMDException {
-        PMD p = new PMD();
-        RuleContext ctx = new RuleContext();
-        Report report = new Report();
-        ctx.setReport(report);
-        ctx.setSourceCodeFile(new File("n/a"));
-        ctx.setIgnoreExceptions(false); // for test, we want immediate exceptions thrown and not collect them
-        RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
-        p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
-        return report.getViolations().iterator();
+    private Iterator<RuleViolation> getViolations(Rule rule, String code) throws Exception {
+        return JavaParsingHelper.WITH_PROCESSING.executeRule(rule, code).getViolations().iterator();
     }
 
 
     @Test
-    public void testWellFormedClassMetricRule() throws PMDException {
+    public void testWellFormedClassMetricRule() throws Exception {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:metric('NCSS') > 0]");
         final String code = "class Foo { Foo() {} void bar() {}}";
 
@@ -71,7 +58,7 @@ public class XPathMetricFunctionTest {
 
 
     @Test
-    public void testWellFormedOperationMetricRule() throws PMDException {
+    public void testWellFormedOperationMetricRule() throws Exception {
         Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[pmd-java:metric('CYCLO') > 1]");
         final String code = "class Goo { Goo() {if(true){}} }";
 
@@ -81,7 +68,7 @@ public class XPathMetricFunctionTest {
 
 
     @Test
-    public void testBadCase() throws PMDException {
+    public void testBadCase() throws Exception {
         Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[pmd-java:metric('cYclo') > 1]");
         final String code = "class Hoo { Hoo() {if(true){}} }";
 
@@ -132,15 +119,11 @@ public class XPathMetricFunctionTest {
 
         Rule rule = makeXpathRuleFromXPath(xpath);
 
-        expected.expect(expectedThrowable);
-        expected.expectMessage(expectedMessage);
+        expected.expect(FileAnalysisException.class);
+        expected.expectCause(Matchers.allOf(CoreMatchers.instanceOf(expectedThrowable),
+                                            Matchers.hasProperty("message", Matchers.equalTo(expectedMessage))));
 
-        try {
-            getViolations(rule, code);
-        } catch (PMDException pmdE) {
-            throw (Exception) pmdE.getCause();
-        }
-
+        getViolations(rule, code);
     }
 
 

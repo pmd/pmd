@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
@@ -37,7 +36,7 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
             image = image.substring(10);
         }
 
-        boolean checkBoolean = ((RuleContext) data).getLanguageVersion()
+        boolean checkBoolean = node.getLanguageVersion()
                 .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
 
         if (PREFIX_SET.contains(image) || checkBoolean && "Boolean.valueOf".equals(image)) {
