@@ -69,7 +69,7 @@ public final class RuleContext {
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        RuleViolationFactory fact = location.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
+        RuleViolationFactory fact = location.getAstInfo().getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
 
         RuleViolation violation = fact.createViolation(rule, location, makeMessage(message, formatArgs));
         if (beginLine != -1 && endLine != -1) {

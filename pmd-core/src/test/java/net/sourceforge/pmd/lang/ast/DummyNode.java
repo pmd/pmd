@@ -85,6 +85,11 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
         return super.getChild(index);
     }
 
+    public DummyNode withFileName(String filename) {
+        ((DummyRoot) getRoot()).withFileName(filename);
+        return this;
+    }
+
     public static class DummyNodeTypeB extends DummyNode {
 
         public DummyNodeTypeB() {

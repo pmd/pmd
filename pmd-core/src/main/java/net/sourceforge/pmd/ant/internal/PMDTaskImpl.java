@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.ant.internal;
 
+import static java.util.Arrays.asList;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,11 +26,8 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSetLoader;
-import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
@@ -40,7 +39,6 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.log.AntLogHandler;
@@ -113,7 +111,8 @@ public class PMDTaskImpl {
                 // Substitute env variables/properties
                 configuration.setRuleSets(project.replaceProperties(ruleSets));
             }
-            rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
+            List<String> paths = asList(configuration.getRuleSets().split(","));
+            rules = rulesetLoader.loadFromResources(paths);
             logRulesUsed(rules);
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage(), e);
@@ -202,7 +201,7 @@ public class PMDTaskImpl {
         };
     }
 
-    private ResourceLoader setupResourceLoader() {
+    private ClassLoader setupResourceLoader() {
         if (classpath == null) {
             classpath = new Path(project);
         }
@@ -219,8 +218,8 @@ public class PMDTaskImpl {
         // are loaded twice
         // and exist in multiple class loaders
         final boolean parentFirst = true;
-        return new ResourceLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(),
-                project, classpath, parentFirst));
+        return new AntClassLoader(Thread.currentThread().getContextClassLoader(),
+                                  project, classpath, parentFirst);
     }
 
     private void setupClassLoader() {

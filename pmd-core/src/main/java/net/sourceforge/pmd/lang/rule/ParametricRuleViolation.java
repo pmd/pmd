@@ -37,7 +37,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     public ParametricRuleViolation(Rule theRule, T node, String message) {
         this.rule = AssertionUtil.requireParamNotNull("rule", theRule);
         this.description = AssertionUtil.requireParamNotNull("message", message);
-        this.filename = node.getSourceCodeFile();
+        this.filename = node.getAstInfo().getFileName();
 
         beginLine = node.getBeginLine();
         beginColumn = node.getBeginColumn();

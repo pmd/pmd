@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
 
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSetLoader;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 

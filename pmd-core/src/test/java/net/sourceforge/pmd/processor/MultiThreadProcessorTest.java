@@ -95,7 +95,7 @@ public class MultiThreadProcessorTest {
         public void apply(Node target, RuleContext ctx) {
             count.incrementAndGet();
 
-            if (target.getSourceCodeFile().contains("violation")) {
+            if (target.getAstInfo().getFileName().contains("violation")) {
                 hasViolation = true;
             } else {
                 letTheOtherThreadRun(10);

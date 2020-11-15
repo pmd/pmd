@@ -129,7 +129,11 @@ public final class PMD {
 
         // Load the RuleSets
         final RuleSetLoader ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration);
-        final List<RuleSet> ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
+
+        final List<RuleSet> ruleSets;
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
+            ruleSets = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), ruleSetFactory);
+        }
         if (ruleSets == null) {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;
         }
@@ -262,7 +266,6 @@ public final class PMD {
         }
 
         return brokenRules;
-        return report;
     }
 
 

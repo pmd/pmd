@@ -13,6 +13,7 @@ import java.io.StringWriter;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
@@ -64,8 +65,8 @@ public class ReportTest {
     }
 
     private static DummyNode getNode(int line, int column) {
+        DummyNode parent = new DummyRoot();
         DummyNode s = new DummyNode();
-        DummyNode parent = new DummyNode();
         parent.setCoords(line, column, line, column + 1);
         parent.addChild(s, 0);
         s.setCoords(line, column, line, column + 1);

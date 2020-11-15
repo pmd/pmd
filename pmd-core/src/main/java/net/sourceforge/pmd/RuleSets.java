@@ -135,7 +135,7 @@ public class RuleSets {
             ruleApplicator.index(root);
         }
 
-        File file = new File(root.getSourceCodeFile());
+        File file = new File(root.getAstInfo().getFileName());
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.applies(file)) {
                 ruleApplicator.apply(ruleSet.getRules(), listener);
