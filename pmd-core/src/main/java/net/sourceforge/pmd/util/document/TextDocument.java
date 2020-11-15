@@ -8,7 +8,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.apache.commons.io.input.CharSequenceReader;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.cpd.SourceCode;
@@ -75,7 +74,7 @@ public interface TextDocument extends Closeable {
      * Returns a reader over the text of this document.
      */
     default Reader newReader() {
-        return new CharSequenceReader(getText());
+        return getText().newReader();
     }
 
 

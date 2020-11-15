@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.document;
 
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -443,4 +444,45 @@ public final class Chars implements CharSequence {
         };
     }
 
+
+    /**
+     * Returns a new reader for the whole contents of this char sequence.
+     */
+    public Reader newReader() {
+        return new Reader() {
+            private int pos = start;
+            private final int max = start + len;
+
+            @Override
+            public int read(char[] cbuf, int off, int len) {
+                if (len < 0 || off < 0 || off + len > cbuf.length) {
+                    throw new IndexOutOfBoundsException();
+                }
+                if (pos >= max) {
+                    return -1;
+                }
+                int toRead = Integer.min(max - pos, len);
+                str.getChars(pos, pos + toRead, cbuf, off);
+                pos += toRead;
+                return toRead;
+            }
+
+            @Override
+            public int read() {
+                return pos >= max ? -1 : str.charAt(pos++);
+            }
+
+            @Override
+            public long skip(long n) {
+                int oldPos = pos;
+                pos = Math.min(max, pos + (int) n);
+                return pos - oldPos;
+            }
+
+            @Override
+            public void close() {
+                // nothing to do
+            }
+        };
+    }
 }
