@@ -4,28 +4,25 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.util.document.TextDocument;
 
 public final class ASTInput extends AbstractPLSQLNode implements RootNode {
 
-    private TextDocument textDocument;
+    private AstInfo<ASTInput> astInfo;
 
     ASTInput(int id) {
         super(id);
     }
 
-
     @Override
-    public @NonNull TextDocument getTextDocument() {
-        return textDocument;
+    public AstInfo<ASTInput> getAstInfo() {
+        return astInfo;
     }
 
     ASTInput addTaskInfo(ParserTask task) {
-        textDocument = task.getTextDocument();
+        this.astInfo = new AstInfo<>(task, this);
         return this;
     }
 
@@ -35,7 +32,4 @@ public final class ASTInput extends AbstractPLSQLNode implements RootNode {
         return visitor.visit(this, data);
     }
 
-    public String getSourcecode() {
-        return new StringBuilder(getText()).toString();
-    }
 }

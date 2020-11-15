@@ -82,6 +82,10 @@ public final class JavaAstProcessor {
         unresolvedTypes = new UnresolvedClassStore(typeSystem);
     }
 
+    public UnresolvedClassStore getUnresolvedStore() {
+        return unresolvedTypes;
+    }
+
     static TypeInferenceLogger defaultTypeInfLogger() {
         if (INFERENCE_LOG_LEVEL == Level.FINEST) {
             return new VerboseLogger(System.err);

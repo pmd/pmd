@@ -234,6 +234,22 @@ public interface JTypeMirror extends JTypeVisitable {
         return false; // overridden in JPrimitiveType
     }
 
+    /**
+     * Returns true if this type is a {@linkplain JPrimitiveType primitive type}
+     * of a floating point type.
+     */
+    default boolean isFloatingPoint() {
+        return false; // overridden in JPrimitiveType
+    }
+
+    /**
+     * Returns true if this type is a {@linkplain JPrimitiveType primitive type}
+     * of an integral type.
+     */
+    default boolean isIntegral() {
+        return false; // overridden in JPrimitiveType
+    }
+
 
     /** Returns true if this type is a {@linkplain JTypeVar type variable}. */
     default boolean isTypeVariable() {

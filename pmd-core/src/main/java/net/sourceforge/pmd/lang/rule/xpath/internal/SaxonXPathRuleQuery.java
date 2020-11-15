@@ -13,9 +13,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
+import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -71,7 +75,7 @@ public class SaxonXPathRuleQuery {
     Map<String, List<Expression>> nodeNameToXPaths = new HashMap<>();
 
     /**
-     * Representation of an XPath query, created at {@link #ensureInitialized()} using {@link #xpathExpr}.
+     * Representation of an XPath query, created at {@link #initialize()} using {@link #xpathExpr}.
      */
     XPathExpression xpathExpression;
 
@@ -82,12 +86,17 @@ public class SaxonXPathRuleQuery {
                                XPathVersion version,
                                Map<PropertyDescriptor<?>, Object> properties,
                                XPathHandler xPathHandler,
-                               DeprecatedAttrLogger logger) {
+                               DeprecatedAttrLogger logger) throws PmdXPathException {
         this.xpathExpr = xpathExpr;
         this.version = version;
         this.properties = properties;
         this.xPathHandler = xPathHandler;
         this.attrCtx = logger;
+        try {
+            initialize();
+        } catch (XPathException e) {
+            throw wrapException(e, Phase.INITIALIZATION);
+        }
     }
 
 
@@ -97,14 +106,11 @@ public class SaxonXPathRuleQuery {
 
 
     public List<String> getRuleChainVisits() {
-        ensureInitialized();
         return rulechainQueries;
     }
 
 
     public List<Node> evaluate(final Node node) {
-        ensureInitialized();
-
         final AstTreeInfo documentNode = getDocumentNodeForRootNode(node);
         documentNode.setAttrCtx(attrCtx);
         try {
@@ -123,7 +129,7 @@ public class SaxonXPathRuleQuery {
                     if (current instanceof AstNodeOwner) {
                         results.add(((AstNodeOwner) current).getUnderlyingNode());
                     } else {
-                        throw new RuntimeException("XPath rule expression returned a non-node (" + current.getClass() + "): " + current);
+                        throw new XPathException("XPath rule expression returned a non-node (" + current.getClass() + "): " + current);
                     }
                     current = iterator.next();
                 }
@@ -133,15 +139,18 @@ public class SaxonXPathRuleQuery {
             sortedRes.sort(RuleChainAnalyzer.documentOrderComparator());
             return sortedRes;
         } catch (final XPathException e) {
-            throw new RuntimeException(xpathExpr + " had problem: " + e.getMessage(), e);
+            throw wrapException(e, Phase.EVALUATION);
         } finally {
             documentNode.setAttrCtx(DeprecatedAttrLogger.noop());
         }
     }
 
+    private ContextedRuntimeException wrapException(XPathException e, Phase phase) {
+        return new PmdXPathException(e, phase, xpathExpr, version);
+    }
+
     // test only
     List<Expression> getExpressionsForLocalNameOrDefault(String nodeName) {
-        ensureInitialized();
         List<Expression> expressions = nodeNameToXPaths.get(nodeName);
         if (expressions != null) {
             return expressions;
@@ -151,7 +160,6 @@ public class SaxonXPathRuleQuery {
 
     // test only
     Expression getFallbackExpr() {
-        ensureInitialized();
         return nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0);
     }
 
@@ -175,39 +183,34 @@ public class SaxonXPathRuleQuery {
         nodeNameToXPaths.computeIfAbsent(nodeName, n -> new ArrayList<>(2)).add(expression);
     }
 
-    private void ensureInitialized() {
-        if (xpathExpression != null) {
-            return;
-        }
-        try {
-            this.configuration = Configuration.newConfiguration();
-            this.configuration.setNamePool(getNamePool());
+    private void initialize() throws XPathException {
 
-            StaticContextWithProperties staticCtx = new StaticContextWithProperties(this.configuration);
-            staticCtx.setXPathLanguageLevel(version == XPathVersion.XPATH_3_1 ? 31 : 20);
-            staticCtx.declareNamespace("fn", NamespaceConstant.FN);
+        this.configuration = Configuration.newConfiguration();
+        this.configuration.setNamePool(getNamePool());
 
-            for (final PropertyDescriptor<?> propertyDescriptor : properties.keySet()) {
-                final String name = propertyDescriptor.name();
-                if (!"xpath".equals(name) && !XPathRule.VERSION_DESCRIPTOR.name().equals(name)) {
-                    staticCtx.declareProperty(propertyDescriptor);
-                }
+        StaticContextWithProperties staticCtx = new StaticContextWithProperties(this.configuration);
+        staticCtx.setXPathLanguageLevel(version == XPathVersion.XPATH_3_1 ? 31 : 20);
+        staticCtx.declareNamespace("fn", NamespaceConstant.FN);
+
+        for (final PropertyDescriptor<?> propertyDescriptor : properties.keySet()) {
+            final String name = propertyDescriptor.name();
+            if (!"xpath".equals(name) && !XPathRule.VERSION_DESCRIPTOR.name().equals(name)) {
+                staticCtx.declareProperty(propertyDescriptor);
             }
-
-            for (ExtensionFunctionDefinition fun : xPathHandler.getRegisteredExtensionFunctions()) {
-                StructuredQName qname = fun.getFunctionQName();
-                staticCtx.declareNamespace(qname.getPrefix(), qname.getURI());
-                this.configuration.registerExtensionFunction(fun);
-            }
-
-            final XPathEvaluator xpathEvaluator = new XPathEvaluator(configuration);
-            xpathEvaluator.setStaticContext(staticCtx);
-
-            xpathExpression = xpathEvaluator.createExpression(xpathExpr);
-            analyzeXPathForRuleChain(xpathEvaluator);
-        } catch (final XPathException e) {
-            throw new RuntimeException(e);
         }
+
+        for (ExtensionFunctionDefinition fun : xPathHandler.getRegisteredExtensionFunctions()) {
+            StructuredQName qname = fun.getFunctionQName();
+            staticCtx.declareNamespace(qname.getPrefix(), qname.getURI());
+            this.configuration.registerExtensionFunction(fun);
+        }
+
+        final XPathEvaluator xpathEvaluator = new XPathEvaluator(configuration);
+        xpathEvaluator.setStaticContext(staticCtx);
+
+        xpathExpression = xpathEvaluator.createExpression(xpathExpr);
+        analyzeXPathForRuleChain(xpathEvaluator);
+
     }
 
     private void analyzeXPathForRuleChain(final XPathEvaluator xpathEvaluator) {

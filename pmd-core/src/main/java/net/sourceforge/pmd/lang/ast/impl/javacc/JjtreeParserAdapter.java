@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**

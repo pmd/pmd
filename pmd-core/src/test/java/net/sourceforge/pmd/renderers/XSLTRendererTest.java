@@ -12,7 +12,6 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 public class XSLTRendererTest {
@@ -23,7 +22,7 @@ public class XSLTRendererTest {
         Report report = new Report();
         DummyNode node = new DummyNode().withFileName("file");
         node.setCoords(1, 1, 1, 2);
-        RuleViolation rv = new ParametricRuleViolation<Node>(new FooRule(), node, "violation message");
+        RuleViolation rv = new ParametricRuleViolation(new FooRule(), node, "violation message");
         report.addRuleViolation(rv);
         String result = ReportTest.render(renderer, report);
         Assert.assertTrue(result.contains("violation message"));

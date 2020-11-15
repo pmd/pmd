@@ -75,6 +75,11 @@ public class RuleSets {
         return ruleSets.toArray(new RuleSet[0]);
     }
 
+    // internal
+    List<RuleSet> getRuleSetsInternal() {
+        return ruleSets;
+    }
+
     public Iterator<RuleSet> getRuleSetsIterator() {
         return ruleSets.iterator();
     }

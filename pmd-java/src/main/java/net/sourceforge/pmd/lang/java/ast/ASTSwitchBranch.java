@@ -23,4 +23,9 @@ public interface ASTSwitchBranch extends JavaNode {
         return (ASTSwitchLabel) getFirstChild();
     }
 
+    /** Return true if this is the default branch. */
+    default boolean isDefault() {
+        return getLabel().isDefault();
+    }
+
 }

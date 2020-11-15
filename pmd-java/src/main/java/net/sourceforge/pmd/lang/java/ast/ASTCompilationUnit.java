@@ -4,14 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
@@ -25,8 +24,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
 
     private LazyTypeResolver lazyTypeResolver;
     private List<Comment> comments;
-    private Map<Integer, String> noPmdComments = Collections.emptyMap();
-    private TextDocument doc;
+    private AstInfo<ASTCompilationUnit> astInfo;
 
     ASTCompilationUnit(int id) {
         super(id);
@@ -36,13 +34,13 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
         return comments;
     }
 
-    @Override
-    public @NonNull TextDocument getTextDocument() {
-        return doc;
+    public void setAstInfo(AstInfo<ASTCompilationUnit> task) {
+        this.astInfo = task;
     }
 
-    void addTaskInfo(TextDocument translatedDoc) {
-        this.doc = translatedDoc;
+    @Override
+    public AstInfo<ASTCompilationUnit> getAstInfo() {
+        return astInfo;
     }
 
      void setComments(List<Comment> comments) {
@@ -80,7 +78,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
     @NonNull
     public String getPackageName() {
         ASTPackageDeclaration pack = getPackageDeclaration();
-        return pack == null ? "" : pack.getPackageNameImage();
+        return pack == null ? "" : pack.getName();
     }
 
     /**
@@ -121,12 +119,4 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
         return lazyTypeResolver;
     }
 
-    @Override
-    public Map<Integer, String> getNoPmdComments() {
-        return noPmdComments;
-    }
-
-    void setNoPmdComments(Map<Integer, String> noPmdComments) {
-        this.noPmdComments = noPmdComments;
-    }
 }

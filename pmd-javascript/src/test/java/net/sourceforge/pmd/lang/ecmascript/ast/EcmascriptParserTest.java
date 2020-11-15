@@ -16,8 +16,8 @@ import org.mozilla.javascript.ast.AstRoot;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 
 public class EcmascriptParserTest extends EcmascriptParserTestBase {
@@ -68,7 +68,9 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
             }
         }
 
-        Report report = js.executeRule(new MyEcmascriptRule(), source);
+        MyEcmascriptRule rule = new MyEcmascriptRule();
+        rule.setLanguage(js.getLanguage());
+        Report report = js.executeRule(rule, source);
 
         assertEquals("Expecting 2 violations", 2, report.getViolations().size());
         assertEquals("Scope from 2 to 4", report.getViolations().get(0).getDescription());
@@ -145,14 +147,14 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
         ASTAstRoot root = js.parse("function(x) {\n"
                                        + "x = x; //NOPMD I know what I'm doing\n"
                                        + "}\n");
-        assertEquals(" I know what I'm doing", root.getNoPmdComments().get(2));
-        assertEquals(1, root.getNoPmdComments().size());
+        assertEquals(" I know what I'm doing", root.getAstInfo().getSuppressionComments().get(2));
+        assertEquals(1, root.getAstInfo().getSuppressionComments().size());
 
-        EcmascriptParserOptions parserOptions = new EcmascriptParserOptions();
+        ParserOptions parserOptions = new ParserOptions();
         parserOptions.setSuppressMarker("FOOOO");
         root = js.withParserOptions(parserOptions).parse("function(x) {\n" + "y = y; //NOPMD xyz\n" + "x = x; //FOOOO I know what I'm doing\n" + "}\n");
-        assertEquals(" I know what I'm doing", root.getNoPmdComments().get(3));
-        assertEquals(1, root.getNoPmdComments().size());
+        assertEquals(" I know what I'm doing", root.getAstInfo().getSuppressionComments().get(3));
+        assertEquals(1, root.getAstInfo().getSuppressionComments().size());
     }
 
     /**

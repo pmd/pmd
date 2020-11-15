@@ -18,8 +18,9 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
@@ -93,16 +94,16 @@ public class XmlParserImpl {
      */
     public static class RootXmlNode extends XmlNodeWrapper implements RootNode {
 
-        private final TextDocument textDoc;
+        private final AstInfo<RootXmlNode> astInfo;
 
         RootXmlNode(XmlParserImpl parser, Node domNode, TextDocument textDoc) {
             super(parser, domNode);
-            this.textDoc = textDoc;
+            this.astInfo = new AstInfo<>(task, this);
         }
 
         @Override
-        public @NonNull TextDocument getTextDocument() {
-            return textDoc;
+        public AstInfo<RootXmlNode> getAstInfo() {
+            return astInfo;
         }
     }
 

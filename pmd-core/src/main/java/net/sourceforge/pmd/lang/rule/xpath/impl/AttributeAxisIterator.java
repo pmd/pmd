@@ -172,6 +172,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
             }
             if ("size".equals(n)) {
                 return "Size";
+            } else if ("length".equals(n)) {
+                return "Length";
             }
 
             return n;

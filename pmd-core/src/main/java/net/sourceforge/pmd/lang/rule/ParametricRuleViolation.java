@@ -6,37 +6,40 @@ package net.sourceforge.pmd.lang.rule;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.Reportable;
 
-public class ParametricRuleViolation<T extends Node> implements RuleViolation {
+/**
+ * @deprecated This is internal. Clients should exclusively use {@link RuleViolation}.
+ */
+@Deprecated
+@InternalApi
+public class ParametricRuleViolation implements RuleViolation {
     // todo move to package reporting
 
     protected final Rule rule;
     protected final String description;
-    protected String filename;
 
-    protected int beginLine;
-    protected int beginColumn;
-
-    protected int endLine;
-    protected int endColumn;
+    private final FileLocation location;
 
     protected String packageName = "";
     protected String className = "";
     protected String methodName = "";
     protected String variableName = "";
 
-    public ParametricRuleViolation(Rule theRule, T node, String message) {
+
+    public ParametricRuleViolation(Rule theRule, Reportable node, String message) {
+        this(theRule, node.getReportLocation(), message);
+    }
+
+    public ParametricRuleViolation(Rule theRule, FileLocation location, String message) {
         this.rule = AssertionUtil.requireParamNotNull("rule", theRule);
         this.description = AssertionUtil.requireParamNotNull("message", message);
-        this.filename = node.getTextDocument().getDisplayName();
 
-        beginLine = node.getBeginLine();
-        beginColumn = node.getBeginColumn();
-        endLine = node.getEndLine();
-        endColumn = node.getEndColumn();
+        this.location = location;
     }
 
     protected String expandVariables(String message) {
@@ -87,28 +90,8 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     }
 
     @Override
-    public String getFilename() {
-        return filename;
-    }
-
-    @Override
-    public int getBeginLine() {
-        return beginLine;
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return beginColumn;
-    }
-
-    @Override
-    public int getEndLine() {
-        return endLine;
-    }
-
-    @Override
-    public int getEndColumn() {
-        return endColumn;
+    public FileLocation getLocation() {
+        return location;
     }
 
     @Override
@@ -129,12 +112,6 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     @Override
     public String getVariableName() {
         return variableName;
-    }
-
-    public void setLines(int theBeginLine, int theEndLine) {
-        assert theBeginLine > 0 && theEndLine > 0 && theBeginLine <= theEndLine : "Line numbers are 1-based";
-        beginLine = theBeginLine;
-        endLine = theEndLine;
     }
 
     @Override

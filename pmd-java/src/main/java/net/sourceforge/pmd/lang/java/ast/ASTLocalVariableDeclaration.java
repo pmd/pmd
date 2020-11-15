@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.util.document.FileLocation;
+
 /**
  * Represents a local variable declaration. This is a {@linkplain ASTStatement statement},
  * but the node is also used in {@linkplain ASTForInit for-loop initialisers} and
@@ -31,6 +35,10 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
         super(id);
     }
 
+    @Override
+    public  @Nullable FileLocation getReportLocation() {
+        return getVarIds().firstOrThrow().getFirstToken().getReportLocation();
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

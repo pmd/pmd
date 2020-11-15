@@ -13,10 +13,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * The API for rules to report violations or errors during analysis.
@@ -64,20 +64,22 @@ public final class RuleContext {
         addViolationWithPosition(location, -1, -1, message, formatArgs);
     }
 
-    public void addViolationWithPosition(Node location, int beginLine, int endLine, String message, Object... formatArgs) {
-        Objects.requireNonNull(location, "Node was null");
+    public void addViolationWithPosition(Node node, int beginLine, int endLine, String message, Object... formatArgs) {
+        Objects.requireNonNull(node, "Node was null");
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        RuleViolationFactory fact = location.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
+        RuleViolationFactory fact = node.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
 
-        RuleViolation violation = fact.createViolation(rule, location, makeMessage(message, formatArgs));
+
+        FileLocation location = node.getReportLocation();
         if (beginLine != -1 && endLine != -1) {
-            // fixme, this is needed until we have actual Location objects
-            ((ParametricRuleViolation<?>) violation).setLines(beginLine, endLine);
+            location = FileLocation.location(location.getFileName(), beginLine, 1, endLine, 1);
         }
 
-        SuppressedViolation suppressed = fact.suppressOrNull(location, violation);
+        RuleViolation violation = fact.createViolation(rule, node, location, makeMessage(message, formatArgs));
+
+        SuppressedViolation suppressed = fact.suppressOrNull(node, violation);
 
         if (suppressed != null) {
             listener.onSuppressedRuleViolation(suppressed);

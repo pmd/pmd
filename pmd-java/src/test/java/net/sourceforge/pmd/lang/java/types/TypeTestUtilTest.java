@@ -12,14 +12,15 @@ import java.util.concurrent.Callable;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
 import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
@@ -127,6 +128,22 @@ public class TypeTestUtilTest extends BaseNonParserTest {
         assertIsStrictSubtype(arrayT, Object.class);
     }
 
+    @Test
+    public void testIsAPrimitiveSubtype() {
+
+        ASTType arrayT =
+            java.parse("import java.io.ObjectStreamField; "
+                           + "class Foo { private static final int serialPersistentFields; }")
+                .getFirstDescendantOfType(ASTType.class);
+
+
+        assertIsExactlyA(arrayT, int.class);
+        assertIsNot(arrayT, long.class);
+        assertIsNot(arrayT, double.class);
+        assertIsNot(arrayT, float.class);
+        assertIsNot(arrayT, Object.class);
+    }
+
 
     @Test
     public void testIsAFallbackAnnotation() {
@@ -141,6 +158,48 @@ public class TypeTestUtilTest extends BaseNonParserTest {
         Assert.assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         assertIsA(klass, Annotation.class);
         assertIsA(klass, Object.class);
+    }
+
+    @Test
+    public void testIsATypeVarWithUnresolvedBound() {
+        // a type var with an unresolved bound should not be considered
+        // a subtype of everything
+
+        ASTType field =
+            java.parse("class Foo<T extends Unresolved> {\n"
+                           + "\tT field;\n"
+                           + "}")
+                .descendants(ASTFieldDeclaration.class)
+                .firstOrThrow().getTypeNode();
+
+        assertIsA(field, Object.class);
+        assertIsNot(field, String.class);
+    }
+
+    @Test
+    public void testIsAStringWithTypeArguments() {
+
+        ASTAnyTypeDeclaration klass =
+            java.parse("package org;"
+                           + "public class FooBar {}")
+                .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
+
+
+        expect.expect(IllegalArgumentException.class);
+        TypeTestUtil.isA("java.util.List<java.lang.String>", klass);
+    }
+
+    @Test
+    public void testIsAStringWithTypeArgumentsAnnotation() {
+
+        ASTAnyTypeDeclaration klass =
+            java.parse("package org;"
+                           + "public @interface FooBar {}")
+                .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
+
+
+        expect.expect(IllegalArgumentException.class);
+        TypeTestUtil.isA("java.util.List<java.lang.String>", klass);
     }
 
     @Test
@@ -187,8 +246,9 @@ public class TypeTestUtilTest extends BaseNonParserTest {
     @Test
     public void testNullNode() {
         Assert.assertFalse(TypeTestUtil.isA(String.class, null));
-        Assert.assertFalse(TypeTestUtil.isA("java.lang.String", null));
-        Assert.assertFalse(TypeTestUtil.isExactlyA(String.class, null));
+        Assert.assertFalse(TypeTestUtil.isA("java.lang.String", (JTypeMirror) null));
+        Assert.assertFalse(TypeTestUtil.isA("java.lang.String", (TypeNode) null));
+        Assert.assertFalse(TypeTestUtil.isExactlyA(String.class, (TypeNode) null));
         Assert.assertFalse(TypeTestUtil.isExactlyA("java.lang.String", null));
     }
 
@@ -198,30 +258,10 @@ public class TypeTestUtilTest extends BaseNonParserTest {
                                        .getFirstDescendantOfType(ASTAnnotation.class);
         Assert.assertNotNull(node);
 
-        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() {
-                TypeTestUtil.isA((String) null, node);
-            }
-        });
-        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() {
-                TypeTestUtil.isA((Class<?>) null, node);
-            }
-        });
-        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() {
-                TypeTestUtil.isExactlyA((Class<?>) null, node);
-            }
-        });
-        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() {
-                TypeTestUtil.isExactlyA((String) null, node);
-            }
-        });
+        Assert.assertThrows(NullPointerException.class, () -> TypeTestUtil.isA((String) null, node));
+        Assert.assertThrows(NullPointerException.class, () -> TypeTestUtil.isA((Class<?>) null, node));
+        Assert.assertThrows(NullPointerException.class, () -> TypeTestUtil.isExactlyA((Class<?>) null, node));
+        Assert.assertThrows(NullPointerException.class, () -> TypeTestUtil.isExactlyA((String) null, node));
     }
 
     private void assertIsA(TypeNode node, Class<?> type) {

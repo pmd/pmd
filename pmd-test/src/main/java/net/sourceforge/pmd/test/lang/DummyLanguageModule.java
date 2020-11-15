@@ -4,13 +4,15 @@
 
 package net.sourceforge.pmd.test.lang;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import java.util.Collections;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
@@ -57,16 +59,20 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
     public static class DummyRootNode extends DummyNode implements RootNode {
 
-        @Override
-        public @NonNull TextDocument getTextDocument() {
-            return TextDocument.readOnlyString("dummy text", languageVersion);
+
+        private LanguageVersion languageVersion = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME).getDefaultVersion();
+
+        public void setLanguageVersion(LanguageVersion languageVersion) {
+            this.languageVersion = languageVersion;
         }
 
-        private LanguageVersion languageVersion;
-
-        public DummyRootNode setLanguageVersion(LanguageVersion languageVersion) {
-            this.languageVersion = languageVersion;
-            return this;
+        @Override
+        public AstInfo<DummyRootNode> getAstInfo() {
+            return new AstInfo<>(
+                TextDocument.readOnlyString("dummy text", "sample.dummy", languageVersion),
+                this,
+                Collections.emptyMap()
+            );
         }
     }
 

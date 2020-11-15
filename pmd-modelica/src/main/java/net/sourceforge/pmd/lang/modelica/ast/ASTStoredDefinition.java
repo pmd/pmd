@@ -4,19 +4,17 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
-import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * A representation of a Modelica source code file.
  */
 public class ASTStoredDefinition extends AbstractModelicaNode implements RootNode {
     private boolean hasBOM = false;
-    private TextDocument textDocument;
+    private AstInfo<ASTStoredDefinition> astInfo;
 
     ASTStoredDefinition(int id) {
         super(id);
@@ -32,12 +30,12 @@ public class ASTStoredDefinition extends AbstractModelicaNode implements RootNod
     }
 
     @Override
-    public @NonNull TextDocument getTextDocument() {
-        return textDocument;
+    public AstInfo<ASTStoredDefinition> getAstInfo() {
+        return astInfo;
     }
 
-    ASTStoredDefinition addTaskInfo(ParserTask task) {
-        textDocument = task.getTextDocument();
+    ASTStoredDefinition makeTaskInfo(ParserTask task) {
+        this.astInfo = new AstInfo<>(task, this);
         return this;
     }
 

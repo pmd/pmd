@@ -155,6 +155,8 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
             case 'b':
             case 'B':
                 return 2;
+            case '.':
+                return 10;
             default:
                 return 8;
             }

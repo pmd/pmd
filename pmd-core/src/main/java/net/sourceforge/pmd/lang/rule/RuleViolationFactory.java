@@ -4,12 +4,11 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * Creates violations and controls suppression behavior for a language.
@@ -21,7 +20,9 @@ public interface RuleViolationFactory {
     // todo move to package reporting
 
 
-    RuleViolation createViolation(Rule rule, @NonNull Node location, String formattedMessage);
+    default RuleViolation createViolation(Rule rule, Node node, FileLocation location, String formattedMessage) {
+        return new ParametricRuleViolation(rule, location, formattedMessage);
+    }
 
 
     SuppressedViolation suppressOrNull(Node location, RuleViolation violation);

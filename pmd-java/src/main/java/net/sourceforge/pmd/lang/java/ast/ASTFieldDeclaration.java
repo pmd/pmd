@@ -4,12 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 
 /**
@@ -40,10 +38,11 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
         super(id);
     }
 
+
     @Override
-    protected @Nullable JavaccToken getPreferredReportLocation() {
+    public FileLocation getReportLocation() {
         // report on the identifier and not the annotations
-        return getVarIds().firstOrThrow().getFirstToken();
+        return getVarIds().firstOrThrow().getFirstToken().getReportLocation();
     }
 
     @Override

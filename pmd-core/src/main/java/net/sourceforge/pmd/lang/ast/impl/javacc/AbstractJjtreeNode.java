@@ -4,14 +4,11 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.FileLocation;
-import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
@@ -52,11 +49,6 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     @Override
     public final Chars getText() {
         return getTextDocument().sliceOriginalText(getTextRegion());
-    }
-
-    @Override
-    public @NonNull TextDocument getTextDocument() {
-        return getFirstToken().getDocument().getTextDocument();
     }
 
     @Override

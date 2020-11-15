@@ -188,4 +188,30 @@ class Scratch<N extends Number> {
         }
     }
 
+    parserTest("Raw type as target type") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+import java.util.List;
+class Scratch {
+    static {
+        List l = asList("");
+    }
+    static <T> List<T> asList(T... ts) { return null; }
+}
+        """)
+
+        val (t_Scratch) = acu.typeDeclarations.toList { it.typeMirror }
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.overloadSelectionInfo.isFailed shouldBe false
+            call.methodType.shouldMatchMethod(
+                    named = "asList",
+                    declaredIn = t_Scratch,
+                    withFormals = listOf(gen.t_String.toArray()),
+                    returning = gen.`t_List{String}`
+            )
+        }
+    }
+
 })

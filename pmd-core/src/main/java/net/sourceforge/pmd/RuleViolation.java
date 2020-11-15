@@ -6,6 +6,8 @@ package net.sourceforge.pmd;
 
 import java.util.Comparator;
 
+import net.sourceforge.pmd.util.document.FileLocation;
+
 /**
  * A RuleViolation is created by a Rule when it identifies a violation of the
  * Rule constraints. RuleViolations are simple data holders that are collected
@@ -49,11 +51,18 @@ public interface RuleViolation {
 
 
     /**
+     * Returns the location where the violation should be reported.
+     */
+    FileLocation getLocation();
+
+    /**
      * Get the source file name in which this violation was identified.
      *
      * @return The source file name.
      */
-    String getFilename();
+    default String getFilename() {
+        return getLocation().getFileName();
+    }
 
     /**
      * Get the begin line number in the source file in which this violation was
@@ -61,7 +70,9 @@ public interface RuleViolation {
      *
      * @return Begin line number.
      */
-    int getBeginLine();
+    default int getBeginLine() {
+        return getLocation().getBeginLine();
+    }
 
     /**
      * Get the column number of the begin line in the source file in which this
@@ -69,7 +80,9 @@ public interface RuleViolation {
      *
      * @return Begin column number.
      */
-    int getBeginColumn();
+    default int getBeginColumn() {
+        return getLocation().getBeginColumn();
+    }
 
     /**
      * Get the end line number in the source file in which this violation was
@@ -77,7 +90,9 @@ public interface RuleViolation {
      *
      * @return End line number.
      */
-    int getEndLine();
+    default int getEndLine() {
+        return getLocation().getEndLine();
+    }
 
     /**
      * Get the column number of the end line in the source file in which this
@@ -85,7 +100,9 @@ public interface RuleViolation {
      *
      * @return End column number.
      */
-    int getEndColumn();
+    default int getEndColumn() {
+        return getLocation().getEndColumn();
+    }
 
     /**
      * Get the package name of the Class in which this violation was identified.

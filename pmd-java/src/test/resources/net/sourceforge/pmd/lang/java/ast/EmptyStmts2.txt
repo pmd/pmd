@@ -1,5 +1,5 @@
 +- CompilationUnit[@PackageName = "c"]
-   +- PackageDeclaration[@PackageNameImage = "c"]
+   +- PackageDeclaration[@Name = "c"]
    |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
    +- EmptyDeclaration[]
    +- ImportDeclaration[@ImportOnDemand = "false", @ImportedName = "a", @ImportedSimpleName = "a", @PackageName = "", @Static = "false"]

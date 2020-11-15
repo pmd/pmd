@@ -4,27 +4,26 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 public final class ASTCompilationUnit extends AbstractVfNode implements RootNode {
+    private AstInfo<ASTCompilationUnit> astInfo;
 
-    private TextDocument textDocument;
 
     ASTCompilationUnit(int id) {
         super(id);
     }
 
     @Override
-    public @NonNull TextDocument getTextDocument() {
-        return textDocument;
+    public AstInfo<ASTCompilationUnit> getAstInfo() {
+        return astInfo;
     }
 
-    ASTCompilationUnit addTaskInfo(ParserTask languageVersion) {
-        textDocument = languageVersion.getTextDocument();
+    ASTCompilationUnit makeTaskInfo(ParserTask task) {
+        this.astInfo = new AstInfo<>(task, this);
         return this;
     }
 

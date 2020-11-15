@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
@@ -253,7 +254,7 @@ public interface Rule extends PropertySource {
 
     /**
      * Get the parser options for this Rule. Parser options are used to
-     * configure the {@link net.sourceforge.pmd.lang.Parser} to create an AST in
+     * configure the {@link Parser} to create an AST in
      * the form the Rule is expecting. Because ParserOptions are mutable, a Rule
      * should return a new instance on each call.
      *

@@ -12,7 +12,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
@@ -96,7 +95,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
         theRule.setDescription("desc");
         theRule.setName("Foo");
 
-        report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, node, "blah"));
+        report.addRuleViolation(new ParametricRuleViolation(theRule, node, "blah"));
         String rendered = ReportTest.render(getRenderer(), report);
 
         // Output should be the exact same as for non xpath rules

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum type declaration}.
@@ -31,6 +32,11 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
         super(id);
     }
 
+
+    @Override
+    public FileLocation getReportLocation() {
+        return getVarId().getFirstToken().getReportLocation();
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

@@ -4,29 +4,28 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.util.document.TextDocument;
 
 public final class ASTTemplate extends AbstractVmNode implements RootNode {
 
-    private TextDocument textDocument;
+    private AstInfo<ASTTemplate> astInfo;
 
     public ASTTemplate(int id) {
         super(id);
     }
 
     @Override
-    public @NonNull TextDocument getTextDocument() {
-        return textDocument;
+    public AstInfo<ASTTemplate> getAstInfo() {
+        return astInfo;
     }
 
-    ASTTemplate addTaskInfo(ParserTask task) {
-        textDocument = task.getTextDocument();
+    ASTTemplate makeTaskInfo(ParserTask task) {
+        this.astInfo = new AstInfo<>(task, this);
         return this;
     }
+
 
     @Override
     protected <P, R> R acceptVmVisitor(VmVisitor<? super P, ? extends R> visitor, P data) {

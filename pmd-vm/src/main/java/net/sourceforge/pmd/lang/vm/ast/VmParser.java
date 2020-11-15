@@ -44,7 +44,7 @@ public class VmParser extends JjtreeParserAdapter<ASTTemplate> {
 
     @Override
     protected ASTTemplate parseImpl(CharStream cs, ParserTask task) throws ParseException {
-        return new VmParserImpl(cs).Template().addTaskInfo(task);
+        return new VmParserImpl(cs).Template().makeTaskInfo(task);
     }
 
 

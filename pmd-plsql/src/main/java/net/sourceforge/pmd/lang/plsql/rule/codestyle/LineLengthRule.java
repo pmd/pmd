@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.constraints.NumericConstraints;
+import net.sourceforge.pmd.util.document.Chars;
 
 public class LineLengthRule extends AbstractPLSQLRule {
 
@@ -37,22 +34,17 @@ public class LineLengthRule extends AbstractPLSQLRule {
         boolean eachLine = getProperty(EACH_LINE);
         int maxLineLength = getProperty(MAX_LINE_LENGTH);
 
-        try (BufferedReader in = new BufferedReader(new StringReader(node.getSourcecode()))) {
-            String line;
-            int lineNumber = 0;
-            while ((line = in.readLine()) != null) {
-                lineNumber++;
-                if (line.length() > maxLineLength) {
-                    addViolationWithMessage(data, node, "The line is too long. Only " + maxLineLength + " characters are allowed.",
-                            lineNumber, lineNumber);
+        int lineNumber = 1;
+        for (Chars line : node.getText().lines()) {
+            if (line.length() > maxLineLength) {
+                addViolationWithMessage(data, node, "The line is too long. Only " + maxLineLength + " characters are allowed.",
+                                        lineNumber, lineNumber);
 
-                    if (!eachLine) {
-                        break;
-                    }
+                if (!eachLine) {
+                    break;
                 }
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Error while executing rule LineLengthRule", e);
+            lineNumber++;
         }
         return data;
     }
