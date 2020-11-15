@@ -39,6 +39,6 @@ public class ScalaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public ScalaParser getParser(ParserOptions parserOptions) {
-        return new ScalaParser(dialect, parserOptions);
+        return new ScalaParser(dialect);
     }
 }

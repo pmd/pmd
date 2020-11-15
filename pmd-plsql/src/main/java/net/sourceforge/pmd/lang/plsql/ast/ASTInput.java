@@ -21,9 +21,9 @@ public final class ASTInput extends AbstractPLSQLNode implements RootNode {
         return astInfo;
     }
 
-    AstInfo<ASTInput> addTaskInfo(ParserTask task) {
+    ASTInput addTaskInfo(ParserTask task) {
         this.astInfo = new AstInfo<>(task, this);
-        return astInfo;
+        return this;
     }
 
 

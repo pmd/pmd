@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.vf;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
-import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.vf.ast.VfParser;
 
 public class VfHandler extends AbstractPmdLanguageVersionHandler {

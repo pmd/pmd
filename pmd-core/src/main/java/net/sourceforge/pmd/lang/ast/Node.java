@@ -320,8 +320,10 @@ public interface Node {
 
     /**
      * Returns the {@link AstInfo} for this root node.
+     *
+     * @implNote This default implementation can not work unless overridden in the root node.
      */
-    default AstInfo getAstInfo() {
+    default AstInfo<? extends RootNode> getAstInfo() {
         return getRoot().getAstInfo();
     }
 

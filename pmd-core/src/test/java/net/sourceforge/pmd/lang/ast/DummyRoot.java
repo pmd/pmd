@@ -4,17 +4,20 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.Collections;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 public class DummyRoot extends DummyNode implements GenericNode<DummyNode>, RootNode {
 
-    private Map<Integer, String> suppressMap;
+    private Map<Integer, String> suppressMap = Collections.emptyMap();
     private String filename = "sample.dummy";
-    private LanguageVersion languageVersion;
-    private String sourceText;
+    private LanguageVersion languageVersion = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME).getDefaultVersion();
+    private String sourceText = "dummy text";
 
 
     public DummyRoot withLanguage(LanguageVersion languageVersion) {

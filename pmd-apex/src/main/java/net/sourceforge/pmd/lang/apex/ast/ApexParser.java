@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
-import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
@@ -23,7 +22,7 @@ public final class ApexParser implements Parser {
     }
 
     @Override
-    public AstInfo<ASTApexFile> parse(final ParserTask task) {
+    public ASTApexFile parse(final ParserTask task) {
         try {
             String sourceCode = task.getSourceText();
             final Compilation astRoot = CompilerService.INSTANCE.parseApex(task.getFileDisplayName(), sourceCode);
@@ -35,8 +34,7 @@ public final class ApexParser implements Parser {
             SourceCodePositioner positioner = new SourceCodePositioner(sourceCode);
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, task.getCommentMarker(), positioner);
             AbstractApexNode<Compilation> treeRoot = treeBuilder.build(astRoot);
-            ASTApexFile fileNode = new ASTApexFile(positioner, task, treeRoot, treeBuilder.getSuppressMap());
-            return fileNode.getAstInfo();
+            return new ASTApexFile(positioner, task, treeRoot, treeBuilder.getSuppressMap());
         } catch (apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);
         }

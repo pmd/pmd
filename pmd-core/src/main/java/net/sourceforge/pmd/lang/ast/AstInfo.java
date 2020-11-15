@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Collections;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 
@@ -16,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
  * @param <T> Type of root nodes
  */
 public final class AstInfo<T extends RootNode> {
+
     private final String filename;
     private final LanguageVersion languageVersion;
     private final String sourceText;
@@ -23,14 +26,16 @@ public final class AstInfo<T extends RootNode> {
     private final Map<Integer, String> suppressionComments;
 
 
-    public AstInfo(ParserTask task,
-                   T rootNode,
-                   Map<Integer, String> suppressionComments) {
-        this.filename = task.getFileDisplayName();
-        this.sourceText = task.getSourceText();
-        this.languageVersion = task.getLanguageVersion();
-        this.rootNode = rootNode;
-        this.suppressionComments = suppressionComments;
+    public AstInfo(ParserTask task, T rootNode) {
+        this(task, rootNode, Collections.emptyMap());
+    }
+
+    public AstInfo(ParserTask task, T rootNode, Map<Integer, String> suppressionComments) {
+        this(task.getFileDisplayName(),
+             task.getLanguageVersion(),
+             task.getSourceText(),
+             rootNode,
+             suppressionComments);
     }
 
     public AstInfo(String filename,
@@ -38,16 +43,13 @@ public final class AstInfo<T extends RootNode> {
                    String sourceText,
                    T rootNode,
                    Map<Integer, String> suppressionComments) {
-        this.filename = filename;
-        this.languageVersion = languageVersion;
-        this.sourceText = sourceText;
-        this.rootNode = rootNode;
-        this.suppressionComments = suppressionComments;
+        this.filename = AssertionUtil.requireParamNotNull("file name", filename);
+        this.languageVersion = AssertionUtil.requireParamNotNull("language version", languageVersion);
+        this.sourceText = AssertionUtil.requireParamNotNull("text", sourceText);
+        this.rootNode = AssertionUtil.requireParamNotNull("root node", rootNode);
+        this.suppressionComments = AssertionUtil.requireParamNotNull("suppress map", suppressionComments);
     }
 
-    public AstInfo(ParserTask task, T rootNode) {
-        this(task, rootNode, Collections.emptyMap());
-    }
 
     public T getRootNode() {
         return rootNode;
@@ -61,11 +63,25 @@ public final class AstInfo<T extends RootNode> {
         return sourceText;
     }
 
+    public LanguageVersion getLanguageVersion() {
+        return languageVersion;
+    }
+
+    /**
+     * Returns the map of line numbers to suppression / review comments.
+     * Only single line comments are considered, that start with the configured
+     * "suppressMarker", which by default is "PMD". The text after the
+     * suppressMarker is used as a "review comment" and included in this map.
+     *
+     * <p>
+     * This map is later used to determine, if a violation is being suppressed.
+     * It is suppressed, if the line of the violation is contained in this suppress map.
+     *
+     * @return map of the suppress lines with the corresponding review comments.
+     */
+    @Experimental
     public Map<Integer, String> getSuppressionComments() {
         return suppressionComments;
     }
 
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
-    }
 }

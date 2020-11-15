@@ -4,11 +4,15 @@
 
 package net.sourceforge.pmd.test.lang;
 
+import java.util.Collections;
+
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
@@ -55,16 +59,21 @@ public class DummyLanguageModule extends BaseLanguageModule {
     public static class DummyRootNode extends DummyNode implements RootNode {
 
 
-        private LanguageVersion languageVersion;
+        private LanguageVersion languageVersion = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME).getDefaultVersion();
 
-        @Override
-        public LanguageVersion getLanguageVersion() {
-            return languageVersion;
+        public void setLanguageVersion(LanguageVersion languageVersion) {
+            this.languageVersion = languageVersion;
         }
 
-        public DummyRootNode setLanguageVersion(LanguageVersion languageVersion) {
-            this.languageVersion = languageVersion;
-            return this;
+        @Override
+        public AstInfo<DummyRootNode> getAstInfo() {
+            return new AstInfo<>(
+                "sample.dummy",
+                languageVersion,
+                "dummy text",
+                this,
+                Collections.emptyMap()
+            );
         }
 
 
