@@ -116,6 +116,6 @@ public class ParametricRuleViolation implements RuleViolation {
 
     @Override
     public String toString() {
-        return getFilename() + ':' + getRule() + ':' + getDescription() + ':' + beginLine;
+        return getFilename() + ':' + getRule() + ':' + getDescription() + ':' + getLocation().startPosToString();
     }
 }
