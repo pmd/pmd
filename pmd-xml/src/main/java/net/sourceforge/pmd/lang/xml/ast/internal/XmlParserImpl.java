@@ -106,10 +106,6 @@ public class XmlParserImpl {
             return languageVersion;
         }
 
-        @Override
-        public String getSourceCodeFile() {
-            return filename;
-        }
     }
 
 }

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
-public final class EcmascriptParser implements net.sourceforge.pmd.lang.Parser {
+public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Parser {
     private final int esVersion;
     private final String suppressMarker;
 

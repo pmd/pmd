@@ -9,7 +9,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
-import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> implements GenericNode<DummyNode> {
     private final boolean findBoundary;
@@ -56,12 +55,6 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
     public DummyNode withFileName(String fname) {
         this.fileName = fname;
         return this;
-    }
-
-    @Override
-    @NoAttribute
-    public String getSourceCodeFile() {
-        return fileName == null ? "no-file" : fileName;
     }
 
     @Override

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.test.lang;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
@@ -60,11 +60,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
         @Override
         public LanguageVersion getLanguageVersion() {
             return languageVersion;
-        }
-
-        @Override
-        public String getSourceCodeFile() {
-            return "someFile.dummy";
         }
 
         public DummyRootNode setLanguageVersion(LanguageVersion languageVersion) {

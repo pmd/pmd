@@ -10,7 +10,7 @@ import java.util.Map;
 import org.mozilla.javascript.ast.AstRoot;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 public final class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> implements RootNode {
@@ -26,11 +26,6 @@ public final class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> implements
     @Override
     public LanguageVersion getLanguageVersion() {
         return languageVersion;
-    }
-
-    @Override
-    public String getSourceCodeFile() {
-        return filename;
     }
 
     void addTaskInfo(ParserTask languageVersion) {

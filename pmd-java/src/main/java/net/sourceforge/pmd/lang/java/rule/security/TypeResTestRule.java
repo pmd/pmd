@@ -69,7 +69,7 @@ public class TypeResTestRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        FILENAME.set(node.getSourceCodeFile());
+        FILENAME.set(node.getAstInfo().getFileName());
         for (JavaNode descendant : node.descendants().crossFindBoundaries()) {
             visitJavaNode(descendant, data);
         }
@@ -113,7 +113,7 @@ public class TypeResTestRule extends AbstractJavaRule {
 
     @NonNull
     public String position(JavaNode node) {
-        return "In: " + node.getSourceCodeFile() + ":" + node.getBeginLine() + ":" + node.getBeginColumn();
+        return "In: " + node.getAstInfo().getFileName() + ":" + node.getBeginLine() + ":" + node.getBeginColumn();
     }
 
     @Override

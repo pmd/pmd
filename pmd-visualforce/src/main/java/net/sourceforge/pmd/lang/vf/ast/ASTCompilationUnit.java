@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 public final class ASTCompilationUnit extends AbstractVfNode implements RootNode {
@@ -20,11 +20,6 @@ public final class ASTCompilationUnit extends AbstractVfNode implements RootNode
     @Override
     public LanguageVersion getLanguageVersion() {
         return languageVersion;
-    }
-
-    @Override
-    public String getSourceCodeFile() {
-        return filename;
     }
 
     ASTCompilationUnit addTaskInfo(ParserTask languageVersion) {

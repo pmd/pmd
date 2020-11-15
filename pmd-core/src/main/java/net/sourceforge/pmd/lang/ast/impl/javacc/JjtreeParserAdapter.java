@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
@@ -30,7 +31,7 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
     }
 
     @Override
-    public R parse(ParserTask task) throws ParseException {
+    public AstInfo<R> parse(ParserTask task) throws ParseException {
         JavaccTokenDocument doc = newDocument(task.getSourceText());
         CharStream charStream = newCharStream(doc);
 
@@ -41,7 +42,7 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
         }
     }
 
-    protected abstract R parseImpl(CharStream cs, ParserTask task) throws ParseException;
+    protected abstract AstInfo<R> parseImpl(CharStream cs, ParserTask task) throws ParseException;
 
 
     @Override

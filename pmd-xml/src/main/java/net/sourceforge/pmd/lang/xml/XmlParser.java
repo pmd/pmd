@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl;
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;

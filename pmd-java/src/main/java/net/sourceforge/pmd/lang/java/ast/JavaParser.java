@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.ParseResult;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
@@ -37,16 +39,15 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     }
 
     @Override
-    protected ASTCompilationUnit parseImpl(CharStream cs, ParserTask task) throws ParseException {
+    protected ParseResult<ASTCompilationUnit> parseImpl(CharStream cs, ParserTask task) throws ParseException {
         JavaParserImpl parser = new JavaParserImpl(cs);
         parser.setSuppressMarker(task.getCommentMarker());
         parser.setJdkVersion(checker.getJdkVersion());
         parser.setPreview(checker.isPreviewEnabled());
 
         ASTCompilationUnit acu = parser.CompilationUnit();
-        acu.setNoPmdComments(parser.getSuppressMap());
-        acu.addTaskInfo(task);
+        acu.setAstInfo(new AstInfo(task, parser.getSuppressMap()));
         checker.check(acu);
-        return acu;
+        return new ParseResult<>(acu, acu.getAstInfo());
     }
 }

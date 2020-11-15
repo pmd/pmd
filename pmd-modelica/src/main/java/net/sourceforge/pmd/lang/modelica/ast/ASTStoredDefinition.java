@@ -35,11 +35,6 @@ public class ASTStoredDefinition extends AbstractModelicaNode implements RootNod
         return languageVersion;
     }
 
-    @Override
-    public String getSourceCodeFile() {
-        return filename;
-    }
-
     ASTStoredDefinition addTaskInfo(ParserTask languageVersion) {
         this.languageVersion = languageVersion.getLanguageVersion();
         this.filename = languageVersion.getFileDisplayName();

@@ -22,11 +22,6 @@ public final class ASTInput extends AbstractPLSQLNode implements RootNode {
         return languageVersion;
     }
 
-    @Override
-    public String getSourceCodeFile() {
-        return filename;
-    }
-
     ASTInput addTaskInfo(ParserTask languageVersion) {
         this.languageVersion = languageVersion.getLanguageVersion();
         this.filename = languageVersion.getFileDisplayName();

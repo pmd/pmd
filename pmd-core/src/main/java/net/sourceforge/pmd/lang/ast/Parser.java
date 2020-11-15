@@ -2,16 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang;
+package net.sourceforge.pmd.lang.ast;
 
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.ast.FileAnalysisException;
-import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 /**
  * Produces an AST from a source file. Instances of this interface must
@@ -36,7 +34,7 @@ public interface Parser {
      *                                  parsing task is for an incorrect language
      * @throws FileAnalysisException    If any error occurs
      */
-    RootNode parse(ParserTask task) throws FileAnalysisException;
+    AstInfo<? extends RootNode> parse(ParserTask task) throws FileAnalysisException;
 
 
     /**
