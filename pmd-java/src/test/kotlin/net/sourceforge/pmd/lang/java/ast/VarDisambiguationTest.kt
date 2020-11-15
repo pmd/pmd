@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.*
 
 class VarDisambiguationTest : ParserTestSpec({
 
@@ -153,7 +154,7 @@ class Foo<T> {
 
         doTest("Unresolved field") {
 
-            logger.getWarning(JavaSemanticErrors.CANNOT_RESOLVE_MEMBER, 0) { node, args ->
+            logger.getWarning(CANNOT_RESOLVE_MEMBER, 0) { node, args ->
 
                 args shouldBe listOf("noField", "com.foo.bar.Foo.Inner", "a field access")
                 node.shouldMatchN {
@@ -170,7 +171,7 @@ class Foo<T> {
 
         doTest("Unresolved field chain") {
 
-            logger.getWarning(JavaSemanticErrors.CANNOT_RESOLVE_MEMBER, 1) { node, args ->
+            logger.getWarning(CANNOT_RESOLVE_MEMBER, 1) { node, args ->
 
                 args shouldBe listOf("noField", "com.foo.bar.Foo.Inner", "a field access")
                 node.shouldMatchN {
@@ -189,7 +190,7 @@ class Foo<T> {
 
         doTest("Unresolved type var member") {
 
-            logger.getWarning(JavaSemanticErrors.CANNOT_RESOLVE_MEMBER, 2) { node, args ->
+            logger.getWarning(CANNOT_RESOLVE_MEMBER, 2) { node, args ->
 
                 args shouldBe listOf("fofo", "type variable T", "a field access")
                 node.shouldMatchN {
@@ -206,7 +207,7 @@ class Foo<T> {
 
         doTest("Unresolved type var member (in type ctx)") {
 
-            logger.getWarning(JavaSemanticErrors.CANNOT_RESOLVE_MEMBER, 3) { node, args ->
+            logger.getWarning(CANNOT_RESOLVE_MEMBER, 3) { node, args ->
 
                 args shouldBe listOf("Fofo", "type variable T", "an unresolved type")
                 node.shouldMatchN {
