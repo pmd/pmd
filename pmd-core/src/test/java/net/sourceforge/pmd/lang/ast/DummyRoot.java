@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 public class DummyRoot extends DummyNode implements GenericNode<DummyNode>, RootNode {
 
@@ -45,9 +46,7 @@ public class DummyRoot extends DummyNode implements GenericNode<DummyNode>, Root
     @Override
     public AstInfo<DummyRoot> getAstInfo() {
         return new AstInfo<>(
-            filename,
-            languageVersion,
-            sourceText,
+            TextDocument.readOnlyString(sourceText, filename, languageVersion),
             this,
             suppressMap
         );

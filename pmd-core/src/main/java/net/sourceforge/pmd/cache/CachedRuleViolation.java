@@ -129,10 +129,11 @@ public final class CachedRuleViolation implements RuleViolation {
         stream.writeUTF(getValueOrEmpty(violation.getRule().getRuleClass()));
         stream.writeUTF(getValueOrEmpty(violation.getRule().getName()));
         stream.writeUTF(getValueOrEmpty(violation.getRule().getLanguage().getTerseName()));
-        stream.writeInt(violation.getBeginLine());
-        stream.writeInt(violation.getBeginColumn());
-        stream.writeInt(violation.getEndLine());
-        stream.writeInt(violation.getEndColumn());
+        FileLocation location = violation.getLocation();
+        stream.writeInt(location.getBeginLine());
+        stream.writeInt(location.getBeginColumn());
+        stream.writeInt(location.getEndLine());
+        stream.writeInt(location.getEndColumn());
         stream.writeUTF(getValueOrEmpty(violation.getPackageName()));
         stream.writeUTF(getValueOrEmpty(violation.getClassName()));
         stream.writeUTF(getValueOrEmpty(violation.getMethodName()));

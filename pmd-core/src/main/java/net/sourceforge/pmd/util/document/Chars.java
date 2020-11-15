@@ -172,7 +172,7 @@ public final class Chars implements CharSequence {
      * See {@link String#startsWith(String, int)}.
      */
     public boolean startsWith(String prefix, int fromIndex) {
-        if (fromIndex < 0 || fromIndex >= len || prefix.length() > len) {
+        if (fromIndex < 0 || fromIndex + prefix.length() > len) {
             return false;
         }
         return str.startsWith(prefix, idx(fromIndex));
@@ -183,6 +183,14 @@ public final class Chars implements CharSequence {
      */
     public boolean startsWith(String prefix) {
         return startsWith(prefix, 0);
+    }
+
+
+    public boolean startsWith(char prefix, int fromIndex) {
+        if (fromIndex < 0 || fromIndex + 1 > len) {
+            return false;
+        }
+        return str.charAt(start + fromIndex) == prefix;
     }
 
     /**

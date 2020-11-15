@@ -17,7 +17,10 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
     private final Map<String, String> userData = new HashMap<>();
     private String image;
 
-    private FileLocation location;
+    private int bline = 1;
+    private int bcol = 1;
+    private int eline = 1;
+    private int ecol = 1;
 
     public DummyNode(String xpathName) {
         super();
@@ -45,14 +48,17 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
         }
     }
 
-    public void setCoords(int bline, int bcol, int eline, int ecol) {
-        this.location = FileLocation.location(":dummyFile:", bline, bcol, eline, ecol);
+    public DummyNode setCoords(int bline, int bcol, int eline, int ecol) {
+        this.bline = bline;
+        this.bcol = bcol;
+        this.eline = eline;
+        this.ecol = ecol;
+        return this;
     }
 
     @Override
     public FileLocation getReportLocation() {
-        assert location != null : "Should have called setCoords";
-        return location;
+        return getTextDocument().createLocation(bline, bcol, eline, ecol);
     }
 
     public void setImage(String image) {

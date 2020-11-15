@@ -36,6 +36,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.TextFile;
 import net.sourceforge.pmd.util.document.TextFileContent;
@@ -113,6 +114,7 @@ public class FileAnalysisCacheTest {
 
         final RuleViolation rv = mock(RuleViolation.class);
         when(rv.getFilename()).thenReturn(sourceFile.getDisplayName());
+        when(rv.getLocation()).thenReturn(FileLocation.location(sourceFile.getDisplayName(), 1, 2, 3, 4));
         final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);

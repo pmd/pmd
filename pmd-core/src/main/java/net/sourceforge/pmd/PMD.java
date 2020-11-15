@@ -20,6 +20,7 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -78,8 +79,6 @@ public final class PMD {
         final RuleSetLoader ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration);
 
         final List<RuleSet> ruleSets;
-        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
-            ruleSets;
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
             ruleSets = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), ruleSetFactory);
         }
@@ -142,8 +141,13 @@ public final class PMD {
      *
      * @throws Exception If an exception occurs while closing the data sources
      *                   Todo wrap that into a known exception type
+     *
+     * @deprecated Use {@link #processTextFiles(PMDConfiguration, List, List, GlobalAnalysisListener)},
+     * which uses a list of {@link TextFile} and not the deprecated {@link DataSource}.
+     *
      */
     @Deprecated
+    @DeprecatedUntil700
     public static void processFiles(PMDConfiguration configuration,
                                     List<RuleSet> ruleSets,
                                     List<DataSource> files,
@@ -153,6 +157,21 @@ public final class PMD {
         processTextFiles(configuration, ruleSets, inputFiles, listener);
     }
 
+    /**
+     * Run PMD on a list of files using the number of threads specified
+     * by the configuration.
+     *
+     * TODO rulesets should be validated more strictly upon construction.
+     * We shouldn't be removing rules after construction.
+     *
+     * @param configuration Configuration (the input files and rulesets are ignored)
+     * @param ruleSets      RuleSetFactory
+     * @param inputFiles    List of input files to process
+     * @param listener      RuleContext
+     *
+     * @throws Exception If an exception occurs while closing the data sources
+     *                   Todo wrap that into a known exception type
+     */
     public static void processTextFiles(PMDConfiguration configuration,
                                         List<RuleSet> ruleSets,
                                         List<TextFile> inputFiles,

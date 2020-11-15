@@ -21,7 +21,7 @@ public abstract class TextFileBuilder {
     protected final LanguageVersion languageVersion;
     protected @Nullable String displayName;
 
-    private TextFileBuilder(LanguageVersion languageVersion) {
+    TextFileBuilder(LanguageVersion languageVersion) {
         this.languageVersion = AssertionUtil.requireParamNotNull("language version", languageVersion);
     }
 

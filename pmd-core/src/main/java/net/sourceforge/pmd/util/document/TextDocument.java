@@ -109,6 +109,12 @@ public interface TextDocument extends Closeable {
      */
     FileLocation toLocation(TextRegion region);
 
+
+    // todo doc
+    default FileLocation createLocation(int bline, int bcol, int eline, int ecol) {
+        return FileLocation.location(getDisplayName(), bline, bcol, eline, ecol);
+    }
+
     /**
      * Determines the line number at the given offset (inclusive).
      *
@@ -157,6 +163,7 @@ public interface TextDocument extends Closeable {
      *
      * @see TextFile#forCharSeq(CharSequence, String, LanguageVersion)
      */
+    @SuppressWarnings("PMD.CloseResource")
     static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull String filename, @NonNull LanguageVersion lv) {
         TextFile textFile = TextFile.forCharSeq(source, filename, lv);
         try {

@@ -51,6 +51,7 @@ import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.ReferenceCountedCloseable;
 import net.sourceforge.pmd.util.document.TextFile;
+import net.sourceforge.pmd.util.document.TextFileBuilder;
 
 /**
  * This is a utility class for working with Files.
@@ -225,10 +226,8 @@ public final class FileUtil {
         Predicate<Path> fileFilter = PredicateUtil.toFileFilter(new LanguageFilenameFilter(languages));
         fileFilter = fileFilter.and(path -> !ignoredFiles.contains(path.toString()));
 
-        if (null != configuration.getInputPaths()) {
-            for (String root : configuration.getInputPaths().split(",")) {
-                collect(files, root, configuration, fileFilter);
-            }
+        for (String root : configuration.getAllInputPaths()) {
+            collect(files, root, configuration, fileFilter);
         }
 
         if (null != configuration.getInputUri()) {
@@ -300,19 +299,25 @@ public final class FileUtil {
     }
 
     private static @Nullable String displayName(PMDConfiguration config, Path file) {
-        if (config.isReportShortNames() && config.getInputPaths() != null) {
-            return ShortFilenameUtil.determineFileName(Arrays.asList(config.getInputPaths().split(",")), file.toString());
+        if (config.isReportShortNames()) {
+            return ShortFilenameUtil.determineFileName(config.getAllInputPaths(), file.toString());
         }
         return null;
     }
 
     public static TextFile createNioTextFile(PMDConfiguration config, Path file, @Nullable ReferenceCountedCloseable fsCloseable) {
+        return buildNioTextFile(config, file).belongingTo(fsCloseable).build();
+    }
+
+    /**
+     * Returns a builder that uses the configuration's encoding, and pre-fills the display name
+     * using the input paths ({@link PMDConfiguration#getAllInputPaths()}) if {@link PMDConfiguration#isReportShortNames()}).
+     */
+    public static TextFileBuilder buildNioTextFile(PMDConfiguration config, Path file) {
         LanguageVersion langVersion = config.getLanguageVersionOfFile(file.toString());
 
         return TextFile.forPath(file, config.getSourceEncoding(), langVersion)
-                       .withDisplayName(displayName(config, file))
-                       .belongingTo(fsCloseable)
-                       .build();
+                       .withDisplayName(displayName(config, file));
     }
 
 }

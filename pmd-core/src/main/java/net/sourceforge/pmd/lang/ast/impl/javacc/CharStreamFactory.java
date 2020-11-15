@@ -11,8 +11,8 @@ import java.util.function.Function;
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.CpdCompat;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 public final class CharStreamFactory {
 

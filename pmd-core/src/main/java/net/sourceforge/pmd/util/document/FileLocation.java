@@ -115,4 +115,9 @@ public final class FileLocation {
         return new FileLocation(fileName, beginLine, beginColumn, endLine, endColumn);
     }
 
+
+    @Override
+    public String toString() {
+        return "!debug only! " + startPosToStringWithFile();
+    }
 }

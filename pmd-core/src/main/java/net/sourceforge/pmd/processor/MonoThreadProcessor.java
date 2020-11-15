@@ -38,7 +38,7 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
 
         private final RuleSets ruleSets;
 
-        MonothreadRunnable(RuleSets ruleSets, DataSource dataSource, GlobalAnalysisListener ruleContext, PMDConfiguration configuration) {
+        MonothreadRunnable(RuleSets ruleSets, TextFile dataSource, GlobalAnalysisListener ruleContext, PMDConfiguration configuration) {
             super(dataSource, ruleContext, configuration);
             this.ruleSets = ruleSets;
         }

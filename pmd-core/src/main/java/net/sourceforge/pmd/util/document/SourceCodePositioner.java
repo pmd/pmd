@@ -216,7 +216,7 @@ final class SourceCodePositioner {
             buf = new int[Math.max(1, bufSize)];
         }
 
-        public Builder() {
+        Builder() {
             this(400);
         }
 

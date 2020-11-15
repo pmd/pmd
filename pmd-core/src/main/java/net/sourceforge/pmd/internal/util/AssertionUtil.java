@@ -6,8 +6,8 @@ package net.sourceforge.pmd.internal.util;
 
 
 import java.util.Collection;
-import java.util.regex.Pattern;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
