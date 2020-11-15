@@ -1,0 +1,36 @@
+name: troubleshooting
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: false
+    strategy:
+      matrix:
+        #os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ ubuntu-latest ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.cache
+            vendor/bundle
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Set up Ruby 2.7
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - name: Install OpenJDK 11
+        run: |
+          source .ci/inc/logger.inc
+          source .ci/inc/install-openjdk.inc
+          install_openjdk 11
+        shell: bash
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
