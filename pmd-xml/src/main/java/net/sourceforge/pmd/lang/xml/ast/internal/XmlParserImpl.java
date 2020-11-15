@@ -17,9 +17,9 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
@@ -92,23 +92,16 @@ public class XmlParserImpl {
      */
     public static class RootXmlNode extends XmlNodeWrapper implements RootNode {
 
-        private final LanguageVersion languageVersion;
-        private final String filename;
+        private final AstInfo<RootXmlNode> astInfo;
 
         RootXmlNode(XmlParserImpl parser, Node domNode, ParserTask task) {
             super(parser, domNode);
-            this.languageVersion = task.getLanguageVersion();
-            this.filename = task.getFileDisplayName();
+            this.astInfo = new AstInfo<>(task, this);
         }
 
         @Override
-        public LanguageVersion getLanguageVersion() {
-            return languageVersion;
-        }
-
-        @Override
-        public String getSourceCodeFile() {
-            return filename;
+        public AstInfo<RootXmlNode> getAstInfo() {
+            return astInfo;
         }
     }
 

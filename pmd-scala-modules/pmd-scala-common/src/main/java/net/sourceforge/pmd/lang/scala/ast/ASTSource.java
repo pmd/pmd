@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 import scala.meta.Source;
@@ -15,27 +15,20 @@ import scala.meta.Source;
  */
 public final class ASTSource extends AbstractScalaNode<Source> implements RootNode {
 
-    private LanguageVersion languageVersion;
-    private String filename;
+    private AstInfo<ASTSource> astInfo;
 
     ASTSource(Source scalaNode) {
         super(scalaNode);
     }
 
-    @Override
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
-    }
-
 
     @Override
-    public String getSourceCodeFile() {
-        return filename;
+    public AstInfo<ASTSource> getAstInfo() {
+        return astInfo;
     }
 
-    void addTaskInfo(ParserTask languageVersion) {
-        this.languageVersion = languageVersion.getLanguageVersion();
-        this.filename = languageVersion.getFileDisplayName();
+    void addTaskInfo(ParserTask task) {
+        this.astInfo = new AstInfo<>(task, this);
     }
 
     @Override

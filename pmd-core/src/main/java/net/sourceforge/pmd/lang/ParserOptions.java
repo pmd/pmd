@@ -9,6 +9,7 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.ast.Parser;
 
 /**
  * Represents a set of configuration options for a {@link Parser}. For each

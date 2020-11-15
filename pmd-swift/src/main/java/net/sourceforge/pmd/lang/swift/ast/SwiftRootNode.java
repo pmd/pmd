@@ -6,15 +6,15 @@ package net.sourceforge.pmd.lang.swift.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwTopLevel;
 
 // package private base class
 abstract class SwiftRootNode extends SwiftInnerNode implements RootNode {
 
-    private String filename;
-    private LanguageVersion languageVersion;
+    private AstInfo<SwTopLevel> astInfo;
 
     SwiftRootNode() {
         super();
@@ -24,20 +24,15 @@ abstract class SwiftRootNode extends SwiftInnerNode implements RootNode {
         super(parent, invokingStateNumber);
     }
 
-
     @Override
-    public String getSourceCodeFile() {
-        return filename;
+    public AstInfo<SwTopLevel> getAstInfo() {
+        return astInfo;
     }
 
-    @Override
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
-    }
-
-    void addTaskInfo(ParserTask languageVersion) {
-        this.languageVersion = languageVersion.getLanguageVersion();
-        this.filename = languageVersion.getFileDisplayName();
+    SwTopLevel makeAstInfo(ParserTask task) {
+        SwTopLevel me = (SwTopLevel) this;
+        this.astInfo = new AstInfo<>(task, me);
+        return me;
     }
 
 }

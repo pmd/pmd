@@ -4,32 +4,25 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 public final class ASTInput extends AbstractPLSQLNode implements RootNode {
 
-    private LanguageVersion languageVersion;
-    private String filename;
+    private AstInfo<ASTInput> astInfo;
 
     ASTInput(int id) {
         super(id);
     }
 
     @Override
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
+    public AstInfo<ASTInput> getAstInfo() {
+        return astInfo;
     }
 
-    @Override
-    public String getSourceCodeFile() {
-        return filename;
-    }
-
-    ASTInput addTaskInfo(ParserTask languageVersion) {
-        this.languageVersion = languageVersion.getLanguageVersion();
-        this.filename = languageVersion.getFileDisplayName();
+    ASTInput addTaskInfo(ParserTask task) {
+        this.astInfo = new AstInfo<>(task, this);
         return this;
     }
 
@@ -40,6 +33,6 @@ public final class ASTInput extends AbstractPLSQLNode implements RootNode {
     }
 
     public String getSourcecode() {
-        return new StringBuilder(getText()).toString();
+        return getAstInfo().getSourceText();
     }
 }

@@ -4,33 +4,25 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 public final class ASTCompilationUnit extends AbstractJspNode implements RootNode {
 
-    private LanguageVersion languageVersion;
-    private String filename;
+    private AstInfo<ASTCompilationUnit> astInfo;
 
     ASTCompilationUnit(int id) {
         super(id);
     }
 
     @Override
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
+    public AstInfo<ASTCompilationUnit> getAstInfo() {
+        return astInfo;
     }
 
-
-    @Override
-    public String getSourceCodeFile() {
-        return filename;
-    }
-
-    ASTCompilationUnit addTaskInfo(ParserTask languageVersion) {
-        this.languageVersion = languageVersion.getLanguageVersion();
-        this.filename = languageVersion.getFileDisplayName();
+    ASTCompilationUnit makeTaskInfo(ParserTask task) {
+        this.astInfo = new AstInfo<>(task, this);
         return this;
     }
 

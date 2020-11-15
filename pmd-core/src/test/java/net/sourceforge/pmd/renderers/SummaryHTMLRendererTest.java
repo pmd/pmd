@@ -148,7 +148,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
 
     private Report createEmptyReportWithSuppression() throws Exception {
 
-        DummyRoot root = new DummyRoot(Collections.singletonMap(1, "test")).withFileName(getSourceCodeFilename());
+        DummyRoot root = new DummyRoot().withNoPmdComments(Collections.singletonMap(1, "test")).withFileName(getSourceCodeFilename());
         root.setCoords(1, 10, 4, 5);
 
         return RuleContextTest.getReportForRuleApply(new FooRule() {

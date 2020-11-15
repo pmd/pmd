@@ -13,12 +13,10 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
-import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
@@ -320,19 +318,13 @@ public interface Node {
         return visitor.cannotVisit(this, data);
     }
 
-
-    default LanguageVersion getLanguageVersion() {
-        return getRoot().getLanguageVersion();
-    }
-
-
     /**
-     * @deprecated This is simply a placeholder until we have TextDocuments
+     * Returns the {@link AstInfo} for this root node.
+     *
+     * @implNote This default implementation can not work unless overridden in the root node.
      */
-    @Deprecated
-    @NoAttribute
-    default String getSourceCodeFile() {
-        return getRoot().getSourceCodeFile();
+    default AstInfo<? extends RootNode> getAstInfo() {
+        return getRoot().getAstInfo();
     }
 
 

@@ -147,14 +147,14 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
         ASTAstRoot root = js.parse("function(x) {\n"
                                        + "x = x; //NOPMD I know what I'm doing\n"
                                        + "}\n");
-        assertEquals(" I know what I'm doing", root.getNoPmdComments().get(2));
-        assertEquals(1, root.getNoPmdComments().size());
+        assertEquals(" I know what I'm doing", root.getAstInfo().getSuppressionComments().get(2));
+        assertEquals(1, root.getAstInfo().getSuppressionComments().size());
 
         ParserOptions parserOptions = new ParserOptions();
         parserOptions.setSuppressMarker("FOOOO");
         root = js.withParserOptions(parserOptions).parse("function(x) {\n" + "y = y; //NOPMD xyz\n" + "x = x; //FOOOO I know what I'm doing\n" + "}\n");
-        assertEquals(" I know what I'm doing", root.getNoPmdComments().get(3));
-        assertEquals(1, root.getNoPmdComments().size());
+        assertEquals(" I know what I'm doing", root.getAstInfo().getSuppressionComments().get(3));
+        assertEquals(1, root.getAstInfo().getSuppressionComments().size());
     }
 
     /**

@@ -11,6 +11,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyAstStages;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
@@ -50,10 +51,12 @@ public class DummyLanguageModule extends BaseLanguageModule {
         @Override
         public Parser getParser(ParserOptions parserOptions) {
             return task -> {
-                DummyRoot node = new DummyRoot(task.getLanguageVersion());
+                DummyRoot node = new DummyRoot();
                 node.setCoords(1, 1, 2, 10);
                 node.setImage("Foo");
                 node.withFileName(task.getFileDisplayName());
+                node.withLanguage(task.getLanguageVersion());
+                node.withSourceText(task.getSourceText());
                 return node;
             };
         }

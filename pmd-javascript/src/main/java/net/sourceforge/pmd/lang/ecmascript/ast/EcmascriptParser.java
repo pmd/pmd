@@ -17,11 +17,12 @@ import org.mozilla.javascript.ast.ErrorCollector;
 import org.mozilla.javascript.ast.ParseProblem;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
-public final class EcmascriptParser implements net.sourceforge.pmd.lang.Parser {
+public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Parser {
     private final int esVersion;
     private final String suppressMarker;
 
@@ -71,7 +72,7 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.Parser {
                 }
             }
         }
-        tree.setNoPmdComments(suppressMap);
+        tree.setAstInfo(new AstInfo<>(task, tree, suppressMap));
         return tree;
     }
 

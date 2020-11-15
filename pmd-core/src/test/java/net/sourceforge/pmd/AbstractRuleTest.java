@@ -10,7 +10,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
-import java.util.Map;
 
 import org.junit.Test;
 
@@ -114,8 +113,7 @@ public class AbstractRuleTest {
 
     @Test
     public void testRuleSuppress() {
-        Map<Integer, String> m = Collections.singletonMap(5, "");
-        DummyRoot n = new DummyRoot(m);
+        DummyRoot n = new DummyRoot().withNoPmdComments(Collections.singletonMap(5, ""));
         n.setCoords(5, 1, 6, 1);
         RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new MyRule(), n, "specificdescription");
         SuppressedViolation suppressed = DefaultRuleViolationFactory.defaultInstance().suppressOrNull(n, violation);

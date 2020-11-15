@@ -27,9 +27,9 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
@@ -183,7 +183,8 @@ public class TreeExportCli {
 
         try {
             String fullSource = IOUtils.toString(source);
-            RootNode root = parser.parse(new ParserTask(langVersion, filename, fullSource, SemanticErrorReporter.noop()));
+            ParserTask task = new ParserTask(langVersion, filename, fullSource, SemanticErrorReporter.noop());
+            RootNode root = parser.parse(task);
 
             AstAnalysisContext ctx = new AstAnalysisContext() {
                 @Override
