@@ -5,10 +5,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * A constructor of a {@linkplain ASTConstructorDeclaration class} or
@@ -37,8 +36,8 @@ public final class ASTConstructorDeclaration extends AbstractMethodOrConstructor
     }
 
     @Override
-    protected @Nullable JavaccToken getPreferredReportLocation() {
-        return getModifiers().getLastToken().getNext();
+    public FileLocation getReportLocation() {
+        return getModifiers().getLastToken().getNext().getReportLocation();
     }
 
     @Override

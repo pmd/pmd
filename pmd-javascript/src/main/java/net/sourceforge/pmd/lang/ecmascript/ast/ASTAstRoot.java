@@ -8,7 +8,6 @@ import org.mozilla.javascript.ast.AstRoot;
 
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.util.document.TextDocument;
 
 public final class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> implements RootNode {
 
@@ -32,14 +31,6 @@ public final class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> implements
         return node.getComments() != null ? node.getComments().size() : 0;
     }
 
-    @Override
-    public @NonNull TextDocument getTextDocument() {
-        return document;
-    }
-
-    void setDocument(TextDocument document) {
-        this.document = document;
-    }
 
     public ASTComment getComment(int index) {
         return (ASTComment) getChild(getNumChildren() - 1 - getNumComments() + index);

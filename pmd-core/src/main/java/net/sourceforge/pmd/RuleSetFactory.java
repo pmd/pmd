@@ -33,9 +33,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.rules.RuleFactory;
 import net.sourceforge.pmd.util.ResourceLoader;

@@ -11,6 +11,7 @@ import java.io.IOException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * A {@link RuleViolation} implementation that is immutable, and therefore cache friendly
@@ -24,14 +25,10 @@ public final class CachedRuleViolation implements RuleViolation {
     private final CachedRuleMapper mapper;
 
     private final String description;
-    private final String fileName;
+    private final FileLocation location;
     private final String ruleClassName;
     private final String ruleName;
     private final String ruleTargetLanguage;
-    private final int beginLine;
-    private final int beginColumn;
-    private final int endLine;
-    private final int endColumn;
     private final String packageName;
     private final String className;
     private final String methodName;
@@ -44,14 +41,10 @@ public final class CachedRuleViolation implements RuleViolation {
             final String className, final String methodName, final String variableName) {
         this.mapper = mapper;
         this.description = description;
-        this.fileName = fileName;
+        this.location = FileLocation.location(fileName, beginLine, beginColumn, endLine, endColumn);
         this.ruleClassName = ruleClassName;
         this.ruleName = ruleName;
         this.ruleTargetLanguage = ruleTargetLanguage;
-        this.beginLine = beginLine;
-        this.beginColumn = beginColumn;
-        this.endLine = endLine;
-        this.endColumn = endColumn;
         this.packageName = packageName;
         this.className = className;
         this.methodName = methodName;
@@ -70,28 +63,8 @@ public final class CachedRuleViolation implements RuleViolation {
     }
 
     @Override
-    public String getFilename() {
-        return fileName;
-    }
-
-    @Override
-    public int getBeginLine() {
-        return beginLine;
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return beginColumn;
-    }
-
-    @Override
-    public int getEndLine() {
-        return endLine;
-    }
-
-    @Override
-    public int getEndColumn() {
-        return endColumn;
+    public FileLocation getLocation() {
+        return location;
     }
 
     @Override

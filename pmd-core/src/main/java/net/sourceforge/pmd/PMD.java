@@ -223,7 +223,6 @@ public final class PMD {
         }
 
         return brokenRules;
-        return report;
     }
 
 

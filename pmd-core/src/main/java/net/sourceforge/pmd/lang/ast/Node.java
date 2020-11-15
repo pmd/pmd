@@ -14,11 +14,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
-import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
@@ -353,7 +353,7 @@ public interface Node extends Reportable {
      * @return The text document
      */
     default @NonNull TextDocument getTextDocument() {
-        return getRoot().getTextDocument();
+        return getAstInfo().getTextDocument();
     }
 
     /**
@@ -670,4 +670,7 @@ public interface Node extends Reportable {
         return (RootNode) r;
     }
 
+    default LanguageVersion getLanguageVersion() {
+        return getTextDocument().getLanguageVersion();
+    }
 }

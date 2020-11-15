@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 
 /**
@@ -63,8 +64,9 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
     }
 
     @Override
-    protected @Nullable JavaccToken getPreferredReportLocation() {
-        return TokenUtils.nthPrevious(getModifiers().getLastToken(), getFormalParameters().getFirstToken(), 1);
+    public FileLocation getReportLocation() {
+        JavaccToken ident = TokenUtils.nthPrevious(getModifiers().getLastToken(), getFormalParameters().getFirstToken(), 1);
+        return ident.getReportLocation();
     }
 
     /**
