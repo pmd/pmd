@@ -23,10 +23,24 @@ public final class AstInfo<T extends RootNode> {
     private final Map<Integer, String> suppressionComments;
 
 
-    public AstInfo(ParserTask task, T rootNode, Map<Integer, String> suppressionComments) {
+    public AstInfo(ParserTask task,
+                   T rootNode,
+                   Map<Integer, String> suppressionComments) {
         this.filename = task.getFileDisplayName();
         this.sourceText = task.getSourceText();
         this.languageVersion = task.getLanguageVersion();
+        this.rootNode = rootNode;
+        this.suppressionComments = suppressionComments;
+    }
+
+    public AstInfo(String filename,
+                   LanguageVersion languageVersion,
+                   String sourceText,
+                   T rootNode,
+                   Map<Integer, String> suppressionComments) {
+        this.filename = filename;
+        this.languageVersion = languageVersion;
+        this.sourceText = sourceText;
         this.rootNode = rootNode;
         this.suppressionComments = suppressionComments;
     }

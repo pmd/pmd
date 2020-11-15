@@ -4,56 +4,50 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import java.util.Collections;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 public class DummyRoot extends DummyNode implements GenericNode<DummyNode>, RootNode {
 
-    private final Map<Integer, String> suppressMap;
+    private Map<Integer, String> suppressMap;
+    private String filename = "sample.dummy";
     private LanguageVersion languageVersion;
+    private String sourceText;
 
-    public DummyRoot(Map<Integer, String> suppressMap, LanguageVersion languageVersion) {
-        super();
-        this.suppressMap = suppressMap;
-        this.languageVersion = languageVersion;
-    }
-
-    public DummyRoot(Map<Integer, String> suppressMap) {
-        this(suppressMap, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-    }
-
-    public DummyRoot() {
-        this(Collections.emptyMap());
-    }
-
-    public DummyRoot(LanguageVersion languageVersion) {
-        this(Collections.emptyMap(), languageVersion);
-    }
-
-
-    @Override
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
-    }
 
     public DummyRoot withLanguage(LanguageVersion languageVersion) {
         this.languageVersion = languageVersion;
         return this;
     }
 
-    public DummyRoot withFileName(String filename) {
-        super.withFileName(filename);
+    public DummyRoot withSourceText(String sourceText) {
+        this.sourceText = sourceText;
         return this;
     }
 
+    public DummyRoot withNoPmdComments(Map<Integer, String> suppressMap) {
+        this.suppressMap = suppressMap;
+        return this;
+    }
+
+
+    public DummyRoot withFileName(String filename) {
+        this.filename = filename;
+        return this;
+    }
+
+
     @Override
-    public Map<Integer, String> getNoPmdComments() {
-        return suppressMap;
+    public AstInfo<DummyRoot> getAstInfo() {
+        return new AstInfo<>(
+            filename,
+            languageVersion,
+            sourceText,
+            this,
+            suppressMap
+        );
     }
 
     @Override

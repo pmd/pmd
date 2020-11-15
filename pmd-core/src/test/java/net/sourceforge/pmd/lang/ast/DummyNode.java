@@ -15,7 +15,6 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
     private String image;
-    private String fileName = "sample.dummy";
 
     public DummyNode(String xpathName) {
         super();
@@ -50,11 +49,6 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public DummyNode withFileName(String fname) {
-        this.fileName = fname;
-        return this;
     }
 
     @Override
