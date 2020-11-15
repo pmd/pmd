@@ -24,7 +24,7 @@ public class PLSQLHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new PLSQLParser(parserOptions);
+        return new PLSQLParser();
     }
 
 }

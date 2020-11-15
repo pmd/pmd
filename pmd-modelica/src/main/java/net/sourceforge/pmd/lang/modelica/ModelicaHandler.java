@@ -20,7 +20,7 @@ public class ModelicaHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new ModelicaParser(parserOptions);
+        return new ModelicaParser();
     }
 
 }
