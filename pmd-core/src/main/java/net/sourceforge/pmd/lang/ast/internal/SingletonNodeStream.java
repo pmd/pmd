@@ -162,7 +162,7 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
 
     @Override
     public <R extends Node> NodeStream<R> firstChild(Class<? extends R> rClass) {
-        return NodeStream.of(TraversalUtils.getFirstChildMatching(node, Filtermap.isInstance(rClass), 0, node.getNumChildren()));
+        return NodeStream.of(node.firstChild(rClass));
     }
 
     @Override
