@@ -58,7 +58,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
                else language.getVersion(version) ?: throw AssertionError("Unsupported version $version for language $language")
     }
 
-    private val language: Language
+    val language: Language
         get() = LanguageRegistry.getLanguage(langName)
                 ?: throw AssertionError("'$langName' is not a supported language (available ${LanguageRegistry.getLanguages()})")
 
