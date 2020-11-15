@@ -59,7 +59,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
     public static class HandlerWithParserThatThrows extends Handler {
         @Override
         public Parser getParser(ParserOptions parserOptions) {
-            return task ->  {
+            return task -> {
                 throw new AssertionError("test error while parsing");
             };
         }

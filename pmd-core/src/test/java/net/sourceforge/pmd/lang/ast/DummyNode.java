@@ -95,7 +95,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
 
     public DummyNode withFileName(String filename) {
         ((DummyRoot) getRoot()).withFileName(filename);
-        return null;
+        return this;
     }
 
     public static class DummyNodeTypeB extends DummyNode {

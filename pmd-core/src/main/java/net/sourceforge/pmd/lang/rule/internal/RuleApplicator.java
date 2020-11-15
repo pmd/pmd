@@ -54,7 +54,7 @@ public class RuleApplicator {
                 Iterator<? extends Node> targets = rule.getTargetSelector().getVisitedNodes(idx);
                 while (targets.hasNext()) {
                     Node node = targets.next();
-                    if (!RuleSet.applies(rule, node.getLanguageVersion())) {
+                    if (!RuleSet.applies(rule, node.getTextDocument().getLanguageVersion())) {
                         continue;
                     }
 
@@ -62,7 +62,7 @@ public class RuleApplicator {
                         rule.apply(node, ctx);
                         rcto.close(1);
                     } catch (RuntimeException | StackOverflowError | AssertionError e) {
-                        if (e instanceof Error && !SystemProps.isErrorRecoveryMode()) {
+                        if (e instanceof Error && !SystemProps.isErrorRecoveryMode()) { // NOPMD
                             throw e;
                         }
                         // The listener handles logging if needed,

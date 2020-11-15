@@ -185,7 +185,7 @@ public final class RuleSetLoader {
     public List<RuleSet> getStandardRuleSets() throws RuleSetNotFoundException {
         String rulesetsProperties;
         List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<>();
-        for (Language language : LanguageRegistry.findWithRuleSupport()) {
+        for (Language language : LanguageRegistry.getLanguages()) {
             Properties props = new Properties();
             rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
             try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
@@ -202,6 +202,6 @@ public final class RuleSetLoader {
                                                        + System.getProperty("java.class.path"), ioe);
             }
         }
-        return toFactory().createRuleSets(ruleSetReferenceIds).getRuleSetsInternal();
+        return toFactory().createRuleSets(ruleSetReferenceIds);
     }
 }

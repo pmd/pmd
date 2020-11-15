@@ -76,7 +76,10 @@ public final class PMD {
 
         // Load the RuleSets
         final RuleSetLoader ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration);
+
         final List<RuleSet> ruleSets;
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
+            ruleSets;
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
             ruleSets = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), ruleSetFactory);
         }

@@ -65,8 +65,8 @@ public class ReportTest {
     }
 
     private static DummyNode getNode(int line, int column) {
-        DummyNode s = new DummyRoot();
-        DummyNode parent = new DummyNode();
+        DummyNode parent = new DummyRoot();
+        DummyNode s = new DummyNode();
         parent.setCoords(line, column, line, column + 1);
         parent.addChild(s, 0);
         s.setCoords(line, column, line, column + 1);
