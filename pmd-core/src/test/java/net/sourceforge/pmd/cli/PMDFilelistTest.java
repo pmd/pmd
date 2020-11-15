@@ -50,7 +50,7 @@ public class PMDFilelistTest {
     }
 
     @Test
-    public void testGetApplicatbleFilesWithIgnores() throws IOException {
+    public void testGetApplicableFilesWithIgnores() throws IOException {
         Set<Language> languages = new HashSet<>();
         languages.add(new DummyLanguageModule());
 
@@ -65,7 +65,7 @@ public class PMDFilelistTest {
     }
 
     @Test
-    public void testGetApplicatbleFilesWithDirAndIgnores() throws IOException {
+    public void testGetApplicableFilesWithDirAndIgnores() throws IOException {
         Set<Language> languages = new HashSet<>();
         languages.add(new DummyLanguageModule());
 

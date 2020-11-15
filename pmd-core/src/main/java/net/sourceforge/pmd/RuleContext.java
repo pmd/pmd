@@ -69,7 +69,7 @@ public final class RuleContext {
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        RuleViolationFactory fact = node.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
+        RuleViolationFactory fact = node.getTextDocument().getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
 
 
         FileLocation location = node.getReportLocation();

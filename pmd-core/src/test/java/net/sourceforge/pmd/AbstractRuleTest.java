@@ -70,7 +70,7 @@ public class AbstractRuleTest {
     public void testCreateRV() {
         MyRule r = new MyRule();
         r.setRuleSetName("foo");
-        DummyNode s = new DummyNode().withFileName("filename");
+        DummyNode s = new DummyRoot().withFileName("filename");
         s.setCoords(5, 5, 5, 10);
         RuleViolation rv = new ParametricRuleViolation(r, s, r.getMessage());
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
@@ -83,7 +83,7 @@ public class AbstractRuleTest {
     @Test
     public void testCreateRV2() {
         MyRule r = new MyRule();
-        DummyNode s = new DummyNode().withFileName("filename");
+        DummyNode s = new DummyRoot().withFileName("filename");
         s.setCoords(5, 5, 5, 10);
         RuleViolation rv = new ParametricRuleViolation(r, s, "specificdescription");
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());

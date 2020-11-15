@@ -16,10 +16,6 @@ abstract class SwiftRootNode extends SwiftInnerNode implements RootNode {
 
     private AstInfo<SwTopLevel> astInfo;
 
-    SwiftRootNode() {
-        super();
-    }
-
     SwiftRootNode(ParserRuleContext parent, int invokingStateNumber) {
         super(parent, invokingStateNumber);
     }

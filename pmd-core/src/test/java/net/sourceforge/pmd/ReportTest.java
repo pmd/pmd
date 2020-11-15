@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -34,6 +36,8 @@ public class ReportTest {
         r.addRuleViolation(new ParametricRuleViolation(rule2, s1, rule2.getMessage()));
         Renderer rend = new XMLRenderer();
         String result = render(rend, r);
+        assertThat(result, containsString("bar"));
+        assertThat(result, containsString("foo"));
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
     }
 
@@ -65,8 +69,8 @@ public class ReportTest {
     }
 
     private static DummyNode getNode(int line, int column) {
-        DummyNode s = new DummyRoot();
-        DummyNode parent = new DummyNode();
+        DummyNode parent = new DummyRoot();
+        DummyNode s = new DummyNode();
         parent.setCoords(line, column, line, column + 1);
         parent.addChild(s, 0);
         s.setCoords(line, column, line, column + 1);

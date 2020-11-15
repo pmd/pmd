@@ -20,7 +20,7 @@ import scala.meta.inputs.Position;
  *
  * @param <T> the type of the Scala tree node
  */
-abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractScalaNode<?>,ScalaNode<?>> implements ScalaNode<T> {
+abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractScalaNode<?>, ScalaNode<?>> implements ScalaNode<T> {
 
     private static final Comparator<Position> POS_CMP =
         Comparator.comparingInt(Position::start).thenComparing(Position::end);

@@ -13,7 +13,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  */
 final class FragmentedTextDocument extends BaseMappedDocument implements TextDocument {
 
-    private final Fragment firstFragment;
     private final Chars text;
 
     private Fragment lastAccessedFragment;
@@ -21,7 +20,6 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
     FragmentedTextDocument(TextDocument base, Fragment firstFragment, Fragment lastFragment) {
         super(base);
         assert firstFragment != lastFragment; // NOPMD
-        this.firstFragment = firstFragment;
         this.text = toChars(firstFragment, lastFragment);
         this.lastAccessedFragment = firstFragment;
     }

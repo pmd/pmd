@@ -35,8 +35,7 @@ public final class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
         // check, whether the this block statement really begins with a curly brace
         // unfortunately, for-loop and if-statements always contain a block statement,
         // regardless whether curly braces where present or not.
-        char firstChar = positioner.getText().charAt(node.getLoc().getStartIndex());
-        curlyBrace = firstChar == '{';
+        curlyBrace = positioner.getText().startsWith('{', node.getLoc().getStartIndex());
     }
 
     @Override

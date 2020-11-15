@@ -296,6 +296,8 @@ public abstract class RuleTst {
                 listener.close();
                 return reportBuilder.getResult();
             }
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

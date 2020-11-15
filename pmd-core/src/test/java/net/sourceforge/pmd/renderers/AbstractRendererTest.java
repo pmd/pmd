@@ -16,6 +16,7 @@ import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleWithProperties;
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 public abstract class AbstractRendererTest {
@@ -76,7 +77,7 @@ public abstract class AbstractRendererTest {
     }
 
     protected DummyNode createNode(int endColumn) {
-        DummyNode node = new DummyNode().withFileName(getSourceCodeFilename());
+        DummyNode node = new DummyRoot().withFileName(getSourceCodeFilename());
         node.setCoords(1, 1, 1, endColumn);
         return node;
     }

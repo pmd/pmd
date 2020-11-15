@@ -6,11 +6,18 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
@@ -89,7 +96,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Rule and source file options
     private String ruleSets;
     private RulePriority minimumPriority = RulePriority.LOW;
-    private String inputPaths;
+    private @NonNull List<String> inputPaths = Collections.emptyList();
     private String inputUri;
     private String inputFilePath;
     private String ignoreFilePath;
@@ -298,9 +305,20 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the comma separated list of input paths to process for source files.
      *
      * @return A comma separated list.
+     *
+     * @deprecated Use {@link #getAllInputPaths()}
      */
-    public String getInputPaths() {
-        return inputPaths;
+    @Deprecated
+    @DeprecatedUntil700
+    public @Nullable String getInputPaths() {
+        return inputPaths.isEmpty() ? null : String.join(",", inputPaths);
+    }
+
+    /**
+     * Returns an unmodifiable list.
+     */
+    public @NonNull List<String> getAllInputPaths() {
+        return Collections.unmodifiableList(inputPaths);
     }
 
     /**
@@ -309,8 +327,17 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param inputPaths
      *            The comma separated list.
      */
-    public void setInputPaths(String inputPaths) {
-        this.inputPaths = inputPaths;
+    public void setInputPaths(@NonNull String inputPaths) {
+        List<String> paths = new ArrayList<>();
+        Collections.addAll(paths, inputPaths.split(","));
+        paths.removeIf(StringUtils::isBlank);
+        this.inputPaths = paths;
+    }
+
+    public void setInputPaths(@NonNull List<String> inputPaths) {
+        List<String> paths = new ArrayList<>(inputPaths);
+        paths.removeIf(StringUtils::isBlank);
+        this.inputPaths = paths;
     }
 
     public String getInputFilePath() {

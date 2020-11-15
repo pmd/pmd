@@ -89,6 +89,21 @@ public class TextDocumentTest {
     }
 
     @Test
+    public void testRegionAtEndOfFile() {
+        TextDocument doc = TextDocument.readOnlyString("flemme", dummyVersion);
+
+        TextRegion region = TextRegion.fromOffsetLength(0, doc.getLength());
+        assertEquals(doc.getText(), doc.sliceOriginalText(region));
+
+        FileLocation withLines = doc.toLocation(region);
+
+        assertEquals(1, withLines.getBeginLine());
+        assertEquals(1, withLines.getEndLine());
+        assertEquals(1, withLines.getBeginColumn());
+        assertEquals(1 + doc.getLength(), withLines.getEndColumn());
+    }
+
+    @Test
     public void testMultiLineRegion() {
         TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
 

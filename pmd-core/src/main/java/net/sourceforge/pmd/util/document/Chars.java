@@ -6,15 +6,15 @@ package net.sourceforge.pmd.util.document;
 
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.internal.util.IteratorUtil.AbstractIterator;
 
 /**
  * View on a string which doesn't copy the array for subsequence operations.
@@ -72,7 +72,7 @@ public final class Chars implements CharSequence {
      * @throws NullPointerException If the writer is null
      */
     public void writeFully(@NonNull Writer writer) throws IOException {
-        writer.write(str, start, length());
+        write(writer, 0, length());
     }
 
     /**
@@ -102,9 +102,7 @@ public final class Chars implements CharSequence {
      * @throws IndexOutOfBoundsException See {@link String#getChars(int, int, char[], int)}
      */
     public void getChars(int srcBegin, char @NonNull [] cbuf, int dstBegin, int count) {
-        if (count == 0) {
-            return;
-        }
+        validateRange(srcBegin, count, length());
         int start = idx(srcBegin);
         str.getChars(start, start + count, cbuf, dstBegin);
     }
@@ -155,24 +153,54 @@ public final class Chars implements CharSequence {
     /**
      * See {@link String#indexOf(String, int)}.
      */
-    public int indexOf(String s, int fromIndex) {
-        int res = str.indexOf(s, idx(fromIndex)) - start;
-        return res >= len ? -1 : res;
+    public int indexOf(String searched, int fromIndex) {
+        // max index in the string at which the search string may start
+        final int max = start + len - searched.length();
+
+        if (fromIndex < 0 || max < start + fromIndex) {
+            return -1;
+        } else if (searched.isEmpty()) {
+            return 0;
+        }
+
+        final char fst = searched.charAt(0);
+        int strpos = str.indexOf(fst, start + fromIndex);
+        while (strpos != -1 && strpos <= max) {
+            if (str.startsWith(searched, strpos)) {
+                return strpos - start;
+            }
+            strpos = str.indexOf(fst, strpos + 1);
+        }
+        return -1;
     }
 
     /**
      * See {@link String#indexOf(int, int)}.
      */
     public int indexOf(int ch, int fromIndex) {
-        int res = str.indexOf(ch, idx(fromIndex)) - start;
-        return res >= len ? -1 : res;
+        if (fromIndex < 0 || fromIndex >= len) {
+            return -1;
+        }
+        // we want to avoid searching too far in the string
+        // so we don't use String#indexOf, as it would be looking
+        // in the rest of the file too, which in the worst case is
+        // horrible
+
+        int max = start + len;
+        for (int i = start + fromIndex; i < max; i++) {
+            char c = str.charAt(i);
+            if (c == ch) {
+                return i - start;
+            }
+        }
+        return -1;
     }
 
     /**
      * See {@link String#startsWith(String, int)}.
      */
     public boolean startsWith(String prefix, int fromIndex) {
-        if (fromIndex < 0 || fromIndex >= len || prefix.length() > len) {
+        if (fromIndex < 0 || fromIndex + prefix.length() > len) {
             return false;
         }
         return str.startsWith(prefix, idx(fromIndex));
@@ -183,6 +211,14 @@ public final class Chars implements CharSequence {
      */
     public boolean startsWith(String prefix) {
         return startsWith(prefix, 0);
+    }
+
+
+    public boolean startsWith(char prefix, int fromIndex) {
+        if (fromIndex < 0 || fromIndex + 1 > len) {
+            return false;
+        }
+        return str.charAt(start + fromIndex) == prefix;
     }
 
     /**
@@ -376,32 +412,77 @@ public final class Chars implements CharSequence {
 
     /**
      * Returns an iterable over the lines of this char sequence. The lines
-     * are yielded without line separators.
+     * are yielded without line separators. For the purposes of this method,
+     * a line delimiter is {@code LF} or {@code CR+LF}.
      */
     public Iterable<Chars> lines() {
-        return () -> new AbstractIterator<Chars>() {
+        return () -> new Iterator<Chars>() {
             final int max = len;
             int pos = 0;
 
             @Override
-            protected void computeNext() {
-                if (pos >= max) {
-                    done();
-                    return;
-                }
+            public boolean hasNext() {
+                return pos < max;
+            }
+
+            @Override
+            public Chars next() {
                 int nl = indexOf('\n', pos);
+                Chars next;
                 if (nl < 0) {
-                    setNext(subSequence(pos, max));
+                    next = subSequence(pos, max);
                     pos = max;
-                    return;
-                } else if (startsWith("\r", nl - 1)) {
-                    setNext(subSequence(pos, nl - 1));
+                    return next;
+                } else if (startsWith('\r', nl - 1)) {
+                    next = subSequence(pos, nl - 1);
                 } else {
-                    setNext(subSequence(pos, nl));
+                    next = subSequence(pos, nl);
                 }
                 pos = nl + 1;
+                return next;
             }
         };
     }
 
+
+    /**
+     * Returns a new reader for the whole contents of this char sequence.
+     */
+    public Reader newReader() {
+        return new Reader() {
+            private int pos = start;
+            private final int max = start + len;
+
+            @Override
+            public int read(char[] cbuf, int off, int len) {
+                if (len < 0 || off < 0 || off + len > cbuf.length) {
+                    throw new IndexOutOfBoundsException();
+                }
+                if (pos >= max) {
+                    return -1;
+                }
+                int toRead = Integer.min(max - pos, len);
+                str.getChars(pos, pos + toRead, cbuf, off);
+                pos += toRead;
+                return toRead;
+            }
+
+            @Override
+            public int read() {
+                return pos >= max ? -1 : str.charAt(pos++);
+            }
+
+            @Override
+            public long skip(long n) {
+                int oldPos = pos;
+                pos = Math.min(max, pos + (int) n);
+                return pos - oldPos;
+            }
+
+            @Override
+            public void close() {
+                // nothing to do
+            }
+        };
+    }
 }

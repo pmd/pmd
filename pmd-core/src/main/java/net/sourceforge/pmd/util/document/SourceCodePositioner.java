@@ -38,7 +38,7 @@ final class SourceCodePositioner {
     }
 
     long lineColFromOffset(int offset, boolean inclusive) {
-        AssertionUtil.requireInNonNegativeRange("offset", offset, sourceCodeLength);
+        AssertionUtil.requireInInclusiveRange("offset", offset, 0, sourceCodeLength);
 
         int line = searchLineOffset(offset);
 
