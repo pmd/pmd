@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.vm.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -18,18 +17,14 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
  */
 public class VmParser extends JjtreeParserAdapter<ASTTemplate> {
 
-    public VmParser(final ParserOptions parserOptions) {
-        super(parserOptions);
-    }
-
     @Override
     protected JavaccTokenDocument newDocument(String fullText) {
         return new VmTokenDocument(fullText);
     }
 
     @Override
-    protected ASTTemplate parseImpl(CharStream cs, ParserOptions options) throws ParseException {
-        return new VmParserImpl(cs).Template();
+    protected ASTTemplate parseImpl(CharStream cs, ParserTask task) throws ParseException {
+        return new VmParserImpl(cs).Template().addTaskInfo(task);
     }
 
 

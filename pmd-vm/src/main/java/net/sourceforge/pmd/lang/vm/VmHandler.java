@@ -18,7 +18,7 @@ public class VmHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser(final ParserOptions parserOptions) {
-        return new VmParser(parserOptions);
+        return new VmParser();
     }
 
 }
