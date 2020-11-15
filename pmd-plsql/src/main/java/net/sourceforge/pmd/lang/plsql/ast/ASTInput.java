@@ -32,7 +32,4 @@ public final class ASTInput extends AbstractPLSQLNode implements RootNode {
         return visitor.visit(this, data);
     }
 
-    public String getSourcecode() {
-        return getAstInfo().getSourceText();
-    }
 }

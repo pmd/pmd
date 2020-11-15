@@ -36,7 +36,7 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
             image = image.substring(10);
         }
 
-        boolean checkBoolean = node.getAstInfo().getLanguageVersion()
+        boolean checkBoolean = node.getTextDocument().getLanguageVersion()
                                    .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
 
         if (PREFIX_SET.contains(image) || checkBoolean && "Boolean.valueOf".equals(image)) {

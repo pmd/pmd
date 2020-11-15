@@ -4,14 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.document.Chars;
 
 public class AvoidTabCharacterRule extends AbstractPLSQLRule {
 
@@ -29,22 +26,18 @@ public class AvoidTabCharacterRule extends AbstractPLSQLRule {
     public Object visit(ASTInput node, Object data) {
         boolean eachLine = getProperty(EACH_LINE);
 
-        try (BufferedReader in = new BufferedReader(new StringReader(node.getSourcecode()))) {
-            String line;
-            int lineNumber = 0;
-            while ((line = in.readLine()) != null) {
-                lineNumber++;
-                if (line.indexOf('\t') != -1) {
-                    addViolationWithMessage(data, node, "Tab characters are not allowed. Use spaces for indentation",
-                            lineNumber, lineNumber);
+        int lineNumber = 1;
+        for (Chars line : node.getText().lines()) {
+            if (line.indexOf('\t', 0) != -1) {
+                addViolationWithMessage(data, node,
+                                        "Tab characters are not allowed. Use spaces for indentation",
+                                        lineNumber, lineNumber);
 
-                    if (!eachLine) {
-                        break;
-                    }
+                if (!eachLine) {
+                    break;
                 }
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Error while executing rule AvoidTabCharacter", e);
+            lineNumber++;
         }
         return data;
     }

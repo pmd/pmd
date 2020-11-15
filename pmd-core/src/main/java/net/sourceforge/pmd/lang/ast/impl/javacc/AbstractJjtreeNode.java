@@ -56,7 +56,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
 
     @Override
     public @NonNull TextDocument getTextDocument() {
-        return getFirstToken().getDocument().getTextDocument();
+        return getAstInfo().getTextDocument();
     }
 
     @Override

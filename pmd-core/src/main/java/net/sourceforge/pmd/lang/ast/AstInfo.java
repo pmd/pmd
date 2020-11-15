@@ -7,10 +7,12 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Collections;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * The output of {@link Parser#parse(ParserTask)}.
@@ -19,9 +21,7 @@ import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
  */
 public final class AstInfo<T extends RootNode> {
 
-    private final String filename;
-    private final LanguageVersion languageVersion;
-    private final String sourceText;
+    private final TextDocument textDocument;
     private final T rootNode;
     private final Map<Integer, String> suppressionComments;
 
@@ -31,21 +31,13 @@ public final class AstInfo<T extends RootNode> {
     }
 
     public AstInfo(ParserTask task, T rootNode, Map<Integer, String> suppressionComments) {
-        this(task.getFileDisplayName(),
-             task.getLanguageVersion(),
-             task.getSourceText(),
-             rootNode,
-             suppressionComments);
+        this(task.getTextDocument(), rootNode, suppressionComments);
     }
 
-    public AstInfo(String filename,
-                   LanguageVersion languageVersion,
-                   String sourceText,
+    public AstInfo(TextDocument textDocument,
                    T rootNode,
                    Map<Integer, String> suppressionComments) {
-        this.filename = AssertionUtil.requireParamNotNull("file name", filename);
-        this.languageVersion = AssertionUtil.requireParamNotNull("language version", languageVersion);
-        this.sourceText = AssertionUtil.requireParamNotNull("text", sourceText);
+        this.textDocument = AssertionUtil.requireParamNotNull("text document", textDocument);
         this.rootNode = AssertionUtil.requireParamNotNull("root node", rootNode);
         this.suppressionComments = AssertionUtil.requireParamNotNull("suppress map", suppressionComments);
     }
@@ -55,16 +47,12 @@ public final class AstInfo<T extends RootNode> {
         return rootNode;
     }
 
-    public String getFileName() {
-        return filename;
-    }
-
-    public String getSourceText() {
-        return sourceText;
-    }
-
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
+    /**
+     * Returns the text document that was parsed.
+     * This has info like language version, etc.
+     */
+    public @NonNull TextDocument getTextDocument() {
+        return textDocument;
     }
 
     /**
