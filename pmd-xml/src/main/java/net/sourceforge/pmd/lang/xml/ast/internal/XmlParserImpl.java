@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.xml.ast.internal;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +12,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 public class XmlParserImpl {
 
     private final XmlParserOptions parserOptions;
-    private Map<org.w3c.dom.Node, XmlNode> nodeCache = new HashMap<>();
+    private final Map<org.w3c.dom.Node, XmlNode> nodeCache = new HashMap<>();
 
 
     public XmlParserImpl(XmlParserOptions parserOptions) {
@@ -59,15 +59,10 @@ public class XmlParserImpl {
     }
 
 
-    public RootXmlNode parse(Reader reader) {
-        String xmlData;
-        try {
-            xmlData = IOUtils.toString(reader);
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
+    public RootXmlNode parse(ParserTask task) {
+        String xmlData = task.getSourceText();
         Document document = parseDocument(xmlData);
-        RootXmlNode root = new RootXmlNode(this, document);
+        RootXmlNode root = new RootXmlNode(this, document, task);
         DOMLineNumbers lineNumbers = new DOMLineNumbers(root, xmlData);
         lineNumbers.determine();
         nodeCache.put(document, root);
@@ -96,8 +91,24 @@ public class XmlParserImpl {
      * The root should implement {@link RootNode}.
      */
     public static class RootXmlNode extends XmlNodeWrapper implements RootNode {
-        RootXmlNode(XmlParserImpl parser, Node domNode) {
+
+        private final LanguageVersion languageVersion;
+        private final String filename;
+
+        RootXmlNode(XmlParserImpl parser, Node domNode, ParserTask task) {
             super(parser, domNode);
+            this.languageVersion = task.getLanguageVersion();
+            this.filename = task.getFileDisplayName();
+        }
+
+        @Override
+        public LanguageVersion getLanguageVersion() {
+            return languageVersion;
+        }
+
+        @Override
+        public String getSourceCodeFile() {
+            return filename;
         }
     }
 
