@@ -9,6 +9,8 @@ import java.util.Map;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 /**
  * This interface identifies the root node of an AST. Each language
@@ -37,4 +39,12 @@ public interface RootNode extends Node {
         return Collections.emptyMap();
     }
 
+
+    @Override
+    LanguageVersion getLanguageVersion();
+
+
+    @Override
+    @NoAttribute
+    String getSourceCodeFile();
 }

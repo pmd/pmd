@@ -19,13 +19,21 @@ import net.sourceforge.pmd.PMD;
 public class ParserOptions {
     private String suppressMarker = PMD.SUPPRESS_MARKER;
 
-    public String getSuppressMarker() {
+    public final @NonNull String getSuppressMarker() {
         return suppressMarker;
     }
 
     public final void setSuppressMarker(@NonNull String suppressMarker) {
         Objects.requireNonNull(suppressMarker);
         this.suppressMarker = suppressMarker;
+    }
+
+    public ParserOptions() {
+        this(PMD.SUPPRESS_MARKER);
+    }
+
+    public ParserOptions(String suppressMarker) {
+        setSuppressMarker(suppressMarker);
     }
 
     @Override

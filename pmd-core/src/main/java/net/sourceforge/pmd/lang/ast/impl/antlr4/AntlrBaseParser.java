@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
-import java.io.IOException;
-import java.io.Reader;
-
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Lexer;
@@ -35,22 +32,12 @@ public abstract class AntlrBaseParser<
     }
 
     @Override
-    public ParserOptions getParserOptions() {
-        return parserOptions;
+    public R parse(ParserTask task) throws ParseException {
+        CharStream cs = CharStreams.fromString(task.getSourceText(), task.getFileDisplayName());
+        return parse(getLexer(cs), task);
     }
 
-    @Override
-    public R parse(final String fileName, final Reader source) throws ParseException {
-        CharStream cs;
-        try {
-            cs = CharStreams.fromReader(source, fileName);
-        } catch (final IOException e) {
-            throw new ParseException(e);
-        }
-        return parse(getLexer(cs));
-    }
-
-    protected abstract R parse(Lexer parser);
+    protected abstract R parse(Lexer parser, ParserTask task);
 
     protected abstract Lexer getLexer(CharStream source);
 }

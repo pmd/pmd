@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.io.Reader;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
@@ -13,8 +11,6 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyAstStages;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
@@ -53,15 +49,12 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
         @Override
         public Parser getParser(ParserOptions parserOptions) {
-            return new AbstractParser(parserOptions) {
-                @Override
-                public DummyRoot parse(String fileName, Reader source) throws ParseException {
-                    DummyRoot node = new DummyRoot();
-                    node.setCoords(1, 1, 2, 10);
-                    node.setImage("Foo");
-                    return node;
-                }
-
+            return task -> {
+                DummyRoot node = new DummyRoot(task.getLanguageVersion());
+                node.setCoords(1, 1, 2, 10);
+                node.setImage("Foo");
+                node.withFileName(task.getFileDisplayName());
+                return node;
             };
         }
     }
@@ -69,11 +62,8 @@ public class DummyLanguageModule extends BaseLanguageModule {
     public static class HandlerWithParserThatThrows extends Handler {
         @Override
         public Parser getParser(ParserOptions parserOptions) {
-            return new AbstractParser(parserOptions) {
-                @Override
-                public RootNode parse(String fileName, Reader source) throws ParseException {
-                    throw new AssertionError("test error while parsing");
-                }
+            return task -> {
+                throw new AssertionError("test error while parsing");
             };
         }
     }

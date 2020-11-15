@@ -9,12 +9,14 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> implements GenericNode<DummyNode> {
     private final boolean findBoundary;
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
     private String image;
+    private String fileName = "sample.dummy";
 
     public DummyNode(String xpathName) {
         super();
@@ -49,6 +51,17 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public DummyNode withFileName(String fname) {
+        this.fileName = fname;
+        return this;
+    }
+
+    @Override
+    @NoAttribute
+    public String getSourceCodeFile() {
+        return fileName == null ? "no-file" : fileName;
     }
 
     @Override

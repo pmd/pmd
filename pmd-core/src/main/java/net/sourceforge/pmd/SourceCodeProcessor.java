@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collections;
 
+import org.apache.commons.io.IOUtils;
+
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -17,9 +19,10 @@ import net.sourceforge.pmd.internal.RulesetStageDependencyHelper;
 import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 
 public class SourceCodeProcessor {
 
@@ -120,15 +123,15 @@ public class SourceCodeProcessor {
         }
     }
 
-    private Node parse(RuleContext ctx, Reader sourceCode, Parser parser) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.PARSER)) {
-            return parser.parse(String.valueOf(ctx.getSourceCodeFile()), sourceCode);
+    private RootNode parse(Parser parser, ParserTask task) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.PARSER)) {
+            return parser.parse(task);
         }
     }
 
 
 
-    private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
+    private void processSource(Reader reader, RuleSets ruleSets, RuleContext ctx) throws IOException {
 
         // basically:
         // 1. make the union of all stage dependencies of each rule, by language, for the Rulesets
@@ -157,11 +160,23 @@ public class SourceCodeProcessor {
         // * grouping rules by language/ file extension
         // * etc.
 
+
+
         LanguageVersion languageVersion = ctx.getLanguageVersion();
+        String filename = ctx.getSourceCodeFilename();
+        String sourceCode = IOUtils.toString(reader);
 
-        Parser parser = PMD.parserFor(languageVersion, configuration);
+        ParserTask task = new ParserTask(
+            languageVersion,
+            filename,
+            sourceCode,
+            SemanticErrorReporter.noop(), // TODO
+            configuration.getSuppressMarker()
+        );
 
-        RootNode rootNode = (RootNode) parse(ctx, sourceCode, parser);
+        Parser parser = languageVersion.getLanguageVersionHandler().getParser();
+
+        RootNode rootNode = parse(parser, task);
 
         dependencyHelper.runLanguageSpecificStages(ruleSets, languageVersion, rootNode);
 
