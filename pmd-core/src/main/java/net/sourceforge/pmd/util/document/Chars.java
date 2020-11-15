@@ -155,17 +155,47 @@ public final class Chars implements CharSequence {
     /**
      * See {@link String#indexOf(String, int)}.
      */
-    public int indexOf(String s, int fromIndex) {
-        int res = str.indexOf(s, idx(fromIndex)) - start;
-        return res >= len ? -1 : res;
+    public int indexOf(String searched, int fromIndex) {
+        // max index in the string at which the search string may start
+        final int max = start + len - searched.length();
+
+        if (fromIndex < 0 || max < start + fromIndex) {
+            return -1;
+        } else if (searched.isEmpty()) {
+            return 0;
+        }
+
+        final char fst = searched.charAt(0);
+        int strpos = str.indexOf(fst, start + fromIndex);
+        while (strpos != -1 && strpos <= max) {
+            if (str.startsWith(searched, strpos)) {
+                return strpos - start;
+            }
+            strpos = str.indexOf(fst, strpos + 1);
+        }
+        return -1;
     }
 
     /**
      * See {@link String#indexOf(int, int)}.
      */
     public int indexOf(int ch, int fromIndex) {
-        int res = str.indexOf(ch, idx(fromIndex)) - start;
-        return res >= len ? -1 : res;
+        if (fromIndex < 0 || fromIndex >= len) {
+            return -1;
+        }
+        // we want to avoid searching too far in the string
+        // so we don't use String#indexOf, as it would be looking
+        // in the rest of the file too, which in the worst case is
+        // horrible
+
+        int max = start + len;
+        for (int i = start + fromIndex; i < max; i++) {
+            char c = str.charAt(i);
+            if (c == ch) {
+                return i - start;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -402,7 +432,7 @@ public final class Chars implements CharSequence {
                     setNext(subSequence(pos, max));
                     pos = max;
                     return;
-                } else if (startsWith("\r", nl - 1)) {
+                } else if (startsWith('\r', nl - 1)) {
                     setNext(subSequence(pos, nl - 1));
                 } else {
                     setNext(subSequence(pos, nl));

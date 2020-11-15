@@ -42,12 +42,41 @@ public class CharsTest {
 
     @Test
     public void indexOf() {
-        Chars bc = Chars.wrap("abcdb").slice(1, 2);
+        Chars bc = Chars.wrap("aaaaabcdb").slice(5, 2);
+        //                          --
         Assert.assertEquals(0, bc.indexOf('b', 0));
         Assert.assertEquals(1, bc.indexOf('c', 0));
 
         Assert.assertEquals(-1, bc.indexOf('b', 1));
         Assert.assertEquals(-1, bc.indexOf('d', 0));
+
+        Assert.assertEquals(-1, bc.indexOf('x', 0));
+        Assert.assertEquals(-1, bc.indexOf('a', -1));
+    }
+
+    @Test
+    public void indexOfString() {
+        Chars bc = Chars.wrap("aaaaabcdb").slice(5, 2);
+        //                          --
+        Assert.assertEquals(0, bc.indexOf("b", 0));
+        Assert.assertEquals(0, bc.indexOf("bc", 0));
+        Assert.assertEquals(1, bc.indexOf("c", 0));
+
+        Assert.assertEquals(-1, bc.indexOf("b", 1));
+        Assert.assertEquals(-1, bc.indexOf("bc", 1));
+        Assert.assertEquals(-1, bc.indexOf("d", 0));
+        Assert.assertEquals(-1, bc.indexOf("bcd", 0));
+
+        Assert.assertEquals(-1, bc.indexOf("x", 0));
+        Assert.assertEquals(-1, bc.indexOf("ab", -1));
+
+        bc = Chars.wrap("aaaaabcdbxdb").slice(5, 5);
+        //                    -----
+        Assert.assertEquals(3, bc.indexOf("bx", 0));
+
+        bc = Chars.wrap("aaaaabcbxdb").slice(5, 5);
+        //                    -----
+        Assert.assertEquals(2, bc.indexOf("bx", 0));
     }
 
     @Test
@@ -63,6 +92,7 @@ public class CharsTest {
 
         Assert.assertFalse(bc.startsWith("c", 0));
         Assert.assertFalse(bc.startsWith("bcd", 0));
+        Assert.assertFalse(bc.startsWith("xcd", 0));
         Assert.assertFalse(bc.startsWith("b", -1));
         Assert.assertFalse(bc.startsWith("", -1));
         Assert.assertFalse(bc.startsWith("", 5));
