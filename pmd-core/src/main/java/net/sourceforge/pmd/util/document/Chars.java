@@ -10,11 +10,10 @@ import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.internal.util.IteratorUtil.AbstractIterator;
 
 /**
  * View on a string which doesn't copy the array for subsequence operations.
@@ -72,7 +71,7 @@ public final class Chars implements CharSequence {
      * @throws NullPointerException If the writer is null
      */
     public void writeFully(@NonNull Writer writer) throws IOException {
-        writer.write(str, start, length());
+        write(writer, 0, length());
     }
 
     /**
@@ -102,9 +101,7 @@ public final class Chars implements CharSequence {
      * @throws IndexOutOfBoundsException See {@link String#getChars(int, int, char[], int)}
      */
     public void getChars(int srcBegin, char @NonNull [] cbuf, int dstBegin, int count) {
-        if (count == 0) {
-            return;
-        }
+        validateRange(srcBegin, count, length());
         int start = idx(srcBegin);
         str.getChars(start, start + count, cbuf, dstBegin);
     }
@@ -414,30 +411,34 @@ public final class Chars implements CharSequence {
 
     /**
      * Returns an iterable over the lines of this char sequence. The lines
-     * are yielded without line separators.
+     * are yielded without line separators. For the purposes of this method,
+     * a line delimiter is {@code LF} or {@code CR+LF}.
      */
     public Iterable<Chars> lines() {
-        return () -> new AbstractIterator<Chars>() {
+        return () -> new Iterator<Chars>() {
             final int max = len;
             int pos = 0;
 
             @Override
-            protected void computeNext() {
-                if (pos >= max) {
-                    done();
-                    return;
-                }
+            public boolean hasNext() {
+                return pos < max;
+            }
+
+            @Override
+            public Chars next() {
                 int nl = indexOf('\n', pos);
+                Chars next;
                 if (nl < 0) {
-                    setNext(subSequence(pos, max));
+                    next = subSequence(pos, max);
                     pos = max;
-                    return;
+                    return next;
                 } else if (startsWith('\r', nl - 1)) {
-                    setNext(subSequence(pos, nl - 1));
+                    next = subSequence(pos, nl - 1);
                 } else {
-                    setNext(subSequence(pos, nl));
+                    next = subSequence(pos, nl);
                 }
                 pos = nl + 1;
+                return next;
             }
         };
     }
