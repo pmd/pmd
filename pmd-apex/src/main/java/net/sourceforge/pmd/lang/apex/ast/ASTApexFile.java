@@ -9,24 +9,44 @@ import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.Compilation;
 
 public final class ASTApexFile extends AbstractApexNode<AstNode> implements RootNode {
 
+    private final LanguageVersion languageVersion;
+    private final String file;
     private Map<Integer, String> suppressMap = Collections.emptyMap();
 
-    ASTApexFile(SourceCodePositioner source, AbstractApexNode<? extends Compilation> child) {
+    ASTApexFile(SourceCodePositioner source,
+                ParserTask task,
+                AbstractApexNode<? extends Compilation> child) {
         super(child.getNode());
+        this.languageVersion = task.getLanguageVersion();
+        this.file = task.getFileDisplayName();
         addChild(child, 0);
         this.beginLine = 1;
         this.endLine = source.getLastLine();
         this.beginColumn = 1;
         this.endColumn = source.getLastLineColumn();
         child.setCoords(child.getBeginLine(), child.getBeginColumn(), source.getLastLine(), source.getLastLineColumn());
+    }
+
+    @Override
+    public LanguageVersion getLanguageVersion() {
+        return languageVersion;
+    }
+
+    @Override
+    @NoAttribute
+    public String getSourceCodeFile() {
+        return file;
     }
 
     @Override
