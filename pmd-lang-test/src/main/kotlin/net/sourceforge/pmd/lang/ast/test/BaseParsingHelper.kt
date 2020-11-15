@@ -217,11 +217,12 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val report = Report()
         ctx.report = report
         ctx.sourceCodeFile = File(filename)
+        ctx.isIgnoreExceptions = false
         val rules = RuleSetFactory().createSingleRuleRuleSet(rule)
         try {
             p.sourceCodeProcessor.processSourceCode(StringReader(code), RuleSets(rules), ctx)
         } catch (e: PMDException) {
-            throw AssertionError(e)
+            throw e.cause!!
         }
         return report
     }
