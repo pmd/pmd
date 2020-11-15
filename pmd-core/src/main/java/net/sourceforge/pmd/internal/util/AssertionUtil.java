@@ -137,18 +137,37 @@ public final class AssertionUtil {
      * @throws IndexOutOfBoundsException If value < 0 || value >= maxValue
      */
     public static int requireInNonNegativeRange(String name, int value, int maxValue) {
-        if (value < 0 || value >= maxValue) {
-            throw mustBe(name, value, "in range [0," + maxValue + "[", IndexOutOfBoundsException::new);
-        }
-        return value;
+        return requireInExclusiveRange(name, value, 0, maxValue);
     }
 
     /**
      * @throws IndexOutOfBoundsException If value < 1 || value >= maxValue
      */
     public static int requireInPositiveRange(String name, int value, int maxValue) {
-        if (value < 0 || value >= maxValue) {
-            throw mustBe(name, value, "in range [1," + maxValue + "[", IndexOutOfBoundsException::new);
+        return requireInExclusiveRange(name, value, 1, maxValue);
+    }
+
+    // the difference between those two is the message
+
+    /**
+     * @throws IndexOutOfBoundsException If {@code value < minValue || value > maxValue}
+     */
+    public static int requireInInclusiveRange(String name, int value, int minValue, int maxValue) {
+        return requireInRange(name, value, minValue, maxValue, true);
+    }
+
+    /**
+     * @throws IndexOutOfBoundsException If {@code value < minValue || value > maxValue}
+     */
+    public static int requireInExclusiveRange(String name, int value, int minValue, int maxValue) {
+        return requireInRange(name, value, minValue, maxValue, false);
+    }
+
+    public static int requireInRange(String name, int value, int minValue, int maxValue, boolean inclusive) {
+        if (value < 0 || inclusive && value > maxValue || !inclusive && value >= maxValue) {
+            String message = "in range [" + minValue + "," + maxValue;
+            message += inclusive ? "]" : "[";
+            throw mustBe(name, value, message, IndexOutOfBoundsException::new);
         }
         return value;
     }

@@ -67,6 +67,8 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
         checkInRange(region);
         SourceCodePositioner positioner = content.getPositioner();
 
+        // We use longs to return both numbers at the same time
+        // This limits us to 2 billion lines or columns, which is FINE
         long bpos = positioner.lineColFromOffset(region.getStartOffset(), true);
         long epos = region.isEmpty() ? bpos
                                      : positioner.lineColFromOffset(region.getEndOffset(), false);

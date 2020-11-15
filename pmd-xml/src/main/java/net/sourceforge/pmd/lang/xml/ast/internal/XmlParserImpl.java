@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
-import net.sourceforge.pmd.util.document.TextDocument;
 
 
 public class XmlParserImpl {
@@ -95,7 +94,7 @@ public class XmlParserImpl {
 
         private final AstInfo<RootXmlNode> astInfo;
 
-        RootXmlNode(XmlParserImpl parser, Node domNode, TextDocument textDoc) {
+        RootXmlNode(XmlParserImpl parser, Node domNode, ParserTask task) {
             super(parser, domNode);
             this.astInfo = new AstInfo<>(task, this);
         }
