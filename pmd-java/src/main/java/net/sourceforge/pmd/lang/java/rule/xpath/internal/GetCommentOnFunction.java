@@ -66,7 +66,7 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
                 List<Comment> commentList = contextNode.getFirstParentOfType(ASTCompilationUnit.class).getComments();
                 for (Comment comment : commentList) {
                     if (comment.getBeginLine() == codeBeginLine || comment.getEndLine() == codeEndLine) {
-                        return new StringValue(comment.getImage());
+                        return new StringValue(comment.getText());
                     }
                 }
                 return EmptyAtomicSequence.INSTANCE;

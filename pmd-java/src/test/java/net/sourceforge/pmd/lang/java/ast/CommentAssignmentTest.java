@@ -10,6 +10,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,11 +31,11 @@ public class CommentAssignmentTest extends BaseNonParserTest {
         Comment comment = node.getComments().get(0);
 
         assertThat(comment, instanceOf(MultiLineComment.class));
-        assertEquals("multi line comment with blank lines", comment.getFilteredComment());
+        assertEquals("multi line comment with blank lines", StringUtils.join(comment.filteredLines(), ' '));
 
         comment = node.getComments().get(1);
         assertThat(comment, instanceOf(FormalComment.class));
-        assertEquals("a formal comment with blank lines", comment.getFilteredComment());
+        assertEquals("a formal comment with blank lines", StringUtils.join(comment.filteredLines(), ' '));
     }
 
 

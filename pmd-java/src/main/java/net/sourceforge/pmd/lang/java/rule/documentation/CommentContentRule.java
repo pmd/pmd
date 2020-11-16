@@ -50,12 +50,7 @@ public class CommentContentRule extends AbstractJavaRule {
 
         List<String> foundWords = new ArrayList<>();
         for (Chars word : comment.getText().splits(WHITESPACE)) {
-            if (word.length() <= 3 &&
-                (word.contentEquals("*")
-                    || word.contentEquals("//")
-                    || word.contentEquals("/*")
-                    || word.contentEquals("*/")
-                    || word.contentEquals("/**"))) {
+            if (Comment.isMarkupWord(word)) {
                 continue;
             }
 

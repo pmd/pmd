@@ -4,57 +4,62 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.Reportable;
 
-public abstract class Comment {
-
-    // single regex, that captures: the start of a multi-line comment (/**|/*), the start of a single line comment (//)
-    // or the start of line within a multiline comment (*). It removes the end of the comment (*/) if existing.
-    private static final Pattern COMMENT_LINE_COMBINED = Pattern.compile("^(?://|/\\*\\*?|\\*)?(.*?)(?:\\*/|/)?$");
-
-    // Same as "\\R" - but \\R is only available with java8+
-    static final Pattern NEWLINES_PATTERN = Pattern.compile("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]");
+/**
+ * Wraps a comment token to provide some utilities.
+ * This is not a node, it's not part of the tree anywhere,
+ * just convenient.
+ *
+ * TODO subclasses are useless
+ * TODO maybe move part of this into pmd core
+ */
+public abstract class Comment implements Reportable {
 
     private final JavaccToken token;
 
-    protected Comment(JavaccToken t) {
+    Comment(JavaccToken t) {
         this.token = t;
     }
 
+    /** The token underlying this comment. */
     public final JavaccToken getToken() {
         return token;
+    }
+
+    public boolean isSingleLine() {
+        return token.kind == JavaTokenKinds.SINGLE_LINE_COMMENT;
+    }
+
+    public boolean hasJavadocContent() {
+        return token.kind == JavaTokenKinds.FORMAL_COMMENT;
+    }
+
+    /** Returns the full text of the comment. */
+    public Chars getText() {
+        // todo remove this cast
+        return (Chars) getToken().getImageCs();
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        return getToken().getReportLocation();
     }
 
     public int compareLocation(Comment other) {
         return getToken().compareTo(other.getToken());
     }
 
+    /**
+     * Returns true if the given token has the kind
+     * of a comment token (there are three such kinds).
+     */
     public static boolean isComment(JavaccToken token) {
         return JavaTokenDocument.isComment(token);
-    }
-
-    /**
-     * Filters the comment by removing the leading comment marker (like {@code *}) of each line
-     * as well as the start markers ({@code //}, {@code /*} or {@code /**}
-     * and the end markers (<code>&#x2a;/</code>).
-     * Also leading and trailing empty lines are removed.
-     *
-     * @return the filtered comment
-     */
-    public String getFilteredComment() {
-        List<String> lines = multiLinesIn();
-        lines = trim(lines);
-        return StringUtils.join(lines, PMD.EOL);
     }
 
     /**
@@ -62,73 +67,58 @@ public abstract class Comment {
      * of the comment as well as the start marker ({@code //}, {@code /*} or {@code /**}
      * and the end markers (<code>&#x2a;/</code>).
      *
+     * <p>Empty lines are removed.
+     *
      * @return List of lines of the comments
      */
-    private List<String> multiLinesIn() {
-        String[] lines = NEWLINES_PATTERN.split(getText());
-        List<String> filteredLines = new ArrayList<>(lines.length);
-
-        for (String rawLine : lines) {
-            String line = rawLine.trim();
-
-            Matcher allMatcher = COMMENT_LINE_COMBINED.matcher(line);
-            if (allMatcher.matches()) {
-                filteredLines.add(allMatcher.group(1).trim());
+    public Iterable<Chars> filteredLines() {
+        return () -> IteratorUtil.mapNotNull(
+            getText().lines().iterator(),
+            line -> {
+                line = removeCommentMarkup(line);
+                return line.isEmpty() ? null : line;
             }
-        }
-
-        return filteredLines;
+        );
     }
 
-    public Chars getText() {
-        return (Chars) getToken().getImageCs();
-    }
-
-    public int getBeginLine() {
-        return getToken().getBeginLine();
-    }
-
-    public int getEndLine() {
-        return getToken().getEndLine();
-    }
-
+    /**
+     * @deprecated Use {@link #getText()} to avoid array copies
+     */
+    @Deprecated
     public String getImage() {
         return getToken().getImage();
     }
 
     /**
-     * Similar to the String.trim() function, this one removes the leading and
-     * trailing empty/blank lines from the line list.
-     *
-     * @param lines the list of lines, which might contain empty lines
-     *
-     * @return the lines without leading or trailing blank lines.
+     * True if this is a comment delimiter or an asterisk. This
+     * tests the whole parameter and not a prefix/suffix.
      */
-    // note: this is only package private, since it is used by CommentUtil. Once CommentUtil is gone, this
-    // can be private
-    static List<String> trim(List<String> lines) {
-        if (lines == null) {
-            return Collections.emptyList();
-        }
+    public static boolean isMarkupWord(Chars word) {
+        return word.length() <= 3 &&
+            (word.contentEquals("*")
+                || word.contentEquals("//")
+                || word.contentEquals("/*")
+                || word.contentEquals("*/")
+                || word.contentEquals("/**"));
+    }
 
-        List<String> result = new ArrayList<>(lines.size());
-        List<String> tempList = new ArrayList<>();
-        boolean foundFirstNonEmptyLine = false;
-        for (String line : lines) {
-            if (StringUtils.isNotBlank(line)) {
-                // new non-empty line: add all previous empty lines occurred before
-                result.addAll(tempList);
-                tempList.clear();
-                result.add(line);
-
-                foundFirstNonEmptyLine = true;
-            } else {
-                if (foundFirstNonEmptyLine) {
-                    // add the empty line to a temporary list first
-                    tempList.add(line);
-                }
+    /**
+     * Trim the start of the provided line to remove a comment
+     * markup opener ({@code //, /*, /**, *}) or closer {@code * /}.
+     */
+    public static Chars removeCommentMarkup(Chars line) {
+        line = line.trim().removeSuffix("*/");
+        int subseqFrom = 0;
+        if (line.startsWith('/', 0)) {
+            if (line.startsWith("**", 1)) {
+                subseqFrom = 3;
+            } else if (line.startsWith('/', 1)
+                || line.startsWith('*', 1)) {
+                subseqFrom = 2;
             }
+        } else if (line.startsWith('*', 0)) {
+            subseqFrom = 1;
         }
-        return result;
+        return line.subSequence(subseqFrom, line.length()).trim();
     }
 }

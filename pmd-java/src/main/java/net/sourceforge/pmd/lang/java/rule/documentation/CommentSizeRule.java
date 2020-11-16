@@ -80,18 +80,6 @@ public class CommentSizeRule extends AbstractJavaRule {
         return lineCount > getProperty(MAX_LINES);
     }
 
-    private Chars withoutCommentMarkup(Chars text) {
-        text = text.trimStart();
-        if (text.startsWith("//")) {
-            return text.subSequence(2, text.length());
-        } else if (text.startsWith('*', 0)) {
-            return text.subSequence(1, text.length());
-        } else if (text.startsWith("/**")) {
-            return text.subSequence(3, text.length());
-        }
-        return text;
-    }
-
     private List<Integer> overLengthLineIndicesIn(Comment comment) {
 
         int maxLength = getProperty(MAX_LINE_LENGTH);
@@ -99,7 +87,7 @@ public class CommentSizeRule extends AbstractJavaRule {
         List<Integer> indices = new ArrayList<>();
         int i = 0;
         for (Chars line : comment.getText().lines()) {
-            line = withoutCommentMarkup(line);
+            line = Comment.removeCommentMarkup(line);
             if (line.length() > maxLength) {
                 indices.add(i);
             }

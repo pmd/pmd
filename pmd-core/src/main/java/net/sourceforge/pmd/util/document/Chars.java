@@ -53,6 +53,10 @@ public final class Chars implements CharSequence {
         return this.start + off;
     }
 
+    public boolean isEmpty() {
+        return len == 0;
+    }
+
 
     /**
      * Wraps the given char sequence into a {@link Chars}. This may
@@ -255,6 +259,17 @@ public final class Chars implements CharSequence {
      */
     public Chars trim() {
         return trimStart().trimEnd();
+    }
+
+    /**
+     * Remove the suffix if it is present, otherwise returns this.
+     */
+    public Chars removeSuffix(String charSeq) {
+        int trimmedLen = length() - charSeq.length();
+        if (startsWith(charSeq, trimmedLen)) {
+            return slice(0, trimmedLen);
+        }
+        return this;
     }
 
 
