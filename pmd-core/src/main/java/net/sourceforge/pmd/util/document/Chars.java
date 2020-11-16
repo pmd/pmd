@@ -12,9 +12,12 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.Iterator;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.internal.util.IteratorUtil.AbstractIterator;
 
 /**
  * View on a string which doesn't copy the array for subsequence operations.
@@ -444,6 +447,29 @@ public final class Chars implements CharSequence {
         };
     }
 
+    /**
+     * Split this slice into subslices, like {@link String#split(String)},
+     * except it's iterated lazily. Results excludes the delimiter
+     */
+    public Iterable<Chars> splits(Pattern regex) {
+        return () -> new AbstractIterator<Chars>() {
+            final Matcher matcher = regex.matcher(Chars.this);
+            int lastPos = 0;
+
+            @Override
+            protected void computeNext() {
+                if (matcher.find()) {
+                    setNext(subSequence(lastPos, matcher.start()));
+                    lastPos = matcher.end();
+                } else {
+                    if (lastPos != len) {
+                        setNext(subSequence(lastPos, len));
+                    }
+                    done();
+                }
+            }
+        };
+    }
 
     /**
      * Returns a new reader for the whole contents of this char sequence.
