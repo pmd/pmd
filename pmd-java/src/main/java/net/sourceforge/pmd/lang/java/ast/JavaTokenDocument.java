@@ -89,7 +89,7 @@ final class JavaTokenDocument extends JavaccTokenDocument.TokenDocumentBehavior 
 
         final int realKind;
 
-        GTToken(int kind, int realKind, CharSequence image, int startOffset, int endOffset, JavaccTokenDocument doc) {
+        GTToken(int kind, int realKind, String image, int startOffset, int endOffset, JavaccTokenDocument doc) {
             super(kind, image, startOffset, endOffset, doc);
             this.realKind = realKind;
         }

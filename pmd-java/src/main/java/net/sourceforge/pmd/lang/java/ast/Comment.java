@@ -43,8 +43,7 @@ public class Comment implements Reportable {
 
     /** Returns the full text of the comment. */
     public Chars getText() {
-        // todo remove this cast
-        return (Chars) getToken().getImageCs();
+        return getToken().getImageCs();
     }
 
     @Override
