@@ -73,13 +73,21 @@ public class Comment implements Reportable {
      * @return List of lines of the comments
      */
     public Iterable<Chars> filteredLines() {
-        return () -> IteratorUtil.mapNotNull(
-            getText().lines().iterator(),
-            line -> {
-                line = removeCommentMarkup(line);
-                return line.isEmpty() ? null : line;
-            }
-        );
+        return filteredLines(false);
+    }
+
+    public Iterable<Chars> filteredLines(boolean preserveEmptyLines) {
+        if (preserveEmptyLines) {
+            return () -> IteratorUtil.map(getText().lines().iterator(), Comment::removeCommentMarkup);
+        } else {
+            return () -> IteratorUtil.mapNotNull(
+                getText().lines().iterator(),
+                line -> {
+                    line = removeCommentMarkup(line);
+                    return line.isEmpty() ? null : line;
+                }
+            );
+        }
     }
 
     /**
