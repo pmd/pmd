@@ -150,6 +150,22 @@ public class CharsTest {
     }
 
     @Test
+    public void removeSuffix() {
+        Chars bc = Chars.wrap("abcdb").slice(1, 2);
+        //                      --
+
+        Assert.assertEquals("bc", bc.toString());
+        Assert.assertEquals("b", bc.removeSuffix("c").toString());
+        Assert.assertEquals("", bc.removeSuffix("bc").toString());
+
+        bc = Chars.wrap("aaaaaaa").slice(2, 3);
+        //                 ---
+
+        Assert.assertEquals("", bc.removeSuffix("aaa").toString());
+        Assert.assertEquals("aaa", bc.removeSuffix("aaaa").toString());
+    }
+
+    @Test
     public void trimNoop() {
         Chars bc = Chars.wrap("abcdb").slice(1, 2);
         Assert.assertEquals("bc", bc.toString());
