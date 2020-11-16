@@ -144,7 +144,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
 
     @Override
     public String getImage() {
-        return document.computeImage(this);
+        return image.toString();
     }
 
     @Override
