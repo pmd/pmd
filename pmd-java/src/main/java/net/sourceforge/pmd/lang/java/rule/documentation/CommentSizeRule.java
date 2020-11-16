@@ -86,8 +86,7 @@ public class CommentSizeRule extends AbstractJavaRule {
 
         List<Integer> indices = new ArrayList<>();
         int i = 0;
-        for (Chars line : comment.getText().lines()) {
-            line = Comment.removeCommentMarkup(line);
+        for (Chars line : comment.filteredLines()) {
             if (line.length() > maxLength) {
                 indices.add(i);
             }

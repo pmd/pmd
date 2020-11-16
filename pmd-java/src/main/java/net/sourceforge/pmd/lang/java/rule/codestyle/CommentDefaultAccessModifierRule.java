@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -17,7 +15,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
@@ -124,16 +121,9 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
     }
 
     private boolean hasOkComment(AccessNode node) {
-        ASTModifierList modifiers = node.getModifiers();
         Pattern regex = getProperty(REGEX_DESCRIPTOR);
-        for (JavaccToken token : GenericToken.range(modifiers.getFirstToken(), modifiers.getLastToken())) {
-            for (JavaccToken special : GenericToken.previousSpecials(token)) {
-                if (Comment.isComment(special)) {
-                    return regex.matcher(special.getImageCs()).matches();
-                }
-            }
-        }
-        return false;
+        return Comment.getLeadingComments(node)
+                      .anyMatch(it -> regex.matcher(it.getImageCs()).matches());
     }
 
     private boolean shouldReportTypeDeclaration(ASTAnyTypeDeclaration decl) {

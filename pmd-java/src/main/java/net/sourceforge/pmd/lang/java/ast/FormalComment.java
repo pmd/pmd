@@ -8,6 +8,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
+/**
+ * A wrapper for Javadoc {@link Comment}s.
+ */
 public class FormalComment extends Comment {
 
     private JavadocCommentOwner owner;

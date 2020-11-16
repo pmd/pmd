@@ -4,8 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.stream.Stream;
+
 import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.Reportable;
@@ -14,11 +18,9 @@ import net.sourceforge.pmd.util.document.Reportable;
  * Wraps a comment token to provide some utilities.
  * This is not a node, it's not part of the tree anywhere,
  * just convenient.
- *
- * TODO subclasses are useless
- * TODO maybe move part of this into pmd core
  */
-public abstract class Comment implements Reportable {
+public class Comment implements Reportable {
+    //TODO maybe move part of this into pmd core
 
     private final JavaccToken token;
 
@@ -106,7 +108,7 @@ public abstract class Comment implements Reportable {
      * Trim the start of the provided line to remove a comment
      * markup opener ({@code //, /*, /**, *}) or closer {@code * /}.
      */
-    public static Chars removeCommentMarkup(Chars line) {
+    private static Chars removeCommentMarkup(Chars line) {
         line = line.trim().removeSuffix("*/");
         int subseqFrom = 0;
         if (line.startsWith('/', 0)) {
@@ -120,5 +122,17 @@ public abstract class Comment implements Reportable {
             subseqFrom = 1;
         }
         return line.subSequence(subseqFrom, line.length()).trim();
+    }
+
+    private static Stream<JavaccToken> getSpecialCommentsIn(JjtreeNode<?> node) {
+        return GenericToken.streamRange(node.getFirstToken(), node.getLastToken())
+                           .flatMap(it -> IteratorUtil.toStream(GenericToken.previousSpecials(it).iterator()));
+    }
+
+    public static Stream<JavaccToken> getLeadingComments(JavaNode node) {
+        if (node instanceof AccessNode) {
+            node = ((AccessNode) node).getModifiers();
+        }
+        return getSpecialCommentsIn(node).filter(Comment::isComment);
     }
 }

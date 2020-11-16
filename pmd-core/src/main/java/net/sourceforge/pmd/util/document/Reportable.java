@@ -18,6 +18,10 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public interface Reportable {
 
+    // todo add optional method to get the nearest node, to implement
+    //  suppression that depends on tree structure (eg annotations) for
+    //  not just nodes, for example, for comments or individual tokens
+
     /**
      * Returns the location at which this element should be reported.
      *

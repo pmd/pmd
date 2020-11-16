@@ -545,7 +545,7 @@ SPECIAL_TOKEN :
         if (startOfNOPMD != -1) {
             suppressMap.put(matchedToken.getBeginLine(), matchedToken.getImage().substring(startOfNOPMD + suppressMarker.length()));
         }
-        comments.add(new SingleLineComment(matchedToken));
+        comments.add(new Comment(matchedToken));
     }
 }
 
@@ -566,7 +566,7 @@ SPECIAL_TOKEN :
 <IN_MULTI_LINE_COMMENT>
 SPECIAL_TOKEN :
 {
-  <MULTI_LINE_COMMENT: "*/" > { comments.add(new MultiLineComment(matchedToken)); } : DEFAULT
+  <MULTI_LINE_COMMENT: "*/" > { comments.add(new Comment(matchedToken)); } : DEFAULT
 }
 
 <IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
