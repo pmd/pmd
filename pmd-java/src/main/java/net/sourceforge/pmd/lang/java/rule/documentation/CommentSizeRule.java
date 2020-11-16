@@ -37,8 +37,6 @@ public class CommentSizeRule extends AbstractJavaRule {
                          .desc("Maximum line length")
                          .require(positive()).defaultValue(80).build();
 
-    private static final String CR = "\n";
-
     static final Set<Chars> IGNORED_LINES = setOf(Chars.wrap("//"),
                                                   Chars.wrap("/*"),
                                                   Chars.wrap("/**"),
