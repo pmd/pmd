@@ -464,23 +464,34 @@ public final class Chars implements CharSequence {
 
     /**
      * Split this slice into subslices, like {@link String#split(String)},
-     * except it's iterated lazily. Results excludes the delimiter
+     * except it's iterated lazily. Like splits the
      */
     public Iterable<Chars> splits(Pattern regex) {
         return () -> new AbstractIterator<Chars>() {
             final Matcher matcher = regex.matcher(Chars.this);
             int lastPos = 0;
 
-            @Override
-            protected void computeNext() {
+            private boolean shouldRetry() {
                 if (matcher.find()) {
+                    if (matcher.start() == 0 && matcher.end() == 0 && lastPos != len) {
+                        return true; // zero length match at the start, we should retry once
+                    }
                     setNext(subSequence(lastPos, matcher.start()));
                     lastPos = matcher.end();
+                } else if (lastPos != len) {
+                    setNext(subSequence(lastPos, len));
                 } else {
-                    if (lastPos != len) {
-                        setNext(subSequence(lastPos, len));
-                    }
                     done();
+                }
+                return false;
+            }
+
+            @Override
+            protected void computeNext() {
+                if (matcher.hitEnd()) {
+                    done();
+                } else if (shouldRetry()) {
+                    shouldRetry();
                 }
             }
         };
