@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import java.util.Iterator;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -106,13 +106,19 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
      *
      * @throws IllegalArgumentException If the first token does not come before the other token
      */
-    static <T extends GenericToken<T>> Iterator<T> range(T from, T to) {
+    static <T extends GenericToken<T>> Iterable<T> range(T from, T to) {
         if (from.compareTo(to) > 0) {
             throw new IllegalArgumentException(from + " must come before " + to);
         }
-        return IteratorUtil.generate(from, t -> t == to ? null : t.getNext());
+        return () -> IteratorUtil.generate(from, t -> t == to ? null : t.getNext());
     }
 
+    /**
+     * Returns a stream corresponding to {@link #range(GenericToken, GenericToken)}.
+     */
+    static <T extends GenericToken<T>> Stream<T> streamRange(T from, T to) {
+        return IteratorUtil.toStream(range(from, to).iterator());
+    }
 
     /**
      * Returns an iterable that enumerates all special tokens belonging

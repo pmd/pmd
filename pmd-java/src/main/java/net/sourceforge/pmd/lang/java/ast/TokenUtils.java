@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -91,7 +90,4 @@ final class TokenUtils {
         assert token.kind == kind : "Expected " + token.getDocument().describeKind(kind) + ", got " + token;
     }
 
-    public static Iterator<JavaccToken> tokenRange(JavaNode node) {
-        return GenericToken.range(node.getFirstToken(), node.getLastToken());
-    }
 }

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.TextAvailableNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.util.document.Chars;
@@ -26,5 +27,12 @@ public interface JjtreeNode<N extends JjtreeNode<N>> extends GenericNode<N>, Tex
 
 
     JavaccToken getLastToken();
+
+    /**
+     * Returns a token range, that includes the first and last token.
+     */
+    default Iterable<JavaccToken> tokens() {
+        return GenericToken.range(getFirstToken(), getLastToken());
+    }
 
 }

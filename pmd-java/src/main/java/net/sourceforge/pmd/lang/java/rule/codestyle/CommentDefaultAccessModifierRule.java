@@ -125,9 +125,8 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
 
     private boolean hasOkComment(AccessNode node) {
         ASTModifierList modifiers = node.getModifiers();
-        Iterable<JavaccToken> tokens = () -> GenericToken.range(modifiers.getFirstToken(), modifiers.getLastToken());
         Pattern regex = getProperty(REGEX_DESCRIPTOR);
-        for (JavaccToken token : tokens) {
+        for (JavaccToken token : GenericToken.range(modifiers.getFirstToken(), modifiers.getLastToken())) {
             for (JavaccToken special : GenericToken.previousSpecials(token)) {
                 if (Comment.isComment(special)) {
                     return regex.matcher(special.getImageCs()).matches();
