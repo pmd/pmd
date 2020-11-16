@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.document.Chars;
 
@@ -25,12 +25,12 @@ import net.sourceforge.pmd.util.document.Chars;
  *
  * @author Brian Remedios
  */
-public class CommentContentRule extends AbstractJavaRule {
+public class CommentContentRule extends AbstractJavaRulechainRule {
 
     private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
-    // ignored when property above == True
-    public static final PropertyDescriptor<Boolean> CASE_SENSITIVE_DESCRIPTOR = booleanProperty("caseSensitive").defaultValue(false).desc("Case sensitive").build();
+    public static final PropertyDescriptor<Boolean> CASE_SENSITIVE_DESCRIPTOR =
+        booleanProperty("caseSensitive").defaultValue(false).desc("Whether the words are case sensitive").build();
 
     public static final PropertyDescriptor<List<String>> DISSALLOWED_TERMS_DESCRIPTOR =
             stringListProperty("disallowedTerms")
@@ -38,8 +38,28 @@ public class CommentContentRule extends AbstractJavaRule {
                     .defaultValues("idiot", "jerk").build(); // TODO make blank property? or add more defaults?
 
     public CommentContentRule() {
+        super(ASTCompilationUnit.class);
         definePropertyDescriptor(CASE_SENSITIVE_DESCRIPTOR);
         definePropertyDescriptor(DISSALLOWED_TERMS_DESCRIPTOR);
+    }
+
+
+    @Override
+    public Object visit(ASTCompilationUnit cUnit, Object data) {
+
+        List<String> currentBadWords = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
+        boolean caseSensitive = getProperty(CASE_SENSITIVE_DESCRIPTOR);
+
+        for (Comment comment : cUnit.getComments()) {
+            List<String> badWords = illegalTermsIn(comment, currentBadWords, caseSensitive);
+            if (badWords.isEmpty()) {
+                continue;
+            }
+
+            addViolationWithMessage(data, cUnit, errorMsgFor(badWords), comment.getBeginLine(), comment.getEndLine());
+        }
+
+        return super.visit(cUnit, data);
     }
 
     private List<String> illegalTermsIn(Comment comment, List<String> badWords, boolean caseSensitive) {
@@ -79,28 +99,8 @@ public class CommentContentRule extends AbstractJavaRule {
         return msg.toString();
     }
 
-    @Override
-    public Object visit(ASTCompilationUnit cUnit, Object data) {
-
-        // NPE patch: Eclipse plugin doesn't call start() at onset?
-        List<String> currentBadWords = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
-        boolean caseSensitive = getProperty(CASE_SENSITIVE_DESCRIPTOR);
-
-        for (Comment comment : cUnit.getComments()) {
-            List<String> badWords = illegalTermsIn(comment, currentBadWords, caseSensitive);
-            if (badWords.isEmpty()) {
-                continue;
-            }
-
-            addViolationWithMessage(data, cUnit, errorMsgFor(badWords), comment.getBeginLine(), comment.getEndLine());
-        }
-
-        return super.visit(cUnit, data);
-    }
-
     private boolean hasDisallowedTerms() {
-        List<String> terms = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
-        return !terms.isEmpty();
+        return !getProperty(DISSALLOWED_TERMS_DESCRIPTOR).isEmpty();
     }
 
     @Override

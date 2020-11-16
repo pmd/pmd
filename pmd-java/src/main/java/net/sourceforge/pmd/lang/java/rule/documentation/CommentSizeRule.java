@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.document.Chars;
@@ -25,7 +25,7 @@ import net.sourceforge.pmd.util.document.Chars;
  *
  * @author Brian Remedios
  */
-public class CommentSizeRule extends AbstractJavaRule {
+public class CommentSizeRule extends AbstractJavaRulechainRule {
 
     public static final PropertyDescriptor<Integer> MAX_LINES
             = PropertyFactory.intProperty("maxLines")
@@ -44,8 +44,34 @@ public class CommentSizeRule extends AbstractJavaRule {
                                                   Chars.wrap("*/"));
 
     public CommentSizeRule() {
+        super(ASTCompilationUnit.class);
         definePropertyDescriptor(MAX_LINES);
         definePropertyDescriptor(MAX_LINE_LENGTH);
+    }
+
+
+    @Override
+    public Object visit(ASTCompilationUnit cUnit, Object data) {
+
+        for (Comment comment : cUnit.getComments()) {
+            if (hasTooManyLines(comment)) {
+                addViolationWithMessage(data, cUnit, this.getMessage() + ": Too many lines", comment.getBeginLine(),
+                                        comment.getEndLine());
+            }
+
+            List<Integer> lineNumbers = overLengthLineIndicesIn(comment);
+            if (lineNumbers.isEmpty()) {
+                continue;
+            }
+
+            int offset = comment.getBeginLine();
+            for (int lineNum : lineNumbers) {
+                lineNum += offset;
+                addViolationWithMessage(data, cUnit, this.getMessage() + ": Line too long", lineNum, lineNum);
+            }
+        }
+
+        return super.visit(cUnit, data);
     }
 
     private static boolean hasRealText(Chars line) {
@@ -92,27 +118,4 @@ public class CommentSizeRule extends AbstractJavaRule {
         return indices;
     }
 
-    @Override
-    public Object visit(ASTCompilationUnit cUnit, Object data) {
-
-        for (Comment comment : cUnit.getComments()) {
-            if (hasTooManyLines(comment)) {
-                addViolationWithMessage(data, cUnit, this.getMessage() + ": Too many lines", comment.getBeginLine(),
-                        comment.getEndLine());
-            }
-
-            List<Integer> lineNumbers = overLengthLineIndicesIn(comment);
-            if (lineNumbers.isEmpty()) {
-                continue;
-            }
-
-            int offset = comment.getBeginLine();
-            for (int lineNum : lineNumbers) {
-                lineNum += offset;
-                addViolationWithMessage(data, cUnit, this.getMessage() + ": Line too long", lineNum, lineNum);
-            }
-        }
-
-        return super.visit(cUnit, data);
-    }
 }
