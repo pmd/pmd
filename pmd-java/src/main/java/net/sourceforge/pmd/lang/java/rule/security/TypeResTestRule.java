@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.impl.javacc.StringPool;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -126,6 +127,7 @@ public class TypeResTestRule extends AbstractJavaRule {
             if (fid % 400 == 0) {
                 synchronized (STATIC) {
                     if (STATIC.fileId % 400 == 0) {
+                        StringPool.printStats();
                         STATIC.print();
                     }
                 }

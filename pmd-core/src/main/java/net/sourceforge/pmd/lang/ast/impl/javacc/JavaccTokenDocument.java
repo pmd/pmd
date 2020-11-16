@@ -179,7 +179,7 @@ public final class JavaccTokenDocument extends TokenDocument<JavaccToken> {
     }
 
     String computeImage(JavaccToken t) {
-        CharSequence imageCs = t.getImageCs();
+        CharSequence imageCs = t.getImageInternal();
         if (imageCs instanceof String) {
             return (String) imageCs;
         }

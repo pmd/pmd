@@ -20,7 +20,7 @@ import net.sourceforge.pmd.util.document.Chars;
 public final class StringPool {
 
     // This will be constant-folded by the JIT, use false in production
-    private static final boolean COLLECT_STATS = false;
+    private static final boolean COLLECT_STATS = true;
     private static final Stats STATS = new Stats();
 
     private static final String[] SINGLE_CHARS;
@@ -96,7 +96,7 @@ public final class StringPool {
             System.err.println("Unpooled string length: " + notPooledAlloc + " chars (" + toSize(notPooledAlloc) + ")");
         }
 
-        private String toSize(long charLen) {
+        private static String toSize(long charLen) {
             // Assuming all pooled chars are latin-1, so 1B in a compressed string (byte[], not char[])
             // Before Java 9, it's twice as much
             if (charLen > (1 << 20)) {

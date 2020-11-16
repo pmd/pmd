@@ -46,7 +46,7 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
     @Override
     @Deprecated
     public String getImage() {
-        return super.getImage();
+        return getToken().getImage();
     }
 
     public final JavaccToken getToken() {
@@ -75,7 +75,7 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
      * @return List of lines of the comments
      */
     private List<String> multiLinesIn() {
-        String[] lines = NEWLINES_PATTERN.split(getText());
+        String[] lines = NEWLINES_PATTERN.split(token.getImageCs());
         List<String> filteredLines = new ArrayList<>(lines.length);
 
         for (String rawLine : lines) {
