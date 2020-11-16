@@ -13,11 +13,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.Chars;
 
-public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
+public abstract class Comment {
 
     // single regex, that captures: the start of a multi-line comment (/**|/*), the start of a single line comment (//)
     // or the start of line within a multiline comment (*). It removes the end of the comment (*/) if existing.
@@ -29,28 +28,15 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
     private final JavaccToken token;
 
     protected Comment(JavaccToken t) {
-        super(0);
         this.token = t;
-        setFirstToken(t);
-        setLastToken(t);
-    }
-
-    @Override
-    public FileLocation getReportLocation() {
-        return token.getReportLocation();
-    }
-
-    /**
-     * @deprecated Use {@link #getText()}
-     */
-    @Override
-    @Deprecated
-    public String getImage() {
-        return super.getImage();
     }
 
     public final JavaccToken getToken() {
-        return super.getFirstToken();
+        return token;
+    }
+
+    public int compareLocation(Comment other) {
+        return getToken().compareTo(other.getToken());
     }
 
     /**
@@ -90,11 +76,28 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
         return filteredLines;
     }
 
+    public Chars getText() {
+        return (Chars) getToken().getImageCs();
+    }
+
+    public int getBeginLine() {
+        return getToken().getBeginLine();
+    }
+
+    public int getEndLine() {
+        return getToken().getEndLine();
+    }
+
+    public String getImage() {
+        return getToken().getImage();
+    }
+
     /**
      * Similar to the String.trim() function, this one removes the leading and
      * trailing empty/blank lines from the line list.
      *
      * @param lines the list of lines, which might contain empty lines
+     *
      * @return the lines without leading or trailing blank lines.
      */
     // note: this is only package private, since it is used by CommentUtil. Once CommentUtil is gone, this

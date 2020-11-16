@@ -13,9 +13,4 @@ public class MultiLineComment extends Comment {
     }
 
 
-    @Override
-    public String getXPathNodeName() {
-        return "MultiLineComment";
-    }
-
 }
