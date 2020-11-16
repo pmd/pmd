@@ -1,0 +1,52 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [// Testing CPD suppression]            1         27
+L3
+    [// Irrelevant comment]                 1         22
+L4
+    [// CPD-OFF]                            1         11
+L7
+    [case]                                  1         5
+    [class]                                 6         11
+    [Foo]                                   12        15
+    [(]                                     15        16
+    [)]                                     16        17
+    [{]                                     18        19
+    [// special multiline comments]         20        49
+L9
+    [/* CPD-OFF\n  *\n  *\n  * */]          3         7
+L14
+    [private]                               3         10
+    [def]                                   11        14
+    [bar]                                   15        18
+    [(]                                     18        19
+    [i]                                     19        20
+    [:]                                     20        21
+    [Int]                                   22        25
+    [)]                                     25        26
+    [:]                                     27        28
+    [Int]                                   29        32
+    [=]                                     33        34
+    [{]                                     35        36
+L15
+    [val]                                   5         8
+    [CPD]                                   9         12
+    [=]                                     13        14
+    [40]                                    15        17
+L16
+    [val]                                   5         8
+    [OFF]                                   9         12
+    [=]                                     13        14
+    [60]                                    15        17
+L17
+    [CPD]                                   5         8
+    [-]                                     8         9
+    [OFF]                                   9         12
+    [// This should tokenize]               15        38
+L18
+    [}]                                     3         4
+L20
+    [/* CPD-OFF */]                         3         16
+L24
+    [}]                                     1         2
+EOF
