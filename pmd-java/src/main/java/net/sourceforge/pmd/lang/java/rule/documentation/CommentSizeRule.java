@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.document.Chars;
 
 /**
  * A rule to manage those who just can't shut up...
@@ -33,20 +33,24 @@ public class CommentSizeRule extends AbstractJavaRule {
                              .require(positive()).defaultValue(6).build();
 
     public static final PropertyDescriptor<Integer> MAX_LINE_LENGTH
-            = PropertyFactory.intProperty("maxLineLength")
-                             .desc("Maximum line length")
-                             .require(positive()).defaultValue(80).build();
+        = PropertyFactory.intProperty("maxLineLength")
+                         .desc("Maximum line length")
+                         .require(positive()).defaultValue(80).build();
 
     private static final String CR = "\n";
 
-    static final Set<String> IGNORED_LINES = setOf("//", "/*", "/**", "*", "*/");
+    static final Set<Chars> IGNORED_LINES = setOf(Chars.wrap("//"),
+                                                  Chars.wrap("/*"),
+                                                  Chars.wrap("/**"),
+                                                  Chars.wrap("*"),
+                                                  Chars.wrap("*/"));
 
     public CommentSizeRule() {
         definePropertyDescriptor(MAX_LINES);
         definePropertyDescriptor(MAX_LINE_LENGTH);
     }
 
-    private static boolean hasRealText(String line) {
+    private static boolean hasRealText(Chars line) {
 
         if (StringUtils.isBlank(line)) {
             return false;
@@ -57,30 +61,35 @@ public class CommentSizeRule extends AbstractJavaRule {
 
     private boolean hasTooManyLines(Comment comment) {
 
-        String[] lines = comment.getImage().split(CR);
-
-        int start = 0; // start from top
-        for (; start < lines.length; start++) {
-            if (hasRealText(lines[start])) {
-                break;
+        int firstLineWithText = -1;
+        int lastLineWithText = 0;
+        int i = 0;
+        for (Chars line : comment.getText().lines()) {
+            boolean real = hasRealText(line);
+            if (real) {
+                lastLineWithText = i;
+                if (firstLineWithText == -1) {
+                    firstLineWithText = i;
+                }
             }
+            i++;
         }
 
-        int end = lines.length - 1; // go up from bottom
-        for (; end > 0; end--) {
-            if (hasRealText(lines[end])) {
-                break;
-            }
-        }
-
-        int lineCount = end - start + 1;
+        int lineCount = lastLineWithText - firstLineWithText + 1;
 
         return lineCount > getProperty(MAX_LINES);
     }
 
-    private String withoutCommentMarkup(String text) {
-
-        return StringUtil.withoutPrefixes(text.trim(), "//", "*", "/**");
+    private Chars withoutCommentMarkup(Chars text) {
+        text = text.trimStart();
+        if (text.startsWith("//")) {
+            return text.subSequence(2, text.length());
+        } else if (text.startsWith('*', 0)) {
+            return text.subSequence(1, text.length());
+        } else if (text.startsWith("/**")) {
+            return text.subSequence(3, text.length());
+        }
+        return text;
     }
 
     private List<Integer> overLengthLineIndicesIn(Comment comment) {
@@ -88,17 +97,13 @@ public class CommentSizeRule extends AbstractJavaRule {
         int maxLength = getProperty(MAX_LINE_LENGTH);
 
         List<Integer> indices = new ArrayList<>();
-        String[] lines = comment.getImage().split(CR);
-
-        int offset = comment.getBeginLine();
-
-        for (int i = 0; i < lines.length; i++) {
-            String cleaned = withoutCommentMarkup(lines[i]);
-            if (cleaned.length() > maxLength) {
-                indices.add(i + offset);
+        int i = 0;
+        for (Chars line : comment.getText().lines()) {
+            line = withoutCommentMarkup(line);
+            if (line.length() > maxLength) {
+                indices.add(i);
             }
         }
-
         return indices;
     }
 
@@ -116,7 +121,9 @@ public class CommentSizeRule extends AbstractJavaRule {
                 continue;
             }
 
-            for (Integer lineNum : lineNumbers) {
+            int offset = comment.getBeginLine();
+            for (int lineNum : lineNumbers) {
+                lineNum += offset;
                 addViolationWithMessage(data, cUnit, this.getMessage() + ": Line too long", lineNum, lineNum);
             }
         }
