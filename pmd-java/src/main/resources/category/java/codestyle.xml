@@ -268,7 +268,7 @@ public class Éléphant {}
           language="java"
           since="5.4.0"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.CommentDefaultAccessModifierRule"
-          message="Missing commented default access modifier"
+          message="To avoid mistakes, add a comment at the beginning of the {1} ''{0}'' if you want a default access modifier"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#commentdefaultaccessmodifier">
         <description>
 To avoid mistakes if we want that an Annotation, Class, Enum, Method, Constructor or Field have a default access modifier

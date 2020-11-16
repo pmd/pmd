@@ -119,6 +119,7 @@ public class Foo {
     </test-code>
 
     <code-fragment id="top-level-annotations-with-default-access-modifier"><![CDATA[
+import com.google.common.annotations.VisibleForTesting;
 @interface Bar {}
 
 public @interface Foo {}
@@ -142,7 +143,7 @@ public @interface Foo {}
         <description>Top-level annotations with default access modifier checks enabled with property</description>
         <rule-property name="checkTopLevelTypes">true</rule-property>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>1,6</expected-linenumbers>
+        <expected-linenumbers>2,7</expected-linenumbers>
         <code-ref id="top-level-annotations-with-default-access-modifier"/>
     </test-code>
 
@@ -154,7 +155,7 @@ public enum Foo {}
 @SomeAnnotation
 enum Baz {}
 
-@VisibleForTesting
+@com.google.common.annotations.VisibleForTesting
 enum Foobar {}
 
 /* default */ enum FoobarWithComment {}
@@ -182,7 +183,7 @@ public class Foo {}
 @SomeAnnotation
 class Baz {}
 
-@VisibleForTesting
+@com.google.common.annotations.VisibleForTesting
 class Foobar {}
 
 /* default */ class FoobarWithComment {}
@@ -245,7 +246,7 @@ public enum TestEnum {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class CommentDefaultAccessModifier {
-    @VisibleForTesting void method() {}
+    @com.google.common.annotations.VisibleForTesting void method() {}
 }
         ]]></code>
     </test-code>
@@ -328,7 +329,7 @@ public interface A {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>To avoid mistakes add a comment at the beginning of the method method if you want a default access modifier</message>
+            <message>To avoid mistakes, add a comment at the beginning of the method 'method' if you want a default access modifier</message>
         </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.codestyle.commentdefaultaccessmodifier;
@@ -358,9 +359,9 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>2,4</expected-linenumbers>
         <expected-messages>
-            <message>To avoid mistakes add a comment at the beginning of the Foo constructor if you want a default access modifier</message>
-                <message>To avoid mistakes add a comment at the beginning of the Foo constructor if you want a default access modifier</message>
-            </expected-messages>
+            <message>To avoid mistakes, add a comment at the beginning of the constructor 'Foo' if you want a default access modifier</message>
+            <message>To avoid mistakes, add a comment at the beginning of the constructor 'Foo' if you want a default access modifier</message>
+        </expected-messages>
         <code-ref id="constructor-with-default-access-modifier-rule"/>
     </test-code>
 

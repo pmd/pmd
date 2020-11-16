@@ -33,7 +33,7 @@ public final class ASTBlock extends ASTMaybeEmptyListOf<ASTStatement> implements
     public boolean containsComment() {
         JavaccToken t = getLastToken().getPreviousComment();
         while (t != null) {
-            if (JavaTokenDocument.isComment(t)) {
+            if (Comment.isComment(t)) {
                 return true;
             }
             t = t.getPreviousComment();

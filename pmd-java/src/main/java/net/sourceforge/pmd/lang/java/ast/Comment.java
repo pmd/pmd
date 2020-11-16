@@ -39,6 +39,10 @@ public abstract class Comment {
         return getToken().compareTo(other.getToken());
     }
 
+    public static boolean isComment(JavaccToken token) {
+        return JavaTokenDocument.isComment(token);
+    }
+
     /**
      * Filters the comment by removing the leading comment marker (like {@code *}) of each line
      * as well as the start markers ({@code //}, {@code /*} or {@code /**}
