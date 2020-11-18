@@ -76,7 +76,7 @@ langs:
         returnType: "xs:boolean"
         shortDescription: "Tests whether an annotation is present on the node"
         description: "Returns true if the node has an annotation with the given qualified name"
-        notes: "The context node must be an {% jdoc jast::Annotatable %}"
+        notes: "The context node must be an {% jdoc jast::Annotatable %}, otherwise this returns false"
         parameters:
           - name: annotationClassName
             type: "xs:string"
@@ -92,7 +92,7 @@ langs:
           Returns a sequence of the effective modifiers of a node as strings.
           This is documented on {% jdoc jast::ASTModifierList#getEffectiveModifiers() %}.
 
-        notes: "The context node must be an {% jdoc jast::AccessNode %}"
+        notes: "The context node must be an {% jdoc jast::AccessNode %}, otherwise this returns an empty sequence"
         parameters:
         examples:
           - code: '//MethodDeclaration[pmd-java:modifiers() = "native"]'
@@ -116,7 +116,7 @@ langs:
           Returns a sequence of the explicit modifiers of a node as strings.
           This is documented on {% jdoc jast::ASTModifierList#getExplicitModifiers() %}.
 
-        notes: "The context node must be an {% jdoc jast::AccessNode %}"
+        notes: "The context node must be an {% jdoc jast::AccessNode %}, otherwise this returns an empty sequence"
         parameters:
         examples:
           - code: '//MethodDeclaration[pmd-java:explicitModifiers() = "public"]'
@@ -130,7 +130,7 @@ langs:
           the method signature called by the context node. The format of the parameter is
           described on that class.
 
-        notes: "The context node must be an {% jdoc jast::InvocationNode %}"
+        notes: "The context node must be an {% jdoc jast::InvocationNode %}, otherwise this returns false"
         parameters:
           - name: "sig"
             type: "xs:string"

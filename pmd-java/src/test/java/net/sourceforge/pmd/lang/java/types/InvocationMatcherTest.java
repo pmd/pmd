@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import static net.sourceforge.pmd.lang.java.types.TypeTestUtil.InvocationMatcher.parse;
+import static org.hamcrest.Matchers.equalTo;
 
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -75,6 +77,17 @@ public class InvocationMatcherTest extends BaseNonParserTest {
         assertNoMatch(call, "_[][]#_(_*)");
         // maybe we should support this one later
         assertNoMatch(call, "_[]#toString()");
+    }
+
+    @Test
+    public void testWhitespaceErrorMessage() {
+
+        parse("_#_(int,int)"); // does not fail
+        IllegalArgumentException e = Assert.assertThrows(IllegalArgumentException.class, () -> parse("_#_(int, int)"));
+        MatcherAssert.assertThat(e.getMessage(), equalTo("Expected type at index 8:\n"
+                                                             + "    \"_#_(int, int)\"\n"
+                                                             + "             ^\n"));
+
     }
 
     private void assertMatch(InvocationNode call, String sig) {

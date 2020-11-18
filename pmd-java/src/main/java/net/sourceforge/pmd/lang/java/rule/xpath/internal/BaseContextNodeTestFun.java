@@ -68,14 +68,7 @@ public class BaseContextNodeTestFun<T extends JavaNode> extends BaseJavaXPathFun
                 String fullTypeName = arguments[0].head().getStringValue();
 
 
-                if (klass.isInstance(contextNode)) {
-                    return BooleanValue.get(checker.test(fullTypeName, (T) contextNode));
-                } else {
-                    throw new XPathException(
-                        getFunctionQName().getLocalPart()
-                            + " function may only be called on an instance of "
-                            + klass.getSimpleName());
-                }
+                return BooleanValue.get(klass.isInstance(contextNode) && checker.test(fullTypeName, (T) contextNode));
             }
         };
     }

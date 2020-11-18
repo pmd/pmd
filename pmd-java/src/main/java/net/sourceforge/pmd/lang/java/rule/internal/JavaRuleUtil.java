@@ -135,6 +135,14 @@ public final class JavaRuleUtil {
         return false;
     }
 
+    public static boolean isStringConcatExpr(@Nullable ASTExpression e) {
+        if (e instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) e;
+            return infix.getOperator() == BinaryOp.ADD && TypeTestUtil.isA(String.class, infix);
+        }
+        return false;
+    }
+
     /**
      * Returns true if the node is a {@link ASTMethodDeclaration} that
      * is a main method.

@@ -70,7 +70,12 @@ abstract class BaseRewrittenFunction<S, N extends JavaNode> extends BaseJavaXPat
                 Expression firstArg = arguments[0]; // this expression has been type checked so there is an argument
                 if (firstArg instanceof StringLiteral) {
                     String name = ((StringLiteral) firstArg).getStringValue();
-                    constantState = parseArgument(name);
+                    try {
+                        constantState = parseArgument(name);
+                    } catch (XPathException e) {
+                        e.setIsStaticError(true);
+                        throw e;
+                    }
                     isConstant = true;
                 }
                 return null;
@@ -80,8 +85,8 @@ abstract class BaseRewrittenFunction<S, N extends JavaNode> extends BaseJavaXPat
             public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
                 Node node = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
                 if (!contextNodeType.isInstance(node)) {
-                    throw new XPathException(
-                        "Invalid node type: " + node.getXPathNodeName() + ", expected " + contextNodeType);
+                    // we could report that as an error
+                    return BooleanValue.FALSE;
                 }
 
                 String arg = arguments[0].head().getStringValue();

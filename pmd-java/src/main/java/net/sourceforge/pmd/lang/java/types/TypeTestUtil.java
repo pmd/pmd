@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.util.OptionalBool;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Public utilities to test the type of nodes.
@@ -317,7 +318,9 @@ public final class TypeTestUtil {
      * an overload that does not exist (the char is widened to an int,
      * so the int overload is selected).
      *
-     * <p>Full EBNF grammar (no whitespace is tolerated anywhere):
+     * <h5 id='ebnf'>Full EBNF grammar</h5>
+     *
+     * <p>(no whitespace is tolerated anywhere):
      * <pre>{@code
      * sig         ::= type '#' method_name param_list
      * type        ::= qname ( '[]' )* | '_'
@@ -406,8 +409,8 @@ public final class TypeTestUtil {
          *
          * @return A sig matcher
          *
-         * @throws IllegalArgumentException If the parameters are malformed
-         * @throws NullPointerException     If the parameters are null
+         * @throws IllegalArgumentException If the signature is malformed (see <a href='#ebnf'>EBNF</a>)
+         * @throws NullPointerException     If the signature is null
          */
         public static InvocationMatcher parse(String sig) {
             int i = parseType(sig, 0);
@@ -463,7 +466,15 @@ public final class TypeTestUtil {
             if (isChar(source, i, c)) {
                 return i + 1;
             }
-            throw new IllegalArgumentException("Expected " + c + " at index " + i);
+            throw newParseException(source, i, "character '" + c + "'");
+        }
+
+        private static RuntimeException newParseException(String source, int i, String expectedWhat) {
+            final String indent = "    ";
+            String message = "Expected " + expectedWhat + " at index " + i + ":\n";
+            message += indent + "\"" + StringUtil.escapeJava(source) + "\"\n";
+            message += indent + StringUtils.repeat(' ', i + 1) + '^' + "\n";
+            return new IllegalArgumentException(message);
         }
 
         private static boolean isChar(String source, int i, char c) {
@@ -483,6 +494,10 @@ public final class TypeTestUtil {
                 || source.charAt(i) == '.')) {
                 i++;
             }
+            if (i == start) {
+                throw newParseException(source, i, "type");
+            }
+
             AssertionUtil.assertValidJavaBinaryName(source.substring(start, i));
             // array dimensions
             while (isChar(source, i, '[')) {

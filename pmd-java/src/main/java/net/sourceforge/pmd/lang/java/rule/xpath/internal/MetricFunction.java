@@ -11,7 +11,7 @@ import org.apache.commons.lang3.EnumUtils;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
@@ -79,13 +79,13 @@ public final class MetricFunction extends BaseJavaXPathFunction {
     }
 
 
-    static String badOperationMetricKeyMessage() {
-        return "This is not the name of an operation metric";
+    static String badOperationMetricKeyMessage(String constantName) {
+        return String.format("'%s' is not the name of an operation metric", constantName);
     }
 
 
-    static String badClassMetricKeyMessage() {
-        return "This is not the name of a class metric";
+    static String badClassMetricKeyMessage(String constantName) {
+        return String.format("'%s' is not the name of a class metric", constantName);
     }
 
 
@@ -93,13 +93,13 @@ public final class MetricFunction extends BaseJavaXPathFunction {
         return "Incorrect node type: the 'metric' function cannot be applied";
     }
 
-    private static double getMetric(Node n, String metricKeyName) {
+    private static double getMetric(Node n, String metricKeyName) throws XPathException {
         if (n instanceof ASTAnyTypeDeclaration) {
             return computeMetric(getClassMetricKey(metricKeyName), (ASTAnyTypeDeclaration) n);
-        } else if (n instanceof MethodLikeNode) {
-            return computeMetric(getOperationMetricKey(metricKeyName), (MethodLikeNode) n);
+        } else if (n instanceof ASTMethodOrConstructorDeclaration) {
+            return computeMetric(getOperationMetricKey(metricKeyName), (ASTMethodOrConstructorDeclaration) n);
         } else {
-            throw new IllegalStateException(genericBadNodeMessage());
+            throw new XPathException(genericBadNodeMessage());
         }
     }
 
@@ -108,19 +108,19 @@ public final class MetricFunction extends BaseJavaXPathFunction {
     }
 
 
-    private static JavaClassMetricKey getClassMetricKey(String s) {
+    private static JavaClassMetricKey getClassMetricKey(String s) throws XPathException {
         String constantName = s.toUpperCase(Locale.ROOT);
         if (!CLASS_METRIC_KEY_MAP.containsKey(constantName)) {
-            throw new IllegalArgumentException(badClassMetricKeyMessage());
+            throw new XPathException(badClassMetricKeyMessage(constantName));
         }
         return CLASS_METRIC_KEY_MAP.get(constantName);
     }
 
 
-    private static JavaOperationMetricKey getOperationMetricKey(String s) {
+    private static JavaOperationMetricKey getOperationMetricKey(String s) throws XPathException {
         String constantName = s.toUpperCase(Locale.ROOT);
         if (!OPERATION_METRIC_KEY_MAP.containsKey(constantName)) {
-            throw new IllegalArgumentException(badOperationMetricKeyMessage());
+            throw new XPathException(badOperationMetricKeyMessage(constantName));
         }
         return OPERATION_METRIC_KEY_MAP.get(constantName);
     }

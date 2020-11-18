@@ -1,6 +1,6 @@
 #
 # The functions here require the following scripts:
-# .travis/logger.sh
+# logger.inc
 #
 # The functions here require the following environment variables:
 # PMD_SF_USER
@@ -86,7 +86,7 @@ function sourceforge_uploadFile() {
         trap upload_failed ERR
 
         log_info "Uploading $filename to sourceforge..."
-        .travis/travis_wait "rsync -avh ${filename} ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${pmdVersion}/"
+        .ci/travis_wait "rsync -avh ${filename} ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${pmdVersion}/"
         log_success "Successfully uploaded ${filename} to sourceforge: ${targetUrl}"
     )
     # restore errexit state
@@ -158,7 +158,7 @@ function sourceforge_rsyncSnapshotDocumentation() {
         trap upload_failed ERR
 
         log_info "Uploading documentation to ${targetUrl}..."
-        .travis/travis_wait "rsync -ah --stats --delete docs/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/"
+        .ci/travis_wait "rsync -ah --stats --delete docs/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/"
         log_success "Successfully uploaded documentation: ${targetUrl}"
     )
     # restore errexit state

@@ -1,6 +1,6 @@
 #
 # The functions here require the following scripts:
-# .travis/logger.sh
+# inc/logger.inc
 #
 
 PMD_CODE_SSH_USER=pmd
