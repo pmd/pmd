@@ -162,6 +162,9 @@ public final class JavaRuleUtil {
     /**
      * Returns true if the expression is a stringbuilder (or stringbuffer)
      * append call, or a constructor call for one of these classes.
+     *
+     * <p>If it is a constructor call, returns false if this is a call to
+     * the constructor with a capacity parameter.
      */
     public static boolean isStringBuilderCtorOrAppend(@Nullable ASTExpression e) {
         if (e instanceof ASTMethodCall) {

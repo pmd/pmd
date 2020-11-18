@@ -1381,10 +1381,29 @@ public final class DataflowPass {
             return node;
         }
 
+
         public JavaNode getLocation() {
             return rhs;
         }
 
+        // todo i'm probably missing some
+
+        /**
+         * <p>Returns non-null for an assignment expression, eg for (a = b), returns b.
+         * For (i++), returns (i++) and not (i), same for (i--).
+         * Returns null if the assignment is, eg, the default value
+         * of a field; the "blank" definition of a local variable,
+         * exception parameter, formal parameter, foreach variable, etc.
+         */
+        public @Nullable ASTExpression getRhsAsExpression() {
+            if (isUnbound() || isBlankDeclaration()) {
+                return null;
+            }
+            if (rhs instanceof ASTExpression) {
+                return (ASTExpression) rhs;
+            }
+            return null;
+        }
 
         /**
          * Returns the type of the right-hand side if it is an explicit

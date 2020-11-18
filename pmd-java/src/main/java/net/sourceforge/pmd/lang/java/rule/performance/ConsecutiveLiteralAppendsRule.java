@@ -10,7 +10,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
@@ -18,28 +21,40 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -65,7 +80,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * <p>The rule takes one parameter, threshold, which defines the lower limit of
  * consecutive appends before a violation is created. The default is 1.</p>
  */
-public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
+public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
 
     private static final Set<Class<?>> BLOCK_PARENTS;
 
@@ -82,15 +97,63 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         BLOCK_PARENTS.add(ASTLambdaExpression.class);
     }
 
+
     private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
-            = PropertyFactory.intProperty("threshold")
-                             .desc("Max consecutive appends")
-                             .require(inRange(1, 10)).defaultValue(1).build();
+        = PropertyFactory.intProperty("threshold")
+                         .desc("Max consecutive appends")
+                         .require(inRange(1, 10)).defaultValue(1).build();
 
     private int threshold = 1;
 
     public ConsecutiveLiteralAppendsRule() {
+        super(ASTMethodCall.class);
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
+    }
+
+    private boolean isQualifierAnAppend(ASTMethodCall e) {
+        ASTExpression qual = e.getQualifier();
+        if (qual instanceof ASTVariableAccess) {
+            ASTVariableAccess varLhs = (ASTVariableAccess) qual;
+            JVariableSymbol sym = varLhs.getReferencedSym();
+            ASTVariableDeclaratorId varId;
+            if (sym instanceof JLocalVariableSymbol) {
+                varId = Objects.requireNonNull(sym.tryGetNode());
+            } else {
+                return false;
+            }
+            AssignmentEntry singleAssignment = getReachingDefinition(e, varLhs);
+            if (singleAssignment == null) {
+                return false;
+            }
+            return isStringBuilderCallWithLiteral(singleAssignment.getRhsAsExpression());
+        } else {
+            return isStringBuilderCallWithLiteral(e);
+        }
+    }
+
+    private @Nullable AssignmentEntry getReachingDefinition(ASTMethodCall e, ASTVariableAccess varLhs) {
+        DataflowPass.ensureProcessed(e.getRoot());
+        ReachingDefinitionSet reaching = DataflowPass.getReachingDefinitions(varLhs);
+        if (reaching == null || reaching.isNotFullyKnown()) {
+            return null;
+        }
+
+        // don't deal with forks in control flow for now
+        return CollectionUtil.asSingle(reaching.getReaching());
+    }
+
+    @Override
+    public Object visit(ASTMethodCall call, Object data) {
+        if (isStringBuilderCallWithLiteral(call)
+            && isQualifierAnAppend(call)) {
+            addViolation(data, call);
+        }
+        return null;
+    }
+
+    private boolean isStringBuilderCallWithLiteral(ASTExpression call) {
+        return JavaRuleUtil.isStringBuilderCtorOrAppend(call)
+            && ((InvocationNode) call).getArguments().toStream().get(0) instanceof ASTStringLiteral;
     }
 
     @Override
@@ -133,7 +196,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
                     // see if it changed blocks
                     if (currentBlock != null && lastBlock != null && !currentBlock.equals(lastBlock)
-                            || currentBlock == null ^ lastBlock == null) {
+                        || currentBlock == null ^ lastBlock == null) {
                         checkForViolation(rootNode, data, concurrentCount);
                         concurrentCount = 0;
                     }
