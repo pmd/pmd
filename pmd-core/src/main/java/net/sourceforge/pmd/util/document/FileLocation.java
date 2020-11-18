@@ -42,7 +42,7 @@ public final class FileLocation {
     private final int endColumn;
     private final String fileName;
 
-    /** @see #location(String, int, int, int, int) */
+    /** @see #range(String, int, int, int, int) */
     FileLocation(String fileName, int beginLine, int beginColumn, int endLine, int endColumn) {
         this.fileName = Objects.requireNonNull(fileName);
         this.beginLine = AssertionUtil.requireOver1("Begin line", beginLine);
@@ -104,15 +104,30 @@ public final class FileLocation {
     }
 
     /**
-     * Creates a new location from the given parameters.
+     * Creates a new location for a range of text.
      *
      * @throws IllegalArgumentException If the file name is null
      * @throws IllegalArgumentException If any of the line/col parameters are strictly less than 1
      * @throws IllegalArgumentException If the line and column are not correctly ordered
      * @throws IllegalArgumentException If the start offset or length are negative
      */
-    public static FileLocation location(String fileName, int beginLine, int beginColumn, int endLine, int endColumn) {
+    public static FileLocation range(String fileName, int beginLine, int beginColumn, int endLine, int endColumn) {
         return new FileLocation(fileName, beginLine, beginColumn, endLine, endColumn);
+    }
+
+    /**
+     * Returns a new location that starts and ends at the same position.
+     *
+     * @param fileName File name
+     * @param line     Line number
+     * @param column   Column number
+     *
+     * @return A new location
+     *
+     * @throws IllegalArgumentException See {@link #range(String, int, int, int, int)}
+     */
+    public static FileLocation caret(String fileName, int line, int column) {
+        return new FileLocation(fileName, line, column, line, column);
     }
 
 

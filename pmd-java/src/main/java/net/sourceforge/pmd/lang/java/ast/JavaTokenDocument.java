@@ -17,7 +17,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.JavaEscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -30,7 +29,7 @@ final class JavaTokenDocument extends JavaccTokenDocument.TokenDocumentBehavior 
     static final JavaTokenDocument INSTANCE = new JavaTokenDocument();
 
     private JavaTokenDocument() {
-        super(JavaTokenKinds.TOKEN_NAMES, EscapeTranslator.translatorFor(JavaEscapeTranslator::new));
+        super(JavaTokenKinds.TOKEN_NAMES);
     }
 
 
@@ -51,9 +50,7 @@ final class JavaTokenDocument extends JavaccTokenDocument.TokenDocumentBehavior 
 
     @Override
     protected TextDocument translate(TextDocument text) throws MalformedSourceException {
-        try (JavaEscapeTranslator translator = new JavaEscapeTranslator(text)) {
-            return translator.translateDocument();
-        }
+        return new JavaEscapeTranslator(text).translateDocument();
     }
 
 

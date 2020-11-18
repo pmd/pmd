@@ -74,7 +74,7 @@ public final class RuleContext {
 
         FileLocation location = node.getReportLocation();
         if (beginLine != -1 && endLine != -1) {
-            location = FileLocation.location(location.getFileName(), beginLine, 1, endLine, 1);
+            location = FileLocation.range(location.getFileName(), beginLine, 1, endLine, 1);
         }
 
         RuleViolation violation = fact.createViolation(rule, node, location, makeMessage(message, formatArgs));

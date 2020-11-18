@@ -53,7 +53,7 @@ public final class JavaEscapeTranslator extends BackslashEscapeTranslator {
 
             return Chars.wrap(Character.toString(c));
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            throw new MalformedSourceException("Invalid unicode escape " + " at line", e, getLine(posOfFirstBackSlash), getColumn(posOfFirstBackSlash));
+            throw new MalformedSourceException("Invalid unicode escape ", e, locationAt(posOfFirstBackSlash));
         }
     }
 

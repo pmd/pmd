@@ -10,9 +10,10 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.JavaEscapeTranslator;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
 import net.sourceforge.pmd.lang.vf.ast.VfTokenKinds;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * @author sergey.gorbaty
@@ -26,8 +27,12 @@ public class VfTokenizer extends JavaCCTokenizer {
 
     @Override
     protected TokenDocumentBehavior tokenBehavior() {
-        return new JavaccTokenDocument.TokenDocumentBehavior(VfTokenKinds.TOKEN_NAMES,
-                                                             EscapeTranslator.translatorFor(JavaEscapeTranslator::new));
+        return new JavaccTokenDocument.TokenDocumentBehavior(VfTokenKinds.TOKEN_NAMES) {
+            @Override
+            protected TextDocument translate(TextDocument text) throws MalformedSourceException {
+                return new JavaEscapeTranslator(text).translateDocument();
+            }
+        };
     }
 
 }

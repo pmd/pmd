@@ -41,7 +41,7 @@ public final class CachedRuleViolation implements RuleViolation {
             final String className, final String methodName, final String variableName) {
         this.mapper = mapper;
         this.description = description;
-        this.location = FileLocation.location(fileName, beginLine, beginColumn, endLine, endColumn);
+        this.location = FileLocation.range(fileName, beginLine, beginColumn, endLine, endColumn);
         this.ruleClassName = ruleClassName;
         this.ruleName = ruleName;
         this.ruleTargetLanguage = ruleTargetLanguage;

@@ -66,13 +66,9 @@ public class CPPTokenizer extends JavaCCTokenizer {
             @Override
             protected TextDocument translate(TextDocument text) throws MalformedSourceException {
                 if (skipBlocks) {
-                    try (CppBlockSkipper translator = new CppBlockSkipper(text, skipBlocksStart, skipBlocksEnd)) {
-                        text = translator.translateDocument();
-                    }
+                    text = new CppBlockSkipper(text, skipBlocksStart, skipBlocksEnd).translateDocument();
                 }
-                try (CppEscapeTranslator translator = new CppEscapeTranslator(text)) {
-                    return translator.translateDocument();
-                }
+                return new CppEscapeTranslator(text).translateDocument();
             }
         };
     }

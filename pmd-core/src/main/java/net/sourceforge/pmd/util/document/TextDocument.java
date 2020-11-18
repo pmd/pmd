@@ -179,7 +179,7 @@ public interface TextDocument extends Closeable {
 
     // todo doc
     default FileLocation createLocation(int bline, int bcol, int eline, int ecol) {
-        return FileLocation.location(getDisplayName(), bline, bcol, eline, ecol);
+        return FileLocation.range(getDisplayName(), bline, bcol, eline, ecol);
     }
 
     /**
