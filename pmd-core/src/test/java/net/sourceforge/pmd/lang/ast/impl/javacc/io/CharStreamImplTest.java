@@ -145,7 +145,12 @@ public class CharStreamImplTest {
 
     public CharStream javaCharStream(String abcd) {
         return CharStream.create(TextDocument.readOnlyString(abcd, dummyVersion),
-                                 new TokenDocumentBehavior(Collections.emptyList(), EscapeTranslator.translatorFor(JavaEscapeTranslator::new)));
+                                 new TokenDocumentBehavior(Collections.emptyList()) {
+                                     @Override
+                                     protected TextDocument translate(TextDocument text) throws MalformedSourceException {
+                                         return new JavaEscapeTranslator(text).translateDocument();
+                                     }
+                                 });
     }
 
     @Test

@@ -18,9 +18,7 @@ public class JavaEscapeReaderTest {
 
     public TextDocument readString(String input) {
         TextDocument intext = TextDocument.readOnlyString(Chars.wrap(input), LanguageRegistry.getDefaultLanguage().getDefaultVersion());
-        try (JavaEscapeTranslator translator = new JavaEscapeTranslator(intext)) {
-            return translator.translateDocument();
-        }
+        return new JavaEscapeTranslator(intext).translateDocument();
     }
 
 

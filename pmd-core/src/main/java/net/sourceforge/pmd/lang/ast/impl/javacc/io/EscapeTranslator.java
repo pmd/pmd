@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
 import static java.lang.Integer.min;
 
-import java.util.function.Function;
-
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.document.Chars;
@@ -22,7 +20,7 @@ import net.sourceforge.pmd.util.document.TextDocument;
  * perform any escape processing. Subclasses refine this behavior.
  */
 @SuppressWarnings("PMD.AssignmentInOperand")
-public abstract class EscapeTranslator implements AutoCloseable {
+public abstract class EscapeTranslator {
     // Note that this can easily be turned into a java.io.Reader with
     // efficient block IO, optimized for the common case where there are
     // few or no escapes. This is part of the history of this file, but
@@ -43,6 +41,13 @@ public abstract class EscapeTranslator implements AutoCloseable {
     private Chars curEscape;
     private int offInEscape;
 
+    /**
+     * Create a translator that will read from the given document.
+     *
+     * @param original Original document
+     *
+     * @throws NullPointerException If the parameter is null
+     */
     public EscapeTranslator(TextDocument original) {
         AssertionUtil.requireParamNotNull("builder", original);
         this.input = original.getText();
@@ -52,10 +57,23 @@ public abstract class EscapeTranslator implements AutoCloseable {
 
 
     /**
-     * Translate all the input in the buffer.
+     * Translate all the input in the buffer. This consumes this object.
+     *
+     * @return The translated text document. If there is no escape, returns the original text
+     *
+     * @throws IllegalStateException    If this method is called more than once on the same object
+     * @throws MalformedSourceException If there are invalid escapes in the source
      */
     public TextDocument translateDocument() throws MalformedSourceException {
         ensureOpen();
+        try {
+            return translateImpl();
+        } finally {
+            close();
+        }
+    }
+
+    private TextDocument translateImpl() {
         if (this.bufpos == input.length()) {
             return escapes.build();
         }
@@ -113,15 +131,18 @@ public abstract class EscapeTranslator implements AutoCloseable {
         return startOffsetInclusive;
     }
 
-    @Override
-    public void close() {
+    /**
+     * Closing a translator does not close the underlying document, it just
+     * clears the intermediary state.
+     */
+    private void close() {
         this.bufpos = -1;
         this.input = null;
     }
 
 
     /** Check to make sure that the stream has not been closed */
-    protected void ensureOpen() {
+    protected final void ensureOpen() {
         if (input == null) {
             throw new IllegalStateException("Closed");
         }
@@ -141,13 +162,5 @@ public abstract class EscapeTranslator implements AutoCloseable {
         return StringUtil.columnNumberAt(input, idxInInput);
     }
 
-
-    public static Function<TextDocument, TextDocument> translatorFor(Function<TextDocument, EscapeTranslator> translatorMaker) {
-        return original -> {
-            try (EscapeTranslator translator = translatorMaker.apply(original)) {
-                return translator.translateDocument();
-            }
-        };
-    }
 
 }
