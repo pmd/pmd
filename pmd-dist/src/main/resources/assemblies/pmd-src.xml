@@ -29,9 +29,10 @@
                 <exclude>**/.idea/**</exclude>
                 <exclude>**/*.iml</exclude>
 
-                <exclude>.travis/secrets.tar</exclude>
-                <exclude>.travis/id_rsa</exclude>
-                <exclude>.travis/*.gpg</exclude>
+                <exclude>.ci/files/id_rsa</exclude>
+                <exclude>.ci/files/private-env</exclude>
+                <exclude>.ci/files/public-env</exclude>
+                <exclude>.ci/files/release-signing-key-D0BF1D737C9A1C22.gpg.gpg</exclude>
 
                 <exclude>.bundle/**</exclude>
                 <exclude>vendor/**</exclude>

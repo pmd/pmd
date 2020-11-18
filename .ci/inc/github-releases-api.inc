@@ -1,6 +1,6 @@
 #
 # The functions here require the following scripts:
-# logger.sh
+# logger.inc
 #
 # The functions here require the following environment variables:
 # GITHUB_OAUTH_TOKEN

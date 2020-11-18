@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.AbstractXPathFunctionDef;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
@@ -106,7 +107,7 @@ public class SaxonXPathRuleQueryTest {
         DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum();
 
 
-        expected.expect(RuntimeException.class);
+        expected.expect(PmdXPathException.class);
         expected.expectMessage(CoreMatchers.containsString("XPath rule expression returned a non-node"));
         expected.expectMessage(CoreMatchers.containsString("Int64Value"));
 

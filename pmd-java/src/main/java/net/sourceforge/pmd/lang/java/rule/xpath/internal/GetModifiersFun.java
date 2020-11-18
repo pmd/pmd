@@ -22,12 +22,7 @@ import net.sf.saxon.value.SequenceType;
 import net.sf.saxon.value.StringValue;
 
 /**
- * XPath function {@code pmd-java:typeIs(typeName as xs:string) as xs:boolean}
- * and {@code typeIsExactly}.
- *
- * <p>Example XPath 2.0: {@code //ClassOrInterfaceType[pmd-java:typeIs('java.lang.String')]}
- *
- * <p>Returns true if the type of the node matches, false otherwise.
+ * The two functions {@code modifiers} and {@code explicitModifiers}.
  */
 public final class GetModifiersFun extends BaseJavaXPathFunction {
 
@@ -63,7 +58,6 @@ public final class GetModifiersFun extends BaseJavaXPathFunction {
             @Override
             public Sequence call(XPathContext context, Sequence[] arguments) {
                 Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
-
 
                 if (contextNode instanceof AccessNode) {
                     ASTModifierList modList = ((AccessNode) contextNode).getModifiers();
