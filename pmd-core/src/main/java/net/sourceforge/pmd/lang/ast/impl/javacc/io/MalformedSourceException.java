@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * A {@link FileAnalysisException} thrown when the source format is invalid,
@@ -12,18 +15,17 @@ import net.sourceforge.pmd.lang.ast.FileAnalysisException;
  */
 public class MalformedSourceException extends FileAnalysisException {
 
-    private final int line;
-    private final int col;
+    private final FileLocation location;
 
-    public MalformedSourceException(String message, Throwable cause, int line, int col) {
+    public MalformedSourceException(String message, Throwable cause, FileLocation fileLocation) {
         super(message, cause);
-        this.line = line;
-        this.col = col;
+        this.location = Objects.requireNonNull(fileLocation);
+        setFileName(fileLocation.getFileName());
     }
 
     @Override
     protected String positionToString() {
-        return super.positionToString() + " at line " + line + ", column " + col;
+        return super.positionToString() + " at " + location.startPosToString();
     }
 
     @Override

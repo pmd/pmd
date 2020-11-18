@@ -13,7 +13,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
     private FileLocation location;
 
     public void setCoords(int bline, int bcol, int eline, int ecol) {
-        this.location = FileLocation.location(":dummyFile:", bline, bcol, eline, ecol);
+        this.location = FileLocation.range(":dummyFile:", bline, bcol, eline, ecol);
     }
 
     @Override

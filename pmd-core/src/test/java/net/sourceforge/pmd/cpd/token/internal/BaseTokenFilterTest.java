@@ -58,7 +58,7 @@ public class BaseTokenFilterTest {
 
         @Override
         public FileLocation getReportLocation() {
-            return FileLocation.location("n/a", 0, 0, 0, 0);
+            return FileLocation.range("n/a", 0, 0, 0, 0);
         }
 
         @Override

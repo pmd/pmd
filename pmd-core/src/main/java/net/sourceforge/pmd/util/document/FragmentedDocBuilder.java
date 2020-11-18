@@ -22,8 +22,8 @@ public final class FragmentedDocBuilder {
         this.original = original;
     }
 
-    public Chars inputChars() {
-        return mainBuf;
+    public FileLocation toLocation(int indexInInput) {
+        return original.toLocation(TextRegion.caretAt(indexInInput));
     }
 
     /**

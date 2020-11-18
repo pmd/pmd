@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 import static java.lang.Integer.min;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.FragmentedDocBuilder;
 import net.sourceforge.pmd.util.document.TextDocument;
 
@@ -36,7 +36,7 @@ public abstract class EscapeTranslator {
     /** Position of the next char to read in the input. */
     protected int bufpos;
     /** Keep track of adjustments to make to the offsets, caused by unicode escapes. */
-    final FragmentedDocBuilder escapes;
+    final FragmentedDocBuilder builder;
 
     private Chars curEscape;
     private int offInEscape;
@@ -52,7 +52,7 @@ public abstract class EscapeTranslator {
         AssertionUtil.requireParamNotNull("builder", original);
         this.input = original.getText();
         this.bufpos = 0;
-        this.escapes = new FragmentedDocBuilder(original);
+        this.builder = new FragmentedDocBuilder(original);
     }
 
 
@@ -75,7 +75,7 @@ public abstract class EscapeTranslator {
 
     private TextDocument translateImpl() {
         if (this.bufpos == input.length()) {
-            return escapes.build();
+            return builder.build();
         }
 
         final int len = input.length(); // remove Integer.MAX_VALUE
@@ -108,7 +108,7 @@ public abstract class EscapeTranslator {
             }
             readChars += newlyReadChars;
         }
-        return escapes.build();
+        return builder.build();
     }
 
     /**
@@ -124,7 +124,7 @@ public abstract class EscapeTranslator {
 
     protected int recordEscape(final int startOffsetInclusive, int endOffsetExclusive, Chars translation) {
         assert endOffsetExclusive > startOffsetInclusive && startOffsetInclusive >= 0;
-        this.escapes.recordDelta(startOffsetInclusive, endOffsetExclusive, translation);
+        this.builder.recordDelta(startOffsetInclusive, endOffsetExclusive, translation);
         this.bufpos = endOffsetExclusive;
         this.curEscape = translation;
         this.offInEscape = 0;
@@ -148,19 +148,8 @@ public abstract class EscapeTranslator {
         }
     }
 
-    /**
-     * The parameter is an *input* offset.
-     */
-    protected int getLine(int idxInInput) {
-        return StringUtil.lineNumberAt(input, idxInInput);
+    protected FileLocation locationAt(int indexInInput) {
+        return builder.toLocation(indexInInput);
     }
-
-    /**
-     * @see #getLine(int)
-     */
-    protected int getColumn(int idxInInput) {
-        return StringUtil.columnNumberAt(input, idxInInput);
-    }
-
 
 }

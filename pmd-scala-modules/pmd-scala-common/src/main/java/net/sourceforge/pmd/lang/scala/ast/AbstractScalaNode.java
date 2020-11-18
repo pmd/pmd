@@ -64,11 +64,11 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractSc
 
     @Override
     public FileLocation getReportLocation() {
-        return FileLocation.location("TODO",
-                                     pos.startLine() + 1,
-                                     pos.startColumn() + 1,
-                                     pos.endLine() + 1,
-                                     pos.endColumn() + 1);
+        return FileLocation.range("TODO",
+                                  pos.startLine() + 1,
+                                  pos.startColumn() + 1,
+                                  pos.endLine() + 1,
+                                  pos.endColumn() + 1);
     }
 
     @Override
