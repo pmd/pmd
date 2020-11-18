@@ -11,11 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil.InvocationMatcher;
 
 /**
  * How this rule works: find additive expressions: + check that the addition is
@@ -26,15 +23,13 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil.InvocationMatcher;
  */
 public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
 
-    private static final InvocationMatcher APPEND_MATCHER = InvocationMatcher.parse("java.lang.AbstractStringBuilder#append(_*)");
-
     public InefficientStringBufferingRule() {
         super(ASTConstructorCall.class, ASTMethodCall.class);
     }
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        if (APPEND_MATCHER.matchesCall(node)) {
+        if (JavaRuleUtil.isStringBuilderCtorOrAppend(node)) {
             checkArgument(node.getArguments(), (RuleContext) data);
         }
         return null;
@@ -42,8 +37,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
-        if (TypeTestUtil.isA(StringBuilder.class, node.getTypeNode())
-            || TypeTestUtil.isA(StringBuffer.class, node.getTypeNode())) {
+        if (JavaRuleUtil.isStringBuilderCtorOrAppend(node)) {
             checkArgument(node.getArguments(), (RuleContext) data);
         }
         return null;
@@ -67,6 +61,6 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
         Node parent = node.getParent();
 
         return parent instanceof ASTMethodCall
-            && APPEND_MATCHER.matchesCall((InvocationNode) parent);
+            && JavaRuleUtil.isStringBuilderCtorOrAppend((ASTMethodCall) parent);
     }
 }
