@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -45,8 +46,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
@@ -62,6 +65,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -135,12 +140,45 @@ public final class JavaRuleUtil {
         return false;
     }
 
-    public static boolean isStringConcatExpr(@Nullable ASTExpression e) {
+    public static boolean isStringConcatExpr(@Nullable JavaNode e) {
         if (e instanceof ASTInfixExpression) {
             ASTInfixExpression infix = (ASTInfixExpression) e;
             return infix.getOperator() == BinaryOp.ADD && TypeTestUtil.isA(String.class, infix);
         }
         return false;
+    }
+
+    /**
+     * If the parameter is an operand of a binary infix expression,
+     * returns the other operand. Otherwise returns null.
+     */
+    public static @Nullable ASTExpression getOtherOperandIfInInfixExpr(@Nullable JavaNode e) {
+        if (e != null && e.getParent() instanceof ASTInfixExpression) {
+            return (ASTExpression) e.getParent().getChild(1 - e.getIndexInParent());
+        }
+        return null;
+    }
+
+    /**
+     * Returns true if the expression is a stringbuilder (or stringbuffer)
+     * append call, or a constructor call for one of these classes.
+     */
+    public static boolean isStringBuilderCtorOrAppend(@Nullable ASTExpression e) {
+        if (e instanceof ASTMethodCall) {
+            ASTMethodCall call = (ASTMethodCall) e;
+            if ("append".equals(call.getMethodName())) {
+                ASTExpression qual = ((ASTMethodCall) e).getQualifier();
+                return qual != null && isStringBufferOrBuilder(qual);
+            }
+        } else if (e instanceof ASTConstructorCall) {
+            return isStringBufferOrBuilder(((ASTConstructorCall) e).getTypeNode());
+        }
+        return false;
+    }
+
+    private static boolean isStringBufferOrBuilder(TypeNode node) {
+        return TypeTestUtil.isExactlyA(StringBuilder.class, node)
+            || TypeTestUtil.isExactlyA(StringBuffer.class, node);
     }
 
     /**
@@ -522,4 +560,22 @@ public final class JavaRuleUtil {
         return qualifiedNames.stream().anyMatch(node::isAnnotationPresent);
     }
 
+
+    /**
+     * Returns true if the expression is the default field value for
+     * the given type.
+     */
+    public static boolean isDefaultValue(JTypeMirror type, ASTExpression expr) {
+        if (type.isPrimitive()) {
+            if (type.isPrimitive(PrimitiveTypeKind.BOOLEAN)) {
+                return expr instanceof ASTBooleanLiteral && !((ASTBooleanLiteral) expr).isTrue();
+            } else {
+                Object constValue = expr.getConstValue();
+                return constValue instanceof Number && ((Number) constValue).doubleValue() == 0d
+                    || constValue instanceof Character && constValue.equals('\u0000');
+            }
+        } else {
+            return expr instanceof ASTNullLiteral;
+        }
+    }
 }
