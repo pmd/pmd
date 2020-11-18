@@ -23,8 +23,7 @@ public class ScalaTokenAdapter implements GenericToken {
 
     @Override
     public GenericToken getNext() {
-        // not required
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -39,21 +38,29 @@ public class ScalaTokenAdapter implements GenericToken {
 
     @Override
     public int getBeginLine() {
-        return token.pos().startLine();
+        return token.pos().startLine() + 1;
     }
 
     @Override
     public int getEndLine() {
-        return token.pos().endLine();
+        return token.pos().endLine() + 1;
     }
 
     @Override
     public int getBeginColumn() {
-        return token.pos().startColumn();
+        return token.pos().startColumn() + 1;
     }
 
     @Override
     public int getEndColumn() {
-        return token.pos().endColumn();
+        return token.pos().endColumn() + 1;
+    }
+
+    @Override
+    public String toString() {
+        return "ScalaTokenAdapter{"
+                + "token=" + token
+                + ", previousComment=" + previousComment
+                + "}";
     }
 }

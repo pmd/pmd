@@ -87,9 +87,9 @@ public class ScalaTokenizer implements Tokenizer {
                 }
                 TokenEntry cpdToken = new TokenEntry(token.getImage(),
                                                      filename,
-                                                     token.getBeginLine() + 1,
-                                                     token.getBeginColumn() + 1,
-                                                     token.getEndColumn() + 1);
+                                                     token.getBeginLine(),
+                                                     token.getBeginColumn(),
+                                                     token.getEndColumn());
                 tokenEntries.add(cpdToken);
             }
         } catch (Exception e) {
@@ -108,7 +108,7 @@ public class ScalaTokenizer implements Tokenizer {
     }
 
     /**
-     * Implementation of the generic Token Manager, also skips un-helpful tokens to only register important tokens
+     * Implementation of the generic Token Manager, also skips un-helpful tokens and comments to only register important tokens
      * and patterns.
      *
      * Keeps track of comments, for special comment processing
@@ -117,7 +117,7 @@ public class ScalaTokenizer implements Tokenizer {
 
         Iterator<Token> tokenIter;
         Class<?>[] skippableTokens = new Class<?>[] { Token.Space.class, Token.Tab.class, Token.CR.class,
-            Token.LF.class, Token.FF.class, Token.LFLF.class, Token.EOF.class };
+            Token.LF.class, Token.FF.class, Token.LFLF.class, Token.EOF.class, Token.Comment.class };
 
         GenericToken previousComment = null;
         GenericToken result = null;
@@ -135,15 +135,12 @@ public class ScalaTokenizer implements Tokenizer {
             Token token;
             do {
                 token = tokenIter.next();
+                if (isComment(token)) {
+                    previousComment = new ScalaTokenAdapter(token, previousComment);
+                }
             } while (token != null && skipToken(token) && tokenIter.hasNext());
 
-            result = new ScalaTokenAdapter(token, previousComment);
-
-            if (isComment(token)) {
-                previousComment = result;
-            }
-
-            return result;
+            return new ScalaTokenAdapter(token, previousComment);
         }
 
         private boolean skipToken(Token token) {
@@ -157,7 +154,7 @@ public class ScalaTokenizer implements Tokenizer {
         }
 
         private boolean isComment(Token token) {
-            return token != null && (token.text().startsWith("//") || token.text().startsWith("/*"));
+            return token instanceof Token.Comment;
         }
 
         @Override
