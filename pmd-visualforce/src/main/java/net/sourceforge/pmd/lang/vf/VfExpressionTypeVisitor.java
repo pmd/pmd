@@ -4,58 +4,33 @@
 
 package net.sourceforge.pmd.lang.vf;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttributeValue;
 import net.sourceforge.pmd.lang.vf.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.vf.ast.ASTDotExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
 import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
-import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
+import net.sourceforge.pmd.lang.vf.ast.AbstractVFDataNode;
 import net.sourceforge.pmd.lang.vf.ast.VfParserVisitorAdapter;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 
 /**
- * Visits {@link ASTElExpression} nodes and stores type information for all {@link ASTIdentifier} child nodes.
+ * Visits {@link ASTExpression} nodes and stores type information for
+ * {@link net.sourceforge.pmd.lang.vf.ast.ASTIdentifier} children that represent an IdentifierDotted construct. An
+ * IdentifierDotted is of the form {@code MyObject__c.MyField__c}.
  */
-public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
+class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     private static final Logger LOGGER = Logger.getLogger(VfExpressionTypeVisitor.class.getName());
-
-    static final List<String> DEFAULT_APEX_DIRECTORIES = Collections.singletonList(".." + File.separator + "classes");
-    static final List<String> DEFAULT_OBJECT_DIRECTORIES = Collections.singletonList(".." + File.separator + "objects");
-
-    /**
-     * Directory that contains Apex classes that may be referenced from a Visualforce page.
-     */
-    public static final PropertyDescriptor<List<String>> APEX_DIRECTORIES_DESCRIPTOR =
-            PropertyFactory.stringListProperty("apexDirectories")
-                    .desc("Location of Apex Class directories. Absolute or relative to the Visualforce directory.")
-                    .defaultValue(DEFAULT_APEX_DIRECTORIES)
-                    .delim(',')
-                    .build();
-
-    /**
-     * Directory that contains Object definitions that may be referenced from a Visualforce page.
-     */
-    public static final PropertyDescriptor<List<String>> OBJECTS_DIRECTORIES_DESCRIPTOR =
-            PropertyFactory.stringListProperty("objectsDirectories")
-                    .desc("Location of CustomObject directories. Absolute or relative to the Visualforce directory.")
-                    .defaultValue(DEFAULT_OBJECT_DIRECTORIES)
-                    .delim(',')
-                    .build();
 
     private static final String APEX_PAGE = "apex:page";
     private static final String CONTROLLER_ATTRIBUTE = "controller";
@@ -64,8 +39,8 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
 
     private final ApexClassPropertyTypes apexClassPropertyTypes;
     private final ObjectFieldTypes objectFieldTypes;
+    private final String fileName;
 
-    private String fileName;
     private String standardControllerName;
 
     /**
@@ -76,9 +51,10 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     private final List<String> apexDirectories;
     private final List<String> objectsDirectories;
 
-    public VfExpressionTypeVisitor(PropertySource propertySource) {
-        this.apexDirectories = propertySource.getProperty(APEX_DIRECTORIES_DESCRIPTOR);
-        this.objectsDirectories = propertySource.getProperty(OBJECTS_DIRECTORIES_DESCRIPTOR);
+    VfExpressionTypeVisitor(String fileName, PropertySource propertySource) {
+        this.fileName = fileName;
+        this.apexDirectories = propertySource.getProperty(VfParserOptions.APEX_DIRECTORIES_DESCRIPTOR);
+        this.objectsDirectories = propertySource.getProperty(VfParserOptions.OBJECTS_DIRECTORIES_DESCRIPTOR);
         this.apexClassNames = new ArrayList<>();
         this.apexClassPropertyTypes = new ApexClassPropertyTypes();
         this.objectFieldTypes = new ObjectFieldTypes();
@@ -86,11 +62,15 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
+        if (StringUtils.isBlank(fileName)) {
+            // Skip visiting if there isn't a file that can anchor the directories
+            return data;
+        }
+
         if (apexDirectories.isEmpty() && objectsDirectories.isEmpty()) {
             // Skip visiting if there aren't any directories to look in
             return data;
         }
-        this.fileName = AbstractTokenManager.getFileName();
         return super.visit(node, data);
     }
 
@@ -125,14 +105,14 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     }
 
     /**
-     * Find all {@link ASTIdentifier} child nodes of {@code node} and attempt to resolve their type. The order of
-     * precedence is Controller, Extensions, StandardController.
+     * Invoke {@link ASTExpression#getDataNodes()} on all children of {@code node} and attempt to determine the
+     * {@link DataType} by looking at Apex or CustomField metadata.
      */
     @Override
     public Object visit(ASTElExpression node, Object data) {
-        for (Map.Entry<ASTIdentifier, String> entry : getExpressionIdentifierNames(node).entrySet()) {
+        for (Map.Entry<AbstractVFDataNode, String> entry : getDataNodeNames(node).entrySet()) {
             String name = entry.getValue();
-            IdentifierType type = null;
+            DataType type = null;
             String[] parts = name.split("\\.");
 
             // Apex extensions take precedence over Standard controllers.
@@ -158,7 +138,7 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
             // Try to find the identifier in an Apex class
             for (String apexClassName : apexClassNames) {
                 String fullName = apexClassName + "." + name;
-                type = apexClassPropertyTypes.getVariableType(fullName, fileName, apexDirectories);
+                type = apexClassPropertyTypes.getDataType(fullName, fileName, apexDirectories);
                 if (type != null) {
                     break;
                 }
@@ -168,12 +148,12 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
             // to the StandardController.
             if (type == null) {
                 if (parts.length >= 2 && standardControllerName != null && standardControllerName.equalsIgnoreCase(parts[0])) {
-                    type = objectFieldTypes.getVariableType(name, fileName, objectsDirectories);
+                    type = objectFieldTypes.getDataType(name, fileName, objectsDirectories);
                 }
             }
 
             if (type != null) {
-                entry.getKey().setIdentifierType(type);
+                entry.getKey().setDataType(type);
             } else {
                 LOGGER.fine("Unable to determine type for: " + name);
             }
@@ -182,36 +162,21 @@ public class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     }
 
     /**
-     * Parse the expression returning all of the identifiers in that expression mapped to its string represenation.
-     * An {@code ASTElExpression} can contain multiple {@code ASTExpressions} in cases of logical operators.
+     * Invoke {@link ASTExpression#getDataNodes()} for all {@link ASTExpression} children of {@code node} and return
+     * the consolidated results.
      */
-    private Map<ASTIdentifier, String> getExpressionIdentifierNames(ASTElExpression elExpression) {
-        Map<ASTIdentifier, String> identifierToName = new IdentityHashMap<>();
+    private IdentityHashMap<AbstractVFDataNode, String> getDataNodeNames(ASTElExpression node) {
+        IdentityHashMap<AbstractVFDataNode, String> dataNodeToName = new IdentityHashMap<>();
 
-        for (ASTExpression expression : elExpression.findChildrenOfType(ASTExpression.class)) {
-            for (ASTIdentifier identifier : expression.findChildrenOfType(ASTIdentifier.class)) {
-                StringBuilder sb = new StringBuilder(identifier.getImage());
-
-                for (ASTDotExpression dotExpression : expression.findChildrenOfType(ASTDotExpression.class)) {
-                    sb.append(".");
-
-                    List<ASTIdentifier> childIdentifiers = dotExpression.findChildrenOfType(ASTIdentifier.class);
-                    if (childIdentifiers.isEmpty()) {
-                        continue;
-                    } else if (childIdentifiers.size() > 1) {
-                        // The grammar guarantees tha there should be at most 1 child identifier
-                        // <EXP_DOT> (Identifier() | Literal() )
-                        throw new RuntimeException("Unexpected number of childIdentifiers: size=" + childIdentifiers.size());
-                    }
-
-                    ASTIdentifier childIdentifier = childIdentifiers.get(0);
-                    sb.append(childIdentifier.getImage());
-                }
-
-                identifierToName.put(identifier, sb.toString());
+        for (ASTExpression expression : node.findChildrenOfType(ASTExpression.class)) {
+            try {
+                dataNodeToName.putAll(expression.getDataNodes());
+            } catch (ASTExpression.DataNodeStateException ignore) {
+                // Intentionally left blank
+                continue;
             }
         }
 
-        return identifierToName;
+        return dataNodeToName;
     }
 }

@@ -4,8 +4,19 @@
 
 package net.sourceforge.pmd.lang.vf;
 
+import static org.junit.Assert.assertEquals;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public final class VFTestUtils {
     /**
@@ -59,6 +70,36 @@ public final class VFTestUtils {
         }
 
         return path.toAbsolutePath();
+    }
+
+    /**
+     * @return all nodes that match the {@code xpath} version 2 query.
+     */
+    public static List<Node> findNodes(Node node, String xpath) {
+        SaxonXPathRuleQuery query = createQuery(xpath);
+        return query.evaluate(node, new RuleContext());
+    }
+
+    /**
+     * Verify that return values of {@link SalesforceFieldTypes#getDataType(String, String, List)} using the keys of
+     * {@code expectedDataTypes} matches the values of {@code expectedDataTypes}
+     */
+    public static void validateDataTypes(Map<String, DataType> expectedDataTypes, SalesforceFieldTypes fieldTypes,
+                                         Path vfPagePath, List<String> paths) {
+        String vfFileName = vfPagePath.toString();
+
+        for (Map.Entry<String, DataType> entry : expectedDataTypes.entrySet()) {
+            assertEquals(entry.getKey(), entry.getValue(),
+                    fieldTypes.getDataType(entry.getKey(), vfFileName, paths));
+        }
+    }
+
+    private static SaxonXPathRuleQuery createQuery(String xpath) {
+        SaxonXPathRuleQuery query = new SaxonXPathRuleQuery();
+        query.setVersion(XPathRuleQuery.XPATH_2_0);
+        query.setProperties(Collections.<PropertyDescriptor<?>, Object>emptyMap());
+        query.setXPath(xpath);
+        return query;
     }
 
     private VFTestUtils() {

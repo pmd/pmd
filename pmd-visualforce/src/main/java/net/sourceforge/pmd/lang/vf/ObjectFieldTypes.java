@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.vf;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,14 +24,16 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Responsible for storing a mapping of Fields that can be referenced from Visualforce to the type of the field.
  */
-class ObjectFieldTypes {
+class ObjectFieldTypes extends SalesforceFieldTypes {
     private static final Logger LOGGER = Logger.getLogger(ObjectFieldTypes.class.getName());
 
     public static final String CUSTOM_OBJECT_SUFFIX = "__c";
@@ -38,29 +41,19 @@ class ObjectFieldTypes {
     private static final String MDAPI_OBJECT_FILE_SUFFIX = ".object";
     private static final String SFDX_FIELD_FILE_SUFFIX = ".field-meta.xml";
 
-    private static final Map<String, IdentifierType> STANDARD_FIELD_TYPES;
+    private static final Map<String, DataType> STANDARD_FIELD_TYPES;
 
     static {
         STANDARD_FIELD_TYPES = new HashMap<>();
-        STANDARD_FIELD_TYPES.put("createdbyid", IdentifierType.Lookup);
-        STANDARD_FIELD_TYPES.put("createddate", IdentifierType.DateTime);
-        STANDARD_FIELD_TYPES.put("id", IdentifierType.Lookup);
-        STANDARD_FIELD_TYPES.put("isdeleted", IdentifierType.Checkbox);
-        STANDARD_FIELD_TYPES.put("lastmodifiedbyid", IdentifierType.Lookup);
-        STANDARD_FIELD_TYPES.put("lastmodifieddate", IdentifierType.DateTime);
-        STANDARD_FIELD_TYPES.put("systemmodstamp", IdentifierType.DateTime);
+        STANDARD_FIELD_TYPES.put("createdbyid", DataType.Lookup);
+        STANDARD_FIELD_TYPES.put("createddate", DataType.DateTime);
+        STANDARD_FIELD_TYPES.put("id", DataType.Lookup);
+        STANDARD_FIELD_TYPES.put("isdeleted", DataType.Checkbox);
+        STANDARD_FIELD_TYPES.put("lastmodifiedbyid", DataType.Lookup);
+        STANDARD_FIELD_TYPES.put("lastmodifieddate", DataType.DateTime);
+        STANDARD_FIELD_TYPES.put("name", DataType.Text);
+        STANDARD_FIELD_TYPES.put("systemmodstamp", DataType.DateTime);
     }
-
-    /**
-     * Cache of lowercase variable names to the variable type declared in the field's metadata file.
-     */
-    private final Map<String, IdentifierType> variableNameToVariableType;
-
-    /**
-     * Keep track of which variables were already processed. Avoid processing if a page repeatedly asks for an entry
-     * which we haven't previously found.
-     */
-    private final Set<String> variableNameProcessed;
 
     /**
      * Keep track of which ".object" files have already been processed. All fields are processed at once. If an object
@@ -77,8 +70,6 @@ class ObjectFieldTypes {
     private final XPathExpression sfdxCustomFieldTypeExpression;
 
     ObjectFieldTypes() {
-        this.variableNameToVariableType = new HashMap<>();
-        this.variableNameProcessed = new HashSet<>();
         this.objectFileProcessed = new HashSet<>();
 
         try {
@@ -111,68 +102,46 @@ class ObjectFieldTypes {
 
     /**
      * Looks in {@code objectsDirectories} for a custom field identified by {@code expression}.
-     *
-     * @return the IdentifierType for the field represented by {@code expression} or null the custom field isn't found.
      */
-    public IdentifierType getVariableType(String expression, String vfFileName, List<String> objectsDirectories) {
-        String lowerExpression = expression.toLowerCase(Locale.ROOT);
+    @Override
+    protected void findDataType(String expression, List<Path> objectsDirectories) {
+        // The expression should be in the form <objectName>.<fieldName>
+        String[] parts = expression.split("\\.");
+        if (parts.length == 1) {
+            throw new RuntimeException("Malformed identifier: " + expression);
+        } else if (parts.length == 2) {
+            String objectName = parts[0];
+            String fieldName = parts[1];
 
-        if (variableNameToVariableType.containsKey(lowerExpression)) {
-            // The expression has been previously retrieved
-            return variableNameToVariableType.get(lowerExpression);
-        } else if (variableNameProcessed.contains(lowerExpression)) {
-            // The expression has been previously requested, but was not found
-            return null;
-        } else {
-            // The expression should be in the form <objectName>.<fieldName>
-            String[] parts = expression.split("\\.");
-            if (parts.length == 1) {
-                throw new RuntimeException("Malformed identifier: " + expression);
-            } else if (parts.length == 2) {
-                String objectName = parts[0];
-                String fieldName = parts[1];
+            addStandardFields(objectName);
 
-                addStandardFields(objectName);
-
-                // Attempt to find a metadata file that contains the custom field. The information will be located in a
-                // file located at <objectDirectory>/<objectName>.object or in an file located at
-                // <objectDirectory>/<objectName>/fields/<fieldName>.field-meta.xml. The list of object directories
-                // defaults to the [<vfFileName>/../objects] but can be overridden by the user.
-                Path vfFilePath = Paths.get(vfFileName);
-                for (String objectsDirectory : objectsDirectories) {
-                    Path candidateDirectory;
-                    if (Paths.get(objectsDirectory).isAbsolute()) {
-                        candidateDirectory = Paths.get(objectsDirectory);
-                    } else {
-                        candidateDirectory = vfFilePath.getParent().resolve(objectsDirectory);
-                    }
-
-                    Path sfdxCustomFieldPath = getSfdxCustomFieldPath(candidateDirectory, objectName, fieldName);
-                    if (sfdxCustomFieldPath != null) {
-                        // SFDX Format
-                        parseSfdxCustomField(objectName, sfdxCustomFieldPath);
-                    } else {
-                        // MDAPI Format
-                        String fileName = objectName + MDAPI_OBJECT_FILE_SUFFIX;
-                        Path mdapiPath = candidateDirectory.resolve(fileName);
-                        if (Files.exists(mdapiPath) && Files.isRegularFile(mdapiPath)) {
-                            parseMdapiCustomObject(mdapiPath);
-                        }
-                    }
-
-                    if (variableNameToVariableType.containsKey(lowerExpression)) {
-                        // Break out of the loop if a variable was found
-                        break;
+            // Attempt to find a metadata file that contains the custom field. The information will be located in a
+            // file located at <objectDirectory>/<objectName>.object or in an file located at
+            // <objectDirectory>/<objectName>/fields/<fieldName>.field-meta.xml. The list of object directories
+            // defaults to the [<vfFileName>/../objects] but can be overridden by the user.
+            for (Path objectsDirectory : objectsDirectories) {
+                Path sfdxCustomFieldPath = getSfdxCustomFieldPath(objectsDirectory, objectName, fieldName);
+                if (sfdxCustomFieldPath != null) {
+                    // SFDX Format
+                    parseSfdxCustomField(objectName, sfdxCustomFieldPath);
+                } else {
+                    // MDAPI Format
+                    String fileName = objectName + MDAPI_OBJECT_FILE_SUFFIX;
+                    Path mdapiPath = objectsDirectory.resolve(fileName);
+                    if (Files.exists(mdapiPath) && Files.isRegularFile(mdapiPath)) {
+                        parseMdapiCustomObject(mdapiPath);
                     }
                 }
-                variableNameProcessed.add(lowerExpression);
-            } else {
-                // TODO: Support cross object relationships, these are expressions that contain "__r"
-                LOGGER.fine("Expression does not have two parts: " + expression);
-            }
-        }
 
-        return variableNameToVariableType.get(lowerExpression);
+                if (containsExpression(expression)) {
+                    // Break out of the loop if a variable was found
+                    break;
+                }
+            }
+        } else {
+            // TODO: Support cross object relationships, these are expressions that contain "__r"
+            LOGGER.fine("Expression does not have two parts: " + expression);
+        }
     }
 
     /**
@@ -201,12 +170,14 @@ class ObjectFieldTypes {
             Node fullNameNode = (Node) sfdxCustomFieldFullNameExpression.evaluate(document, XPathConstants.NODE);
             Node typeNode = (Node) sfdxCustomFieldTypeExpression.evaluate(document, XPathConstants.NODE);
             String type = typeNode.getNodeValue();
-            IdentifierType identifierType = IdentifierType.fromString(type);
+            DataType dataType = DataType.fromString(type);
 
             String key = customObjectName + "." + fullNameNode.getNodeValue();
-            setVariableType(key, identifierType);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            putDataType(key, dataType);
+        } catch (IOException | SAXException | XPathExpressionException e) {
+            throw new ContextedRuntimeException(e)
+                    .addContextValue("customObjectName", customObjectName)
+                    .addContextValue("sfdxCustomFieldPath", sfdxCustomFieldPath);
         }
     }
 
@@ -234,13 +205,15 @@ class ObjectFieldTypes {
                             throw new RuntimeException("type evaluate failed for object=" + customObjectName + ", field=" + name + " " + fieldsNode.getTextContent());
                         }
                         String type = typeNode.getNodeValue();
-                        IdentifierType identifierType = IdentifierType.fromString(type);
+                        DataType dataType = DataType.fromString(type);
                         String key = customObjectName + "." + fullNameNode.getNodeValue();
-                        setVariableType(key, identifierType);
+                        putDataType(key, dataType);
                     }
                 }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            } catch (IOException | SAXException | XPathExpressionException e) {
+                throw new ContextedRuntimeException(e)
+                        .addContextValue("customObjectName", customObjectName)
+                        .addContextValue("mdapiObjectFile", mdapiObjectFile);
             }
             objectFileProcessed.add(customObjectName);
         }
@@ -251,8 +224,8 @@ class ObjectFieldTypes {
      * visualforce page.
      */
     private void addStandardFields(String customObjectName) {
-        for (Map.Entry<String, IdentifierType> entry : STANDARD_FIELD_TYPES.entrySet()) {
-            setVariableType(customObjectName + "." + entry.getKey(), entry.getValue());
+        for (Map.Entry<String, DataType> entry : STANDARD_FIELD_TYPES.entrySet()) {
+            putDataType(customObjectName + "." + entry.getKey(), entry.getValue());
         }
     }
 
@@ -263,17 +236,18 @@ class ObjectFieldTypes {
         return str != null && str.toLowerCase(Locale.ROOT).endsWith(suffix.toLowerCase(Locale.ROOT));
     }
 
-    private void setVariableType(String name, IdentifierType identifierType) {
-        name = name.toLowerCase(Locale.ROOT);
-        IdentifierType previousType = variableNameToVariableType.put(name, identifierType);
-        if (previousType != null && !previousType.equals(identifierType)) {
+    @Override
+    protected DataType putDataType(String name, DataType dataType) {
+        DataType previousType = super.putDataType(name, dataType);
+        if (previousType != null && !previousType.equals(dataType)) {
             // It should not be possible to have conflicting types for CustomFields
             throw new RuntimeException("Conflicting types for "
                     + name
                     + ". CurrentType="
-                    + identifierType
+                    + dataType
                     + ", PreviousType="
                     + previousType);
         }
+        return previousType;
     }
 }

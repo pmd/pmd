@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * Represents a set of configuration options for a {@link Parser}. For each
@@ -16,7 +17,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * Therefore, implementations must implement {@link Object#equals(Object)} and
  * {@link Object#hashCode()}.
  */
-public class ParserOptions extends AbstractPropertySource {
+public class ParserOptions {
     /**
      * @deprecated Use {@link #getSuppressMarker()} instead.
      */
@@ -28,12 +29,15 @@ public class ParserOptions extends AbstractPropertySource {
      */
     private final Language language;
 
+    private final ParserOptionsProperties parserOptionsProperties;
+
     public ParserOptions() {
         this(null);
     }
 
     public ParserOptions(Language language) {
         this.language = language;
+        this.parserOptionsProperties = new ParserOptionsProperties();
     }
 
     public String getSuppressMarker() {
@@ -44,6 +48,10 @@ public class ParserOptions extends AbstractPropertySource {
         this.suppressMarker = suppressMarker;
     }
 
+    public PropertySource getProperties() {
+        return parserOptionsProperties;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -52,27 +60,15 @@ public class ParserOptions extends AbstractPropertySource {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        if (!super.equals(obj)) {
-            return false;
-        }
         final ParserOptions that = (ParserOptions) obj;
         return Objects.equals(suppressMarker, that.suppressMarker)
-                && Objects.equals(language, that.language);
+                && Objects.equals(language, that.language)
+                && Objects.equals(parserOptionsProperties, that.parserOptionsProperties);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), suppressMarker, language);
-    }
-
-    @Override
-    protected String getPropertySourceType() {
-        return "ParserOptions";
-    }
-
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
+        return Objects.hash(suppressMarker, language, parserOptionsProperties);
     }
 
     /**
@@ -99,13 +95,25 @@ public class ParserOptions extends AbstractPropertySource {
      * TODO: Move this to net.sourceforge.pmd.PMD#parserFor when CLI options are implemented
      */
     protected void overridePropertiesFromEnv() {
-        for (PropertyDescriptor propertyDescriptor : getPropertyDescriptors()) {
+        for (PropertyDescriptor propertyDescriptor : parserOptionsProperties.getPropertyDescriptors()) {
             String propertyValue = getEnvValue(propertyDescriptor);
 
             if (propertyValue != null) {
                 Object value = propertyDescriptor.valueFrom(propertyValue);
-                setProperty(propertyDescriptor, value);
+                parserOptionsProperties.setProperty(propertyDescriptor, value);
             }
+        }
+    }
+
+    private final class ParserOptionsProperties extends AbstractPropertySource {
+        @Override
+        protected String getPropertySourceType() {
+            return "ParserOptions";
+        }
+
+        @Override
+        public String getName() {
+            return ParserOptions.this.getClass().getSimpleName();
         }
     }
 }

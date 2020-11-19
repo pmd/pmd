@@ -12,9 +12,9 @@ public class VfParserOptionsTest {
     @Test
     public void testDefaultPropertyDescriptors() {
         VfParserOptions vfParserOptions = new VfParserOptions();
-        assertEquals(VfExpressionTypeVisitor.DEFAULT_APEX_DIRECTORIES,
-                vfParserOptions.getProperty(VfExpressionTypeVisitor.APEX_DIRECTORIES_DESCRIPTOR));
-        assertEquals(VfExpressionTypeVisitor.DEFAULT_OBJECT_DIRECTORIES,
-                vfParserOptions.getProperty(VfExpressionTypeVisitor.OBJECTS_DIRECTORIES_DESCRIPTOR));
+        assertEquals(VfParserOptions.DEFAULT_APEX_DIRECTORIES,
+                vfParserOptions.getProperties().getProperty(VfParserOptions.APEX_DIRECTORIES_DESCRIPTOR));
+        assertEquals(VfParserOptions.DEFAULT_OBJECT_DIRECTORIES,
+                vfParserOptions.getProperties().getProperty(VfParserOptions.OBJECTS_DIRECTORIES_DESCRIPTOR));
     }
 }

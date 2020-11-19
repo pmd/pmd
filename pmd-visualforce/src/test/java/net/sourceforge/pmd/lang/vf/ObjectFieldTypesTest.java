@@ -4,18 +4,45 @@
 
 package net.sourceforge.pmd.lang.vf;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
 public class ObjectFieldTypesTest {
+    private static final Map<String, DataType> EXPECTED_SFDX_DATA_TYPES;
+    private static final Map<String, DataType> EXPECTED_MDAPI_DATA_TYPES;
+
+    static {
+        EXPECTED_SFDX_DATA_TYPES = new HashMap<>();
+        EXPECTED_SFDX_DATA_TYPES.put("Account.Checkbox__c", DataType.Checkbox);
+        EXPECTED_SFDX_DATA_TYPES.put("Account.DateTime__c", DataType.DateTime);
+        EXPECTED_SFDX_DATA_TYPES.put("Account.LongTextArea__c", DataType.LongTextArea);
+        EXPECTED_SFDX_DATA_TYPES.put("Account.Picklist__c", DataType.Picklist);
+        EXPECTED_SFDX_DATA_TYPES.put("Account.Text__c", DataType.Text);
+        EXPECTED_SFDX_DATA_TYPES.put("Account.TextArea__c", DataType.TextArea);
+        // Edge Cases
+        // Invalid property should return null
+        EXPECTED_SFDX_DATA_TYPES.put("Account.DoesNotExist__c", null);
+
+        EXPECTED_MDAPI_DATA_TYPES = new HashMap<>();
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDCheckbox__c", DataType.Checkbox);
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDDateTime__c", DataType.DateTime);
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDLongTextArea__c", DataType.LongTextArea);
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDPicklist__c", DataType.Picklist);
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDText__c", DataType.Text);
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDTextArea__c", DataType.TextArea);
+        // Edge Cases
+        // Invalid property should return null
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.DoesNotExist__c", null);
+    }
 
     /**
      * Verify that CustomFields stored in sfdx project format are correctly parsed
@@ -25,7 +52,7 @@ public class ObjectFieldTypesTest {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
 
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
-        validateSfdxAccount(objectFieldTypes, vfPagePath, VfExpressionTypeVisitor.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
+        validateSfdxAccount(objectFieldTypes, vfPagePath, VfParserOptions.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
     }
 
     /**
@@ -36,7 +63,7 @@ public class ObjectFieldTypesTest {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
 
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
-        validateMDAPIAccount(objectFieldTypes, vfPagePath, VfExpressionTypeVisitor.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
+        validateMDAPIAccount(objectFieldTypes, vfPagePath, VfParserOptions.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
     }
 
     /**
@@ -48,7 +75,7 @@ public class ObjectFieldTypesTest {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
             .resolve("SomePage.page");
 
-        List<String> paths = Arrays.asList(VfExpressionTypeVisitor.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue().get(0),
+        List<String> paths = Arrays.asList(VfParserOptions.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue().get(0),
                 VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Objects).toString());
         objectFieldTypes = new ObjectFieldTypes();
         validateSfdxAccount(objectFieldTypes, vfPagePath, paths);
@@ -67,48 +94,20 @@ public class ObjectFieldTypesTest {
 
         List<String> paths = Arrays.asList(Paths.get("..", "objects-does-not-exist").toString());
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
-        assertNull(objectFieldTypes.getVariableType("Account.DoesNotExist__c", vfFileName, paths));
+        assertNull(objectFieldTypes.getDataType("Account.DoesNotExist__c", vfFileName, paths));
     }
 
     /**
      * Validate the expected results when the Account Fields are stored in decomposed sfdx format
      */
     private void validateSfdxAccount(ObjectFieldTypes objectFieldTypes, Path vfPagePath, List<String> paths) {
-        String vfFileName = vfPagePath.toString();
-
-        assertEquals(IdentifierType.Checkbox,
-                objectFieldTypes.getVariableType("Account.Checkbox__c", vfFileName, paths));
-        assertEquals(IdentifierType.DateTime,
-                objectFieldTypes.getVariableType("Account.DateTime__c", vfFileName, paths));
-        assertEquals(IdentifierType.LongTextArea,
-                objectFieldTypes.getVariableType("Account.LongTextArea__c", vfFileName, paths));
-        assertEquals(IdentifierType.Picklist,
-                objectFieldTypes.getVariableType("Account.Picklist__c", vfFileName, paths));
-        assertEquals(IdentifierType.Text,
-                objectFieldTypes.getVariableType("Account.Text__c", vfFileName, paths));
-        assertEquals(IdentifierType.TextArea,
-                objectFieldTypes.getVariableType("Account.TextArea__c", vfFileName, paths));
-        assertNull(objectFieldTypes.getVariableType("Account.DoesNotExist__c", vfFileName, paths));
+        VFTestUtils.validateDataTypes(EXPECTED_SFDX_DATA_TYPES, objectFieldTypes, vfPagePath, paths);
     }
 
     /**
      * Validate the expected results when the Account Fields are stored in a single file MDAPI format
      */
     private void validateMDAPIAccount(ObjectFieldTypes objectFieldTypes, Path vfPagePath, List<String> paths) {
-        String vfFileName = vfPagePath.toString();
-
-        assertEquals(IdentifierType.Checkbox,
-                objectFieldTypes.getVariableType("Account.MDCheckbox__c", vfFileName, paths));
-        assertEquals(IdentifierType.DateTime,
-                objectFieldTypes.getVariableType("Account.MDDateTime__c", vfFileName, paths));
-        assertEquals(IdentifierType.LongTextArea,
-                objectFieldTypes.getVariableType("Account.MDLongTextArea__c", vfFileName, paths));
-        assertEquals(IdentifierType.Picklist,
-                objectFieldTypes.getVariableType("Account.MDPicklist__c", vfFileName, paths));
-        assertEquals(IdentifierType.Text,
-                objectFieldTypes.getVariableType("Account.MDText__c", vfFileName, paths));
-        assertEquals(IdentifierType.TextArea,
-                objectFieldTypes.getVariableType("Account.MDTextArea__c", vfFileName, paths));
-        assertNull(objectFieldTypes.getVariableType("Account.DoesNotExist__c", vfFileName, paths));
+        VFTestUtils.validateDataTypes(EXPECTED_MDAPI_DATA_TYPES, objectFieldTypes, vfPagePath, paths);
     }
 }

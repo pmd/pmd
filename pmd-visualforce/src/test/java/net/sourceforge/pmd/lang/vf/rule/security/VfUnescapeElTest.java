@@ -47,12 +47,18 @@ public class VfUnescapeElTest extends PmdRuleTst {
 
         Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
-        assertEquals(6, ruleViolations.size());
-        int firstLineWithErrors = 7;
+        assertEquals("Number of violations", 20, ruleViolations.size());
+
+        int firstLineWithErrors = 14;
         for (int i = 0; i < ruleViolations.size(); i++) {
             RuleViolation ruleViolation = ruleViolations.get(i);
             assertEquals(EXPECTED_RULE_MESSAGE, ruleViolation.getDescription());
-            assertEquals(firstLineWithErrors + i, ruleViolation.getBeginLine());
+            int expectedLineNumber = firstLineWithErrors + i;
+            if ((ruleViolations.size() + firstLineWithErrors - 1) == expectedLineNumber) {
+                // The last line has two errors on the same page
+                expectedLineNumber = expectedLineNumber - 1;
+            }
+            assertEquals("Line Number", expectedLineNumber, ruleViolation.getBeginLine());
         }
     }
 
@@ -65,12 +71,12 @@ public class VfUnescapeElTest extends PmdRuleTst {
 
         Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
-        assertEquals(6, ruleViolations.size());
+        assertEquals("Number of violations", 6, ruleViolations.size());
         int firstLineWithErrors = 8;
         for (int i = 0; i < ruleViolations.size(); i++) {
             RuleViolation ruleViolation = ruleViolations.get(i);
             assertEquals(EXPECTED_RULE_MESSAGE, ruleViolation.getDescription());
-            assertEquals(firstLineWithErrors + i, ruleViolation.getBeginLine());
+            assertEquals("Line Number", firstLineWithErrors + i, ruleViolation.getBeginLine());
         }
     }
 
@@ -83,13 +89,13 @@ public class VfUnescapeElTest extends PmdRuleTst {
 
         Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
-        assertEquals(2, ruleViolations.size());
+        assertEquals("Number of violations", 2, ruleViolations.size());
         int firstLineWithErrors = 9;
         for (int i = 0; i < ruleViolations.size(); i++) {
             // There should start at line 9
             RuleViolation ruleViolation = ruleViolations.get(i);
             assertEquals(EXPECTED_RULE_MESSAGE, ruleViolation.getDescription());
-            assertEquals(firstLineWithErrors + i, ruleViolation.getBeginLine());
+            assertEquals("Line Number", firstLineWithErrors + i, ruleViolation.getBeginLine());
         }
     }
 

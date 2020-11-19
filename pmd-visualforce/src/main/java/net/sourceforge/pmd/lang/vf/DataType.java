@@ -20,7 +20,7 @@ import apex.jorje.semantic.symbol.type.BasicType;
  *
  * See https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_field_types.htm#meta_type_fieldtype
  */
-public enum IdentifierType {
+public enum DataType {
     AutoNumber(false),
     Checkbox(false, BasicType.BOOLEAN),
     Currency(false, BasicType.CURRENCY),
@@ -49,9 +49,13 @@ public enum IdentifierType {
     TextArea(true),
     Time(false, BasicType.TIME),
     Url(false),
+    /**
+     * Indicates that Metatada was found, but it's type was not mappable. This could because it is a type which isn't
+     * mapped, or it was an edge case where the type was ambiguously defined in the Metadata.
+     */
     Unknown(true);
 
-    private static final Logger LOGGER = Logger.getLogger(IdentifierType.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DataType.class.getName());
 
 
     /**
@@ -68,18 +72,18 @@ public enum IdentifierType {
      * A case insensitive map of the enum name to its instance. The case metadata is not guaranteed to have the correct
      * case.
      */
-    private static final Map<String, IdentifierType> CASE_INSENSITIVE_MAP = new HashMap<>();
+    private static final Map<String, DataType> CASE_INSENSITIVE_MAP = new HashMap<>();
 
     /**
-     * Map of BasicType to IdentifierType. Multiple BasicTypes may map to one ExrpessionType.
+     * Map of BasicType to DataType. Multiple BasicTypes may map to one DataType.
      */
-    private static final Map<BasicType, IdentifierType> BASIC_TYPE_MAP = new HashMap<>();
+    private static final Map<BasicType, DataType> BASIC_TYPE_MAP = new HashMap<>();
 
     static {
-        for (IdentifierType identifierType : IdentifierType.values()) {
-            CASE_INSENSITIVE_MAP.put(identifierType.name().toLowerCase(Locale.ROOT), identifierType);
-            for (BasicType basicType : identifierType.basicTypes) {
-                BASIC_TYPE_MAP.put(basicType, identifierType);
+        for (DataType dataType : DataType.values()) {
+            CASE_INSENSITIVE_MAP.put(dataType.name().toLowerCase(Locale.ROOT), dataType);
+            for (BasicType basicType : dataType.basicTypes) {
+                BASIC_TYPE_MAP.put(basicType, dataType);
             }
         }
     }
@@ -87,37 +91,37 @@ public enum IdentifierType {
     /**
      * Map to correct instance, returns {@code Unknown} if the value can't be mapped.
      */
-    public static IdentifierType fromString(String value) {
+    public static DataType fromString(String value) {
         value = value != null ? value : "";
-        IdentifierType identifierType = CASE_INSENSITIVE_MAP.get(value.toLowerCase(Locale.ROOT));
+        DataType dataType = CASE_INSENSITIVE_MAP.get(value.toLowerCase(Locale.ROOT));
 
-        if (identifierType == null) {
-            identifierType = IdentifierType.Unknown;
-            LOGGER.fine("Unable to determine IdentifierType of " + value);
+        if (dataType == null) {
+            dataType = DataType.Unknown;
+            LOGGER.fine("Unable to determine DataType of " + value);
         }
 
-        return identifierType;
+        return dataType;
     }
 
     /**
      * Map to correct instance, returns {@code Unknown} if the value can't be mapped.
      */
-    public static IdentifierType fromBasicType(BasicType value) {
-        IdentifierType identifierType = value != null ? BASIC_TYPE_MAP.get(value) : null;
+    public static DataType fromBasicType(BasicType value) {
+        DataType dataType = value != null ? BASIC_TYPE_MAP.get(value) : null;
 
-        if (identifierType == null) {
-            identifierType = IdentifierType.Unknown;
-            LOGGER.fine("Unable to determine IdentifierType of " + value);
+        if (dataType == null) {
+            dataType = DataType.Unknown;
+            LOGGER.fine("Unable to determine DataType of " + value);
         }
 
-        return identifierType;
+        return dataType;
     }
 
-    IdentifierType(boolean requiresEscaping) {
+    DataType(boolean requiresEscaping) {
         this(requiresEscaping, null);
     }
 
-    IdentifierType(boolean requiresEscaping, BasicType...basicTypes) {
+    DataType(boolean requiresEscaping, BasicType...basicTypes) {
         this.requiresEscaping = requiresEscaping;
         this.basicTypes = new HashSet<>();
         if (basicTypes != null) {

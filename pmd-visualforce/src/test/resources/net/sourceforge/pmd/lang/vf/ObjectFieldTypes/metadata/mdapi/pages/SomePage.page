@@ -1,1 +1,3 @@
-<apex:page/>
+<apex:page>
+The contents of this page aren't relevant to the test, but the test requires the file to be present.
+</apex:page>

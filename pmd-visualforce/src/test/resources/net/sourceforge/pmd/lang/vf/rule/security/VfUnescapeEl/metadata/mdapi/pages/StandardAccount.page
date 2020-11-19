@@ -10,5 +10,5 @@
     <apex:outputText value="{!Account.MDTextArea__c}" escape="false"/>
     <apex:outputText value="{!Account.MDLongTextArea__c}" escape="false"/>
     <apex:outputText value="{!Account.MDPicklist__c}" escape="false"/>
-    <apex:outputText value="{!Account.UnknownField__c}" escape="false"/> <!-- This field doesn't exist on Account -->
+    <apex:outputText value="{!Account.NotFoundField__c}" escape="false"/> <!-- This field doesn't exist on Account -->
 </apex:page>

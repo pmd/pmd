@@ -23,8 +23,10 @@ import net.sourceforge.pmd.test.lang.DummyLanguageModule;
  * Unit tests for {@link ParserOptions}.
  * This class is located in the pmd-test project instead of pmd-core so that it can invoke
  * {@link ParserOptionsTestUtils#verifyOptionsEqualsHashcode}
+ *
+ * TODO: 7.0.0: Rename to ParserOptionsTest when {@link ParserOptionsTest} is removed.
  */
-public class ParserOptionsTest {
+public class ParserOptionsUnitTest {
     private static final List<String> DEFAULT_LIST = Arrays.asList("value1", "value2");
     private static final String DEFAULT_STRING = "value3";
     private static final List<String> OVERRIDDEN_LIST = Arrays.asList("override1", "override2");
@@ -46,8 +48,8 @@ public class ParserOptionsTest {
 
         private TestParserOptions() {
             super(new DummyLanguageModule());
-            definePropertyDescriptor(LIST_DESCRIPTOR);
-            definePropertyDescriptor(STRING_DESCRIPTOR);
+            getProperties().definePropertyDescriptor(LIST_DESCRIPTOR);
+            getProperties().definePropertyDescriptor(STRING_DESCRIPTOR);
             overridePropertiesFromEnv();
         }
     }
@@ -66,20 +68,19 @@ public class ParserOptionsTest {
     @Test
     public void testDefaultPropertyDescriptors() {
         TestParserOptions parserOptions = new TestParserOptions();
-        assertEquals(DEFAULT_LIST, parserOptions.getProperty(TestParserOptions.LIST_DESCRIPTOR));
-        assertEquals(DEFAULT_STRING, parserOptions.getProperty(TestParserOptions.STRING_DESCRIPTOR));
-        assertEquals("ParserOptions", parserOptions.getPropertySourceType());
-        assertEquals("TestParserOptions", parserOptions.getName());
+        assertEquals(DEFAULT_LIST, parserOptions.getProperties().getProperty(TestParserOptions.LIST_DESCRIPTOR));
+        assertEquals(DEFAULT_STRING, parserOptions.getProperties().getProperty(TestParserOptions.STRING_DESCRIPTOR));
+        assertEquals("TestParserOptions", parserOptions.getProperties().getName());
     }
 
     @Test
     public void testOverriddenPropertyDescriptors() {
         TestParserOptions parserOptions = new TestParserOptions();
-        parserOptions.setProperty(TestParserOptions.LIST_DESCRIPTOR, OVERRIDDEN_LIST);
-        parserOptions.setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
+        parserOptions.getProperties().setProperty(TestParserOptions.LIST_DESCRIPTOR, OVERRIDDEN_LIST);
+        parserOptions.getProperties().setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
 
-        assertEquals(OVERRIDDEN_LIST, parserOptions.getProperty(TestParserOptions.LIST_DESCRIPTOR));
-        assertEquals(OVERRIDDEN_STRING, parserOptions.getProperty(TestParserOptions.STRING_DESCRIPTOR));
+        assertEquals(OVERRIDDEN_LIST, parserOptions.getProperties().getProperty(TestParserOptions.LIST_DESCRIPTOR));
+        assertEquals(OVERRIDDEN_STRING, parserOptions.getProperties().getProperty(TestParserOptions.STRING_DESCRIPTOR));
     }
 
     @Test
@@ -97,8 +98,8 @@ public class ParserOptionsTest {
             }
         };
 
-        assertEquals(OVERRIDDEN_LIST, parserOptions.getProperty(TestParserOptions.LIST_DESCRIPTOR));
-        assertEquals(OVERRIDDEN_STRING, parserOptions.getProperty(TestParserOptions.STRING_DESCRIPTOR));
+        assertEquals(OVERRIDDEN_LIST, parserOptions.getProperties().getProperty(TestParserOptions.LIST_DESCRIPTOR));
+        assertEquals(OVERRIDDEN_STRING, parserOptions.getProperties().getProperty(TestParserOptions.STRING_DESCRIPTOR));
     }
 
     @Test
@@ -115,8 +116,8 @@ public class ParserOptionsTest {
             }
         };
 
-        assertEquals(Collections.emptyList(), vfParserOptions.getProperty(TestParserOptions.LIST_DESCRIPTOR));
-        assertEquals("", vfParserOptions.getProperty(TestParserOptions.STRING_DESCRIPTOR));
+        assertEquals(Collections.emptyList(), vfParserOptions.getProperties().getProperty(TestParserOptions.LIST_DESCRIPTOR));
+        assertEquals("", vfParserOptions.getProperties().getProperty(TestParserOptions.STRING_DESCRIPTOR));
     }
 
     /**
@@ -146,10 +147,10 @@ public class ParserOptionsTest {
         options2 = new ParserOptions();
         options3 = new ParserOptions();
         options4 = new ParserOptions();
-        options1.definePropertyDescriptor(TestParserOptions.LIST_DESCRIPTOR);
-        options2.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
-        options3.definePropertyDescriptor(TestParserOptions.LIST_DESCRIPTOR);
-        options4.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options1.getProperties().definePropertyDescriptor(TestParserOptions.LIST_DESCRIPTOR);
+        options2.getProperties().definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options3.getProperties().definePropertyDescriptor(TestParserOptions.LIST_DESCRIPTOR);
+        options4.getProperties().definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
         ParserOptionsTestUtils.verifyOptionsEqualsHashcode(options1, options2, options3, options4);
 
         // PropertyValue
@@ -157,14 +158,14 @@ public class ParserOptionsTest {
         options2 = new ParserOptions();
         options3 = new ParserOptions();
         options4 = new ParserOptions();
-        options1.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
-        options1.setProperty(TestParserOptions.STRING_DESCRIPTOR, DEFAULT_STRING);
-        options2.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
-        options2.setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
-        options3.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
-        options3.setProperty(TestParserOptions.STRING_DESCRIPTOR, DEFAULT_STRING);
-        options4.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
-        options4.setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
+        options1.getProperties().definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options1.getProperties().setProperty(TestParserOptions.STRING_DESCRIPTOR, DEFAULT_STRING);
+        options2.getProperties().definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options2.getProperties().setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
+        options3.getProperties().definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options3.getProperties().setProperty(TestParserOptions.STRING_DESCRIPTOR, DEFAULT_STRING);
+        options4.getProperties().definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options4.getProperties().setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
         ParserOptionsTestUtils.verifyOptionsEqualsHashcode(options1, options2, options3, options4);
 
         // Language
@@ -183,14 +184,14 @@ public class ParserOptionsTest {
         options2.setSuppressMarker("bar");
         options3.setSuppressMarker("foo");
         options4.setSuppressMarker("bar");
-        options1.definePropertyDescriptor(TestParserOptions.LIST_DESCRIPTOR);
-        options1.setProperty(TestParserOptions.LIST_DESCRIPTOR, DEFAULT_LIST);
-        options2.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
-        options2.setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
-        options3.definePropertyDescriptor(TestParserOptions.LIST_DESCRIPTOR);
-        options3.setProperty(TestParserOptions.LIST_DESCRIPTOR, DEFAULT_LIST);
-        options4.definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
-        options4.setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
+        options1.getProperties().definePropertyDescriptor(TestParserOptions.LIST_DESCRIPTOR);
+        options1.getProperties().setProperty(TestParserOptions.LIST_DESCRIPTOR, DEFAULT_LIST);
+        options2.getProperties().definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options2.getProperties().setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
+        options3.getProperties().definePropertyDescriptor(TestParserOptions.LIST_DESCRIPTOR);
+        options3.getProperties().setProperty(TestParserOptions.LIST_DESCRIPTOR, DEFAULT_LIST);
+        options4.getProperties().definePropertyDescriptor(TestParserOptions.STRING_DESCRIPTOR);
+        options4.getProperties().setProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
         ParserOptionsTestUtils.verifyOptionsEqualsHashcode(options1, options2, options3, options4);
 
         assertFalse(options1.equals(null));
