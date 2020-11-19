@@ -53,10 +53,12 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>more qualified name skippage</description>
+        <description>charAt return char - that's ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+public class CompareObjectsWithEqualsSample {
     boolean bar(String a, String b) {
         return a.charAt(0) == b.charAt(0);
     }
@@ -95,11 +97,17 @@ public class Foo {
 
     <test-code>
         <description>array element comparison</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
-public class Foo {
-    void bar(int[] a, String[] b) {
-        if (a[1] == b[1]) {}
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+public class CompareObjectsWithEqualsSample {
+    void array(int[] a, String[] b) {
+        if (a[1] == b[1]) {} // int == String
+    }
+    void array2(int[] c, int[] d) {
+        if (c[1] == d[1]) {}
     }
 }
         ]]></code>
@@ -109,6 +117,8 @@ public class Foo {
         <description>Comparing against new object should always return false</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.Date;
+
 public class Foo {
     void bar(Date aDate) {
         if ( aDate == new Date( 0 ) ) {
@@ -206,6 +216,29 @@ public class CompareWithEqualsTest {
     public static boolean test(Enum<?> a, Enum<?> b)
     {
         return a == b;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative - class with fields</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>8,9,10,11</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+public class ClassWithFields {
+    private Object a;
+    private Object b;
+
+    boolean test1() {
+        return  a == b // violation
+             && this.a == b // violation
+             && a != this.b // violation
+             && this.a == this.b // violation
+             && a.equals(b) // ok
+             && this.a.equals(this.b); // ok
     }
 }
         ]]></code>
