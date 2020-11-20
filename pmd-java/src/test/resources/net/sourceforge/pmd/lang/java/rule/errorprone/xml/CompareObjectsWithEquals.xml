@@ -245,8 +245,9 @@ public class ClassWithFields {
     </test-code>
 
     <test-code>
-        <description>#2934 comparison with null is valid</description>
-        <expected-problems>0</expected-problems>
+        <description>#2934 comparison with null is valid and with primitive literals</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>18</expected-linenumbers>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
 
@@ -261,6 +262,14 @@ public class ClassWithFields {
 
     void test2(StringBuilder sb) {
         if (sb != null) { } // ok
+    }
+
+    public void bar(Integer x, Integer y) {
+        if (x == 1) { } // ok
+        if (x == y) { } // not ok
+
+        // basically not ok, but this case is covered already by UseEqualsToCompareStrings
+        if (x == "String") { }
     }
 }
         ]]></code>
