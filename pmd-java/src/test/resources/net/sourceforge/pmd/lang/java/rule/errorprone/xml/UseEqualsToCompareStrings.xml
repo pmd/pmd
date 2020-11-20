@@ -6,14 +6,15 @@
 
     <test-code>
         <description>failure case using ==</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.errorprone.useequalstocomparestrings;
 
 public class UseEqualsToCompareStringsSample {
     void bar(String x) {
         if (x == "hello") {}
+        if (x == new String("hello")) {}
     }
 }
         ]]></code>

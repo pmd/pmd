@@ -1109,12 +1109,11 @@ Use equals() to compare object references; avoid comparing them with ==.
                 <value>
 <![CDATA[
 //EqualityExpression
-    [PrimaryExpression
+    [count(PrimaryExpression
         [pmd-java:typeIs('java.lang.Object')]
         [not(pmd-java:typeIs('java.lang.Enum'))]
-        [not(pmd-java:typeIs('java.lang.Class'))]
+        [not(pmd-java:typeIs('java.lang.Class'))]) = 2
     ]
-    [not(PrimaryExpression/PrimaryPrefix/Literal)]
     [not(PrimaryExpression[PrimaryPrefix/@ThisModifier = true()][not(PrimarySuffix)])]
 ]]>
                 </value>
@@ -3467,8 +3466,7 @@ Use the equals() method instead.
                 <value>
 <![CDATA[
 //EqualityExpression
-    [PrimaryExpression[pmd-java:typeIs('java.lang.String')]]
-    [not(PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)]
+    [count(PrimaryExpression[pmd-java:typeIs('java.lang.String')]) = 2]
 ]]>
                 </value>
             </property>

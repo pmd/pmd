@@ -20,9 +20,17 @@ public class Foo {
         <description>primitives are ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+public class CompareObjectsWithEqualsSample {
     boolean bar(int a, int b) {
         return a == b;
+    }
+    void bar(Integer i, Character c) {
+        int l = i;
+        if (1 == i) { }
+        if (i == Integer.MAX_VALUE) { } // ok
+        if (c == Character.MAX_VALUE) { } // ok
     }
 }
         ]]></code>
@@ -98,16 +106,19 @@ public class Foo {
     <test-code>
         <description>array element comparison</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>11</expected-linenumbers>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
 
 public class CompareObjectsWithEqualsSample {
     void array(int[] a, String[] b) {
-        if (a[1] == b[1]) {} // int == String
+        if (a[1] == b[1]) {} // int == String - this comparison doesn't make sense
     }
     void array2(int[] c, int[] d) {
         if (c[1] == d[1]) {}
+    }
+    void array3(String[] a, String[] b) {
+        if (a[1] == b[1]) {} // not ok
     }
 }
         ]]></code>
@@ -115,14 +126,18 @@ public class CompareObjectsWithEqualsSample {
 
     <test-code>
         <description>Comparing against new object should always return false</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,9</expected-linenumbers>
         <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
 import java.util.Date;
 
-public class Foo {
-    void bar(Date aDate) {
-        if ( aDate == new Date( 0 ) ) {
-        }
+public class CompareObjectsWithEqualsSample {
+    void bar(Date aDate, int aInt, Integer realInt) {
+        if ( aDate == new Date( 0 ) ) {} // not ok
+        if ( aInt == new Integer(1) ) {} // that's actually ok, since Integer will be unboxed
+        if ( realInt == new Integer(1) ) {} // not ok
     }
 }
         ]]></code>
@@ -132,7 +147,11 @@ public class Foo {
         <description>qualified call in allocation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+import java.io.File;
+
+public class CompareObjectsWithEqualsSample {
     boolean bar(String b) {
         return new File(b).exists() == false;
     }
@@ -246,8 +265,8 @@ public class ClassWithFields {
 
     <test-code>
         <description>#2934 comparison with null is valid and with primitive literals</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>18</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>18,19</expected-linenumbers>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
 
@@ -266,10 +285,8 @@ public class ClassWithFields {
 
     public void bar(Integer x, Integer y) {
         if (x == 1) { } // ok
-        if (x == y) { } // not ok
-
-        // basically not ok, but this case is covered already by UseEqualsToCompareStrings
-        if (x == "String") { }
+        if (x == y) { } // not ok! only works -128<x<127 dependent on Integer caching
+        if (x == "String") { } // not ok
     }
 }
         ]]></code>
