@@ -274,4 +274,25 @@ public class ClassWithFields {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#2934 this and class should be ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+public class ClassWithFields {
+    private Object a;
+    private Object b;
+
+    void test(Object o) {
+        if (this == o) { } // should be allowed, since this is a often used pattern in Object::equals.
+        // comparing class instances is ok
+        if (o.getClass() == a.getClass()) { }
+        if (this.getClass() == this.a.getClass()) { }
+        if (Object.class == a.getClass()) { }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
