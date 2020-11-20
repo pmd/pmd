@@ -77,7 +77,7 @@ public class UseEqualsToCompareStringsSample {
     </test-code>
 
     <test-code>
-        <description>false negatives with fields</description>
+        <description>#2934 false negatives with fields</description>
         <expected-problems>8</expected-problems>
         <expected-linenumbers>8,9,10,11,13,14,15,16</expected-linenumbers>
         <code><![CDATA[
@@ -102,6 +102,28 @@ public class ClassWithStringFields {
         if (this.string1.equals(string2)) { } // ok
         if (string1.equals(this.string2)) { } // ok
         if (this.string1.equals(this.string2)) { } // ok
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2934 comparison with null is valid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.useequalstocomparestrings;
+
+public class ClassWithStringFields {
+    private String string1 = "a";
+    private String string2 = "a";
+
+    public void bar() {
+        if (string1 == null) { } // ok
+        if (this.string1 == null) { } // ok
+    }
+
+    public void bar(String param) {
+        if (param != null) { } // ok
     }
 }
         ]]></code>

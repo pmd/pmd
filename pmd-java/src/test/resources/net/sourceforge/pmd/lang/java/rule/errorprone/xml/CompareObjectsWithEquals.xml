@@ -222,7 +222,7 @@ public class CompareWithEqualsTest {
     </test-code>
 
     <test-code>
-        <description>False negative - class with fields</description>
+        <description>#2934 False negative - class with fields</description>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>8,9,10,11</expected-linenumbers>
         <code><![CDATA[
@@ -239,6 +239,28 @@ public class ClassWithFields {
              && this.a == this.b // violation
              && a.equals(b) // ok
              && this.a.equals(this.b); // ok
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2934 comparison with null is valid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+public class ClassWithFields {
+    private Object a;
+    private Object b;
+
+    boolean test1() {
+        return a == null // ok
+             && this.a == null; // ok
+    }
+
+    void test2(StringBuilder sb) {
+        if (sb != null) { } // ok
     }
 }
         ]]></code>

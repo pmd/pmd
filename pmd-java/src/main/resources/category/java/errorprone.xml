@@ -1108,8 +1108,12 @@ Use equals() to compare object references; avoid comparing them with ==.
             <property name="xpath">
                 <value>
 <![CDATA[
-//EqualityExpression[PrimaryExpression[pmd-java:typeIs('java.lang.Object')
-    and not(pmd-java:typeIs('java.lang.Enum'))]]
+//EqualityExpression
+    [PrimaryExpression
+        [pmd-java:typeIs('java.lang.Object')]
+        [not(pmd-java:typeIs('java.lang.Enum'))]
+    ]
+    [not(PrimaryExpression//NullLiteral)]
 ]]>
                 </value>
             </property>
@@ -3460,8 +3464,9 @@ Use the equals() method instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//EqualityExpression[PrimaryExpression[pmd-java:typeIs('java.lang.String')]
-]
+//EqualityExpression
+    [PrimaryExpression[pmd-java:typeIs('java.lang.String')]]
+    [not(PrimaryExpression//NullLiteral)]
 ]]>
                 </value>
             </property>
