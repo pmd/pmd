@@ -508,7 +508,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                 }
             } catch (final NoSuchFieldException ignored) {
                 // swallow
-            } catch (final LinkageError e) {
+            } catch (final TypeNotPresentException | LinkageError e) {
+                // might be thrown by getGenericType()
                 if (LOG.isLoggable(Level.WARNING)) {
                     String message = "Error during type resolution of field '" + fieldImage + "' in "
                             + typeToSearch.getType() + " due to: " + e;
@@ -518,8 +519,21 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                 return null;
             }
 
-            // transform the type into it's supertype
-            typeToSearch = typeToSearch.resolveTypeDefinition(typeToSearch.getType().getGenericSuperclass());
+            try {
+                // transform the type into it's supertype
+                typeToSearch = typeToSearch.resolveTypeDefinition(typeToSearch.getType().getGenericSuperclass());
+            } catch (final TypeNotPresentException | LinkageError e) {
+                // might be thrown by getGenericSuperclass()
+                // Note: This try block can't be moved up, because we need to go to the super type
+                // in case of NoSuchFieldException and search there. Otherwise we have a endless loop.
+                if (LOG.isLoggable(Level.WARNING)) {
+                    String message = "Error during type resolution of field '" + fieldImage + "' in "
+                            + typeToSearch.getType() + " due to: " + e;
+                    LOG.log(Level.WARNING, message);
+                }
+                // TODO : report a missing class once we start doing that...
+                return null;
+            }
         }
 
         return null;

@@ -349,13 +349,19 @@ import java.util.logging.Logger;
     protected Set<JavaTypeDefinition> getSuperTypeSet(Set<JavaTypeDefinition> destinationSet) {
         destinationSet.add(this);
 
-        if (this.clazz != Object.class) {
+        try {
+            if (this.clazz != Object.class) {
 
-            resolveTypeDefinition(clazz.getGenericSuperclass()).getSuperTypeSet(destinationSet);
+                resolveTypeDefinition(clazz.getGenericSuperclass()).getSuperTypeSet(destinationSet);
 
-            for (Type type : clazz.getGenericInterfaces()) {
-                resolveTypeDefinition(type).getSuperTypeSet(destinationSet);
+                for (Type type : clazz.getGenericInterfaces()) {
+                    resolveTypeDefinition(type).getSuperTypeSet(destinationSet);
+                }
             }
+        } catch (TypeNotPresentException | LinkageError e) {
+            // might be thrown by clazz.getGenericSuperclass(), clazz.getGenericInterfaces()
+            // This is an incomplete classpath, report the missing class
+            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
         }
 
         return destinationSet;
