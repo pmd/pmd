@@ -61,12 +61,7 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
         if (clazz == null) {
             return null;
         }
-
-        try {
-            return new JavaTypeDefinitionSimple(clazz, boundGenerics);
-        } catch (final LinkageError e) {
-            return null; // Can happen if a parent class references a class not in classpath
-        }
+        return new JavaTypeDefinitionSimple(clazz, boundGenerics);
     }
 
     @Override

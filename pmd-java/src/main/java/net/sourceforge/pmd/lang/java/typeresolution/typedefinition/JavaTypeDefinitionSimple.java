@@ -96,7 +96,11 @@ import java.util.logging.Logger;
     @Override
     public int getTypeParameterCount() {
         if (typeParameterCount == -1) {
-            typeParameterCount = getTypeParameters(clazz).length;
+            try {
+                typeParameterCount = getTypeParameters(clazz).length;
+            } catch (LinkageError | TypeNotPresentException ignored) {
+                typeParameterCount = 0; // don't stay stuck on -1
+            }
         }
         return typeParameterCount;
     }
