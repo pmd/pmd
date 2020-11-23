@@ -113,14 +113,13 @@ public class ScalaTokenizer implements Tokenizer {
      *
      * Keeps track of comments, for special comment processing
      */
-    private class ScalaTokenManager implements TokenManager {
+    private static class ScalaTokenManager implements TokenManager {
 
         Iterator<Token> tokenIter;
         Class<?>[] skippableTokens = new Class<?>[] { Token.Space.class, Token.Tab.class, Token.CR.class,
             Token.LF.class, Token.FF.class, Token.LFLF.class, Token.EOF.class, Token.Comment.class };
 
         GenericToken previousComment = null;
-        GenericToken result = null;
 
         ScalaTokenManager(Iterator<Token> iterator) {
             this.tokenIter = iterator;
@@ -163,7 +162,7 @@ public class ScalaTokenizer implements Tokenizer {
         }
     }
 
-    private class ScalaTokenFilter extends BaseTokenFilter<ScalaTokenAdapter> {
+    private static class ScalaTokenFilter extends BaseTokenFilter<ScalaTokenAdapter> {
         ScalaTokenFilter(TokenManager tokenManager) {
             super(tokenManager);
         }
