@@ -16,11 +16,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
-*   cs
-    * [#2938](https://github.com/pmd/pmd/pull/2938): \[cs] CPD: ignoring using directives could not be disabled
-*   pmd-core
+*   core
     * [#1939](https://github.com/pmd/pmd/issues/1939): \[core] XPath expressions return handling
     * [#1961](https://github.com/pmd/pmd/issues/1961): \[core] Text renderer should include name of violated rule
+    * [#2874](https://github.com/pmd/pmd/pull/2874): \[core] Fix XMLRenderer with UTF-16
+*   cs
+    * [#2938](https://github.com/pmd/pmd/pull/2938): \[cs] CPD: ignoring using directives could not be disabled
 *   scala
     * [#2480](https://github.com/pmd/pmd/issues/2480): \[scala] Support CPD suppressions
 
