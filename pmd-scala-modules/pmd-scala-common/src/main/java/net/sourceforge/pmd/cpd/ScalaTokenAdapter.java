@@ -11,23 +11,23 @@ import scala.meta.tokens.Token;
 /**
  * Adapts the scala.meta.tokens.Token so that it can be used with the generic BaseTokenFilter
  */
-public class ScalaTokenAdapter implements GenericToken {
+public class ScalaTokenAdapter implements GenericToken<ScalaTokenAdapter> {
 
     private Token token;
-    private GenericToken previousComment;
+    private ScalaTokenAdapter previousComment;
 
-    ScalaTokenAdapter(Token token, GenericToken comment) {
+    ScalaTokenAdapter(Token token, ScalaTokenAdapter comment) {
         this.token = token;
         this.previousComment = comment;
     }
 
     @Override
-    public GenericToken getNext() {
+    public ScalaTokenAdapter getNext() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public GenericToken getPreviousComment() {
+    public ScalaTokenAdapter getPreviousComment() {
         return previousComment;
     }
 
@@ -54,6 +54,11 @@ public class ScalaTokenAdapter implements GenericToken {
     @Override
     public int getEndColumn() {
         return token.pos().endColumn() + 2;
+    }
+
+    @Override
+    public boolean isEof() {
+        return token instanceof Token.EOF;
     }
 
     @Override

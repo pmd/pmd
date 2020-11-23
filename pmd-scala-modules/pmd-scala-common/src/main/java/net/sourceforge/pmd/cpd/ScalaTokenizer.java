@@ -13,7 +13,6 @@ import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageHandler;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
@@ -80,7 +79,7 @@ public class ScalaTokenizer implements Tokenizer {
             ScalaTokenManager scalaTokenManager = new ScalaTokenManager(tokens.iterator());
             ScalaTokenFilter filter = new ScalaTokenFilter(scalaTokenManager);
 
-            GenericToken token;
+            ScalaTokenAdapter token;
             while ((token = filter.getNextToken()) != null) {
                 if (StringUtils.isEmpty(token.getImage())) {
                     continue;
@@ -113,20 +112,20 @@ public class ScalaTokenizer implements Tokenizer {
      *
      * Keeps track of comments, for special comment processing
      */
-    private static class ScalaTokenManager implements TokenManager {
+    private static class ScalaTokenManager implements TokenManager<ScalaTokenAdapter> {
 
         Iterator<Token> tokenIter;
         Class<?>[] skippableTokens = new Class<?>[] { Token.Space.class, Token.Tab.class, Token.CR.class,
             Token.LF.class, Token.FF.class, Token.LFLF.class, Token.EOF.class, Token.Comment.class };
 
-        GenericToken previousComment = null;
+        ScalaTokenAdapter previousComment = null;
 
         ScalaTokenManager(Iterator<Token> iterator) {
             this.tokenIter = iterator;
         }
 
         @Override
-        public GenericToken getNextToken() {
+        public ScalaTokenAdapter getNextToken() {
             if (!tokenIter.hasNext()) {
                 return null;
             }
@@ -155,15 +154,10 @@ public class ScalaTokenizer implements Tokenizer {
         private boolean isComment(Token token) {
             return token instanceof Token.Comment;
         }
-
-        @Override
-        public void setFileName(String fileName) {
-            throw new UnsupportedOperationException("setFileName deprecated");
-        }
     }
 
     private static class ScalaTokenFilter extends BaseTokenFilter<ScalaTokenAdapter> {
-        ScalaTokenFilter(TokenManager tokenManager) {
+        ScalaTokenFilter(TokenManager<ScalaTokenAdapter> tokenManager) {
             super(tokenManager);
         }
 

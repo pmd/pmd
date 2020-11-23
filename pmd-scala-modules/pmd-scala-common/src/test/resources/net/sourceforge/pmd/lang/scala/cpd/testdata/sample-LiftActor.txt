@@ -80,7 +80,6 @@ L48
     [threadPoolSize]                        17        32
     [=]                                     32        34
     [16]                                    34        37
-    [// issue 194]                          37        50
 L50
     [@]                                     3         5
     [volatile]                              4         13
