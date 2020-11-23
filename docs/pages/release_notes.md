@@ -18,6 +18,7 @@ This is a {{ site.pmd.release_type }} release.
 
 *   pmd-core
     * [#1939](https://github.com/pmd/pmd/issues/1939): \[core] XPath expressions return handling
+    * [#1961](https://github.com/pmd/pmd/issues/1961): \[core] Text renderer should include name of violated rule
 
 
 ### API Changes
@@ -47,5 +48,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 
 
 ### External Contributions
+
+*   [#2914](https://github.com/pmd/pmd/pull/2914): \[core] Include rule name in text renderer - [Gunther Schrijvers](https://github.com/GuntherSchrijvers)
 
 {% endtocmaker %}
