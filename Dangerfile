@@ -7,10 +7,10 @@ require 'logger'
 def run_pmdtester
   Dir.chdir('..') do
     argv = ['--local-git-repo', './pmd',
-            '--list-of-project', './pmd/.travis/project-list.xml',
-            '--base-branch', "#{ENV['TRAVIS_BRANCH']}",
+            '--list-of-project', './pmd/.ci/files/project-list.xml',
+            '--base-branch', "#{ENV['PMD_CI_BRANCH']}",
             '--patch-branch', 'HEAD',
-            '--patch-config', './pmd/.travis/all-java.xml',
+            '--patch-config', './pmd/.ci/files/all-java.xml',
             '--mode', 'online',
             '--auto-gen-config',
             # '--debug',
@@ -28,14 +28,14 @@ end
 
 def upload_report
   Dir.chdir('target/reports') do
-    tar_filename = "pr-#{ENV['TRAVIS_PULL_REQUEST']}-diff-report-#{Time.now.strftime("%Y-%m-%dT%H-%M-%SZ")}.tar"
+    tar_filename = "pr-#{ENV['PMD_CI_PULL_REQUEST_NUMBER']}-diff-report-#{Time.now.strftime("%Y-%m-%dT%H-%M-%SZ")}.tar"
     unless Dir.exist?('diff/')
       message("No java rules are changed!", sticky: true)
       return
     end
 
     `tar -cf #{tar_filename} diff/`
-    report_url = `curl -u #{ENV['CHUNK_TOKEN']} -T #{tar_filename} https://chunk.io`
+    report_url = `curl -u #{ENV['PMD_CI_CHUNK_TOKEN']} -T #{tar_filename} https://chunk.io`
     if $?.success?
       @logger.info "Successfully uploaded #{tar_filename} to chunk.io"
 
@@ -53,11 +53,6 @@ def upload_report
 end
 
 # Perform regression testing
-can_merge = github.pr_json['mergeable']
-if can_merge
-  run_pmdtester
-else
-  warn("This PR cannot be merged yet.", sticky: false)
-end
+run_pmdtester
 
 # vim: syntax=ruby

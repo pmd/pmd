@@ -10,6 +10,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -66,7 +68,8 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     @Override
     public void start() throws IOException {
         String encoding = getProperty(ENCODING);
-        lineSeparator = PMD.EOL.getBytes(encoding);
+        String unmarkedEncoding = toUnmarkedEncoding(encoding);
+        lineSeparator = PMD.EOL.getBytes(unmarkedEncoding);
 
         try {
             xmlWriter.writeStartDocument(encoding, "1.0");
@@ -84,6 +87,26 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         } catch (XMLStreamException e) {
             throw new IOException(e);
         }
+    }
+
+    /**
+     * Return a encoding, which doesn't write a BOM (byte order mark).
+     * Only UTF-16 encoders might write a BOM, see {@link Charset}.
+     *
+     * <p>This is needed, so that we don't accidentally add BOMs whenever
+     * we insert a newline.
+     *
+     * @return
+     */
+    private static String toUnmarkedEncoding(String encoding) {
+        if (StandardCharsets.UTF_16.name().equalsIgnoreCase(encoding)) {
+            return StandardCharsets.UTF_16BE.name();
+        }
+        // edge case: UTF-16LE with BOM
+        if ("UTF-16LE_BOM".equalsIgnoreCase(encoding)) {
+            return StandardCharsets.UTF_16LE.name();
+        }
+        return encoding;
     }
 
     /**

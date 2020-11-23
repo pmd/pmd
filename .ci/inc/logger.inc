@@ -1,5 +1,3 @@
-#!/bin/bash
-
 COL_GREEN="\e[32m"
 COL_RED="\e[31m"
 COL_RESET="\e[0m"
@@ -20,4 +18,13 @@ function log_success() {
 function log_debug() {
     true
     #echo -e "[DEBUG  ] $*"
+}
+
+function log_group_start() {
+    echo "::group::$*"
+    log_info $*
+}
+
+function log_group_end() {
+    echo "::endgroup::"
 }
