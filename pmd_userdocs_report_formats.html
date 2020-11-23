@@ -1575,8 +1575,8 @@ and configuration errors are reported.</p>
 
 <p>Example:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java:124:    Logger calls should be surrounded by log level guards.
-/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java:58:   This for loop can be replaced by a foreach loop
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java:124:    GuardLogStatement:    Logger calls should be surrounded by log level guards.
+/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java:58:    ForLoopCanBeForeach:   This for loop can be replaced by a foreach loop
 /home/pmd/source/pmd-core/src/test/resources/net/sourceforge/pmd/cpd/files/file_with_ISO-8859-1_encoding.java    -   PMDException: Error while parsing /home/pmd/source/pmd-core/src/test/resources/net/sourceforge/pmd/cpd/files/file_with_ISO-8859-1_encoding.java
 CloseResource rule violation suppressed by Annotation in /home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/PMD.java
 LoosePackageCoupling    -   No packages or classes specified
