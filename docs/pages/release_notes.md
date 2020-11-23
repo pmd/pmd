@@ -49,5 +49,6 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 ### External Contributions
 
 *   [#2925](https://github.com/pmd/pmd/pull/2925): Cleanup: Correct annotation array initializer indents from checkstyle #8083 - [Abhishek Kumar](https://github.com/Abhishek-kumar09)
+*   [#2936](https://github.com/pmd/pmd/pull/2936): \[java] (doc) Fix typo: "an accessor" not "a" - [Igor Moreno](https://github.com/igormoreno)
 
 {% endtocmaker %}
