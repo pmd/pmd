@@ -16,6 +16,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   cs
+    * [#2938](https://github.com/pmd/pmd/pull/2938): \[cs] CPD: ignoring using directives could not be disabled
 *   pmd-core
     * [#1939](https://github.com/pmd/pmd/issues/1939): \[core] XPath expressions return handling
 
@@ -49,5 +51,6 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 ### External Contributions
 
 *   [#2925](https://github.com/pmd/pmd/pull/2925): Cleanup: Correct annotation array initializer indents from checkstyle #8083 - [Abhishek Kumar](https://github.com/Abhishek-kumar09)
+*   [#2938](https://github.com/pmd/pmd/pull/2938): \[cs] CPD: fix issue where ignoring using directives could not be disabled - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
