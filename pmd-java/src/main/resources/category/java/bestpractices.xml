@@ -71,7 +71,7 @@ public class Outer {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AccessorMethodGenerationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#accessormethodgeneration">
         <description>
-When accessing a private field / method from another class, the Java compiler will generate an accessor methods
+When accessing private fields / methods from another class, the Java compiler will generate accessor methods
 with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
 be avoided by changing the visibility of the field / method from private to package-private.
         </description>
