@@ -18,7 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   pmd-core
     * [#1939](https://github.com/pmd/pmd/issues/1939): \[core] XPath expressions return handling
-
+*   scala
+    * [#2480](https://github.com/pmd/pmd/issues/2480): \[scala] Support CPD suppressions
 
 ### API Changes
 
@@ -47,5 +48,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 
 
 ### External Contributions
+
+*   [#2929](https://github.com/pmd/pmd/pull/2929): \[scala] Add support for CPD-ON and CPD-OFF special comments - [Andy Robinson](https://github.com/andyrobinson)
 
 {% endtocmaker %}
