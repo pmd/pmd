@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -254,21 +253,4 @@ public abstract class AbstractPropertySource implements PropertySource {
         return descriptor.errorFor(getProperty(descriptor));
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final AbstractPropertySource that = (AbstractPropertySource) obj;
-        return Objects.equals(propertyDescriptors, that.propertyDescriptors)
-                && Objects.equals(propertyValuesByDescriptor, that.propertyValuesByDescriptor);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(propertyDescriptors, propertyValuesByDescriptor);
-    }
 }
