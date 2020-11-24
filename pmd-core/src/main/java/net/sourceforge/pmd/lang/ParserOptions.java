@@ -86,19 +86,19 @@ public class ParserOptions {
     /**
      * Returns the environment variable name that a user can set in order to override the default value.
      */
-    String getEnvironmentVariableName(PropertyDescriptor propertyDescriptor) {
+    String getEnvironmentVariableName(PropertyDescriptor<?> propertyDescriptor) {
         if (languageId == null) {
             throw new IllegalStateException("Language is null");
         }
         return "PMD_" + languageId.toUpperCase(Locale.ROOT) + "_"
-                + propertyDescriptor.name().toUpperCase(Locale.ROOT);
+            + propertyDescriptor.name().toUpperCase(Locale.ROOT);
     }
 
     /**
      * @return environment variable that overrides the PropertyDesciptors default value. Returns null if no environment
-     * variable has been set.
+     *     variable has been set.
      */
-    protected String getEnvValue(PropertyDescriptor propertyDescriptor) {
+    protected String getEnvValue(PropertyDescriptor<?> propertyDescriptor) {
         return System.getenv(getEnvironmentVariableName(propertyDescriptor));
     }
 
@@ -107,17 +107,22 @@ public class ParserOptions {
      * TODO: Move this to net.sourceforge.pmd.PMD#parserFor when CLI options are implemented
      */
     protected void overridePropertiesFromEnv() {
-        for (PropertyDescriptor propertyDescriptor : parserOptionsProperties.getPropertyDescriptors()) {
+        for (PropertyDescriptor<?> propertyDescriptor : parserOptionsProperties.getPropertyDescriptors()) {
             String propertyValue = getEnvValue(propertyDescriptor);
 
             if (propertyValue != null) {
-                Object value = propertyDescriptor.valueFrom(propertyValue);
-                parserOptionsProperties.setProperty(propertyDescriptor, value);
+                setPropertyCapture(propertyDescriptor, propertyValue);
             }
         }
     }
 
+    private <T> void setPropertyCapture(PropertyDescriptor<T> propertyDescriptor, String propertyValue) {
+        T value = propertyDescriptor.valueFrom(propertyValue);
+        parserOptionsProperties.setProperty(propertyDescriptor, value);
+    }
+
     private final class ParserOptionsProperties extends AbstractPropertySource {
+
         @Override
         protected String getPropertySourceType() {
             return "ParserOptions";
@@ -126,6 +131,24 @@ public class ParserOptions {
         @Override
         public String getName() {
             return ParserOptions.this.getClass().getSimpleName();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof ParserOptionsProperties)) {
+                return false;
+            }
+            final ParserOptionsProperties that = (ParserOptionsProperties) obj;
+            return Objects.equals(getPropertiesByPropertyDescriptor(),
+                                  that.getPropertiesByPropertyDescriptor());
+        }
+
+        @Override
+        public int hashCode() {
+            return getPropertiesByPropertyDescriptor().hashCode();
         }
     }
 }
