@@ -21,7 +21,7 @@ end
 def run_pmdtester
   Dir.chdir('..') do
     begin
-      @base_branch = ENV['TRAVIS_BRANCH']
+      @base_branch = ENV['PMD_CI_BRANCH']
       @logger.info "Run against PR base #{@base_branch}"
       runner = PmdTester::Runner.new(get_args(@base_branch))
       @new_errors, @removed_errors, @new_violations, @removed_violations, @new_configerrors, @removed_configerrors = runner.run
@@ -36,7 +36,7 @@ def run_pmdtester
       message1 = create_message
 
       # run against master branch (if the PR is not already against master)
-      unless ENV['TRAVIS_BRANCH'] == 'master'
+      unless ENV['PMD_CI_BRANCH'] == 'master'
         @base_branch = 'master'
         @logger.info "Run against #{@base_branch}"
         runner = PmdTester::Runner.new(get_args(@base_branch))
