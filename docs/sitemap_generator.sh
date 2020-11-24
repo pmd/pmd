@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Sitemap generator
-# Assumes we have the latest version of the site under "latest" and "pmd-${RELEASE_VERSION}"
+# Sitemap generator for pmd.github.io main landing page.
+# Assumes we have the latest version of the site under "latest"
 # https://www.sitemaps.org/protocol.html
 
 WEBSITE_PREFIX="https://pmd.github.io/"
-DOC_PREFIX="latest/" # "pmd-${RELEASE_VERSION}/"
+DOC_PREFIX="latest/"
 DATE=`date +%Y-%m-%d`
 # Priority is relative to the website, can be chosen in {0.1, 0.2, ..., 1}
 # Default priority is 0.5

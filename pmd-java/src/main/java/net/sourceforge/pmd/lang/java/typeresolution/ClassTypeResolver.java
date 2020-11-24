@@ -14,12 +14,15 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDe
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -289,20 +292,24 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
     /**
      * Set's the node's type to the found Class in the node's name (if there is a class to be found).
      *
-     * @param node
-     *
      * @return The index in the array produced by splitting the node's name by '.', which is not part of the
-     * class name found. Example: com.package.SomeClass.staticField.otherField, return would be 3
+     *     class name found. Example: com.package.SomeClass.staticField.otherField, return would be 3
      */
-    private int searchNodeNameForClass(TypeNode node) {
+    private int searchNodeNameForClass(ASTName node, String[] segments) {
         // this is the index from which field/method names start in the dotSplitImage array
-        int startIndex = node.getImage().split("\\.").length;
+        int startIndex = lastIndexThatMayBeAClassNameExclusive(node, segments);
+        if (startIndex == 0) {
+            return 0;
+        }
+
+        String reducedImage = StringUtils.join(Arrays.asList(segments).subList(0, startIndex), '.');
 
         // tries to find a class in the node's image by omitting the parts after each '.', example:
         // First try: com.package.SomeClass.staticField.otherField
         // Second try: com.package.SomeClass.staticField
         // Third try: com.package.SomeClass <- found a class!
-        for (String reducedImage = node.getImage();;) {
+
+        while (StringUtils.isNotEmpty(reducedImage) && startIndex > 0) {
             populateType(node, reducedImage);
             if (node.getType() != null) {
                 break; // we found a class!
@@ -321,6 +328,35 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         }
 
         return startIndex;
+    }
+
+    private int lastIndexThatMayBeAClassNameExclusive(ASTName name, String[] segments) {
+        assert segments.length > 0;
+
+
+
+        if (name.getParent() instanceof ASTPrimarySuffix) {
+            // not a class name as class name in primary
+            // expressions are only prefixes of the expr
+            return 0;
+        }
+
+        JavaNode opa = name.getParent().getParent();
+        if (opa.getNumChildren() > 1 + name.getParent().getIndexInParent()) {
+            // there is a following sibling to the primary prefix
+            JavaNode nextSibling = opa.getChild(name.getParent().getIndexInParent() + 1);
+            if (isArguments(nextSibling)) {
+                return segments.length - 1;
+            }
+        }
+        return segments.length;
+    }
+
+    private boolean isArguments(JavaNode node) {
+        if (node instanceof ASTPrimarySuffix) {
+            return ((ASTPrimarySuffix) node).isArguments();
+        }
+        return false;
     }
 
     private ASTArgumentList getArgumentList(ASTArguments args) {
@@ -344,7 +380,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         Class<?> accessingClass = getEnclosingTypeDeclarationClass(node);
         String[] dotSplitImage = node.getImage().split("\\.");
 
-        int startIndex = searchNodeNameForClass(node);
+        int startIndex = searchNodeNameForClass(node, dotSplitImage);
 
         ASTArguments astArguments = getSuffixMethodArgs(node);
         ASTArgumentList astArgumentList = getArgumentList(astArguments);
@@ -964,7 +1000,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                     // restore type of the name and search again
                     ASTName name = previousChild.getFirstChildOfType(ASTName.class);
                     name.setTypeDefinition(null);
-                    searchNodeNameForClass(name);
+                    searchNodeNameForClass(name, name.getImage().split("\\."));
                     if (name.getTypeDefinition() != null) {
                         // rollup from Name -> PrimaryPrefix
                         previousChild.setTypeDefinition(name.getTypeDefinition());
