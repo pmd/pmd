@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.AbstractVFDataNode;
 import net.sourceforge.pmd.lang.vf.ast.VfParserVisitorAdapter;
-import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * Visits {@link ASTExpression} nodes and stores type information for
@@ -51,7 +50,7 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     private final List<String> apexDirectories;
     private final List<String> objectsDirectories;
 
-    VfExpressionTypeVisitor(String fileName, PropertySource propertySource) {
+    VfExpressionTypeVisitor(String fileName, VfParserOptions propertySource) {
         this.fileName = fileName;
         this.apexDirectories = propertySource.getProperty(VfParserOptions.APEX_DIRECTORIES_DESCRIPTOR);
         this.objectsDirectories = propertySource.getProperty(VfParserOptions.OBJECTS_DIRECTORIES_DESCRIPTOR);

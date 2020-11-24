@@ -47,7 +47,7 @@ public class VfParser extends AbstractParser {
         ASTCompilationUnit astCompilationUnit = new net.sourceforge.pmd.lang.vf.ast.VfParser(
                 new SimpleCharStream(source)).CompilationUnit();
         // Add type information to the AST
-        VfExpressionTypeVisitor visitor = new VfExpressionTypeVisitor(fileName, this.getParserOptions().getProperties());
+        VfExpressionTypeVisitor visitor = new VfExpressionTypeVisitor(fileName, (VfParserOptions) this.getParserOptions());
         visitor.visit(astCompilationUnit, null);
 
         return astCompilationUnit;

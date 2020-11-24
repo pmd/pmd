@@ -38,8 +38,8 @@ public class VfParserOptions extends ParserOptions {
 
     public VfParserOptions() {
         super(new VfLanguageModule());
-        getProperties().definePropertyDescriptor(APEX_DIRECTORIES_DESCRIPTOR);
-        getProperties().definePropertyDescriptor(OBJECTS_DIRECTORIES_DESCRIPTOR);
+        defineProperty(APEX_DIRECTORIES_DESCRIPTOR);
+        defineProperty(OBJECTS_DIRECTORIES_DESCRIPTOR);
         overridePropertiesFromEnv();
     }
 }

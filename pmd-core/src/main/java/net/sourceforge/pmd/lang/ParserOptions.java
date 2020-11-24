@@ -9,7 +9,6 @@ import java.util.Objects;
 
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * Represents a set of configuration options for a {@link Parser}. For each
@@ -48,8 +47,21 @@ public class ParserOptions {
         this.suppressMarker = suppressMarker;
     }
 
-    public PropertySource getProperties() {
-        return parserOptionsProperties;
+    protected final void defineProperty(PropertyDescriptor<?> propertyDescriptor) {
+        parserOptionsProperties.definePropertyDescriptor(propertyDescriptor);
+    }
+
+    protected final <T> void defineProperty(PropertyDescriptor<T> propertyDescriptor, T initialValue) {
+        defineProperty(propertyDescriptor);
+        setProperty(propertyDescriptor, initialValue);
+    }
+
+    protected final <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T initialValue) {
+        parserOptionsProperties.setProperty(propertyDescriptor, initialValue);
+    }
+
+    public final <T> T getProperty(PropertyDescriptor<T> propertyDescriptor) {
+        return parserOptionsProperties.getProperty(propertyDescriptor);
     }
 
     @Override
