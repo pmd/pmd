@@ -93,6 +93,9 @@ public class PmdRunnable implements Callable<Report> {
 
         TimeTracker.finishThread();
 
+        // merge the sub-report into the global report (thread-safe)
+        ruleContext.getReport().merge(report);
+
         return report;
     }
 
