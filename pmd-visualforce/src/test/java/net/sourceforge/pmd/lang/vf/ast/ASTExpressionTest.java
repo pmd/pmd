@@ -39,7 +39,7 @@ public class ASTExpressionTest {
             assertEquals(template, 1, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
-            Map<AbstractVFDataNode, String> identifiers = expression.getDataNodes();
+            Map<VfTypedNode, String> identifiers = expression.getDataNodes();
             assertEquals(template, 1, identifiers.size());
 
             Map<String, Node> map = invertMap(identifiers);
@@ -57,7 +57,7 @@ public class ASTExpressionTest {
             assertEquals(template, 1, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
-            Map<AbstractVFDataNode, String> identifiers = expression.getDataNodes();
+            Map<VfTypedNode, String> identifiers = expression.getDataNodes();
             assertEquals(template, 1, identifiers.size());
 
             Map<String, Node> map = invertMap(identifiers);
@@ -75,7 +75,7 @@ public class ASTExpressionTest {
             assertEquals(template, 1, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
-            Map<AbstractVFDataNode, String> identifiers = expression.getDataNodes();
+            Map<VfTypedNode, String> identifiers = expression.getDataNodes();
             assertEquals(template, 1, identifiers.size());
 
             Map<String, Node> map = invertMap(identifiers);
@@ -93,7 +93,7 @@ public class ASTExpressionTest {
             assertEquals(template, 1, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
-            Map<AbstractVFDataNode, String> identifiers = expression.getDataNodes();
+            Map<VfTypedNode, String> identifiers = expression.getDataNodes();
             assertEquals(template, 2, identifiers.size());
 
             Map<String, Node> map = invertMap(identifiers);
@@ -114,7 +114,7 @@ public class ASTExpressionTest {
             assertEquals(template, 1, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
-            Map<AbstractVFDataNode, String> identifiers = expression.getDataNodes();
+            Map<VfTypedNode, String> identifiers = expression.getDataNodes();
             assertEquals(template, 1, identifiers.size());
 
             Map<String, Node> map = invertMap(identifiers);
@@ -133,7 +133,7 @@ public class ASTExpressionTest {
             assertEquals(template, 1, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
-            Map<AbstractVFDataNode, String> identifiers = expression.getDataNodes();
+            Map<VfTypedNode, String> identifiers = expression.getDataNodes();
             assertEquals(template, 2, identifiers.size());
 
             Map<String, Node> map = invertMap(identifiers);
@@ -206,7 +206,7 @@ public class ASTExpressionTest {
     /**
      * Invert the map to make it easier to unit test.
      */
-    private Map<String, Node> invertMap(Map<AbstractVFDataNode, String> map) {
+    private Map<String, Node> invertMap(Map<VfTypedNode, String> map) {
         Map<String, Node> result = map.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
         // Ensure no values have been lost

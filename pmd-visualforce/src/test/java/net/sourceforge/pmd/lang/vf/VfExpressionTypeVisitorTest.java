@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.vf.ast.AbstractVFDataNode;
+import net.sourceforge.pmd.lang.vf.ast.VfTypedNode;
 import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer;
 
 public class VfExpressionTypeVisitorTest {
@@ -110,8 +110,8 @@ public class VfExpressionTypeVisitorTest {
             // Each string appears twice, it is set on a "value" attribute and inline
             assertEquals(2, nodes.size());
             for (Node node : nodes) {
-                assertTrue(node.getClass().getSimpleName(), node instanceof AbstractVFDataNode);
-                AbstractVFDataNode dataNode = (AbstractVFDataNode) node;
+                assertTrue(node.getClass().getSimpleName(), node instanceof VfTypedNode);
+                VfTypedNode dataNode = (VfTypedNode) node;
                 assertNull(dataNode.getDataType());
             }
         }
@@ -150,8 +150,8 @@ public class VfExpressionTypeVisitorTest {
         // Each string appears twice, it is set on a "value" attribute and inline
         assertEquals(2, nodes.size());
         for (Node node : nodes) {
-            assertTrue(node.getClass().getSimpleName(), node instanceof AbstractVFDataNode);
-            AbstractVFDataNode dataNode = (AbstractVFDataNode) node;
+            assertTrue(node.getClass().getSimpleName(), node instanceof VfTypedNode);
+            VfTypedNode dataNode = (VfTypedNode) node;
             assertNull(dataNode.getDataType());
         }
     }

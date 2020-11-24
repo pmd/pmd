@@ -20,8 +20,9 @@ import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
 import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
-import net.sourceforge.pmd.lang.vf.ast.AbstractVFDataNode;
+import net.sourceforge.pmd.lang.vf.ast.VfAstInternals;
 import net.sourceforge.pmd.lang.vf.ast.VfParserVisitorAdapter;
+import net.sourceforge.pmd.lang.vf.ast.VfTypedNode;
 
 /**
  * Visits {@link ASTExpression} nodes and stores type information for
@@ -109,7 +110,7 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
      */
     @Override
     public Object visit(ASTElExpression node, Object data) {
-        for (Map.Entry<AbstractVFDataNode, String> entry : getDataNodeNames(node).entrySet()) {
+        for (Map.Entry<VfTypedNode, String> entry : getDataNodeNames(node).entrySet()) {
             String name = entry.getValue();
             DataType type = null;
             String[] parts = name.split("\\.");
@@ -152,7 +153,7 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
             }
 
             if (type != null) {
-                entry.getKey().setDataType(type);
+                VfAstInternals.setDataType(entry.getKey(), type);
             } else {
                 LOGGER.fine("Unable to determine type for: " + name);
             }
@@ -164,8 +165,8 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
      * Invoke {@link ASTExpression#getDataNodes()} for all {@link ASTExpression} children of {@code node} and return
      * the consolidated results.
      */
-    private IdentityHashMap<AbstractVFDataNode, String> getDataNodeNames(ASTElExpression node) {
-        IdentityHashMap<AbstractVFDataNode, String> dataNodeToName = new IdentityHashMap<>();
+    private IdentityHashMap<VfTypedNode, String> getDataNodeNames(ASTElExpression node) {
+        IdentityHashMap<VfTypedNode, String> dataNodeToName = new IdentityHashMap<>();
 
         for (ASTExpression expression : node.findChildrenOfType(ASTExpression.class)) {
             try {

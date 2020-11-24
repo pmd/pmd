@@ -25,8 +25,8 @@ import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.vf.ast.ASTNegationExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
-import net.sourceforge.pmd.lang.vf.ast.AbstractVFDataNode;
 import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
+import net.sourceforge.pmd.lang.vf.ast.VfTypedNode;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
 
 /**
@@ -451,7 +451,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
      */
     private boolean expressionContainsSafeDataNodes(ASTExpression expression) {
         try {
-            for (AbstractVFDataNode node : expression.getDataNodes().keySet()) {
+            for (VfTypedNode node : expression.getDataNodes().keySet()) {
                 DataType dataType = node.getDataType();
                 if (dataType == null || dataType.requiresEscaping) {
                     return false;

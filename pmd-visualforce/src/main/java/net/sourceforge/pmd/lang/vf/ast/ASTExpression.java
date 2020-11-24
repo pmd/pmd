@@ -102,13 +102,13 @@ public class ASTExpression extends AbstractVFNode {
      * @throws DataNodeStateException if the results of this method could have been incorrect. Callers should typically
      * not rethrow this exception, as it will happen often and doesn't represent a terminal exception.
      */
-    public Map<AbstractVFDataNode, String> getDataNodes() throws DataNodeStateException {
-        Map<AbstractVFDataNode, String> result = new IdentityHashMap<>();
+    public Map<VfTypedNode, String> getDataNodes() throws DataNodeStateException {
+        Map<VfTypedNode, String> result = new IdentityHashMap<>();
 
         int numChildren = getNumChildren();
         List<ASTIdentifier> identifiers = findChildrenOfType(ASTIdentifier.class);
         for (ASTIdentifier identifier : identifiers) {
-            LinkedList<AbstractVFDataNode> identifierNodes = new LinkedList<>();
+            LinkedList<VfTypedNode> identifierNodes = new LinkedList<>();
 
             // The Identifier is the first item that makes up the string
             identifierNodes.add(identifier);
@@ -126,7 +126,7 @@ public class ASTExpression extends AbstractVFNode {
                     if (node.getNumChildren() == 1) {
                         final Node expressionChild = node.getChild(0);
                         if (expressionChild instanceof ASTIdentifier || expressionChild instanceof ASTLiteral) {
-                            identifierNodes.add((AbstractVFDataNode) expressionChild);
+                            identifierNodes.add((VfTypedNode) expressionChild);
                         } else {
                             // This should never happen
                             logWarning("Node expected to be Identifier or Literal", node);
