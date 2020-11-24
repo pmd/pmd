@@ -23,6 +23,7 @@ def run_pmdtester
     begin
       @base_branch = ENV['PMD_CI_BRANCH']
       @logger.info "Run against PR base #{@base_branch}"
+      download_baseline(@base_branch)
       runner = PmdTester::Runner.new(get_args(@base_branch))
       @new_errors, @removed_errors, @new_violations, @removed_violations, @new_configerrors, @removed_configerrors = runner.run
 
@@ -39,6 +40,7 @@ def run_pmdtester
       unless ENV['PMD_CI_BRANCH'] == 'master'
         @base_branch = 'master'
         @logger.info "Run against #{@base_branch}"
+        download_baseline(@base_branch)
         runner = PmdTester::Runner.new(get_args(@base_branch))
         @new_errors, @removed_errors, @new_violations, @removed_violations, @new_configerrors, @removed_configerrors = runner.run
         # move the generated report out of the way
@@ -74,6 +76,14 @@ def create_message
   "#{@new_configerrors} new configuration errors,\n"\
   "removes #{@removed_violations} violations, #{@removed_errors} errors and "\
   "#{@removed_configerrors} configuration errors.\n"
+end
+
+def download_baseline(branch_name)
+    branch_filename = branch_name&.tr('/', '_')
+    url = "https://pmd-code.org/pmd-regression-tester/#{branch_filename}"
+    cmd = "mkdir -p target/reports; cd target/reports; wget #{url}"
+    @logger.info "Downloading baseline for branch #{branch_name}: cmd=#{cmd}"
+    system(cmd)
 end
 
 def upload_report
