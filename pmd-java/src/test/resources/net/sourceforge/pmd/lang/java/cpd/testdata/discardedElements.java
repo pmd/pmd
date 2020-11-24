@@ -29,7 +29,7 @@ public class Foo { // class Bar
     @AnnotationWithParams({@Nested(1) ,
                            @Nested(2) ,
                            @Nested
-             })
+        })
     public void foo() {
 
     }
