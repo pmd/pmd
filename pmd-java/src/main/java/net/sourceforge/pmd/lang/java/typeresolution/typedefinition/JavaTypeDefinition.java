@@ -8,16 +8,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 
 public abstract class JavaTypeDefinition implements TypeDefinition {
-    // contains non-generic and raw EXACT types
-    private static final Map<Class<?>, JavaTypeDefinition> CLASS_EXACT_TYPE_DEF_CACHE = new ConcurrentHashMap<>();
+
+    private static final JavaTypeDefinition[] NO_GENERICS = {};
+
 
     private final TypeDefinitionType definitionType;
 
@@ -52,33 +51,17 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
         }
     }
 
+    public static JavaTypeDefinition forClass(final Class<?> clazz) {
+        return clazz == Object.class ? JavaTypeDefinitionSimple.OBJECT_DEFINITION
+                                     : forClass(clazz, NO_GENERICS); // very common
+
+    }
+
     public static JavaTypeDefinition forClass(final Class<?> clazz, JavaTypeDefinition... boundGenerics) {
         if (clazz == null) {
             return null;
         }
-
-        // deal with generic types
-        if (boundGenerics.length != 0) {
-            // With generics there is no cache
-            return new JavaTypeDefinitionSimple(clazz, boundGenerics);
-        }
-
-        final JavaTypeDefinition typeDef = CLASS_EXACT_TYPE_DEF_CACHE.get(clazz);
-
-        if (typeDef != null) {
-            return typeDef;
-        }
-
-        final JavaTypeDefinition newDef;
-        try {
-            newDef = new JavaTypeDefinitionSimple(clazz);
-        } catch (final NoClassDefFoundError e) {
-            return null; // Can happen if a parent class references a class not in classpath
-        }
-
-        CLASS_EXACT_TYPE_DEF_CACHE.put(clazz, newDef);
-
-        return newDef;
+        return new JavaTypeDefinitionSimple(clazz, boundGenerics);
     }
 
     @Override

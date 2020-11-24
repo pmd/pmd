@@ -12,7 +12,7 @@
   <servers>
     <server>
       <id>ossrh</id>
-      <username>${env.CI_DEPLOY_USERNAME}</username>
+      <username>${env.CI_DEPLOY_USER}</username>
       <password>${env.CI_DEPLOY_PASSWORD}</password>
     </server>
   </servers>
@@ -22,7 +22,7 @@
     <profile>
       <id>ossrh</id>
       <properties>
-        <gpg.keyname>${env.CI_SIGN_KEYNAME}</gpg.keyname>
+        <gpg.keyname>${env.CI_SIGN_KEY}</gpg.keyname>
         <gpg.passphrase>${env.CI_SIGN_PASSPHRASE}</gpg.passphrase>
       </properties>
     </profile>
