@@ -128,6 +128,10 @@ public abstract class AbstractPMDProcessor {
     public void processFiles(RuleSets rulesets, List<DataSource> files, RuleContext ctx, List<Renderer> renderers) {
         try {
             reportBrokenRules(ctx.getReport(), rulesets);
+
+            // render base report first - general errors
+            renderReports(renderers, ctx.getReport());
+
             configuration.getAnalysisCache().checkValidity(rulesets, configuration.getClassLoader());
             final SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
 
@@ -137,9 +141,6 @@ public abstract class AbstractPMDProcessor {
 
                 runAnalysis(new PmdRunnable(dataSource, realFileName, renderers, ctx, rulesets, processor));
             }
-
-            // render base report first - general errors
-            renderReports(renderers, ctx.getReport());
 
             // then add analysis results per file
             collectReports(renderers);

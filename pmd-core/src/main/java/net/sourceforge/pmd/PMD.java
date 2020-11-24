@@ -333,7 +333,7 @@ public class PMD {
      *                      and rulesets, are ignored, as they are supplied
      *                      as parameters
      * @param rulesets      Parsed rulesets
-     * @param files         Files to process
+     * @param files         Files to process, will be closed by this method.
      * @param renderers     Renderers that render the report
      *
      * @return Report in which violations are accumulated

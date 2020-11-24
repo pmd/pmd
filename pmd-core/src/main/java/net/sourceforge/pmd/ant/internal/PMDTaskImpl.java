@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
@@ -132,7 +131,7 @@ public class PMDTaskImpl {
         // TODO Do we really need all this in a loop over each FileSet? Seems
         // like a lot of redundancy
         Report errorReport = new Report();
-        final AtomicInteger reportSize = new AtomicInteger();
+        int problemCount = 0;
         final String separator = System.getProperty("file.separator");
 
         for (FileSet fs : filesets) {
@@ -165,10 +164,7 @@ public class PMDTaskImpl {
 
                 @Override
                 public void renderFileReport(Report r) {
-                    int size = r.size();
-                    if (size > 0) {
-                        reportSize.addAndGet(size);
-                    }
+                    // Nothing to do
                 }
 
                 @Override
@@ -189,7 +185,8 @@ public class PMDTaskImpl {
                 renderers.add(renderer);
             }
             try {
-                PMD.processFiles(configuration, rulesetList, files, renderers);
+                Report report = PMD.processFiles(configuration, rulesetList, files, renderers);
+                problemCount += report.getViolations().size();
             } catch (ContextedRuntimeException e) {
                 if (e.getFirstContextValue("filename") instanceof String) {
                     handleError((String) e.getFirstContextValue("filename"), errorReport, e);
@@ -201,7 +198,6 @@ public class PMDTaskImpl {
             }
         }
 
-        int problemCount = reportSize.get();
         project.log(problemCount + " problems found", Project.MSG_VERBOSE);
 
         for (Formatter formatter : formatters) {
