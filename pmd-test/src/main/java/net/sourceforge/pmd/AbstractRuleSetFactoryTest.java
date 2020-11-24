@@ -60,22 +60,20 @@ public abstract class AbstractRuleSetFactoryTest {
     private static SAXParser saxParser;
 
     protected Set<String> validXPathClassNames = new HashSet<>();
-    private Set<Language> languagesToSkip = new HashSet<>();
+    private final Set<String> languagesToSkip = new HashSet<>();
 
     public AbstractRuleSetFactoryTest() {
-        this(null);
+        this(new String[0]);
     }
 
     /**
      * Constructor used when a module that depends on another module wants to filter out the dependee's rulesets.
      *
-     * @param languagesToSkip {@link Language}s that appear in the classpath via a dependency, but should be
+     * @param languagesToSkip {@link Language}s terse names that appear in the classpath via a dependency, but should be
      * skipped because they aren't the primary language which the concrete instance of this class is testing.
      */
-    public AbstractRuleSetFactoryTest(Language... languagesToSkip) {
-        if (languagesToSkip != null) {
-            this.languagesToSkip.addAll(Arrays.asList(languagesToSkip));
-        }
+    public AbstractRuleSetFactoryTest(String... languagesToSkip) {
+        this.languagesToSkip.addAll(Arrays.asList(languagesToSkip));
         validXPathClassNames.add(XPathRule.class.getName());
     }
 
@@ -278,7 +276,7 @@ public abstract class AbstractRuleSetFactoryTest {
         List<String> result = new ArrayList<>();
 
         for (Language language : LanguageRegistry.getLanguages()) {
-            if (this.languagesToSkip.contains(language)) {
+            if (this.languagesToSkip.contains(language.getTerseName())) {
                 continue;
             }
             result.addAll(getRuleSetFileNames(language.getTerseName()));
