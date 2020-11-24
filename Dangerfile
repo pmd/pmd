@@ -6,9 +6,10 @@ require 'logger'
 
 def run_pmdtester
   Dir.chdir('..') do
+    branch_name = "#{ENV['PMD_CI_BRANCH']}"
     argv = ['--local-git-repo', './pmd',
             '--list-of-project', './pmd/.ci/files/project-list.xml',
-            '--base-branch', "#{ENV['PMD_CI_BRANCH']}",
+            '--base-branch', branch_name,
             '--patch-branch', 'HEAD',
             '--patch-config', './pmd/.ci/files/all-java.xml',
             '--mode', 'online',
@@ -16,6 +17,7 @@ def run_pmdtester
             # '--debug',
             ]
     begin
+      download_baseline(branch_name)
       runner = PmdTester::Runner.new(argv)
       @new_errors, @removed_errors, @new_violations, @removed_violations, @new_configerrors, @removed_configerrors = runner.run
       upload_report
@@ -24,6 +26,14 @@ def run_pmdtester
       @logger.error "Running pmdtester failed: #{e.inspect}"
     end
   end
+end
+
+def download_baseline(branch_name)
+    branch_filename = branch_name&.tr('/', '_')
+    url = "https://pmd-code.org/pmd-regression-tester/#{branch_filename}"
+    cmd = "mkdir -p target/reports; cd target/reports; wget #{url}"
+    @logger.info "Downloading baseline for branch #{branch_name}: cmd=#{cmd}"
+    system(cmd)
 end
 
 def upload_report

@@ -41,14 +41,17 @@ function regression_tester_setup_ci() {
 function regression_tester_uploadBaseline() {
     log_debug "$FUNCNAME branch=${PMD_CI_BRANCH}"
     local targetUrl="https://sourceforge.net/projects/pmd/files/pmd-regression-tester/"
+    local pmdcodeUrl="https://pmd-code.org/pmd-regression-tester/"
 
     local errexitstate="$(shopt -po errexit)"
     set +e # disable errexit
     (
         # This handler is called if any command fails
         function upload_failed() {
-            log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to sourceforge!"
-            log_error "Please upload manually: ${targetUrl}"
+            log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to pmd-code.org!"
+            log_error "Please upload manually: ${pmdcodeUrl}"
+            #log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to sourceforge!"
+            #log_error "Please upload manually: ${targetUrl}"
         }
 
         # exit subshell after trap
@@ -67,8 +70,11 @@ function regression_tester_uploadBaseline() {
         cd target/reports
         BRANCH_FILENAME="${PMD_CI_BRANCH/\//_}"
         zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
-        ../../pmd/.ci/travis_wait "rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/"
-        log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${targetUrl}"
+        # ssh-key for pmd-code.org is setup already by pmd_ci_setup_ssh
+        scp ${BRANCH_FILENAME}-baseline.zip pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
+        log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${pmdcodeUrl}"
+        #../../pmd/.ci/travis_wait "rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/"
+        #log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${targetUrl}"
     )
     # restore errexit state
     eval "$errexitstate"
