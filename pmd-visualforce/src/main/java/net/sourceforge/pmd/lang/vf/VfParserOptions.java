@@ -37,7 +37,7 @@ public class VfParserOptions extends ParserOptions {
                     .build();
 
     public VfParserOptions() {
-        super(new VfLanguageModule());
+        super(VfLanguageModule.TERSE_NAME);
         defineProperty(APEX_DIRECTORIES_DESCRIPTOR);
         defineProperty(OBJECTS_DIRECTORIES_DESCRIPTOR);
         overridePropertiesFromEnv();

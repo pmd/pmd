@@ -26,7 +26,7 @@ public class ParserOptions {
     /**
      * Language used to construct environment variable names that match PropertyDescriptors.
      */
-    private final Language language;
+    private final String languageId;
 
     private final ParserOptionsProperties parserOptionsProperties;
 
@@ -34,8 +34,8 @@ public class ParserOptions {
         this(null);
     }
 
-    public ParserOptions(Language language) {
-        this.language = language;
+    public ParserOptions(String languageId) {
+        this.languageId = languageId;
         this.parserOptionsProperties = new ParserOptionsProperties();
     }
 
@@ -74,23 +74,23 @@ public class ParserOptions {
         }
         final ParserOptions that = (ParserOptions) obj;
         return Objects.equals(suppressMarker, that.suppressMarker)
-                && Objects.equals(language, that.language)
+                && Objects.equals(languageId, that.languageId)
                 && Objects.equals(parserOptionsProperties, that.parserOptionsProperties);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(suppressMarker, language, parserOptionsProperties);
+        return Objects.hash(suppressMarker, languageId, parserOptionsProperties);
     }
 
     /**
      * Returns the environment variable name that a user can set in order to override the default value.
      */
     String getEnvironmentVariableName(PropertyDescriptor propertyDescriptor) {
-        if (language == null) {
+        if (languageId == null) {
             throw new IllegalStateException("Language is null");
         }
-        return "PMD_" + language.getTerseName().toUpperCase(Locale.ROOT) + "_"
+        return "PMD_" + languageId.toUpperCase(Locale.ROOT) + "_"
                 + propertyDescriptor.name().toUpperCase(Locale.ROOT);
     }
 
