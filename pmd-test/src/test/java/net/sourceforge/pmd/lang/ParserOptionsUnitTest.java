@@ -47,7 +47,7 @@ public class ParserOptionsUnitTest {
                         .build();
 
         private TestParserOptions() {
-            super(new DummyLanguageModule());
+            super(DummyLanguageModule.TERSE_NAME);
             defineProperty(LIST_DESCRIPTOR);
             defineProperty(STRING_DESCRIPTOR);
             overridePropertiesFromEnv();
@@ -157,23 +157,23 @@ public class ParserOptionsUnitTest {
         options2 = new ParserOptions();
         options3 = new ParserOptions();
         options4 = new ParserOptions();
-        options1.defineProperty(TestParserOptions.STRING_DESCRIPTOR,  DEFAULT_STRING);
+        options1.defineProperty(TestParserOptions.STRING_DESCRIPTOR, DEFAULT_STRING);
         options2.defineProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
         options3.defineProperty(TestParserOptions.STRING_DESCRIPTOR, DEFAULT_STRING);
         options4.defineProperty(TestParserOptions.STRING_DESCRIPTOR, OVERRIDDEN_STRING);
         ParserOptionsTestUtils.verifyOptionsEqualsHashcode(options1, options2, options3, options4);
 
         // Language
-        options1 = new ParserOptions(new DummyLanguageModule());
+        options1 = new ParserOptions(DummyLanguageModule.TERSE_NAME);
         options2 = new ParserOptions();
-        options3 = new ParserOptions(new DummyLanguageModule());
+        options3 = new ParserOptions(DummyLanguageModule.TERSE_NAME);
         options4 = new ParserOptions();
         ParserOptionsTestUtils.verifyOptionsEqualsHashcode(options1, options2, options3, options4);
 
         // SuppressMarker, PropertyDescriptor, PropertyValue, Language
-        options1 = new ParserOptions(new DummyLanguageModule());
+        options1 = new ParserOptions(DummyLanguageModule.TERSE_NAME);
         options2 = new ParserOptions();
-        options3 = new ParserOptions(new DummyLanguageModule());
+        options3 = new ParserOptions(DummyLanguageModule.TERSE_NAME);
         options4 = new ParserOptions();
         options1.setSuppressMarker("foo");
         options2.setSuppressMarker("bar");

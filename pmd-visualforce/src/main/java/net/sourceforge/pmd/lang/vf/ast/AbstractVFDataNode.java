@@ -13,11 +13,11 @@ class AbstractVFDataNode extends AbstractVFNode implements VfTypedNode {
 
     private DataType dataType;
 
-    public AbstractVFDataNode(int id) {
+    AbstractVFDataNode(int id) {
         super(id);
     }
 
-    public AbstractVFDataNode(VfParser parser, int id) {
+    AbstractVFDataNode(VfParser parser, int id) {
         super(id);
         this.parser = parser;
     }
