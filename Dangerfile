@@ -7,13 +7,15 @@ require 'fileutils'
 
 def get_args(base_branch)
   ['--local-git-repo', './pmd',
-   '--list-of-project', './pmd/.travis/project-list.xml',
+   '--list-of-project', './pmd/.ci/files/project-list.xml',
    '--base-branch', base_branch,
    '--patch-branch', 'HEAD',
-   '--patch-config', './pmd/.travis/all-java.xml',
+   '--patch-config', './pmd/.ci/files/all-java.xml',
    '--mode', 'online',
    '--auto-gen-config',
    '--keep-reports',
+   '--error-recovery',
+   '--baseline-download-url', 'https://pmd-code.org/pmd-regression-tester/',
    # '--debug',
    ]
 end
@@ -21,10 +23,10 @@ end
 def run_pmdtester
   Dir.chdir('..') do
     begin
-      @base_branch = ENV['TRAVIS_BRANCH']
+      @base_branch = ENV['PMD_CI_BRANCH']
       @logger.info "Run against PR base #{@base_branch}"
-      runner = PmdTester::Runner.new(get_args(@base_branch))
-      @new_errors, @removed_errors, @new_violations, @removed_violations, @new_configerrors, @removed_configerrors = runner.run
+      download_baseline(@base_branch)
+      @summary = PmdTester::Runner.new(get_args(@base_branch)).run
 
       unless Dir.exist?('target/reports/diff')
         message("No java rules are changed!", sticky: true)
@@ -36,11 +38,12 @@ def run_pmdtester
       message1 = create_message
 
       # run against master branch (if the PR is not already against master)
-      unless ENV['TRAVIS_BRANCH'] == 'master'
+      unless ENV['PMD_CI_BRANCH'] == 'master'
         @base_branch = 'master'
         @logger.info "Run against #{@base_branch}"
-        runner = PmdTester::Runner.new(get_args(@base_branch))
-        @new_errors, @removed_errors, @new_violations, @removed_violations, @new_configerrors, @removed_configerrors = runner.run
+        download_baseline(@base_branch)
+        @summary = PmdTester::Runner.new(get_args(@base_branch)).run
+
         # move the generated report out of the way
         FileUtils.mv 'target/reports/diff', 'target/diff2'
         message2 = create_message
@@ -69,19 +72,22 @@ end
 
 def create_message
   "Compared to #{@base_branch}:\n"\
-  "This changeset introduces "\
-  "#{@new_violations} new violations, #{@new_errors} new errors and "\
-  "#{@new_configerrors} new configuration errors,\n"\
-  "removes #{@removed_violations} violations, #{@removed_errors} errors and "\
-  "#{@removed_configerrors} configuration errors.\n"
+  "This changeset " \
+  "changes #{@summary[:violations][:changed]} violations,\n" \
+  "introduces #{@summary[:violations][:new]} new violations, " \
+  "#{@summary[:errors][:new]} new errors and " \
+  "#{@summary[:configerrors][:new]} new configuration errors,\n" \
+  "removes #{@summary[:violations][:removed]} violations, "\
+  "#{@summary[:errors][:removed]} errors and " \
+  "#{@summary[:configerrors][:removed]} configuration errors.\n"
 end
 
 def upload_report
   Dir.chdir('target') do
-    tar_filename = "pr-#{ENV['TRAVIS_PULL_REQUEST']}-diff-report-#{Time.now.strftime("%Y-%m-%dT%H-%M-%SZ")}.tar"
+    tar_filename = "pr-#{ENV['PMD_CI_PULL_REQUEST_NUMBER']}-diff-report-#{Time.now.strftime("%Y-%m-%dT%H-%M-%SZ")}.tar"
 
     `tar -cf #{tar_filename} diff1/ diff2/`
-    report_url = `curl -u #{ENV['CHUNK_TOKEN']} -T #{tar_filename} https://chunk.io`
+    report_url = `curl -u #{ENV['PMD_CI_CHUNK_TOKEN']} -T #{tar_filename} https://chunk.io`
     if $?.success?
       @logger.info "Successfully uploaded #{tar_filename} to chunk.io"
       report_url.chomp
