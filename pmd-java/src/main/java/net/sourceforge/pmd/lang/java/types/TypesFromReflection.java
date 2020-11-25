@@ -11,9 +11,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +22,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -186,42 +185,35 @@ public final class TypesFromReflection {
         return ts.wildcard(isUpper, ts.glb(boundsMapped));
     }
 
-
-
-    /** Maps names of primitives to their corresponding primitive {@code Class}es. */
-    private static final Map<String, Class<?>> PRIMITIVES_BY_NAME = new HashMap<>();
-
-
-    static {
-        PRIMITIVES_BY_NAME.put("boolean", Boolean.TYPE);
-        PRIMITIVES_BY_NAME.put("byte", Byte.TYPE);
-        PRIMITIVES_BY_NAME.put("char", Character.TYPE);
-        PRIMITIVES_BY_NAME.put("short", Short.TYPE);
-        PRIMITIVES_BY_NAME.put("int", Integer.TYPE);
-        PRIMITIVES_BY_NAME.put("long", Long.TYPE);
-        PRIMITIVES_BY_NAME.put("double", Double.TYPE);
-        PRIMITIVES_BY_NAME.put("float", Float.TYPE);
-        PRIMITIVES_BY_NAME.put("void", Void.TYPE);
-    }
-
-
     /**
      * Load a class. Supports loading array types like 'java.lang.String[]' and
      * converting a canonical name to a binary name (eg 'java.util.Map.Entry' ->
      * 'java.util.Map$Entry').
      */
     public static @Nullable JTypeMirror loadType(TypeSystem ctr, String className) {
-        return loadClassMaybeArray(ctr, StringUtils.deleteWhitespace(className));
+        return loadType(ctr, className, null);
+    }
+
+    /**
+     * Load a class. Supports loading array types like 'java.lang.String[]' and
+     * converting a canonical name to a binary name (eg 'java.util.Map.Entry' ->
+     * 'java.util.Map$Entry'). Types that are not on the classpath may
+     * be replaced by placeholder types if the {@link UnresolvedClassStore}
+     * parameter is non-null.
+     */
+    public static @Nullable JTypeMirror loadType(TypeSystem ctr, String className, UnresolvedClassStore unresolvedStore) {
+        return loadClassMaybeArray(ctr, StringUtils.deleteWhitespace(className), unresolvedStore);
     }
 
     public static @Nullable JClassSymbol loadSymbol(TypeSystem ctr, String className) {
-        JTypeMirror type = loadClassMaybeArray(ctr, StringUtils.deleteWhitespace(className));
+        JTypeMirror type = loadType(ctr, className);
         return type == null ? null : (JClassSymbol) type.getSymbol();
     }
 
 
     private static @Nullable JTypeMirror loadClassMaybeArray(TypeSystem ts,
-                                                             String className) {
+                                                             String className,
+                                                             @Nullable UnresolvedClassStore unresolvedClassStore) {
         Validate.notNull(className, "className must not be null.");
         if (className.endsWith("[]")) {
             int dimension = 0;
@@ -234,7 +226,7 @@ public final class TypesFromReflection {
             checkJavaIdent(className, i);
             String elementName = className.substring(0, i);
 
-            @Nullable JClassSymbol elementType = ts.getClassSymbolFromCanonicalName(elementName);
+            JClassSymbol elementType = getClassOrDefault(ts, unresolvedClassStore, elementName);
             if (elementType == null) {
                 return null;
             }
@@ -242,8 +234,16 @@ public final class TypesFromReflection {
             return ts.arrayType(ts.rawType(elementType), dimension);
         } else {
             checkJavaIdent(className, className.length());
-            return ts.rawType(ts.getClassSymbolFromCanonicalName(className));
+            return ts.rawType(getClassOrDefault(ts, unresolvedClassStore, className));
         }
+    }
+
+    private static JClassSymbol getClassOrDefault(TypeSystem ts, @Nullable UnresolvedClassStore unresolvedClassStore, String canonicalName) {
+        JClassSymbol loaded = ts.getClassSymbolFromCanonicalName(canonicalName);
+        if (loaded == null && unresolvedClassStore != null) {
+            loaded = unresolvedClassStore.makeUnresolvedReference(canonicalName, 0);
+        }
+        return loaded;
     }
 
     private static IllegalArgumentException invalidClassName(String className) {

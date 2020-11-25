@@ -1606,7 +1606,7 @@ public final class TypeOps {
                 return res;
             } else {
                 // then look in interfaces if possible
-                if (target.isInterface()) {
+                if (target.isInterface() || target.isUnresolved()) {
                     return firstResult(target, t.getSuperInterfaces());
                 }
             }
