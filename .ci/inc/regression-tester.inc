@@ -110,6 +110,11 @@ function regression_tester_executeDanger() {
         fi
         # Fetch more commits of the PR for danger and regression tester
         git fetch --no-tags --depth=50 origin +$(git rev-parse HEAD^2):
+        # Fetch more commits from master branch for regression tester
+        if [[ "${PMD_CI_BRANCH}" != "master" ]]; then
+            git fetch --no-tags --depth=50 origin +master:
+            git branch master origin/master
+        fi
 
         log_info "Running danger on branch ${PMD_CI_BRANCH}"
         bundle exec danger --verbose
