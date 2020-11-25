@@ -94,7 +94,7 @@
         <surefire.version>3.0.0-M5</surefire.version>
         <checkstyle.version>8.30</checkstyle.version>
         <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
-        <pmd.plugin.version>3.13.0</pmd.plugin.version>
+        <pmd.plugin.version>3.14.0</pmd.plugin.version>
         <ant.version>1.10.8</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.7.2</antlr.version>
@@ -320,7 +320,7 @@
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <offlineLinks>
                             <offlineLink>
-                                <location>${project.basedir}/../pmd-lang-test/target/dokka/pmd-lang-test</location>
+                                <location>${project.basedir}/../pmd-lang-test/target/dokkaJavadocJar</location>
                                 <url>../../pmd-lang-test/${project.version}</url>
                             </offlineLink>
                             <offlineLink>

@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
 
 /**
  * @author Clément Fournier
- * @since 6.0.0
+ * @since 7.0.0
  */
 public class NodeIsFunctionTest extends BaseXPathFunctionTest {
 

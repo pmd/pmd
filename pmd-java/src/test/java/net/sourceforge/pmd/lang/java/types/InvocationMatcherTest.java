@@ -9,9 +9,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -19,9 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
 public class InvocationMatcherTest extends BaseNonParserTest {
-
-    @Rule
-    public final ExpectedException expect = ExpectedException.none();
 
     @Test
     public void testSimpleMatcher() {
