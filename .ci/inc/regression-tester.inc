@@ -60,12 +60,13 @@ function regression_tester_uploadBaseline() {
         log_info "Generating and uploading baseline for pmdtester..."
         cd ..
         bundle config --local gemfile pmd/Gemfile
-        pmd/.ci/travis_wait "bundle exec pmdtester
-            --mode single
-            --local-git-repo ./pmd
-            --patch-branch ${PMD_CI_BRANCH}
-            --patch-config ./pmd/.ci/files/all-java.xml
-            --list-of-project ./pmd/.ci/files/project-list.xml --html-flag"
+        bundle exec pmdtester \
+            --mode single \
+            --local-git-repo ./pmd \
+            --patch-branch ${PMD_CI_BRANCH} \
+            --patch-config ./pmd/.ci/files/all-java.xml \
+            --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
+            --error-recovery
         cd target/reports
         BRANCH_FILENAME="${PMD_CI_BRANCH/\//_}"
         zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
@@ -106,8 +107,13 @@ function regression_tester_executeDanger() {
             git branch ${PMD_CI_BRANCH} origin/${PMD_CI_BRANCH}
             log_debug "Created local branch ${PMD_CI_BRANCH}"
         fi
-        # Fetch more commits of the PR for danger
+        # Fetch more commits of the PR for danger and regression tester
         git fetch --no-tags --depth=50 origin +$(git rev-parse HEAD^2):
+        # Fetch more commits from master branch for regression tester
+        if [[ "${PMD_CI_BRANCH}" != "master" ]]; then
+            git fetch --no-tags --depth=50 origin +master:
+            git branch master origin/master
+        fi
 
         log_info "Running danger on branch ${PMD_CI_BRANCH}"
         bundle exec danger --verbose
