@@ -54,6 +54,7 @@ public final class RuleSetLoader {
      * Filter loaded rules to only those that match or are above
      * the given priority. The default is {@link RulePriority#LOW},
      * ie, no filtering occurs.
+     *
      * @return This instance, modified
      */
     public RuleSetLoader filterAbovePriority(RulePriority minimumPriority) {
@@ -64,6 +65,7 @@ public final class RuleSetLoader {
     /**
      * Log a warning when referencing a deprecated rule.
      * This is enabled by default.
+     *
      * @return This instance, modified
      */
     public RuleSetLoader warnDeprecated(boolean warn) {
@@ -76,6 +78,7 @@ public final class RuleSetLoader {
      * been moved or renamed. This is enabled by default, if disabled,
      * unresolved references will not be translated and will produce an
      * error.
+     *
      * @return This instance, modified
      */
     public RuleSetLoader enableCompatibility(boolean enable) {
@@ -135,8 +138,8 @@ public final class RuleSetLoader {
      * @param paths Paths
      *
      * @throws RulesetLoadException If any error occurs (eg, invalid syntax, or resource not found),
-     *                                 for any of the parameters
-     * @throws NullPointerException    If the parameter, or any component is null
+     *                              for any of the parameters
+     * @throws NullPointerException If the parameter, or any component is null
      */
     public List<RuleSet> loadFromResources(Collection<String> paths) {
         List<RuleSet> ruleSets = new ArrayList<>(paths.size());
@@ -153,8 +156,8 @@ public final class RuleSetLoader {
      * @param rest  Paths
      *
      * @throws RulesetLoadException If any error occurs (eg, invalid syntax, or resource not found),
-     *                                 for any of the parameters
-     * @throws NullPointerException    If the parameter, or any component is null
+     *                              for any of the parameters
+     * @throws NullPointerException If the parameter, or any component is null
      */
     public List<RuleSet> loadFromResources(String first, String... rest) {
         return loadFromResources(CollectionUtil.listOf(first, rest));
@@ -182,13 +185,15 @@ public final class RuleSetLoader {
 
     /**
      * Returns an Iterator of RuleSet objects loaded from descriptions from the
-     * "categories.properties" resource for each Language with Rule support. This
+     * "categories.properties" resource for each language. This
      * uses the classpath of the resource loader ({@link #loadResourcesWith(ClassLoader)}).
      *
      * @return A list of all category rulesets
      *
-     * @throws RuleSetNotFoundException if some ruleset file could not be parsed
-     *                                  TODO shouldn't our API forbid this case?
+     * @throws RulesetLoadException If a standard ruleset cannot be loaded.
+     *                              This is a corner case, that probably should not be caught by clients.
+     *                              The standard rulesets are well-formed, at least in stock PMD distributions.
+     *
      */
     public List<RuleSet> getStandardRuleSets() {
         String rulesetsProperties;
