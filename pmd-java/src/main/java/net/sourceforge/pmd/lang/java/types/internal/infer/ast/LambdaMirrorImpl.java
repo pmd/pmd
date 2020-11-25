@@ -66,7 +66,9 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
 
     @Override
     public void setFunctionalMethod(JMethodSig methodType) {
-        InternalApiBridge.setFunctionalMethod(myNode, methodType);
+        if (factory.mayMutateAst()) {
+            InternalApiBridge.setFunctionalMethod(myNode, methodType);
+        }
     }
 
     @Override

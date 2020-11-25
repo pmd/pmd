@@ -64,7 +64,9 @@ final class MethodRefMirrorImpl extends BasePolyMirror<ASTMethodReference> imple
 
     @Override
     public void setFunctionalMethod(JMethodSig methodType) {
-        InternalApiBridge.setFunctionalMethod(myNode, methodType);
+        if (factory.mayMutateAst()) {
+            InternalApiBridge.setFunctionalMethod(myNode, methodType);
+        }
     }
 
     @Override

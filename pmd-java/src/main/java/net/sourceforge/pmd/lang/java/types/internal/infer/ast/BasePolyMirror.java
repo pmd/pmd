@@ -21,7 +21,7 @@ abstract class BasePolyMirror<T extends JavaNode> extends BaseExprMirror<T> impl
 
     @Override
     public void setInferredType(JTypeMirror mirror) {
-        if (myNode instanceof TypeNode) {
+        if (myNode instanceof TypeNode && factory.mayMutateAst()) {
             InternalApiBridge.setTypeMirrorInternal((TypeNode) myNode, mirror);
         }
     }

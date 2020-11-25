@@ -44,7 +44,11 @@ final class PolyResolution {
     PolyResolution(Infer infer) {
         this.infer = infer;
         this.ts = infer.getTypeSystem();
-        this.exprMirrors = new JavaExprMirrors(infer);
+        this.exprMirrors = JavaExprMirrors.forTypeResolution(infer);
+    }
+
+    public Infer getInfer() {
+        return infer;
     }
 
     JTypeMirror computePolyType(final TypeNode e) {
@@ -53,7 +57,7 @@ final class PolyResolution {
         }
 
         // here ctx can be
-        // - e (no context)
+        // - null (no context)
         // - an InvocationNode -> invocation context
         // - a ReturnStatement, AssignmentExpression, VariableDeclarator, ArrayInitializer -> assignment context
         // - a CastExpression -> cast context
