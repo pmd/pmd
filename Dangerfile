@@ -14,6 +14,8 @@ def get_args(base_branch)
    '--mode', 'online',
    '--auto-gen-config',
    '--keep-reports',
+   '--error-recovery',
+   '--baseline-download-url', 'https://pmd-code.org/pmd-regression-tester/',
    # '--debug',
    ]
 end
@@ -23,8 +25,8 @@ def run_pmdtester
     begin
       @base_branch = ENV['PMD_CI_BRANCH']
       @logger.info "Run against PR base #{@base_branch}"
-      runner = PmdTester::Runner.new(get_args(@base_branch))
-      @new_errors, @removed_errors, @new_violations, @removed_violations, @new_configerrors, @removed_configerrors = runner.run
+      download_baseline(@base_branch)
+      @summary = PmdTester::Runner.new(get_args(@base_branch)).run
 
       unless Dir.exist?('target/reports/diff')
         message("No java rules are changed!", sticky: true)
@@ -39,8 +41,9 @@ def run_pmdtester
       unless ENV['PMD_CI_BRANCH'] == 'master'
         @base_branch = 'master'
         @logger.info "Run against #{@base_branch}"
-        runner = PmdTester::Runner.new(get_args(@base_branch))
-        @new_errors, @removed_errors, @new_violations, @removed_violations, @new_configerrors, @removed_configerrors = runner.run
+        download_baseline(@base_branch)
+        @summary = PmdTester::Runner.new(get_args(@base_branch)).run
+
         # move the generated report out of the way
         FileUtils.mv 'target/reports/diff', 'target/diff2'
         message2 = create_message
@@ -69,11 +72,14 @@ end
 
 def create_message
   "Compared to #{@base_branch}:\n"\
-  "This changeset introduces "\
-  "#{@new_violations} new violations, #{@new_errors} new errors and "\
-  "#{@new_configerrors} new configuration errors,\n"\
-  "removes #{@removed_violations} violations, #{@removed_errors} errors and "\
-  "#{@removed_configerrors} configuration errors.\n"
+  "This changeset " \
+  "changes #{@summary[:violations][:changed]} violations,\n" \
+  "introduces #{@summary[:violations][:new]} new violations, " \
+  "#{@summary[:errors][:new]} new errors and " \
+  "#{@summary[:configerrors][:new]} new configuration errors,\n" \
+  "removes #{@summary[:violations][:removed]} violations, "\
+  "#{@summary[:errors][:removed]} errors and " \
+  "#{@summary[:configerrors][:removed]} configuration errors.\n"
 end
 
 def upload_report
