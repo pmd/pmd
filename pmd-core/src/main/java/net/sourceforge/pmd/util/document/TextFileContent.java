@@ -115,7 +115,7 @@ public final class TextFileContent {
 
     /**
      * Read the reader fully and produce a {@link TextFileContent}. This
-     * closes the reader.
+     * closes the reader. This takes care of buffering.
      *
      * @param reader A reader
      *
