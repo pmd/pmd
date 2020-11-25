@@ -25,7 +25,6 @@ def run_pmdtester
     begin
       @base_branch = ENV['PMD_CI_BRANCH']
       @logger.info "Run against PR base #{@base_branch}"
-      download_baseline(@base_branch)
       @summary = PmdTester::Runner.new(get_args(@base_branch)).run
 
       unless Dir.exist?('target/reports/diff')
@@ -41,7 +40,6 @@ def run_pmdtester
       unless ENV['PMD_CI_BRANCH'] == 'master'
         @base_branch = 'master'
         @logger.info "Run against #{@base_branch}"
-        download_baseline(@base_branch)
         @summary = PmdTester::Runner.new(get_args(@base_branch)).run
 
         # move the generated report out of the way
