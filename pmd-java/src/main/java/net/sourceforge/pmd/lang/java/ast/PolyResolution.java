@@ -61,10 +61,10 @@ final class PolyResolution {
         // - an InvocationNode -> invocation context
         // - a ReturnStatement, AssignmentExpression, VariableDeclarator, ArrayInitializer -> assignment context
         // - a CastExpression -> cast context
-        final ExprContext ctx = contextOf(e, false);
+        ExprContext ctx = contextOf(e, false);
 
         if (ctx == null) {
-            return polyTypeNoContext(e);
+            ctx = RegularCtx.NO_CTX;
         } else if (ctx instanceof InvocCtx) {
             return polyTypeInvocationCtx(e, (InvocCtx) ctx);
         }
@@ -78,6 +78,7 @@ final class PolyResolution {
             // The original expr was an invocation, but we have
             // a context type (eg assignment context)
             JTypeMirror targetType = ctx.getTargetType(false);
+
             return inferInvocation((InvocationNode) e, e, targetType);
         } else if (e instanceof ASTSwitchExpression || e instanceof ASTConditionalExpression) {
             // Those are standalone if possible, otherwise they take
@@ -92,7 +93,18 @@ final class PolyResolution {
             JTypeMirror standalone = branchingMirror.getStandaloneType();
             if (standalone != null) {
                 return standalone;
+            } else if (ctx == RegularCtx.NO_CTX) {
+                // null standalone, force resolution anyway
+                // probs should log an error and return ERROR instead,
+                // this is a bug
+                if (e instanceof ASTConditionalExpression) {
+                    return computeStandaloneConditionalType((ASTConditionalExpression) e);
+                } else {
+                    List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
+                    return computeStandaloneConditionalType(ts, branches);
+                }
             }
+
             // else use the target type (cast, or assignment)
             JTypeMirror target = ctx.getTargetType(true);
             return target == null ? ts.ERROR : target;
@@ -124,39 +136,6 @@ final class PolyResolution {
             return fetchCascaded(e);
         } else {
             return inferInvocation(ctxInvoc, e, null);
-        }
-    }
-
-    private JTypeMirror polyTypeNoContext(TypeNode e) {
-        // no surrounding context
-        if (e instanceof InvocationNode) {
-            JTypeMirror targetType = null;
-            if (e instanceof ASTExplicitConstructorInvocation) {
-                // target type is superclass type
-                targetType = e.getEnclosingType().getTypeMirror().getSuperClass();
-            }
-            // Invocation context: infer the called method, which will cascade down this node.
-            // This branch is also taken, if e is an invocation and has no surrounding context (ctx == e).
-            return inferInvocation((InvocationNode) e, e, targetType);
-        }
-
-        // no context for a poly that's not an invocation? This could either mean
-        // - a lambda or mref that occurs outside of a cast, invoc, or assignment context
-        //   -> semantic error
-        // - a conditional or switch that is outside an assignment or invocation context,
-        // in which case either
-        //   - it occurs outside of the contexts where it is allowed, eg a conditional as
-        //   an expression statement (for switch it's ok, simply a SwitchStatement in this case)
-        //      -> parsing error, cannot occur at this stage
-        //   - it is not a poly, which is ok (eg 1 + (a ? 2 : 3) )
-        // - a poly in a var assignment context: var f = a ? b : c;
-        if (e instanceof ASTConditionalExpression) {
-            return computeStandaloneConditionalType((ASTConditionalExpression) e);
-        } else if (e instanceof ASTSwitchExpression) {
-            List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
-            return computeStandaloneConditionalType(ts, branches);
-        } else {
-            return ts.ERROR;
         }
     }
 
@@ -372,7 +351,7 @@ final class PolyResolution {
      *
      * </pre>
      */
-    private @Nullable ExprContext contextOf(JavaNode node, boolean onlyInvoc) {
+    private @Nullable ExprContext contextOf(final JavaNode node, boolean onlyInvoc) {
         final JavaNode papa = node.getParent();
         if (papa instanceof ASTArgumentList) {
             // invocation context, return *the first method*
@@ -434,6 +413,14 @@ final class PolyResolution {
             // break with value (switch expr)
             ASTSwitchExpression owner = ((ASTYieldStatement) papa).getYieldTarget();
             return contextOf(owner, false);
+
+        } else if (node instanceof ASTExplicitConstructorInvocation
+            && ((ASTExplicitConstructorInvocation) node).isSuper()) {
+
+            // the superclass type is taken as a target type for inference,
+            // when the super ctor is generic/ the superclass is generic
+            return newSuperCtorCtx(node.getEnclosingType().getTypeMirror().getSuperClass());
+
         } else {
             // stop recursion
             return null;
