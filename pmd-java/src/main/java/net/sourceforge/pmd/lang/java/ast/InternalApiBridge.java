@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
-import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -169,10 +168,6 @@ public final class InternalApiBridge {
 
     public static JavaAstProcessor getProcessor(JavaNode n) {
         return n.getRoot().getLazyTypeResolver().getProcessor();
-    }
-
-    public static Infer getInferenceEntryPoint(JavaNode n) {
-        return n.getRoot().getLazyTypeResolver().getInfer();
     }
 
     public static void setSymbolTable(JavaNode node, JSymbolTable table) {
