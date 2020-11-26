@@ -576,4 +576,38 @@ class C {
         }
     }
 
+    parserTest("No context for lambda/mref") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+                class Foo {
+
+                    void foo(UnresolvedLambdaTarget lambda) { }
+
+                    void bar() {
+                        () -> null;
+                        return this::foo; // return onto void
+                    }
+
+                }
+                """.trimIndent()
+        )
+
+        val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
+        val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
+
+        spy.shouldTriggerNoLambdaCtx {
+            lambda.typeMirror shouldBe ts.UNKNOWN
+            lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
+        }
+
+        spy.resetInteractions()
+
+        spy.shouldTriggerNoLambdaCtx {
+            mref.typeMirror shouldBe ts.UNKNOWN
+            mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
+            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
+        }
+    }
+
 })
