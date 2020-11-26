@@ -67,7 +67,7 @@ public class UnnecessaryTypeArgumentRule extends AbstractJavaRulechainRule {
 
     private SpyInvocMirror installSpy(InvocationMirror base) {
         if (base instanceof CtorInvocationMirror) {
-            throw new NotImplementedException();
+            throw new NotImplementedException("todo");
         }
         return new SpyInvocMirror(base);
     }
