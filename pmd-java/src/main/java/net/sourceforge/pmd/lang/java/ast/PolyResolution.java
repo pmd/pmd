@@ -20,11 +20,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.PolyResolution.ExprContext.InvocCtx;
 import net.sourceforge.pmd.lang.java.ast.PolyResolution.ExprContext.RegularCtx;
-import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
@@ -368,9 +368,8 @@ final class PolyResolution {
         }
 
         if (papa instanceof ASTArrayInitializer) {
-            JTypeMirror type = ((ASTArrayInitializer) papa).getTypeMirror();
-            JTypeMirror target = type.isArray() ? ((JArrayType) type).getComponentType()
-                                                : ts.ERROR;
+
+            JTypeMirror target = TypeOps.getArrayComponent(((ASTArrayInitializer) papa).getTypeMirror());
             return ExprContext.newAssignmentCtx(target);
 
         } else if (papa instanceof ASTCastExpression) {

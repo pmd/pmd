@@ -1943,5 +1943,10 @@ public final class TypeOps {
         return t == null || isUnresolved(t);
     }
 
+
+    public static @Nullable JTypeMirror getArrayComponent(@Nullable JTypeMirror t) {
+        return t instanceof JArrayType ? ((JArrayType) t).getComponentType() : null;
+    }
+
     // </editor-fold>
 }
