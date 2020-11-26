@@ -18,6 +18,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.PolyResolution.ExprContext.InvocCtx;
+import net.sourceforge.pmd.lang.java.ast.PolyResolution.ExprContext.RegularCtx;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
@@ -60,7 +62,7 @@ final class PolyResolution {
         ExprContext ctx = contextOf(e, false);
 
         if (ctx == null) {
-            ctx = RegularCtx.NO_CTX;
+            ctx = ExprContext.RegularCtx.NO_CTX;
         } else if (ctx instanceof InvocCtx) {
             return polyTypeInvocationCtx(e, (InvocCtx) ctx);
         }
@@ -89,7 +91,7 @@ final class PolyResolution {
             JTypeMirror standalone = branchingMirror.getStandaloneType();
             if (standalone != null) {
                 return standalone;
-            } else if (ctx == RegularCtx.NO_CTX) {
+            } else if (ctx == ExprContext.RegularCtx.NO_CTX) {
                 // null standalone, force resolution anyway, because there is no context
                 // this is more general than ExprMirror#getStandaloneType, it's not a bug
                 if (e instanceof ASTConditionalExpression) {
@@ -219,7 +221,7 @@ final class PolyResolution {
      */
     private @NonNull JTypeMirror fallbackIfCtxDidntSet(@Nullable TypeNode e) {
         // retry with no context
-        return polyTypeOtherCtx(e, RegularCtx.NO_CTX);
+        return polyTypeOtherCtx(e, ExprContext.RegularCtx.NO_CTX);
         // infer.LOG.polyResolutionFailure(e);
     }
 
@@ -369,26 +371,26 @@ final class PolyResolution {
             JTypeMirror type = ((ASTArrayInitializer) papa).getTypeMirror();
             JTypeMirror target = type.isArray() ? ((JArrayType) type).getComponentType()
                                                 : ts.ERROR;
-            return newAssignmentCtx(target);
+            return ExprContext.newAssignmentCtx(target);
 
         } else if (papa instanceof ASTCastExpression) {
 
             JTypeMirror target = ((ASTCastExpression) papa).getCastType().getTypeMirror();
-            return newCastCtx(target);
+            return ExprContext.newCastCtx(target);
 
         } else if (papa instanceof ASTAssignmentExpression && node.getIndexInParent() == 1) { // second operand
 
             JTypeMirror target = ((ASTAssignmentExpression) papa).getLeftOperand().getTypeMirror();
-            return newAssignmentCtx(target);
+            return ExprContext.newAssignmentCtx(target);
 
         } else if (papa instanceof ASTReturnStatement) {
 
-            return newAssignmentCtx(returnTargetType((ASTReturnStatement) papa));
+            return ExprContext.newAssignmentCtx(returnTargetType((ASTReturnStatement) papa));
 
         } else if (papa instanceof ASTVariableDeclarator
             && !((ASTVariableDeclarator) papa).getVarId().isTypeInferred()) {
 
-            return newAssignmentCtx(((ASTVariableDeclarator) papa).getVarId().getTypeMirror());
+            return ExprContext.newAssignmentCtx(((ASTVariableDeclarator) papa).getVarId().getTypeMirror());
 
         } else if (papa instanceof ASTYieldStatement) {
             // break with value (switch expr)
@@ -400,7 +402,7 @@ final class PolyResolution {
 
             // the superclass type is taken as a target type for inference,
             // when the super ctor is generic/ the superclass is generic
-            return newSuperCtorCtx(node.getEnclosingType().getTypeMirror().getSuperClass());
+            return ExprContext.newSuperCtorCtx(node.getEnclosingType().getTypeMirror().getSuperClass());
 
         } else {
             // stop recursion
@@ -481,76 +483,78 @@ final class PolyResolution {
         return ts.lub(branchTypes);
     }
 
-    static ExprContext newAssignmentCtx(JTypeMirror targetType) {
-        return new RegularCtx(targetType, CtxKind.Assignment);
-    }
+    /** Context of a poly expression. This determines the target type. */
+    static class ExprContext {
 
-    static ExprContext newCastCtx(JTypeMirror targetType) {
-        return new RegularCtx(targetType, CtxKind.Cast);
-    }
-
-    static ExprContext newSuperCtorCtx(JTypeMirror superclassType) {
-        return new RegularCtx(superclassType, CtxKind.Other);
-    }
-
-    private static class ExprContext {}
-
-    static final class InvocCtx extends ExprContext {
-
-        final int arg;
-        final InvocationNode enclosing;
-
-        InvocCtx(int arg, InvocationNode enclosing) {
-            this.arg = arg;
-            this.enclosing = enclosing;
+        static ExprContext newAssignmentCtx(JTypeMirror targetType) {
+            return new RegularCtx(targetType, CtxKind.Assignment);
         }
 
-    }
-
-    enum CtxKind {
-        /**
-         * Assignment context, eg:
-         * <ul>
-         * <li>RHS of an assignment
-         * <li>Return statement
-         * <li>Array initializer
-         * </ul>
-         */
-        Assignment,
-
-        /**
-         * Cast context. Lambdas can use them as target type, but not
-         * eg conditional expressions.
-         */
-        Cast,
-
-        /** Other kinds of situation that have a target type (eg {@link RegularCtx#NO_CTX}). */
-        Other,
-    }
-
-    static class RegularCtx extends ExprContext {
-
-        static final RegularCtx NO_CTX = new RegularCtx(null, CtxKind.Other);
-
-        final @Nullable JTypeMirror targetType;
-        final CtxKind kind;
-
-        RegularCtx(@Nullable JTypeMirror targetType, CtxKind kind) {
-            this.targetType = targetType;
-            this.kind = kind;
+        static ExprContext newCastCtx(JTypeMirror targetType) {
+            return new RegularCtx(targetType, CtxKind.Cast);
         }
 
-        /**
-         * Returns the target type bestowed by this context.
-         *
-         * @param allowCasts Whether cast contexts should be considered,
-         *                   if false, and this is a cast ctx, returns null.
-         */
-        private @Nullable JTypeMirror getTargetType(boolean allowCasts) {
-            if (!allowCasts && kind == CtxKind.Cast) {
-                return null;
+        static ExprContext newSuperCtorCtx(JTypeMirror superclassType) {
+            return new RegularCtx(superclassType, CtxKind.Other);
+        }
+
+        static final class InvocCtx extends ExprContext {
+
+            final int arg;
+            final InvocationNode enclosing;
+
+            InvocCtx(int arg, InvocationNode enclosing) {
+                this.arg = arg;
+                this.enclosing = enclosing;
             }
-            return targetType;
+
+        }
+
+        enum CtxKind {
+            /**
+             * Assignment context, eg:
+             * <ul>
+             * <li>RHS of an assignment
+             * <li>Return statement
+             * <li>Array initializer
+             * </ul>
+             */
+            Assignment,
+
+            /**
+             * Cast context. Lambdas can use them as target type, but not
+             * eg conditional expressions.
+             */
+            Cast,
+
+            /** Other kinds of situation that have a target type (eg {@link RegularCtx#NO_CTX}). */
+            Other,
+        }
+
+        static class RegularCtx extends ExprContext {
+
+            static final RegularCtx NO_CTX = new RegularCtx(null, CtxKind.Other);
+
+            final @Nullable JTypeMirror targetType;
+            final CtxKind kind;
+
+            RegularCtx(@Nullable JTypeMirror targetType, CtxKind kind) {
+                this.targetType = targetType;
+                this.kind = kind;
+            }
+
+            /**
+             * Returns the target type bestowed by this context.
+             *
+             * @param allowCasts Whether cast contexts should be considered,
+             *                   if false, and this is a cast ctx, returns null.
+             */
+            private @Nullable JTypeMirror getTargetType(boolean allowCasts) {
+                if (!allowCasts && kind == CtxKind.Cast) {
+                    return null;
+                }
+                return targetType;
+            }
         }
     }
 
