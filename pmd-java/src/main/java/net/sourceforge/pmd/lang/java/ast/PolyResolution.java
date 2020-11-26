@@ -94,9 +94,8 @@ final class PolyResolution {
             if (standalone != null) {
                 return standalone;
             } else if (ctx == RegularCtx.NO_CTX) {
-                // null standalone, force resolution anyway
-                // probs should log an error and return ERROR instead,
-                // this is a bug
+                // null standalone, force resolution anyway, because there is no context
+                // this is more general than ExprMirror#getStandaloneType, it's not a bug
                 if (e instanceof ASTConditionalExpression) {
                     return computeStandaloneConditionalType((ASTConditionalExpression) e);
                 } else {
@@ -117,7 +116,7 @@ final class PolyResolution {
         }
     }
 
-    private JTypeMirror inferLambdaOrMref(ASTExpression e, JTypeMirror targetType) {
+    private JTypeMirror inferLambdaOrMref(ASTExpression e, @Nullable JTypeMirror targetType) {
         FunctionalExprMirror mirror = exprMirrors.getFunctionalMirror(e);
         PolySite<FunctionalExprMirror> site = infer.newFunctionalSite(mirror, targetType);
         infer.inferFunctionalExprInUnambiguousContext(site);
@@ -209,8 +208,6 @@ final class PolyResolution {
                 }
                 return targetT;
             }
-        } else if (e.getParent() instanceof ASTConditionalExpression && e.getIndexInParent() != 0) {
-            return fetchCascaded((TypeNode) e.getParent());
         }
 
         // if we're here, we failed
@@ -225,21 +222,9 @@ final class PolyResolution {
      * generic method params to error naturally
      */
     private @NonNull JTypeMirror fallbackIfCtxDidntSet(@Nullable TypeNode e) {
-        if (e instanceof InvocationNode) {
-            return inferInvocation((InvocationNode) e, e, null); // retry with no context
-        }
-        infer.LOG.polyResolutionFailure(e);
-
-        // we need to set those additional stuff, which are asserted
-        // not to be null after type resolution
-        // todo test this
-        if (e instanceof ASTLambdaExpression) {
-            ((ASTLambdaExpression) e).setFunctionalMethod(ts.UNRESOLVED_METHOD);
-        } else if (e instanceof ASTMethodReference) {
-            ((ASTMethodReference) e).setFunctionalMethod(ts.UNRESOLVED_METHOD);
-            ((ASTMethodReference) e).setCompileTimeDecl(ts.UNRESOLVED_METHOD);
-        }
-        return ts.UNKNOWN;
+        // retry with no context
+        return polyTypeOtherCtx(e, RegularCtx.NO_CTX);
+        // infer.LOG.polyResolutionFailure(e);
     }
 
     /**
@@ -527,8 +512,23 @@ final class PolyResolution {
     }
 
     enum CtxKind {
+        /**
+         * Assignment context, eg:
+         * <ul>
+         * <li>RHS of an assignment
+         * <li>Return statement
+         * <li>Array initializer
+         * </ul>
+         */
         Assignment,
+
+        /**
+         * Cast context. Lambdas can use them as target type, but not
+         * eg conditional expressions.
+         */
         Cast,
+
+        /** Other kinds of situation that have a target type (eg {@link RegularCtx#NO_CTX}). */
         Other,
     }
 

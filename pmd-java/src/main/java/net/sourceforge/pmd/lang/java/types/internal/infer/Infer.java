@@ -124,7 +124,6 @@ public final class Infer {
      */
     public void inferFunctionalExprInUnambiguousContext(PolySite<FunctionalExprMirror> site) {
         Objects.requireNonNull(site);
-        Objects.requireNonNull(site.getExpectedType(), "Cannot proceed without a target type");
         FunctionalExprMirror expr = site.getExpr();
         try {
             addBoundOrDefer(null, emptyContext(), INVOC_LOOSE, expr, site.getExpectedType());
