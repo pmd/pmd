@@ -59,11 +59,11 @@ public class TypeResTestRule extends AbstractJavaRule {
 
     private State state = new State();
 
-    private static final boolean IS_SINGLE_FILE;
+    private static final boolean PRINT_ALL_UNRESOLVED;
 
 
     static {
-        IS_SINGLE_FILE = "true".equalsIgnoreCase(System.getProperties().getOrDefault("PRINT_ALL_UNRESOLVED", "").toString());
+        PRINT_ALL_UNRESOLVED = Boolean.parseBoolean(System.getProperties().getOrDefault("PRINT_ALL_UNRESOLVED", "true").toString());
     }
 
 
@@ -84,7 +84,7 @@ public class TypeResTestRule extends AbstractJavaRule {
                 JTypeMirror t = ((TypeNode) node).getTypeMirror();
                 TypeSystem ts = t.getTypeSystem();
                 if (t == ts.ERROR || t == ts.UNKNOWN) {
-                    if (true) {
+                    if (PRINT_ALL_UNRESOLVED) {
                         System.err.println("Unresolved at " + position(node, data) + "\t"
                                                + StringUtil.escapeJava(StringUtils.truncate(node.toString(), 100)));
                     }
@@ -105,11 +105,6 @@ public class TypeResTestRule extends AbstractJavaRule {
         return data;
     }
 
-
-    private static boolean isUnresolved(@NonNull JTypeMirror s) {
-        TypeSystem ts = s.getTypeSystem();
-        return s == ts.UNKNOWN || s == ts.ERROR || s.getSymbol() != null && s.getSymbol().isUnresolved();
-    }
 
     @NonNull
     public String position(JavaNode node, Object data) {
