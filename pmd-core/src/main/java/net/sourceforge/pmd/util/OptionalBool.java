@@ -6,7 +6,7 @@ package net.sourceforge.pmd.util;
 
 /** Represents a boolean that may not be present. Use as a non-null type. */
 public enum OptionalBool {
-    YES, NO, UNKNOWN;
+    NO, UNKNOWN, YES;
 
     public OptionalBool complement() {
         switch (this) {
@@ -14,6 +14,14 @@ public enum OptionalBool {
         case NO: return YES;
         default: return this;
         }
+    }
+
+    public OptionalBool max(OptionalBool other) {
+        return this.compareTo(other) > 0 ? this : other;
+    }
+
+    public OptionalBool min(OptionalBool other) {
+        return this.compareTo(other) < 0 ? this : other;
     }
 
     public boolean isKnown() {

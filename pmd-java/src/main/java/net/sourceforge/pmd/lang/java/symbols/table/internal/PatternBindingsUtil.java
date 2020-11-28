@@ -8,11 +8,15 @@ import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -20,24 +24,49 @@ import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.util.OptionalBool;
 
-/**
- *
- */
-public class PatternBindingsUtil {
+final class PatternBindingsUtil {
 
-
-    enum Certitude {
-        NEVER,
-        MAY,
-        MUST;
-
-        Certitude max(Certitude other) {
-            return this.compareTo(other) > 0 ? this : other;
-        }
+    private PatternBindingsUtil() {
+        // util class
     }
 
+    /**
+     * TODO test
+     * TODO most statements are unsupported, including break statements
+     *  (this will probs need to be rewritten at some point)
+     */
     static OptionalBool completesAbruptly(ASTStatement s) {
-        return OptionalBool.UNKNOWN; // todo
+        if (s instanceof ASTThrowStatement || s instanceof ASTReturnStatement) {
+
+            return OptionalBool.YES;
+
+        } else if (s instanceof ASTBlock) {
+
+            ASTBlock block = (ASTBlock) s;
+            OptionalBool result = OptionalBool.NO;
+            for (ASTStatement stmt : block) {
+                result = result.max(completesAbruptly(stmt));
+                if (result == OptionalBool.YES) {
+                    return result;
+                }
+            }
+        } else if (s instanceof ASTIfStatement) {
+            ASTIfStatement ifStmt = (ASTIfStatement) s;
+
+            ASTStatement thenBranch = ifStmt.getThenBranch();
+            ASTStatement elseBranch = ifStmt.getElseBranch();
+
+            OptionalBool result = completesAbruptly(thenBranch);
+            if (elseBranch != null) {
+                result = result.max(completesAbruptly(elseBranch));
+            } else {
+                result = result.min(OptionalBool.UNKNOWN);
+            }
+            return result;
+        }
+
+        // todo
+        return s.children(ASTStatement.class).reduce(OptionalBool.NO, (r, stmt) -> r.max(completesAbruptly(stmt)));
     }
 
     static boolean canCompleteNormally(ASTStatement s) {
