@@ -16,6 +16,10 @@ import net.sourceforge.pmd.RuleViolation;
  */
 public class TextRenderer extends AbstractIncrementingRenderer {
 
+    private static final char SMALL_SEPARATOR = ':';
+    private static final String MEDIUM_SEPARATOR = ":\t";
+    private static final String LARGE_SEPARATOR = "\t-\t";
+
     public static final String NAME = "text";
 
     public TextRenderer() {
@@ -35,8 +39,9 @@ public class TextRenderer extends AbstractIncrementingRenderer {
             buf.setLength(0);
             RuleViolation rv = violations.next();
             buf.append(determineFileName(rv.getFilename()));
-            buf.append(':').append(Integer.toString(rv.getBeginLine()));
-            buf.append(":\t").append(rv.getDescription()).append(PMD.EOL);
+            buf.append(SMALL_SEPARATOR).append(rv.getBeginLine());
+            buf.append(MEDIUM_SEPARATOR).append(rv.getRule().getName());
+            buf.append(MEDIUM_SEPARATOR).append(rv.getDescription()).append(PMD.EOL);
             writer.write(buf.toString());
         }
     }
@@ -48,7 +53,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
         for (Report.ProcessingError error : errors) {
             buf.setLength(0);
             buf.append(determineFileName(error.getFile()));
-            buf.append("\t-\t").append(error.getMsg()).append(PMD.EOL);
+            buf.append(LARGE_SEPARATOR).append(error.getMsg()).append(PMD.EOL);
             writer.write(buf.toString());
         }
 
@@ -64,7 +69,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
         for (Report.ConfigurationError error : configErrors) {
             buf.setLength(0);
             buf.append(error.rule().getName());
-            buf.append("\t-\t").append(error.issue()).append(PMD.EOL);
+            buf.append(LARGE_SEPARATOR).append(error.issue()).append(PMD.EOL);
             writer.write(buf.toString());
         }
     }

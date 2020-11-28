@@ -124,6 +124,12 @@ public class XMLRendererTest extends AbstractRendererTest {
     }
 
     @Test
+    public void testXMLEscapingWithUTF16() throws Exception {
+        Renderer renderer = getRenderer();
+        verifyXmlEscaping(renderer, "&#x1041c;", StandardCharsets.UTF_16);
+    }
+
+    @Test
     public void testXMLEscapingWithoutUTF8() throws Exception {
         Renderer renderer = getRenderer();
         verifyXmlEscaping(renderer, "&#x1041c;", StandardCharsets.ISO_8859_1);
