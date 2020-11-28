@@ -423,13 +423,11 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
             JTypeDeclSymbol testedSym = testedType.getSymbol();
             if (testedSym instanceof JClassSymbol && ((JClassSymbol) testedSym).isEnum()) {
                 JFieldSymbol enumConstant = ((JClassSymbol) testedSym).getDeclaredField(node.getName());
-                if (enumConstant == null) {
-                    // no symbol, but type is there
-                    return ts.declaration((JClassSymbol) testedSym);
-                } else {
+                if (enumConstant != null) {
+                    // field exists and can be resolved
                     node.setTypedSym(ts.sigOf(testedType, enumConstant));
-                    return testedType;
                 }
+                return testedType;
             } // fallthrough
         }
 

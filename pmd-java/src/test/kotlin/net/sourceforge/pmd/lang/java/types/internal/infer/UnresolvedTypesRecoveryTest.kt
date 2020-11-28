@@ -504,7 +504,7 @@ class C {
         }
     }
 
-    parserTest("Unresolved type in primitive switch label") {
+    parserTest("f:Unresolved type in primitive switch label") {
 
         val acu = parser.parse(
                 """

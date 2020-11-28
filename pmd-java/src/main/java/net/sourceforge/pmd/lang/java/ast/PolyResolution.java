@@ -54,16 +54,9 @@ final class PolyResolution {
             throw shouldNotReachHere("Unknown poly " + e);
         }
 
-        // here ctx can be
-        // - null (no context)
-        // - an InvocationNode -> invocation context
-        // - a ReturnStatement, AssignmentExpression, VariableDeclarator, ArrayInitializer -> assignment context
-        // - a CastExpression -> cast context
         ExprContext ctx = contextOf(e, false);
 
-        if (ctx == null) {
-            ctx = ExprContext.RegularCtx.NO_CTX;
-        } else if (ctx instanceof InvocCtx) {
+        if (ctx instanceof InvocCtx) {
             return polyTypeInvocationCtx(e, (InvocCtx) ctx);
         }
 
@@ -125,7 +118,7 @@ final class PolyResolution {
 
     private @NonNull JTypeMirror polyTypeInvocationCtx(TypeNode e, InvocCtx ctx) {
         // an outer invocation ctx
-        InvocationNode ctxInvoc = ctx.enclosing;
+        InvocationNode ctxInvoc = ctx.node;
         if (ctxInvoc instanceof ASTExpression) {
             // method call or regular constructor call
             // recurse, that will fetch the outer context
@@ -250,7 +243,7 @@ final class PolyResolution {
      * context, that context must not be called.
      */
     JTypeMirror getContextTypeForStandaloneFallback(ASTExpression e) {
-        @Nullable ExprContext ctx = contextOf(e, false);
+        @NonNull ExprContext ctx = contextOf(e, false);
 
         if (ctx instanceof InvocCtx) {
             // This is the case mentioned in the doc
@@ -261,22 +254,27 @@ final class PolyResolution {
             // return getFormalTypeForArgument(e, ctxInvoc);
             return ts.UNKNOWN;
 
-        } else if (ctx instanceof RegularCtx) {
-            JTypeMirror targetType = ((RegularCtx) ctx).getTargetType(false);
-            return targetType == null ? ts.UNKNOWN : targetType;
-
         } else {
+
             if (e.getParent() instanceof ASTSwitchLabel) {
                 ASTSwitchLike switchLike = e.ancestors(ASTSwitchLike.class).firstOrThrow();
                 // this may trigger some inference, which doesn't matter
                 // as it is out of context
                 return switchLike.getTestedExpression().getTypeMirror();
             }
+
+            if (ctx instanceof RegularCtx) {
+                JTypeMirror targetType = ((RegularCtx) ctx).getTargetType(false);
+                if (targetType != null) {
+                    return targetType;
+                }
+            }
+
             return ts.UNKNOWN;
         }
     }
 
-    private @Nullable JTypeMirror returnTargetType(ASTReturnStatement context) {
+    private static @Nullable JTypeMirror returnTargetType(ASTReturnStatement context) {
         Node methodDecl =
             context.ancestors().first(
                 it -> it instanceof ASTMethodDeclaration
@@ -334,7 +332,7 @@ final class PolyResolution {
      *
      * </pre>
      */
-    private @Nullable ExprContext contextOf(final JavaNode node, boolean onlyInvoc) {
+    private static @NonNull ExprContext contextOf(final JavaNode node, boolean onlyInvoc) {
         final JavaNode papa = node.getParent();
         if (papa instanceof ASTArgumentList) {
             // invocation context, return *the first method*
@@ -355,8 +353,8 @@ final class PolyResolution {
                 // Constructor or method call, maybe there's another context around
                 // We want to fetch the outermost invocation node, but not further
                 ExprContext outerCtx = contextOf(papi, /*onlyInvoc:*/true);
-                return outerCtx == null ? new InvocCtx(node.getIndexInParent(), papi)
-                                        : outerCtx;
+                return outerCtx == RegularCtx.NO_CTX ? new InvocCtx(node.getIndexInParent(), papi)
+                                                     : outerCtx;
             }
         } else if (doesCascadesContext(papa, node)) {
             // switch/conditional
@@ -364,7 +362,7 @@ final class PolyResolution {
         }
 
         if (onlyInvoc) {
-            return null;
+            return RegularCtx.NO_CTX;
         }
 
         if (papa instanceof ASTArrayInitializer) {
@@ -405,7 +403,7 @@ final class PolyResolution {
 
         } else {
             // stop recursion
-            return null;
+            return RegularCtx.NO_CTX;
         }
     }
 
@@ -482,8 +480,8 @@ final class PolyResolution {
         return ts.lub(branchTypes);
     }
 
-    /** Context of a poly expression. This determines the target type. */
-    static class ExprContext {
+    /** Context of an expression. This determines the target type. */
+    static abstract class ExprContext {
 
         static ExprContext newAssignmentCtx(JTypeMirror targetType) {
             return new RegularCtx(targetType, CtxKind.Assignment);
@@ -500,13 +498,12 @@ final class PolyResolution {
         static final class InvocCtx extends ExprContext {
 
             final int arg;
-            final InvocationNode enclosing;
+            final InvocationNode node;
 
-            InvocCtx(int arg, InvocationNode enclosing) {
+            InvocCtx(int arg, InvocationNode node) {
                 this.arg = arg;
-                this.enclosing = enclosing;
+                this.node = node;
             }
-
         }
 
         enum CtxKind {
@@ -530,7 +527,7 @@ final class PolyResolution {
             Other,
         }
 
-        static class RegularCtx extends ExprContext {
+        static final class RegularCtx extends ExprContext {
 
             static final RegularCtx NO_CTX = new RegularCtx(null, CtxKind.Other);
 
@@ -543,7 +540,7 @@ final class PolyResolution {
             }
 
             /**
-             * Returns the target type bestowed by this context.
+             * Returns the target type bestowed by this context ON A POLY EXPRESSION.
              *
              * @param allowCasts Whether cast contexts should be considered,
              *                   if false, and this is a cast ctx, returns null.
