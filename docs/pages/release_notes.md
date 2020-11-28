@@ -24,6 +24,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#2938](https://github.com/pmd/pmd/pull/2938): \[cs] CPD: ignoring using directives could not be disabled
 *   java
     * [#2911](https://github.com/pmd/pmd/issues/2911): \[java] `ClassTypeResolver#searchNodeNameForClass` leaks memory
+    * [#2940](https://github.com/pmd/pmd/pull/2940): \[java] Catch additional TypeNotPresentExceptions / LinkageErrors
 *   scala
     * [#2480](https://github.com/pmd/pmd/issues/2480): \[scala] Support CPD suppressions
 
