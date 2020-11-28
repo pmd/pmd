@@ -2756,7 +2756,15 @@ just remove "AutoCloseable" from the types.</p>
 
 <p>Use equals() to compare object references; avoid comparing them with ==.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/CompareObjectsWithEqualsRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.CompareObjectsWithEqualsRule</a></p>
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">EqualityExpression</span><span class="w">
+    </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="w">
+        </span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Object'</span><span class="p">)]</span><span class="w">
+        </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Enum'</span><span class="p">))]</span><span class="w">
+        </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Class'</span><span class="p">))])</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">2</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="nt">PrimaryPrefix</span><span class="err">/</span><span class="na">@ThisModifier</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()][</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="p">)])]</span><span class="w">
+</span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
 
@@ -5110,11 +5118,8 @@ on the wrapper classes instead.</p>
 Use the equals() method instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">EqualityExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="w">
-</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="p">)]</span><span class="w">
-</span><span class="p">[</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="w">
-   </span><span class="p">[</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'"'</span><span class="p">)]</span><span class="w">
-   </span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'"'</span><span class="p">)]]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">EqualityExpression</span><span class="w">
+    </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.String'</span><span class="p">)])</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">2</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
