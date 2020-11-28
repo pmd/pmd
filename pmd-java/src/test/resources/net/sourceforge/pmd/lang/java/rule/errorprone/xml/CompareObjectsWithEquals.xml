@@ -53,8 +53,10 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
+    Foo foo;
+
     boolean bar(Foo b) {
-        return this.b == b.foo;
+        return this.foo == b.foo;
     }
 }
         ]]></code>
@@ -362,7 +364,8 @@ public class ClassWithFields {
     private Object b;
 
     void test(Object o) {
-        if (this == o) { } // should be allowed, since this is a often used pattern in Object::equals.
+        // conflict between #2899 and #2934
+        // if (this == o) { } // should be allowed, since this is a often used pattern in Object::equals.
         // comparing class instances is ok
         if (o.getClass() == a.getClass()) { }
         if (this.getClass() == this.a.getClass()) { }

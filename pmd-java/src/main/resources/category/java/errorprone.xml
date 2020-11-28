@@ -1098,16 +1098,17 @@ Use equals() to compare object references; avoid comparing them with ==.
             <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
-<![CDATA[
-//EqualityExpression
-    [count(PrimaryExpression
+
+//InfixExpression
+    [@Operator = ("==", "!=")]
+    [count(*
+        [not(self::NullLiteral)]
         [pmd-java:typeIs('java.lang.Object')]
         [not(pmd-java:typeIs('java.lang.Enum'))]
         [not(pmd-java:typeIs('java.lang.Class'))]) = 2
     ]
-    [not(PrimaryExpression[PrimaryPrefix/@ThisModifier = true()][not(PrimarySuffix)])]
-]]>
-                </value>
+    [not(ancestor::MethodDeclaration[1][@Name = "equals"])]
+        </value>
             </property>
         </properties>
         <example>
