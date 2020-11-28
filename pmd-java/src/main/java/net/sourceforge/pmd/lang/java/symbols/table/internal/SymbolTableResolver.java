@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
@@ -40,6 +41,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
@@ -503,12 +505,23 @@ public final class SymbolTableResolver {
 
             @Override
             public PSet<ASTVariableDeclaratorId> visit(ASTForStatement node, @NonNull ReferenceCtx ctx) {
-                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varsOfInit(node)));
-                setTopSymbolTableAndRecurse(node, ctx);
-                popStack(pushed);
-                return BindSet.noBindings();
+                BindSet bindSet = bindersOfExpr(node.getCondition());
+                if (bindSet.isEmpty()) {
+                    int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varsOfInit(node)));
+                    setTopSymbolTableAndRecurse(node, ctx);
+                    popStack(pushed);
+                    return BindSet.noBindings();
+                }
+
+                throw new NotImplementedException("TODO - for with pattern bindings in condition");
             }
 
+            @Override
+            public PSet<ASTVariableDeclaratorId> visit(ASTLabeledStatement node, @NonNull ReferenceCtx ctx) {
+                // A pattern variable is introduced by a labeled statement
+                // if and only if it is introduced by its immediately contained Statement.
+                return node.getStatement().acceptVisitor(this, ctx);
+            }
         }
 
 
