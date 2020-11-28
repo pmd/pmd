@@ -6,18 +6,20 @@ require 'logger'
 
 def run_pmdtester
   Dir.chdir('..') do
+    branch_name = "#{ENV['PMD_CI_BRANCH']}"
     argv = ['--local-git-repo', './pmd',
             '--list-of-project', './pmd/.ci/files/project-list.xml',
-            '--base-branch', "#{ENV['PMD_CI_BRANCH']}",
+            '--base-branch', branch_name,
             '--patch-branch', 'HEAD',
             '--patch-config', './pmd/.ci/files/all-java.xml',
             '--mode', 'online',
             '--auto-gen-config',
+            '--error-recovery',
+            '--baseline-download-url', 'https://pmd-code.org/pmd-regression-tester/',
             # '--debug',
             ]
     begin
-      runner = PmdTester::Runner.new(argv)
-      @new_errors, @removed_errors, @new_violations, @removed_violations, @new_configerrors, @removed_configerrors = runner.run
+      @summary = PmdTester::Runner.new(argv).run
       upload_report
     rescue StandardError => e
       warn("Running pmdtester failed, this message is mainly used to remind the maintainers of PMD.")
@@ -39,11 +41,15 @@ def upload_report
     if $?.success?
       @logger.info "Successfully uploaded #{tar_filename} to chunk.io"
 
-      # set value of sticky to true and the message is kept after new commits are submited to the PR
-      message("This changeset introduces #{@new_violations} new violations, #{@new_errors} new errors and " +
-              "#{@new_configerrors} new configuration errors,\n" +
-              "removes #{@removed_violations} violations, #{@removed_errors} errors and " +
-              "#{@removed_configerrors} configuration errors.\n" +
+      # set value of sticky to true and the message is kept after new commits are submitted to the PR
+      message("This changeset " \
+              "changes #{@summary[:violations][:changed]} violations,\n" \
+              "introduces #{@summary[:violations][:new]} new violations, " \
+              "#{@summary[:errors][:new]} new errors and " \
+              "#{@summary[:configerrors][:new]} new configuration errors,\n" \
+              "removes #{@summary[:violations][:removed]} violations, "\
+              "#{@summary[:errors][:removed]} errors and " \
+              "#{@summary[:configerrors][:removed]} configuration errors.\n" \
               "[Full report](#{report_url.chomp}/diff/index.html)", sticky: true)
     else
       @logger.error "Error while uploading #{tar_filename} to chunk.io: #{report_url}"

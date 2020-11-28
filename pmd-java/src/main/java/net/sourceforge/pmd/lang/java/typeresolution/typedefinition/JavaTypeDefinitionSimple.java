@@ -26,21 +26,38 @@ import java.util.logging.Logger;
 
 
 /* default */ class JavaTypeDefinitionSimple extends JavaTypeDefinition {
+
+    static final JavaTypeDefinitionSimple OBJECT_DEFINITION = new JavaTypeDefinitionSimple(Object.class);
     private final Class<?> clazz;
-    private final JavaTypeDefinition[] genericArgs;
+    private JavaTypeDefinition[] genericArgs;
     // cached because calling clazz.getTypeParameters().length create a new array every time
-    private final int typeParameterCount;
-    private final boolean isGeneric;
-    private final boolean isRawType;
-    private final JavaTypeDefinition enclosingClass;
+    private int typeParameterCount = -1;
+    private final int typeArgumentCount;
 
     private static final Logger LOG = Logger.getLogger(JavaTypeDefinitionSimple.class.getName());
-    private static final JavaTypeDefinition[] NO_GENERICS = {};
 
     protected JavaTypeDefinitionSimple(Class<?> clazz, JavaTypeDefinition... boundGenerics) {
         super(EXACT);
         this.clazz = clazz;
 
+        typeArgumentCount = boundGenerics.length;
+        if (boundGenerics.length > 0) {
+            genericArgs = Arrays.copyOf(boundGenerics, boundGenerics.length);
+        } // otherwise stays null
+    }
+
+    private Class<?> loadEnclosing(Class<?> clazz) {
+        try {
+            return clazz.getEnclosingClass();
+        } catch (LinkageError e) {
+            if (LOG.isLoggable(Level.WARNING)) {
+                LOG.log(Level.WARNING, "Could not load enclosing class of " + clazz.getName() + ", due to: " + e);
+            }
+            return null;
+        }
+    }
+
+    private TypeVariable<?>[] getTypeParameters(Class<?> clazz) {
         final TypeVariable<?>[] typeParameters;
         // the anonymous class can't have generics, but we may be binding generics from super classes
         if (clazz.isAnonymousClass()) {
@@ -53,27 +70,7 @@ import java.util.logging.Logger;
         } else {
             typeParameters = clazz.getTypeParameters();
         }
-
-        typeParameterCount = typeParameters.length;
-        isGeneric = typeParameters.length != 0;
-        isRawType = isGeneric && boundGenerics.length == 0;
-
-        if (isGeneric) {
-            // Generics will be lazily loaded if not already known
-            this.genericArgs = Arrays.copyOf(boundGenerics, typeParameterCount);
-        } else {
-            this.genericArgs = NO_GENERICS;
-        }
-
-        Class<?> enclosing = null;
-        try {
-            enclosing = clazz.getEnclosingClass();
-        } catch (LinkageError e) {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.log(Level.WARNING, "Could not load enclosing class of " + clazz.getName() + ", due to: " + e);
-            }
-        }
-        enclosingClass = forClass(enclosing);
+        return typeParameters;
     }
 
     @Override
@@ -83,12 +80,29 @@ import java.util.logging.Logger;
 
     @Override
     public JavaTypeDefinition getEnclosingClass() {
-        return enclosingClass;
+        return JavaTypeDefinition.forClass(loadEnclosing(clazz));
+    }
+
+    @Override
+    public boolean isRawType() {
+        return isGeneric() && typeArgumentCount == 0;
     }
 
     @Override
     public boolean isGeneric() {
-        return isGeneric;
+        return getTypeParameterCount() != 0;
+    }
+
+    @Override
+    public int getTypeParameterCount() {
+        if (typeParameterCount == -1) {
+            try {
+                typeParameterCount = getTypeParameters(clazz).length;
+            } catch (LinkageError | TypeNotPresentException ignored) {
+                typeParameterCount = 0; // don't stay stuck on -1
+            }
+        }
+        return typeParameterCount;
     }
 
     private JavaTypeDefinition getGenericType(final String parameterName, Method method,
@@ -131,6 +145,10 @@ import java.util.logging.Logger;
 
     @Override
     public JavaTypeDefinition getGenericType(final int index) {
+        if (genericArgs == null) {
+            genericArgs = new JavaTypeDefinition[getTypeParameterCount()];
+        }
+
         // Check if it has been lazily initialized first
         final JavaTypeDefinition cachedDefinition = genericArgs[index];
         if (cachedDefinition != null) {
@@ -265,11 +283,6 @@ import java.util.logging.Logger;
         return clazz == def.getType();
     }
 
-    @Override
-    public int getTypeParameterCount() {
-        return typeParameterCount;
-    }
-
 
     @Override
     public String toString() {
@@ -278,19 +291,16 @@ import java.util.logging.Logger;
                 .append(", genericArgs=[");
 
         // Forcefully resolve all generic types
-        for (int i = 0; i < genericArgs.length; i++) {
-            getGenericType(i);
-        }
-
-        for (final JavaTypeDefinition jtd : genericArgs) {
+        for (int i = 0; i < getTypeParameterCount(); i++) {
+            JavaTypeDefinition jtd = getGenericType(i);
             sb.append(jtd.shallowString()).append(", ");
         }
 
-        if (genericArgs.length != 0) {
+        if (getTypeParameterCount() != 0) {
             sb.replace(sb.length() - 3, sb.length() - 1, "");   // remove last comma
         }
 
-        return sb.append("], isGeneric=").append(isGeneric)
+        return sb.append("], isGeneric=").append(isGeneric())
             .append("]\n").toString();
     }
 
@@ -298,7 +308,7 @@ import java.util.logging.Logger;
     public String shallowString() {
         return new StringBuilder("JavaTypeDefinition [clazz=").append(clazz)
                 .append(", definitionType=").append(getDefinitionType())
-                .append(", isGeneric=").append(isGeneric)
+                .append(", isGeneric=").append(isGeneric())
                 .append("]\n").toString();
     }
 
@@ -323,6 +333,10 @@ import java.util.logging.Logger;
 
         if (clazz != otherTypeDef.clazz) {
             return false;
+        }
+
+        if (isRawType() || otherTypeDef.isRawType()) {
+            return this.isRawType() == otherTypeDef.isRawType();
         }
 
         for (int i = 0; i < getTypeParameterCount(); ++i) {
@@ -415,11 +429,6 @@ import java.util.logging.Logger;
     @Override
     public int getJavaTypeCount() {
         return 1;
-    }
-
-    @Override
-    public boolean isRawType() {
-        return isRawType;
     }
 
     @Override
