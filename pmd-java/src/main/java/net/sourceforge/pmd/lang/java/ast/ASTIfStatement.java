@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * Represents an {@code if} statement, possibly with an {@code else} statement.
  *
@@ -58,7 +60,7 @@ public final class ASTIfStatement extends AbstractStatement {
     /**
      * Returns the statement of the {@code else} clause, if any.
      */
-    public ASTStatement getElseBranch() {
+    public @Nullable ASTStatement getElseBranch() {
         return hasElse() ? (ASTStatement) getChild(2) : null;
     }
 

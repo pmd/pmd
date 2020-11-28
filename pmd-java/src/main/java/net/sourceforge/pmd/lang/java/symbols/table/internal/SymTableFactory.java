@@ -370,21 +370,21 @@ final class SymTableFactory {
      * Local vars are merged into the parent shadowing group. They don't
      * shadow other local vars, they conflict with them.
      */
-    JSymbolTable localVarSymTable(JSymbolTable parent, JClassType enclosing, NodeStream<ASTVariableDeclaratorId> ids) {
-        List<JVariableSymbol> list = ids.toList(ASTVariableDeclaratorId::getSymbol);
-        if (list.size() == 1) {
-            return localVarSymTable(parent, enclosing, list.get(0));
+    JSymbolTable localVarSymTable(JSymbolTable parent, JClassType enclosing, Iterable<ASTVariableDeclaratorId> ids) {
+        List<JVariableSig> sigs = new ArrayList<>();
+        for (ASTVariableDeclaratorId id : ids) {
+            sigs.add(id.getTypeSystem().sigOf(enclosing, (JLocalVariableSymbol) id.getSymbol()));
         }
-        return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, VARS.groupByName(list, s -> s.getTypeSystem().sigOf(enclosing, (JLocalVariableSymbol) s))));
+        return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, VARS.groupByName(sigs)));
+    }
+
+    JSymbolTable localVarSymTable(JSymbolTable parent, JClassType enclosing, JVariableSymbol id) {
+        return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, id.getTypeSystem().sigOf(enclosing, (JLocalVariableSymbol) id)));
     }
 
     JSymbolTable localTypeSymTable(JSymbolTable parent, JClassType sym) {
         // TODO is this really not a shadow barrier?
         return SymbolTableImpl.withTypes(parent, TYPES.augment(typeNode(parent), false, ScopeInfo.LOCAL, sym));
-    }
-
-    JSymbolTable localVarSymTable(JSymbolTable parent, JClassType enclosing, JVariableSymbol id) {
-        return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, id.getTypeSystem().sigOf(enclosing, (JLocalVariableSymbol) id)));
     }
 
 }

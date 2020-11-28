@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
-import java.util.Set;
-
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
@@ -14,11 +12,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  *
@@ -34,6 +34,14 @@ public class PatternBindingsUtil {
         Certitude max(Certitude other) {
             return this.compareTo(other) > 0 ? this : other;
         }
+    }
+
+    static OptionalBool completesAbruptly(ASTStatement s) {
+        return OptionalBool.UNKNOWN; // todo
+    }
+
+    static boolean canCompleteNormally(ASTStatement s) {
+        return completesAbruptly(s) != OptionalBool.YES;
     }
 
     /**
@@ -55,8 +63,7 @@ public class PatternBindingsUtil {
             if (op == BinaryOp.INSTANCEOF && right instanceof ASTPatternExpression) {
                 return collectBindings(((ASTPatternExpression) right).getPattern());
             } else if (op == BinaryOp.CONDITIONAL_AND) { // &&
-                return BindSet.union(bindersOfExpr(left),
-                                     bindersOfExpr(right));
+                return BindSet.union(bindersOfExpr(left), bindersOfExpr(right));
             } else if (op == BinaryOp.CONDITIONAL_OR) { // ||
                 // actually compute !( !left && !right )
                 return BindSet.union(bindersOfExpr(left).negate(),
@@ -84,6 +91,9 @@ public class PatternBindingsUtil {
         private final PSet<ASTVariableDeclaratorId> trueBindings;
         private final PSet<ASTVariableDeclaratorId> falseBindings;
 
+        static PSet<ASTVariableDeclaratorId> noBindings() {
+            return HashTreePSet.empty();
+        }
 
         BindSet(PSet<ASTVariableDeclaratorId> trueBindings,
                 PSet<ASTVariableDeclaratorId> falseBindings) {
@@ -91,11 +101,11 @@ public class PatternBindingsUtil {
             this.falseBindings = falseBindings;
         }
 
-        public Set<ASTVariableDeclaratorId> getTrueBindings() {
+        public PSet<ASTVariableDeclaratorId> getTrueBindings() {
             return trueBindings;
         }
 
-        public Set<ASTVariableDeclaratorId> getFalseBindings() {
+        public PSet<ASTVariableDeclaratorId> getFalseBindings() {
             return falseBindings;
         }
 
@@ -103,7 +113,7 @@ public class PatternBindingsUtil {
             return isEmpty() ? this : new BindSet(falseBindings, trueBindings);
         }
 
-        private boolean isEmpty() {
+        boolean isEmpty() {
             return this == EMPTY;
         }
 

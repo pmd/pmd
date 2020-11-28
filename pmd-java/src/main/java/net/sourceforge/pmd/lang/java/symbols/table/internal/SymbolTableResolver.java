@@ -5,6 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.bindersOfExpr;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.canCompleteNormally;
+
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -24,6 +28,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -32,6 +37,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
@@ -50,11 +56,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.BindSet;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 
 
@@ -124,6 +132,7 @@ public final class SymbolTableResolver {
 
         private final Set<DeferredNode> deferredInPrevRound;
         private final Set<DeferredNode> newDeferred;
+        private final StatementVisitor stmtVisitor = new StatementVisitor();
 
         MyVisitor(SymTableFactory helper, Set<DeferredNode> deferredInPrevRound, Set<DeferredNode> newDeferred) {
             f = helper;
@@ -356,7 +365,9 @@ public final class SymbolTableResolver {
                 }
 
                 setTopSymbolTable(st);
-                st.acceptVisitor(this, ctx);
+                // those vars are the one produced by pattern bindings
+                PSet<ASTVariableDeclaratorId> newVars = st.acceptVisitor(this.stmtVisitor, ctx);
+                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), newVars));
             }
 
             popStack(pushed);
@@ -373,22 +384,10 @@ public final class SymbolTableResolver {
 
             int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
             ASTStatement body = node.getBody();
-            if (body instanceof ASTBlock) { // if it's a block then it will be set
-                body.acceptVisitor(this, ctx);
-            } else {
-                // if not, then the body statement may never set a
-                // symbol table that would have this table as parent,
-                // so the table would be dangling
-                setTopSymbolTableAndRecurse(body, ctx);
-            }
-            popStack(pushed);
-            return null;
-        }
-
-        @Override
-        public Void visit(ASTForStatement node, @NonNull ReferenceCtx ctx) {
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varsOfInit(node)));
-            setTopSymbolTableAndRecurse(node, ctx);
+            // unless it's a block the body statement may never set a
+            // symbol table that would have this table as parent,
+            // so the table would be dangling
+            setTopSymbolTableAndRecurse(body, ctx);
             popStack(pushed);
             return null;
         }
@@ -429,6 +428,87 @@ public final class SymbolTableResolver {
             setTopSymbolTableAndRecurse(node, ctx);
             popStack(pushed);
             return null;
+        }
+
+        // non-static
+        // Every visit method returns the set of variables that are introduced by the statement
+        // as defined in the JLS:
+        //   https://cr.openjdk.java.net/~gbierman/jep394/jep394-20201012/specs/patterns-instanceof-jls.html#jls-6.3.1
+        class StatementVisitor extends JavaVisitorBase<ReferenceCtx, PSet<ASTVariableDeclaratorId>> {
+
+            @Override
+            public PSet<ASTVariableDeclaratorId> visitJavaNode(JavaNode node, ReferenceCtx ctx) {
+                throw new IllegalStateException(node + " should not have been visited by this");
+            }
+
+            // default to calling the method on the outer class
+            @Override
+            public PSet<ASTVariableDeclaratorId> visitStatement(ASTStatement node, ReferenceCtx ctx) {
+                node.acceptVisitor(MyVisitor.this, ctx);
+                return BindSet.noBindings();
+            }
+
+            @Override
+            public PSet<ASTVariableDeclaratorId> visit(ASTIfStatement node, ReferenceCtx ctx) {
+                BindSet bindSet = bindersOfExpr(node.getCondition());
+                if (bindSet.isEmpty()) {
+                    return super.visit(node, ctx);
+                }
+
+                ASTStatement thenBranch = node.getThenBranch();
+                ASTStatement elseBranch = node.getElseBranch();
+
+                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), NodeStream.fromIterable(bindSet.getTrueBindings())));
+                setTopSymbolTableAndRecurse(thenBranch, ctx);
+                popStack(pushed);
+                if (elseBranch != null) {
+                    pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), NodeStream.fromIterable(bindSet.getFalseBindings())));
+                    setTopSymbolTableAndRecurse(elseBranch, ctx);
+                    popStack(pushed);
+
+                    boolean thenCanCompleteNormally = canCompleteNormally(thenBranch);
+                    boolean elseCanCompleteNormally = canCompleteNormally(elseBranch);
+
+                    if (thenCanCompleteNormally && !elseCanCompleteNormally) {
+                        return bindSet.getTrueBindings();
+                    } else if (!thenCanCompleteNormally && elseCanCompleteNormally) {
+                        return bindSet.getFalseBindings();
+                    }
+                } else if (!canCompleteNormally(thenBranch)) {
+                    return bindSet.getFalseBindings();
+                }
+                return BindSet.noBindings();
+            }
+
+            @Override
+            public PSet<ASTVariableDeclaratorId> visit(ASTWhileStatement node, ReferenceCtx ctx) {
+                BindSet bindSet = bindersOfExpr(node.getCondition());
+                if (bindSet.isEmpty()) {
+                    return super.visit(node, ctx);
+                }
+
+                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), NodeStream.fromIterable(bindSet.getTrueBindings())));
+                setTopSymbolTableAndRecurse(node.getBody(), ctx);
+                popStack(pushed);
+
+                if (node.descendants(ASTBreakStatement.class).isEmpty()) {
+                    // todo this is a bit too restrictive, we need to check the break target,
+                    //  because if we break to after the following code, it's ok
+                    //  JLS:
+                    //  > V is introduced by while (e) S iff V is introduced by e when false, and S does not contains a reachable break statement whose break target contains S.
+                    return bindSet.getFalseBindings();
+                }
+                return BindSet.noBindings();
+            }
+
+            @Override
+            public PSet<ASTVariableDeclaratorId> visit(ASTForStatement node, @NonNull ReferenceCtx ctx) {
+                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varsOfInit(node)));
+                setTopSymbolTableAndRecurse(node, ctx);
+                popStack(pushed);
+                return BindSet.noBindings();
+            }
+
         }
 
 
