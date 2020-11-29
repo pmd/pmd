@@ -10,18 +10,25 @@ public enum OptionalBool {
 
     public OptionalBool complement() {
         switch (this) {
-        case YES: return NO;
-        case NO: return YES;
-        default: return this;
+        case YES:
+            return NO;
+        case NO:
+            return YES;
+        default:
+            return this;
         }
     }
 
-    public OptionalBool max(OptionalBool other) {
-        return this.compareTo(other) > 0 ? this : other;
+    public static OptionalBool max(OptionalBool a, OptionalBool b) {
+        return a.compareTo(b) > 0 ? a : b;
     }
 
-    public OptionalBool min(OptionalBool other) {
-        return this.compareTo(other) < 0 ? this : other;
+    public static OptionalBool min(OptionalBool a, OptionalBool b) {
+        return a.compareTo(b) < 0 ? a : b;
+    }
+
+    public static OptionalBool mix(OptionalBool a, OptionalBool b) {
+        return a != b ? UNKNOWN : a;
     }
 
     public boolean isKnown() {

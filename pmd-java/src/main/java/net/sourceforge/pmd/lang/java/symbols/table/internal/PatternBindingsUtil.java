@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 import java.util.Collection;
 import java.util.Set;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
@@ -48,56 +47,74 @@ final class PatternBindingsUtil {
     static OptionalBool completesNormally(ASTStatement stmt) {
         State endState = completesNormallyImpl(stmt, HashTreePSet.empty());
 
-        return negate(endState.exits);
+        return OptionalBool.max(endState.exitsLocally, endState.exitsOutside).complement();
     }
 
     private static final class State {
 
-        private static final State NORMAL_COMPLETION = new State(OptionalBool.NO, false);
-        private static final State UNKNOWN_COMPLETION = new State(OptionalBool.UNKNOWN, false);
+        private static final State NORMAL_COMPLETION = new State(OptionalBool.NO, OptionalBool.NO);
         // just for throws & return:
-        private static final State ABRUPT_COMPLETION = new State(OptionalBool.YES, true);
+        private static final State ABRUPT_COMPLETION = new State(OptionalBool.NO, OptionalBool.YES);
+        private static final State UNNAMED_BREAK = new State(OptionalBool.YES, OptionalBool.NO, HashTreePSet.empty(), HashTreePSet.singleton(NO_LABEL));
+        private static final State UNNAMED_CONTINUE = new State(OptionalBool.YES, OptionalBool.NO, HashTreePSet.singleton(NO_LABEL), HashTreePSet.empty());
 
-        final PSet<@Nullable String> continueTargets;
-        final PSet<@Nullable String> breakTargets;
-        final OptionalBool exits;
-        final boolean exitsOutside;
+        final PSet<String> continueTargets;
+        final PSet<String> breakTargets;
+        final OptionalBool exitsLocally;
+        final OptionalBool exitsOutside;
 
-        State(OptionalBool exits, boolean exitsOutside) {
-            this(exits, exitsOutside, HashTreePSet.empty(), HashTreePSet.empty());
+        State(OptionalBool exitsLocally, OptionalBool exitsOutside) {
+            this(exitsLocally, exitsOutside, HashTreePSet.empty(), HashTreePSet.empty());
         }
 
-        State(OptionalBool exits, boolean exitsOutside, PSet<String> continues, PSet<String> breaks) {
-            this.exits = exits;
+        State(OptionalBool exitsLocally, OptionalBool exitsOutside, PSet<String> continues, PSet<String> breaks) {
+            this.exitsLocally = exitsLocally;
             this.exitsOutside = exitsOutside;
             this.continueTargets = continues;
             this.breakTargets = breaks;
         }
 
         State temper() {
-            if (exits == OptionalBool.YES) {
-                return new State(OptionalBool.UNKNOWN, exitsOutside, this.continueTargets, this.breakTargets);
-            }
-            return this;
+            return new State(OptionalBool.min(OptionalBool.UNKNOWN, this.exitsLocally),
+                             OptionalBool.min(OptionalBool.UNKNOWN, this.exitsOutside),
+                             this.continueTargets, this.breakTargets);
         }
 
-        State replaceExits(OptionalBool bool, boolean outside) {
-            if (exits != bool && exitsOutside != outside) {
+        State replaceExits(OptionalBool bool, OptionalBool outside) {
+            if (exitsLocally != bool && exitsOutside != outside) {
                 return new State(bool, outside, this.continueTargets, this.breakTargets);
             }
             return this;
         }
 
+        static OptionalBool mix(OptionalBool b1, OptionalBool b2) {
+            if (b1 != b2) {
+                return OptionalBool.UNKNOWN;
+            }
+            return b1;
+        }
+
+        static OptionalBool max(OptionalBool b1, OptionalBool b2) {
+            return OptionalBool.max(b1, b2);
+        }
+
         State join(State other) {
-            return new State(this.exits.max(other.exits),
-                             this.exitsOutside || other.exitsOutside,
+            return new State(mix(this.exitsLocally, other.exitsLocally),
+                             mix(this.exitsOutside, other.exitsOutside),
+                             this.continueTargets.plusAll(other.continueTargets),
+                             this.breakTargets.plusAll(other.breakTargets));
+        }
+
+        public State chain(State other) {
+            return new State(max(this.exitsLocally, other.exitsLocally),
+                             max(this.exitsOutside, other.exitsOutside),
                              this.continueTargets.plusAll(other.continueTargets),
                              this.breakTargets.plusAll(other.breakTargets));
         }
 
         State removeLabel(String label) {
             return new State(
-                this.exits,
+                this.exitsLocally,
                 this.exitsOutside,
                 this.continueTargets.minus(label),
                 this.breakTargets.minus(label)
@@ -105,27 +122,40 @@ final class PatternBindingsUtil {
         }
 
         State removeContinue(Set<String> labels) {
-            return new State(this.exits, this.exitsOutside, this.continueTargets.minusAll(labels), this.breakTargets);
-        }
+            PSet<String> continues = this.continueTargets.minusAll(labels);
+            if (continues.size() != this.continueTargets.size()) {
+                // we removed stuff
+                OptionalBool localExit = this.exitsLocally;
+                if (!this.breakTargets.isEmpty() || !continues.isEmpty()) {
+                    localExit = OptionalBool.UNKNOWN;
+                }
 
-        public State chain(State other) {
-            return join(other);
+                return new State(localExit,
+                                 this.exitsOutside,
+                                 continues,
+                                 this.breakTargets);
+
+            }
+            return this;
         }
 
         static State breakCompletion(@Nullable String label) {
-            return new State(OptionalBool.YES, false, HashTreePSet.empty(), HashTreePSet.singleton(label));
+            if (label == null) {
+                return UNNAMED_BREAK;
+            }
+            return new State(OptionalBool.YES, OptionalBool.NO, HashTreePSet.empty(), HashTreePSet.singleton(label));
         }
 
         static State continueCompletion(@Nullable String label) {
-            return new State(OptionalBool.YES, false, HashTreePSet.singleton(label), HashTreePSet.empty());
+            if (label == null) {
+                return UNNAMED_CONTINUE;
+            }
+            return new State(OptionalBool.YES, OptionalBool.NO, HashTreePSet.singleton(label), HashTreePSet.empty());
         }
     }
 
     static final String NO_LABEL = ":not a label:";
 
-    static @NonNull String defaultLabel(@Nullable String label) {
-        return label == null ? NO_LABEL : label;
-    }
 
     /**
      * @param stmt Statement
@@ -138,12 +168,12 @@ final class PatternBindingsUtil {
 
         } else if (stmt instanceof ASTBreakStatement) {
 
-            String label = defaultLabel(((ASTBreakStatement) stmt).getLabel());
+            String label = ((ASTBreakStatement) stmt).getLabel();
             return State.breakCompletion(label);
 
         } else if (stmt instanceof ASTContinueStatement) {
 
-            String label = defaultLabel(((ASTContinueStatement) stmt).getLabel());
+            String label = ((ASTContinueStatement) stmt).getLabel();
             return State.continueCompletion(label);
 
         } else if (stmt instanceof ASTBlock) {
@@ -151,9 +181,6 @@ final class PatternBindingsUtil {
             ASTBlock block = (ASTBlock) stmt;
             State result = State.NORMAL_COMPLETION;
             for (ASTStatement child : block) {
-                if (result.exits == OptionalBool.YES) {
-                    return result;
-                }
                 State childResult = completesNormallyImpl(child, HashTreePSet.empty());
 
                 result = result.chain(childResult);
@@ -197,7 +224,7 @@ final class PatternBindingsUtil {
             boolean isWhileTrue = JavaRuleUtil.isBooleanLit(loop.getCondition(), true);
 
             boolean hasLocalBreak = containsAny(bodyResult.breakTargets, allLabels);
-            boolean hasOuterBreak = bodyResult.exitsOutside
+            boolean hasOuterBreak = bodyResult.exitsOutside != OptionalBool.NO
                 // or there is a break/continue to some label that is not within this loop
                 || !isSubset(bodyResult.breakTargets, allLabels)
                 || !isSubset(bodyResult.continueTargets, allLabels);
@@ -213,8 +240,8 @@ final class PatternBindingsUtil {
                                      : bodyResult.temper();
             } else {
                 // no break at all
-                result = isWhileTrue ? bodyResult.replaceExits(OptionalBool.YES, true)
-                                     : bodyResult.replaceExits(OptionalBool.UNKNOWN, true);
+                result = isWhileTrue ? bodyResult.replaceExits(OptionalBool.NO, OptionalBool.YES)
+                                     : bodyResult.replaceExits(OptionalBool.UNKNOWN, OptionalBool.YES);
             }
             return result.removeLabel(NO_LABEL);
         } else {
@@ -240,17 +267,6 @@ final class PatternBindingsUtil {
             }
         }
         return false;
-    }
-
-    static OptionalBool negate(OptionalBool o) {
-        switch (o) {
-        case NO:
-            return OptionalBool.YES;
-        case YES:
-            return OptionalBool.NO;
-        default:
-            return OptionalBool.UNKNOWN;
-        }
     }
 
     /**
