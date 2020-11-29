@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
@@ -44,112 +46,200 @@ final class PatternBindingsUtil {
     }
 
     static OptionalBool completesNormally(ASTStatement stmt) {
-        State state = new State(stmt);
-        OptionalBool completesNormally = completesNormallyImpl(stmt, state);
-        if (state.mayJumpOutsideToplevel) {
-            completesNormally = completesNormally.max(OptionalBool.UNKNOWN);
-        }
-        return completesNormally;
+        State endState = completesNormallyImpl(stmt, HashTreePSet.empty());
+
+        return negate(endState.exits);
     }
 
     private static final class State {
 
-        final ASTStatement toplevel;
-        final Set<String> labelsBelowToplevel = new HashSet<>();
-        boolean mayJumpOutsideToplevel;
+        private static final State NORMAL_COMPLETION = new State(OptionalBool.NO, false);
+        private static final State UNKNOWN_COMPLETION = new State(OptionalBool.UNKNOWN, false);
+        // just for throws & return:
+        private static final State ABRUPT_COMPLETION = new State(OptionalBool.YES, true);
 
-        ASTStatement breakTarget;
-        ASTStatement continueTarget;
+        final PSet<@Nullable String> continueTargets;
+        final PSet<@Nullable String> breakTargets;
+        final OptionalBool exits;
+        final boolean exitsOutside;
 
-        State(ASTStatement toplevel) {
-            this.toplevel = toplevel;
+        State(OptionalBool exits, boolean exitsOutside) {
+            this(exits, exitsOutside, HashTreePSet.empty(), HashTreePSet.empty());
         }
+
+        State(OptionalBool exits, boolean exitsOutside, PSet<String> continues, PSet<String> breaks) {
+            this.exits = exits;
+            this.exitsOutside = exitsOutside;
+            this.continueTargets = continues;
+            this.breakTargets = breaks;
+        }
+
+        State temper() {
+            if (exits == OptionalBool.YES) {
+                return new State(OptionalBool.UNKNOWN, exitsOutside, this.continueTargets, this.breakTargets);
+            }
+            return this;
+        }
+
+        State replaceExits(OptionalBool bool, boolean outside) {
+            if (exits != bool && exitsOutside != outside) {
+                return new State(bool, outside, this.continueTargets, this.breakTargets);
+            }
+            return this;
+        }
+
+        State join(State other) {
+            return new State(this.exits.max(other.exits),
+                             this.exitsOutside || other.exitsOutside,
+                             this.continueTargets.plusAll(other.continueTargets),
+                             this.breakTargets.plusAll(other.breakTargets));
+        }
+
+        State removeLabel(String label) {
+            return new State(
+                this.exits,
+                this.exitsOutside,
+                this.continueTargets.minus(label),
+                this.breakTargets.minus(label)
+            );
+        }
+
+        State removeContinue(Set<String> labels) {
+            return new State(this.exits, this.exitsOutside, this.continueTargets.minusAll(labels), this.breakTargets);
+        }
+
+        public State chain(State other) {
+            return join(other);
+        }
+
+        static State breakCompletion(@Nullable String label) {
+            return new State(OptionalBool.YES, false, HashTreePSet.empty(), HashTreePSet.singleton(label));
+        }
+
+        static State continueCompletion(@Nullable String label) {
+            return new State(OptionalBool.YES, false, HashTreePSet.singleton(label), HashTreePSet.empty());
+        }
+    }
+
+    static final String NO_LABEL = ":not a label:";
+
+    static @NonNull String defaultLabel(@Nullable String label) {
+        return label == null ? NO_LABEL : label;
     }
 
     /**
      * @param stmt Statement
      */
-    private static OptionalBool completesNormallyImpl(ASTStatement stmt, State state) {
+    private static State completesNormallyImpl(ASTStatement stmt, PSet<String> curLabels) {
 
         if (stmt instanceof ASTThrowStatement || stmt instanceof ASTReturnStatement) {
 
-            state.mayJumpOutsideToplevel = true;
-            return OptionalBool.NO;
+            return State.ABRUPT_COMPLETION;
 
         } else if (stmt instanceof ASTBreakStatement) {
 
-            String label = ((ASTBreakStatement) stmt).getLabel();
-            if (label != null && !state.labelsBelowToplevel.contains(label)
-                || label == null && state.breakTarget != state.toplevel) {
-                state.mayJumpOutsideToplevel = true;
-            }
-            return OptionalBool.NO;
+            String label = defaultLabel(((ASTBreakStatement) stmt).getLabel());
+            return State.breakCompletion(label);
 
         } else if (stmt instanceof ASTContinueStatement) {
 
-            String label = ((ASTContinueStatement) stmt).getLabel();
-            if (label != null && !state.labelsBelowToplevel.contains(label)
-                || label == null && state.continueTarget != state.toplevel) {
-                state.mayJumpOutsideToplevel = true;
-            }
-            return OptionalBool.NO;
+            String label = defaultLabel(((ASTContinueStatement) stmt).getLabel());
+            return State.continueCompletion(label);
 
         } else if (stmt instanceof ASTBlock) {
 
             ASTBlock block = (ASTBlock) stmt;
-            OptionalBool result = OptionalBool.YES;
+            State result = State.NORMAL_COMPLETION;
             for (ASTStatement child : block) {
-                result = result.min(completesNormallyImpl(child, state));
+                if (result.exits == OptionalBool.YES) {
+                    return result;
+                }
+                State childResult = completesNormallyImpl(child, HashTreePSet.empty());
+
+                result = result.chain(childResult);
             }
             return result;
+
         } else if (stmt instanceof ASTIfStatement) {
             ASTIfStatement ifStmt = (ASTIfStatement) stmt;
 
             ASTStatement thenBranch = ifStmt.getThenBranch();
             ASTStatement elseBranch = ifStmt.getElseBranch();
 
-            OptionalBool then = completesNormallyImpl(thenBranch, state);
+            State thenResult = completesNormallyImpl(thenBranch, HashTreePSet.empty());
 
-            return elseBranch != null ? then.min(completesNormallyImpl(elseBranch, state))
-                                      : OptionalBool.UNKNOWN;
+            if (elseBranch != null) {
+                return thenResult.join(completesNormallyImpl(elseBranch, HashTreePSet.empty()));
+            } else {
+                return thenResult.temper();
+            }
 
         } else if (stmt instanceof ASTLabeledStatement) {
             ASTLabeledStatement labeledStmt = (ASTLabeledStatement) stmt;
 
-            state.labelsBelowToplevel.add(labeledStmt.getLabel());
-            OptionalBool result = completesNormallyImpl(labeledStmt.getStatement(), state);
-            state.labelsBelowToplevel.remove(labeledStmt.getLabel());
+            State result = completesNormallyImpl(labeledStmt.getStatement(), curLabels.plus(labeledStmt.getLabel()));
 
-            return result;
+            return result.removeLabel(labeledStmt.getLabel());
 
         } else if (stmt instanceof ASTSynchronizedStatement) {
 
-            return completesNormallyImpl(((ASTSynchronizedStatement) stmt).getBody(), state);
+            return completesNormallyImpl(((ASTSynchronizedStatement) stmt).getBody(), HashTreePSet.empty());
 
         } else if (stmt instanceof ASTWhileStatement) {
+
+            PSet<String> allLabels = curLabels.plus(NO_LABEL);
             ASTWhileStatement loop = (ASTWhileStatement) stmt;
 
-            State state2 = new State(loop);
-            state2.continueTarget = loop;
-            state2.breakTarget = loop;
-            OptionalBool bodyCompletesNormally = completesNormallyImpl(loop.getBody(), state2);
+            State bodyResult = completesNormallyImpl(((ASTWhileStatement) stmt).getBody(), curLabels);
 
-            state.mayJumpOutsideToplevel |= state2.mayJumpOutsideToplevel;
+            bodyResult = bodyResult.removeContinue(allLabels);
 
-            if (JavaRuleUtil.isBooleanLit(loop.getCondition(), true)) {
-                // while (true)
+            boolean isWhileTrue = JavaRuleUtil.isBooleanLit(loop.getCondition(), true);
 
-                // can complete normally if the block *may* complete abruptly
-                if (bodyCompletesNormally == OptionalBool.YES) {
-                    return OptionalBool.NO;// fixme    while(true) continue;
-                } else {
-                    return bodyCompletesNormally;
-                }
+            boolean hasLocalBreak = containsAny(bodyResult.breakTargets, allLabels);
+            boolean hasOuterBreak = bodyResult.exitsOutside
+                // or there is a break/continue to some label that is not within this loop
+                || !isSubset(bodyResult.breakTargets, allLabels)
+                || !isSubset(bodyResult.continueTargets, allLabels);
+
+            State result;
+            if (hasLocalBreak && !hasOuterBreak) {
+                result = bodyResult.temper();
+            } else if (hasLocalBreak && hasOuterBreak) {
+                // both local & non-local breaks
+                result = bodyResult.temper();
+            } else if (hasOuterBreak && !hasLocalBreak) {
+                result = isWhileTrue ? bodyResult//.replaceExits(bodyResult.exits, true)
+                                     : bodyResult.temper();
+            } else {
+                // no break at all
+                result = isWhileTrue ? bodyResult.replaceExits(OptionalBool.YES, true)
+                                     : bodyResult.replaceExits(OptionalBool.UNKNOWN, true);
             }
-            return OptionalBool.UNKNOWN;
+            return result.removeLabel(NO_LABEL);
         } else {
-            return OptionalBool.YES;
+            return State.NORMAL_COMPLETION;
         }
+    }
+
+    // as subset of bs?
+    private static <T> boolean isSubset(Collection<? extends T> as, Collection<? super T> bs) {
+        for (T label : as) {
+            if (!bs.contains(label)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static <T> boolean containsAny(Collection<? super T> subject,
+                                           Collection<? extends T> searchedValues) {
+        for (T t : searchedValues) {
+            if (subject.contains(t)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     static OptionalBool negate(OptionalBool o) {

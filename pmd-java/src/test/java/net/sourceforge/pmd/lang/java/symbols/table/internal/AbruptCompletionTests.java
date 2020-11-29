@@ -68,7 +68,11 @@ public class AbruptCompletionTests extends BaseNonParserTest {
             canCompleteNormally("l: while(foo) { if (x) break l; }"),
             canCompleteNormally("while(foo) { if (x) continue; }"),
 
-            mustCompleteAbruptly("while(foo) { continue; }"),
+            // this is trivial, but the condition may have side-effects
+            canCompleteNormally("while(foo) { continue; }"),
+
+            mustCompleteAbruptly("if (foo) while(foo) { continue; } "
+                                     + "else throw e;"),
 
             canCompleteNormally("while(true) { if (foo) break; }"),
 
