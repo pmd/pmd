@@ -9,20 +9,25 @@ import org.pcollections.PSet;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
-import net.sourceforge.pmd.util.OptionalBool;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 final class PatternBindingsUtil {
 
@@ -30,47 +35,84 @@ final class PatternBindingsUtil {
         // util class
     }
 
+    static boolean canCompleteNormally(ASTStatement stmt) {
+        if (stmt instanceof ASTLabeledStatement) {
+            // we need to remove labels
+            return canCompleteNormally(((ASTLabeledStatement) stmt).getStatement());
+        }
+
+        return canCompleteNormallyImpl(stmt, HashTreePSet.empty(), true, true);
+    }
+
     /**
-     * TODO test
-     * TODO most statements are unsupported, including break statements
-     *  (this will probs need to be rewritten at some point)
+     * @param stmt          Statement
+     * @param labelsInScope Labels to which breaking is ok, because they're
+     *                      in a strict descendant of the toplevel node.
+     *                      Unlabeled breaks/continues have special fake labels.
      */
-    static OptionalBool completesAbruptly(ASTStatement s) {
-        if (s instanceof ASTThrowStatement || s instanceof ASTReturnStatement) {
+    private static boolean canCompleteNormallyImpl(ASTStatement stmt,
+                                                   PSet<String> labelsInScope,
+                                                   boolean breakAllowed,
+                                                   boolean continueAllowed) {
+        if (stmt instanceof ASTThrowStatement || stmt instanceof ASTReturnStatement) {
 
-            return OptionalBool.YES;
+            return false;
 
-        } else if (s instanceof ASTBlock) {
+        } else if (stmt instanceof ASTBreakStatement) {
 
-            ASTBlock block = (ASTBlock) s;
-            OptionalBool result = OptionalBool.NO;
-            for (ASTStatement stmt : block) {
-                result = result.max(completesAbruptly(stmt));
-                if (result == OptionalBool.YES) {
-                    return result;
+            String label = ((ASTBreakStatement) stmt).getLabel();
+            return label == null && breakAllowed || label != null && labelsInScope.contains(label);
+
+        } else if (stmt instanceof ASTContinueStatement) {
+
+            String label = ((ASTContinueStatement) stmt).getLabel();
+            return label == null && continueAllowed || label != null && labelsInScope.contains(label);
+
+        } else if (stmt instanceof ASTBlock) {
+
+            ASTBlock block = (ASTBlock) stmt;
+            for (ASTStatement child : block) {
+                if (!canCompleteNormallyImpl(child, labelsInScope, breakAllowed, continueAllowed)) {
+                    return false;
                 }
             }
-        } else if (s instanceof ASTIfStatement) {
-            ASTIfStatement ifStmt = (ASTIfStatement) s;
+            return true;
+        } else if (stmt instanceof ASTIfStatement) {
+            ASTIfStatement ifStmt = (ASTIfStatement) stmt;
 
             ASTStatement thenBranch = ifStmt.getThenBranch();
             ASTStatement elseBranch = ifStmt.getElseBranch();
 
-            OptionalBool result = completesAbruptly(thenBranch);
-            if (elseBranch != null) {
-                result = result.max(completesAbruptly(elseBranch));
-            } else {
-                result = result.min(OptionalBool.UNKNOWN);
+            return elseBranch == null
+                || canCompleteNormallyImpl(thenBranch, labelsInScope, breakAllowed, continueAllowed)
+                || canCompleteNormallyImpl(elseBranch, labelsInScope, breakAllowed, continueAllowed);
+
+        } else if (stmt instanceof ASTLabeledStatement) {
+            ASTLabeledStatement labeledStmt = (ASTLabeledStatement) stmt;
+
+            return canCompleteNormallyImpl(labeledStmt.getStatement(),
+                                           labelsInScope.plus(labeledStmt.getLabel()),
+                                           breakAllowed,
+                                           continueAllowed);
+
+        } else if (stmt instanceof ASTSynchronizedStatement) {
+
+            return canCompleteNormallyImpl(((ASTSynchronizedStatement) stmt).getBody(), labelsInScope, breakAllowed, continueAllowed);
+
+        } else if (stmt instanceof ASTWhileStatement) {
+            ASTWhileStatement loop = (ASTWhileStatement) stmt;
+
+            if (JavaRuleUtil.isBooleanLit(loop.getCondition(), true)) {
+                // while (true)
+
+                // can complete normally if the block *may* complete abruptly
+                // todo
+                return canCompleteNormallyImpl(loop.getBody(), labelsInScope, true, true);
             }
-            return result;
+            return true;
+        } else {
+            return true;
         }
-
-        // todo
-        return s.children(ASTStatement.class).reduce(OptionalBool.NO, (r, stmt) -> r.max(completesAbruptly(stmt)));
-    }
-
-    static boolean canCompleteNormally(ASTStatement s) {
-        return completesAbruptly(s) != OptionalBool.YES;
     }
 
     /**

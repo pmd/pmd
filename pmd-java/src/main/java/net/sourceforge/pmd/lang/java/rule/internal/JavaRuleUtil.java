@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.internal;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -136,5 +137,19 @@ public final class JavaRuleUtil {
 
     private static boolean isNonPrivate(ASTBodyDeclaration decl) {
         return ((AccessNode) decl).getVisibility() != Visibility.V_PRIVATE;
+    }
+
+    /**
+     * TODO move to a more generic ast util
+     *  This is used by the symbol table code, which shouldn't have a dependency on rules
+     * @param node
+     * @param value
+     * @return
+     */
+    public static boolean isBooleanLit(JavaNode node, boolean value) {
+        if (node instanceof ASTBooleanLiteral) {
+            return ((ASTBooleanLiteral) node).isTrue() == value;
+        }
+        return false;
     }
 }

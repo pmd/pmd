@@ -94,6 +94,20 @@ class PatternVarTests : ProcessorTestSpec({
                 """
             }
         }
+        doTest("Test while(true) is handled correctly") {
+
+            checkVars(firstIsPattern = false, secondIsPattern = true) {
+                """
+                args -> {
+                        if (!(args[0] instanceof Boolean var)) {
+                            var.toString(); // the field
+                            while (true) { }
+                        }
+                        var.toString(); //the binding
+                }
+                """
+            }
+        }
     }
 
 })
