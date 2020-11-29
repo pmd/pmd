@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
-import java.util.Collection;
-import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
@@ -32,7 +28,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.util.OptionalBool;
 
 final class PatternBindingsUtil {
 
@@ -41,232 +36,79 @@ final class PatternBindingsUtil {
     }
 
     static boolean canCompleteNormally(ASTStatement stmt) {
-        return completesNormally(stmt) != OptionalBool.NO;
+        if (stmt instanceof ASTLabeledStatement) {
+            // we need to remove labels
+            return canCompleteNormally(((ASTLabeledStatement) stmt).getStatement());
+        }
+
+        return canCompleteNormallyImpl(stmt, new State(HashTreePSet.empty(), true, true));
     }
-
-    static OptionalBool completesNormally(ASTStatement stmt) {
-        State endState = completesNormallyImpl(stmt, HashTreePSet.empty());
-
-        return OptionalBool.max(endState.exitsLocally, endState.exitsOutside).complement();
-    }
-
-    private static final class State {
-
-        private static final State NORMAL_COMPLETION = new State(OptionalBool.NO, OptionalBool.NO);
-        // just for throws & return:
-        private static final State ABRUPT_COMPLETION = new State(OptionalBool.NO, OptionalBool.YES);
-        private static final State UNNAMED_BREAK = new State(OptionalBool.YES, OptionalBool.NO, HashTreePSet.empty(), HashTreePSet.singleton(NO_LABEL));
-        private static final State UNNAMED_CONTINUE = new State(OptionalBool.YES, OptionalBool.NO, HashTreePSet.singleton(NO_LABEL), HashTreePSet.empty());
-
-        final PSet<String> continueTargets;
-        final PSet<String> breakTargets;
-        final OptionalBool exitsLocally;
-        final OptionalBool exitsOutside;
-
-        State(OptionalBool exitsLocally, OptionalBool exitsOutside) {
-            this(exitsLocally, exitsOutside, HashTreePSet.empty(), HashTreePSet.empty());
-        }
-
-        State(OptionalBool exitsLocally, OptionalBool exitsOutside, PSet<String> continues, PSet<String> breaks) {
-            this.exitsLocally = exitsLocally;
-            this.exitsOutside = exitsOutside;
-            this.continueTargets = continues;
-            this.breakTargets = breaks;
-        }
-
-        State temper() {
-            return new State(OptionalBool.min(OptionalBool.UNKNOWN, this.exitsLocally),
-                             OptionalBool.min(OptionalBool.UNKNOWN, this.exitsOutside),
-                             this.continueTargets, this.breakTargets);
-        }
-
-        State replaceExits(OptionalBool bool, OptionalBool outside) {
-            if (exitsLocally != bool && exitsOutside != outside) {
-                return new State(bool, outside, this.continueTargets, this.breakTargets);
-            }
-            return this;
-        }
-
-        static OptionalBool mix(OptionalBool b1, OptionalBool b2) {
-            if (b1 != b2) {
-                return OptionalBool.UNKNOWN;
-            }
-            return b1;
-        }
-
-        static OptionalBool max(OptionalBool b1, OptionalBool b2) {
-            return OptionalBool.max(b1, b2);
-        }
-
-        State join(State other) {
-            return new State(mix(this.exitsLocally, other.exitsLocally),
-                             mix(this.exitsOutside, other.exitsOutside),
-                             this.continueTargets.plusAll(other.continueTargets),
-                             this.breakTargets.plusAll(other.breakTargets));
-        }
-
-        public State chain(State other) {
-            return new State(max(this.exitsLocally, other.exitsLocally),
-                             max(this.exitsOutside, other.exitsOutside),
-                             this.continueTargets.plusAll(other.continueTargets),
-                             this.breakTargets.plusAll(other.breakTargets));
-        }
-
-        State removeLabel(String label) {
-            return new State(
-                this.exitsLocally,
-                this.exitsOutside,
-                this.continueTargets.minus(label),
-                this.breakTargets.minus(label)
-            );
-        }
-
-        State removeContinue(Set<String> labels) {
-            PSet<String> continues = this.continueTargets.minusAll(labels);
-            if (continues.size() != this.continueTargets.size()) {
-                // we removed stuff
-                OptionalBool localExit = this.exitsLocally;
-                if (!this.breakTargets.isEmpty() || !continues.isEmpty()) {
-                    localExit = OptionalBool.UNKNOWN;
-                }
-
-                return new State(localExit,
-                                 this.exitsOutside,
-                                 continues,
-                                 this.breakTargets);
-
-            }
-            return this;
-        }
-
-        static State breakCompletion(@Nullable String label) {
-            if (label == null) {
-                return UNNAMED_BREAK;
-            }
-            return new State(OptionalBool.YES, OptionalBool.NO, HashTreePSet.empty(), HashTreePSet.singleton(label));
-        }
-
-        static State continueCompletion(@Nullable String label) {
-            if (label == null) {
-                return UNNAMED_CONTINUE;
-            }
-            return new State(OptionalBool.YES, OptionalBool.NO, HashTreePSet.singleton(label), HashTreePSet.empty());
-        }
-    }
-
-    static final String NO_LABEL = ":not a label:";
-
 
     /**
      * @param stmt Statement
      */
-    private static State completesNormallyImpl(ASTStatement stmt, PSet<String> curLabels) {
-
+    private static boolean canCompleteNormallyImpl(ASTStatement stmt, State state) {
+        /*
+            TODO:
+                - switches
+                - do {} while(true);
+                - while(true) {}
+         */
         if (stmt instanceof ASTThrowStatement || stmt instanceof ASTReturnStatement) {
 
-            return State.ABRUPT_COMPLETION;
+            return false;
 
         } else if (stmt instanceof ASTBreakStatement) {
 
             String label = ((ASTBreakStatement) stmt).getLabel();
-            return State.breakCompletion(label);
+            return label == null && state.isBreakAllowed() || label != null && state.getLabelsInScope().contains(label);
 
         } else if (stmt instanceof ASTContinueStatement) {
 
             String label = ((ASTContinueStatement) stmt).getLabel();
-            return State.continueCompletion(label);
+            return label == null && state.isContinueAllowed()
+                || label != null && state.getLabelsInScope().contains(label);
 
         } else if (stmt instanceof ASTBlock) {
 
-            ASTBlock block = (ASTBlock) stmt;
-            State result = State.NORMAL_COMPLETION;
-            for (ASTStatement child : block) {
-                State childResult = completesNormallyImpl(child, HashTreePSet.empty());
-
-                result = result.chain(childResult);
+            for (ASTStatement child : (ASTBlock) stmt) {
+                if (!canCompleteNormallyImpl(child, state)) {
+                    return false;
+                }
             }
-            return result;
-
+            return true;
         } else if (stmt instanceof ASTIfStatement) {
             ASTIfStatement ifStmt = (ASTIfStatement) stmt;
 
             ASTStatement thenBranch = ifStmt.getThenBranch();
             ASTStatement elseBranch = ifStmt.getElseBranch();
 
-            State thenResult = completesNormallyImpl(thenBranch, HashTreePSet.empty());
-
-            if (elseBranch != null) {
-                return thenResult.join(completesNormallyImpl(elseBranch, HashTreePSet.empty()));
-            } else {
-                return thenResult.temper();
-            }
+            return elseBranch == null
+                || canCompleteNormallyImpl(thenBranch, state)
+                || canCompleteNormallyImpl(elseBranch, state);
 
         } else if (stmt instanceof ASTLabeledStatement) {
             ASTLabeledStatement labeledStmt = (ASTLabeledStatement) stmt;
 
-            State result = completesNormallyImpl(labeledStmt.getStatement(), curLabels.plus(labeledStmt.getLabel()));
-
-            return result.removeLabel(labeledStmt.getLabel());
+            return canCompleteNormallyImpl(labeledStmt.getStatement(), state.withLabel(labeledStmt.getLabel()));
 
         } else if (stmt instanceof ASTSynchronizedStatement) {
 
-            return completesNormallyImpl(((ASTSynchronizedStatement) stmt).getBody(), HashTreePSet.empty());
+            return canCompleteNormallyImpl(((ASTSynchronizedStatement) stmt).getBody(), state);
 
         } else if (stmt instanceof ASTWhileStatement) {
 
-            PSet<String> allLabels = curLabels.plus(NO_LABEL);
             ASTWhileStatement loop = (ASTWhileStatement) stmt;
-
-            State bodyResult = completesNormallyImpl(((ASTWhileStatement) stmt).getBody(), curLabels);
-
-            bodyResult = bodyResult.removeContinue(allLabels);
-
-            boolean isWhileTrue = JavaRuleUtil.isBooleanLit(loop.getCondition(), true);
-
-            boolean hasLocalBreak = containsAny(bodyResult.breakTargets, allLabels);
-            boolean hasOuterBreak = bodyResult.exitsOutside != OptionalBool.NO
-                // or there is a break/continue to some label that is not within this loop
-                || !isSubset(bodyResult.breakTargets, allLabels)
-                || !isSubset(bodyResult.continueTargets, allLabels);
-
-            State result;
-            if (hasLocalBreak && !hasOuterBreak) {
-                result = bodyResult.temper();
-            } else if (hasLocalBreak && hasOuterBreak) {
-                // both local & non-local breaks
-                result = bodyResult.temper();
-            } else if (hasOuterBreak && !hasLocalBreak) {
-                result = isWhileTrue ? bodyResult//.replaceExits(bodyResult.exits, true)
-                                     : bodyResult.temper();
-            } else {
-                // no break at all
-                result = isWhileTrue ? bodyResult.replaceExits(OptionalBool.NO, OptionalBool.YES)
-                                     : bodyResult.replaceExits(OptionalBool.UNKNOWN, OptionalBool.YES);
+            if (JavaRuleUtil.isBooleanLit(loop.getCondition(), true)) {
+                // todo this does not really work
+                //  should be "may complete abruptly", here it's "must complete abruptly"
+                return !canCompleteNormallyImpl(loop.getBody(), new State(state.labelsInScope, true, true));
             }
-            return result.removeLabel(NO_LABEL);
+
+            return true;
         } else {
-            return State.NORMAL_COMPLETION;
+            return true;
         }
-    }
-
-    // as subset of bs?
-    private static <T> boolean isSubset(Collection<? extends T> as, Collection<? super T> bs) {
-        for (T label : as) {
-            if (!bs.contains(label)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static <T> boolean containsAny(Collection<? super T> subject,
-                                           Collection<? extends T> searchedValues) {
-        for (T t : searchedValues) {
-            if (subject.contains(t)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -357,4 +199,36 @@ final class PatternBindingsUtil {
         }
     }
 
+    private static class State {
+
+        private final PSet<String> labelsInScope;
+        private final boolean breakAllowed;
+        private final boolean continueAllowed;
+
+        /**
+         * @param labelsInScope Labels to which breaking is ok, because they're
+         *                      in a strict descendant of the toplevel node.
+         */
+        public State(PSet<String> labelsInScope, boolean breakAllowed, boolean continueAllowed) {
+            this.labelsInScope = labelsInScope;
+            this.breakAllowed = breakAllowed;
+            this.continueAllowed = continueAllowed;
+        }
+
+        public PSet<String> getLabelsInScope() {
+            return labelsInScope;
+        }
+
+        public boolean isBreakAllowed() {
+            return breakAllowed;
+        }
+
+        public boolean isContinueAllowed() {
+            return continueAllowed;
+        }
+
+        public State withLabel(String label) {
+            return new State(labelsInScope.plus(label), breakAllowed, continueAllowed);
+        }
+    }
 }
