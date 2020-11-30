@@ -51,4 +51,11 @@ public interface GenericToken {
      * @return a non-negative integer containing the begin column
      */
     int getEndColumn();
+
+    /**
+     * Gets a unique integer representing the kind of token this is.
+     *
+     * The semantics of this kind depend on the language.
+     */
+    int getKind();
 }

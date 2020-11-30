@@ -141,6 +141,11 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
     return endColumn;
   }
 
+  @Override
+  public int getKind() {
+    return kind;
+  }
+
 ]]></replacevalue>
         </replace>
 

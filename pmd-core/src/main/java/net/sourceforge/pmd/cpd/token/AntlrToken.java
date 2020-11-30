@@ -132,6 +132,7 @@ public class AntlrToken implements GenericToken {
         }
     }
 
+    @Override
     public int getKind() {
         return token.getType();
     }
