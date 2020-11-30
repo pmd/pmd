@@ -375,7 +375,7 @@ Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 ## Suppression
 
 Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Dart**, **Go**, **Javascript**,
-**Kotlin**, **Lua**, **Matlab**, **Objective-C**, **PL/SQL**, **Python**, **Swift** and **C#** by including the keywords `CPD-OFF` and `CPD-ON`.
+**Kotlin**, **Lua**, **Matlab**, **Objective-C**, **PL/SQL**, **Python**, **Scala**, **Swift** and **C#** by including the keywords `CPD-OFF` and `CPD-ON`.
 
 ```java
     public Object someParameterizedFactoryMethod(int x) throws Exception {

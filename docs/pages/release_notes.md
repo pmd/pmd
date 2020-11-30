@@ -18,7 +18,7 @@ This is a {{ site.pmd.release_type }} release.
 
 * The C# module now supports the new option `--ignore-literal-sequences`, which can be used to avoid detection of some uninteresting clones. Support for other languages may be added in the future. See [#2945](https://github.com/pmd/pmd/pull/2945)
 
-* The Scala module now supports `CPD-ON` and `CPD-OFF` comment pairs. See [#2929](https://github.com/pmd/pmd/pull/2929)
+* The Scala module now supports [suppression](https://pmd.github.io/latest/pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs. See [#2929](https://github.com/pmd/pmd/pull/2929)
 
 ### Fixed Issues
 
