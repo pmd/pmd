@@ -1411,6 +1411,17 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h5 id="cpd">CPD</h5>
+
+<ul>
+  <li>
+    <p>The C# module now supports the new option <a href="https://pmd.github.io/latest/pmd_userdocs_cpd.html#-ignore-literal-sequences"><code class="language-plaintext highlighter-rouge">--ignore-literal-sequences</code></a>, which can be used to avoid detection of some uninteresting clones. Support for other languages may be added in the future. See <a href="https://github.com/pmd/pmd/pull/2945">#2945</a></p>
+  </li>
+  <li>
+    <p>The Scala module now supports <a href="https://pmd.github.io/latest/pmd_userdocs_cpd.html#suppression">suppression</a> through <code class="language-plaintext highlighter-rouge">CPD-ON</code>/<code class="language-plaintext highlighter-rouge">CPD-OFF</code> comment pairs. See <a href="https://github.com/pmd/pmd/pull/2929">#2929</a></p>
+  </li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1477,6 +1488,7 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
   <li><a href="https://github.com/pmd/pmd/pull/2929">#2929</a>: [scala] Add support for CPD-ON and CPD-OFF special comments - <a href="https://github.com/andyrobinson">Andy Robinson</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2936">#2936</a>: [java] (doc) Fix typo: “an accessor” not “a” - <a href="https://github.com/igormoreno">Igor Moreno</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2938">#2938</a>: [cs] CPD: fix issue where ignoring using directives could not be disabled - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2945">#2945</a>: [cs] Add option to ignore sequences of literals - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
 </ul>
 
 
@@ -1495,7 +1507,7 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Nov 28, 2020 <br />
+ Site last generated: Nov 30, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

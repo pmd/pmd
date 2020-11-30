@@ -1791,6 +1791,28 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-ignore-literal-sequences"><code>--ignore-literal-sequences</code></a></td>
+    <td>Ignore sequences of literals (common e.g. in list initializers)</td>
+    <td><code>false</code></td>
+    <td>C#</td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
     <td><a style="pointer-events: none; cursor: default;" name="-ignore-usings"><code>--ignore-usings</code></a></td>
     <td>Ignore <code>using</code> directives in C# when comparing text</td>
     <td><code>false</code></td>
@@ -2355,7 +2377,7 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:</
 <h2 id="suppression">Suppression</h2>
 
 <p>Arbitrary blocks of code can be ignored through comments on <strong>Java</strong>, <strong>C/C++</strong>, <strong>Dart</strong>, <strong>Go</strong>, <strong>Javascript</strong>,
-<strong>Kotlin</strong>, <strong>Lua</strong>, <strong>Matlab</strong>, <strong>Objective-C</strong>, <strong>PL/SQL</strong>, <strong>Python</strong>, <strong>Swift</strong> and <strong>C#</strong> by including the keywords <code class="language-plaintext highlighter-rouge">CPD-OFF</code> and <code class="language-plaintext highlighter-rouge">CPD-ON</code>.</p>
+<strong>Kotlin</strong>, <strong>Lua</strong>, <strong>Matlab</strong>, <strong>Objective-C</strong>, <strong>PL/SQL</strong>, <strong>Python</strong>, <strong>Scala</strong>, <strong>Swift</strong> and <strong>C#</strong> by including the keywords <code class="language-plaintext highlighter-rouge">CPD-OFF</code> and <code class="language-plaintext highlighter-rouge">CPD-ON</code>.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">someParameterizedFactoryMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
         <span class="c1">// some unignored code</span>
@@ -2440,7 +2462,7 @@ the comment based approach will be extended to those of them that can support it
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Nov 28, 2020 <br />
+ Site last generated: Nov 30, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
