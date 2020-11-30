@@ -482,22 +482,34 @@ public final class MethodTypeResolution {
 
         // search it's supertype
         if (!contextClass.equals(Object.class)) {
-            List<MethodType> inheritedMethods = getApplicableMethods(context.resolveTypeDefinition(contextClass.getGenericSuperclass()),
+            try {
+                List<MethodType> inheritedMethods = getApplicableMethods(context.resolveTypeDefinition(contextClass.getGenericSuperclass()),
                                                methodName, typeArguments, argArity, accessingClass);
 
-            // but only add the found methods of the supertype, if they have not been overridden
-            // TODO: verify whether this simplified overriding detection is good enough and at the correct place
-            for (MethodType inherited : inheritedMethods) {
-                if (!result.contains(inherited)) {
-                    result.add(inherited);
+                // but only add the found methods of the supertype, if they have not been overridden
+                // TODO: verify whether this simplified overriding detection is good enough and at the correct place
+                for (MethodType inherited : inheritedMethods) {
+                    if (!result.contains(inherited)) {
+                        result.add(inherited);
+                    }
                 }
+            } catch (TypeNotPresentException | LinkageError e) {
+                // might be thrown by contextClass.getGenericSuperclass()
+                // This is an incomplete classpath, report the missing class
+                LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
             }
         }
 
         // search it's interfaces
-        for (Type interfaceType : contextClass.getGenericInterfaces()) {
-            result.addAll(getApplicableMethods(context.resolveTypeDefinition(interfaceType),
-                                               methodName, typeArguments, argArity, accessingClass));
+        try {
+            for (Type interfaceType : contextClass.getGenericInterfaces()) {
+                result.addAll(getApplicableMethods(context.resolveTypeDefinition(interfaceType),
+                                                   methodName, typeArguments, argArity, accessingClass));
+            }
+        } catch (TypeNotPresentException | LinkageError e) {
+            // might be thrown by contextClass.getGenericInterface()
+            // This is an incomplete classpath, report the missing class
+            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
         }
 
         return result;
