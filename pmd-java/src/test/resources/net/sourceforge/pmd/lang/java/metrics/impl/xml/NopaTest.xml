@@ -47,8 +47,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>NOPA doesn't support enums, interfaces or annotations</description>
-        <expected-problems>0</expected-problems>
+        <description>NOPA supports enums, interfaces or annotations</description>
+        <expected-problems>3</expected-problems>
         <code><![CDATA[
 public interface Foo {
 
