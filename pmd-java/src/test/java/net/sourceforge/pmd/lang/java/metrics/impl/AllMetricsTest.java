@@ -24,14 +24,14 @@ public class AllMetricsTest extends SimpleAggregatorTst {
     public void setUp() {
 //        addRule(RULESET, "CycloTest");
         addRule(RULESET, "NcssTest");
-//        addRule(RULESET, "WmcTest");
+        addRule(RULESET, "WmcTest");
         addRule(RULESET, "LocTest");
         addRule(RULESET, "NPathTest");
 //        addRule(RULESET, "NopaTest");
 //        addRule(RULESET, "NoamTest");
 //        addRule(RULESET, "WocTest");
 //        addRule(RULESET, "TccTest");
-//        addRule(RULESET, "AtfdTest");
+        addRule(RULESET, "AtfdTest");
 //        addRule(RULESET, "CfoTest");
     }
 
