@@ -37,7 +37,7 @@ final class ParameterizedMetricKey<N extends Node, R extends Number> implements 
 
     @Override
     public String toString() {
-        return "ParameterizedMetricKey{key=" + metric.name() + ", options=" + options + '}';
+        return "ParameterizedMetricKey{key=" + metric.displayName() + ", options=" + options + '}';
     }
 
 

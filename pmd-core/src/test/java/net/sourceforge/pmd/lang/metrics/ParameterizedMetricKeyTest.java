@@ -45,7 +45,7 @@ public class ParameterizedMetricKeyTest {
     public void testToString() {
 
         ParameterizedMetricKey<Node, ?> key1 = ParameterizedMetricKey.getInstance(DUMMY_METRIC, DUMMY_VERSION_1);
-        assertTrue(key1.toString().contains(key1.metric.name()));
+        assertTrue(key1.toString().contains(key1.metric.displayName()));
         assertTrue(key1.toString().contains(key1.options.toString()));
     }
 
@@ -60,7 +60,7 @@ public class ParameterizedMetricKeyTest {
         assertNotNull(key2);
         assertSame(key1, key2);
         assertEquals(key1, key2);
-        assertTrue(key1.toString().contains(key1.metric.name()));
+        assertTrue(key1.toString().contains(key1.metric.displayName()));
         assertTrue(key1.toString().contains(key1.options.toString()));
 
     }

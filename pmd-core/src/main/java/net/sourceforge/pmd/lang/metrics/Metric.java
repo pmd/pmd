@@ -33,11 +33,12 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
      * The full name of the metric. This is the preferred name for displaying.
      * Avoid using abbreviations.
      */
-    String name();
+    String displayName();
 
     /**
      * List of name aliases by which the metric is recognisable. This
-     * list includes the {@link #name()} of the metric.
+     * list includes the {@link #displayName()} of the metric. These are
+     * typically an acronym for the display name, or some such mnemonic.
      */
     List<String> nameAliases();
 
@@ -111,7 +112,7 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
 
         return new Metric<T, R>() {
             @Override
-            public String name() {
+            public String displayName() {
                 return fullName;
             }
 

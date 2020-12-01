@@ -33,7 +33,7 @@ public class ProjectMemoizerTest extends BaseNonParserTest {
 
     private static Metric<Node, Integer> randomMetric() {
         Random capturedRandom = new Random();
-        return Metric.of((t, opts)-> capturedRandom.nextInt(), t -> t, "randomMetric");
+        return Metric.of((t, opts) -> capturedRandom.nextInt(), t -> t, "randomMetric");
     }
 
     @Test
@@ -90,7 +90,6 @@ public class ProjectMemoizerTest extends BaseNonParserTest {
 
         return result;
     }
-
 
 
 }

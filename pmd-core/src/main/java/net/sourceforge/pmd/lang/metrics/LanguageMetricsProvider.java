@@ -26,9 +26,11 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public interface LanguageMetricsProvider {
 
+    /** Returns the set of all metrics supported by the language. */
     Set<Metric<?, ?>> getMetrics();
 
 
+    /** Fetch a metric using its name. */
     default @Nullable Metric<?, ?> getMetricWithName(String nameIgnoringCase) {
         for (Metric<?, ?> metric : getMetrics()) {
             for (String nameAlias : metric.nameAliases()) {
