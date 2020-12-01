@@ -286,7 +286,9 @@ public final class JavaMetrics {
 
         int notSetter = methods.filter(it -> !JavaAstUtils.isGetterOrSetter(it)).count();
         int total = methods.count();
-
+        if (total == 0) {
+            return 0;
+        }
         return notSetter / (double) total;
     }
 
