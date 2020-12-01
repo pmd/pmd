@@ -42,15 +42,12 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
 
 
     /* Multiplies the complexity of the children of this node. */
-    private BigInteger multiplyChildrenComplexities(JavaNode node, Void data) {
-        BigInteger product = BigInteger.ONE;
+    private BigInteger multiplyChildrenComplexities(JavaNode node) {
+        return multiplyComplexities(node.children());
+    }
 
-        for (JavaNode child : node.children()) {
-            BigInteger childComplexity = child.acceptVisitor(this, data);
-            product = product.multiply(childComplexity);
-        }
-
-        return product;
+    private BigInteger multiplyComplexities(NodeStream<? extends JavaNode> nodes) {
+        return nodes.reduce(BigInteger.ONE, (acc, n) -> acc.multiply(n.acceptVisitor(this, null)));
     }
 
 
@@ -69,13 +66,13 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
 
     @Override
     public BigInteger visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, Void data) {
-        return multiplyChildrenComplexities(node, data);
+        return multiplyChildrenComplexities(node);
     }
 
 
     @Override
     public BigInteger visitJavaNode(JavaNode node, Void data) {
-        return multiplyChildrenComplexities(node, data);
+        return multiplyChildrenComplexities(node);
     }
 
 
@@ -138,7 +135,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
         }
 
         int boolCompReturn = JavaMetrics.booleanExpressionComplexity(expr);
-        BigInteger conditionalExpressionComplexity = multiplyChildrenComplexities(expr, data);
+        BigInteger conditionalExpressionComplexity = multiplyChildrenComplexities(expr);
 
         return conditionalExpressionComplexity.add(BigInteger.valueOf(boolCompReturn));
     }
@@ -157,26 +154,34 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
     public BigInteger handleSwitch(ASTSwitchLike node, Void data) {
         // bool_comp of switch + sum(npath(case_range))
 
-        int boolCompSwitch = JavaMetrics.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompSwitch = JavaMetrics.booleanExpressionComplexity(node.getTestedExpression());
 
         BigInteger npath = BigInteger.ZERO;
-        BigInteger caseRange = BigInteger.ZERO;
+        int caseRange = 0;
 
         for (ASTSwitchBranch n : node) {
 
             // Fall-through labels count as 1 for complexity
             if (n instanceof ASTSwitchFallthroughBranch) {
-                npath = npath.add(caseRange);
-                caseRange = BigInteger.ONE;
+                caseRange += numAlternatives(n);
+                NodeStream<ASTStatement> statements = ((ASTSwitchFallthroughBranch) n).getStatements();
+                if (statements.nonEmpty()) {
+                    BigInteger branchNpath = multiplyComplexities(statements);
+                    npath = npath.add(branchNpath.multiply(BigInteger.valueOf(caseRange)));
+                    caseRange = 0;
+                }
             } else if (n instanceof ASTSwitchArrowBranch) {
-                npath = npath.add(caseRange);
-                caseRange = n.acceptVisitor(this, data);
-            } else {
-                caseRange = caseRange.multiply(n.acceptVisitor(this, data));
+                int numAlts = numAlternatives(n);
+                BigInteger branchNpath = ((ASTSwitchArrowBranch) n).getRightHandSide().acceptVisitor(this, data);
+                npath = npath.add(branchNpath.multiply(BigInteger.valueOf(numAlts)));
             }
         }
         // add in npath of last label
-        return npath.add(caseRange).add(BigInteger.valueOf(boolCompSwitch));
+        return npath.add(BigInteger.valueOf(boolCompSwitch));
+    }
+
+    private int numAlternatives(ASTSwitchBranch n) {
+        return n.isDefault() ? 1 : n.getLabel().getExprList().count();
     }
 
     @Override
