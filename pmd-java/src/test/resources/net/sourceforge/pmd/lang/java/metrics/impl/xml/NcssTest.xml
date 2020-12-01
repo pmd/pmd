@@ -52,7 +52,7 @@ public class Foo extends Bar {
             }
         }
 
-        super(z);
+        supexx(z);
     }
 
     public void foo() {
@@ -126,7 +126,7 @@ public class Foo extends Bar {
         <rule-property name="reportClasses">true</rule-property>
         <expected-problems>5</expected-problems>
         <expected-messages>
-            <message>'com.company.money.Foo' has value 66 highest 21.</message>
+            <message>'com.company.money.Foo' has value 66.</message>
             <message>'com.company.money.Foo#Foo()' has value 2.</message>
             <message>'com.company.money.Foo#Foo(int)' has value 13.</message>
             <message>'com.company.money.Foo#foo()' has value 14.</message>
@@ -141,7 +141,7 @@ public class Foo extends Bar {
         <rule-property name="metricOptions">countImports</rule-property>
         <expected-problems>5</expected-problems>
         <expected-messages>
-            <message>'com.company.money.Foo' has value 69 highest 21.</message>
+            <message>'com.company.money.Foo' has value 69.</message>
             <message>'com.company.money.Foo#Foo()' has value 2.</message>
             <message>'com.company.money.Foo#Foo(int)' has value 13.</message>
             <message>'com.company.money.Foo#foo()' has value 14.</message>
@@ -170,7 +170,7 @@ public class Foo {
         <rule-property name="reportClasses">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 1 highest 0.</message>
+            <message>'Foo' has value 1.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -295,38 +295,12 @@ public class Hoo {
     <test-code>
         <description>Nested classes are counted</description>
         <rule-property name="reportClasses">true</rule-property>
-        <rule-property name="reportMethods">false</rule-property>
-        <expected-problems>2</expected-problems>
+        <expected-problems>4</expected-problems>
         <expected-messages>
-            <message>'Boo' has value 8 highest 2.</message>
-            <message>'Boo$Barnabee' has value 5 highest 2.</message>
-        </expected-messages>
-        <code><![CDATA[
-public class Boo {
-    void foo() {
-        bar();
-    }
-
-    class Barnabee {
-        int x;
-        int y;
-
-        getX() {
-            return x;
-        }
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Nested classes are counted</description>
-        <rule-property name="reportClasses">true</rule-property>
-        <rule-property name="reportMethods">false</rule-property>
-        <expected-problems>2</expected-problems>
-        <expected-messages>
-            <message>'Boo' has value 8 highest 2.</message>
-            <message>'Boo$Barnabee' has value 5 highest 2.</message>
+            <message>'Boo' has value 8.</message>
+            <message>'Boo#foo()' has value 2.</message>
+            <message>'Boo$Barnabee' has value 5.</message>
+            <message>'Boo$Barnabee#getX()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
 public class Boo {
@@ -349,10 +323,9 @@ public class Boo {
     <test-code>
         <description>Enum constants are not counted</description>
         <rule-property name="reportClasses">true</rule-property>
-        <rule-property name="reportMethods">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Shoo' has value 1 highest 0.</message>
+            <message>'Shoo' has value 1.</message>
         </expected-messages>
         <code><![CDATA[
 public enum Shoo {
@@ -364,10 +337,9 @@ public enum Shoo {
     <test-code>
         <description>Annotation declarations are counted</description>
         <rule-property name="reportClasses">true</rule-property>
-        <rule-property name="reportMethods">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Moo' has value 1 highest 0.</message>
+            <message>'Moo' has value 1.</message>
         </expected-messages>
         <code><![CDATA[
 public @interface Moo {
@@ -390,10 +362,9 @@ public abstract class Koo {
 
     <test-code>
         <description>Lambdas themselves don't count, only the code within</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Koo#bar()' has value 2.</message>
-            <message>'Koo#lambda$bar$0' has value 0.</message>
         </expected-messages>
         <code><![CDATA[
 public abstract class Koo {
@@ -408,10 +379,9 @@ public abstract class Koo {
 
     <test-code>
         <description>Code inside lambdas is counted by default</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Koo#bar()' has value 4.</message>
-            <message>'Koo#lambda$bar$0' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
 public abstract class Koo {

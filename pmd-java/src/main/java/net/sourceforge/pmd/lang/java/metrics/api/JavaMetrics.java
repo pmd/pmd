@@ -132,8 +132,9 @@ public final class JavaMetrics {
     }
 
     private static int computeNcss(JavaNode node, MetricOptions options) {
-        MutableInt ncss = (MutableInt) node.acceptVisitor(new NcssVisitor(options, node), new MutableInt(0));
-        return ncss.getValue();
+        MutableInt result = new MutableInt(0);
+        node.acceptVisitor(new NcssVisitor(options, node), result);
+        return result.getValue();
     }
 
     private static int computeLoc(JavaNode node, MetricOptions ignored) {
