@@ -45,7 +45,7 @@ public class JavaMetricsProviderTest {
 
         ASTMethodDeclaration op = acu.getFirstDescendantOfType(ASTMethodDeclaration.class);
 
-        Map<Metric<?, ?>, Number> opResults = provider.computeAllMetricsFor(op);
+        results = provider.computeAllMetricsFor(op);
 
         assertEquals(10, results.size());
     }
@@ -59,13 +59,13 @@ public class JavaMetricsProviderTest {
         ASTAnyTypeDeclaration tdecl1 = java8.parse("class Foo { void bar() { System.out.println(1); } }")
                                             .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
 
-        Map<Metric<?,?>, Number> reference = provider.computeAllMetricsFor(tdecl1);
+        Map<Metric<?, ?>, Number> reference = provider.computeAllMetricsFor(tdecl1);
 
         // same name, different characteristics
         ASTAnyTypeDeclaration tdecl2 = java8.parse("class Foo { void bar(){} \npublic void hey() { System.out.println(1); } }")
                                             .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
 
-        Map<Metric<?,?>, Number> secondTest = provider.computeAllMetricsFor(tdecl2);
+        Map<Metric<?, ?>, Number> secondTest = provider.computeAllMetricsFor(tdecl2);
 
         assertNotEquals(reference, secondTest);
 

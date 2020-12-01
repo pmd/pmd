@@ -9,7 +9,6 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.CycloOption;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
-import net.sourceforge.pmd.test.AbstractMetricTestRule;
 
 /**
  * Tests cyclo.

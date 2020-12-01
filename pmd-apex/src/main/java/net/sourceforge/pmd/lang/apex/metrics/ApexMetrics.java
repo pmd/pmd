@@ -59,12 +59,14 @@ public final class ApexMetrics {
         return n -> n.asStream().filterIs(klass).filter(pred).first();
     }
 
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private static int computeCyclo(ApexNode<?> node, MetricOptions ignored) {
         MutableInt result = new MutableInt(1);
         node.acceptVisitor(new StandardCycloVisitor(), result);
         return result.getValue();
     }
 
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private static int computeCognitiveComp(ApexNode<?> node, MetricOptions ignored) {
         State state = new State();
         node.acceptVisitor(CognitiveComplexityVisitor.INSTANCE, state);

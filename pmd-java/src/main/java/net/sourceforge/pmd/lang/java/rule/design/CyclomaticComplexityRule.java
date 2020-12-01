@@ -171,7 +171,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
                 addViolation(data, node, new String[] {kindname,
                                                        opname,
                                                        "",
-                                                       "" + cyclo,});
+                                                       "" + cyclo, });
             }
         }
     }

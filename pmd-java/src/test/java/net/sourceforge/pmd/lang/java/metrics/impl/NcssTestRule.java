@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.NcssOption;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
-import net.sourceforge.pmd.test.AbstractMetricTestRule;
 
 /**
  * @author Clément Fournier

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
-import net.sourceforge.pmd.test.AbstractMetricTestRule;
 
 /**
  * @author Clément Fournier

@@ -94,7 +94,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
             if (classSize >= classReportLevel) {
                 String[] messageParams = {PrettyPrintingUtil.kindName(node),
                                           node.getSimpleName(),
-                                          classSize + " (Highest = " + classHighest + ")",};
+                                          classSize + " (Highest = " + classHighest + ")", };
 
                 addViolation(data, node, messageParams);
             }
@@ -111,7 +111,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
             if (methodSize >= methodReportLevel) {
                 addViolation(data, node, new String[] {
                     node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                    PrettyPrintingUtil.displaySignature(node), "" + methodSize,});
+                    PrettyPrintingUtil.displaySignature(node), "" + methodSize, });
             }
         }
         return data;
