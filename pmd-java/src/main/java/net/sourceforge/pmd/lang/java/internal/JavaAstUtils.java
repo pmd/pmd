@@ -4,23 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 
 /**
  *
  */
 public final class JavaAstUtils {
-    private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("(?:m_|_)?(\\w+)");
 
     private JavaAstUtils() {
         // utility class
@@ -28,61 +22,52 @@ public final class JavaAstUtils {
 
 
     public static boolean isGetterOrSetter(ASTMethodDeclaration node) {
-
-        // fields names mapped to their types
-        Map<String, String> fieldNames =
-            node.getEnclosingType()
-                .getDeclarations()
-                .filterIs(ASTFieldDeclaration.class)
-                .flatMap(ASTFieldDeclaration::getVarIds)
-                .collect(Collectors.toMap(
-                    f -> {
-                        Matcher matcher = FIELD_NAME_PATTERN.matcher(f.getVariableName());
-                        return matcher.find() ? matcher.group(1) : f.getVariableName();
-                    },
-                    f -> f.getTypeNode().getTypeImage()
-                ));
-
-        return isGetter(node, fieldNames) || isSetter(node, fieldNames);
+        return isGetter(node) || isSetter(node);
     }
 
 
     /** Attempts to determine if the method is a getter. */
-    private static boolean isGetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
+    private static boolean isGetter(ASTMethodDeclaration node) {
 
         if (node.getArity() != 0 || node.isVoid()) {
             return false;
         }
 
+        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
         if (node.getName().startsWith("get")) {
-            return containsIgnoreCase(fieldNames.keySet(), node.getName().substring(3));
+            return hasField(enclosing, node.getName().substring(3));
         } else if (node.getName().startsWith("is")) {
-            return containsIgnoreCase(fieldNames.keySet(), node.getName().substring(2));
+            return hasField(enclosing, node.getName().substring(2));
         }
 
-
-        return fieldNames.containsKey(node.getName());
+        return hasField(enclosing, node.getName());
     }
 
 
     /** Attempts to determine if the method is a setter. */
-    private static boolean isSetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
+    private static boolean isSetter(ASTMethodDeclaration node) {
 
         if (node.getArity() != 1 || !node.isVoid()) {
             return false;
         }
 
+        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+
         if (node.getName().startsWith("set")) {
-            return containsIgnoreCase(fieldNames.keySet(), node.getName().substring(3));
+            return hasField(enclosing, node.getName().substring(3));
         }
 
-        return fieldNames.containsKey(node.getName());
+        return hasField(enclosing, node.getName());
     }
 
 
-    private static boolean containsIgnoreCase(Set<String> set, String str) {
-        for (String s : set) {
-            if (str.equalsIgnoreCase(s)) {
+    private static boolean hasField(ASTAnyTypeDeclaration node, String name) {
+        for (JFieldSymbol f : node.getSymbol().getDeclaredFields()) {
+            String fname = f.getSimpleName();
+            if (fname.startsWith("m_") || fname.startsWith("_")) {
+                fname = fname.substring(fname.indexOf('_') + 1);
+            }
+            if (fname.equalsIgnoreCase(name)) {
                 return true;
             }
         }
