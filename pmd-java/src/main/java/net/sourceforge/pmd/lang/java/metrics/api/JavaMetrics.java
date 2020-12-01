@@ -321,8 +321,9 @@ public final class JavaMetrics {
 
 
     private static int computeFanOut(JavaNode node, MetricOptions options) {
-        MutableInt cfo = (MutableInt) node.acceptVisitor(new ClassFanOutVisitor(options, node), new MutableInt(0));
-        return cfo.getValue();
+        Set<JClassSymbol> cfo = new HashSet<>();
+        node.acceptVisitor(ClassFanOutVisitor.getInstance(options), cfo);
+        return cfo.size();
     }
 
 

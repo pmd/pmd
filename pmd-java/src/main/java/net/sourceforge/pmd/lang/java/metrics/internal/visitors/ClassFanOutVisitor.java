@@ -4,17 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
 
-import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.mutable.MutableInt;
-
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.ClassFanOutOption;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 
@@ -23,50 +21,50 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
  *
  * @author Andreas Pabst
  */
-public class ClassFanOutVisitor extends JavaParserVisitorAdapter {
+public class ClassFanOutVisitor extends JavaVisitorBase<Set<JClassSymbol>, Void> {
 
-    private static final String JAVA_LANG_PACKAGE_NAME = "java.lang";
-    protected Set<Class<?>> classes = new HashSet<>();
+    private static final ClassFanOutVisitor INCLUDE_JLANG = new ClassFanOutVisitor(true);
+    private static final ClassFanOutVisitor EXCLUDE_JLANG = new ClassFanOutVisitor(false);
+
     private final boolean includeJavaLang;
 
-    @SuppressWarnings("PMD.UnusedFormalParameter")
-    public ClassFanOutVisitor(MetricOptions options, JavaNode topNode) {
-        includeJavaLang = options.getOptions().contains(ClassFanOutOption.INCLUDE_JAVA_LANG);
-        // topNode is unused, but we'll need it if we want to discount lambdas
-        // if we add it later, we break binary compatibility
+    private ClassFanOutVisitor(boolean includeJavaLang) {
+        this.includeJavaLang = includeJavaLang;
     }
 
-    @Override
-    public Object visit(ASTClassOrInterfaceType node, Object data) {
-        check(node, (MutableInt) data);
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTName node, Object data) {
-        check(node, (MutableInt) data);
-        return super.visit(node, data);
-    }
-
-    private void check(TypeNode node, MutableInt counter) {
-        if (!classes.contains(node.getType()) && shouldBeIncluded(node.getType())) {
-            classes.add(node.getType());
-            counter.increment();
-        }
-    }
-
-    private boolean shouldBeIncluded(Class<?> classToCheck) {
-        if (includeJavaLang || classToCheck == null) {
-            // include all packages
-            return true;
+    public static ClassFanOutVisitor getInstance(MetricOptions options) {
+        if (options.getOptions().contains(ClassFanOutOption.INCLUDE_JAVA_LANG)) {
+            return INCLUDE_JLANG;
         } else {
-            // exclude the java.lang package
-            Package packageToCheck = classToCheck.getPackage();
-            if (packageToCheck == null) {
-                return true;
-            }
-
-            return !JAVA_LANG_PACKAGE_NAME.equals(packageToCheck.getName());
+            return EXCLUDE_JLANG;
         }
+    }
+
+    @Override
+    public Void visitExpression(ASTExpression node, Set<JClassSymbol> data) {
+        check(node, data);
+        return visitChildren(node, data);
+    }
+
+    @Override
+    public Void visit(ASTClassOrInterfaceType node, Set<JClassSymbol> data) {
+        check(node, data);
+        return visitChildren(node, data);
+    }
+
+    private void check(TypeNode node, Set<JClassSymbol> classes) {
+        JTypeDeclSymbol symbol = node.getTypeMirror().getSymbol();
+        if (!(symbol instanceof JClassSymbol)
+            || ((JClassSymbol) symbol).isPrimitive()
+            || ((JClassSymbol) symbol).isArray()) {
+            return;
+        }
+        if (shouldBeIncluded((JClassSymbol) symbol)) {
+            classes.add((JClassSymbol) symbol);
+        }
+    }
+
+    private boolean shouldBeIncluded(JClassSymbol classToCheck) {
+        return includeJavaLang || !JClassSymbol.PRIMITIVE_PACKAGE.equals(classToCheck.getPackageName());
     }
 }
