@@ -18,11 +18,12 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 /**
  * @author Clément Fournier
@@ -67,10 +68,10 @@ public class ProjectMemoizerTest extends BaseNonParserTest {
     private List<Integer> visitWith(ASTCompilationUnit acu, final boolean force) {
         final List<Integer> result = new ArrayList<>();
 
-        acu.jjtAccept(new JavaParserVisitorAdapter() {
+        acu.acceptVisitor(new JavaVisitorBase<Object, Object>() {
             @Override
             public Object visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, Object data) {
-                Integer value = Metric.compute(randomMetric, MetricOptions.emptyOptions(), node);
+                Integer value = MetricsUtil.computeMetric(randomMetric, node, MetricOptions.emptyOptions(), force);
                 if (value != null) {
                     result.add(value);
                 }
@@ -80,7 +81,7 @@ public class ProjectMemoizerTest extends BaseNonParserTest {
 
             @Override
             public Object visitTypeDecl(ASTAnyTypeDeclaration node, Object data) {
-                Integer value = Metric.compute(randomMetric, MetricOptions.emptyOptions(), node);
+                Integer value = MetricsUtil.computeMetric(randomMetric, node, MetricOptions.emptyOptions(), force);
                 if (value != null) {
                     result.add(value);
                 }
