@@ -49,7 +49,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
         testWithExpectedException(
             "//ConstructorDeclaration[pmd-java:metric('FOOBAR') > 1]",
             "class Joo { Joo() {if(true){}} }",
-            e -> assertThat(e.getMessage(), containsString(MetricFunction.badOperationMetricKeyMessage("FOOBAR"))));
+            e -> assertThat(e.getMessage(), containsString(MetricFunction.badMetricKeyMessage("FOOBAR"))));
     }
 
 
@@ -67,7 +67,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
         testWithExpectedException(
             "//EnumDeclaration[pmd-java:metric('CYCLO') > 1]",
             "enum Loo { FOO; }",
-            e -> assertThat(e.getMessage(), containsString(MetricFunction.badClassMetricKeyMessage("CYCLO"))));
+            e -> assertThat(e.getMessage(), containsString(MetricFunction.badMetricKeyMessage("CYCLO"))));
     }
 
 
@@ -76,7 +76,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
         testWithExpectedException(
             "//MethodDeclaration[pmd-java:metric('WMC') > 1]",
             "class Moo { void foo() {if(true){}} }",
-            e -> assertThat(e.getMessage(), containsString(MetricFunction.badOperationMetricKeyMessage("WMC"))));
+            e -> assertThat(e.getMessage(), containsString(MetricFunction.badMetricKeyMessage("WMC"))));
 
     }
 

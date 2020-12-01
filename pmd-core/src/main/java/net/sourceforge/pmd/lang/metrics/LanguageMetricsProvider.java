@@ -28,6 +28,18 @@ public interface LanguageMetricsProvider {
 
     Set<Metric<?, ?>> getMetrics();
 
+
+    default @Nullable Metric<?, ?> getMetricWithName(String nameIgnoringCase) {
+        for (Metric<?, ?> metric : getMetrics()) {
+            for (String nameAlias : metric.nameAliases()) {
+                if (nameAlias.equalsIgnoreCase(nameIgnoringCase)) {
+                    return metric;
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Computes all metrics available on the given node.
      * The returned results may contain Double.NaN as a value.

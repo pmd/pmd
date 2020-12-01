@@ -70,12 +70,7 @@ public final class MetricFunction extends BaseJavaXPathFunction {
     }
 
 
-    static String badOperationMetricKeyMessage(String constantName) {
-        return String.format("'%s' is not the name of an operation metric", constantName);
-    }
-
-
-    static String badClassMetricKeyMessage(String constantName) {
+    static String badMetricKeyMessage(String constantName) {
         return String.format("'%s' is not the name of a metric", constantName);
     }
 
@@ -84,16 +79,14 @@ public final class MetricFunction extends BaseJavaXPathFunction {
         return "Incorrect node type: the 'metric' function cannot be applied";
     }
 
-    private static double getMetric(Node n, String metricKeyName) {
-        for (Metric<?, ?> metric : METRICS.getMetrics()) {
-            if (metric.name().equalsIgnoreCase(metricKeyName)) {
-                // todo aliases
-                Number computed = Metric.compute(metric, MetricOptions.emptyOptions(), n);
-                return computed == null ? Double.NaN : computed.doubleValue();
-            }
+    private static double getMetric(Node n, String metricKeyName) throws XPathException {
+        Metric<?, ?> metric = METRICS.getMetricWithName(metricKeyName);
+        if (metric == null) {
+            throw new XPathException(badMetricKeyMessage(metricKeyName));
         }
 
-        throw new IllegalArgumentException(badClassMetricKeyMessage());
+        Number computed = Metric.compute(metric, MetricOptions.emptyOptions(), n);
+        return computed == null ? Double.NaN : computed.doubleValue();
     }
 
 }
