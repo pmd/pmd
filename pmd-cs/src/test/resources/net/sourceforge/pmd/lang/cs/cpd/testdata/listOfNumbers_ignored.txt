@@ -1,41 +1,41 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
-    [using]                                 1         5
-    [System]                                7         12
-    [;]                                     13        13
+    [using]                                 1         6
+    [System]                                7         13
+    [;]                                     13        14
 L2
-    [using]                                 1         5
-    [System]                                7         12
-    [.]                                     13        13
-    [Collections]                           14        24
-    [;]                                     25        25
+    [using]                                 1         6
+    [System]                                7         13
+    [.]                                     13        14
+    [Collections]                           14        25
+    [;]                                     25        26
 L3
-    [using]                                 1         5
-    [System]                                7         12
-    [.]                                     13        13
-    [Collections]                           14        24
-    [.]                                     25        25
-    [Generic]                               26        32
-    [;]                                     33        33
+    [using]                                 1         6
+    [System]                                7         13
+    [.]                                     13        14
+    [Collections]                           14        25
+    [.]                                     25        26
+    [Generic]                               26        33
+    [;]                                     33        34
 L4
-    [public]                                1         6
-    [class]                                 8         12
-    [LongLists]                             14        22
-    [{]                                     24        24
+    [public]                                1         7
+    [class]                                 8         13
+    [LongLists]                             14        23
+    [{]                                     24        25
 L5
-    [List]                                  5         8
-    [<]                                     9         9
-    [byte]                                  10        13
-    [>]                                     14        14
-    [l]                                     16        16
-    [=]                                     18        18
-    [new]                                   20        22
-    [List]                                  24        27
-    [<]                                     28        28
-    [byte]                                  29        32
-    [>]                                     33        33
+    [List]                                  5         9
+    [<]                                     9         10
+    [byte]                                  10        14
+    [>]                                     14        15
+    [l]                                     16        17
+    [=]                                     18        19
+    [new]                                   20        23
+    [List]                                  24        28
+    [<]                                     28        29
+    [byte]                                  29        33
+    [>]                                     33        34
 L7
-    [;]                                     6         6
+    [;]                                     6         7
 L8
-    [}]                                     1         1
+    [}]                                     1         2
 EOF
