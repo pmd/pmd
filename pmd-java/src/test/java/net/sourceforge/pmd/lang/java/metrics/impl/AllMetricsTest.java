@@ -15,7 +15,6 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
  *
  * @author Clément Fournier
  */
-//@Ignore("Metrics tests are ignored until we stabilise the AST, like rules")
 public class AllMetricsTest extends SimpleAggregatorTst {
 
 
@@ -42,7 +41,8 @@ public class AllMetricsTest extends SimpleAggregatorTst {
         if (node instanceof ASTAnyTypeDeclaration) {
             qname = ((ASTAnyTypeDeclaration) node).getBinaryName();
         } else if (node instanceof ASTMethodOrConstructorDeclaration) {
-            qname = PrettyPrintingUtil.displaySignature((ASTMethodOrConstructorDeclaration) node);
+            String enclosing = ((ASTMethodOrConstructorDeclaration) node).getEnclosingType().getBinaryName();
+            qname = enclosing + "#" + PrettyPrintingUtil.displaySignature((ASTMethodOrConstructorDeclaration) node);
         }
 
         if (qname != null) {

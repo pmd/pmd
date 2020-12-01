@@ -279,7 +279,9 @@ public final class JavaMetrics {
     }
 
     private static int computeAtfd(JavaNode node, MetricOptions options) {
-        return ((MutableInt) node.acceptVisitor(new AtfdBaseVisitor(), new MutableInt(0))).getValue();
+        MutableInt result = new MutableInt(0);
+        node.acceptVisitor(new AtfdBaseVisitor(), result);
+        return result.getValue();
     }
 
 

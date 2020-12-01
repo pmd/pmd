@@ -125,16 +125,17 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
 
     <test-code>
-        <description>Full example</description> <!-- TODO issues w/ that-->
-        <expected-problems>7</expected-problems>
+        <description>Full example</description>
+        <expected-problems>8</expected-problems>
         <expected-messages>
-            <message>'StatementAndBraceFinder' has value 36 highest 18.</message>
-            <message>'StatementAndBraceFinder#buildDataFlowFor(JavaNode)' has value 6.</message>
-            <message>'StatementAndBraceFinder#tryToLog(String, NodeType, Node)' has value 4.</message>
+            <message>'StatementAndBraceFinder' has value 18.</message>
+            <message>'StatementAndBraceFinder#StatementAndBraceFinder(DataFlowHandler)' has value 0.</message>
+            <message>'StatementAndBraceFinder#buildDataFlowFor(JavaNode)' has value 4.</message>
+            <message>'StatementAndBraceFinder#tryToLog(String, NodeType, Node)' has value 2.</message>
             <message>'StatementAndBraceFinder#tryToLog(NodeType, Node)' has value 0.</message>
-            <message>'StatementAndBraceFinder#visit(ASTStatementExpression, Object)' has value 4.</message>
-            <message>'StatementAndBraceFinder#visit(ASTVariableDeclarator, Object)' has value 4.</message>
-            <message>'StatementAndBraceFinder#visit(ASTExpression, Object)' has value 18.</message>
+            <message>'StatementAndBraceFinder#visit(ASTStatementExpression, Object)' has value 2.</message>
+            <message>'StatementAndBraceFinder#visit(ASTVariableDeclarator, Object)' has value 2.</message>
+            <message>'StatementAndBraceFinder#visit(ASTExpression, Object)' has value 6.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -160,7 +161,7 @@ public class Foo {
         <description>Test empty class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 0 highest 0.</message>
+            <message>'Foo' has value 0.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -169,8 +170,12 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>ATFD doesn't support interfaces or annotations</description>
-        <expected-problems>0</expected-problems>
+        <description>ATFD with interfaces or annotations</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 0.</message>
+            <message>'Foo$Tag' has value 0.</message>
+        </expected-messages>
         <code><![CDATA[
 public interface Foo {
 
@@ -187,7 +192,7 @@ public interface Foo {
         <description>ATFD without method call chains</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 2 highest 2.</message>
+            <message>'Foo' has value 2.</message>
             <message>'Foo#bar()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
@@ -205,7 +210,7 @@ public class Foo {
         <description>ATFD with method call chains</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 2 highest 2.</message>
+            <message>'Foo' has value 2.</message>
             <message>'Foo#bar()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
