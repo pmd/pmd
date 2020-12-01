@@ -37,7 +37,7 @@ public class JavaMetricsProviderTest {
 
         Map<Metric<?, ?>, Number> results = provider.computeAllMetricsFor(type);
 
-        assertEquals(10, results.size());
+        assertEquals(9, results.size());
     }
 
 

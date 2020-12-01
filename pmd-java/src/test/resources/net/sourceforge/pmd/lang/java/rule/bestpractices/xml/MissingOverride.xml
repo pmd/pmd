@@ -149,19 +149,17 @@ public enum EnumWithInterfaces implements InterfaceWithBound<int[]> {
     <test-code>
         <description>Consider enum methods 2</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>9,15</expected-linenumbers>
+        <expected-linenumbers>5,10</expected-linenumbers>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 public enum EnumWithInterfaces implements InterfaceWithBound<int[]> {
     Foo {
-        @Override
         public void handle(int[] ints) {
             super.handle(ints);
         }
     };
 
-    @Override
     public void handle(int[] ints) {
 
     }
@@ -173,8 +171,8 @@ public enum EnumWithInterfaces implements InterfaceWithBound<int[]> {
     <test-code>
         <description>Consider methods with array parameters</description>
         <expected-problems>1</expected-problems>
-        <expected-messages> <!--FIXME should be arrayParams(String, int[], StringBuilder[]) - caused by #910 -->
-            <message>The method 'arrayParams(String, int, StringBuilder)' is missing an @Override annotation.</message>
+        <expected-messages>
+            <message>The method 'arrayParams(String, int[], StringBuilder[])' is missing an @Override annotation.</message>
         </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
@@ -224,22 +222,16 @@ public enum EnumWithAnonClass {
         <description>Consider method inherited from generic supertype</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'supports(ASTAnyTypeDeclaration)' is missing an @Override annotation.</message>
+            <message>The method 'handle(int[])' is missing an @Override annotation.</message>
         </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 public enum EnumWithInterfaces implements InterfaceWithBound<int[]> {
     Foo {
-        @Override
         public void handle(int[] ints) {
             super.handle(ints);
         }
-    };
-
-    @Override
-    public void handle(int[] ints) {
-
     }
 }
 
@@ -304,7 +296,7 @@ public class SubclassWithGenericMethod extends AbstractClass {
         <description>Consider varargs parameter</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'setProperty(MultiValuePropertyDescriptor, V...)' is missing an @Override annotation.</message>
+            <message>The method 'setProperty(MultiValuePropertyDescriptor, V[])' is missing an @Override annotation.</message>
         </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.rule;

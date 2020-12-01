@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
  *
  * @author Andreas Pabst
  */
-public class ClassFanOutVisitor extends JavaVisitorBase<Set<JClassSymbol>, Void> {
+public final class ClassFanOutVisitor extends JavaVisitorBase<Set<JClassSymbol>, Void> {
 
     private static final ClassFanOutVisitor INCLUDE_JLANG = new ClassFanOutVisitor(true);
     private static final ClassFanOutVisitor EXCLUDE_JLANG = new ClassFanOutVisitor(false);
