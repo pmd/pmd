@@ -116,9 +116,9 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> e
         }
     }
 
-   public abstract static class OfDouble extends AbstractMetricTestRule<Double> {
+    public abstract static class OfDouble extends AbstractMetricTestRule<Double> {
 
-       protected OfDouble(Metric<?, Double> metric) {
+        protected OfDouble(Metric<?, Double> metric) {
             super(metric);
         }
 
@@ -127,10 +127,10 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> e
             return Double.parseDouble(value);
         }
 
-       @Override
-       protected Double defaultReportLevel() {
-           return 0.;
-       }
-   }
+        @Override
+        protected Double defaultReportLevel() {
+            return 0.;
+        }
+    }
 
 }
