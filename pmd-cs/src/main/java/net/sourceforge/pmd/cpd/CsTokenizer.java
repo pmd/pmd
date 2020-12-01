@@ -20,13 +20,19 @@ import net.sourceforge.pmd.lang.cs.ast.CSharpLexer;
 public class CsTokenizer extends AntlrTokenizer {
 
     private boolean ignoreUsings = false;
+    private boolean ignoreLiteralSequences = false;
 
     public void setProperties(Properties properties) {
         ignoreUsings = Boolean.parseBoolean(properties.getProperty(IGNORE_USINGS, "false"));
+        ignoreLiteralSequences = Boolean.parseBoolean(properties.getProperty(OPTION_IGNORE_LITERAL_SEQUENCES, "false"));
     }
 
     public void setIgnoreUsings(boolean ignoreUsings) {
         this.ignoreUsings = ignoreUsings;
+    }
+
+    public void setIgnoreLiteralSequences(boolean ignoreLiteralSequences) {
+        this.ignoreLiteralSequences = ignoreLiteralSequences;
     }
 
     @Override
@@ -37,7 +43,7 @@ public class CsTokenizer extends AntlrTokenizer {
 
     @Override
     protected AntlrTokenFilter getTokenFilter(final AntlrTokenManager tokenManager) {
-        return new CsTokenFilter(tokenManager, ignoreUsings);
+        return new CsTokenFilter(tokenManager, ignoreUsings, ignoreLiteralSequences);
     }
 
     /**
@@ -55,13 +61,16 @@ public class CsTokenizer extends AntlrTokenizer {
         }
 
         private final boolean ignoreUsings;
+        private final boolean ignoreLiteralSequences;
         private boolean discardingUsings = false;
         private boolean discardingNL = false;
+        private boolean discardingLiterals = false;
         private boolean discardCurrent = false;
 
-        CsTokenFilter(final AntlrTokenManager tokenManager, boolean ignoreUsings) {
+        CsTokenFilter(final AntlrTokenManager tokenManager, boolean ignoreUsings, boolean ignoreLiteralSequences) {
             super(tokenManager);
             this.ignoreUsings = ignoreUsings;
+            this.ignoreLiteralSequences = ignoreLiteralSequences;
         }
 
         @Override
@@ -73,6 +82,7 @@ public class CsTokenizer extends AntlrTokenizer {
         protected void analyzeTokens(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
             discardCurrent = false;
             skipUsingDirectives(currentToken, remainingTokens);
+            skipLiteralSequences(currentToken, remainingTokens);
         }
 
         private void skipUsingDirectives(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
@@ -149,9 +159,44 @@ public class CsTokenizer extends AntlrTokenizer {
             discardingNL = currentToken.getKind() == CSharpLexer.NL;
         }
 
+        private void skipLiteralSequences(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
+            if (ignoreLiteralSequences) {
+                final int type = currentToken.getKind();
+                if (type == CSharpLexer.OPEN_BRACE && isSequenceOfLiterals(remainingTokens)) {
+                    discardingLiterals = true;
+                } else if (type == CSharpLexer.CLOSE_BRACE && discardingLiterals) {
+                    discardingLiterals = false;
+                    discardCurrent = true;
+                }
+            }
+        }
+
+        private boolean isSequenceOfLiterals(final Iterable<AntlrToken> remainingTokens) {
+            boolean seenLiteral = false;
+            for (final AntlrToken token : remainingTokens) {
+                switch (token.getKind()) {
+                case CSharpLexer.CHARACTER_LITERAL:
+                case CSharpLexer.HEX_INTEGER_LITERAL:
+                case CSharpLexer.INTEGER_LITERAL:
+                case CSharpLexer.REAL_LITERAL:
+                    seenLiteral = true;
+                    break; // can be skipped; continue to the next token
+                case CSharpLexer.COMMA:
+                    break; // can be skipped; continue to the next token
+                case CSharpLexer.CLOSE_BRACE:
+                    // end of the list; skip all contents
+                    return seenLiteral;
+                default:
+                    // some other token than the expected ones; this is not a sequence of literals
+                    return false;
+                }
+            }
+            return false;
+        }
+
         @Override
         protected boolean isLanguageSpecificDiscarding() {
-            return discardingUsings || discardingNL || discardCurrent;
+            return discardingUsings || discardingNL || discardingLiterals || discardCurrent;
         }
     }
 }
