@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
 
-import java.util.List;
+import java.math.BigInteger;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -24,7 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
 
 
@@ -34,28 +35,19 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
  * @author Clément Fournier
  * @author Jason Bennett
  */
-public class NpathBaseVisitor extends JavaParserVisitorAdapter {
+public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
 
     /** Instance. */
     public static final NpathBaseVisitor INSTANCE = new NpathBaseVisitor();
 
 
     /* Multiplies the complexity of the children of this node. */
-    private int multiplyChildrenComplexities(JavaNode node, Object data) {
-        int product = 1;
+    private BigInteger multiplyChildrenComplexities(JavaNode node, Void data) {
+        BigInteger product = BigInteger.ONE;
 
-        for (int i = 0; i < node.getNumChildren(); i++) {
-            JavaNode n = node.getChild(i);
-            int childComplexity = (int) n.jjtAccept(this, data);
-
-            int newProduct = product * childComplexity;
-            if (newProduct >= product) {
-                product = newProduct;
-            } else {
-                // Overflow happened
-                product = Integer.MAX_VALUE;
-                break;
-            }
+        for (JavaNode child : node.children()) {
+            BigInteger childComplexity = child.acceptVisitor(this, data);
+            product = product.multiply(childComplexity);
         }
 
         return product;
@@ -63,21 +55,12 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
 
 
     /* Sums the complexity of the children of the node. */
-    private int sumChildrenComplexities(JavaNode node, Object data) {
-        int sum = 0;
+    private BigInteger sumChildrenComplexities(JavaNode node, Void data) {
+        BigInteger sum = BigInteger.ZERO;
 
-        for (int i = 0; i < node.getNumChildren(); i++) {
-            JavaNode n = node.getChild(i);
-            int childComplexity = (int) n.jjtAccept(this, data);
-
-            int newSum = sum + childComplexity;
-            if (newSum >= sum) {
-                sum = newSum;
-            } else {
-                // Overflow happened
-                sum = Integer.MAX_VALUE;
-                break;
-            }
+        for (JavaNode child : node.children()) {
+            BigInteger childComplexity = child.acceptVisitor(this, data);
+            sum = sum.add(childComplexity);
         }
 
         return sum;
@@ -85,150 +68,137 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, Object data) {
+    public BigInteger visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, Void data) {
         return multiplyChildrenComplexities(node, data);
     }
 
 
     @Override
-    public Object visitJavaNode(JavaNode node, Object data) {
+    public BigInteger visitJavaNode(JavaNode node, Void data) {
         return multiplyChildrenComplexities(node, data);
     }
 
 
     @Override
-    public Object visit(ASTIfStatement node, Object data) {
+    public BigInteger visit(ASTIfStatement node, Void data) {
         // (npath of if + npath of else (or 1) + bool_comp of if) * npath of next
 
-        List<ASTStatement> statementChildren = node.findChildrenOfType(ASTStatement.class);
+        NodeStream<ASTStatement> statementChildren = node.children(ASTStatement.class);
 
         // add path for not taking if
-        int complexity = node.hasElse() ? 0 : 1;
+        BigInteger complexity = node.hasElse() ? BigInteger.ZERO : BigInteger.ONE;
 
         for (ASTStatement element : statementChildren) {
-            complexity += (int) element.jjtAccept(this, data);
+            complexity = complexity.add(element.acceptVisitor(this, data));
         }
 
         int boolCompIf = JavaMetrics.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-        return boolCompIf + complexity;
+        return complexity.add(BigInteger.valueOf(boolCompIf));
     }
 
 
     @Override
-    public Object visit(ASTWhileStatement node, Object data) {
+    public BigInteger visit(ASTWhileStatement node, Void data) {
         // (npath of while + bool_comp of while + 1) * npath of next
 
-        int boolCompWhile = JavaMetrics.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-
-        int nPathWhile = (int) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
-
-        return boolCompWhile + nPathWhile + 1;
+        int boolComp = JavaMetrics.booleanExpressionComplexity(node.getCondition());
+        BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
+        return nPathBody.add(BigInteger.valueOf(boolComp + 1));
     }
 
 
     @Override
-    public Object visit(ASTDoStatement node, Object data) {
+    public BigInteger visit(ASTDoStatement node, Void data) {
         // (npath of do + bool_comp of do + 1) * npath of next
 
-        int boolCompDo = JavaMetrics.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-
-        int nPathDo = (int) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
-
-        return boolCompDo + nPathDo + 1;
+        int boolComp = JavaMetrics.booleanExpressionComplexity(node.getCondition());
+        BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
+        return nPathBody.add(BigInteger.valueOf(boolComp + 1));
     }
 
 
     @Override
-    public Object visit(ASTForStatement node, Object data) {
+    public BigInteger visit(ASTForStatement node, Void data) {
         // (npath of for + bool_comp of for + 1) * npath of next
 
-        int boolCompFor = JavaMetrics.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
-
-        int nPathFor = (int) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
-
-        return boolCompFor + nPathFor + 1;
+        int boolComp = JavaMetrics.booleanExpressionComplexity(node.getCondition());
+        BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
+        return nPathBody.add(BigInteger.valueOf(boolComp + 1));
     }
 
 
     @Override
-    public Object visit(ASTReturnStatement node, Object data) {
+    public BigInteger visit(ASTReturnStatement node, Void data) {
         // return statements are valued at 1, or the value of the boolean expression
 
-        ASTExpression expr = node.getFirstChildOfType(ASTExpression.class);
+        ASTExpression expr = node.getExpr();
 
         if (expr == null) {
-            return 1;
+            return BigInteger.ONE;
         }
 
         int boolCompReturn = JavaMetrics.booleanExpressionComplexity(expr);
-        int conditionalExpressionComplexity = multiplyChildrenComplexities(expr, data);
+        BigInteger conditionalExpressionComplexity = multiplyChildrenComplexities(expr, data);
 
-        if (conditionalExpressionComplexity > 1) {
-            boolCompReturn += conditionalExpressionComplexity;
-        }
-
-        return boolCompReturn > 0 ? boolCompReturn : 1;
+        return conditionalExpressionComplexity.add(BigInteger.valueOf(boolCompReturn));
     }
 
 
     @Override
-    public Object visit(ASTSwitchExpression node, Object data) {
+    public BigInteger visit(ASTSwitchExpression node, Void data) {
         return handleSwitch(node, data);
     }
 
     @Override
-    public Object visit(ASTSwitchStatement node, Object data) {
+    public BigInteger visit(ASTSwitchStatement node, Void data) {
         return handleSwitch(node, data);
     }
 
-    public int handleSwitch(ASTSwitchLike node, Object data) {
+    public BigInteger handleSwitch(ASTSwitchLike node, Void data) {
         // bool_comp of switch + sum(npath(case_range))
 
         int boolCompSwitch = JavaMetrics.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
-        int npath = 0;
-        int caseRange = 0;
+        BigInteger npath = BigInteger.ZERO;
+        BigInteger caseRange = BigInteger.ZERO;
 
         for (ASTSwitchBranch n : node) {
 
             // Fall-through labels count as 1 for complexity
             if (n instanceof ASTSwitchFallthroughBranch) {
-                npath += caseRange;
-                caseRange = 1;
+                npath = npath.add(caseRange);
+                caseRange = BigInteger.ONE;
             } else if (n instanceof ASTSwitchArrowBranch) {
-                npath += caseRange;
-                int complexity = (int) n.jjtAccept(this, data);
-                caseRange = complexity;
+                npath = npath.add(caseRange);
+                caseRange = n.acceptVisitor(this, data);
             } else {
-                int complexity = (int) n.jjtAccept(this, data);
-                caseRange *= complexity;
+                caseRange = caseRange.multiply(n.acceptVisitor(this, data));
             }
         }
         // add in npath of last label
-        npath += caseRange;
-        return boolCompSwitch + npath;
+        return npath.add(caseRange).add(BigInteger.valueOf(boolCompSwitch));
     }
 
     @Override
-    public Object visit(ASTSwitchLabel node, Object data) {
+    public BigInteger visit(ASTSwitchLabel node, Void data) {
         if (node.isDefault()) {
-            return 1;
+            return BigInteger.ONE;
         }
-        return node.findChildrenOfType(ASTExpression.class).size();
+        return BigInteger.valueOf(node.children(ASTExpression.class).count());
     }
 
     @Override
-    public Object visit(ASTConditionalExpression node, Object data) {
+    public BigInteger visit(ASTConditionalExpression node, Void data) {
         // bool comp of guard clause + complexity of last two children (= total - 1)
 
         int boolCompTernary = JavaMetrics.booleanExpressionComplexity(node.getCondition());
 
-        return boolCompTernary + sumChildrenComplexities(node, data) - 1;
+        return sumChildrenComplexities(node, data).add(BigInteger.valueOf(boolCompTernary - 1));
     }
 
 
     @Override
-    public Object visit(ASTTryStatement node, Object data) {
+    public BigInteger visit(ASTTryStatement node, Void data) {
         /*
          * This scenario was not addressed by the original paper. Based on the
          * principles outlined in the paper, as well as the Checkstyle NPath

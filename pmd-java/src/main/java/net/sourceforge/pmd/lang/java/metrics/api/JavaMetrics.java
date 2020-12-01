@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.api;
 
 import static net.sourceforge.pmd.internal.util.PredicateUtil.always;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,12 +16,14 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -68,7 +71,7 @@ public final class JavaMetrics {
         Metric.of(JavaMetrics::computeCyclo, isJavaNode(),
                   "Cyclomatic Complexity", "Cyclo");
 
-    public static final Metric<ASTMethodOrConstructorDeclaration, Integer> NPATH =
+    public static final Metric<ASTMethodOrConstructorDeclaration, BigInteger> NPATH =
         Metric.of(JavaMetrics::computeNpath, n -> n.asStream().filterIs(ASTMethodOrConstructorDeclaration.class).first(),
                   "NPath Complexity", "NPath");
 
@@ -141,8 +144,8 @@ public final class JavaMetrics {
         return counter.getValue();
     }
 
-    private static int computeNpath(JavaNode node, MetricOptions ignored) {
-        return (Integer) node.acceptVisitor(NpathBaseVisitor.INSTANCE, null);
+    private static BigInteger computeNpath(JavaNode node, MetricOptions ignored) {
+        return (BigInteger) node.acceptVisitor(NpathBaseVisitor.INSTANCE, null);
     }
 
     private static int computeWmc(ASTAnyTypeDeclaration node, MetricOptions options) {
@@ -228,7 +231,7 @@ public final class JavaMetrics {
      *
      * @return The number of paths through the expression
      */
-    public static int booleanExpressionComplexity(Node expr) {
+    public static int booleanExpressionComplexity(@Nullable ASTExpression expr) {
         if (expr == null) {
             return 0;
         }

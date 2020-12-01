@@ -20,8 +20,13 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 
 /**
- * Abstract test rule for a metric. Tests of metrics use the standard framework for rule testing, using one dummy rule
- * per metric. Default parameters can be overridden by overriding the protected methods of this class.
+ * Abstract test rule for a metric. Tests of metrics use the standard
+ * framework for rule testing, using one dummy rule per metric. Default
+ * parameters can be overridden by overriding the protected methods of
+ * this class.
+ *
+ * @param <N> Result type of the metric. The nested subclasses provide
+ *            defaults for common result types
  *
  * @author Clément Fournier
  */

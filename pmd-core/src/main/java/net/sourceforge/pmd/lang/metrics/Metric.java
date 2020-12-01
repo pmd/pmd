@@ -57,7 +57,7 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
 
     /**
      * Casts the node to the more specific type {@code <N>} if this metric
-     * can be computed on it. Returns null if the node is node supported.
+     * can be computed on it. Returns null if the node is not supported.
      *
      * @param node An arbitrary node
      *

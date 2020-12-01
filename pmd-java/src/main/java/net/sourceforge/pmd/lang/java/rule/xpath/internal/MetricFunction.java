@@ -15,6 +15,7 @@ import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.om.Sequence;
 import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.BigDecimalValue;
+import net.sf.saxon.value.EmptySequence;
 import net.sf.saxon.value.SequenceType;
 
 
@@ -45,7 +46,7 @@ public final class MetricFunction extends BaseJavaXPathFunction {
 
     @Override
     public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-        return SequenceType.SINGLE_DECIMAL;
+        return SequenceType.OPTIONAL_DECIMAL;
     }
 
 
@@ -64,7 +65,10 @@ public final class MetricFunction extends BaseJavaXPathFunction {
                 Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
                 String metricKey = arguments[0].head().getStringValue();
 
-                return new BigDecimalValue(getMetric(contextNode, metricKey));
+                double metric = getMetric(contextNode, metricKey);
+                return Double.isFinite(metric)
+                       ? new BigDecimalValue(metric)
+                       : EmptySequence.getInstance();
             }
         };
     }

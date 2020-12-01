@@ -66,7 +66,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
 
     private Void handleSwitch(ASTSwitchLike node, MutableInt data) {
         if (considerBooleanPaths) {
-            data.add(JavaMetrics.booleanExpressionComplexity(node.getChild(0)));
+            data.add(JavaMetrics.booleanExpressionComplexity(node.getTestedExpression()));
         }
 
         for (ASTSwitchBranch branch : node) {

@@ -4,15 +4,27 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
+import java.math.BigInteger;
+
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
 import net.sourceforge.pmd.test.AbstractMetricTestRule;
 
 /**
  * @author Clément Fournier
  */
-public class NPathTestRule extends JavaIntMetricTestRule {
+public class NPathTestRule extends AbstractMetricTestRule<BigInteger> {
 
     public NPathTestRule() {
         super(JavaMetrics.NPATH);
+    }
+
+    @Override
+    protected BigInteger parseReportLevel(String value) {
+        return new BigInteger(value);
+    }
+
+    @Override
+    protected BigInteger defaultReportLevel() {
+        return BigInteger.ZERO;
     }
 }
