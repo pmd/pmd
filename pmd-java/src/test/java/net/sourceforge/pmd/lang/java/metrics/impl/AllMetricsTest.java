@@ -22,7 +22,7 @@ public class AllMetricsTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
-//        addRule(RULESET, "CycloTest");
+        addRule(RULESET, "CycloTest");
         addRule(RULESET, "NcssTest");
         addRule(RULESET, "WmcTest");
         addRule(RULESET, "LocTest");

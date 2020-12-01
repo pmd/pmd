@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
 
 
@@ -163,7 +164,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
 
             // Fall-through labels count as 1 for complexity
             if (n instanceof ASTSwitchFallthroughBranch) {
-                caseRange += numAlternatives(n);
+                caseRange += JavaAstUtils.numAlternatives(n);
                 NodeStream<ASTStatement> statements = ((ASTSwitchFallthroughBranch) n).getStatements();
                 if (statements.nonEmpty()) {
                     BigInteger branchNpath = multiplyComplexities(statements);
@@ -171,17 +172,13 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
                     caseRange = 0;
                 }
             } else if (n instanceof ASTSwitchArrowBranch) {
-                int numAlts = numAlternatives(n);
+                int numAlts = JavaAstUtils.numAlternatives(n);
                 BigInteger branchNpath = ((ASTSwitchArrowBranch) n).getRightHandSide().acceptVisitor(this, data);
                 npath = npath.add(branchNpath.multiply(BigInteger.valueOf(numAlts)));
             }
         }
         // add in npath of last label
         return npath.add(BigInteger.valueOf(boolCompSwitch));
-    }
-
-    private int numAlternatives(ASTSwitchBranch n) {
-        return n.isDefault() ? 1 : n.getLabel().getExprList().count();
     }
 
     @Override

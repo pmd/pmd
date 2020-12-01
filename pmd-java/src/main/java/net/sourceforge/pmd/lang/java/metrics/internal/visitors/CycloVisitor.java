@@ -16,12 +16,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.CycloOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
@@ -75,13 +77,11 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
             }
 
             if (considerBooleanPaths) {
-                data.add(branch.getLabel().getExprList().count());
+                data.add(JavaAstUtils.numAlternatives(branch));
+            } else if (branch instanceof ASTSwitchFallthroughBranch
+                && ((ASTSwitchFallthroughBranch) branch).getStatements().nonEmpty()) {
+                data.increment();
             }
-//            else if (branch instanceof ASTSwitchFallthroughBranch) {
-//                if (considerBooleanPaths && ((ASTSwitchFallthroughBranch) branch).getStatements().isEmpty())
-                // an empty label is only counted if we count boolean paths
-//                data.increment();
-//            }
         }
 
         return visitJavaNode(node, data);

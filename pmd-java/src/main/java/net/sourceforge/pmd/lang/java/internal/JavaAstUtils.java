@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.internal;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -82,5 +83,9 @@ public final class JavaAstUtils {
                 || op == BinaryOp.CONDITIONAL_OR;
         }
         return false;
+    }
+
+    public static int numAlternatives(ASTSwitchBranch n) {
+        return n.isDefault() ? 1 : n.getLabel().getExprList().count();
     }
 }

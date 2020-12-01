@@ -340,7 +340,7 @@ public class LambdaTest {
 
     <test-code>
         <description>Complexity of lambdas doesn't affect the complexity of the method, refs #837</description>
-        <expected-problems>4</expected-problems>
+        <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'LambdaTest#notSoComplex(int)' has value 4.</message>
         </expected-messages>
