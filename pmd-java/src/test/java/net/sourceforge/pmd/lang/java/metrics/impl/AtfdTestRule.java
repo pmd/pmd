@@ -20,12 +20,6 @@ public class AtfdTestRule extends JavaIntMetricTestRule {
     }
 
     @Override
-    protected boolean reportOn(Node node) {
-        return node instanceof ASTMethodOrConstructorDeclaration
-            || node instanceof ASTAnyTypeDeclaration;
-    }
-
-    @Override
     protected String violationMessage(Node node, Integer result) {
         return super.violationMessage(node, result);
     }

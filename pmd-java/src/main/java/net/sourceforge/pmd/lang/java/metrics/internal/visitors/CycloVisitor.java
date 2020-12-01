@@ -7,14 +7,13 @@ package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
@@ -76,12 +75,13 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
             }
 
             if (considerBooleanPaths) {
-                data.add(branch.findChildrenOfType(ASTExpression.class).size());
-            } else if (node.getNumChildren() > 1 + branch.getIndexInParent()
-                && node.getChild(branch.getIndexInParent() + 1) instanceof ASTBlockStatement) {
-                // an empty label is only counted if we count boolean paths
-                data.increment();
+                data.add(branch.getLabel().getExprList().count());
             }
+//            else if (branch instanceof ASTSwitchFallthroughBranch) {
+//                if (considerBooleanPaths && ((ASTSwitchFallthroughBranch) branch).getStatements().isEmpty())
+                // an empty label is only counted if we count boolean paths
+//                data.increment();
+//            }
         }
 
         return visitJavaNode(node, data);
@@ -134,6 +134,12 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTForeachStatement node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
+    }
+
+    @Override
+    public Void visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, MutableInt data) {
+        data.increment();
+        return super.visitMethodOrCtor(node, data);
     }
 
     @Override

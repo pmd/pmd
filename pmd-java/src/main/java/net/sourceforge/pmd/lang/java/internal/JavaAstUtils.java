@@ -11,7 +11,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
  *
@@ -87,4 +90,12 @@ public final class JavaAstUtils {
     }
 
 
+    public static boolean isConditional(JavaNode ifx) {
+        if (ifx instanceof ASTInfixExpression) {
+            BinaryOp op = ((ASTInfixExpression) ifx).getOperator();
+            return op == BinaryOp.CONDITIONAL_AND
+                || op == BinaryOp.CONDITIONAL_OR;
+        }
+        return false;
+    }
 }

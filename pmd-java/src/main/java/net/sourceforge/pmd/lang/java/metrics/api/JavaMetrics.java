@@ -21,8 +21,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -67,12 +65,12 @@ public final class JavaMetrics {
         Metric.of(JavaMetrics::computeTcc, asClass(it -> !it.isInterface()),
                   "Tight Class Cohesion", "TCC");
 
-    public static final Metric<JavaNode, Integer> CYCLO =
-        Metric.of(JavaMetrics::computeCyclo, isJavaNode(),
+    public static final Metric<ASTMethodOrConstructorDeclaration, Integer> CYCLO =
+        Metric.of(JavaMetrics::computeCyclo, asMethodOrCtor(),
                   "Cyclomatic Complexity", "Cyclo");
 
     public static final Metric<ASTMethodOrConstructorDeclaration, BigInteger> NPATH =
-        Metric.of(JavaMetrics::computeNpath, n -> n.asStream().filterIs(ASTMethodOrConstructorDeclaration.class).first(),
+        Metric.of(JavaMetrics::computeNpath, asMethodOrCtor(),
                   "NPath Complexity", "NPath");
 
     public static final Metric<ASTAnyTypeDeclaration, Integer> WEIGHED_METHOD_COUNT =
@@ -100,8 +98,13 @@ public final class JavaMetrics {
 
 
     private static Function<Node, JavaNode> isJavaNode() {
-        return filterMapNode(JavaNode.class, always());
+        return n -> n instanceof JavaNode ? (JavaNode) n : null;
     }
+
+    private static Function<Node, @Nullable ASTMethodOrConstructorDeclaration> asMethodOrCtor() {
+        return n -> n instanceof ASTMethodOrConstructorDeclaration ? (ASTMethodOrConstructorDeclaration) n : null;
+    }
+
 
     private static <T extends Node> Function<Node, T> filterMapNode(Class<? extends T> klass, Predicate<? super T> pred) {
         return n -> n.asStream().filterIs(klass).filter(pred).first();
@@ -139,13 +142,13 @@ public final class JavaMetrics {
 
 
     private static int computeCyclo(JavaNode node, MetricOptions options) {
-        MutableInt counter = new MutableInt(1);
+        MutableInt counter = new MutableInt(0);
         node.acceptVisitor(new CycloVisitor(options, node), counter);
         return counter.getValue();
     }
 
     private static BigInteger computeNpath(JavaNode node, MetricOptions ignored) {
-        return (BigInteger) node.acceptVisitor(NpathBaseVisitor.INSTANCE, null);
+        return node.acceptVisitor(NpathBaseVisitor.INSTANCE, null);
     }
 
     private static int computeWmc(ASTAnyTypeDeclaration node, MetricOptions options) {
@@ -236,24 +239,13 @@ public final class JavaMetrics {
             return 0;
         }
 
-        List<ASTConditionalAndExpression> andNodes = expr.findDescendantsOfType(ASTConditionalAndExpression.class);
-        List<ASTConditionalOrExpression> orNodes = expr.findDescendantsOfType(ASTConditionalOrExpression.class);
-
-        int complexity = 0;
-
-        if (expr instanceof ASTConditionalOrExpression || expr instanceof ASTConditionalAndExpression) {
-            complexity++;
-        }
-
-        for (ASTConditionalOrExpression element : orNodes) {
-            complexity += element.getNumChildren() - 1;
-        }
-
-        for (ASTConditionalAndExpression element : andNodes) {
-            complexity += element.getNumChildren() - 1;
-        }
-
-        return complexity;
+        return expr.descendantsOrSelf()
+                   .reduce(0, (acc, ifx) -> {
+                       if (JavaAstUtils.isConditional(ifx)) {
+                           return acc + 1;
+                       }
+                       return acc;
+                   });
     }
 
 
