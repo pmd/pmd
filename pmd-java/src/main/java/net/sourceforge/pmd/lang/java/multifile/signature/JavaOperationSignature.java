@@ -6,12 +6,12 @@ package net.sourceforge.pmd.lang.java.multifile.signature;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 
 /**
@@ -85,8 +85,6 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
     public enum Role {
         GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC;
 
-        private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("(?:m_|_)?(\\w+)");
-
 
         public static Role get(ASTMethodOrConstructorDeclaration node) {
             return node instanceof ASTConstructorDeclaration ? CONSTRUCTOR : get((ASTMethodDeclaration) node);
@@ -96,58 +94,11 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
         private static Role get(ASTMethodDeclaration node) {
             if (node.isStatic()) {
                 return STATIC;
-            } else if (isGetterOrSetter(node)) {
+            } else if (JavaAstUtils.isGetterOrSetter(node)) {
                 return GETTER_OR_SETTER;
             } else {
                 return METHOD;
             }
-        }
-
-
-        private static boolean isGetterOrSetter(ASTMethodDeclaration node) {
-            return isGetter(node) || isSetter(node);
-        }
-
-        private static boolean containerHasFieldNamed(ASTMethodDeclaration m, String nameIgnoringCase) {
-            return m.getEnclosingType()
-                    .getSymbol()
-                    .getDeclaredFields()
-                    .stream()
-                    .map(JElementSymbol::getSimpleName)
-                    .anyMatch(nameIgnoringCase::equalsIgnoreCase);
-        }
-
-
-        /** Attempts to determine if the method is a getter. */
-        private static boolean isGetter(ASTMethodDeclaration node) {
-
-            if (node.getArity() != 0 || node.isVoid()) {
-                return false;
-            }
-
-            if (node.getName().startsWith("get")) {
-                return containerHasFieldNamed(node, node.getName().substring(3));
-            } else if (node.getName().startsWith("is")) {
-                return containerHasFieldNamed(node, node.getName().substring(2));
-            }
-
-
-            return containerHasFieldNamed(node, node.getName());
-        }
-
-
-        /** Attempts to determine if the method is a setter. */
-        private static boolean isSetter(ASTMethodDeclaration node) {
-
-            if (node.getArity() != 1 || !node.isVoid()) {
-                return false;
-            }
-
-            if (node.getName().startsWith("set")) {
-                return containerHasFieldNamed(node, node.getName().substring(3));
-            }
-
-            return containerHasFieldNamed(node, node.getName());
         }
     }
 }

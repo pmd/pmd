@@ -35,7 +35,7 @@ import net.sourceforge.pmd.lang.java.metrics.internal.visitors.CycloVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.visitors.NcssVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.visitors.NpathBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.visitors.TccAttributeAccessCollector;
-import net.sourceforge.pmd.lang.java.multifile.signature.JavaAstUtils;
+import net.sourceforge.pmd.lang.java.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
