@@ -22,18 +22,17 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.CycloVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.NcssVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.NpathBaseVisitor;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -123,7 +122,7 @@ public final class JavaMetrics {
     private static int computeNoam(ASTAnyTypeDeclaration node, MetricOptions ignored) {
         return node.getDeclarations()
                    .filterIs(ASTMethodDeclaration.class)
-                   .filter(JavaAstUtils::isGetterOrSetter)
+                   .filter(JavaRuleUtil::isGetterOrSetter)
                    .count();
     }
 
@@ -290,7 +289,7 @@ public final class JavaMetrics {
                 .filterIs(ASTMethodDeclaration.class)
                 .filter(it -> !it.isPrivate());
 
-        int notSetter = methods.filter(it -> !JavaAstUtils.isGetterOrSetter(it)).count();
+        int notSetter = methods.filter(it -> !JavaRuleUtil.isGetterOrSetter(it)).count();
         int total = methods.count();
         if (total == 0) {
             return 0;

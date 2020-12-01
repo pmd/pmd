@@ -11,8 +11,7 @@ import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.internal.JavaAstUtils;
-import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 /**
  * Signature for an operation.
@@ -94,7 +93,7 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
         private static Role get(ASTMethodDeclaration node) {
             if (node.isStatic()) {
                 return STATIC;
-            } else if (JavaAstUtils.isGetterOrSetter(node)) {
+            } else if (JavaRuleUtil.isGetterOrSetter(node)) {
                 return GETTER_OR_SETTER;
             } else {
                 return METHOD;

@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public final class JavaRuleUtil {
@@ -136,5 +137,55 @@ public final class JavaRuleUtil {
 
     private static boolean isNonPrivate(ASTBodyDeclaration decl) {
         return ((AccessNode) decl).getVisibility() != Visibility.V_PRIVATE;
+    }
+
+    public static boolean isGetterOrSetter(ASTMethodDeclaration node) {
+        return isGetter(node) || isSetter(node);
+    }
+
+    /** Attempts to determine if the method is a getter. */
+    private static boolean isGetter(ASTMethodDeclaration node) {
+
+        if (node.getArity() != 0 || node.isVoid()) {
+            return false;
+        }
+
+        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+        if (node.getName().startsWith("get")) {
+            return hasField(enclosing, node.getName().substring(3));
+        } else if (node.getName().startsWith("is")) {
+            return hasField(enclosing, node.getName().substring(2));
+        }
+
+        return hasField(enclosing, node.getName());
+    }
+
+    /** Attempts to determine if the method is a setter. */
+    private static boolean isSetter(ASTMethodDeclaration node) {
+
+        if (node.getArity() != 1 || !node.isVoid()) {
+            return false;
+        }
+
+        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+
+        if (node.getName().startsWith("set")) {
+            return hasField(enclosing, node.getName().substring(3));
+        }
+
+        return hasField(enclosing, node.getName());
+    }
+
+    private static boolean hasField(ASTAnyTypeDeclaration node, String name) {
+        for (JFieldSymbol f : node.getSymbol().getDeclaredFields()) {
+            String fname = f.getSimpleName();
+            if (fname.startsWith("m_") || fname.startsWith("_")) {
+                fname = fname.substring(fname.indexOf('_') + 1);
+            }
+            if (fname.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
