@@ -9,8 +9,8 @@ import static net.sourceforge.pmd.internal.util.PredicateUtil.always;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -21,6 +21,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -33,7 +34,9 @@ import net.sourceforge.pmd.lang.java.metrics.internal.visitors.ClassFanOutVisito
 import net.sourceforge.pmd.lang.java.metrics.internal.visitors.CycloVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.visitors.NcssVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.visitors.NpathBaseVisitor;
-import net.sourceforge.pmd.lang.java.metrics.internal.visitors.TccAttributeAccessCollector;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
@@ -158,12 +161,40 @@ public final class JavaMetrics {
 
 
     private static double computeTcc(ASTAnyTypeDeclaration node, MetricOptions ignored) {
-        Map<String, Set<String>> usagesByMethod = new TccAttributeAccessCollector(node).start();
+        List<Set<String>> usagesByMethod = attributeAccessesByMethod(node);
 
         int numPairs = numMethodsRelatedByAttributeAccess(usagesByMethod);
         int maxPairs = maxMethodPairs(usagesByMethod.size());
 
+        if (maxPairs == 0) {
+            return 0;
+        }
+
         return numPairs / (double) maxPairs;
+    }
+
+
+    /**
+     * Collects the attribute accesses by method into a map, for TCC.
+     */
+    private static List<Set<String>> attributeAccessesByMethod(ASTAnyTypeDeclaration type) {
+        final List<Set<String>> map = new ArrayList<>();
+        final JClassSymbol typeSym = type.getSymbol();
+        for (ASTMethodDeclaration decl : type.getDeclarations(ASTMethodDeclaration.class)) {
+            Set<String> attrs = new HashSet<>();
+            decl.descendants().crossFindBoundaries()
+                .filterIs(ASTNamedReferenceExpr.class)
+                .forEach(it -> {
+                    JVariableSymbol sym = it.getReferencedSym();
+                    if (sym instanceof JFieldSymbol && typeSym.equals(((JFieldSymbol) sym).getEnclosingClass())) {
+                        attrs.add(sym.getSimpleName());
+                    }
+                });
+
+            map.add(attrs);
+
+        }
+        return map;
     }
 
 
@@ -174,19 +205,15 @@ public final class JavaMetrics {
      *
      * @return The number of pairs
      */
-    private static int numMethodsRelatedByAttributeAccess(Map<String, Set<String>> usagesByMethod) {
-        List<String> methods = new ArrayList<>(usagesByMethod.keySet());
-        int methodCount = methods.size();
+    private static int numMethodsRelatedByAttributeAccess(List<Set<String>> usagesByMethod) {
+        int methodCount = usagesByMethod.size();
         int pairs = 0;
 
         if (methodCount > 1) {
             for (int i = 0; i < methodCount - 1; i++) {
                 for (int j = i + 1; j < methodCount; j++) {
-                    String firstMethodName = methods.get(i);
-                    String secondMethodName = methods.get(j);
-
-                    if (!Collections.disjoint(usagesByMethod.get(firstMethodName),
-                                              usagesByMethod.get(secondMethodName))) {
+                    if (!Collections.disjoint(usagesByMethod.get(i),
+                                              usagesByMethod.get(j))) {
                         pairs++;
                     }
                 }

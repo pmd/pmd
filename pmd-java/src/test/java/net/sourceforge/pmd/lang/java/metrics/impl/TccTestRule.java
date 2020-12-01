@@ -5,13 +5,12 @@
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
-import net.sourceforge.pmd.test.AbstractMetricTestRule;
 
 /**
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class TccTestRule extends AbstractMetricTestRule.OfDouble {
+public class TccTestRule extends JavaDoubleMetricTestRule {
 
     public TccTestRule() {
         super(JavaMetrics.TIGHT_CLASS_COHESION);
