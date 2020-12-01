@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.CycloOption;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.CycloOption;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 
 /**

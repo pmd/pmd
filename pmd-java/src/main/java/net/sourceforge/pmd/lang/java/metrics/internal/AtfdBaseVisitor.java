@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
+package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 

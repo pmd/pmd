@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.BaseContextNodeTestFun;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.GetCommentOnFunction;

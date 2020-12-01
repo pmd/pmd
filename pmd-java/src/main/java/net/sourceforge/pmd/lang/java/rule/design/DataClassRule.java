@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.NUMBER_OF_ACCESSORS;
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.NUMBER_OF_PUBLIC_FIELDS;
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.WEIGHED_METHOD_COUNT;
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.WEIGHT_OF_CLASS;
+import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.NUMBER_OF_ACCESSORS;
+import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.NUMBER_OF_PUBLIC_FIELDS;
+import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.WEIGHED_METHOD_COUNT;
+import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.WEIGHT_OF_CLASS;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;

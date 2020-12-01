@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
+package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.NcssOption;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.NcssOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 

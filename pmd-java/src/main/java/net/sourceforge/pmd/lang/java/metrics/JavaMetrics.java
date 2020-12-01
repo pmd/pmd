@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.api;
+package net.sourceforge.pmd.lang.java.metrics;
 
 import static net.sourceforge.pmd.internal.util.PredicateUtil.always;
 
@@ -29,11 +29,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstUtils;
-import net.sourceforge.pmd.lang.java.metrics.internal.visitors.AtfdBaseVisitor;
-import net.sourceforge.pmd.lang.java.metrics.internal.visitors.ClassFanOutVisitor;
-import net.sourceforge.pmd.lang.java.metrics.internal.visitors.CycloVisitor;
-import net.sourceforge.pmd.lang.java.metrics.internal.visitors.NcssVisitor;
-import net.sourceforge.pmd.lang.java.metrics.internal.visitors.NpathBaseVisitor;
+import net.sourceforge.pmd.lang.java.metrics.internal.AtfdBaseVisitor;
+import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutVisitor;
+import net.sourceforge.pmd.lang.java.metrics.internal.CycloVisitor;
+import net.sourceforge.pmd.lang.java.metrics.internal.NcssVisitor;
+import net.sourceforge.pmd.lang.java.metrics.internal.NpathBaseVisitor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -43,7 +43,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 /**
- *
+ * A collection of java metrics.
  */
 @SuppressWarnings("PMD.UnusedFormalParameter") // #2838
 public final class JavaMetrics {
@@ -253,28 +253,6 @@ public final class JavaMetrics {
         public String valueName() {
             return vName;
         }
-    }
-
-    /**
-     * Evaluates the number of paths through a boolean expression. This is the total number of {@code &&} and {@code ||}
-     * operators appearing in the expression. This is used in the calculation of cyclomatic and n-path complexity.
-     *
-     * @param expr Expression to analyse
-     *
-     * @return The number of paths through the expression
-     */
-    public static int booleanExpressionComplexity(@Nullable ASTExpression expr) {
-        if (expr == null) {
-            return 0;
-        }
-
-        return expr.descendantsOrSelf()
-                   .reduce(0, (acc, ifx) -> {
-                       if (JavaAstUtils.isConditional(ifx)) {
-                           return acc + 1;
-                       }
-                       return acc;
-                   });
     }
 
 

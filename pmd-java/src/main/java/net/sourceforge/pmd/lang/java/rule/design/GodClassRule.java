@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.ACCESS_TO_FOREIGN_DATA;
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.TIGHT_CLASS_COHESION;
-import static net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.WEIGHED_METHOD_COUNT;
+import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.ACCESS_TO_FOREIGN_DATA;
+import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.TIGHT_CLASS_COHESION;
+import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.WEIGHED_METHOD_COUNT;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;

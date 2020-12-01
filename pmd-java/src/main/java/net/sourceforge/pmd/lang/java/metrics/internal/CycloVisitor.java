@@ -1,15 +1,17 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
+package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
@@ -24,8 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.internal.JavaAstUtils;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.CycloOption;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.CycloOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 
@@ -67,7 +68,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
 
     private Void handleSwitch(ASTSwitchLike node, MutableInt data) {
         if (considerBooleanPaths) {
-            data.add(JavaMetrics.booleanExpressionComplexity(node.getTestedExpression()));
+            data.add(booleanExpressionComplexity(node.getTestedExpression()));
         }
 
         for (ASTSwitchBranch branch : node) {
@@ -92,7 +93,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTConditionalExpression node, MutableInt data) {
         data.increment();
         if (considerBooleanPaths) {
-            data.add(JavaMetrics.booleanExpressionComplexity(node.getCondition()));
+            data.add(booleanExpressionComplexity(node.getCondition()));
         }
         return super.visit(node, data);
     }
@@ -102,7 +103,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTWhileStatement node, MutableInt data) {
         data.increment();
         if (considerBooleanPaths) {
-            data.add(JavaMetrics.booleanExpressionComplexity(node.getCondition()));
+            data.add(booleanExpressionComplexity(node.getCondition()));
         }
         return super.visit(node, data);
     }
@@ -112,7 +113,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTIfStatement node, MutableInt data) {
         data.increment();
         if (considerBooleanPaths) {
-            data.add(JavaMetrics.booleanExpressionComplexity(node.getCondition()));
+            data.add(booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -124,7 +125,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
         data.increment();
 
         if (considerBooleanPaths) {
-            data.add(JavaMetrics.booleanExpressionComplexity(node.getCondition()));
+            data.add(booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -146,7 +147,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTDoStatement node, MutableInt data) {
         data.increment();
         if (considerBooleanPaths) {
-            data.add(JavaMetrics.booleanExpressionComplexity(node.getCondition()));
+            data.add(booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -173,11 +174,32 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
             data.add(2); // equivalent to if (condition) { throw .. }
 
             if (considerBooleanPaths) {
-                data.add(JavaMetrics.booleanExpressionComplexity(node.getCondition()));
+                data.add(booleanExpressionComplexity(node.getCondition()));
             }
         }
 
         return super.visit(node, data);
     }
 
+    /**
+     * Evaluates the number of paths through a boolean expression. This is the total number of {@code &&} and {@code ||}
+     * operators appearing in the expression. This is used in the calculation of cyclomatic and n-path complexity.
+     *
+     * @param expr Expression to analyse
+     *
+     * @return The number of paths through the expression
+     */
+    public static int booleanExpressionComplexity(@Nullable ASTExpression expr) {
+        if (expr == null) {
+            return 0;
+        }
+
+        return expr.descendantsOrSelf()
+                   .reduce(0, (acc, ifx) -> {
+                       if (JavaAstUtils.isConditional(ifx)) {
+                           return acc + 1;
+                       }
+                       return acc;
+                   });
+    }
 }

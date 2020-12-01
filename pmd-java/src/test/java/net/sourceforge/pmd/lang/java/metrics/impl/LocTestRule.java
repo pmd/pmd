@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 
 /**
  * @author Clément Fournier

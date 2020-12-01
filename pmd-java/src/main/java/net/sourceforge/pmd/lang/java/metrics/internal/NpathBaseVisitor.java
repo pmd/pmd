@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
+package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import java.math.BigInteger;
 
@@ -27,7 +27,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.internal.JavaAstUtils;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics;
 
 
 /**
@@ -90,7 +89,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
             complexity = complexity.add(element.acceptVisitor(this, data));
         }
 
-        int boolCompIf = JavaMetrics.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompIf = CycloVisitor.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
         return complexity.add(BigInteger.valueOf(boolCompIf));
     }
 
@@ -99,7 +98,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
     public BigInteger visit(ASTWhileStatement node, Void data) {
         // (npath of while + bool_comp of while + 1) * npath of next
 
-        int boolComp = JavaMetrics.booleanExpressionComplexity(node.getCondition());
+        int boolComp = CycloVisitor.booleanExpressionComplexity(node.getCondition());
         BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
         return nPathBody.add(BigInteger.valueOf(boolComp + 1));
     }
@@ -109,7 +108,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
     public BigInteger visit(ASTDoStatement node, Void data) {
         // (npath of do + bool_comp of do + 1) * npath of next
 
-        int boolComp = JavaMetrics.booleanExpressionComplexity(node.getCondition());
+        int boolComp = CycloVisitor.booleanExpressionComplexity(node.getCondition());
         BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
         return nPathBody.add(BigInteger.valueOf(boolComp + 1));
     }
@@ -119,7 +118,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
     public BigInteger visit(ASTForStatement node, Void data) {
         // (npath of for + bool_comp of for + 1) * npath of next
 
-        int boolComp = JavaMetrics.booleanExpressionComplexity(node.getCondition());
+        int boolComp = CycloVisitor.booleanExpressionComplexity(node.getCondition());
         BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
         return nPathBody.add(BigInteger.valueOf(boolComp + 1));
     }
@@ -135,7 +134,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
             return BigInteger.ONE;
         }
 
-        int boolCompReturn = JavaMetrics.booleanExpressionComplexity(expr);
+        int boolCompReturn = CycloVisitor.booleanExpressionComplexity(expr);
         BigInteger conditionalExpressionComplexity = multiplyChildrenComplexities(expr);
 
         return conditionalExpressionComplexity.add(BigInteger.valueOf(boolCompReturn));
@@ -155,7 +154,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
     public BigInteger handleSwitch(ASTSwitchLike node, Void data) {
         // bool_comp of switch + sum(npath(case_range))
 
-        int boolCompSwitch = JavaMetrics.booleanExpressionComplexity(node.getTestedExpression());
+        int boolCompSwitch = CycloVisitor.booleanExpressionComplexity(node.getTestedExpression());
 
         BigInteger npath = BigInteger.ZERO;
         int caseRange = 0;
@@ -193,7 +192,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
     public BigInteger visit(ASTConditionalExpression node, Void data) {
         // bool comp of guard clause + complexity of last two children (= total - 1)
 
-        int boolCompTernary = JavaMetrics.booleanExpressionComplexity(node.getCondition());
+        int boolCompTernary = CycloVisitor.booleanExpressionComplexity(node.getCondition());
 
         return sumChildrenComplexities(node, data).add(BigInteger.valueOf(boolCompTernary - 1));
     }

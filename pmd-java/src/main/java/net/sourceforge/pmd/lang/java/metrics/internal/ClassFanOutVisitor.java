@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
+package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import java.util.Set;
 
@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaMetrics.ClassFanOutOption;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.ClassFanOutOption;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
