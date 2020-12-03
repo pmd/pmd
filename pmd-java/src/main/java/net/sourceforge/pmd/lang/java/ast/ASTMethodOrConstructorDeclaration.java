@@ -26,12 +26,10 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  * </pre>
  *
  * @author Clément Fournier
- * @see MethodLikeNode
  * @since 5.8.1
  */
 public interface ASTMethodOrConstructorDeclaration
-    extends MethodLikeNode,
-            AccessNode,
+    extends AccessNode,
             SignedNode<ASTMethodOrConstructorDeclaration>,
             ASTBodyDeclaration,
             TypeParamOwnerNode,
