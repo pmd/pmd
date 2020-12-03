@@ -4,14 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.SignedNode;
-
 import apex.jorje.semantic.ast.member.Method;
 
-public final class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode,
-                                                                         SignedNode<ASTMethod>, Node {
+public final class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode {
 
     ASTMethod(Method method) {
         super(method);
@@ -57,11 +52,6 @@ public final class ASTMethod extends AbstractApexNode<Method> implements ApexQua
         return ApexQualifiedName.ofMethod(this);
     }
 
-
-    @Override
-    public ApexOperationSignature getSignature() {
-        return ApexOperationSignature.of(this);
-    }
 
     /**
      * Returns true if this is a synthetic class initializer, inserted

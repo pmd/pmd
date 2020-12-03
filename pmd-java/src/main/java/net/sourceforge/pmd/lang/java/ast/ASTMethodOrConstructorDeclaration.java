@@ -7,9 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
-import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -30,7 +28,6 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  */
 public interface ASTMethodOrConstructorDeclaration
     extends AccessNode,
-            SignedNode<ASTMethodOrConstructorDeclaration>,
             ASTBodyDeclaration,
             TypeParamOwnerNode,
             GenericNode<JavaNode>,
@@ -55,11 +52,6 @@ public interface ASTMethodOrConstructorDeclaration
      * a constructor declaration.
      */
     String getName();
-
-
-    @Override
-    JavaOperationSignature getSignature();
-
 
 
     /**

@@ -24,8 +24,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavadocCommentOwner;
-import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
@@ -162,7 +162,7 @@ public class CommentRequiredRule extends AbstractJavaRule {
     public Object visit(ASTMethodDeclaration decl, Object data) {
         if (isAnnotatedOverride(decl)) {
             checkCommentMeetsRequirement(data, decl, OVERRIDE_CMT_DESCRIPTOR);
-        } else if (decl.getSignature().role == JavaOperationSignature.Role.GETTER_OR_SETTER) {
+        } else if (JavaRuleUtil.isGetterOrSetter(decl)) {
             checkCommentMeetsRequirement(data, decl, ACCESSOR_CMT_DESCRIPTOR);
         } else {
             checkMethodOrConstructorComment(decl, data);
