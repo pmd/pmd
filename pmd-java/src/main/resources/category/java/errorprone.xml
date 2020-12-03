@@ -1088,12 +1088,29 @@ public class Bar {
           language="java"
           since="3.2"
           message="Use equals() to compare object references."
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.CompareObjectsWithEqualsRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#compareobjectswithequals">
         <description>
 Use equals() to compare object references; avoid comparing them with ==.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+
+//InfixExpression
+    [@Operator = ("==", "!=")]
+    [count(*
+        [not(self::NullLiteral)]
+        [pmd-java:typeIs('java.lang.Object')]
+        [not(pmd-java:typeIs('java.lang.Enum'))]
+        [not(pmd-java:typeIs('java.lang.Class'))]) = 2
+    ]
+    [not(ancestor::MethodDeclaration[1][@Name = "equals"])]
+        </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 class Foo {
@@ -3308,11 +3325,8 @@ Use the equals() method instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//EqualityExpression/PrimaryExpression
-[not(PrimarySuffix)]
-[PrimaryPrefix/Literal
-   [starts-with(@Image, '"')]
-   [ends-with(@Image, '"')]]
+//EqualityExpression
+    [count(PrimaryExpression[pmd-java:typeIs('java.lang.String')]) = 2]
 ]]>
                 </value>
             </property>

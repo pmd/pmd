@@ -20,9 +20,17 @@ public class Foo {
         <description>primitives are ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+public class CompareObjectsWithEqualsSample {
     boolean bar(int a, int b) {
         return a == b;
+    }
+    void bar(Integer i, Character c) {
+        int l = i;
+        if (1 == i) { }
+        if (i == Integer.MAX_VALUE) { } // ok
+        if (c == Character.MAX_VALUE) { } // ok
     }
 }
         ]]></code>
@@ -45,18 +53,22 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
+    Foo foo;
+
     boolean bar(Foo b) {
-        return this.b == b.foo;
+        return this.foo == b.foo;
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>more qualified name skippage</description>
+        <description>charAt return char - that's ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+public class CompareObjectsWithEqualsSample {
     boolean bar(String a, String b) {
         return a.charAt(0) == b.charAt(0);
     }
@@ -95,11 +107,20 @@ public class Foo {
 
     <test-code>
         <description>array element comparison</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
         <code><![CDATA[
-public class Foo {
-    void bar(int[] a, String[] b) {
-        if (a[1] == b[1]) {}
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+public class CompareObjectsWithEqualsSample {
+    void array(int[] a, String[] b) {
+        if (a[1] == b[1]) {} // int == String - this comparison doesn't make sense
+    }
+    void array2(int[] c, int[] d) {
+        if (c[1] == d[1]) {}
+    }
+    void array3(String[] a, String[] b) {
+        if (a[1] == b[1]) {} // not ok
     }
 }
         ]]></code>
@@ -107,12 +128,18 @@ public class Foo {
 
     <test-code>
         <description>Comparing against new object should always return false</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,9</expected-linenumbers>
         <code><![CDATA[
-public class Foo {
-    void bar(Date aDate) {
-        if ( aDate == new Date( 0 ) ) {
-        }
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+import java.util.Date;
+
+public class CompareObjectsWithEqualsSample {
+    void bar(Date aDate, int aInt, Integer realInt) {
+        if ( aDate == new Date( 0 ) ) {} // not ok
+        if ( aInt == new Integer(1) ) {} // that's actually ok, since Integer will be unboxed
+        if ( realInt == new Integer(1) ) {} // not ok
     }
 }
         ]]></code>
@@ -122,7 +149,11 @@ public class Foo {
         <description>qualified call in allocation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+import java.io.File;
+
+public class CompareObjectsWithEqualsSample {
     boolean bar(String b) {
         return new File(b).exists() == false;
     }
@@ -267,6 +298,80 @@ public class EnumTest {
                             && other.testBit(field2.intValue());
                 }
             }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2934 False negative - class with fields</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>8,9,10,11</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+public class ClassWithFields {
+    private Object a;
+    private Object b;
+
+    boolean test1() {
+        return  a == b // violation
+             && this.a == b // violation
+             && a != this.b // violation
+             && this.a == this.b // violation
+             && a.equals(b) // ok
+             && this.a.equals(this.b); // ok
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2934 comparison with null is valid and with primitive literals</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>18,19</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+public class ClassWithFields {
+    private Object a;
+    private Object b;
+
+    boolean test1() {
+        return a == null // ok
+             && this.a == null; // ok
+    }
+
+    void test2(StringBuilder sb) {
+        if (sb != null) { } // ok
+    }
+
+    public void bar(Integer x, Integer y) {
+        if (x == 1) { } // ok
+        if (x == y) { } // not ok! only works -128<x<127 dependent on Integer caching
+        if (x == "String") { } // not ok
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2934 this and class should be ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
+
+public class ClassWithFields {
+    private Object a;
+    private Object b;
+
+    void test(Object o) {
+        // conflict between #2899 and #2934
+        // if (this == o) { } // should be allowed, since this is a often used pattern in Object::equals.
+        // comparing class instances is ok
+        if (o.getClass() == a.getClass()) { }
+        if (this.getClass() == this.a.getClass()) { }
+        if (Object.class == a.getClass()) { }
+    }
+}
         ]]></code>
     </test-code>
 </test-data>
