@@ -74,15 +74,11 @@ public class Foo {
         int j = 0;
 
         switch (j) { // 5
-            case 0:
-            case 1:
-            case 3: if (a || b) {} break;
+        case 0: case 1: case 2: case 3: case 4: break;
         }
 
-        switch (j) { // * 5
-            case 0:
-            case 1:
-            case 3: if (a || b) {} break;
+        switch (j) { // 5
+        case 0: case 1: case 2: case 3: case 4: break;
         }
 
         if (true || a && b); // * 4
@@ -142,6 +138,27 @@ class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Switch stmt</description>
+        <rule-property name="reportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'bar()' has an NPath complexity of 9, current threshold is 2</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void bar() {
+        switch (j) { // 5
+        case 0:
+        case 1:
+        case 3: if (a || b) {} break;
+        }
+
+    }
+}
+        ]]></code>
+    </test-code>
+
     <code-fragment id="bug3484404"><![CDATA[
 class Bar {
     public void x(boolean x, boolean y) {
@@ -176,27 +193,6 @@ class Bar {
         <expected-messages>
             <message>The constructor 'Foo()' has an NPath complexity of 7, current threshold is 6</message>
         </expected-messages>
-        <code><![CDATA[
-class Foo {
-    Foo() {
-        boolean a, b;
-        int j = 23;
-        switch(j) {
-            case 1:
-            case 2: break;
-            case 3: j = 5; break;
-            case 4: if (b && a) { bar(); } break;
-            default: break;
-        }
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Backwards compatibility with minimum property</description>
-        <rule-property name="minimum">300</rule-property>
-        <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
     Foo() {

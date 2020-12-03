@@ -194,12 +194,16 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
             return 0;
         }
 
-        return expr.descendantsOrSelf()
-                   .reduce(0, (acc, ifx) -> {
-                       if (JavaAstUtils.isConditional(ifx)) {
-                           return acc + 1;
-                       }
-                       return acc;
-                   });
+        if (expr instanceof ASTConditionalExpression) {
+            ASTConditionalExpression conditional = (ASTConditionalExpression) expr;
+            return booleanExpressionComplexity(conditional.getCondition())
+                + booleanExpressionComplexity(conditional.getThenBranch())
+                + booleanExpressionComplexity(conditional.getElseBranch())
+                + 2;
+        } else {
+            return expr.descendantsOrSelf()
+                       .filter(JavaAstUtils::isConditional)
+                       .count();
+        }
     }
 }

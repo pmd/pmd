@@ -80,17 +80,13 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
     public BigInteger visit(ASTIfStatement node, Void data) {
         // (npath of if + npath of else (or 1) + bool_comp of if) * npath of next
 
-        NodeStream<ASTStatement> statementChildren = node.children(ASTStatement.class);
+        int boolCompIf = CycloVisitor.booleanExpressionComplexity(node.getCondition());
 
-        // add path for not taking if
-        BigInteger complexity = node.hasElse() ? BigInteger.ZERO : BigInteger.ONE;
+        BigInteger thenResult = node.getThenBranch().acceptVisitor(this, data);
+        ASTStatement elseBranch = node.getElseBranch();
+        BigInteger elseResult = elseBranch != null ? elseBranch.acceptVisitor(this, data) : BigInteger.ONE;
 
-        for (ASTStatement element : statementChildren) {
-            complexity = complexity.add(element.acceptVisitor(this, data));
-        }
-
-        int boolCompIf = CycloVisitor.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-        return complexity.add(BigInteger.valueOf(boolCompIf));
+        return thenResult.add(BigInteger.valueOf(boolCompIf)).add(elseResult);
     }
 
 
