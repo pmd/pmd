@@ -133,7 +133,7 @@
     <!-- <rule ref="category/java/design.xml/CollapsibleIfStatements"/> -->
     <!-- <rule ref="category/java/design.xml/CouplingBetweenObjects"/> -->
     <!-- <rule ref="category/java/design.xml/CyclomaticComplexity"/> -->
-    <!-- <rule ref="category/java/design.xml/DataClass"/> -->
+    <rule ref="category/java/design.xml/DataClass"/>
     <!-- <rule ref="category/java/design.xml/DoNotExtendJavaLangError"/> -->
     <!-- <rule ref="category/java/design.xml/ExceptionAsFlowControl"/> -->
     <!-- <rule ref="category/java/design.xml/ExcessiveClassLength"/> -->
@@ -147,8 +147,8 @@
     <!-- <rule ref="category/java/design.xml/LawOfDemeter"/> -->
     <!-- <rule ref="category/java/design.xml/LogicInversion"/> -->
     <!-- <rule ref="category/java/design.xml/LoosePackageCoupling"/> -->
-    <!-- <rule ref="category/java/design.xml/NPathComplexity"/> -->
-    <!-- <rule ref="category/java/design.xml/NcssCount"/> -->
+    <rule ref="category/java/design.xml/NPathComplexity"/>
+    <rule ref="category/java/design.xml/NcssCount"/>
     <!-- <rule ref="category/java/design.xml/SignatureDeclareThrowsException"/> -->
     <!-- <rule ref="category/java/design.xml/SimplifiedTernary"/> -->
     <!-- <rule ref="category/java/design.xml/SimplifyBooleanAssertion"/> -->
