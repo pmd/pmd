@@ -12,7 +12,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.ClassFanOutOption;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 
@@ -53,14 +54,13 @@ public final class ClassFanOutVisitor extends JavaVisitorBase<Set<JClassSymbol>,
     }
 
     private void check(TypeNode node, Set<JClassSymbol> classes) {
-        JTypeDeclSymbol symbol = node.getTypeMirror().getSymbol();
-        if (!(symbol instanceof JClassSymbol)
-            || ((JClassSymbol) symbol).isPrimitive()
-            || ((JClassSymbol) symbol).isArray()) {
+        JTypeMirror typeMirror = node.getTypeMirror();
+        if (!(typeMirror instanceof JClassType)) {
             return;
         }
-        if (shouldBeIncluded((JClassSymbol) symbol)) {
-            classes.add((JClassSymbol) symbol);
+        JClassSymbol symbol = ((JClassType) typeMirror).getSymbol();
+        if (shouldBeIncluded(symbol)) {
+            classes.add(symbol);
         }
     }
 

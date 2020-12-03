@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 /**
  * @author Clément Fournier
  */
-public class ProjectMemoizerTest extends BaseNonParserTest {
+public class MetricsMemoizationTest extends BaseNonParserTest {
 
     private final Metric<Node, Integer> randomMetric = randomMetric();
 
