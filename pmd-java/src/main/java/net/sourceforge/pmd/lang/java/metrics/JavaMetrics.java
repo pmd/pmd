@@ -42,7 +42,9 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 /**
- * A collection of java metrics.
+ * A collection of Java metrics.
+ *
+ * @see <a href="https://pmd.github.io/latest/pmd_java_metrics_index.html">Online documentation</a>
  */
 @SuppressWarnings("PMD.UnusedFormalParameter") // #2838
 public final class JavaMetrics {
