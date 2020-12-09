@@ -93,7 +93,7 @@ public class CPPTokenizer extends JavaCCTokenizer {
 
     private static class CppTokenFilter extends JavaCCTokenFilter {
         private final boolean ignoreLiteralSequences;
-        private boolean discardingLiterals = false;
+        private GenericToken discardingLiteralsUntil = null;
         private boolean discardCurrent = false;
 
         CppTokenFilter(final TokenManager tokenManager, final boolean ignoreLiteralSequences) {
@@ -110,17 +110,21 @@ public class CPPTokenizer extends JavaCCTokenizer {
         private void skipLiteralSequences(final GenericToken currentToken, final Iterable<GenericToken> remainingTokens) {
             if (ignoreLiteralSequences) {
                 final int kind = currentToken.getKind();
-                if (kind == CppParserConstants.LCURLYBRACE && isSequenceOfLiterals(remainingTokens)) {
-                    discardingLiterals = true;
-                } else if (kind == CppParserConstants.RCURLYBRACE && discardingLiterals) {
-                    discardingLiterals = false;
-                    discardCurrent = true;
+                if (isDiscardingLiterals()) {
+                    if (currentToken == discardingLiteralsUntil) { // NOPMD - intentional check for reference equality
+                        discardingLiteralsUntil = null;
+                        discardCurrent = true;
+                    }
+                } else if (kind == CppParserConstants.LCURLYBRACE) {
+                    final GenericToken finalToken = findEndOfSequenceOfLiterals(remainingTokens);
+                    discardingLiteralsUntil = finalToken;
                 }
             }
         }
 
-        private boolean isSequenceOfLiterals(final Iterable<GenericToken> remainingTokens) {
+        private static GenericToken findEndOfSequenceOfLiterals(final Iterable<GenericToken> remainingTokens) {
             boolean seenLiteral = false;
+            int braceCount = 0;
             for (final GenericToken token : remainingTokens) {
                 switch (token.getKind()) {
                 case CppParserConstants.BINARY_INT_LITERAL:
@@ -133,20 +137,33 @@ public class CPPTokenizer extends JavaCCTokenizer {
                     break; // can be skipped; continue to the next token
                 case CppParserConstants.COMMA:
                     break; // can be skipped; continue to the next token
+                case CppParserConstants.LCURLYBRACE:
+                    braceCount++;
+                    break; // curly braces are allowed, as long as they're balanced
                 case CppParserConstants.RCURLYBRACE:
-                    // end of the list; skip all contents
-                    return seenLiteral;
+                    braceCount--;
+                    if (braceCount < 0) {
+                        // end of the list; skip all contents
+                        return seenLiteral ? token : null;
+                    } else {
+                        // curly braces are not yet balanced; continue to the next token
+                        break;
+                    }
                 default:
                     // some other token than the expected ones; this is not a sequence of literals
-                    return false;
+                    return null;
                 }
             }
-            return false;
+            return null;
+        }
+
+        private boolean isDiscardingLiterals() {
+            return discardingLiteralsUntil != null;
         }
 
         @Override
         protected boolean isLanguageSpecificDiscarding() {
-            return discardingLiterals || discardCurrent;
+            return isDiscardingLiterals() || discardCurrent;
         }
     }
 }
