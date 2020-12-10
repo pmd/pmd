@@ -281,7 +281,7 @@ public final class JavaRuleUtil {
      * us to be sure of it.
      */
     public static boolean isNeverUsed(ASTVariableDeclaratorId varId) {
-        return CollectionUtil.none(varId.getUsages(), JavaRuleUtil::isReadUsage);
+        return CollectionUtil.none(varId.getLocalUsages(), JavaRuleUtil::isReadUsage);
     }
 
     private static boolean isReadUsage(ASTNamedReferenceExpr expr) {

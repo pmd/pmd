@@ -71,7 +71,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
         }
         ASTVariableDeclaratorId loopVar = loopStmt.getVarId();
         boolean ignoreNext = behavior == ForeachReassignOption.FIRST_ONLY;
-        for (ASTNamedReferenceExpr usage : loopVar.getUsages()) {
+        for (ASTNamedReferenceExpr usage : loopVar.getLocalUsages()) {
             if (usage.getAccessType() == AccessType.WRITE) {
                 if (ignoreNext) {
                     ignoreNext = false;
@@ -95,7 +95,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
         NodeStream<ASTVariableDeclaratorId> loopVars = JavaRuleUtil.getLoopVariables(loopStmt);
         if (behavior == ForReassignOption.DENY) {
             for (ASTVariableDeclaratorId loopVar : loopVars) {
-                for (ASTNamedReferenceExpr usage : loopVar.getUsages()) {
+                for (ASTNamedReferenceExpr usage : loopVar.getLocalUsages()) {
                     if (usage.getAccessType() == AccessType.WRITE) {
                         if (update != null && usage.ancestors(ASTForUpdate.class).first() == update) {
                             continue;

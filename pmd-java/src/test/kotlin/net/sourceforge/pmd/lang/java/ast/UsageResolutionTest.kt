@@ -40,11 +40,11 @@ class UsageResolutionTest : ProcessorTestSpec({
             }
         """)
         val (barF1, fooF1, fooF2, localF2, localF22) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
-        barF1.usages.map { it.text.toString() }.shouldContainExactly("this.f1", "super.f1")
-        fooF1.usages.map { it.text.toString() }.shouldContainExactly("f1", "this.f1")
-        fooF2.usages.map { it.text.toString() }.shouldContainExactly("this.f2")
-        localF2.usages.shouldBeEmpty()
-        localF22.usages.shouldBeSingleton {
+        barF1.localUsages.map { it.text.toString() }.shouldContainExactly("this.f1", "super.f1")
+        fooF1.localUsages.map { it.text.toString() }.shouldContainExactly("f1", "this.f1")
+        fooF2.localUsages.map { it.text.toString() }.shouldContainExactly("this.f2")
+        localF2.localUsages.shouldBeEmpty()
+        localF22.localUsages.shouldBeSingleton {
             it.accessType shouldBe WRITE
         }
     }
@@ -63,13 +63,13 @@ class UsageResolutionTest : ProcessorTestSpec({
         val (p) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
         p::isRecordComponent shouldBe true
-        p.usages.shouldHaveSize(2)
-        p.usages[0].shouldBeA<ASTVariableAccess> {
+        p.localUsages.shouldHaveSize(2)
+        p.localUsages[0].shouldBeA<ASTVariableAccess> {
             it.referencedSym!!.shouldBeA<JFormalParamSymbol> {
                 it.tryGetNode() shouldBe p
             }
         }
-        p.usages[1].shouldBeA<ASTVariableAccess> {
+        p.localUsages[1].shouldBeA<ASTVariableAccess> {
             it.referencedSym!!.shouldBeA<JFieldSymbol> {
                 it.tryGetNode() shouldBe p
             }

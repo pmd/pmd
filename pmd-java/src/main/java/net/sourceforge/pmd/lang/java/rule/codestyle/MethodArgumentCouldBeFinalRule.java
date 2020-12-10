@@ -48,7 +48,7 @@ public class MethodArgumentCouldBeFinalRule extends AbstractJavaRulechainRule {
                 continue;
             }
             boolean used = false;
-            for (ASTNamedReferenceExpr usage : var.getUsages()) {
+            for (ASTNamedReferenceExpr usage : var.getLocalUsages()) {
                 used = true;
                 if (usage.getAccessType() == AccessType.WRITE) {
                     continue outer;

@@ -36,7 +36,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  * <p>Since this node conventionally represents the declared variable in PMD, our symbol table
  * populates it with a {@link VariableNameDeclaration}, and its usages can be accessed through
- * the method {@link #oldGetUsages ()}.
+ * the method {@link #getUsages ()}.
  *
  * <p>Type resolution assigns the type of the variable to this node. See {@link #getType()}'s
  * documentation for the contract of this method.
@@ -79,10 +79,10 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     }
 
     /**
-     * @deprecated transitional, use {@link #getUsages()}
+     * @deprecated transitional, use {@link #getLocalUsages()}
      */
     @Deprecated
-    public List<NameOccurrence> oldGetUsages() {
+    public List<NameOccurrence> getUsages() {
         return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
     }
 
@@ -94,7 +94,7 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      * <p>Note that a variable initializer is not part of the usages
      * (though this should be evident from the return type).
      */
-    public List<ASTNamedReferenceExpr> getUsages() {
+    public List<ASTNamedReferenceExpr> getLocalUsages() {
         return usages;
     }
 

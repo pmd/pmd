@@ -88,7 +88,7 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
 
         for (ASTVariableDeclarator declarator : node.findChildrenOfType(ASTVariableDeclarator.class)) {
             ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId) declarator.getChild(0);
-            List<NameOccurrence> usages = declaration.oldGetUsages();
+            List<NameOccurrence> usages = declaration.getUsages();
             Node decl = null;
             boolean violation = true;
             for (int ix = 0; ix < usages.size(); ix++) {
