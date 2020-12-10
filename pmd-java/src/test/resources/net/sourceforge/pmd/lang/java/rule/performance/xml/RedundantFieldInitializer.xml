@@ -1434,7 +1434,7 @@ public class RedundantFieldInitializerTest {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#2441 can not detect a case char c = '\0';</description>
         <expected-problems>1</expected-problems>
@@ -1442,6 +1442,25 @@ public class RedundantFieldInitializerTest {
         <code><![CDATA[
 public class Foo {
     char c = '\0';
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Non-literals are ok</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+public class C {
+    public static final int ZERO = 0;
+    public static final long ZEROL = 0L;
+}
+
+class O {
+    public static final int ZERO = 0;
+    private int s = C.ZERO;
+    private int s2 = 0 * 1000; //not ok
+    private int o = 2 * ZERO;
 }
         ]]></code>
     </test-code>

@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
-import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * This rule finds code which inefficiently determines empty strings.
@@ -41,41 +42,45 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
  *
  * @author acaplan
  */
-public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroCheck {
+public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
+
+    public InefficientEmptyStringCheckRule() {
+        super(ASTMethodCall.class);
+    }
 
     @Override
-    public boolean isTargetMethod(JavaNameOccurrence occ) {
-        if (occ.getNameForWhichThisIsAQualifier() != null
-                && occ.getNameForWhichThisIsAQualifier().getImage().contains("trim")) {
-            Node pExpression = occ.getLocation().getParent().getParent();
-            if (pExpression.getNumChildren() > 2 && "length".equals(pExpression.getChild(2).getImage())) {
-                return true;
-            }
+    public Object visit(ASTMethodCall call, Object data) {
+        if (isTrimCall(call.getQualifier())
+            && (isLengthZeroCheck(call) || isIsEmptyCall(call))) {
+            addViolation(data, call);
+        }
+        return null;
+    }
+
+    private static boolean isLengthZeroCheck(ASTMethodCall call) {
+        return "length".equals(call.getMethodName())
+            && call.getArguments().size() == 0
+            && JavaRuleUtil.isZeroChecked(call);
+    }
+
+    private static boolean isTrimCall(ASTExpression expr) {
+        if (expr instanceof ASTMethodCall) {
+            ASTMethodCall call = (ASTMethodCall) expr;
+            return "trim".equals(call.getMethodName())
+                && call.getArguments().size() == 0
+                && TypeTestUtil.isA(String.class, call.getQualifier());
         }
         return false;
     }
 
-    @Override
-    public boolean appliesToClassName(String name) {
-        return "String".equals(name);
-    }
 
-    @Override
-    public Object visit(ASTPrimaryExpression node, Object data) {
-
-        if (node.getNumChildren() > 3) {
-            // Check last suffix
-            if (!"isEmpty".equals(node.getChild(node.getNumChildren() - 2).getImage())) {
-                return data;
-            }
-
-            Node prevCall = node.getChild(node.getNumChildren() - 4);
-            String target = prevCall.getNumChildren() > 0 ? prevCall.getChild(0).getImage() : prevCall.getImage();
-            if (target != null && ("trim".equals(target) || target.endsWith(".trim"))) {
-                addViolation(data, node);
-            }
+    private static boolean isIsEmptyCall(ASTExpression expr) {
+        if (expr instanceof ASTMethodCall) {
+            ASTMethodCall call = (ASTMethodCall) expr;
+            return "isEmpty".equals(call.getMethodName())
+                && call.getArguments().size() == 0;
         }
-        return data;
+        return false;
     }
 
 }

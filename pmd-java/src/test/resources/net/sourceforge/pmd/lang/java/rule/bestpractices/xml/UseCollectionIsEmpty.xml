@@ -7,8 +7,9 @@
     <test-code>
         <description>fail, == 0</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
     public static boolean bar(List lst) {
         if(lst.size() == 0){
@@ -24,6 +25,7 @@ public class Foo {
         <description>ok, isEmpty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
     public static boolean bar(List lst) {
         if(lst.isEmpty()){
@@ -38,8 +40,9 @@ public class Foo {
     <test-code>
         <description>fail, != 0</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
     public static boolean bar(List lst) {
         if(lst.size() != 0){
@@ -55,6 +58,7 @@ public class Foo {
         <description>ok, !isEmpty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
     public static boolean bar(List lst) {
         if(!lst.isEmpty()){
@@ -69,8 +73,9 @@ public class Foo {
     <test-code>
         <description>fail, != 0</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
     public static boolean bar(List lst, boolean b) {
         if(lst.size() == 0 && b){
@@ -86,6 +91,7 @@ public class Foo {
         <description>ok, !isEmpty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
     public static boolean bar(List lst, boolean b) {
         if(lst.isEmpty() && b){
@@ -100,8 +106,9 @@ public class Foo {
     <test-code>
         <description>fail, 0 ==</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
     public static boolean bar(List lst) {
         if(0 == lst.size()){
@@ -116,8 +123,9 @@ public class Foo {
     <test-code>
         <description>fail, &gt; 0</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
     public static boolean bar(List lst) {
         if(lst.size() > 0){
@@ -133,6 +141,7 @@ public class Foo {
         <description>ok, in expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
     public static int modulo = 2;
     public static boolean bar(List lst) {
@@ -149,6 +158,7 @@ public class Foo {
         <description>ok, in expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
     final Map map;
     public boolean bar(Foo other) {
@@ -166,7 +176,7 @@ public class Foo {
         <expected-problems>5</expected-problems>
         <expected-linenumbers>25,28,31,34,37</expected-linenumbers>
         <code><![CDATA[
-import java.util.ArrayList;
+import java.util.*;
 
 public class TestIsEmpty {
     public static void main(String args[]) {
@@ -284,6 +294,7 @@ public class IsEmptyTest {
         <description>#1304 UseCollectionIsEmpty false positive comparing to 1</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class PMDIsEmptyFalsePositive {
     public void falsePositive() {
         Collection<String> c = new ArrayList<String>();
@@ -344,6 +355,29 @@ public class Foo {
 
     public int size() {
         return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2542 UseCollectionIsEmpty can not detect the case foo.bar().size()</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+
+public class Foo {
+
+    private List<String> list = new ArrayList<>();
+
+    Foo foo() { return this; }
+    Foo bar() { return this; }
+    List<String> list() { return list; }
+
+    public void bar() {
+        if (foo().bar().foo().list().size() == 0) {
+            throw new RuntimeException("Empty list");
+        }
     }
 }
         ]]></code>
