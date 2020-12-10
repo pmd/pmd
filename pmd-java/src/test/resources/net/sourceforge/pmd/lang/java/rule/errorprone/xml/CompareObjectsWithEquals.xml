@@ -355,7 +355,8 @@ public class ClassWithFields {
 
     <test-code>
         <description>#2934 this and class should be ignored</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>16</expected-linenumbers>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
 
@@ -363,13 +364,16 @@ public class ClassWithFields {
     private Object a;
     private Object b;
 
-    void test(Object o) {
-        // conflict between #2899 and #2934
+    public boolean equals(Object o) {
         // if (this == o) { } // should be allowed, since this is a often used pattern in Object::equals.
         // comparing class instances is ok
         if (o.getClass() == a.getClass()) { }
         if (this.getClass() == this.a.getClass()) { }
         if (Object.class == a.getClass()) { }
+    }
+
+    void test(Object o) {
+        if (this == o) { } // this is not allowed here, only in equals
     }
 }
         ]]></code>

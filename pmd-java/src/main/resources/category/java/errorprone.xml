@@ -1098,7 +1098,7 @@ Use equals() to compare object references; avoid comparing them with ==.
             <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
-
+<![CDATA[
 //InfixExpression
     [@Operator = ("==", "!=")]
     [count(*
@@ -1108,6 +1108,7 @@ Use equals() to compare object references; avoid comparing them with ==.
         [not(pmd-java:typeIs('java.lang.Class'))]) = 2
     ]
     [not(ancestor::MethodDeclaration[1][@Name = "equals"])]
+]]>
         </value>
             </property>
         </properties>

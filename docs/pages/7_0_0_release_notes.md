@@ -98,6 +98,8 @@ The following previously deprecated rules have been finally removed:
 *   LoggerIsNotStaticFinal (java-errorprone)
 *   MIsLeadingVariableName (java-codestyle)
 *   ModifiedCyclomaticComplexity (java-design)
+*   PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices)
+*   PositionLiteralsFirstInComparisons (java-bestpractices)
 *   StdCyclomaticComplexity (java-design)
 *   SuspiciousConstantFieldName (java-codestyle)
 *   UnsynchronizedStaticDateFormatter (java-multithreading)
