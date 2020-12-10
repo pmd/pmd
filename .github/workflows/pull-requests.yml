@@ -21,9 +21,9 @@ jobs:
             ~/.m2/repository
             ~/.cache
             vendor/bundle
-          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          key: pr-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-
+            pr-${{ runner.os }}-
       - name: Set up Ruby 2.7
         uses: actions/setup-ruby@v1
         with:

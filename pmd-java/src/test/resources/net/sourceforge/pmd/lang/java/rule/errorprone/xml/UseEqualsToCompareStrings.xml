@@ -6,11 +6,15 @@
 
     <test-code>
         <description>failure case using ==</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
         <code><![CDATA[
-public class Foo {
+package net.sourceforge.pmd.lang.java.rule.errorprone.useequalstocomparestrings;
+
+public class UseEqualsToCompareStringsSample {
     void bar(String x) {
         if (x == "hello") {}
+        if (x == new String("hello")) {}
     }
 }
         ]]></code>
@@ -19,8 +23,11 @@ public class Foo {
     <test-code>
         <description>failure case using !=</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
-public class Foo {
+package net.sourceforge.pmd.lang.java.rule.errorprone.useequalstocomparestrings;
+
+public class UseEqualsToCompareStringsSample {
     void bar(String x) {
         if (x != "hello") {}
     }
@@ -32,7 +39,9 @@ public class Foo {
         <description>using equals, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+package net.sourceforge.pmd.lang.java.rule.errorprone.useequalstocomparestrings;
+
+public class UseEqualsToCompareStringsSample {
     void bar(String x) {
         if ("hello".equals(x)) {}
     }
@@ -44,7 +53,9 @@ public class Foo {
         <description>using compareTo, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+package net.sourceforge.pmd.lang.java.rule.errorprone.useequalstocomparestrings;
+
+public class UseEqualsToCompareStringsSample {
     void bar(String x) {
         if ( "yes".compareTo( x ) == 0 ) {}
     }
@@ -56,9 +67,64 @@ public class Foo {
         <description>using length, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+package net.sourceforge.pmd.lang.java.rule.errorprone.useequalstocomparestrings;
+
+public class UseEqualsToCompareStringsSample {
     void bar(String x) {
         if (x.length() == "DOCTYPE".length()) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2934 false negatives with fields</description>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>8,9,10,11,13,14,15,16</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.useequalstocomparestrings;
+
+public class ClassWithStringFields {
+    private String string1 = "a";
+    private String string2 = "a";
+
+    public void bar() {
+        if (string1 == string2) { }  // violation
+        if (string1 == this.string2) { } // violation
+        if (this.string1 == string2) { } // violation
+        if (this.string1 == this.string2) { } // violation
+
+        if (string1 != string2) { } // violation
+        if (string1 != this.string2) { } // violation
+        if (this.string1 != string2) { } // violation
+        if (this.string1 != this.string2) { } // violation
+
+        if (string1.equals(string2)) { } // ok
+        if (this.string1.equals(string2)) { } // ok
+        if (string1.equals(this.string2)) { } // ok
+        if (this.string1.equals(this.string2)) { } // ok
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2934 comparison with null is valid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.useequalstocomparestrings;
+
+public class ClassWithStringFields {
+    private String string1 = "a";
+    private String string2 = "a";
+
+    public void bar() {
+        if (string1 == null) { } // ok
+        if (this.string1 == null) { } // ok
+    }
+
+    public void bar(String param) {
+        if (param != null) { } // ok
     }
 }
         ]]></code>
