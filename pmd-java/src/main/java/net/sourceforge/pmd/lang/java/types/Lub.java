@@ -345,9 +345,6 @@ final class Lub {
         JTypeMirror lastBadClass = null;
         for (int i = 0; i < bounds.size(); i++) {
             JTypeMirror ci = bounds.get(i);
-            if (ci.isPrimitive() || ci instanceof JWildcardType || ci instanceof JIntersectionType) {
-                throw new IllegalArgumentException("Bad intersection type component: " + ci + " in " + types);
-            }
 
             if (isExclusiveIntersectionBound(ci)) {
                 // either Ci is an array, or Ci is a class, or Ci is a type var (possibly captured)
@@ -395,6 +392,12 @@ final class Lub {
         return new JIntersectionType(ts, ck, bounds);
     }
 
+    private static void checkGlbComponent(Collection<? extends JTypeMirror> types, JTypeMirror ci) {
+        if (ci.isPrimitive() || ci instanceof JWildcardType || ci instanceof JIntersectionType) {
+            throw new IllegalArgumentException("Bad intersection type component: " + ci + " in " + types);
+        }
+    }
+
     private static @NonNull List<JTypeMirror> flattenRemoveTrivialBound(Collection<? extends JTypeMirror> types) {
         ArrayList<JTypeMirror> bounds = new ArrayList<>(types.size());
 
@@ -403,6 +406,8 @@ final class Lub {
             if (type instanceof JIntersectionType) {
                 bounds.addAll(((JIntersectionType) type).getComponents());
             } else {
+                checkGlbComponent(types, type);
+
                 if (!type.isTop()) {
                     bounds.add(type);
                 }
