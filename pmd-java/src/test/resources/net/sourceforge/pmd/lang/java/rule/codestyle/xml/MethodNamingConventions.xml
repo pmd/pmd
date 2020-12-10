@@ -226,4 +226,32 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2528 [java] MethodNamingConventions - JUnit 5 method naming not support ParameterizedTest</description>
+        <rule-property name="junit5TestPattern">moo_[a-z][A-Za-z]*</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
+        <expected-messages>
+            <message>The JUnit 5 test method name 'moo_str2' doesn't match 'moo_[a-z][A-Za-z]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.ValueSource;
+import static org.junit.jupiter.api.Assertions.*;
+public class Foo {
+
+    @ParameterizedTest
+    @ValueSource(strings = { "FEMALE", "MALE" })
+    public void moo_str(final String value) {
+        assertNotNull(Gender.fromValue(value));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "FEMALE", "MALE" })
+    public void moo_str2(final String value) {
+        assertNotNull(Gender.fromValue(value));
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

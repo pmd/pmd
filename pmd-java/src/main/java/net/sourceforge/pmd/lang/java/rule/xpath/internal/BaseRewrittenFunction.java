@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 import static net.sourceforge.pmd.lang.java.rule.xpath.internal.BaseContextNodeTestFun.SINGLE_STRING_SEQ;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
 
 import net.sf.saxon.expr.Expression;
@@ -24,8 +23,13 @@ import net.sf.saxon.value.SequenceType;
 /**
  * A context node test function that may parse its string argument early
  * if it is a string literal.
+ *
+ * @param <S> Type of state into which the argument is parsed
+ * @param <N> Type of node the function applies. The function will return
+ *            false for other kinds of node.
  */
-abstract class BaseRewrittenFunction<S, N extends JavaNode> extends BaseJavaXPathFunction {
+// TODO could move that up to pmd-core
+abstract class BaseRewrittenFunction<S, N extends Node> extends BaseJavaXPathFunction {
 
     private final Class<N> contextNodeType;
 
@@ -50,8 +54,23 @@ abstract class BaseRewrittenFunction<S, N extends JavaNode> extends BaseJavaXPat
     }
 
 
-    protected abstract S parseArgument(String constantArg) throws XPathException;
+    /**
+     * Parse the argument into the state. This is called at build time
+     * if the arg is constant, otherwise it's anyway called before {@link #matches(Node, String, Object, boolean)}
+     * is called.
+     */
+    protected abstract S parseArgument(String arg) throws XPathException;
 
+    /**
+     * Compute the result of the function.
+     *
+     * @param contextNode Context node
+     * @param arg         Value of the argument
+     * @param parsedArg   Result of {@link #parseArgument(String)} on the argument
+     * @param isConstant  Whether the argument is constant (it was parsed in all cases)
+     *
+     * @return Whether the function matches
+     */
     protected abstract boolean matches(N contextNode, String arg, S parsedArg, boolean isConstant) throws XPathException;
 
 

@@ -23,7 +23,7 @@ gets it.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//MethodDeclaration[@Synchronized = true()]</value>
+                <value>//MethodDeclaration[pmd-java:modifiers() = "synchronized"]</value>
             </property>
         </properties>
         <example>
@@ -87,8 +87,8 @@ it contains methods that are not thread-safe.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.ThreadGroup')]|
-//PrimarySuffix[contains(@Image, 'getThreadGroup')]
+  //ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.ThreadGroup')]
+| //MethodCall[@MethodName = 'getThreadGroup']
 ]]>
                 </value>
             </property>
@@ -121,7 +121,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//FieldDeclaration[@Volatile = true()]</value>
+                <value>//FieldDeclaration[pmd-java:modifiers() = "volatile"]</value>
             </property>
         </properties>
         <example>
@@ -150,9 +150,16 @@ Also EJB's might be moved between machines in a cluster and only managed resourc
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+//ClassOrInterfaceType
+[pmd-java:typeIs('java.lang.Thread') or ../../self::ClassOrInterfaceDeclaration and pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+
+[not(parent::TypeExpression[parent::MethodCall[pmd-java:matchesSig('_#currentThread()')
+                                               and parent::MethodCall[pmd-java:matchesSig('_#getContextClassLoader()')]
+                                              ]
+                           ]
+)]
 |
-//StatementExpression/PrimaryExpression/PrimaryPrefix/Name[pmd-java:typeIs('java.util.concurrent.Executors') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+//MethodCall[*[1][pmd-java:nodeIs('Expression') and (pmd-java:typeIs('java.util.concurrent.Executors') or pmd-java:typeIs('java.util.concurrent.ExecutorService'))]]
 ]]>
                 </value>
             </property>
@@ -207,17 +214,7 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
             <property name="xpath">
                 <value>
 <![CDATA[
-//StatementExpression/PrimaryExpression
-[
-    PrimaryPrefix
-    [pmd-java:typeIs('java.lang.Thread')]
-    [
-            ./Name[ends-with(@Image, '.run') or @Image = 'run']
-        or
-            ./AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]
-            and ../PrimarySuffix[@Image = 'run']
-    ]
-]
+//MethodCall[ pmd-java:matchesSig("java.lang.Thread#run()") ]
 ]]>
                 </value>
             </property>
@@ -348,8 +345,7 @@ perform efficient map reads without blocking other threads.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Type[../VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[@Image != 'ConcurrentHashMap']]
-/ReferenceType/ClassOrInterfaceType[@Image = 'Map']
+//VariableDeclarator[VariableDeclaratorId[pmd-java:typeIsExactly('java.util.Map')] and *[2][self::ConstructorCall and not(pmd-java:typeIs('java.util.concurrent.ConcurrentHashMap'))]]
 ]]>
                 </value>
             </property>
@@ -384,15 +380,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
             <property name="xpath">
                 <value>
 <![CDATA[
-//StatementExpression/PrimaryExpression
-[PrimarySuffix/Arguments[@Size = 0]]
-[
-    PrimaryPrefix[
-        ./Name[@Image='notify' or ends-with(@Image,'.notify')]
-        or ../PrimarySuffix/@Image='notify'
-        or (./AllocationExpression and ../PrimarySuffix[@Image='notify'])
-    ]
-]
+//MethodCall[@MethodName="notify" and ArgumentList[count(*) = 0]]
 ]]>
                 </value>
             </property>

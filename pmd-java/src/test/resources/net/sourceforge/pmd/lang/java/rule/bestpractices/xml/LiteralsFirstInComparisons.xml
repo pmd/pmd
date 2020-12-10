@@ -30,7 +30,7 @@ public class Foo {
 
     <test-code>
         <description>ok, empty literal in .equals comparison</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>4</expected-problems>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -280,10 +280,11 @@ public class Foo {
         <description>bad, testing false negative at the end of a chain</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.io.File;
 public class Foo {
     public boolean bar() {
         File f;
-        return f.getFileType().equals("testStr");
+        return f.getParent().equals("testStr");
     }
 }
         ]]></code>
@@ -314,6 +315,22 @@ public class Foo {
     public void bar() {
         if (getStr("b").equals("ab")) { }   // nok
         if ("ab".equals(getStr("b"))) { }   // ok
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FN with unresolved types</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.util.Map;
+class Foo {
+    public void testObjectArray(Unknown uk) {
+        HasMap hasMap = (HasMap) this.beanFactory.getBean("literalMap");
+        assertTrue(hasMap.getMap().size() == 3);
+        assertTrue(hasMap.getMap().get("foo").equals("bar"));
+        assertTrue(hasMap.getMap().get("fi").equals("fum"));
+        assertTrue(hasMap.getMap().get("fa") == null);
     }
 }
         ]]></code>

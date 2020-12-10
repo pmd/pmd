@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**
  * @author Clément Fournier
- * @since 6.0.0
+ * @since 7.0.0
  */
 public class BaseXPathFunctionTest extends BaseNonParserTest {
 

@@ -81,4 +81,62 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Enum type, not ok</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+
+public class Foo {
+    enum MyEnum { A, B, C }
+    void bar(MyEnum x) {
+        // This switch is not exhaustive
+        switch (x) {
+        case A:
+            int y = 8;
+            break;
+        case B:
+            break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Enum type, not ok (arrow branches)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+
+public class Foo {
+    enum MyEnum { A, B, C }
+    void bar(MyEnum x) {
+        // This switch is not exhaustive
+        switch (x) {
+        case A -> {
+            int y = 8;
+        }
+        case B -> throw new IllegalStateException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2806 [java] SwitchStmtsShouldHaveDefault false-positive with Java 14 non-fallthrough branches</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+
+public class Foo {
+    public String foo(String foo) {
+        switch (foo) {
+        case "=" -> foo = "eq";
+        case "!=" -> foo = "ne";
+        default -> throw new IllegalArgumentException();
+        }
+        return foo + 'a';
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

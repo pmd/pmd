@@ -153,6 +153,7 @@ public class Foo {
         <description>Issue #1003: UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import javax.inject.Inject;
 public class Foo {
     @Inject
     public Foo() {

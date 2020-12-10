@@ -115,7 +115,7 @@ cd pmd
 git init
 git remote add origin https://github.com/pmd/pmd
 git fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +refs/heads/${MAIN_BRANCH}:refs/remotes/origin/${MAIN_BRANCH}
-git checkout --progress --force -B master refs/remotes/origin/${MAIN_BRANCH}
+git checkout --progress --force -B ${MAIN_BRANCH} refs/remotes/origin/${MAIN_BRANCH}
 
 .ci/check-environment.sh
 
@@ -159,8 +159,10 @@ You'll be dropped into a bash. Use the following script, to setup and start the 
 
 ```
 export MAVEN_OPTS="-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3"
-export PMD_CI_BRANCH="master" # base branch
+export PMD_CI_BRANCH="master" # base branch of the pull request
 export PMD_CI_PULL_REQUEST_NUMBER=2913
+
+unset PMD_CI_SECRET_PASSPHRASE
 
 # these are used by danger
 export GITHUB_EVENT_PATH=/workspaces/event.json
@@ -179,5 +181,5 @@ git checkout --progress --force refs/remotes/pull/${PMD_CI_PULL_REQUEST_NUMBER}/
 
 .ci/check-environment.sh
 
-.ci/build-pr.sh
+.ci/build-pr-win-macos.sh
 ```

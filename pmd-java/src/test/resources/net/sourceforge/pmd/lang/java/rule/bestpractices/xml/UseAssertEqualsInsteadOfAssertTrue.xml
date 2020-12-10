@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>TEST1</description>
+        <description>Identity test doesn't match</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -18,12 +18,13 @@ public class Foo extends TestCase {
     </test-code>
 
     <test-code>
-        <description>TEST2</description>
+        <description>Junit 3 problem</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void test1() {
+        Object a, b;
         assertTrue(a.equals(b));
     }
 }
@@ -31,24 +32,33 @@ public class Foo extends TestCase {
     </test-code>
 
     <test-code>
-        <description>TEST3</description>
+        <description>Overload of equal doesn't match</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void test1() {
-        assertTrue(a.mySpecialequals(b));
+        SpecialEquals a, b;
+        assertTrue(a.equals(b)); // not equals(Object)
+    }
+
+    class SpecialEquals {
+        boolean equals(SpecialEquals b) {
+            return false;
+        }
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Not a JUnit test - TEST2</description>
-        <expected-problems>0</expected-problems>
+        <description>JUnit 4, even outside of @Test method</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
+import static org.junit.Assert.*;
 public class Foo {
     public void test1() {
+        Object a, b;
         assertTrue(a.equals(b));
     }
 }
@@ -56,13 +66,15 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>JUnit4 - TEST2</description>
+        <description>JUnit4 - match</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.junit.Test;
+import static org.junit.Assert.*;
 public class Foo {
     @Test
     public void test1() {
+        Object a, b;
         assertTrue(a.equals(b));
     }
 }
@@ -78,6 +90,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class Foo {
     @Test
     public void test1() {
+        Object a, b;
         assertTrue(a.equals(b));
     }
 }
