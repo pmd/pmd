@@ -195,8 +195,11 @@ public class Report {
      * summary over all violations is needed as PMD creates one report per file
      * by default.
      *
-     * @param r
-     *            the report to be merged into this.
+     * <p>This is synchronized on an internal lock (note that other mutation
+     * operations are not synchronized, todo for pmd 7).
+     *
+     * @param r the report to be merged into this.
+     *
      * @see AbstractAccumulatingRenderer
      */
     public void merge(Report r) {

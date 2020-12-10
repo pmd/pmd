@@ -7,21 +7,22 @@ package net.sourceforge.pmd;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
- * Configurable ruleset parser. Note that this replaces the API of {@link RulesetsFactoryUtils}
- * and {@link RuleSetFactory}. This can be configured using a fluent
- * API, see eg {@link #warnDeprecated(boolean)}. To create a list of
- * rulesets, use {@link #loadFromResource(String)}.
+ * Configurable object to load rulesets from XML resources.
+ * This can be configured using a fluent API, see eg {@link #warnDeprecated(boolean)}.
+ * To create a new ruleset, use {@link #loadFromResource(String)}
+ * or some such overload.
  */
 public final class RuleSetLoader {
 
@@ -53,6 +54,7 @@ public final class RuleSetLoader {
      * Filter loaded rules to only those that match or are above
      * the given priority. The default is {@link RulePriority#LOW},
      * ie, no filtering occurs.
+     *
      * @return This instance, modified
      */
     public RuleSetLoader filterAbovePriority(RulePriority minimumPriority) {
@@ -63,6 +65,7 @@ public final class RuleSetLoader {
     /**
      * Log a warning when referencing a deprecated rule.
      * This is enabled by default.
+     *
      * @return This instance, modified
      */
     public RuleSetLoader warnDeprecated(boolean warn) {
@@ -75,6 +78,7 @@ public final class RuleSetLoader {
      * been moved or renamed. This is enabled by default, if disabled,
      * unresolved references will not be translated and will produce an
      * error.
+     *
      * @return This instance, modified
      */
     public RuleSetLoader enableCompatibility(boolean enable) {
@@ -98,8 +102,8 @@ public final class RuleSetLoader {
      * Create a new rule set factory, if you have to (that class is deprecated).
      * That factory will use the configuration that was set using the setters of this.
      *
-     * @deprecated {@link RuleSetFactory} is deprecated, replace its usages with usages of this class,
-     *     or of static factory methods of {@link RuleSet}
+     * @deprecated {@link RuleSetFactory} is deprecated, replace its usages
+     *     with usages of this class, or of static factory methods of {@link RuleSet}
      */
     @Deprecated
     public RuleSetFactory toFactory() {
@@ -122,9 +126,9 @@ public final class RuleSetLoader {
      *
      * @param rulesetPath A reference to a single ruleset
      *
-     * @throws RuleSetNotFoundException If the path does not correspond to a resource
+     * @throws RulesetLoadException If any error occurs (eg, invalid syntax, or resource not found)
      */
-    public RuleSet loadFromResource(String rulesetPath) throws RuleSetNotFoundException {
+    public RuleSet loadFromResource(String rulesetPath) {
         return loadFromResource(new RuleSetReferenceId(rulesetPath));
     }
 
@@ -133,10 +137,11 @@ public final class RuleSetLoader {
      *
      * @param paths Paths
      *
-     * @throws RuleSetNotFoundException If any resource throws
-     * @throws NullPointerException     If the parameter, or any component is null
+     * @throws RulesetLoadException If any error occurs (eg, invalid syntax, or resource not found),
+     *                              for any of the parameters
+     * @throws NullPointerException If the parameter, or any component is null
      */
-    public List<RuleSet> loadFromResources(Collection<String> paths) throws RuleSetNotFoundException {
+    public List<RuleSet> loadFromResources(Collection<String> paths) {
         List<RuleSet> ruleSets = new ArrayList<>(paths.size());
         for (String path : paths) {
             ruleSets.add(loadFromResource(path));
@@ -147,18 +152,24 @@ public final class RuleSetLoader {
     /**
      * Parses several resources into a list of rulesets.
      *
-     * @param paths Paths
+     * @param first First path
+     * @param rest  Paths
      *
-     * @throws RuleSetNotFoundException If any resource throws
-     * @throws NullPointerException     If the parameter, or any component is null
+     * @throws RulesetLoadException If any error occurs (eg, invalid syntax, or resource not found),
+     *                              for any of the parameters
+     * @throws NullPointerException If the parameter, or any component is null
      */
-    public List<RuleSet> loadFromResources(String... paths) throws RuleSetNotFoundException {
-        return loadFromResources(Arrays.asList(paths));
+    public List<RuleSet> loadFromResources(String first, String... rest) {
+        return loadFromResources(CollectionUtil.listOf(first, rest));
     }
 
     // package private
-    RuleSet loadFromResource(RuleSetReferenceId ruleSetReferenceId) throws RuleSetNotFoundException {
-        return toFactory().createRuleSet(ruleSetReferenceId);
+    RuleSet loadFromResource(RuleSetReferenceId ruleSetReferenceId) {
+        try {
+            return toFactory().createRuleSet(ruleSetReferenceId);
+        } catch (Exception e) {
+            throw new RulesetLoadException("Cannot parse " + ruleSetReferenceId, e);
+        }
     }
 
 
@@ -174,15 +185,17 @@ public final class RuleSetLoader {
 
     /**
      * Returns an Iterator of RuleSet objects loaded from descriptions from the
-     * "categories.properties" resource for each Language with Rule support. This
+     * "categories.properties" resource for each language. This
      * uses the classpath of the resource loader ({@link #loadResourcesWith(ClassLoader)}).
      *
      * @return A list of all category rulesets
      *
-     * @throws RuleSetNotFoundException if some ruleset file could not be parsed
-     *                                  TODO shouldn't our API forbid this case?
+     * @throws RulesetLoadException If a standard ruleset cannot be loaded.
+     *                              This is a corner case, that probably should not be caught by clients.
+     *                              The standard rulesets are well-formed, at least in stock PMD distributions.
+     *
      */
-    public List<RuleSet> getStandardRuleSets() throws RuleSetNotFoundException {
+    public List<RuleSet> getStandardRuleSets() {
         String rulesetsProperties;
         List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<>();
         for (Language language : LanguageRegistry.getLanguages()) {
@@ -195,13 +208,23 @@ public final class RuleSetLoader {
                     ruleSetReferenceIds.addAll(RuleSetReferenceId.parse(rulesetFilenames));
                 }
             } catch (RuleSetNotFoundException e) {
-                LOG.fine("The language " + language.getTerseName() + " provides no " + rulesetsProperties + ".");
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.fine("The language " + language.getTerseName() + " provides no " + rulesetsProperties + ".");
+                }
             } catch (IOException ioe) {
-                throw new RuleSetNotFoundException("Couldn't read " + rulesetsProperties
-                                                       + "; please ensure that the directory is on the classpath. The current classpath is: "
-                                                       + System.getProperty("java.class.path"), ioe);
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.fine("Couldn't read " + rulesetsProperties
+                                 + "; please ensure that the directory is on the classpath. The current classpath is: "
+                                 + System.getProperty("java.class.path"));
+                    LOG.fine(ioe.toString());
+                }
             }
         }
-        return toFactory().createRuleSets(ruleSetReferenceIds);
+
+        List<RuleSet> ruleSets = new ArrayList<>();
+        for (RuleSetReferenceId id : ruleSetReferenceIds) {
+            ruleSets.add(loadFromResource(id)); // may throw
+        }
+        return ruleSets;
     }
 }

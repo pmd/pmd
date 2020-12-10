@@ -27,7 +27,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
-import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RulesetLoadException;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
@@ -103,20 +103,7 @@ public class PMDTaskImpl {
         RuleSetLoader rulesetLoader = RuleSetLoader.fromPmdConfig(configuration)
                                                    .loadResourcesWith(setupResourceLoader());
 
-        List<RuleSet> rules;
-        try {
-            // This is just used to validate and display rules. Each thread will create its own ruleset
-            String ruleSets = configuration.getRuleSets();
-            if (StringUtils.isNotBlank(ruleSets)) {
-                // Substitute env variables/properties
-                configuration.setRuleSets(project.replaceProperties(ruleSets));
-            }
-            List<String> paths = asList(configuration.getRuleSets().split(","));
-            rules = rulesetLoader.loadFromResources(paths);
-            logRulesUsed(rules);
-        } catch (RuleSetNotFoundException e) {
-            throw new BuildException(e.getMessage(), e);
-        }
+        List<RuleSet> rules = loadRulesets(rulesetLoader);
 
         if (configuration.getSuppressMarker() != null) {
             project.log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
@@ -129,6 +116,7 @@ public class PMDTaskImpl {
         final List<DataSource> files = new ArrayList<>();
         final List<String> reportShortNamesPaths = new ArrayList<>();
         StringJoiner fullInputPath = new StringJoiner(",");
+
         for (FileSet fs : filesets) {
             DirectoryScanner ds = fs.getDirectoryScanner(project);
             for (String srcFile : ds.getIncludedFiles()) {
@@ -161,6 +149,25 @@ public class PMDTaskImpl {
         if (failOnRuleViolation && problemCount > maxRuleViolations) {
             throw new BuildException("Stopping build since PMD found " + problemCount + " rule violations in the code");
         }
+    }
+
+    @NonNull
+    private List<RuleSet> loadRulesets(RuleSetLoader rulesetLoader) {
+        List<RuleSet> rules;
+        try {
+            // This is just used to validate and display rules. Each thread will create its own ruleset
+            String ruleSets = configuration.getRuleSets();
+            if (StringUtils.isNotBlank(ruleSets)) {
+                // Substitute env variables/properties
+                configuration.setRuleSets(project.replaceProperties(ruleSets));
+            }
+            List<String> paths = asList(configuration.getRuleSets().split(","));
+            rules = rulesetLoader.loadFromResources(paths);
+            logRulesUsed(rules);
+        } catch (RulesetLoadException e) {
+            throw new BuildException(e.getMessage(), e);
+        }
+        return rules;
     }
 
     private @NonNull GlobalAnalysisListener getListener(ViolationCounterListener reportSizeListener, List<String> reportShortNamesPaths) {
