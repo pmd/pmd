@@ -79,10 +79,6 @@ public final class MetricFunction extends BaseJavaXPathFunction {
     }
 
 
-    static String genericBadNodeMessage() {
-        return "Incorrect node type: the 'metric' function cannot be applied";
-    }
-
     private static double getMetric(Node n, String metricKeyName) throws XPathException {
         Metric<?, ?> metric = METRICS.getMetricWithName(metricKeyName);
         if (metric == null) {

@@ -19,7 +19,29 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
 
 /**
  * A named computation that can be carried out on some nodes. Example
- * include complexity metrics.
+ * include complexity metrics, like cyclomatic complexity.
+ *
+ * <p>Use with {@link MetricsUtil}, for example, in the Java module:
+ * <pre>{@code
+ *   if (JavaMetrics.CYCLO.supports(node)) {
+ *     int cyclo = MetricsUtil.computeMetric(JavaMetrics.CYCLO, node);
+ *     ...
+ *   }
+ * }</pre>
+ *
+ * <p>Note that the {@code supports} check is necessary (metrics cannot
+ * necessarily be computed on any node of the type they support).
+ *
+ * <p>Metrics support a concept of {@linkplain MetricOption options},
+ * which can be passed to {@link Metric#compute(Metric, MetricOptions, Node) compute}
+ * or {@link MetricsUtil#computeMetric(Metric, Node, MetricOptions)}.
+ *
+ * <p>Metric instances are stateless by contract.
+ *
+ * <p>To implement your own metrics, use the factory method {@link #of(BiFunction, Function, String, String...) of}.
+ * Be aware though, that you cannot register a custom metric into a
+ * {@link LanguageMetricsProvider}, which means your metric will not be
+ * available from XPath.
  *
  * @param <N> Type of nodes the metric can be computed on
  * @param <R> Result type of the metric
@@ -86,10 +108,11 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
 
 
     /**
-     * Factory method for a metric.
+     * Factory method for a metric. The returned instance does not override
+     * equals/hashcode.
      *
-     * @param compute  Implementation for {@link #computeFor(Node, MetricOptions)}
-     * @param cast     Implementation for {@link #castIfSupported(Node)}
+     * @param compute  Implementation for {@link #computeFor(Node, MetricOptions)} (a pure function).
+     * @param cast     Implementation for {@link #castIfSupported(Node)} (a pure function).
      * @param fullName The full name of the metric
      * @param aliases  Aliases for the name
      * @param <R>      Return type of the metric
@@ -136,7 +159,8 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
 
     /**
      * Compute a metric on an arbitrary node, if possible. This is useful
-     * in situations where {@code N} is unknown.
+     * in situations where {@code N} is unknown. The result is not cached
+     * on the node.
      *
      * @param metric  Metric
      * @param options Options for the metric

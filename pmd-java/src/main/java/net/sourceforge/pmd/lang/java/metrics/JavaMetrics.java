@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -85,8 +86,9 @@ public final class JavaMetrics {
     public static final Metric<JavaNode, Integer> ACCESS_TO_FOREIGN_DATA =
         Metric.of(JavaMetrics::computeAtfd, isJavaNode(),
                   "Access To Foreign Data", "ATFD");
-
-
+    /**
+     * {@link Metric#of(BiFunction, Function, String, String...)}
+     */
     public static final Metric<ASTAnyTypeDeclaration, Double> WEIGHT_OF_CLASS =
         Metric.of(JavaMetrics::computeWoc, asClass(it -> !it.isInterface()),
                   "Weight Of Class", "WOC");
@@ -237,7 +239,9 @@ public final class JavaMetrics {
     }
 
 
-    /** Variants of NCSS. */
+    /**
+     * Options for {@link #NCSS}.
+     */
     public enum NcssOption implements MetricOption {
         /** Counts import and package statement. This makes the metric JavaNCSS compliant. */
         COUNT_IMPORTS("countImports");
@@ -257,7 +261,9 @@ public final class JavaMetrics {
     }
 
 
-    /** Options for CYCLO. */
+    /**
+     * Options for {@link #CYCLO}.
+     */
     public enum CycloOption implements MetricOption {
         /** Do not count the paths in boolean expressions as decision points. */
         IGNORE_BOOLEAN_PATHS("ignoreBooleanPaths"),
@@ -307,6 +313,9 @@ public final class JavaMetrics {
     }
 
 
+    /**
+     * Options for {@link #FAN_OUT}.
+     */
     public enum ClassFanOutOption implements MetricOption {
         /** Whether to include Classes in the java.lang package. */
         INCLUDE_JAVA_LANG("includeJavaLang");
