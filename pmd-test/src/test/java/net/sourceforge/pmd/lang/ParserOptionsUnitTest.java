@@ -86,7 +86,7 @@ public class ParserOptionsUnitTest {
     public void testEnvOverriddenPropertyDescriptors() {
         TestParserOptions parserOptions = new TestParserOptions() {
             @Override
-            protected String getEnvValue(PropertyDescriptor propertyDescriptor) {
+            protected String getEnvValue(PropertyDescriptor<?> propertyDescriptor) {
                 if (propertyDescriptor.equals(TestParserOptions.LIST_DESCRIPTOR)) {
                     return StringUtils.join(OVERRIDDEN_LIST, ",");
                 } else if (propertyDescriptor.equals(TestParserOptions.STRING_DESCRIPTOR)) {
@@ -105,7 +105,7 @@ public class ParserOptionsUnitTest {
     public void testEmptyPropertyDescriptors() {
         TestParserOptions vfParserOptions = new TestParserOptions() {
             @Override
-            protected String getEnvValue(PropertyDescriptor propertyDescriptor) {
+            protected String getEnvValue(PropertyDescriptor<?> propertyDescriptor) {
                 if (propertyDescriptor.equals(TestParserOptions.LIST_DESCRIPTOR)
                         || propertyDescriptor.equals(TestParserOptions.STRING_DESCRIPTOR)) {
                     return "";

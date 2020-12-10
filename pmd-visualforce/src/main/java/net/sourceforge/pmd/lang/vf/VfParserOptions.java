@@ -18,6 +18,8 @@ public class VfParserOptions extends ParserOptions {
 
     /**
      * Directory that contains Apex classes that may be referenced from a Visualforce page.
+     *
+     * <p>Env variable is {@code PMD_VF_APEXDIRECTORIES}.
      */
     public static final PropertyDescriptor<List<String>> APEX_DIRECTORIES_DESCRIPTOR =
             PropertyFactory.stringListProperty("apexDirectories")
@@ -28,6 +30,8 @@ public class VfParserOptions extends ParserOptions {
 
     /**
      * Directory that contains Object definitions that may be referenced from a Visualforce page.
+     *
+     * <p>Env variable is {@code PMD_VF_OBJECTSDIRECTORIES}.
      */
     public static final PropertyDescriptor<List<String>> OBJECTS_DIRECTORIES_DESCRIPTOR =
             PropertyFactory.stringListProperty("objectsDirectories")

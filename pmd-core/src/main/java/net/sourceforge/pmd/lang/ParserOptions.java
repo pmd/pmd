@@ -31,11 +31,12 @@ public class ParserOptions {
     private final ParserOptionsProperties parserOptionsProperties;
 
     public ParserOptions() {
-        this(null);
+        this.languageId = null;
+        this.parserOptionsProperties = new ParserOptionsProperties();
     }
 
     public ParserOptions(String languageId) {
-        this.languageId = languageId;
+        this.languageId = Objects.requireNonNull(languageId);
         this.parserOptionsProperties = new ParserOptionsProperties();
     }
 
@@ -98,7 +99,9 @@ public class ParserOptions {
      * @return environment variable that overrides the PropertyDesciptors default value. Returns null if no environment
      *     variable has been set.
      */
-    protected String getEnvValue(PropertyDescriptor<?> propertyDescriptor) {
+    String getEnvValue(PropertyDescriptor<?> propertyDescriptor) {
+        // note: since we use environent variables and not system properties,
+        // tests override this method.
         return System.getenv(getEnvironmentVariableName(propertyDescriptor));
     }
 
@@ -106,7 +109,7 @@ public class ParserOptions {
      * Overrides the default PropertyDescriptors with values found in environment variables.
      * TODO: Move this to net.sourceforge.pmd.PMD#parserFor when CLI options are implemented
      */
-    protected void overridePropertiesFromEnv() {
+    protected final void overridePropertiesFromEnv() {
         for (PropertyDescriptor<?> propertyDescriptor : parserOptionsProperties.getPropertyDescriptors()) {
             String propertyValue = getEnvValue(propertyDescriptor);
 
