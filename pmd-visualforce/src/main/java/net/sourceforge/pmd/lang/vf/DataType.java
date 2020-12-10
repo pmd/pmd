@@ -31,7 +31,7 @@ public enum DataType {
     ExternalLookup(true),
     File(false),
     Hierarchy(false),
-    Html(true),
+    Html(false),
     IndirectLookup(false),
     Location(false),
     LongTextArea(true),
