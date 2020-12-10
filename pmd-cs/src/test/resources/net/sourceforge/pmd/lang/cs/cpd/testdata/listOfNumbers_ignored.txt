@@ -1,0 +1,41 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [using]                                 1         5
+    [System]                                7         12
+    [;]                                     13        13
+L2
+    [using]                                 1         5
+    [System]                                7         12
+    [.]                                     13        13
+    [Collections]                           14        24
+    [;]                                     25        25
+L3
+    [using]                                 1         5
+    [System]                                7         12
+    [.]                                     13        13
+    [Collections]                           14        24
+    [.]                                     25        25
+    [Generic]                               26        32
+    [;]                                     33        33
+L4
+    [public]                                1         6
+    [class]                                 8         12
+    [LongLists]                             14        22
+    [{]                                     24        24
+L5
+    [List]                                  5         8
+    [<]                                     9         9
+    [byte]                                  10        13
+    [>]                                     14        14
+    [l]                                     16        16
+    [=]                                     18        18
+    [new]                                   20        22
+    [List]                                  24        27
+    [<]                                     28        28
+    [byte]                                  29        32
+    [>]                                     33        33
+L7
+    [;]                                     6         6
+L8
+    [}]                                     1         1
+EOF
