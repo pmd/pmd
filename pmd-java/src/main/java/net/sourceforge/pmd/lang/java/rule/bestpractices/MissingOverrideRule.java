@@ -55,7 +55,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
         RelevantMethodSet relevantMethods = new RelevantMethodSet(node.getSymbol());
 
-        for (ASTMethodDeclaration methodDecl : node.getDeclarations().filterIs(ASTMethodDeclaration.class)) {
+        for (ASTMethodDeclaration methodDecl : node.getDeclarations(ASTMethodDeclaration.class)) {
             relevantMethods.addIfRelevant(methodDecl);
         }
 

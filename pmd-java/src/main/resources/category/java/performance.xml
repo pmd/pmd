@@ -24,7 +24,7 @@ It is much better to use one of the type-specific toString() methods instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']
+//InfixExpression[@Operator='+']/StringLiteral[@Empty=true()]
 ]]>
                 </value>
             </property>
@@ -209,7 +209,7 @@ that one covers both.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[
+//ConstructorCall/ClassOrInterfaceType[
        pmd-java:typeIs('java.io.FileInputStream')
     or pmd-java:typeIs('java.io.FileOutputStream')
     or pmd-java:typeIs('java.io.FileReader')
@@ -282,17 +282,12 @@ adverse impacts on performance.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration/Type/PrimitiveType[@Image = 'short']
-|
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[pmd-java:typeIs('java.lang.Override')])]
-    /MethodDeclaration/ResultType/Type/PrimitiveType[@Image = 'short']
-|
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[pmd-java:typeIs('java.lang.Override')])]
-    /MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/Type/PrimitiveType[@Image = 'short']
-|
-//LocalVariableDeclaration/Type/PrimitiveType[@Image = 'short']
-|
-//AnnotationMethodDeclaration/Type/PrimitiveType[@Image = 'short']
+//PrimitiveType[@Kind = 'short'][
+       parent::FieldDeclaration
+    or parent::LocalVariableDeclaration
+    or parent::FormalParameter and ../../../self::MethodDeclaration[@Overridden = false()]
+    or parent::MethodDeclaration[@Overridden = false()]
+]
 ]]>
                 </value>
             </property>
@@ -368,9 +363,7 @@ Note that new Byte() is deprecated since JDK 9 for that reason.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression
-[not (ArrayDimsAndInits)
-and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')]]
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')]
 ]]>
                 </value>
             </property>
@@ -544,9 +537,7 @@ Note that new Integer() is deprecated since JDK 9 for that reason.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression
-  [not (ArrayDimsAndInits)
-   and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Integer')]]
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Integer')]
 ]]>
                 </value>
             </property>
@@ -576,9 +567,7 @@ Note that new Long() is deprecated since JDK 9 for that reason.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression
-[not (ArrayDimsAndInits)
-and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Long')]]
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Long')]
 ]]>
                 </value>
             </property>
@@ -694,16 +683,9 @@ ensure that the string is not empty by making an additional check first.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
- [PrimaryPrefix/Name
-  [ends-with(@Image, '.startsWith')] or PrimarySuffix[@Image='startsWith']]
- [PrimarySuffix/Arguments/ArgumentList
-  /Expression/PrimaryExpression/PrimaryPrefix
-  /Literal
-   [string-length(@Image)=3]
-   [starts-with(@Image, '"')]
-   [ends-with(@Image, '"')]
- ]
+//MethodCall
+ [ pmd-java:matchesSig('java.lang.String#startsWith(_)') ]
+ [ArgumentList[StringLiteral[@Length = 1]]]
 ]]>
                 </value>
             </property>
@@ -740,9 +722,7 @@ Note that new Short() is deprecated since JDK 9 for that reason.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression
-[not (ArrayDimsAndInits)
-and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Short')]]
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Short')]
 ]]>
                 </value>
             </property>
@@ -777,12 +757,19 @@ private String bar = new String("bar"); // just do a String bar = "bar";
           language="java"
           since="1.0"
           message="Avoid calling toString() on String objects; this is unnecessary."
-          class="net.sourceforge.pmd.lang.java.rule.performance.StringToStringRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#stringtostring">
         <description>
 Avoid calling toString() on objects already known to be string instances; this is unnecessary.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    //MethodCall[pmd-java:matchesSig("java.lang.String#toString()")]
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 private String baz() {
@@ -810,9 +797,7 @@ if-then statement to increase code readability.
             <property name="xpath">
                 <value>
 <![CDATA[
-//SwitchStatement[
-    (count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
-]
+//SwitchStatement[ (count(*) - 1) < $minimumNumberCaseForASwitch ]
 ]]>
                 </value>
             </property>
@@ -881,9 +866,7 @@ ArrayList is a much better Collection implementation than Vector if thread-safe 
             <property name="xpath">
                 <value>
 <![CDATA[
-//CompilationUnit[not(ImportDeclaration) or ImportDeclaration[@ImportedName='java.util.Vector']]
-  //AllocationExpression/ClassOrInterfaceType
-    [@Image='Vector' or @Image='java.util.Vector']
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]
 ]]>
                 </value>
             </property>
@@ -1105,14 +1088,22 @@ public class Foo {
     <rule name="UseStringBufferLength"
           language="java"
           since="3.4"
-          message="This is an inefficient use of StringBuffer.toString; call StringBuffer.length instead."
-          class="net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferLengthRule"
+          message="This is an inefficient use of CharSequence.toString; call CharSequence.length instead."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usestringbufferlength">
         <description>
 Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
 or StringBuffer.toString().length() == ...
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    //MethodCall[pmd-java:matchesSig('_#length()')
+                                 and MethodCall[pmd-java:matchesSig('java.lang.CharSequence#toString()')]]
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 StringBuffer sb = new StringBuffer();

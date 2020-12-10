@@ -90,13 +90,28 @@ public class CsTokenizerTest extends CpdTextComparisonTest {
         doTest("tabWidth");
     }
 
-    private Properties ignoreUsings() {
-        return properties(true);
+    @Test
+    public void testLongListsOfNumbersAreNotIgnored() {
+        doTest("listOfNumbers");
     }
 
-    private Properties properties(boolean ignoreUsings) {
+    @Test
+    public void testLongListsOfNumbersAreIgnored() {
+        doTest("listOfNumbers", "_ignored", skipLiteralSequences());
+    }
+
+    private Properties ignoreUsings() {
+        return properties(true, false);
+    }
+
+    private Properties skipLiteralSequences() {
+        return properties(false, true);
+    }
+
+    private Properties properties(boolean ignoreUsings, boolean ignoreLiteralSequences) {
         Properties properties = new Properties();
         properties.setProperty(Tokenizer.IGNORE_USINGS, Boolean.toString(ignoreUsings));
+        properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, Boolean.toString(ignoreLiteralSequences));
         return properties;
     }
 }
