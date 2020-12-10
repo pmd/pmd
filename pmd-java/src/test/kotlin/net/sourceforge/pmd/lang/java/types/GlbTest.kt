@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
@@ -36,7 +37,7 @@ class GlbTest : FunSpec({
                 }
 
                 // in particular
-                checkAll(ts.allTypesGen) { t ->
+                checkAll(ts.refTypeGen) { t ->
                     glb(t, t) shouldBe t // regardless of what kind of type t is
                 }
             }
@@ -74,6 +75,16 @@ class GlbTest : FunSpec({
                 glb(t_ArrayList, ts.SERIALIZABLE) shouldBe t_ArrayList
                 glb(t_List, `t_List{?}`) shouldBe `t_List{?}`
 
+            }
+
+            test("Test GLB errors") {
+
+                shouldThrow<IllegalArgumentException> {
+                    glb(int, t_Number)
+                }
+                shouldThrow<IllegalArgumentException> {
+                    glb(int, ts.OBJECT)
+                }
             }
 
             test("Test GLB corner cases") {
