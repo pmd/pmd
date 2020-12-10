@@ -65,7 +65,7 @@ public class RuleDocGeneratorTest {
         RuleSetFactory rsf = RulesetsFactoryUtils.createFactory(RulePriority.LOW, false, false, true);
         RuleSet ruleset = rsf.createRuleSet("rulesets/ruledoctest/sample.xml");
 
-        generator.generate(Arrays.asList(ruleset).iterator(),
+        generator.generate(Arrays.asList(ruleset),
                 Arrays.asList(
                         "rulesets/ruledoctest/sample-deprecated.xml",
                         "rulesets/ruledoctest/other-ruleset.xml"));

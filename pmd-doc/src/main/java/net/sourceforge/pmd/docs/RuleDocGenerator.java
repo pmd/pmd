@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -29,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,9 +36,8 @@ import org.apache.commons.text.StringEscapeUtils;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoader;
+import net.sourceforge.pmd.RulesetLoadException;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -91,21 +90,16 @@ public class RuleDocGenerator {
         }
     }
 
-    public void generate(Iterator<RuleSet> registeredRulesets, List<String> additionalRulesets) {
+    public void generate(List<RuleSet> registeredRulesets, List<String> additionalRulesets) throws IOException {
         Map<Language, List<RuleSet>> sortedRulesets;
         Map<Language, List<RuleSet>> sortedAdditionalRulesets;
-        try {
-            sortedRulesets = sortRulesets(registeredRulesets);
-            sortedAdditionalRulesets = sortRulesets(resolveAdditionalRulesets(additionalRulesets));
-            determineRuleClassSourceFiles(sortedRulesets);
-            generateLanguageIndex(sortedRulesets, sortedAdditionalRulesets);
-            generateRuleSetIndex(sortedRulesets);
+        sortedRulesets = sortRulesets(registeredRulesets);
+        sortedAdditionalRulesets = sortRulesets(resolveAdditionalRulesets(additionalRulesets));
+        determineRuleClassSourceFiles(sortedRulesets);
+        generateLanguageIndex(sortedRulesets, sortedAdditionalRulesets);
+        generateRuleSetIndex(sortedRulesets);
 
-            generateSidebar(sortedRulesets);
-
-        } catch (RuleSetNotFoundException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        generateSidebar(sortedRulesets);
     }
 
     private void generateSidebar(Map<Language, List<RuleSet>> sortedRulesets) throws IOException {
@@ -113,53 +107,40 @@ public class RuleDocGenerator {
         generator.generateSidebar(sortedRulesets);
     }
 
-    private Iterator<RuleSet> resolveAdditionalRulesets(List<String> additionalRulesets) throws RuleSetNotFoundException {
+    private List<RuleSet> resolveAdditionalRulesets(List<String> additionalRulesets) {
         if (additionalRulesets == null) {
-            return Collections.emptyIterator();
+            return Collections.emptyList();
         }
 
         List<RuleSet> rulesets = new ArrayList<>();
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
+        RuleSetLoader ruleSetLoader = new RuleSetLoader();
         for (String filename : additionalRulesets) {
             try {
                 // do not take rulesets from pmd-test or pmd-core
                 if (!filename.contains("pmd-test") && !filename.contains("pmd-core")) {
-                    rulesets.add(ruleSetFactory.createRuleSet(filename));
+                    rulesets.add(ruleSetLoader.loadFromResource(filename));
                 } else {
                     LOG.fine("Ignoring ruleset " + filename);
                 }
-            } catch (IllegalArgumentException e) {
+            } catch (RulesetLoadException e) {
                 // ignore rulesets, we can't read
                 LOG.log(Level.WARNING, "ruleset file " + filename + " ignored (" + e.getMessage() + ")", e);
             }
         }
-        return rulesets.iterator();
+        return rulesets;
     }
 
     private Path getAbsoluteOutputPath(String filename) {
         return root.resolve(FilenameUtils.normalize(filename));
     }
 
-    private Map<Language, List<RuleSet>> sortRulesets(Iterator<RuleSet> rulesets) throws RuleSetNotFoundException {
-        SortedMap<Language, List<RuleSet>> rulesetsByLanguage = new TreeMap<>();
-
-        while (rulesets.hasNext()) {
-            RuleSet ruleset = rulesets.next();
-            Language language = getRuleSetLanguage(ruleset);
-
-            if (!rulesetsByLanguage.containsKey(language)) {
-                rulesetsByLanguage.put(language, new ArrayList<RuleSet>());
-            }
-            rulesetsByLanguage.get(language).add(ruleset);
-        }
+    private Map<Language, List<RuleSet>> sortRulesets(List<RuleSet> rulesets) {
+        SortedMap<Language, List<RuleSet>> rulesetsByLanguage = rulesets.stream().collect(Collectors.groupingBy(RuleDocGenerator::getRuleSetLanguage,
+                                                                                                                TreeMap::new,
+                                                                                                                Collectors.toCollection(ArrayList::new)));
 
         for (List<RuleSet> rulesetsOfOneLanguage : rulesetsByLanguage.values()) {
-            Collections.sort(rulesetsOfOneLanguage, new Comparator<RuleSet>() {
-                @Override
-                public int compare(RuleSet o1, RuleSet o2) {
-                    return o1.getName().compareToIgnoreCase(o2.getName());
-                }
-            });
+            rulesetsOfOneLanguage.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
         }
         return rulesetsByLanguage;
     }
