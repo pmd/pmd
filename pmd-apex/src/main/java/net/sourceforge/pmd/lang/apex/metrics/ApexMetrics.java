@@ -23,7 +23,8 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 /**
- *
+ * Built-in Apex metrics. See {@link Metric} and {@link MetricsUtil}
+ * for usage doc.
  */
 public final class ApexMetrics {
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -31,6 +32,54 @@ public final class ApexMetrics {
         (Class) ApexNode.class; // this is a Class<ApexNode>, the raw type
 
 
+    /**
+     * Number of independent paths through a block of code.
+     * Formally, given that the control flow graph of the block has n
+     * vertices, e edges and p connected components, the cyclomatic complexity
+     * of the block is given by {@code CYCLO = e - n + 2p}. In practice
+     * it can be calculated by counting control flow statements following
+     * the standard rules given below.
+     *
+     *
+     * <p>The standard version of the metric complies with McCabe’s original definition:
+     * <ul>
+     *  <li>Methods have a base complexity of 1.
+     *  <li>+1 for every control flow statement (if, catch, throw, do, while, for, break, continue) and conditional expression (?:).
+     *  <li>else, finally and default do not count;
+     *  <li>+1 for every boolean operator ({@code &&}, {@code ||}) in
+     *  the guard condition of a control flow statement. That’s because
+     *  Apex has short-circuit evaluation semantics for boolean operators,
+     *  which makes every boolean operator kind of a control flow statement in itself.
+     * </ul>
+     *
+     * <p>Code example:
+     * <pre>{@code
+     * class Foo {
+     *   void baseCyclo() {                // Cyclo = 1
+     *     highCyclo();
+     *   }
+     *
+     *   void highCyclo() {                // Cyclo = 10
+     *     int x = 0, y = 2;
+     *     boolean a = false, b = true;
+     *
+     *     if (a && (y == 1 ? b : true)) { // +3
+     *       if (y == x) {                 // +1
+     *         while (true) {              // +1
+     *           if (x++ < 20) {           // +1
+     *             break;                  // +1
+     *           }
+     *         }
+     *       } else if (y == t && !d) {    // +2
+     *         x = a ? y : x;              // +1
+     *       } else {
+     *         x = 2;
+     *       }
+     *     }
+     *   }
+     * }
+     * }</pre>
+     */
     public static final Metric<ApexNode<?>, Integer> CYCLO =
         Metric.of(ApexMetrics::computeCyclo, isRegularApexNode(),
                   "Cyclomatic Complexity", "Cyclo");
@@ -40,6 +89,11 @@ public final class ApexMetrics {
                   "Cognitive Complexity");
 
 
+    /**
+     * Sum of the statistical complexity of the operations in the class.
+     * We use CYCLO to quantify the complexity of an operation.
+     *
+     */
     public static final Metric<ASTUserClassOrInterface<?>, Integer> WEIGHED_METHOD_COUNT =
         Metric.of(ApexMetrics::computeWmc, filterMapNode(ASTUserClass.class, PredicateUtil.always()),
                   "Weighed Method Count", "WMC");

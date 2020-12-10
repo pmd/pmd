@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -43,21 +42,227 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 /**
- * A collection of Java metrics.
- *
- * @see <a href="https://pmd.github.io/latest/pmd_java_metrics_index.html">Online documentation</a>
+ * Built-in Java metrics. See {@link Metric} and {@link MetricsUtil}
+ * for usage doc.
  */
 @SuppressWarnings("PMD.UnusedFormalParameter") // #2838
 public final class JavaMetrics {
 
+    /**
+     * Number of usages of foreign attributes, both directly and through accessors.
+     * High values of ATFD (&gt; 3 for an operation) may suggest that the
+     * class or operation breaks encapsulation by relying on the internal
+     * representation of the classes it uses instead of the services they provide.
+     */
+    public static final Metric<JavaNode, Integer> ACCESS_TO_FOREIGN_DATA =
+        Metric.of(JavaMetrics::computeAtfd, isJavaNode(),
+                  "Access To Foreign Data", "ATFD");
 
+
+    /**
+     * Number of independent paths through a block of code.
+     * Formally, given that the control flow graph of the block has n
+     * vertices, e edges and p connected components, the cyclomatic complexity
+     * of the block is given by {@code CYCLO = e - n + 2p}. In practice
+     * it can be calculated by counting control flow statements following
+     * the standard rules given below.
+     *
+     * <p>The standard version of the metric complies with McCabe’s original definition:
+     * <ul>
+     *  <li>Methods have a base complexity of 1.
+     *  <li>+1 for every control flow statement (if, case, catch, throw,
+     *  do, while, for, break, continue) and conditional expression (?:).
+     *  Notice switch cases count as one, but not the switch itself: the
+     *  point is that a switch should have the same complexity value as
+     *  the equivalent series of if statements.
+     *  <li>else, finally and default do not count;
+     *  <li>+1 for every boolean operator ({@code &&}, {@code ||}) in
+     *  the guard condition of a control flow statement. That’s because
+     *  Java has short-circuit evaluation semantics for boolean operators,
+     *  which makes every boolean operator kind of a control flow statement in itself.
+     * </ul>
+     *
+     * <p>Code example:
+     * <pre>{@code
+     * class Foo {
+     *   void baseCyclo() {                // Cyclo = 1
+     *     highCyclo();
+     *   }
+     *
+     *   void highCyclo() {                // Cyclo = 10
+     *     int x = 0, y = 2;
+     *     boolean a = false, b = true;
+     *
+     *     if (a && (y == 1 ? b : true)) { // +3
+     *       if (y == x) {                 // +1
+     *         while (true) {              // +1
+     *           if (x++ < 20) {           // +1
+     *             break;                  // +1
+     *           }
+     *         }
+     *       } else if (y == t && !d) {    // +2
+     *         x = a ? y : x;              // +1
+     *       } else {
+     *         x = 2;
+     *       }
+     *     }
+     *   }
+     * }
+     * }</pre>
+     *
+     * @see CycloOption
+     */
+    public static final Metric<ASTMethodOrConstructorDeclaration, Integer> CYCLO =
+        Metric.of(JavaMetrics::computeCyclo, asMethodOrCtor(),
+                  "Cyclomatic Complexity", "Cyclo");
+
+    /**
+     * This counts the number of other classes a given class or operation
+     * relies on. Classes from the package {@code java.lang} are ignored
+     * by default (can be changed via options). Also primitives are not
+     * included into the count.
+     *
+     * <p>Code example:
+     * <pre>{@code
+     * import java.util.*;
+     * import java.io.IOException;
+     *
+     * public class Foo { // total 8
+     *     public Set set = new HashSet(); // +2
+     *     public Map map = new HashMap(); // +2
+     *     public String string = ""; // from java.lang -> does not count by default
+     *     public Double number = 0.0; // from java.lang -> does not count by default
+     *     public int[] intArray = new int[3]; // primitive -> does not count
+     *
+     *     \@Deprecated // from java.lang -> does not count by default
+     *     public void foo(List list) throws Exception { // +1 (Exception is from java.lang)
+     *         throw new IOException(); // +1
+     *     }
+     *
+     *     public int getMapSize() {
+     *         return map.size(); // +1 because it uses the Class from the 'map' field
+     *     }
+     * }
+     * }</pre>
+     *
+     * @see ClassFanOutOption
+     */
+    public static final Metric<JavaNode, Integer> FAN_OUT =
+        Metric.of(JavaMetrics::computeFanOut, isJavaNode(),
+                  "Fan-Out", "CFO");
+
+    /**
+     * Simply counts the number of lines of code the operation or class
+     * takes up in the source. This metric doesn’t discount comments or blank lines.
+     * See {@link #NCSS} for a less biased metric.
+     */
     public static final Metric<JavaNode, Integer> LINES_OF_CODE =
         Metric.of(JavaMetrics::computeLoc, isJavaNode(),
                   "Lines of code", "LOC");
 
+    /**
+     * Number of statements in a class or operation. That’s roughly
+     * equivalent to counting the number of semicolons and opening braces
+     * in the program. Comments and blank lines are ignored, and statements
+     * spread on multiple lines count as only one (e.g. {@code int\n a;}
+     * counts a single statement).
+     *
+     * <p>The standard version of the metric is based off [JavaNCSS](http://www.kclee.de/clemens/java/javancss/):
+     * <ul>
+     * <li>+1 for any of the following statements: {@code if}, {@code else},
+     * {@code while}, {@code do}, {@code for}, {@code switch}, {@code break},
+     * {@code continue}, {@code return}, {@code throw}, {@code synchronized},
+     * {@code catch}, {@code finally}.
+     * <li>+1 for each assignment, variable declaration (except for loop initializers)
+     * or statement expression. We count variables declared on the same line (e.g.
+     * {@code int a, b, c;}) as a single statement.
+     * <li>Contrary to Sonarqube, but as JavaNCSS, we count type declarations (class, interface, enum, annotation),
+     * and method and field declarations.
+     * <li>Contrary to JavaNCSS, but as Sonarqube, we do not count package
+     * declaration and import declarations as statements. This makes it
+     * easier to compare nested classes to outer classes. Besides, it makes
+     * for class metric results that actually represent the size of the class
+     * and not of the file. If you don’t like that behaviour, use the {@link NcssOption#COUNT_IMPORTS} option.
+     * </ul>
+     *
+     * <pre>{@code
+     * import java.util.Collections;       // +0
+     * import java.io.IOException;         // +0
+     *
+     * class Foo {                         // +1, total Ncss = 12
+     *
+     *   public void bigMethod()           // +1
+     *       throws IOException {
+     *     int x = 0, y = 2;               // +1
+     *     boolean a = false, b = true;    // +1
+     *
+     *     if (a || b) {                   // +1
+     *       try {                         // +1
+     *         do {                        // +1
+     *           x += 2;                   // +1
+     *         } while (x < 12);
+     *
+     *         System.exit(0);             // +1
+     *       } catch (IOException ioe) {   // +1
+     *         throw new PatheticFailException(ioe); // +1
+     *       }
+     *     } else {
+     *       assert false;                 // +1
+     *     }
+     *   }
+     * }
+     * }</pre>
+     */
     public static final Metric<JavaNode, Integer> NCSS =
         Metric.of(JavaMetrics::computeNcss, isJavaNode(),
                   "Non-commenting source statements", "NCSS");
+
+    /**
+     * Number of acyclic execution paths through a piece of code. This
+     * is related to cyclomatic complexity, but the two metrics don’t
+     * count the same thing: NPath counts the number of distinct full
+     * paths from the beginning to the end of the method, while Cyclo
+     * only counts the number of decision points. NPath is not computed
+     * as simply as {@link #CYCLO}. With NPath, two decision points appearing
+     * sequentially have their complexity multiplied.
+     *
+     * <p>The fact that NPath multiplies the complexity of statements makes
+     * it grow exponentially: 10 {@code if .. else} statements in a row
+     * would give an NPath of 1024, while Cyclo would evaluate to 20.
+     * Methods with an NPath complexity over 200 are generally considered
+     * too complex.
+     *
+     * <p>We compute NPath recursively, with the following set of rules:
+     * <ul>
+     * <li>An empty block has a complexity of 1.
+     * <li>The complexity of a block is the product of the NPath complexity
+     * of its statements, calculated as follows:
+     * <ul>
+     * <li>The complexity of for, do and while statements is 1, plus the
+     * complexity of the block, plus the complexity of the guard condition.
+     * <li> The complexity of a cascading if statement ({@code if .. else if ..})
+     * is the number of if statements in the chain, plus the complexity of
+     * their guard condition, plus the complexity of the unguarded else block
+     * (or 1 if there is none).
+     * <li> The complexity of a switch statement is the number of cases,
+     * plus the complexity of each case block. It’s equivalent to the
+     * complexity of the equivalent cascade of if statements.
+     * <li> The complexity of a ternary expression ({@code ? :}) is the complexity
+     * of the guard condition, plus the complexity of both expressions.
+     * It’s equivalent to the complexity of the equivalent {@code if .. else} construct.
+     * <li> The complexity of a {@code try .. catch} statement is the complexity
+     * of the {@code try} block, plus the complexity of each catch block.
+     * <li> The complexity of a return statement is the complexity of the
+     * expression (or 1 if there is none).
+     * <li> All other statements have a complexity of 1 and are discarded
+     * from the product.
+     * </ul>
+     * </li>
+     * </ul>
+     */
+    public static final Metric<ASTMethodOrConstructorDeclaration, BigInteger> NPATH =
+        Metric.of(JavaMetrics::computeNpath, asMethodOrCtor(),
+                  "NPath Complexity", "NPath");
 
     public static final Metric<ASTAnyTypeDeclaration, Integer> NUMBER_OF_ACCESSORS =
         Metric.of(JavaMetrics::computeNoam, asClass(always()),
@@ -67,37 +272,50 @@ public final class JavaMetrics {
         Metric.of(JavaMetrics::computeNopa, asClass(always()),
                   "Number of public attributes", "NOPA");
 
+    /**
+     * The relative number of method pairs of a class that access in common
+     * at least one attribute of the measured class. TCC only counts direct
+     * attribute accesses, that is, only those attributes that are accessed
+     * in the body of the method.
+     *
+     * <p>The value is a double between 0 and 1.
+     *
+     * <p>TCC is taken to be a reliable cohesion metric for a class.
+     * High values (&gt;70%) indicate a class with one basic function,
+     * which is hard to break into subcomponents. On the other hand, low
+     * values (&lt;50%) may indicate that the class tries to do too much
+     * and defines several unrelated services, which is undesirable.
+     */
     public static final Metric<ASTAnyTypeDeclaration, Double> TIGHT_CLASS_COHESION =
         Metric.of(JavaMetrics::computeTcc, asClass(it -> !it.isInterface()),
                   "Tight Class Cohesion", "TCC");
 
-    public static final Metric<ASTMethodOrConstructorDeclaration, Integer> CYCLO =
-        Metric.of(JavaMetrics::computeCyclo, asMethodOrCtor(),
-                  "Cyclomatic Complexity", "Cyclo");
-
-    public static final Metric<ASTMethodOrConstructorDeclaration, BigInteger> NPATH =
-        Metric.of(JavaMetrics::computeNpath, asMethodOrCtor(),
-                  "NPath Complexity", "NPath");
-
+    /**
+     * Sum of the statistical complexity of the operations in the class.
+     * We use CYCLO to quantify the complexity of an operation.
+     *
+     * <p>WMC uses the same options as CYCLO, which are provided to CYCLO when computing it ({@link CycloOption}).
+     */
     public static final Metric<ASTAnyTypeDeclaration, Integer> WEIGHED_METHOD_COUNT =
         Metric.of(JavaMetrics::computeWmc, asClass(it -> !it.isInterface()),
                   "Weighed Method Count", "WMC");
 
-    public static final Metric<JavaNode, Integer> ACCESS_TO_FOREIGN_DATA =
-        Metric.of(JavaMetrics::computeAtfd, isJavaNode(),
-                  "Access To Foreign Data", "ATFD");
+
     /**
-     * {@link Metric#of(BiFunction, Function, String, String...)}
+     * Number of “functional” public methods divided by the total number
+     * of public methods. Our definition of “functional method” excludes
+     * constructors, getters, and setters.
+     *
+     * <p>The value is a double between 0 and 1.
+     *
+     * <p>This metric tries to quantify whether the measured class’ interface
+     * reveals more data than behaviour. Low values (less than 30%) indicate
+     * that the class reveals much more data than behaviour, which is a
+     * sign of poor encapsulation.
      */
     public static final Metric<ASTAnyTypeDeclaration, Double> WEIGHT_OF_CLASS =
         Metric.of(JavaMetrics::computeWoc, asClass(it -> !it.isInterface()),
                   "Weight Of Class", "WOC");
-
-
-    public static final Metric<JavaNode, Integer> FAN_OUT =
-        Metric.of(JavaMetrics::computeFanOut, isJavaNode(),
-                  "Fan-Out", "CFO");
-
 
     private JavaMetrics() {
         // utility class
@@ -267,7 +485,7 @@ public final class JavaMetrics {
     public enum CycloOption implements MetricOption {
         /** Do not count the paths in boolean expressions as decision points. */
         IGNORE_BOOLEAN_PATHS("ignoreBooleanPaths"),
-        /** Consider assert statements. */
+        /** Consider assert statements as if they were {@code if (..) throw new AssertionError(..)}. */
         CONSIDER_ASSERT("considerAssert");
 
         private final String vName;
@@ -317,7 +535,7 @@ public final class JavaMetrics {
      * Options for {@link #FAN_OUT}.
      */
     public enum ClassFanOutOption implements MetricOption {
-        /** Whether to include Classes in the java.lang package. */
+        /** Whether to include classes in the {@code java.lang} package. */
         INCLUDE_JAVA_LANG("includeJavaLang");
 
         private final String vName;

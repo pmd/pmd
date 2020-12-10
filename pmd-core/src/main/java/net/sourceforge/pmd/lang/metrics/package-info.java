@@ -3,14 +3,14 @@
  */
 
 /**
- * Language-independent framework to represent code metrics. If you want
- * to compute code metrics in your rules, then you should find the language-specific
+ * Language-independent framework to represent code metrics. To find the build-in
+ * metrics for a language, find the language-specific
  * utility class containing {@link net.sourceforge.pmd.lang.metrics.Metric}
  * constants, eg in java, {@code JavaMetrics}.
  *
- * <p>Metrics are cached by default on the nodes they're computed on.
- * Many APIs here are deprecated, this is because metrics were previously
- * cached in big static maps, which is replaced by caching on nodes.
- *
+ * <p>See {@link net.sourceforge.pmd.lang.metrics.Metric} and {@link net.sourceforge.pmd.lang.metrics.MetricsUtil}
+ * for usage documentation. In some language modules, XPath rules may
+ * use metrics through an XPath function, e.g. <a href="pmd_userdocs_extending_writing_xpath_rules.html#pmd-java-metric">pmd-java:metric</a>
+ * function.
  */
 package net.sourceforge.pmd.lang.metrics;
