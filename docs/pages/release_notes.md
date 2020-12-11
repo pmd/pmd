@@ -23,15 +23,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ##### Type information for VisualForce
 
-The VisualForce AST now can resolve the data type of Apex expressions mentioned in `<apex>` elements. This feature improves the precision of existing rules, like {% rule vf/security/VfUnescapeEl %}.
+The Visualforce AST now can resolve the data type of Visualforce expressions that reference Apex Controller properties and Custom Object fields. This feature improves the precision of existing rules, like {% rule vf/security/VfUnescapeEl %}.
 
 This can be configured using two environment variables:
-* `PMD_VF_APEXDIRECTORIES`: Comma separated list of directories for Apex classes. Absolute or relative to the Visualforce directory. Default is `../classes`
-* `PMD_VF_OBJECTSDIRECTORIES`: Comma separated list of directories for CustomObjects. Absolute or relative to the Visualforce directory. Default is `../objects`
+* `PMD_VF_APEXDIRECTORIES`: Comma separated list of directories for Apex classes. Absolute or relative to the Visualforce directory. Default is `../classes`. Specifying an empty string will disable data type resolution for Apex Controller properties.
+* `PMD_VF_OBJECTSDIRECTORIES`: Comma separated list of directories for Custom Objects. Absolute or relative to the Visualforce directory. Default is `../objects`. Specifying an empty string will disable data type resolution for Custom Object fields.
 
 This feature is experimental, in particular, expect changes to the way the configuration is specified. We'll probably extend the CLI instead of relying on environment variables in a future version.
 
-Thanks to Jeff Bartolotta for contributing this!
+Thanks to Jeff Bartolotta and Roopa Mohan for contributing this!
 
 ### Fixed Issues
 

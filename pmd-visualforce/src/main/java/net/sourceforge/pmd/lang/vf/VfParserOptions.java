@@ -35,7 +35,7 @@ public class VfParserOptions extends ParserOptions {
      */
     public static final PropertyDescriptor<List<String>> OBJECTS_DIRECTORIES_DESCRIPTOR =
             PropertyFactory.stringListProperty("objectsDirectories")
-                    .desc("Location of CustomObject directories. Absolute or relative to the Visualforce directory.")
+                    .desc("Location of Custom Object directories. Absolute or relative to the Visualforce directory.")
                     .defaultValue(DEFAULT_OBJECT_DIRECTORIES)
                     .delim(',')
                     .build();
