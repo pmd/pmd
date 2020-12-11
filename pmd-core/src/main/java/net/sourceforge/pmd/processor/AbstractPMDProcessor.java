@@ -112,9 +112,6 @@ public abstract class AbstractPMDProcessor {
         return brokenRules;
     }
 
-    @SuppressWarnings("PMD.CloseResource")
-    // the data sources must only be closed after the threads are finished
-    // this is done manually without a try-with-resources
     @Deprecated
     public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
                              List<Renderer> renderers) {
