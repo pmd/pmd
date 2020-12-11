@@ -6,7 +6,8 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTIdentifier extends AbstractVFNode {
+public class ASTIdentifier extends AbstractVFDataNode {
+
     @Deprecated
     @InternalApi
     public ASTIdentifier(int id) {
