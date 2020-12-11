@@ -84,5 +84,6 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   [#2936](https://github.com/pmd/pmd/pull/2936): \[java] (doc) Fix typo: "an accessor" not "a" - [Igor Moreno](https://github.com/igormoreno)
 *   [#2938](https://github.com/pmd/pmd/pull/2938): \[cs] CPD: fix issue where ignoring using directives could not be disabled - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#2945](https://github.com/pmd/pmd/pull/2945): \[cs] Add option to ignore sequences of literals - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#2962](https://github.com/pmd/pmd/pull/2962): \[cpp] Add support for C++ 14 binary literals - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
