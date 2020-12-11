@@ -1422,6 +1422,20 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   </li>
 </ul>
 
+<h5 id="type-information-for-visualforce">Type information for VisualForce</h5>
+
+<p>The Visualforce AST now can resolve the data type of Visualforce expressions that reference Apex Controller properties and Custom Object fields. This feature improves the precision of existing rules, like <a href="pmd_rules_vf_security.html#vfunescapeel"><code class="language-plaintext highlighter-rouge">VfUnescapeEl</code></a>.</p>
+
+<p>This can be configured using two environment variables:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">PMD_VF_APEXDIRECTORIES</code>: Comma separated list of directories for Apex classes. Absolute or relative to the Visualforce directory. Default is <code class="language-plaintext highlighter-rouge">../classes</code>. Specifying an empty string will disable data type resolution for Apex Controller properties.</li>
+  <li><code class="language-plaintext highlighter-rouge">PMD_VF_OBJECTSDIRECTORIES</code>: Comma separated list of directories for Custom Objects. Absolute or relative to the Visualforce directory. Default is <code class="language-plaintext highlighter-rouge">../objects</code>. Specifying an empty string will disable data type resolution for Custom Object fields.</li>
+</ul>
+
+<p>This feature is experimental, in particular, expect changes to the way the configuration is specified. We’ll probably extend the CLI instead of relying on environment variables in a future version.</p>
+
+<p>Thanks to Jeff Bartolotta and Roopa Mohan for contributing this!</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1483,6 +1497,7 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/2864">#2864</a>: [vf] Provide expression type information to Visualforce rules to avoid false positives - <a href="https://github.com/jbartolotta-sfdc">Jeff Bartolotta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2914">#2914</a>: [core] Include rule name in text renderer - <a href="https://github.com/GuntherSchrijvers">Gunther Schrijvers</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2925">#2925</a>: Cleanup: Correct annotation array initializer indents from checkstyle #8083 - <a href="https://github.com/Abhishek-kumar09">Abhishek Kumar</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2929">#2929</a>: [scala] Add support for CPD-ON and CPD-OFF special comments - <a href="https://github.com/andyrobinson">Andy Robinson</a></li>
@@ -1507,7 +1522,7 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 5, 2020 <br />
+ Site last generated: Dec 11, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
