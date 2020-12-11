@@ -1192,8 +1192,8 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
     will be removed with PMD 7.0.0. The rule is replaced by the more general
     {% rule "java/multithreading/UnsynchronizedStaticFormatter" %}.
 
-*   The two Java rules {% rule "java/bestpractices/PositionLiteralsFirstInComparisons" %}
-    and {% rule "java/bestpractices/PositionLiteralsFirstInCaseInsensitiveComparisons" %} (ruleset `java-bestpractices`)
+*   The two Java rules [`PositionLiteralsFirstInComparisons`](https://pmd.github.io/pmd-6.29.0/pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons)
+    and [`PositionLiteralsFirstInCaseInsensitiveComparisons`](https://pmd.github.io/pmd-6.29.0/pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons) (ruleset `java-bestpractices`)
     have been deprecated in favor of the new rule {% rule "java/bestpractices/LiteralsFirstInComparisons" %}.
 
 *   The Java rule [`AvoidFinalLocalVariable`](https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#avoidfinallocalvariable) (`java-codestyle`) has been deprecated
