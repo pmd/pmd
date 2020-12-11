@@ -32,7 +32,7 @@ public final class JspParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     }
 
     @Override
-    protected ASTCompilationUnit parseImpl(CharStream cs, ParserOptions options) throws ParseException {
+    protected ASTCompilationUnit parseImpl(CharStream cs, ParserOptions options, String fileName) throws ParseException {
         return new JspParserImpl(cs).CompilationUnit();
     }
 

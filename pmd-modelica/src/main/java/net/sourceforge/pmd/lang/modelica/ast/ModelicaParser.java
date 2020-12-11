@@ -23,7 +23,7 @@ public class ModelicaParser extends JjtreeParserAdapter<ASTStoredDefinition> {
     }
 
     @Override
-    protected ASTStoredDefinition parseImpl(CharStream cs, ParserOptions options) throws ParseException {
+    protected ASTStoredDefinition parseImpl(CharStream cs, ParserOptions options, String fileName) throws ParseException {
         return new ModelicaParserImpl(cs).StoredDefinition();
     }
 

@@ -155,11 +155,6 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-visualforce</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-kotlin</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -37,7 +37,7 @@ public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
     }
 
     @Override
-    protected ASTInput parseImpl(CharStream cs, ParserOptions options) throws ParseException {
+    protected ASTInput parseImpl(CharStream cs, ParserOptions options, String fileName) throws ParseException {
         return new PLSQLParserImpl(cs).Input();
     }
 
