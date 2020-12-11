@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import static net.sourceforge.pmd.lang.java.types.TypeOps.typeArgContains;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -62,10 +60,10 @@ final class Lub {
     /**
      * The "relevant" parameterizations of G, Relevant(G), is:
      *
-     * <pre>
+     * <pre>{@code
      * Relevant(G) = { V | 1 ≤ i ≤ k: V in ST(Ui) and V = G<...> }
      *             = { V ∈ stunion | V = G<...> }
-     * </pre>
+     * }</pre>
      *
      * <p>G must be erased (raw).
      *
@@ -212,12 +210,6 @@ final class Lub {
          * {@link TypeOps#typeArgContains(JTypeMirror, JTypeMirror)}.
          */
         private JTypeMirror lcta(JTypeMirror t, JTypeMirror s) {
-
-            if (typeArgContains(t, s).somehow()) {
-                return t;
-            } else if (typeArgContains(s, t).somehow()) {
-                return s;
-            }
 
             TypePair pair = new TypePair(t, s);
 
