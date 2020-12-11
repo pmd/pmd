@@ -14,16 +14,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoader;
 
 public class DefaultRulesetTest {
     @Rule
     public final SystemErrRule systemErrRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
 
-    private RuleSetFactory factory = RulesetsFactoryUtils.createFactory(RulePriority.LOW, true, false);
+    private RuleSetFactory factory = new RuleSetLoader().enableCompatibility(false).toFactory();
 
     @Test
     public void loadDefaultRuleset() throws Exception {
