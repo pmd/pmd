@@ -36,8 +36,8 @@ import org.apache.commons.text.StringEscapeUtils;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
-import net.sourceforge.pmd.RulesetLoadException;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -122,7 +122,7 @@ public class RuleDocGenerator {
                 } else {
                     LOG.fine("Ignoring ruleset " + filename);
                 }
-            } catch (RulesetLoadException e) {
+            } catch (RuleSetLoadException e) {
                 // ignore rulesets, we can't read
                 LOG.log(Level.WARNING, "ruleset file " + filename + " ignored (" + e.getMessage() + ")", e);
             }

@@ -6,7 +6,7 @@ package net.sourceforge.pmd;
 
 /**
  * @deprecated This is now only thrown by deprecated apis. {@link RuleSetLoader}
- *     throws {@link RulesetLoadException} instead
+ *     throws {@link RuleSetLoadException} instead
  */
 @Deprecated
 public class RuleSetNotFoundException extends Exception {

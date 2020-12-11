@@ -126,7 +126,7 @@ public final class RuleSetLoader {
      *
      * @param rulesetPath A reference to a single ruleset
      *
-     * @throws RulesetLoadException If any error occurs (eg, invalid syntax, or resource not found)
+     * @throws RuleSetLoadException If any error occurs (eg, invalid syntax, or resource not found)
      */
     public RuleSet loadFromResource(String rulesetPath) {
         return loadFromResource(new RuleSetReferenceId(rulesetPath));
@@ -137,7 +137,7 @@ public final class RuleSetLoader {
      *
      * @param paths Paths
      *
-     * @throws RulesetLoadException If any error occurs (eg, invalid syntax, or resource not found),
+     * @throws RuleSetLoadException If any error occurs (eg, invalid syntax, or resource not found),
      *                              for any of the parameters
      * @throws NullPointerException If the parameter, or any component is null
      */
@@ -155,7 +155,7 @@ public final class RuleSetLoader {
      * @param first First path
      * @param rest  Paths
      *
-     * @throws RulesetLoadException If any error occurs (eg, invalid syntax, or resource not found),
+     * @throws RuleSetLoadException If any error occurs (eg, invalid syntax, or resource not found),
      *                              for any of the parameters
      * @throws NullPointerException If the parameter, or any component is null
      */
@@ -168,7 +168,7 @@ public final class RuleSetLoader {
         try {
             return toFactory().createRuleSet(ruleSetReferenceId);
         } catch (Exception e) {
-            throw new RulesetLoadException("Cannot parse " + ruleSetReferenceId, e);
+            throw new RuleSetLoadException("Cannot parse " + ruleSetReferenceId, e);
         }
     }
 
@@ -190,7 +190,7 @@ public final class RuleSetLoader {
      *
      * @return A list of all category rulesets
      *
-     * @throws RulesetLoadException If a standard ruleset cannot be loaded.
+     * @throws RuleSetLoadException If a standard ruleset cannot be loaded.
      *                              This is a corner case, that probably should not be caught by clients.
      *                              The standard rulesets are well-formed, at least in stock PMD distributions.
      *
