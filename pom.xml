@@ -1082,7 +1082,6 @@
         <module>pmd-ruby</module>
         <module>pmd-swift</module>
         <module>pmd-test</module>
-        <module>pmd-visualforce</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>
 
@@ -1096,5 +1095,6 @@
         <module>pmd-scala-modules/pmd-scala-common</module>
         <module>pmd-scala-modules/pmd-scala_2.13</module>
         <module>pmd-scala-modules/pmd-scala_2.12</module>
+        <module>pmd-visualforce</module>
     </modules>
 </project>

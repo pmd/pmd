@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.ast.ASTArguments;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTContent;
@@ -25,6 +26,7 @@ import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.vf.ast.ASTNegationExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
+import net.sourceforge.pmd.lang.vf.ast.VfTypedNode;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
 
 /**
@@ -53,7 +55,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
     @Override
     public Object visit(ASTHtmlScript node, Object data) {
         checkIfCorrectlyEscaped(node, data);
-
         return super.visit(node, data);
     }
 
@@ -409,8 +410,11 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 continue;
             }
 
-            final List<ASTIdentifier> ids = expr.findChildrenOfType(ASTIdentifier.class);
+            if (expressionContainsSafeDataNodes(expr)) {
+                continue;
+            }
 
+            final List<ASTIdentifier> ids = expr.findChildrenOfType(ASTIdentifier.class);
             for (final ASTIdentifier id : ids) {
                 boolean isEscaped = false;
 
@@ -440,6 +444,24 @@ public class VfUnescapeElRule extends AbstractVfRule {
         }
 
         return !nonEscapedIds.isEmpty();
+    }
+
+    /**
+     * Return true if the type of all data nodes can be determined and none of them require escaping
+     */
+    private boolean expressionContainsSafeDataNodes(ASTExpression expression) {
+        try {
+            for (VfTypedNode node : expression.getDataNodes().keySet()) {
+                DataType dataType = node.getDataType();
+                if (dataType == null || dataType.requiresEscaping) {
+                    return false;
+                }
+            }
+
+            return true;
+        } catch (ASTExpression.DataNodeStateException e) {
+            return false;
+        }
     }
 
     private boolean containsSafeFields(final AbstractVFNode expression) {
