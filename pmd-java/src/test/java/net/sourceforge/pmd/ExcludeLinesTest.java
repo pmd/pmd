@@ -41,7 +41,7 @@ public class ExcludeLinesTest extends RuleTst {
         ctx.setReport(r);
         ctx.setSourceCodeFile(new File("n/a"));
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
-        RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
+        RuleSet rules = RuleSet.forSingleRule(rule);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST3), new RuleSets(rules), ctx);
         assertTrue(r.isEmpty());
         assertEquals(r.getSuppressedRuleViolations().size(), 1);

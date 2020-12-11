@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -23,6 +24,11 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 
+/**
+ * Source code processor is internal.
+ */
+@Deprecated
+@InternalApi
 public class SourceCodeProcessor {
 
     private final PMDConfiguration configuration;
