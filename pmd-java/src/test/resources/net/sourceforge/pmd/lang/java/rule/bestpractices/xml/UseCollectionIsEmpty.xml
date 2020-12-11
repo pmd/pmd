@@ -163,8 +163,8 @@ public class Foo {
 
     <test-code>
         <description>#1214 UseCollectionIsEmpty misses some usage</description>
-        <expected-problems>5</expected-problems>
-        <expected-linenumbers>25,28,31,34,37</expected-linenumbers>
+        <expected-problems>10</expected-problems>
+        <expected-linenumbers>8,11,14,17,20,23,26,29,32,35</expected-linenumbers>
         <code><![CDATA[
 import java.util.ArrayList;
 
@@ -172,24 +172,22 @@ public class TestIsEmpty {
     public static void main(String args[]) {
         ArrayList<String> testObject = new ArrayList<String>();
 
-        // These ones are flagged
-//      if (testObject.size() == 0) {
-//          System.out.println("List is empty");
-//      }
-//      if (testObject.size() != 0) {
-//          System.out.println("List is empty");
-//      }
-//      if (0 == testObject.size()) {
-//          System.out.println("List is empty");
-//      }
-//      if (0 != testObject.size()) {
-//          System.out.println("List is empty");
-//      }
-//      if (testObject.size() > 0) {
-//          System.out.println("List is empty");
-//      }
-
-        // These ones are not flagged, but should be flagged
+        // These should be flagged
+        if (testObject.size() == 0) {
+            System.out.println("List is empty");
+        }
+        if (testObject.size() != 0) {
+            System.out.println("List is empty");
+        }
+        if (0 == testObject.size()) {
+            System.out.println("List is empty");
+        }
+        if (0 != testObject.size()) {
+            System.out.println("List is empty");
+        }
+        if (testObject.size() > 0) {
+            System.out.println("List is empty");
+        }
         if (testObject.size() < 1) {
             System.out.println("List is empty");
         }
@@ -232,7 +230,7 @@ public class IsEmptyTest {
     public static void main(String args[]) {
         ArrayList<String> testObject = new ArrayList<String>();
 
-        // these should be flagged (as they are equivalent to == 0) and are
+        // These should be flagged
         if (testObject.size() < 1) { // line 8
             System.out.println("List is empty");
         }
@@ -240,7 +238,7 @@ public class IsEmptyTest {
             System.out.println("List is empty");
         }
 
-        // these should not be flagged, and are not
+        // These should not be flagged
         if (testObject.size() <= 1) { // line 16
             System.out.println("List may or may not be empty");
         }
@@ -248,7 +246,7 @@ public class IsEmptyTest {
             System.out.println("List may or may not be empty");
         }
 
-        // these should be flagged (as they are equivalent to != 0) and are not
+        // These should be flagged (as they are equivalent to != 0) and are not
         if (testObject.size() >= 1) { // line 24
             System.out.println("List is not empty");
         }
@@ -256,7 +254,7 @@ public class IsEmptyTest {
             System.out.println("List is not empty");
         }
 
-        // these should not be flagged, yet are
+        // These should not be flagged
         if (testObject.size() > 1) { // line 32
             System.out.println("List is not empty, but not all non-empty lists will trigger this");
         }
@@ -348,4 +346,63 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    
+	<test-code>
+        <description>#2833 NPE in UseCollectionIsEmptyRule with enums</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum ComponentSize {
+
+    S("s"),
+    M("m"),
+    L("l"),
+    XL("xl");
+
+
+    private String size;
+
+    ComponentSize(String size) {
+        this.size = size;
+    }
+
+    @Override
+    public String toString() {
+        return size;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>##2833 NPE in UseCollectionIsEmptyRule with enums (sanity check)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+public enum ComponentSize {
+
+    S("s"),
+    M("m"),
+    L("l"),
+    XL("xl");
+
+    private List<String> list;
+    private String size;
+
+    ComponentSize(String size) {
+        if (list.size() == 0) {
+            this.size = size;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return size;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

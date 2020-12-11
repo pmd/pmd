@@ -14,6 +14,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -112,11 +113,14 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
     }
 
     private ASTClassOrInterfaceType getTypeOfVariableByName(String varName, ASTPrimaryExpression expr) {
-        ASTClassOrInterfaceBody classBody = expr.getFirstParentOfType(ASTClassOrInterfaceBody.class);
-        List<ASTVariableDeclarator> varDeclarators = classBody.findDescendantsOfType(ASTVariableDeclarator.class);
+        Node classOrEnumBody = expr.getFirstParentOfType(ASTClassOrInterfaceBody.class);
+        if (classOrEnumBody == null) {
+            classOrEnumBody = expr.getFirstParentOfType(ASTEnumBody.class);
+        }                 
+        List<ASTVariableDeclarator> varDeclarators = classOrEnumBody.findDescendantsOfType(ASTVariableDeclarator.class);
         for (ASTVariableDeclarator varDeclarator : varDeclarators) {
             if (varDeclarator.getName().equals(varName)) {
-                return varDeclarator.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+                return varDeclarator.getParent().getFirstDescendantOfType(ASTClassOrInterfaceType.class);
             }
         }
         return null;
