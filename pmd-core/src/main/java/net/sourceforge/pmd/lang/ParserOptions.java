@@ -81,7 +81,7 @@ public class ParserOptions {
 
     @Override
     public int hashCode() {
-        return getSuppressMarker().hashCode();
+        return Objects.hash(suppressMarker, languageId, parserOptionsProperties);
     }
 
     /**

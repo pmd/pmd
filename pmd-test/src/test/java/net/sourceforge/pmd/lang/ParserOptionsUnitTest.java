@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.test.lang.DummyLanguageModule;
@@ -60,7 +61,7 @@ public class ParserOptionsUnitTest {
     @Test
     public void testSuppressMarker() {
         ParserOptions parserOptions = new ParserOptions();
-        Assert.assertNull(parserOptions.getSuppressMarker());
+        Assert.assertEquals(PMD.SUPPRESS_MARKER, parserOptions.getSuppressMarker());
         parserOptions.setSuppressMarker("foo");
         Assert.assertEquals("foo", parserOptions.getSuppressMarker());
     }

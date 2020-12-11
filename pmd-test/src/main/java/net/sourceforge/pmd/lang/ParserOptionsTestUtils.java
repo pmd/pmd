@@ -35,23 +35,23 @@ public final class ParserOptionsTestUtils {
 
         // Check all 16 equality combinations
         Assert.assertEquals(options1, options1);
-        Assert.assertFalse(options1.equals(options2));
+        Assert.assertNotEquals(options1, options2);
         Assert.assertEquals(options1, options3);
-        Assert.assertFalse(options1.equals(options4));
+        Assert.assertNotEquals(options1, options4);
 
-        Assert.assertFalse(options2.equals(options1));
+        Assert.assertNotEquals(options2, options1);
         Assert.assertEquals(options2, options2);
-        Assert.assertFalse(options2.equals(options3));
+        Assert.assertNotEquals(options2, options3);
         Assert.assertEquals(options2, options4);
 
         Assert.assertEquals(options3, options1);
-        Assert.assertFalse(options3.equals(options2));
+        Assert.assertNotEquals(options3, options2);
         Assert.assertEquals(options3, options3);
-        Assert.assertFalse(options3.equals(options4));
+        Assert.assertNotEquals(options3, options4);
 
-        Assert.assertFalse(options4.equals(options1));
+        Assert.assertNotEquals(options4, options1);
         Assert.assertEquals(options4, options2);
-        Assert.assertFalse(options4.equals(options3));
+        Assert.assertNotEquals(options4, options3);
         Assert.assertEquals(options4, options4);
 
         // Hashcodes should match up

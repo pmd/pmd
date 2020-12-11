@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer;
 
 public class ASTExpressionTest {
@@ -34,7 +33,7 @@ public class ASTExpressionTest {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyValue"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
+            List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(template, 1, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
@@ -52,7 +51,7 @@ public class ASTExpressionTest {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject__c.Text__c"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
+            List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(template, 1, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
@@ -70,7 +69,7 @@ public class ASTExpressionTest {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "userOptions.0"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
+            List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(template, 1, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
@@ -88,7 +87,7 @@ public class ASTExpressionTest {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject__c.Text__c + ' this is a string' + MyObject__c.Text2__c"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
+            List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(template, 1, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
@@ -109,7 +108,7 @@ public class ASTExpressionTest {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject1__c.MyObject2__r.Text__c"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
+            List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(template, 1, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
@@ -128,7 +127,7 @@ public class ASTExpressionTest {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject1__c.MyObject2__r.Text__c + ' this is a string' + MyObject1__c.MyObject2__r.Text2__c"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
+            List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(template, 1, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
@@ -153,7 +152,7 @@ public class ASTExpressionTest {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject__c['Name']"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
+            List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(template, 2, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
@@ -171,7 +170,7 @@ public class ASTExpressionTest {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject1__c['MyObject2__r'].Text__c"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
+            List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(template, 2, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
@@ -189,7 +188,7 @@ public class ASTExpressionTest {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "theLineItems[item.Id].UnitPrice"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
+            List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(template, 2, nodes.size());
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
@@ -200,6 +199,10 @@ public class ASTExpressionTest {
                 // Intentionally left blank
             }
         }
+    }
+
+    private static List<Node> getExpressions(ASTCompilationUnit compilationUnit) {
+        return compilationUnit.descendants(ASTExpression.class).toList(it -> it);
     }
 
     /**

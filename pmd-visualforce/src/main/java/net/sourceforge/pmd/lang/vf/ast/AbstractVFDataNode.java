@@ -9,17 +9,12 @@ import net.sourceforge.pmd.lang.vf.DataType;
 /**
  * Represents a node that displays a piece of data.
  */
-class AbstractVFDataNode extends AbstractVFNode implements VfTypedNode {
+abstract class AbstractVFDataNode extends AbstractVfNode implements VfTypedNode {
 
     private DataType dataType;
 
     AbstractVFDataNode(int id) {
         super(id);
-    }
-
-    AbstractVFDataNode(VfParser parser, int id) {
-        super(id);
-        this.parser = parser;
     }
 
     @Override

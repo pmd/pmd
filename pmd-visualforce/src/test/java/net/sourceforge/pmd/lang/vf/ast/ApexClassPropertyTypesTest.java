@@ -57,8 +57,8 @@ public class ApexClassPropertyTypesTest {
                                      .resolve("SomePage.page");
         ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes();
 
-        VFTestUtils.validateDataTypes(EXPECTED_DATA_TYPES, apexClassPropertyTypes, vfPagePath,
-                                      VfParserOptions.APEX_DIRECTORIES_DESCRIPTOR.defaultValue());
+        ObjectFieldTypesTest.validateDataTypes(EXPECTED_DATA_TYPES, apexClassPropertyTypes, vfPagePath,
+                                               VfParserOptions.APEX_DIRECTORIES_DESCRIPTOR.defaultValue());
     }
 
     @Test

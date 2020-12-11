@@ -28,7 +28,6 @@ import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
-import net.sourceforge.pmd.lang.vf.ast.ApexClassPropertyTypesVisitor;
 
 import apex.jorje.semantic.symbol.type.BasicType;
 

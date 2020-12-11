@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Test;
 
@@ -24,6 +25,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.lang.vf.VfLanguageModule;
@@ -62,8 +64,8 @@ public class VfExpressionTypeVisitorTest {
         Node rootNode = compile("StandardAccount.page");
 
         for (Map.Entry<String, DataType> entry : EXPECTED_CUSTOM_FIELD_DATA_TYPES.entrySet()) {
-            String xpath = String.format("//Identifier[@Image='%s' and @DataType='%s']", entry.getKey(), entry.getValue().name());
-            List<Node> nodes = VFTestUtils.findNodes(rootNode, xpath);
+            List<ASTIdentifier> nodes = getIdentifiers(rootNode, entry);
+
             // Each string appears twice, it is set on a "value" attribute and inline
             assertEquals(entry.getKey(), 2, nodes.size());
             for (Node node : nodes) {
@@ -84,9 +86,12 @@ public class VfExpressionTypeVisitorTest {
         Node rootNode = compile("StandardAccount.page");
 
         for (Map.Entry<String, DataType> entry : EXPECTED_CUSTOM_FIELD_DATA_TYPES.entrySet()) {
-            // Literals are surrounded by apostrophes
-            String xpath = String.format("//Literal[@Image=\"'%s'\" and @DataType='']", entry.getKey());
-            List<Node> nodes = VFTestUtils.findNodes(rootNode, xpath);
+            List<ASTLiteral> nodes = rootNode.descendants(ASTLiteral.class)
+                                             // Literals are surrounded by apostrophes
+                                             .filterMatching(ASTLiteral::getImage, "'" + entry.getKey() + "'")
+                                             .filterMatching(ASTLiteral::getDataType, null)
+                                             .toList();
+
             // Each string appears twice, it is set on a "value" attribute and inline
             assertEquals(entry.getKey(), 2, nodes.size());
             for (Node node : nodes) {
@@ -105,15 +110,18 @@ public class VfExpressionTypeVisitorTest {
     public void testDataTypeForCustomFieldsNotFound() throws FileNotFoundException {
         Node rootNode = compile("StandardAccount.page");
 
-        for (String xpath : new String[] { "//Identifier[@Image='NotFoundField__c']", "//Literal[@Image=\"'NotFoundField__c'\"]" }) {
-            List<Node> nodes = VFTestUtils.findNodes(rootNode, xpath);
-            // Each string appears twice, it is set on a "value" attribute and inline
-            assertEquals(2, nodes.size());
-            for (Node node : nodes) {
-                assertTrue(node.getClass().getSimpleName(), node instanceof VfTypedNode);
-                VfTypedNode dataNode = (VfTypedNode) node;
-                assertNull(dataNode.getDataType());
-            }
+        checkNodes(rootNode.descendants(ASTIdentifier.class)
+                           .filterMatching(ASTIdentifier::getImage, "NotFoundField__c"));
+        checkNodes(rootNode.descendants(ASTLiteral.class)
+                           .filterMatching(ASTLiteral::getImage, "'NotFoundField__c'"));
+    }
+
+    private void checkNodes(NodeStream<? extends VfTypedNode> nodeStream) {
+        // Each string appears twice, it is set on a "value" attribute and inline
+        List<? extends VfTypedNode> nodes = nodeStream.toList();
+        assertEquals(2, nodes.size());
+        for (VfTypedNode node : nodes) {
+            assertNull(node.getDataType());
         }
     }
 
@@ -125,8 +133,8 @@ public class VfExpressionTypeVisitorTest {
         Node rootNode = compile("ApexController.page");
 
         for (Map.Entry<String, DataType> entry : EXPECTED_APEX_DATA_TYPES.entrySet()) {
-            String xpath = String.format("//Identifier[@Image='%s' and @DataType='%s']", entry.getKey(), entry.getValue().name());
-            List<Node> nodes = VFTestUtils.findNodes(rootNode, xpath);
+            List<ASTIdentifier> nodes = getIdentifiers(rootNode, entry);
+
             // Each string appears twice, it is set on a "value" attribute and inline
             assertEquals(entry.getKey(), 2, nodes.size());
             for (Node node : nodes) {
@@ -138,6 +146,13 @@ public class VfExpressionTypeVisitorTest {
         }
     }
 
+    private List<ASTIdentifier> getIdentifiers(Node rootNode, Entry<String, DataType> entry) {
+        return rootNode.descendants(ASTIdentifier.class)
+                       .filterMatching(ASTIdentifier::getImage, entry.getKey())
+                       .filterMatching(ASTIdentifier::getDataType, entry.getValue())
+                       .toList();
+    }
+
     /**
      * Nodes where the DataType can't be determined should have a null DataType
      */
@@ -145,15 +160,9 @@ public class VfExpressionTypeVisitorTest {
     public void testDataTypeForApexPropertiesNotFound() throws FileNotFoundException {
         Node rootNode = compile("ApexController.page");
 
-        String xpath = "//Identifier[@Image='NotFoundProp']";
-        List<Node> nodes = VFTestUtils.findNodes(rootNode, xpath);
         // Each string appears twice, it is set on a "value" attribute and inline
-        assertEquals(2, nodes.size());
-        for (Node node : nodes) {
-            assertTrue(node.getClass().getSimpleName(), node instanceof VfTypedNode);
-            VfTypedNode dataNode = (VfTypedNode) node;
-            assertNull(dataNode.getDataType());
-        }
+        checkNodes(rootNode.descendants(ASTIdentifier.class)
+                           .filterMatching(ASTIdentifier::getImage, "NotFoundProp"));
     }
 
     private Node compile(String pageName) throws FileNotFoundException {

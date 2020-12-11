@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.nio.file.Path;
@@ -19,7 +20,6 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.lang.vf.VfParserOptions;
-import net.sourceforge.pmd.lang.vf.ast.ObjectFieldTypes;
 
 public class ObjectFieldTypesTest {
     private static final Map<String, DataType> EXPECTED_SFDX_DATA_TYPES;
@@ -106,13 +106,26 @@ public class ObjectFieldTypesTest {
      * Validate the expected results when the Account Fields are stored in decomposed sfdx format
      */
     private void validateSfdxAccount(ObjectFieldTypes objectFieldTypes, Path vfPagePath, List<String> paths) {
-        VFTestUtils.validateDataTypes(EXPECTED_SFDX_DATA_TYPES, objectFieldTypes, vfPagePath, paths);
+        validateDataTypes(EXPECTED_SFDX_DATA_TYPES, objectFieldTypes, vfPagePath, paths);
     }
 
     /**
      * Validate the expected results when the Account Fields are stored in a single file MDAPI format
      */
     private void validateMDAPIAccount(ObjectFieldTypes objectFieldTypes, Path vfPagePath, List<String> paths) {
-        VFTestUtils.validateDataTypes(EXPECTED_MDAPI_DATA_TYPES, objectFieldTypes, vfPagePath, paths);
+        validateDataTypes(EXPECTED_MDAPI_DATA_TYPES, objectFieldTypes, vfPagePath, paths);
+    }
+
+    /**
+     * Verify that return values of {@link SalesforceFieldTypes#getDataType(String, String, List)} using the keys of
+     * {@code expectedDataTypes} matches the values of {@code expectedDataTypes}
+     */
+    public static void validateDataTypes(Map<String, DataType> expectedDataTypes, SalesforceFieldTypes fieldTypes,
+                                         Path vfPagePath, List<String> paths) {
+        String vfFileName = vfPagePath.toString();
+
+        for (Map.Entry<String, DataType> entry : expectedDataTypes.entrySet()) {
+            assertEquals(entry.getKey(), entry.getValue(), fieldTypes.getDataType(entry.getKey(), vfFileName, paths));
+        }
     }
 }
