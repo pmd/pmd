@@ -14,6 +14,9 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
@@ -61,7 +64,7 @@ public class ResourceLoader {
      *
      * @return InputStream
      */
-    public InputStream loadResourceAsStream(final String name) throws IOException {
+    public @NonNull InputStream loadResourceAsStream(final String name) throws IOException {
         // Search file locations first
         final File file = new File(name);
         if (file.exists()) {
@@ -79,18 +82,18 @@ public class ResourceLoader {
             final HttpURLConnection connection = (HttpURLConnection) new URL(name).openConnection();
             connection.setConnectTimeout(TIMEOUT);
             connection.setReadTimeout(TIMEOUT);
-            return connection.getInputStream();
-        } catch (final Exception e) {
-            try {
-                return loadClassPathResourceAsStream(name);
-            } catch (final IOException ioe) {
-                throw new IOException("Can't find resource " + name + ". Make sure the resource is a valid file or URL or is on the CLASSPATH", ioe);
+            InputStream is = connection.getInputStream();
+            if (is != null) {
+                return is;
             }
+        } catch (final Exception e) {
+            return loadClassPathResourceAsStreamOrThrow(name);
         }
 
+        throw new IOException("Can't find resource " + name + ". Make sure the resource is a valid file or URL or is on the classpath");
     }
 
-    public InputStream loadClassPathResourceAsStream(final String name) throws IOException {
+    public @Nullable InputStream loadClassPathResourceAsStream(final String name) throws IOException {
         /*
          * Don't use getResourceAsStream to avoid reusing connections between threads
          * See https://github.com/pmd/pmd/issues/234
@@ -109,7 +112,7 @@ public class ResourceLoader {
         }
     }
 
-    public InputStream loadClassPathResourceAsStreamOrThrow(final String name) throws IOException {
+    public @NonNull InputStream loadClassPathResourceAsStreamOrThrow(final String name) throws IOException {
         InputStream is = null;
         try {
             is = loadClassPathResourceAsStream(name);
@@ -119,7 +122,7 @@ public class ResourceLoader {
 
         if (is == null) {
             throw new FileNotFoundException("Can't find resource " + name
-                    + ". Make sure the resource is on the CLASSPATH");
+                    + ". Make sure the resource is on the classpath");
         }
 
         return is;

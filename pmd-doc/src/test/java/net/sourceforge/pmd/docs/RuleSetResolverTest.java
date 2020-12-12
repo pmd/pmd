@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.docs;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,11 +18,9 @@ import net.sourceforge.pmd.RuleSetLoader;
 
 public class RuleSetResolverTest {
 
-    private static final List<String> excludedRulesets = new ArrayList<>();
-
-    static {
-        excludedRulesets.add(FilenameUtils.normalize("pmd-test/src/main/resources/rulesets/dummy/basic.xml"));
-    }
+    private static final List<String> EXCLUDED_RULESETS = listOf(
+        FilenameUtils.normalize("pmd-test/src/main/resources/rulesets/dummy/basic.xml")
+    );
 
     @Test
     public void resolveAllRulesets() {
@@ -39,7 +38,7 @@ public class RuleSetResolverTest {
         Iterator<String> it = additionalRulesets.iterator();
         while (it.hasNext()) {
             String filename = it.next();
-            for (String exclusion : excludedRulesets) {
+            for (String exclusion : EXCLUDED_RULESETS) {
                 if (filename.endsWith(exclusion)) {
                     it.remove();
                     break;

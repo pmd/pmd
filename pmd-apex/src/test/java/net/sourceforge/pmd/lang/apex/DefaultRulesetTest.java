@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetLoader;
 
 public class DefaultRulesetTest {
@@ -30,15 +29,15 @@ public class DefaultRulesetTest {
 
     @After
     public void cleanup() {
-        Handler[] handlers = Logger.getLogger(RuleSetFactory.class.getName()).getHandlers();
+        Handler[] handlers = Logger.getLogger(RuleSetLoader.class.getName()).getHandlers();
         for (Handler handler : handlers) {
-            Logger.getLogger(RuleSetFactory.class.getName()).removeHandler(handler);
+            Logger.getLogger(RuleSetLoader.class.getName()).removeHandler(handler);
         }
     }
 
     @Test
     public void loadQuickstartRuleset() {
-        Logger.getLogger(RuleSetFactory.class.getName()).addHandler(new Handler() {
+        Logger.getLogger(RuleSetLoader.class.getName()).addHandler(new Handler() {
             @Override
             public void publish(LogRecord record) {
                 Assert.fail("No Logging expected: " + record.getMessage());

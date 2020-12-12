@@ -278,7 +278,8 @@ public class PMD {
                 ruleSets = factory.loadFromResources(rulesetPaths);
                 printRuleNamesInDebug(ruleSets);
                 if (isEmpty(ruleSets)) {
-                    String msg = "No rules found. Maybe you misspelled a rule name? (" + rulesetPaths + ')';
+                    String msg = "No rules found. Maybe you misspelled a rule name? ("
+                        + String.join(",", rulesetPaths) + ')';
                     LOG.log(Level.SEVERE, msg);
                     throw new IllegalArgumentException(msg);
                 }

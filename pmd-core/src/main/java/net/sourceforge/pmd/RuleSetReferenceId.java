@@ -402,14 +402,23 @@ public class RuleSetReferenceId {
     public InputStream getInputStream(final ResourceLoader rl) throws IOException {
         if (externalRuleSetReferenceId == null) {
             if (StringUtils.isBlank(ruleSetFileName)) {
-                throw new FileNotFoundException("Can't find resource '" + ruleSetFileName + "' for rule '" + ruleName
-                                                    + "'" + ".  Make sure the resource is a valid file or URL and is on the CLASSPATH. "
-                                                    + "Here's the current classpath: " + System.getProperty("java.class.path"));
+                throw notFoundException();
             }
-            return rl.loadResourceAsStream(ruleSetFileName);
+            try {
+                return rl.loadResourceAsStream(ruleSetFileName);
+            } catch (FileNotFoundException ignored) {
+                throw notFoundException();
+            }
         } else {
             return externalRuleSetReferenceId.getInputStream(rl);
         }
+    }
+
+    private FileNotFoundException notFoundException() {
+        return new FileNotFoundException("Can't find resource '" + ruleSetFileName + "' for rule '" + ruleName
+                                            + "'" + ".  Make sure the resource is a valid file or URL and is on the classpath. "
+                                            + "Here's the current classpath: " 
+                                            + System.getProperty("java.class.path"));
     }
 
     /**

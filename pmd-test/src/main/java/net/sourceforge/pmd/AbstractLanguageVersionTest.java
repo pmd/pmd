@@ -101,8 +101,11 @@ public class AbstractLanguageVersionTest {
         }
 
         Properties props = new Properties();
-        String rulesetsProperties = "category/" + simpleTerseName + "/categories.properties";
+        String rulesetsProperties = "/category/" + simpleTerseName + "/categories.properties";
         try (InputStream inputStream = getClass().getResourceAsStream(rulesetsProperties)) {
+            if (inputStream == null) {
+                throw new IOException();
+            }
             props.load(inputStream);
         }
         assertRulesetsAndCategoriesProperties(props);
@@ -122,7 +125,7 @@ public class AbstractLanguageVersionTest {
         }
 
         Properties props = new Properties();
-        String rulesetsProperties = "rulesets/" + simpleTerseName + "/rulesets.properties";
+        String rulesetsProperties = "/rulesets/" + simpleTerseName + "/rulesets.properties";
         InputStream inputStream = getClass().getResourceAsStream(rulesetsProperties);
         if (inputStream != null) {
             // rulesets.properties file exists

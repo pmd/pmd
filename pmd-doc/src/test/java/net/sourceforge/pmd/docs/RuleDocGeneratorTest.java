@@ -59,7 +59,7 @@ public class RuleDocGeneratorTest {
     public void testSingleRuleset() throws IOException {
         RuleDocGenerator generator = new RuleDocGenerator(writer, root);
 
-        RuleSetLoader rsf = new RuleSetLoader();
+        RuleSetLoader rsf = new RuleSetLoader().includeDeprecatedRuleReferences(true);
         RuleSet ruleset = rsf.loadFromResource("rulesets/ruledoctest/sample.xml");
 
         generator.generate(Arrays.asList(ruleset),
