@@ -62,58 +62,14 @@ public class RuleSetFactory {
 
     private final Map<RuleSetReferenceId, RuleSet> parsedRulesets = new HashMap<>();
 
-    /**
-     * @deprecated Use a {@link RuleSetLoader} to build a new factory
-     */
-    @Deprecated // to be removed with PMD 7.0.0.
-    public RuleSetFactory() {
-        this(new ResourceLoader(), RulePriority.LOW, false, true);
-    }
-
-    /**
-     * @deprecated Use a {@link RuleSetLoader} to build a new factory
-     */
-    @Deprecated // to be removed with PMD 7.0.0.
-    public RuleSetFactory(final ClassLoader classLoader, final RulePriority minimumPriority,
-                          final boolean warnDeprecated, final boolean enableCompatibility) {
-        this(new ResourceLoader(classLoader), minimumPriority, warnDeprecated, enableCompatibility);
-    }
-
-    /**
-     * @deprecated Use a {@link RuleSetLoader} to build a new factory
-     */
-    @Deprecated // to be hidden with PMD 7.0.0.
-    public RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
-                          final boolean warnDeprecated, final boolean enableCompatibility) {
-        this(resourceLoader, minimumPriority, warnDeprecated, enableCompatibility, false);
-    }
-
     RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
-            final boolean warnDeprecated, final boolean enableCompatibility, boolean includeDeprecatedRuleReferences) {
+            final boolean warnDeprecated, final RuleSetFactoryCompatibility compatFilter, boolean includeDeprecatedRuleReferences) {
         this.resourceLoader = resourceLoader;
         this.minimumPriority = minimumPriority;
         this.warnDeprecated = warnDeprecated;
         this.includeDeprecatedRuleReferences = includeDeprecatedRuleReferences;
 
-        if (enableCompatibility) {
-            this.compatibilityFilter = new RuleSetFactoryCompatibility();
-        } else {
-            this.compatibilityFilter = null;
-        }
-    }
-
-    /**
-     * Constructor copying all configuration from another factory.
-     *
-     * @param factory        The factory whose configuration to copy.
-     * @param warnDeprecated Whether deprecation warnings are to be produced by this
-     *                       factory
-     *
-     * @deprecated Use {@link #toLoader()} to rebuild a factory from a configuration
-     */
-    @Deprecated
-    public RuleSetFactory(final RuleSetFactory factory, final boolean warnDeprecated) {
-        this(factory.resourceLoader, factory.minimumPriority, warnDeprecated, factory.compatibilityFilter != null);
+        this.compatibilityFilter = compatFilter;
     }
 
 

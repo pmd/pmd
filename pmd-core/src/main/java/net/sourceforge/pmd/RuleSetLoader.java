@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -30,7 +32,7 @@ public final class RuleSetLoader {
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = true;
-    private boolean enableCompatibility = true;
+    private @Nullable RuleSetFactoryCompatibility compatFilter;
     private boolean includeDeprecatedRuleReferences = false;
 
     /**
@@ -81,7 +83,11 @@ public final class RuleSetLoader {
      * @return This instance, modified
      */
     public RuleSetLoader enableCompatibility(boolean enable) {
-        this.enableCompatibility = enable;
+        if (enable) {
+            this.compatFilter = RuleSetFactoryCompatibility.INSTANCE;
+        } else {
+            this.compatFilter = null;
+        }
         return this;
     }
 
@@ -110,7 +116,7 @@ public final class RuleSetLoader {
             this.resourceLoader,
             this.minimumPriority,
             this.warnDeprecated,
-            this.enableCompatibility,
+            this.compatFilter,
             this.includeDeprecatedRuleReferences
         );
     }

@@ -254,12 +254,10 @@ public class RuleSetFactoryTest {
      * <p>When loading this ruleset at a whole for generating the documentation, we should still
      * include the deprecated rule reference, so that we can create a nice documentation.
      *
-     * @throws Exception
      */
     @Test
-    public void testRuleSetWithDeprecatedRenamedRuleForDoc() throws Exception {
-        RuleSetFactory rsf = RulesetsFactoryUtils.createFactory(RulePriority.LOW, false, false, true);
-        RuleSet rs = rsf.createRuleSet(createRuleSetReferenceId("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+    public void testRuleSetWithDeprecatedRenamedRuleForDoc() {
+        RuleSet rs = new RuleSetLoader().loadFromResource(createRuleSetReferenceId("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
                 + "  <description>ruleset desc</description>\n"
                 + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
                 + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">"
