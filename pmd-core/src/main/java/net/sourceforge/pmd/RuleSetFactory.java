@@ -362,12 +362,7 @@ public class RuleSetFactory {
                         "Cannot parse a RuleSet from a non-external reference: <" + ruleSetReferenceId + ">.");
             }
             DocumentBuilder builder = createDocumentBuilder();
-            InputSource inputSource;
-            if (compatibilityFilter != null) {
-                inputSource = new InputSource(compatibilityFilter.filterRuleSetFile(inputStream));
-            } else {
-                inputSource = new InputSource(inputStream);
-            }
+            InputSource inputSource = new InputSource(inputStream);
             Document document = builder.parse(inputSource);
             Element ruleSetElement = document.getDocumentElement();
 
@@ -494,6 +489,9 @@ public class RuleSetFactory {
             throws RuleSetNotFoundException {
         Element ruleElement = (Element) ruleNode;
         String ref = ruleElement.getAttribute("ref");
+        if (compatibilityFilter != null) {
+            ref = compatibilityFilter.applyRef(ref);
+        }
         if (ref.endsWith("xml")) {
             parseRuleSetReferenceNode(ruleSetBuilder, ruleElement, ref, rulesetReferences);
         } else if (StringUtils.isBlank(ref)) {

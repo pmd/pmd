@@ -53,7 +53,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * <li>A comma separated list of input paths to process for source files. This
  * may include files, directories, archives (e.g. ZIP files), etc.
  * {@link #getInputPaths()}</li>
- * <li>A flag which controls, whether {@link RuleSetFactoryCompatibility} filter
+ * <li>A flag which controls, whether {@link RuleSetLoader#enableCompatibility(boolean)} filter
  * should be used or not: #isRuleSetFactoryCompatibilityEnabled;
  * </ul>
  *
@@ -561,7 +561,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return true, if the rule set factory compatibility feature is enabled
      *
-     * @see RuleSetFactoryCompatibility
+     * @see RuleSetLoader#enableCompatibility(boolean)
      */
     public boolean isRuleSetFactoryCompatibilityEnabled() {
         return ruleSetFactoryCompatibilityEnabled;
@@ -572,7 +572,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param ruleSetFactoryCompatibilityEnabled {@code true} if the feature should be enabled
      *
-     * @see RuleSetFactoryCompatibility
+     * @see RuleSetLoader#enableCompatibility(boolean)
      */
     public void setRuleSetFactoryCompatibilityEnabled(boolean ruleSetFactoryCompatibilityEnabled) {
         this.ruleSetFactoryCompatibilityEnabled = ruleSetFactoryCompatibilityEnabled;

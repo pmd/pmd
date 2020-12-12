@@ -4,21 +4,13 @@
 
 package net.sourceforge.pmd;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
-
-import net.sourceforge.pmd.annotation.InternalApi;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Provides a simple filter mechanism to avoid failing to parse an old ruleset,
@@ -26,72 +18,77 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * renamed or moved to another ruleset.
  *
  * @see <a href="https://sourceforge.net/p/pmd/bugs/1360/">issue 1360</a>
- *
- * @deprecated Use {@link RuleSetLoader#enableCompatibility(boolean)} to enable this feature.
- *  This implementation is internal API.
  */
-@InternalApi
-@Deprecated
-public class RuleSetFactoryCompatibility {
+final class RuleSetFactoryCompatibility {
+
+    static final RuleSetFactoryCompatibility INSTANCE = new RuleSetFactoryCompatibility();
+
+
+    static {
+        // PMD 5.3.0
+        INSTANCE.addFilterRuleRenamed("java", "design", "UncommentedEmptyMethod", "UncommentedEmptyMethodBody");
+        INSTANCE.addFilterRuleRemoved("java", "controversial", "BooleanInversion");
+
+        // PMD 5.3.1
+        INSTANCE.addFilterRuleRenamed("java", "design", "UseSingleton", "UseUtilityClass");
+
+        // PMD 5.4.0
+        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyCatchBlock");
+        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyIfStatement");
+        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyWhileStmt");
+        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyTryBlock");
+        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyFinallyBlock");
+        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptySwitchStatements");
+        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptySynchronizedBlock");
+        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyStatementNotInLoop");
+        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyInitializer");
+        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyStatementBlock");
+        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyStaticInitializer");
+        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UnnecessaryConversionTemporary");
+        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UnnecessaryReturn");
+        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UnnecessaryFinalModifier");
+        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UselessOverridingMethod");
+        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UselessOperationOnImmutable");
+        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UnusedNullCheckInEquals");
+        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UselessParentheses");
+
+        // PMD 5.6.0
+        INSTANCE.addFilterRuleRenamed("java", "design", "AvoidConstantsInterface", "ConstantsInInterface");
+        // unused/UnusedModifier moved AND renamed, order is important!
+        INSTANCE.addFilterRuleMovedAndRenamed("java", "unusedcode", "UnusedModifier", "unnecessary", "UnnecessaryModifier");
+
+        // PMD 6.0.0
+        INSTANCE.addFilterRuleMoved("java", "controversial", "unnecessary", "UnnecessaryParentheses");
+        INSTANCE.addFilterRuleRenamed("java", "unnecessary", "UnnecessaryParentheses", "UselessParentheses");
+        INSTANCE.addFilterRuleMoved("java", "typeresolution", "coupling", "LooseCoupling");
+        INSTANCE.addFilterRuleMoved("java", "typeresolution", "clone", "CloneMethodMustImplementCloneable");
+        INSTANCE.addFilterRuleMoved("java", "typeresolution", "imports", "UnusedImports");
+        INSTANCE.addFilterRuleMoved("java", "typeresolution", "strictexception", "SignatureDeclareThrowsException");
+        INSTANCE.addFilterRuleRenamed("java", "naming", "MisleadingVariableName", "MIsLeadingVariableName");
+        INSTANCE.addFilterRuleRenamed("java", "unnecessary", "UnnecessaryFinalModifier", "UnnecessaryModifier");
+        INSTANCE.addFilterRuleRenamed("java", "empty", "EmptyStaticInitializer", "EmptyInitializer");
+        // GuardLogStatementJavaUtil moved and renamed...
+        INSTANCE.addFilterRuleMovedAndRenamed("java", "logging-java", "GuardLogStatementJavaUtil", "logging-jakarta-commons", "GuardLogStatement");
+        INSTANCE.addFilterRuleRenamed("java", "logging-jakarta-commons", "GuardDebugLogging", "GuardLogStatement");
+
+    }
+
+
     private static final Logger LOG = Logger.getLogger(RuleSetFactoryCompatibility.class.getName());
 
-    private List<RuleSetFilter> filters = new LinkedList<>();
+    private final List<RuleSetFilter> filters = new ArrayList<>();
 
     /**
      * Creates a new instance of the compatibility filter with the built-in
      * filters for the modified PMD rules.
      */
-    public RuleSetFactoryCompatibility() {
-        // PMD 5.3.0
-        addFilterRuleRenamed("java", "design", "UncommentedEmptyMethod", "UncommentedEmptyMethodBody");
-        addFilterRuleRemoved("java", "controversial", "BooleanInversion");
+    RuleSetFactoryCompatibility() {
 
-        // PMD 5.3.1
-        addFilterRuleRenamed("java", "design", "UseSingleton", "UseUtilityClass");
-
-        // PMD 5.4.0
-        addFilterRuleMoved("java", "basic", "empty", "EmptyCatchBlock");
-        addFilterRuleMoved("java", "basic", "empty", "EmptyIfStatement");
-        addFilterRuleMoved("java", "basic", "empty", "EmptyWhileStmt");
-        addFilterRuleMoved("java", "basic", "empty", "EmptyTryBlock");
-        addFilterRuleMoved("java", "basic", "empty", "EmptyFinallyBlock");
-        addFilterRuleMoved("java", "basic", "empty", "EmptySwitchStatements");
-        addFilterRuleMoved("java", "basic", "empty", "EmptySynchronizedBlock");
-        addFilterRuleMoved("java", "basic", "empty", "EmptyStatementNotInLoop");
-        addFilterRuleMoved("java", "basic", "empty", "EmptyInitializer");
-        addFilterRuleMoved("java", "basic", "empty", "EmptyStatementBlock");
-        addFilterRuleMoved("java", "basic", "empty", "EmptyStaticInitializer");
-        addFilterRuleMoved("java", "basic", "unnecessary", "UnnecessaryConversionTemporary");
-        addFilterRuleMoved("java", "basic", "unnecessary", "UnnecessaryReturn");
-        addFilterRuleMoved("java", "basic", "unnecessary", "UnnecessaryFinalModifier");
-        addFilterRuleMoved("java", "basic", "unnecessary", "UselessOverridingMethod");
-        addFilterRuleMoved("java", "basic", "unnecessary", "UselessOperationOnImmutable");
-        addFilterRuleMoved("java", "basic", "unnecessary", "UnusedNullCheckInEquals");
-        addFilterRuleMoved("java", "basic", "unnecessary", "UselessParentheses");
-
-        // PMD 5.6.0
-        addFilterRuleRenamed("java", "design", "AvoidConstantsInterface", "ConstantsInInterface");
-        // unused/UnusedModifier moved AND renamed, order is important!
-        addFilterRuleMovedAndRenamed("java", "unusedcode", "UnusedModifier", "unnecessary", "UnnecessaryModifier");
-
-        // PMD 6.0.0
-        addFilterRuleMoved("java", "controversial", "unnecessary", "UnnecessaryParentheses");
-        addFilterRuleRenamed("java", "unnecessary", "UnnecessaryParentheses", "UselessParentheses");
-        addFilterRuleMoved("java", "typeresolution", "coupling", "LooseCoupling");
-        addFilterRuleMoved("java", "typeresolution", "clone", "CloneMethodMustImplementCloneable");
-        addFilterRuleMoved("java", "typeresolution", "imports", "UnusedImports");
-        addFilterRuleMoved("java", "typeresolution", "strictexception", "SignatureDeclareThrowsException");
-        addFilterRuleRenamed("java", "naming", "MisleadingVariableName", "MIsLeadingVariableName");
-        addFilterRuleRenamed("java", "unnecessary", "UnnecessaryFinalModifier", "UnnecessaryModifier");
-        addFilterRuleRenamed("java", "empty", "EmptyStaticInitializer", "EmptyInitializer");
-        // GuardLogStatementJavaUtil moved and renamed...
-        addFilterRuleMovedAndRenamed("java", "logging-java", "GuardLogStatementJavaUtil", "logging-jakarta-commons", "GuardLogStatement");
-        addFilterRuleRenamed("java", "logging-jakarta-commons", "GuardDebugLogging", "GuardLogStatement");
     }
 
     void addFilterRuleMovedAndRenamed(String language, String oldRuleset, String oldName, String newRuleset, String newName) {
         filters.add(RuleSetFilter.ruleMoved(language, oldRuleset, newRuleset, oldName));
-        filters.add(RuleSetFilter.ruleRenamedMoved(language, newRuleset, oldName, newName));
+        filters.add(RuleSetFilter.ruleRenamed(language, newRuleset, oldName, newName));
     }
 
     void addFilterRuleRenamed(String language, String ruleset, String oldName, String newName) {
@@ -106,134 +103,102 @@ public class RuleSetFactoryCompatibility {
         filters.add(RuleSetFilter.ruleRemoved(language, ruleset, name));
     }
 
-    /**
-     * Applies all configured filters against the given input stream. The
-     * resulting reader will contain the original ruleset modified by the
-     * filters.
-     *
-     * @param stream the original ruleset file input stream
-     * @return a reader, from which the filtered ruleset can be read
-     * @throws IOException if the stream couldn't be read
-     */
-    public Reader filterRuleSetFile(InputStream stream) throws IOException {
-        byte[] bytes = IOUtils.toByteArray(stream);
-        String encoding = determineEncoding(bytes);
-        String ruleset = new String(bytes, encoding);
 
-        ruleset = applyAllFilters(ruleset);
-
-        return new StringReader(ruleset);
-    }
-
-    private String applyAllFilters(String ruleset) {
+    public @Nullable String applyRef(String ruleset) {
         String result = ruleset;
         for (RuleSetFilter filter : filters) {
-            result = filter.apply(result);
+            result = filter.applyRef(result);
+            if (result == null) {
+                return null;
+            }
         }
         return result;
     }
 
-    private static final Pattern ENCODING_PATTERN = Pattern.compile("encoding=\"([^\"]+)\"");
 
-    /**
-     * Determines the encoding of the given bytes, assuming this is a XML
-     * document, which specifies the encoding in the first 1024 bytes.
-     *
-     * @param bytes
-     *            the input bytes, might be more or less than 1024 bytes
-     * @return the determined encoding, falls back to the default UTF-8 encoding
-     */
-    String determineEncoding(byte[] bytes) {
-        String firstBytes = new String(bytes, 0, bytes.length > 1024 ? 1024 : bytes.length,
-                StandardCharsets.ISO_8859_1);
-        Matcher matcher = ENCODING_PATTERN.matcher(firstBytes);
-        String encoding = StandardCharsets.UTF_8.name();
-        if (matcher.find()) {
-            encoding = matcher.group(1);
+    public @Nullable String applyExclude(String ref, String excludeName) {
+        String result = excludeName;
+        for (RuleSetFilter filter : filters) {
+            result = filter.applyExclude(ref, result);
+            if (result == null) {
+                return null;
+            }
         }
-        return encoding;
+        return result;
     }
 
     private static class RuleSetFilter {
-        private final Pattern refPattern;
-        private final String replacement;
-        private Pattern exclusionPattern;
-        private String exclusionReplacement;
+
+        private static final String MOVED_MESSAGE = "The rule \"{1}\" has been moved from ruleset \"{0}\" to \"{2}\". Please change your ruleset!";
+        private static final String RENAMED_MESSAGE = "The rule \"{1}\" has been renamed to \"{3}\". Please change your ruleset!";
+        private static final String REMOVED_MESSAGE = "The rule \"{1}\" in ruleset \"{0}\" has been removed from PMD and no longer exists. Please change your ruleset!";
+        private final String ruleRef;
+        private final String oldRuleset;
+        private final String oldName;
+        private final String newRuleset;
+        private final String newName;
         private final String logMessage;
 
-        private RuleSetFilter(String refPattern, String replacement, String logMessage) {
+        private RuleSetFilter(String oldRuleset,
+                              String oldName,
+                              @Nullable String newRuleset,
+                              @Nullable String newName,
+                              String logMessage) {
+            this.oldRuleset = oldRuleset;
+            this.oldName = oldName;
+            this.newRuleset = newRuleset;
+            this.newName = newName;
             this.logMessage = logMessage;
-            if (replacement != null) {
-                this.refPattern = Pattern.compile("ref=\"" + Pattern.quote(refPattern) + "\"");
-                this.replacement = "ref=\"" + replacement + "\"";
-            } else {
-                this.refPattern = Pattern.compile("<rule\\s+ref=\"" + Pattern.quote(refPattern) + "\"\\s*/>");
-                this.replacement = "";
-            }
-        }
-
-        private void setExclusionPattern(String oldName, String newName) {
-            exclusionPattern = Pattern.compile("<exclude\\s+name=[\"']" + Pattern.quote(oldName) + "[\"']\\s*/>");
-            if (newName != null) {
-                exclusionReplacement = "<exclude name=\"" + newName + "\" />";
-            } else {
-                exclusionReplacement = "";
-            }
+            this.ruleRef = oldRuleset + "/" + oldName;
         }
 
         public static RuleSetFilter ruleRenamed(String language, String ruleset, String oldName, String newName) {
-            RuleSetFilter filter = ruleRenamedMoved(language, ruleset, oldName, newName);
-            filter.setExclusionPattern(oldName, newName);
-            return filter;
-        }
-
-        public static RuleSetFilter ruleRenamedMoved(String language, String ruleset, String oldName, String newName) {
-            String base = "rulesets/" + language + "/" + ruleset + ".xml/";
-            return new RuleSetFilter(base + oldName, base + newName, "The rule \"" + oldName
-                    + "\" has been renamed to \"" + newName + "\". Please change your ruleset!");
+            String base = "rulesets/" + language + "/" + ruleset + ".xml";
+            return new RuleSetFilter(base, oldName, base, newName, RENAMED_MESSAGE);
         }
 
         public static RuleSetFilter ruleMoved(String language, String oldRuleset, String newRuleset, String ruleName) {
             String base = "rulesets/" + language + "/";
-            return new RuleSetFilter(base + oldRuleset + ".xml/" + ruleName, base + newRuleset + ".xml/" + ruleName,
-                    "The rule \"" + ruleName + "\" has been moved from ruleset \"" + oldRuleset + "\" to \""
-                            + newRuleset + "\". Please change your ruleset!");
+            return new RuleSetFilter(base + oldRuleset + ".xml", ruleName,
+                                     base + newRuleset + ".xml", ruleName,
+                                     MOVED_MESSAGE);
         }
 
         public static RuleSetFilter ruleRemoved(String language, String ruleset, String name) {
-            RuleSetFilter filter = new RuleSetFilter("rulesets/" + language + "/" + ruleset + ".xml/" + name, null,
-                    "The rule \"" + name + "\" in ruleset \"" + ruleset
-                            + "\" has been removed from PMD and no longer exists. Please change your ruleset!");
-            filter.setExclusionPattern(name, null);
-            return filter;
+            String oldRuleset = "rulesets/" + language + "/" + ruleset + ".xml";
+            return new RuleSetFilter(oldRuleset, name,
+                                     null, null,
+                                     REMOVED_MESSAGE);
         }
 
-        String apply(String ruleset) {
-            String result = ruleset;
-            Matcher matcher = refPattern.matcher(ruleset);
+        @Nullable String applyExclude(String ref, String name) {
+            if (oldRuleset.equals(ref)
+                && oldName.equals(name)
+                && oldRuleset.equals(newRuleset)) {
+                return newName;
+            }
 
-            if (matcher.find()) {
-                result = matcher.replaceAll(replacement);
+            return name;
+        }
+
+        @Nullable String applyRef(String ref) {
+
+            if (ref.equals(this.ruleRef)) {
 
                 if (LOG.isLoggable(Level.WARNING)) {
-                    LOG.warning("Applying rule set filter: " + logMessage);
+                    String log = MessageFormat.format(logMessage, oldRuleset, oldName, newRuleset, newName);
+                    LOG.warning("Applying rule set filter: " + log);
+                }
+
+                if (newName != null) {
+                    return newRuleset + "/" + newName;
+                } else {
+                    // deleted
+                    return null;
                 }
             }
 
-            if (exclusionPattern == null) {
-                return result;
-            }
-
-            Matcher exclusions = exclusionPattern.matcher(result);
-            if (exclusions.find()) {
-                result = exclusions.replaceAll(exclusionReplacement);
-
-                if (LOG.isLoggable(Level.WARNING)) {
-                    LOG.warning("Applying rule set filter for exclusions: " + logMessage);
-                }
-            }
-
-            return result;
+            return ref;
         }
     }
 }
