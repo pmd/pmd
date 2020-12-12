@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -28,8 +28,6 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * or some such overload.
  */
 public final class RuleSetLoader {
-
-    private static final Logger LOG = Logger.getLogger(RuleSetLoader.class.getName());
 
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
@@ -220,7 +218,7 @@ public final class RuleSetLoader {
      */
     public List<RuleSet> getStandardRuleSets() {
         String rulesetsProperties;
-        List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<>();
+        List<String> ruleSetReferenceIds = new ArrayList<>();
         for (Language language : LanguageRegistry.getLanguages()) {
             Properties props = new Properties();
             rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
@@ -228,11 +226,9 @@ public final class RuleSetLoader {
                 props.load(inputStream);
                 String rulesetFilenames = props.getProperty("rulesets.filenames");
                 if (rulesetFilenames != null) {
-                    ruleSetReferenceIds.addAll(RuleSetReferenceId.parse(rulesetFilenames));
+                    ruleSetReferenceIds.addAll(Arrays.asList(rulesetFilenames.split(",")));
                 }
-            } catch (RuleSetNotFoundException e) {
-                LOG.warning("The language " + language.getTerseName() + " provides no " + rulesetsProperties + ".");
-            } catch (IOException ioe) {
+            } catch (IOException e) {
                 throw new RuntimeException("Couldn't find " + rulesetsProperties
                         + "; please ensure that the directory is on the classpath. The current classpath is: "
                         + System.getProperty("java.class.path"));
@@ -240,7 +236,7 @@ public final class RuleSetLoader {
         }
 
         List<RuleSet> ruleSets = new ArrayList<>();
-        for (RuleSetReferenceId id : ruleSetReferenceIds) {
+        for (String id : ruleSetReferenceIds) {
             ruleSets.add(loadFromResource(id)); // may throw
         }
         return ruleSets;

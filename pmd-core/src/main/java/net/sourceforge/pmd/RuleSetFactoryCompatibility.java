@@ -22,6 +22,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 final class RuleSetFactoryCompatibility {
 
     static final RuleSetFactoryCompatibility EMPTY = new RuleSetFactoryCompatibility();
+    /** The instance with the built-in filters for the modified PMD rules. */
     static final RuleSetFactoryCompatibility DEFAULT = new RuleSetFactoryCompatibility();
 
 
@@ -79,13 +80,6 @@ final class RuleSetFactoryCompatibility {
 
     private final List<RuleSetFilter> filters = new ArrayList<>();
 
-    /**
-     * Creates a new instance of the compatibility filter with the built-in
-     * filters for the modified PMD rules.
-     */
-    RuleSetFactoryCompatibility() {
-
-    }
 
     void addFilterRuleMovedAndRenamed(String language, String oldRuleset, String oldName, String newRuleset, String newName) {
         filters.add(RuleSetFilter.ruleMoved(language, oldRuleset, newRuleset, oldName));

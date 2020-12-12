@@ -579,7 +579,7 @@ public class RuleSetFactoryTest {
     }
 
     @Test
-    public void testIncorrectExternalRef()  {
+    public void testIncorrectExternalRef() {
         assertCannotParse(REF_MISSPELLED_XREF);
     }
 

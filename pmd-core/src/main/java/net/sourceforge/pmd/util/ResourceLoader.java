@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -14,7 +15,6 @@ import java.nio.file.Files;
 import java.util.Objects;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
@@ -58,10 +58,10 @@ public class ResourceLoader {
      * Caller is responsible for closing the {@link InputStream}.
      *
      * @param name The resource to attempt and load
+     *
      * @return InputStream
-     * @throws RuleSetNotFoundException
      */
-    public InputStream loadResourceAsStream(final String name) throws RuleSetNotFoundException {
+    public InputStream loadResourceAsStream(final String name) throws IOException {
         // Search file locations first
         final File file = new File(name);
         if (file.exists()) {
@@ -69,7 +69,8 @@ public class ResourceLoader {
                 return Files.newInputStream(file.toPath());
             } catch (final IOException e) {
                 // if the file didn't exist, we wouldn't be here
-                throw new RuntimeException(e); // somehow the file vanished between checking for existence and opening
+                // somehow the file vanished between checking for existence and opening
+                throw new IOException("File was checked to exist", e);
             }
         }
 
@@ -82,13 +83,11 @@ public class ResourceLoader {
         } catch (final Exception e) {
             try {
                 return loadClassPathResourceAsStream(name);
-            } catch (final IOException ignored) {
-                // We will throw our own exception, with a different message
+            } catch (final IOException ioe) {
+                throw new IOException("Can't find resource " + name + ". Make sure the resource is a valid file or URL or is on the CLASSPATH", ioe);
             }
         }
 
-        throw new RuleSetNotFoundException("Can't find resource " + name
-                + ". Make sure the resource is a valid file or URL or is on the CLASSPATH");
     }
 
     public InputStream loadClassPathResourceAsStream(final String name) throws IOException {
@@ -110,7 +109,7 @@ public class ResourceLoader {
         }
     }
 
-    public InputStream loadClassPathResourceAsStreamOrThrow(final String name) throws RuleSetNotFoundException {
+    public InputStream loadClassPathResourceAsStreamOrThrow(final String name) throws IOException {
         InputStream is = null;
         try {
             is = loadClassPathResourceAsStream(name);
@@ -119,7 +118,7 @@ public class ResourceLoader {
         }
 
         if (is == null) {
-            throw new RuleSetNotFoundException("Can't find resource " + name
+            throw new FileNotFoundException("Can't find resource " + name
                     + ". Make sure the resource is on the CLASSPATH");
         }
 
@@ -128,12 +127,6 @@ public class ResourceLoader {
 
     /**
      * Load the rule from the classloader from resource loader, consistent with the ruleset
-     *
-     * @param clazz
-     * @return
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
      */
     public Rule loadRuleFromClassPath(final String clazz) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         return (Rule) classLoader.loadClass(clazz).newInstance();
