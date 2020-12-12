@@ -220,11 +220,7 @@ public class PMD {
 
         // Load the RuleSets
         final RuleSetLoader ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration);
-        List<String> rulesetPaths = Arrays.asList(configuration.getRuleSets().split(","));
-        final RuleSets ruleSets = new RuleSets(getRuleSetsWithBenchmark(rulesetPaths, ruleSetFactory));
-        if (ruleSets == null) {
-            return PMDCommandLineInterface.NO_ERRORS_STATUS;
-        }
+        final RuleSets ruleSets = new RuleSets(getRuleSetsWithBenchmark(configuration.getRuleSetPaths(), ruleSetFactory));
 
         final Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
         final List<DataSource> files = getApplicableFiles(configuration, languages);
@@ -273,7 +269,7 @@ public class PMD {
 
     private static List<RuleSet> getRuleSetsWithBenchmark(List<String> rulesetPaths, RuleSetLoader factory) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
-            List<RuleSet> ruleSets = null;
+            List<RuleSet> ruleSets;
             try {
                 ruleSets = factory.loadFromResources(rulesetPaths);
                 printRuleNamesInDebug(ruleSets);
