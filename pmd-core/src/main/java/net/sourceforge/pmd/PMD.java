@@ -291,42 +291,6 @@ public class PMD {
     }
 
     /**
-     * Run PMD on a list of files using multiple threads - if more than one is
-     * available
-     *
-     * @param configuration
-     *            Configuration
-     * @param ruleSetFactory
-     *            RuleSetFactory
-     * @param files
-     *            List of {@link DataSource}s
-     * @param ctx
-     *            RuleContext
-     * @param renderers
-     *            List of {@link Renderer}s
-     *
-     * @deprecated Use {@link #processFiles(PMDConfiguration, List, Collection, List)}
-     * so as not to depend on {@link RuleSetFactory}. Note that this sorts the list of data sources in-place,
-     * which won't be fixed
-     */
-    @Deprecated
-    public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
-                                    final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
-        // Note that this duplicates the other routine, because the old behavior was
-        // that we parsed rulesets (a second time) inside the processor execution.
-        // To not mess up error handling, we keep this behavior.
-
-        encourageToUseIncrementalAnalysis(configuration);
-        sortFiles(configuration, files);
-        // Make sure the cache is listening for analysis results
-        ctx.getReport().addListener(configuration.getAnalysisCache());
-
-        final RuleSetFactory silentFactory = ruleSetFactory.toLoader().warnDeprecated(false).toFactory();
-        newFileProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
-        configuration.getAnalysisCache().persist();
-    }
-
-    /**
      * Run PMD using the given configuration. This replaces the other overload.
      *
      * @param configuration Configuration for the run. Note that the files,

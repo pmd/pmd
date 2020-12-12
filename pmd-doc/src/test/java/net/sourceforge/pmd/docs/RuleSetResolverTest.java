@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.docs;
 
-import static org.junit.Assert.fail;
-
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -15,13 +13,11 @@ import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoader;
 
 public class RuleSetResolverTest {
 
-    private static List<String> excludedRulesets = new ArrayList<>();
+    private static final List<String> excludedRulesets = new ArrayList<>();
 
     static {
         excludedRulesets.add(FilenameUtils.normalize("pmd-test/src/main/resources/rulesets/dummy/basic.xml"));
@@ -34,13 +30,8 @@ public class RuleSetResolverTest {
 
         filterRuleSets(additionalRulesets);
 
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
         for (String filename : additionalRulesets) {
-            try {
-                ruleSetFactory.createRuleSet(filename);
-            } catch (RuntimeException | RuleSetNotFoundException e) {
-                fail("Couldn't load ruleset " + filename + ": " + e.getMessage());
-            }
+            new RuleSetLoader().loadFromResource(filename); // will throw if invalid
         }
     }
 

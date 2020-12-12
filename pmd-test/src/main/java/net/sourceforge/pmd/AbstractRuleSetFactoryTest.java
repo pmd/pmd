@@ -12,10 +12,10 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,7 +27,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -45,7 +44,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
  * Base test class to verify the language's rulesets. This class should be
@@ -55,7 +53,6 @@ public abstract class AbstractRuleSetFactoryTest {
     @org.junit.Rule
     public final SystemErrRule systemErrRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
 
-    private static SAXParserFactory saxParserFactory;
     private static ValidateDefaultHandler validateDefaultHandler;
     private static SAXParser saxParser;
 
@@ -85,7 +82,7 @@ public abstract class AbstractRuleSetFactoryTest {
      */
     @BeforeClass
     public static void init() throws Exception {
-        saxParserFactory = SAXParserFactory.newInstance();
+        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         saxParserFactory.setValidating(true);
         saxParserFactory.setNamespaceAware(true);
 
@@ -272,7 +269,7 @@ public abstract class AbstractRuleSetFactoryTest {
     }
 
     // Gets all test PMD Ruleset XML files
-    private List<String> getRuleSetFileNames() throws IOException, RuleSetNotFoundException {
+    private List<String> getRuleSetFileNames() throws IOException {
         List<String> result = new ArrayList<>();
 
         for (Language language : LanguageRegistry.getLanguages()) {
@@ -285,33 +282,32 @@ public abstract class AbstractRuleSetFactoryTest {
         return result;
     }
 
-    private List<String> getRuleSetFileNames(String language) throws IOException, RuleSetNotFoundException {
+    private List<String> getRuleSetFileNames(String language) throws IOException {
         List<String> ruleSetFileNames = new ArrayList<>();
-        try {
-            Properties properties = new Properties();
-            try (InputStream is = new ResourceLoader().loadClassPathResourceAsStreamOrThrow("rulesets/" + language + "/rulesets.properties")) {
-                properties.load(is);
-            }
-            String fileNames = properties.getProperty("rulesets.filenames");
-            StringTokenizer st = new StringTokenizer(fileNames, ",");
-            while (st.hasMoreTokens()) {
-                ruleSetFileNames.add(st.nextToken());
-            }
-        } catch (RuleSetNotFoundException e) {
+        Properties properties = new Properties();
+        InputStream input = getClass().getResourceAsStream("rulesets/" + language + "/rulesets.properties");
+        if (input == null) {
             // this might happen if a language is only support by CPD, but not
             // by PMD
             System.err.println("No ruleset found for language " + language);
         }
+        try (InputStream is = input) {
+            properties.load(is);
+        }
+        String fileNames = properties.getProperty("rulesets.filenames");
+        StringTokenizer st = new StringTokenizer(fileNames, ",");
+        while (st.hasMoreTokens()) {
+            ruleSetFileNames.add(st.nextToken());
+        }
+
         return ruleSetFileNames;
     }
 
-    private RuleSet loadRuleSetByFileName(String ruleSetFileName) throws RuleSetNotFoundException {
-        RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();
-        return rsf.createRuleSet(ruleSetFileName);
+    private RuleSet loadRuleSetByFileName(String ruleSetFileName) {
+        return new RuleSetLoader().loadFromResource(ruleSetFileName);
     }
 
-    private boolean validateAgainstSchema(String fileName)
-            throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
+    private boolean validateAgainstSchema(String fileName) throws IOException, SAXException {
         try (InputStream inputStream = loadResourceAsStream(fileName)) {
             boolean valid = validateAgainstSchema(inputStream);
             if (!valid) {
@@ -321,16 +317,14 @@ public abstract class AbstractRuleSetFactoryTest {
         }
     }
 
-    private boolean validateAgainstSchema(InputStream inputStream)
-            throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
+    private boolean validateAgainstSchema(InputStream inputStream) throws IOException, SAXException {
 
         saxParser.parse(inputStream, validateDefaultHandler.resetValid());
         inputStream.close();
         return validateDefaultHandler.isValid();
     }
 
-    private boolean validateAgainstDtd(String fileName)
-            throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
+    private boolean validateAgainstDtd(String fileName) throws IOException, SAXException {
         try (InputStream inputStream = loadResourceAsStream(fileName)) {
             boolean valid = validateAgainstDtd(inputStream);
             if (!valid) {
@@ -340,8 +334,7 @@ public abstract class AbstractRuleSetFactoryTest {
         }
     }
 
-    private boolean validateAgainstDtd(InputStream inputStream)
-            throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
+    private boolean validateAgainstDtd(InputStream inputStream) throws IOException, SAXException {
 
         // Read file into memory
         String file = readFullyToString(inputStream);
@@ -381,12 +374,11 @@ public abstract class AbstractRuleSetFactoryTest {
         }
     }
 
-    private static InputStream loadResourceAsStream(String resource) throws RuleSetNotFoundException {
-        return new ResourceLoader().loadClassPathResourceAsStreamOrThrow(resource);
+    private InputStream loadResourceAsStream(String resource) {
+        return getClass().getResourceAsStream(resource);
     }
 
-    private void testRuleSet(String fileName)
-            throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
+    private void testRuleSet(String fileName) throws IOException, SAXException {
 
         // Load original XML
         // String xml1 =
@@ -405,8 +397,8 @@ public abstract class AbstractRuleSetFactoryTest {
         // System.out.println("xml2: " + xml2);
 
         // Read RuleSet from XML, first time
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
-        RuleSet ruleSet2 = ruleSetFactory.createRuleSet(createRuleSetReferenceId(xml2));
+        RuleSetLoader loader = new RuleSetLoader();
+        RuleSet ruleSet2 = loader.loadFromString("", xml2);
 
         // Do write/read a 2nd time, just to be sure
 
@@ -419,7 +411,7 @@ public abstract class AbstractRuleSetFactoryTest {
         // System.out.println("xml3: " + xml3);
 
         // Read RuleSet from XML, second time
-        RuleSet ruleSet3 = ruleSetFactory.createRuleSet(createRuleSetReferenceId(xml3));
+        RuleSet ruleSet3 = loader.loadFromString("", xml3);
 
         // The 2 written XMLs should all be valid w.r.t Schema/DTD
         assertTrue("1st roundtrip RuleSet XML is not valid against Schema (filename: " + fileName + ")",
@@ -446,10 +438,10 @@ public abstract class AbstractRuleSetFactoryTest {
     private void assertEqualsRuleSet(String message, RuleSet ruleSet1, RuleSet ruleSet2) {
         assertEquals(message + ", RuleSet name", ruleSet1.getName(), ruleSet2.getName());
         assertEquals(message + ", RuleSet description", ruleSet1.getDescription(), ruleSet2.getDescription());
-        assertEquals(message + ", RuleSet exclude patterns", ruleSet1.getExcludePatterns(),
-                ruleSet2.getExcludePatterns());
-        assertEquals(message + ", RuleSet include patterns", ruleSet1.getIncludePatterns(),
-                ruleSet2.getIncludePatterns());
+        assertEquals(message + ", RuleSet exclude patterns", ruleSet1.getFileExclusions(),
+                ruleSet2.getFileExclusions());
+        assertEquals(message + ", RuleSet include patterns", ruleSet1.getFileInclusions(),
+                ruleSet2.getFileInclusions());
         assertEquals(message + ", RuleSet rule count", ruleSet1.getRules().size(), ruleSet2.getRules().size());
 
         for (int i = 0; i < ruleSet1.getRules().size(); i++) {
@@ -512,22 +504,6 @@ public abstract class AbstractRuleSetFactoryTest {
     }
 
     /**
-     * Create a {@link RuleSetReferenceId} by the given XML string.
-     *
-     * @param ruleSetXml
-     *            the ruleset file content as string
-     * @return the {@link RuleSetReferenceId}
-     */
-    protected static RuleSetReferenceId createRuleSetReferenceId(final String ruleSetXml) {
-        return new RuleSetReferenceId(null) {
-            @Override
-            public InputStream getInputStream(ResourceLoader resourceLoader) throws RuleSetNotFoundException {
-                return new ByteArrayInputStream(ruleSetXml.getBytes(StandardCharsets.UTF_8));
-            }
-        };
-    }
-
-    /**
      * Validator for the SAX parser
      */
     private static class ValidateDefaultHandler extends DefaultHandler {
@@ -550,17 +526,17 @@ public abstract class AbstractRuleSetFactoryTest {
         }
 
         @Override
-        public void error(SAXParseException e) throws SAXException {
+        public void error(SAXParseException e) {
             log("Error", e);
         }
 
         @Override
-        public void fatalError(SAXParseException e) throws SAXException {
+        public void fatalError(SAXParseException e) {
             log("FatalError", e);
         }
 
         @Override
-        public void warning(SAXParseException e) throws SAXException {
+        public void warning(SAXParseException e) {
             log("Warning", e);
         }
 
@@ -571,17 +547,15 @@ public abstract class AbstractRuleSetFactoryTest {
         }
 
         @Override
-        public InputSource resolveEntity(String publicId, String systemId) throws IOException, SAXException {
+        public InputSource resolveEntity(String publicId, String systemId) throws IOException {
             String resource = schemaMapping.get(systemId);
 
             if (resource != null) {
-                try {
-                    InputStream inputStream = loadResourceAsStream(resource);
-                    return new InputSource(inputStream);
-                } catch (RuleSetNotFoundException e) {
-                    System.err.println(e.getMessage());
-                    throw new IOException(e.getMessage());
+                InputStream inputStream = getClass().getResourceAsStream(resource);
+                if (inputStream == null) {
+                    throw new FileNotFoundException(resource);
                 }
+                return new InputSource(inputStream);
             }
             throw new IllegalArgumentException(
                     "No clue how to handle: publicId=" + publicId + ", systemId=" + systemId);

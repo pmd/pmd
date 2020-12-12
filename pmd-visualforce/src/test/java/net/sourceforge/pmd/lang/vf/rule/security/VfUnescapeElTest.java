@@ -24,7 +24,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
@@ -155,7 +154,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
         ctx.setSourceCodeFile(vfPagePath.toFile());
         ctx.setLanguageVersion(languageVersion);
         ctx.setIgnoreExceptions(false);
-        RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
+        RuleSet rules = RuleSet.forSingleRule(rule);
         p.getSourceCodeProcessor().processSourceCode(new FileReader(vfPagePath.toFile()), new RuleSets(rules), ctx);
         // END Based on RuleTst class
 

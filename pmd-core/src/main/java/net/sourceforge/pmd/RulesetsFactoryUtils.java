@@ -79,19 +79,6 @@ public final class RulesetsFactoryUtils {
     }
 
     /**
-     * Returns a ruleset factory with default parameters. It doesn't prune
-     * rules based on priority, and doesn't warn for deprecations.
-     *
-     * @return A ruleset factory
-     *
-     * @see RuleSetLoader
-     */
-    @Deprecated
-    public static RuleSetFactory defaultFactory() {
-        return new RuleSetLoader().toFactory();
-    }
-
-    /**
      * If in debug modus, print the names of the rules.
      *
      * @param rulesets the RuleSets to print
