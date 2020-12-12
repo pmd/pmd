@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.vf.ast.VfParser;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -46,7 +45,7 @@ public class VfHandler extends AbstractPmdLanguageVersionHandler {
                        .build();
 
     @Override
-    public Parser getParser(ParserOptions parserOptions) {
+    public Parser getParser() {
         return new VfParser();
     }
 

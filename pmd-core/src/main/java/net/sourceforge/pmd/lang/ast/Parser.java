@@ -53,12 +53,7 @@ public interface Parser {
 
         private final PropertySource propertySource;
 
-
         public ParserTask(LanguageVersion lv, String filepath, String sourceText, SemanticErrorReporter reporter) {
-            this(lv, filepath, sourceText, reporter, PMD.SUPPRESS_MARKER);
-        }
-
-        public ParserTask(LanguageVersion lv, String filepath, String sourceText, SemanticErrorReporter reporter, String commentMarker) {
             this.lv = Objects.requireNonNull(lv, "lv was null");
             this.filepath = Objects.requireNonNull(filepath, "filepath was null");
             this.sourceText = Objects.requireNonNull(sourceText, "sourceText was null");

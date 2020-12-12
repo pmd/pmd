@@ -49,14 +49,9 @@ public interface LanguageVersionHandler {
 
 
     /**
-     * Get the default ParserOptions.
-     *
-     * @return ParserOptions
+     * @deprecated This is transitional
      */
-    default ParserOptions getDefaultParserOptions() {
-        return new ParserOptions();
-    }
-
+    @Deprecated
     default void declareParserTaskProperties(PropertySource source) {
         // do nothing
     }
@@ -67,12 +62,8 @@ public interface LanguageVersionHandler {
      *
      * @return Parser
      */
-    Parser getParser(ParserOptions parserOptions);
+    Parser getParser();
 
-
-    default Parser getParser() {
-        return getParser(getDefaultParserOptions());
-    }
 
 
     /**

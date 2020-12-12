@@ -13,6 +13,8 @@ import java.io.File
 import java.io.InputStream
 import java.io.StringReader
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util.function.Consumer
 
 /**
@@ -30,7 +32,6 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             val defaultVerString: String?,
             val resourceLoader: Class<*>?,
             val resourcePrefix: String,
-            val parserOptions: ParserOptions? = null,
             val configureParser: (PropertySource) -> Unit = {},
     ) {
         companion object {
@@ -94,13 +95,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
 
     /**
-     * Returns an instance of [Self] for which the [parse] methods use
-     * the provided [parserOptions].
+     * Returns an instance of [Self] which configures the parser task with the
+     * given closure.
      */
-    fun withParserOptions(parserOptions: ParserOptions?): Self =
-            clone(params.copy(parserOptions = parserOptions))
-
-
     fun withParserConfig(configFun: Consumer<PropertySource>): Self =
             clone(params.copy(configureParser = { configFun.accept(it) }))
 
@@ -126,8 +123,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     fun parse(sourceCode: String, version: String? = null): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val handler = lversion.languageVersionHandler
-        val options = params.parserOptions ?: handler.defaultParserOptions
-        val parser = handler.getParser(options)
+        val parser = handler.parser
         val source = DataSource.forString(sourceCode, FileAnalysisException.NO_FILE_NAME)
         val toString = DataSource.readToString(source, StandardCharsets.UTF_8)
         val task = Parser.ParserTask(lversion, FileAnalysisException.NO_FILE_NAME, toString, SemanticErrorReporter.noop())
@@ -174,6 +170,13 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     @JvmOverloads
     open fun parseResource(resource: String, version: String? = null): T =
             parse(readResource(resource), version)
+
+    /**
+     * Fetches and [parse]s the [path].
+     */
+    @JvmOverloads
+    open fun parseFile(path: Path, version: String? = null): T =
+            parse(IOUtils.toString(Files.newBufferedReader(path)), version)
 
     /**
      * Fetches the source of the given [clazz].
