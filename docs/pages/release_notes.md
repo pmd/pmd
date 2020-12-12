@@ -103,4 +103,10 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   [#2945](https://github.com/pmd/pmd/pull/2945): \[cs] Add option to ignore sequences of literals - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#2962](https://github.com/pmd/pmd/pull/2962): \[cpp] Add support for C++ 14 binary literals - [Maikel Steneker](https://github.com/maikelsteneker)
 
+### Stats
+* 190 commits
+* 25 closed tickets & PRs
+* Days since last release: 49
+
 {% endtocmaker %}
+
