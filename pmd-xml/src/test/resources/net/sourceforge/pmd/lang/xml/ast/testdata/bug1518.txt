@@ -1,0 +1,69 @@
++- document[]
+   +- deployment-plan[@global-variables = "false", @xmlns = "http://xmlns.oracle.com/weblogic/deployment-plan", @xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance", @xsi:schemaLocation = "http://xmlns.oracle.com/weblogic/deployment-plan http://xmlns.oracle.com/weblogic/deployment-plan/1.0/deployment-plan.xsd"]
+      +- text[@Image = "
+    "]
+      +- application-name[]
+      |  +- text[@Image = "app"]
+      +- text[@Image = "
+    "]
+      +- variable-definition[]
+      |  +- text[@Image = "
+        "]
+      |  +- variable[]
+      |  |  +- text[@Image = "
+            "]
+      |  |  +- name[]
+      |  |  |  +- text[@Image = "Application_Module_Web_ContextRoot"]
+      |  |  +- text[@Image = "
+            "]
+      |  |  +- value[@xsi:nil = "false"]
+      |  |  |  +- text[@Image = "ikb.adf.kreda.abw.webapp-Abnahmetest-ohne-SSO"]
+      |  |  +- text[@Image = "
+        "]
+      |  +- text[@Image = "
+    "]
+      +- text[@Image = "
+    "]
+      +- module-override[]
+      |  +- text[@Image = "
+        "]
+      |  +- module-name[]
+      |  |  +- text[@Image = "ikb.adf.kreda.abw.ear"]
+      |  +- text[@Image = "
+        "]
+      |  +- module-type[]
+      |  |  +- text[@Image = "ear"]
+      |  +- text[@Image = "
+        "]
+      |  +- module-descriptor[@external = "false"]
+      |  |  +- text[@Image = "
+            "]
+      |  |  +- root-element[]
+      |  |  |  +- text[@Image = "application"]
+      |  |  +- text[@Image = "
+            "]
+      |  |  +- uri[]
+      |  |  |  +- text[@Image = "META-INF/application.xml"]
+      |  |  +- text[@Image = "
+            "]
+      |  |  +- variable-assignment[]
+      |  |  |  +- text[@Image = "
+                "]
+      |  |  |  +- name[]
+      |  |  |  |  +- text[@Image = "Application_Module_Web_ContextRoot"]
+      |  |  |  +- text[@Image = "
+                "]
+      |  |  |  +- xpath[]
+      |  |  |  |  +- text[@Image = "/application/module/web/[context-root="ikb.adf.kreda.abw.webapp-Local-ohne-SSO"]"]
+      |  |  |  +- text[@Image = "
+                "]
+      |  |  |  +- operation[]
+      |  |  |  |  +- text[@Image = "replace"]
+      |  |  |  +- text[@Image = "
+            "]
+      |  |  +- text[@Image = "
+        "]
+      |  +- text[@Image = "
+    "]
+      +- text[@Image = "
+"]

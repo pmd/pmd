@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+  ~ BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+  -->
+
+<!-- do  -->
+
+<!DOCTYPE rootElement
+        [
+                <!ELEMENT rootElement (child1,child2)>
+                <!ELEMENT child1 (#PCDATA)>
+                <!ATTLIST child1 test CDATA #REQUIRED>
+                <!ELEMENT child2 (#PCDATA)>
+
+                <!ENTITY pmd "Copyright: PMD">
+                ]
+        >
+<rootElement>
+    <!-- that's a comment -->
+    <child1 test="1">entity: &pmd;
+    </child1>
+    <child2>
+        <![CDATA[ cdata section ]]>
+    </child2>
+</rootElement>
