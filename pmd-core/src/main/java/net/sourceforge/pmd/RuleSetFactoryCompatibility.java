@@ -21,55 +21,56 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 final class RuleSetFactoryCompatibility {
 
-    static final RuleSetFactoryCompatibility INSTANCE = new RuleSetFactoryCompatibility();
+    static final RuleSetFactoryCompatibility EMPTY = new RuleSetFactoryCompatibility();
+    static final RuleSetFactoryCompatibility DEFAULT = new RuleSetFactoryCompatibility();
 
 
     static {
         // PMD 5.3.0
-        INSTANCE.addFilterRuleRenamed("java", "design", "UncommentedEmptyMethod", "UncommentedEmptyMethodBody");
-        INSTANCE.addFilterRuleRemoved("java", "controversial", "BooleanInversion");
+        DEFAULT.addFilterRuleRenamed("java", "design", "UncommentedEmptyMethod", "UncommentedEmptyMethodBody");
+        DEFAULT.addFilterRuleRemoved("java", "controversial", "BooleanInversion");
 
         // PMD 5.3.1
-        INSTANCE.addFilterRuleRenamed("java", "design", "UseSingleton", "UseUtilityClass");
+        DEFAULT.addFilterRuleRenamed("java", "design", "UseSingleton", "UseUtilityClass");
 
         // PMD 5.4.0
-        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyCatchBlock");
-        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyIfStatement");
-        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyWhileStmt");
-        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyTryBlock");
-        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyFinallyBlock");
-        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptySwitchStatements");
-        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptySynchronizedBlock");
-        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyStatementNotInLoop");
-        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyInitializer");
-        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyStatementBlock");
-        INSTANCE.addFilterRuleMoved("java", "basic", "empty", "EmptyStaticInitializer");
-        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UnnecessaryConversionTemporary");
-        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UnnecessaryReturn");
-        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UnnecessaryFinalModifier");
-        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UselessOverridingMethod");
-        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UselessOperationOnImmutable");
-        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UnusedNullCheckInEquals");
-        INSTANCE.addFilterRuleMoved("java", "basic", "unnecessary", "UselessParentheses");
+        DEFAULT.addFilterRuleMoved("java", "basic", "empty", "EmptyCatchBlock");
+        DEFAULT.addFilterRuleMoved("java", "basic", "empty", "EmptyIfStatement");
+        DEFAULT.addFilterRuleMoved("java", "basic", "empty", "EmptyWhileStmt");
+        DEFAULT.addFilterRuleMoved("java", "basic", "empty", "EmptyTryBlock");
+        DEFAULT.addFilterRuleMoved("java", "basic", "empty", "EmptyFinallyBlock");
+        DEFAULT.addFilterRuleMoved("java", "basic", "empty", "EmptySwitchStatements");
+        DEFAULT.addFilterRuleMoved("java", "basic", "empty", "EmptySynchronizedBlock");
+        DEFAULT.addFilterRuleMoved("java", "basic", "empty", "EmptyStatementNotInLoop");
+        DEFAULT.addFilterRuleMoved("java", "basic", "empty", "EmptyInitializer");
+        DEFAULT.addFilterRuleMoved("java", "basic", "empty", "EmptyStatementBlock");
+        DEFAULT.addFilterRuleMoved("java", "basic", "empty", "EmptyStaticInitializer");
+        DEFAULT.addFilterRuleMoved("java", "basic", "unnecessary", "UnnecessaryConversionTemporary");
+        DEFAULT.addFilterRuleMoved("java", "basic", "unnecessary", "UnnecessaryReturn");
+        DEFAULT.addFilterRuleMoved("java", "basic", "unnecessary", "UnnecessaryFinalModifier");
+        DEFAULT.addFilterRuleMoved("java", "basic", "unnecessary", "UselessOverridingMethod");
+        DEFAULT.addFilterRuleMoved("java", "basic", "unnecessary", "UselessOperationOnImmutable");
+        DEFAULT.addFilterRuleMoved("java", "basic", "unnecessary", "UnusedNullCheckInEquals");
+        DEFAULT.addFilterRuleMoved("java", "basic", "unnecessary", "UselessParentheses");
 
         // PMD 5.6.0
-        INSTANCE.addFilterRuleRenamed("java", "design", "AvoidConstantsInterface", "ConstantsInInterface");
+        DEFAULT.addFilterRuleRenamed("java", "design", "AvoidConstantsInterface", "ConstantsInInterface");
         // unused/UnusedModifier moved AND renamed, order is important!
-        INSTANCE.addFilterRuleMovedAndRenamed("java", "unusedcode", "UnusedModifier", "unnecessary", "UnnecessaryModifier");
+        DEFAULT.addFilterRuleMovedAndRenamed("java", "unusedcode", "UnusedModifier", "unnecessary", "UnnecessaryModifier");
 
         // PMD 6.0.0
-        INSTANCE.addFilterRuleMoved("java", "controversial", "unnecessary", "UnnecessaryParentheses");
-        INSTANCE.addFilterRuleRenamed("java", "unnecessary", "UnnecessaryParentheses", "UselessParentheses");
-        INSTANCE.addFilterRuleMoved("java", "typeresolution", "coupling", "LooseCoupling");
-        INSTANCE.addFilterRuleMoved("java", "typeresolution", "clone", "CloneMethodMustImplementCloneable");
-        INSTANCE.addFilterRuleMoved("java", "typeresolution", "imports", "UnusedImports");
-        INSTANCE.addFilterRuleMoved("java", "typeresolution", "strictexception", "SignatureDeclareThrowsException");
-        INSTANCE.addFilterRuleRenamed("java", "naming", "MisleadingVariableName", "MIsLeadingVariableName");
-        INSTANCE.addFilterRuleRenamed("java", "unnecessary", "UnnecessaryFinalModifier", "UnnecessaryModifier");
-        INSTANCE.addFilterRuleRenamed("java", "empty", "EmptyStaticInitializer", "EmptyInitializer");
+        DEFAULT.addFilterRuleMoved("java", "controversial", "unnecessary", "UnnecessaryParentheses");
+        DEFAULT.addFilterRuleRenamed("java", "unnecessary", "UnnecessaryParentheses", "UselessParentheses");
+        DEFAULT.addFilterRuleMoved("java", "typeresolution", "coupling", "LooseCoupling");
+        DEFAULT.addFilterRuleMoved("java", "typeresolution", "clone", "CloneMethodMustImplementCloneable");
+        DEFAULT.addFilterRuleMoved("java", "typeresolution", "imports", "UnusedImports");
+        DEFAULT.addFilterRuleMoved("java", "typeresolution", "strictexception", "SignatureDeclareThrowsException");
+        DEFAULT.addFilterRuleRenamed("java", "naming", "MisleadingVariableName", "MIsLeadingVariableName");
+        DEFAULT.addFilterRuleRenamed("java", "unnecessary", "UnnecessaryFinalModifier", "UnnecessaryModifier");
+        DEFAULT.addFilterRuleRenamed("java", "empty", "EmptyStaticInitializer", "EmptyInitializer");
         // GuardLogStatementJavaUtil moved and renamed...
-        INSTANCE.addFilterRuleMovedAndRenamed("java", "logging-java", "GuardLogStatementJavaUtil", "logging-jakarta-commons", "GuardLogStatement");
-        INSTANCE.addFilterRuleRenamed("java", "logging-jakarta-commons", "GuardDebugLogging", "GuardLogStatement");
+        DEFAULT.addFilterRuleMovedAndRenamed("java", "logging-java", "GuardLogStatementJavaUtil", "logging-jakarta-commons", "GuardLogStatement");
+        DEFAULT.addFilterRuleRenamed("java", "logging-jakarta-commons", "GuardDebugLogging", "GuardLogStatement");
 
     }
 
@@ -103,11 +104,22 @@ final class RuleSetFactoryCompatibility {
         filters.add(RuleSetFilter.ruleRemoved(language, ruleset, name));
     }
 
+    @Nullable String applyRef(String ref) {
+        return applyRef(ref, false);
+    }
 
-    public @Nullable String applyRef(String ruleset) {
-        String result = ruleset;
+
+    /**
+     * Returns the new rule ref, or null if the rule was deleted. Returns
+     * the argument if no replacement is needed.
+     *
+     * @param ref  Original ref
+     * @param warn Whether to output a warning if a replacement is done
+     */
+    public @Nullable String applyRef(String ref, boolean warn) {
+        String result = ref;
         for (RuleSetFilter filter : filters) {
-            result = filter.applyRef(result);
+            result = filter.applyRef(result, warn);
             if (result == null) {
                 return null;
             }
@@ -115,11 +127,18 @@ final class RuleSetFactoryCompatibility {
         return result;
     }
 
-
-    public @Nullable String applyExclude(String ref, String excludeName) {
+    /**
+     * Returns the new rule name, or null if the rule was deleted. Returns
+     * the argument if no replacement is needed.
+     *
+     * @param rulesetRef  Ruleset name
+     * @param excludeName Original excluded name
+     * @param warn        Whether to output a warning if a replacement is done
+     */
+    public @Nullable String applyExclude(String rulesetRef, String excludeName, boolean warn) {
         String result = excludeName;
         for (RuleSetFilter filter : filters) {
-            result = filter.applyExclude(ref, result);
+            result = filter.applyExclude(rulesetRef, result, warn);
             if (result == null) {
                 return null;
             }
@@ -171,23 +190,26 @@ final class RuleSetFactoryCompatibility {
                                      REMOVED_MESSAGE);
         }
 
-        @Nullable String applyExclude(String ref, String name) {
+        @Nullable String applyExclude(String ref, String name, boolean warn) {
             if (oldRuleset.equals(ref)
                 && oldName.equals(name)
                 && oldRuleset.equals(newRuleset)) {
+                if (warn) {
+                    warn();
+                }
+
                 return newName;
             }
 
             return name;
         }
 
-        @Nullable String applyRef(String ref) {
+        @Nullable String applyRef(String ref, boolean warn) {
 
             if (ref.equals(this.ruleRef)) {
 
-                if (LOG.isLoggable(Level.WARNING)) {
-                    String log = MessageFormat.format(logMessage, oldRuleset, oldName, newRuleset, newName);
-                    LOG.warning("Applying rule set filter: " + log);
+                if (warn) {
+                    warn();
                 }
 
                 if (newName != null) {
@@ -199,6 +221,13 @@ final class RuleSetFactoryCompatibility {
             }
 
             return ref;
+        }
+
+        private void warn() {
+            if (LOG.isLoggable(Level.WARNING)) {
+                String log = MessageFormat.format(logMessage, oldRuleset, oldName, newRuleset, newName);
+                LOG.warning("Applying rule set filter: " + log);
+            }
         }
     }
 }

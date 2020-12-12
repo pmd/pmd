@@ -4,15 +4,17 @@
 
 package net.sourceforge.pmd;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -32,7 +34,7 @@ public final class RuleSetLoader {
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = true;
-    private @Nullable RuleSetFactoryCompatibility compatFilter;
+    private @NonNull RuleSetFactoryCompatibility compatFilter;
     private boolean includeDeprecatedRuleReferences = false;
 
     /**
@@ -83,11 +85,13 @@ public final class RuleSetLoader {
      * @return This instance, modified
      */
     public RuleSetLoader enableCompatibility(boolean enable) {
-        if (enable) {
-            this.compatFilter = RuleSetFactoryCompatibility.INSTANCE;
-        } else {
-            this.compatFilter = null;
-        }
+        return setCompatibility(enable ? RuleSetFactoryCompatibility.DEFAULT
+                                       : RuleSetFactoryCompatibility.EMPTY);
+    }
+
+    // test only
+    RuleSetLoader setCompatibility(@NonNull RuleSetFactoryCompatibility filter) {
+        this.compatFilter = filter;
         return this;
     }
 
@@ -135,6 +139,23 @@ public final class RuleSetLoader {
      */
     public RuleSet loadFromResource(String rulesetPath) {
         return loadFromResource(new RuleSetReferenceId(rulesetPath));
+    }
+
+    /**
+     * Parses and returns a ruleset from string content.
+     *
+     * @param filename          The symbolic "file name", for error messages.
+     * @param rulesetXmlContent Xml file contents
+     *
+     * @throws RuleSetLoadException If any error occurs (eg, invalid syntax)
+     */
+    public RuleSet loadFromString(String filename, String rulesetXmlContent) {
+        return loadFromResource(new RuleSetReferenceId(filename) {
+            @Override
+            public InputStream getInputStream(ResourceLoader rl) {
+                return new ByteArrayInputStream(rulesetXmlContent.getBytes(StandardCharsets.UTF_8));
+            }
+        });
     }
 
     /**

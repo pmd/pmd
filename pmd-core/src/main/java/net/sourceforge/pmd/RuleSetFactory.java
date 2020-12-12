@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,7 +47,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
 @Deprecated
 public class RuleSetFactory {
 
-    private static final Logger LOG = Logger.getLogger(RuleSetFactory.class.getName());
+    private static final Logger LOG = Logger.getLogger(RuleSetLoader.class.getName());
 
     private static final String DESCRIPTION = "description";
     private static final String UNEXPECTED_ELEMENT = "Unexpected element <";
@@ -62,8 +61,11 @@ public class RuleSetFactory {
 
     private final Map<RuleSetReferenceId, RuleSet> parsedRulesets = new HashMap<>();
 
-    RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
-            final boolean warnDeprecated, final RuleSetFactoryCompatibility compatFilter, boolean includeDeprecatedRuleReferences) {
+    RuleSetFactory(ResourceLoader resourceLoader,
+                   RulePriority minimumPriority,
+                   boolean warnDeprecated,
+                   RuleSetFactoryCompatibility compatFilter,
+                   boolean includeDeprecatedRuleReferences) {
         this.resourceLoader = resourceLoader;
         this.minimumPriority = minimumPriority;
         this.warnDeprecated = warnDeprecated;
@@ -72,31 +74,6 @@ public class RuleSetFactory {
         this.compatibilityFilter = compatFilter;
     }
 
-
-    /**
-     * Gets the compatibility filter in order to adjust it, e.g. add additional
-     * filters.
-     *
-     * @return the {@link RuleSetFactoryCompatibility}
-     */
-    /* package */ RuleSetFactoryCompatibility getCompatibilityFilter() {
-        return compatibilityFilter;
-    }
-
-    /**
-     * Returns an Iterator of RuleSet objects loaded from descriptions from the
-     * "categories.properties" resource for each Language with Rule support.
-     *
-     * @return An Iterator of RuleSet objects.
-     *
-     * @throws RuleSetNotFoundException if the ruleset file could not be found
-     *
-     * @deprecated Use {@link RuleSetLoader#getStandardRuleSets()}
-     */
-    @Deprecated
-    public Iterator<RuleSet> getRegisteredRuleSets() throws RuleSetNotFoundException {
-        return toLoader().getStandardRuleSets().iterator();
-    }
 
     /**
      * Create a RuleSets from a comma separated list of RuleSet reference IDs.
@@ -445,8 +422,9 @@ public class RuleSetFactory {
             throws RuleSetNotFoundException {
         Element ruleElement = (Element) ruleNode;
         String ref = ruleElement.getAttribute("ref");
-        if (compatibilityFilter != null) {
-            ref = compatibilityFilter.applyRef(ref);
+        ref = compatibilityFilter.applyRef(ref, this.warnDeprecated);
+        if (ref == null) {
+            return; // deleted rule
         }
         if (ref.endsWith("xml")) {
             parseRuleSetReferenceNode(ruleSetBuilder, ruleElement, ref, rulesetReferences);
@@ -481,7 +459,10 @@ public class RuleSetFactory {
             if (isElementNode(child, "exclude")) {
                 Element excludeElement = (Element) child;
                 String excludedRuleName = excludeElement.getAttribute("name");
-                excludedRulesCheck.add(excludedRuleName);
+                excludedRuleName = compatibilityFilter.applyExclude(ref, excludedRuleName, this.warnDeprecated);
+                if (excludedRuleName != null) {
+                    excludedRulesCheck.add(excludedRuleName);
+                }
             } else if (isElementNode(child, PRIORITY)) {
                 priority = parseTextNode(child).trim();
             }
