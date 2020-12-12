@@ -30,7 +30,7 @@ function maven_dependencies_resolve() {
 
     # the resolve most other projects. The excluded projects depend on other projects in the reactor, which is not
     # completely built yet, so these are excluded.
-    ./mvnw dependency:resolve -pl '!pmd-dist,!pmd-java8,!pmd-doc,!pmd-scala'
+    ./mvnw dependency:resolve -pl '!pmd-dist,!pmd-doc,!pmd-scala'
 
     ./mvnw dependency:get -DgroupId=org.jetbrains.dokka \
            -DartifactId=dokka-maven-plugin \
