@@ -29,8 +29,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
-import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
@@ -114,9 +112,12 @@ public class PMDTaskImpl {
             configuration.setRuleSets(project.replaceProperties(ruleSetString));
         }
 
-        final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), rulesetLoader.toFactory());
-        List<RuleSet> rulesetList = Arrays.asList(ruleSets.getAllRuleSets());
-        logRulesUsed(ruleSets);
+        List<String> rulesets = Arrays.asList(configuration.getRuleSets().split(","));
+        List<RuleSet> rulesetList = rulesetLoader.loadFromResources(rulesets);
+        if (rulesetList.isEmpty()) {
+            throw new BuildException("No rulesets");
+        }
+        logRulesUsed(rulesetList);
 
         if (configuration.getSuppressMarker() != null) {
             project.log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
@@ -294,10 +295,10 @@ public class PMDTaskImpl {
         }
     }
 
-    private void logRulesUsed(RuleSets rules) {
+    private void logRulesUsed(List<RuleSet> rulesets) {
         project.log("Using these rulesets: " + configuration.getRuleSets(), Project.MSG_VERBOSE);
 
-        for (RuleSet ruleSet : rules.getAllRuleSets()) {
+        for (RuleSet ruleSet : rulesets) {
             for (Rule rule : ruleSet.getRules()) {
                 project.log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
             }

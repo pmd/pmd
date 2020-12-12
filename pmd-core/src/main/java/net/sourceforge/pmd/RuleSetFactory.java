@@ -7,7 +7,6 @@ package net.sourceforge.pmd;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,12 +39,8 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * RuleSetFactory is responsible for creating RuleSet instances from XML
  * content. See {@link RuleSetLoader} for configuration options and
  * their defaults.
- *
- * @deprecated Use a {@link RuleSetLoader} instead. This will be hidden in PMD 7
- *     (it's the implementation, while {@link RuleSetLoader} is the API).
  */
-@Deprecated
-public class RuleSetFactory {
+final class RuleSetFactory {
 
     private static final Logger LOG = Logger.getLogger(RuleSetLoader.class.getName());
 
@@ -76,74 +71,6 @@ public class RuleSetFactory {
 
 
     /**
-     * Create a RuleSets from a comma separated list of RuleSet reference IDs.
-     * This is a convenience method which calls
-     * {@link RuleSetReferenceId#parse(String)}, and then calls
-     * {@link #createRuleSets(List)}. The currently configured ResourceLoader is
-     * used.
-     *
-     * @param referenceString
-     *            A comma separated list of RuleSet reference IDs.
-     * @return The new RuleSets.
-     * @throws RuleSetNotFoundException
-     *             if unable to find a resource.
-     *
-     * @deprecated Use {@link RuleSetLoader#loadFromResource(String)},
-     * but note that that method does not split on commas
-     */
-    @Deprecated
-    public RuleSets createRuleSets(String referenceString) throws RuleSetNotFoundException {
-        return createRuleSets(RuleSetReferenceId.parse(referenceString));
-    }
-
-    /**
-     * Create a RuleSets from a list of RuleSetReferenceIds. The currently
-     * configured ResourceLoader is used.
-     *
-     * @param ruleSetReferenceIds
-     *            The List of RuleSetReferenceId of the RuleSets to create.
-     * @return The new RuleSets.
-     * @throws RuleSetNotFoundException
-     *             if unable to find a resource.
-     *
-     * @deprecated Will not be replaced
-     */
-    @Deprecated
-    public RuleSets createRuleSets(List<RuleSetReferenceId> ruleSetReferenceIds) throws RuleSetNotFoundException {
-        List<RuleSet> ruleSets = new ArrayList<>();
-        for (RuleSetReferenceId ruleSetReferenceId : ruleSetReferenceIds) {
-            RuleSet ruleSet = createRuleSet(ruleSetReferenceId);
-            ruleSets.add(ruleSet);
-        }
-        return new RuleSets(ruleSets);
-    }
-
-    /**
-     * Create a RuleSet from a RuleSet reference ID string. This is a
-     * convenience method which calls {@link RuleSetReferenceId#parse(String)},
-     * gets the first item in the List, and then calls
-     * {@link #createRuleSet(RuleSetReferenceId)}. The currently configured
-     * ResourceLoader is used.
-     *
-     * @param referenceString
-     *            A comma separated list of RuleSet reference IDs.
-     * @return A new RuleSet.
-     * @throws RuleSetNotFoundException
-     *             if unable to find a resource.
-     *
-     * @deprecated Use {@link RuleSetLoader#loadFromResource(String)} and discard the rest of the list.
-     */
-    @Deprecated
-    public RuleSet createRuleSet(String referenceString) throws RuleSetNotFoundException {
-        List<RuleSetReferenceId> references = RuleSetReferenceId.parse(referenceString);
-        if (references.isEmpty()) {
-            throw new RuleSetNotFoundException(
-                    "No RuleSetReferenceId can be parsed from the string: <" + referenceString + '>');
-        }
-        return createRuleSet(references.get(0));
-    }
-
-    /**
      * Create a RuleSet from a RuleSetReferenceId. Priority filtering is ignored
      * when loading a single Rule. The currently configured ResourceLoader is used.
      *
@@ -152,11 +79,8 @@ public class RuleSetFactory {
      * @return A new RuleSet.
      * @throws RuleSetNotFoundException
      *             if unable to find a resource.
-     *
-     * @deprecated Will not be replaced
      */
-    @Deprecated
-    public RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId) throws RuleSetNotFoundException {
+    RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId) throws RuleSetNotFoundException {
         return createRuleSet(ruleSetReferenceId, includeDeprecatedRuleReferences);
     }
 
@@ -183,49 +107,6 @@ public class RuleSetFactory {
     public RuleSet createRuleSetCopy(RuleSet original) {
         RuleSetBuilder builder = new RuleSetBuilder(original);
         return builder.build();
-    }
-
-    /**
-     * Creates a new ruleset with the given metadata such as name, description,
-     * fileName, exclude/include patterns are used. The rules are taken from the given
-     * collection.
-     *
-     * <p><strong>Note:</strong> The rule instances are shared between the collection
-     * and the new ruleset (copy-by-reference). This might lead to concurrency issues,
-     * if the rules of the collection are also referenced by other rulesets and used
-     * in different threads.
-     * </p>
-     *
-     * @param name the name of the ruleset
-     * @param description the description
-     * @param fileName the filename
-     * @param excludePatterns list of exclude patterns, if any is not a valid regular expression, it will be ignored
-     * @param includePatterns list of include patterns, if any is not a valid regular expression, it will be ignored
-     * @param rules the collection with the rules to add to the new ruleset
-     * @return the new ruleset
-     *
-     * @deprecated Use {@link RuleSet#create(String, String, String, Collection, Collection, Iterable)}
-     */
-    @Deprecated
-    public RuleSet createNewRuleSet(String name,
-                                    String description,
-                                    String fileName,
-                                    Collection<String> excludePatterns,
-                                    Collection<String> includePatterns,
-                                    Collection<Rule> rules) {
-        return RuleSet.create(name, description, fileName, toPatterns(excludePatterns), toPatterns(includePatterns), rules);
-    }
-
-    private Collection<Pattern> toPatterns(Collection<String> sources) {
-        List<Pattern> result = new ArrayList<>();
-        for (String s : sources) {
-            try {
-                result.add(Pattern.compile(s));
-            } catch (PatternSyntaxException ignored) {
-
-            }
-        }
-        return result;
     }
 
     /**

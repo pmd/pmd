@@ -219,8 +219,9 @@ public class PMD {
     public static int doPMD(final PMDConfiguration configuration) {
 
         // Load the RuleSets
-        final RuleSetFactory ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration).toFactory();
-        final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
+        final RuleSetLoader ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration);
+        List<String> rulesetPaths = Arrays.asList(configuration.getRuleSets().split(","));
+        final RuleSets ruleSets = new RuleSets(getRuleSetsWithBenchmark(rulesetPaths, ruleSetFactory));
         if (ruleSets == null) {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;
         }
@@ -263,9 +264,47 @@ public class PMD {
              * Make sure it's our own classloader before attempting to close it....
              * Maven + Jacoco provide us with a cloaseable classloader that if closed
              * will throw a ClassNotFoundException.
-            */
+             */
             if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
                 IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+            }
+        }
+    }
+
+    private static List<RuleSet> getRuleSetsWithBenchmark(List<String> rulesetPaths, RuleSetLoader factory) {
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
+            List<RuleSet> ruleSets = null;
+            try {
+                ruleSets = factory.loadFromResources(rulesetPaths);
+                printRuleNamesInDebug(ruleSets);
+                if (isEmpty(ruleSets)) {
+                    String msg = "No rules found. Maybe you misspelled a rule name? (" + rulesetPaths + ')';
+                    LOG.log(Level.SEVERE, msg);
+                    throw new IllegalArgumentException(msg);
+                }
+            } catch (RuleSetLoadException rsnfe) {
+                LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
+                throw rsnfe;
+            }
+            return ruleSets;
+        }
+    }
+
+    private static boolean isEmpty(List<RuleSet> rsets) {
+        return rsets.stream().noneMatch(it -> it.size() > 0);
+    }
+
+    /**
+     * If in debug modus, print the names of the rules.
+     *
+     * @param rulesets the RuleSets to print
+     */
+    private static void printRuleNamesInDebug(List<RuleSet> rulesets) {
+        if (LOG.isLoggable(Level.FINER)) {
+            for (RuleSet rset : rulesets) {
+                for (Rule r : rset.getRules()) {
+                    LOG.finer("Loaded rule " + r.getName());
+                }
             }
         }
     }
