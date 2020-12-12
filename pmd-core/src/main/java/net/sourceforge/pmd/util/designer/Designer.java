@@ -328,7 +328,7 @@ public class Designer implements ClipboardOwner {
         @Override
         public int getIndex(TreeNode node) {
             for (int i = 0; i < kids.length; i++) {
-                if (kids[i] == node) {
+                if (kids[i].equals(node)) {
                     return i;
                 }
             }
@@ -423,7 +423,7 @@ public class Designer implements ClipboardOwner {
         public int getIndex(TreeNode node) {
 
             for (int i = 0; i < kids.length; i++) {
-                if (kids[i] == node) {
+                if (kids[i].equals(node)) {
                     return i;
                 }
             }

@@ -171,7 +171,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     @Override
     public String toString() {
-        if (this == EOF) {
+        if (EOF == this) { // NOPMD: must compare references here, as hashCode is not initialized until CPD is executed
             return "EOF";
         }
         for (Map.Entry<String, Integer> e : TOKENS.get().entrySet()) {

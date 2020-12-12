@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import net.sourceforge.pmd.lang.internal.DefaultRulechainVisitor;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -178,26 +179,27 @@ public abstract class BaseLanguageModule implements Language {
     }
 
     @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof BaseLanguageModule)) {
-            return false;
-        }
-        BaseLanguageModule other = (BaseLanguageModule) obj;
-        return name.equals(other.name);
-    }
-
-    @Override
     public int compareTo(Language o) {
         return getName().compareTo(o.getName());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        BaseLanguageModule other = (BaseLanguageModule) obj;
+        return Objects.equals(name, other.name);
+    }
 }
