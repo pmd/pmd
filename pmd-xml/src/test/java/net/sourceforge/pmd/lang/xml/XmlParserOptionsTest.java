@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.xml;
 
 import static net.sourceforge.pmd.lang.ParserOptionsTestUtils.verifyOptionsEqualsHashcode;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -86,9 +85,6 @@ public class XmlParserOptionsTest {
     public void testSetters() {
         XmlParserOptions options = new XmlParserOptions();
 
-        options.setSuppressMarker("foo");
-        assertEquals("foo", options.getSuppressMarker());
-
         options.setCoalescing(true);
         assertTrue(options.isCoalescing());
         options.setCoalescing(false);
@@ -148,15 +144,6 @@ public class XmlParserOptionsTest {
             verifyOptionsEqualsHashcode(options1, options2, options3, options4);
         }
 
-        XmlParserOptions options1 = new XmlParserOptions();
-        options1.setSuppressMarker("foo");
-        XmlParserOptions options2 = new XmlParserOptions();
-        options2.setSuppressMarker("bar");
-        XmlParserOptions options3 = new XmlParserOptions();
-        options3.setSuppressMarker("foo");
-        XmlParserOptions options4 = new XmlParserOptions();
-        options4.setSuppressMarker("bar");
-        verifyOptionsEqualsHashcode(options1, options2, options3, options4);
     }
 
     private static final class MyRule extends AbstractXmlRule {

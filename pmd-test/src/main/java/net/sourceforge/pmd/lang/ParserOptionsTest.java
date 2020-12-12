@@ -4,31 +4,12 @@
 
 package net.sourceforge.pmd.lang;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
  * Unit tests for {@link ParserOptions}.
  * @deprecated for removal in PMD 7.0. Use {@link ParserOptionsTestUtils}.
  */
 @Deprecated
 public class ParserOptionsTest {
-
-    /**
-     * Verify that the equals and hashCode methods work as expected.
-     */
-    @Test
-    public void testEqualsHashcode() {
-        ParserOptions options1 = new ParserOptions();
-        options1.setSuppressMarker("foo");
-        ParserOptions options2 = new ParserOptions();
-        options2.setSuppressMarker("bar");
-        ParserOptions options3 = new ParserOptions();
-        options3.setSuppressMarker("foo");
-        ParserOptions options4 = new ParserOptions();
-        options4.setSuppressMarker("bar");
-        verifyOptionsEqualsHashcode(options1, options2, options3, options4);
-    }
 
     /**
      * Verify equals and hashCode for 4 {@link ParserOptions} instances. The

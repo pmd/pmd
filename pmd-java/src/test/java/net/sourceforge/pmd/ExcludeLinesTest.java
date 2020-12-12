@@ -9,7 +9,7 @@ import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSuppressed;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
@@ -38,9 +38,7 @@ public class ExcludeLinesTest extends BaseNonParserTest {
 
     @Test
     public void testAlternateMarker() {
-        ParserOptions options = new ParserOptions();
-        options.setSuppressMarker("FOOBAR");
-        Report rpt = java.withParserOptions(options).executeRule(getRule(), TEST3);
+        Report rpt = java.withParserConfig(p -> p.setProperty(ParserTask.COMMENT_MARKER, "FOOBAR")).executeRule(getRule(), TEST3);
         assertSize(rpt, 0);
         assertSuppressed(rpt, 1);
     }

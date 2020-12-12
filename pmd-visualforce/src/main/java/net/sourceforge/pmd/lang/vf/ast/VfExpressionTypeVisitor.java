@@ -13,8 +13,9 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.vf.DataType;
-import net.sourceforge.pmd.lang.vf.VfParserOptions;
+import net.sourceforge.pmd.lang.vf.VfHandler;
 
 /**
  * Visits {@link ASTExpression} nodes and stores type information for
@@ -43,10 +44,10 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     private final List<String> apexDirectories;
     private final List<String> objectsDirectories;
 
-    VfExpressionTypeVisitor(String fileName, VfParserOptions propertySource) {
-        this.fileName = fileName;
-        this.apexDirectories = propertySource.getProperty(VfParserOptions.APEX_DIRECTORIES_DESCRIPTOR);
-        this.objectsDirectories = propertySource.getProperty(VfParserOptions.OBJECTS_DIRECTORIES_DESCRIPTOR);
+    VfExpressionTypeVisitor(ParserTask task) {
+        this.fileName = task.getFileDisplayName();
+        this.apexDirectories = task.getProperties().getProperty(VfHandler.APEX_DIRECTORIES_DESCRIPTOR);
+        this.objectsDirectories = task.getProperties().getProperty(VfHandler.OBJECTS_DIRECTORIES_DESCRIPTOR);
         this.apexClassNames = new ArrayList<>();
         this.apexClassPropertyTypes = new ApexClassPropertyTypes();
         this.objectFieldTypes = new ObjectFieldTypes();

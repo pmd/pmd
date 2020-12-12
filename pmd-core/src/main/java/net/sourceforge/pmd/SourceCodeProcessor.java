@@ -176,9 +176,10 @@ public class SourceCodeProcessor {
             languageVersion,
             filename,
             sourceCode,
-            SemanticErrorReporter.noop(), // TODO
-            configuration.getSuppressMarker()
+            SemanticErrorReporter.noop() // TODO
         );
+
+        task.getProperties().setProperty(ParserTask.COMMENT_MARKER, configuration.getSuppressMarker());
 
         Parser parser = languageVersion.getLanguageVersionHandler().getParser();
 

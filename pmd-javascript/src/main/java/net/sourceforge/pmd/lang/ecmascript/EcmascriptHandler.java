@@ -19,7 +19,7 @@ class EcmascriptHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new EcmascriptParser(rhinoVersion, parserOptions.getSuppressMarker());
+        return new EcmascriptParser(rhinoVersion);
     }
 
 }

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.xml;
 
 import java.io.ByteArrayInputStream;
-import java.util.Objects;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -199,8 +198,7 @@ public class XmlParserOptions extends ParserOptions {
             return false;
         }
         final XmlParserOptions that = (XmlParserOptions) obj;
-        return Objects.equals(this.getSuppressMarker(), that.getSuppressMarker())
-                && this.coalescing == that.coalescing && this.expandEntityReferences == that.expandEntityReferences
+        return this.coalescing == that.coalescing && this.expandEntityReferences == that.expandEntityReferences
                 && this.ignoringComments == that.ignoringComments
                 && this.ignoringElementContentWhitespace == that.ignoringElementContentWhitespace
                 && this.namespaceAware == that.namespaceAware && this.validating == that.validating
