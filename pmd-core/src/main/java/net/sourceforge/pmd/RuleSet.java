@@ -554,18 +554,6 @@ public class RuleSet implements ChecksumAware {
     }
 
     /**
-     * @deprecated Use {@link #getFileExclusions()}
-     */
-    @Deprecated
-    public List<String> getExcludePatterns() {
-        List<String> excludes = new ArrayList<>();
-        for (Pattern p : excludePatterns) {
-            excludes.add(p.pattern());
-        }
-        return excludes;
-    }
-
-    /**
      * Returns the number of rules in this ruleset
      *
      * @return an int representing the number of rules
@@ -720,18 +708,6 @@ public class RuleSet implements ChecksumAware {
 
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * @deprecated Use {@link #getFileInclusions()}
-     */
-    @Deprecated
-    public List<String> getIncludePatterns() {
-        List<String> includes = new ArrayList<>();
-        for (Pattern p : includePatterns) {
-            includes.add(p.pattern());
-        }
-        return includes;
     }
 
     /**

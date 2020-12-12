@@ -231,11 +231,11 @@ public class Report {
             errors.addAll(r.errors);
             configErrors.addAll(r.configErrors);
             suppressedRuleViolations.addAll(r.suppressedRuleViolations);
-        }
 
-        for (RuleViolation violation : r.getViolations()) {
-            int index = Collections.binarySearch(violations, violation, RuleViolation.DEFAULT_COMPARATOR);
-            violations.add(index < 0 ? -index - 1 : index, violation);
+            for (RuleViolation violation : r.getViolations()) {
+                int index = Collections.binarySearch(violations, violation, RuleViolation.DEFAULT_COMPARATOR);
+                violations.add(index < 0 ? -index - 1 : index, violation);
+            }
         }
     }
 

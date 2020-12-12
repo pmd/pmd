@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cli;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -203,7 +204,7 @@ public class PMDParameters {
         configuration.setReportFile(this.getReportfile());
         configuration.setReportProperties(this.getProperties());
         configuration.setReportShortNames(this.isShortnames());
-        configuration.setRuleSets(this.getRulesets());
+        configuration.setRuleSets(Arrays.asList(this.getRulesets().split(",")));
         configuration.setRuleSetFactoryCompatibilityEnabled(!this.noRuleSetCompatibility);
         configuration.setShowSuppressedViolations(this.isShowsuppressed());
         configuration.setSourceEncoding(this.getEncoding());

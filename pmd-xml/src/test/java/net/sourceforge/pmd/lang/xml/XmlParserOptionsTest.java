@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import static net.sourceforge.pmd.lang.ParserOptionsTest.verifyOptionsEqualsHashcode;
+import static net.sourceforge.pmd.lang.ParserOptionsTestUtils.verifyOptionsEqualsHashcode;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

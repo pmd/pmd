@@ -219,13 +219,8 @@ public class PMD {
     public static int doPMD(final PMDConfiguration configuration) {
 
         // Load the RuleSets
-        final RuleSetFactory ruleSetFactory =
-            RuleSetLoader.fromPmdConfig(configuration).toFactory();
-        final RuleSets ruleSets =
-            RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
-        if (ruleSets == null) {
-            return PMDCommandLineInterface.NO_ERRORS_STATUS;
-        }
+        final RuleSetLoader ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration);
+        final RuleSets ruleSets = new RuleSets(getRuleSetsWithBenchmark(configuration.getRuleSetPaths(), ruleSetFactory));
 
         final Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
         final List<DataSource> files = getApplicableFiles(configuration, languages);
@@ -265,9 +260,48 @@ public class PMD {
              * Make sure it's our own classloader before attempting to close it....
              * Maven + Jacoco provide us with a cloaseable classloader that if closed
              * will throw a ClassNotFoundException.
-            */
+             */
             if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
                 IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+            }
+        }
+    }
+
+    private static List<RuleSet> getRuleSetsWithBenchmark(List<String> rulesetPaths, RuleSetLoader factory) {
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
+            List<RuleSet> ruleSets;
+            try {
+                ruleSets = factory.loadFromResources(rulesetPaths);
+                printRuleNamesInDebug(ruleSets);
+                if (isEmpty(ruleSets)) {
+                    String msg = "No rules found. Maybe you misspelled a rule name? ("
+                        + String.join(",", rulesetPaths) + ')';
+                    LOG.log(Level.SEVERE, msg);
+                    throw new IllegalArgumentException(msg);
+                }
+            } catch (RuleSetLoadException rsnfe) {
+                LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
+                throw rsnfe;
+            }
+            return ruleSets;
+        }
+    }
+
+    private static boolean isEmpty(List<RuleSet> rsets) {
+        return rsets.stream().noneMatch(it -> it.size() > 0);
+    }
+
+    /**
+     * If in debug modus, print the names of the rules.
+     *
+     * @param rulesets the RuleSets to print
+     */
+    private static void printRuleNamesInDebug(List<RuleSet> rulesets) {
+        if (LOG.isLoggable(Level.FINER)) {
+            for (RuleSet rset : rulesets) {
+                for (Rule r : rset.getRules()) {
+                    LOG.finer("Loaded rule " + r.getName());
+                }
             }
         }
     }
@@ -290,42 +324,6 @@ public class PMD {
         context.setSourceCodeFile(sourceCodeFile);
         context.setReport(new Report());
         return context;
-    }
-
-    /**
-     * Run PMD on a list of files using multiple threads - if more than one is
-     * available
-     *
-     * @param configuration
-     *            Configuration
-     * @param ruleSetFactory
-     *            RuleSetFactory
-     * @param files
-     *            List of {@link DataSource}s
-     * @param ctx
-     *            RuleContext
-     * @param renderers
-     *            List of {@link Renderer}s
-     *
-     * @deprecated Use {@link #processFiles(PMDConfiguration, List, Collection, List)}
-     * so as not to depend on {@link RuleSetFactory}. Note that this sorts the list of data sources in-place,
-     * which won't be fixed
-     */
-    @Deprecated
-    public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
-                                    final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
-        // Note that this duplicates the other routine, because the old behavior was
-        // that we parsed rulesets (a second time) inside the processor execution.
-        // To not mess up error handling, we keep this behavior.
-
-        encourageToUseIncrementalAnalysis(configuration);
-        sortFiles(configuration, files);
-        // Make sure the cache is listening for analysis results
-        ctx.getReport().addListener(configuration.getAnalysisCache());
-
-        final RuleSetFactory silentFactory = ruleSetFactory.toLoader().warnDeprecated(false).toFactory();
-        newFileProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
-        configuration.getAnalysisCache().persist();
     }
 
     /**

@@ -16,4 +16,8 @@ public class VfHandler extends AbstractPmdLanguageVersionHandler {
         return new VfParser();
     }
 
+    @Override
+    public ParserOptions getDefaultParserOptions() {
+        return new VfParserOptions();
+    }
 }

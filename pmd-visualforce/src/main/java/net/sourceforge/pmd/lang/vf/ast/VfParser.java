@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
+import net.sourceforge.pmd.lang.vf.VfParserOptions;
 
 /**
  * Parser for the VisualForce language.
@@ -28,7 +29,13 @@ public final class VfParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
     @Override
     protected ASTCompilationUnit parseImpl(CharStream cs, ParserTask task) throws ParseException {
-        return new VfParserImpl(cs).CompilationUnit().makeTaskInfo(task);
+        ASTCompilationUnit root = new VfParserImpl(cs).CompilationUnit().makeTaskInfo(task);
+
+        // Add type information to the AST
+        VfExpressionTypeVisitor visitor = new VfExpressionTypeVisitor(task);
+        visitor.visit(root, null);
+
+        return root;
     }
 
 }
