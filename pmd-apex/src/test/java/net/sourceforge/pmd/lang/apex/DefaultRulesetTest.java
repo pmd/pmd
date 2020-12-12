@@ -22,11 +22,9 @@ public class DefaultRulesetTest {
     @Rule
     public final SystemErrRule systemErrRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
 
-    private RuleSetFactory factory = new RuleSetLoader().enableCompatibility(false).toFactory();
-
     @Test
-    public void loadDefaultRuleset() throws Exception {
-        RuleSet ruleset = factory.createRuleSet("rulesets/apex/ruleset.xml");
+    public void loadDefaultRuleset() {
+        RuleSet ruleset = rulesetLoader().loadFromResource("rulesets/apex/ruleset.xml");
         Assert.assertNotNull(ruleset);
     }
 
@@ -39,7 +37,7 @@ public class DefaultRulesetTest {
     }
 
     @Test
-    public void loadQuickstartRuleset() throws Exception {
+    public void loadQuickstartRuleset() {
         Logger.getLogger(RuleSetFactory.class.getName()).addHandler(new Handler() {
             @Override
             public void publish(LogRecord record) {
@@ -54,7 +52,11 @@ public class DefaultRulesetTest {
             public void close() throws SecurityException {
             }
         });
-        RuleSet ruleset = factory.createRuleSet("rulesets/apex/quickstart.xml");
+        RuleSet ruleset = rulesetLoader().loadFromResource("rulesets/apex/quickstart.xml");
         Assert.assertNotNull(ruleset);
+    }
+
+    private RuleSetLoader rulesetLoader() {
+        return new RuleSetLoader().enableCompatibility(false);
     }
 }

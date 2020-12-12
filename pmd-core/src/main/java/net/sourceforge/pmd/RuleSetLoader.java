@@ -34,7 +34,7 @@ public final class RuleSetLoader {
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = true;
-    private @NonNull RuleSetFactoryCompatibility compatFilter;
+    private @NonNull RuleSetFactoryCompatibility compatFilter = RuleSetFactoryCompatibility.DEFAULT;
     private boolean includeDeprecatedRuleReferences = false;
 
     /**
@@ -129,9 +129,6 @@ public final class RuleSetLoader {
     /**
      * Parses and returns a ruleset from its location. The location may
      * be a file system path, or a resource path (see {@link #loadResourcesWith(ClassLoader)}).
-     *
-     * <p>This replaces {@link RuleSetFactory#createRuleSet(String)},
-     * but does not split commas.
      *
      * @param rulesetPath A reference to a single ruleset
      *
