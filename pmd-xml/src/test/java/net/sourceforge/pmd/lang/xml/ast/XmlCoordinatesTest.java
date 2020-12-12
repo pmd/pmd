@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.xml.ast;
 
+import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertPosition;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.CoordinatesPrinter;
@@ -37,22 +37,7 @@ public class XmlCoordinatesTest extends BaseTreeDumpTest {
     @Test
     public void testAutoclosingElementLength() {
         final String xml = "<elementName att1='foo' att2='bar' att3='other' />";
-        assertLineNumbers(XmlParsingHelper.XML.parse(xml), 1, 1, 1, xml.length());
+        assertPosition(XmlParsingHelper.XML.parse(xml), 1, 1, 1, xml.length());
     }
 
-    /**
-     * Assert the line numbers of a node.
-     *
-     * @param node        the node
-     * @param beginLine   the begin line
-     * @param beginColumn the begin column
-     * @param endLine     the end line
-     * @param endColumn   the end column
-     */
-    private void assertLineNumbers(Node node, int beginLine, int beginColumn, int endLine, int endColumn) {
-        Assert.assertEquals("begin line wrong", beginLine, node.getBeginLine());
-        Assert.assertEquals("begin column wrong", beginColumn, node.getBeginColumn());
-        Assert.assertEquals("end line wrong", endLine, node.getEndLine());
-        Assert.assertEquals("end column wrong", endColumn, node.getEndColumn());
-    }
 }
