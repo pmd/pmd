@@ -34,6 +34,25 @@ open class RelevantAttributePrinter : BaseNodeAttributePrinter() {
 }
 
 /**
+ * Only prints the begin/end coordinates.
+ */
+object CoordinatesPrinter : BaseNodeAttributePrinter() {
+
+    private val Considered = setOf("BeginLine", "EndLine", "BeginColumn", "EndColumn")
+
+    override fun fillAttributes(node: Node, result: MutableList<AttributeInfo>) {
+        result += AttributeInfo("BeginLine", node.beginLine)
+        result += AttributeInfo("EndLine", node.endLine)
+        result += AttributeInfo("EndColumn", node.endColumn)
+        result += AttributeInfo("BeginColumn", node.beginColumn)
+    }
+
+    override fun ignoreAttribute(node: Node, attribute: Attribute): Boolean =
+            attribute.name !in Considered
+
+}
+
+/**
  * Base attribute printer, subclass to filter attributes.
  */
 open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
