@@ -138,36 +138,6 @@ public class SourceCodeProcessor {
 
 
     private void processSource(Reader reader, RuleSets ruleSets, RuleContext ctx) throws IOException {
-
-        // basically:
-        // 1. make the union of all stage dependencies of each rule, by language, for the Rulesets
-        // 2. order them by dependency
-        // 3. run them and time them if needed
-
-        // The problem is the first two steps need only be done once.
-        // They're probably costly and if we do this here without changing anything,
-        // they'll be done on each file! Btw currently the "usesDfa" and such are nested loops testing
-        // all rules of all rulesets, but they're run on each file too!
-
-        // FIXME - this implementation is a hack to wire-in stages without
-        //  needing to change RuleSet immediately
-
-        // With mutable RuleSets, caching of the value can't be guaranteed to be accurate...
-        // The approach I'd like to take is either
-        // * to create a new RunnableRulesets class which is immutable, and performs all these preliminary
-        //   computations upon construction.
-        // * or to modify Ruleset and Rulesets to be immutable. This IMO is a better option because it makes
-        //   these objects easier to reason about and pass around from thread to thread. It also avoid creating
-        //   a new class, and breaking SourceCodeProcessor's API too much.
-        //
-        // The "preliminary computations" also include:
-        // * removing dysfunctional rules
-        // * separating rulechain rules from normal rules
-        // * grouping rules by language/ file extension
-        // * etc.
-
-
-
         LanguageVersion languageVersion = ctx.getLanguageVersion();
         String filename = ctx.getSourceCodeFilename();
         String sourceCode = IOUtils.toString(reader);
@@ -178,6 +148,8 @@ public class SourceCodeProcessor {
             sourceCode,
             SemanticErrorReporter.noop() // TODO
         );
+
+        languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
 
         task.getProperties().setProperty(ParserTask.COMMENT_MARKER, configuration.getSuppressMarker());
 

@@ -55,6 +55,7 @@ abstract class SalesforceFieldTypes {
             // The expression has been previously requested, but was not found
             return null;
         } else {
+            // fixme getting a Path from the display name is just wrong.
             Path vfFilePath = Paths.get(vfFileName);
             List<Path> resolvedPaths = new ArrayList<>();
             for (String metadataDirectory : metadataDirectories) {

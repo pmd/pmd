@@ -8,31 +8,22 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
-import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
-import net.sourceforge.pmd.lang.vf.VfLanguageModule;
+import net.sourceforge.pmd.lang.vf.ast.VfParsingHelper;
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 
@@ -43,7 +34,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Verify that CustomFields stored in sfdx project format are correctly parsed
      */
     @Test
-    public void testSfdxCustomFields() throws IOException, PMDException {
+    public void testSfdxCustomFields() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve("StandardAccount.page");
 
@@ -68,7 +59,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Verify that CustomFields stored in mdapi format are correctly parsed
      */
     @Test
-    public void testMdapiCustomFields() throws IOException, PMDException {
+    public void testMdapiCustomFields() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Vf).resolve("StandardAccount.page");
 
         Report report = runRule(vfPagePath);
@@ -86,7 +77,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Tests a page with a single Apex controller
      */
     @Test
-    public void testApexController() throws IOException, PMDException {
+    public void testApexController() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("ApexController.page");
 
         Report report = runRule(vfPagePath);
@@ -105,7 +96,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Tests a page with a standard controller and two Apex extensions
      */
     @Test
-    public void testExtensions() throws IOException, PMDException {
+    public void testExtensions() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve(Paths.get("StandardAccountWithExtensions.page"));
 
@@ -123,20 +114,11 @@ public class VfUnescapeElTest extends PmdRuleTst {
     /**
      * Runs a rule against a Visualforce page on the file system.
      */
-    private Report runRule(Path vfPagePath) throws IOException {
-        LanguageVersion languageVersion = LanguageRegistry.getLanguage(VfLanguageModule.NAME).getDefaultVersion();
-        ParserTask task = new ParserTask(languageVersion,
-                                         vfPagePath.toString(),
-                                         IOUtils.toString(Files.newBufferedReader(vfPagePath)),
-                                         SemanticErrorReporter.noop());
-
-        Parser parser = languageVersion.getLanguageVersionHandler().getParser();
-
-        Node node = parser.parse(task);
+    private Report runRule(Path vfPagePath) {
+        Node node = VfParsingHelper.DEFAULT.parseFile(vfPagePath);
         assertNotNull(node);
 
         PMDConfiguration config = new PMDConfiguration();
-        config.setDefaultLanguageVersion(languageVersion);
         config.setIgnoreIncrementalAnalysis(true);
         // simple class loader, that doesn't delegate to parent.
         // this allows us in the tests to simulate PMD run without
@@ -156,7 +138,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
         return PMD.processFiles(
             config,
             listOf(RuleSet.forSingleRule(rule)),
-            listOf(new FileDataSource(vfPagePath.toFile())),
+            listOf(new FileDataSource(vfPagePath.toAbsolutePath().toFile())),
             Collections.emptyList()
         );
     }

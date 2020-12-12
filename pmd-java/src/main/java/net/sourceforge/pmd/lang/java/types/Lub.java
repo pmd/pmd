@@ -356,12 +356,6 @@ final class Lub {
         }
     }
 
-    private static void checkGlbComponent(Collection<? extends JTypeMirror> types, JTypeMirror ci) {
-        if (ci.isPrimitive() || ci instanceof JWildcardType || ci instanceof JIntersectionType) {
-            throw new IllegalArgumentException("Bad intersection type component: " + ci + " in " + types);
-        }
-    }
-
     private static @NonNull List<JTypeMirror> flattenRemoveTrivialBound(Collection<? extends JTypeMirror> types) {
         List<JTypeMirror> bounds = new ArrayList<>(types.size());
 

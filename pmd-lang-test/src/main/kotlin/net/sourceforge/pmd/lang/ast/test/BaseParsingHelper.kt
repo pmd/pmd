@@ -120,13 +120,13 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * so.
      */
     @JvmOverloads
-    fun parse(sourceCode: String, version: String? = null): T {
+    fun parse(sourceCode: String, version: String? = null, filename: String = FileAnalysisException.NO_FILE_NAME): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val handler = lversion.languageVersionHandler
         val parser = handler.parser
-        val source = DataSource.forString(sourceCode, FileAnalysisException.NO_FILE_NAME)
+        val source = DataSource.forString(sourceCode, filename)
         val toString = DataSource.readToString(source, StandardCharsets.UTF_8)
-        val task = Parser.ParserTask(lversion, FileAnalysisException.NO_FILE_NAME, toString, SemanticErrorReporter.noop())
+        val task = Parser.ParserTask(lversion, filename, toString, SemanticErrorReporter.noop())
         task.properties.also {
             handler.declareParserTaskProperties(it)
             params.configureParser(it)
@@ -176,7 +176,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      */
     @JvmOverloads
     open fun parseFile(path: Path, version: String? = null): T =
-            parse(IOUtils.toString(Files.newBufferedReader(path)), version)
+            parse(IOUtils.toString(Files.newBufferedReader(path)), version, filename = path.toAbsolutePath().toString())
 
     /**
      * Fetches the source of the given [clazz].
