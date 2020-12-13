@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,7 +11,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -24,6 +22,8 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.vf.DataType;
+import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.TextFile;
 
 import apex.jorje.semantic.symbol.type.BasicType;
 
@@ -48,44 +48,35 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
             for (Path apexDirectory : apexDirectories) {
                 Path apexFilePath = apexDirectory.resolve(className + APEX_CLASS_FILE_SUFFIX);
                 if (Files.exists(apexFilePath) && Files.isRegularFile(apexFilePath)) {
-                    Node node = parse(expression, apexFilePath);
-                    ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
-                    node.acceptVisitor(visitor, null);
+                    LanguageVersion languageVersion = LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
+                    Parser parser = languageVersion.getLanguageVersionHandler().getParser();
 
-                    for (Pair<String, BasicType> variable : visitor.getVariables()) {
-                        putDataType(variable.getKey(), DataType.fromBasicType(variable.getValue()));
-                    }
+                    try (TextDocument textDocument = TextDocument.create(TextFile.forPath(apexFilePath, StandardCharsets.UTF_8, languageVersion))) {
+                        ParserTask task = new ParserTask(
+                            textDocument,
+                            SemanticErrorReporter.noop()
+                        );
 
-                    if (containsExpression(expression)) {
-                        // Break out of the loop if a variable was found
-                        break;
+                        Node node = parser.parse(task);
+                        ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
+                        node.acceptVisitor(visitor, null);
+
+                        for (Pair<String, BasicType> variable : visitor.getVariables()) {
+                            putDataType(variable.getKey(), DataType.fromBasicType(variable.getValue()));
+                        }
+
+                        if (containsExpression(expression)) {
+                            // Break out of the loop if a variable was found
+                            break;
+                        }
+                    } catch (IOException e) {
+                        throw new ContextedRuntimeException(e)
+                            .addContextValue("expression", expression)
+                            .addContextValue("apexFilePath", apexFilePath);
                     }
                 }
             }
         }
-    }
-
-    private Node parse(String expression, Path apexFilePath) {
-        String fileText;
-        try (BufferedReader reader = Files.newBufferedReader(apexFilePath, StandardCharsets.UTF_8)) {
-            fileText = IOUtils.toString(reader);
-        } catch (IOException e) {
-            throw new ContextedRuntimeException(e)
-                .addContextValue("expression", expression)
-                .addContextValue("apexFilePath", apexFilePath);
-        }
-
-        LanguageVersion languageVersion = LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
-        Parser parser = languageVersion.getLanguageVersionHandler().getParser();
-
-        ParserTask task = new ParserTask(
-            languageVersion,
-            apexFilePath.toString(),
-            fileText,
-            SemanticErrorReporter.noop()
-        );
-
-        return parser.parse(task);
     }
 
     @Override

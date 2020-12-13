@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;

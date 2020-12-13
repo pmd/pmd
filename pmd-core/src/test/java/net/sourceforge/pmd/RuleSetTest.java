@@ -374,7 +374,7 @@ public class RuleSetTest {
 
     @Test
     public void testIncludeExcludeApplies() {
-        TextFile file = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyLang.getDefaultVersion()).build();
+        TextFile file = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyLang.getDefaultVersion());
 
         RuleSet ruleSet = createRuleSetBuilder("ruleset").build();
         assertTrue("No patterns", ruleSet.applies(file));

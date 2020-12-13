@@ -66,7 +66,7 @@ public class FileAnalysisCacheTest {
         newCacheFile = new File(tempFolder.getRoot(), "pmd-analysis.cache");
         emptyCacheFile = tempFolder.newFile();
         File sourceFile = tempFolder.newFile("Source.java");
-        this.sourceFileBackend = TextFile.forPath(sourceFile.toPath(), Charset.defaultCharset(), dummyVersion).build();
+        this.sourceFileBackend = TextFile.forPath(sourceFile.toPath(), Charset.defaultCharset(), dummyVersion);
         this.sourceFile = TextDocument.create(sourceFileBackend);
     }
 
