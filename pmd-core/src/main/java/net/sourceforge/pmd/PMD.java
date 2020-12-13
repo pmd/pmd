@@ -222,7 +222,7 @@ public final class PMD {
      *                      as parameters
      * @param ruleSets      Parsed rulesets
      * @param files         Files to process, will be closed by this method.
-     * @param renderers     Renderers that render the report
+     * @param renderers     Renderers that render the report (may be empty)
      *
      * @return Report in which violations are accumulated
      *
@@ -248,6 +248,10 @@ public final class PMD {
     }
 
     private static GlobalAnalysisListener createComposedRendererListener(List<Renderer> renderers) throws Exception {
+        if (renderers.isEmpty()) {
+            return GlobalAnalysisListener.noop();
+        }
+
         List<GlobalAnalysisListener> rendererListeners = new ArrayList<>(renderers.size());
         for (Renderer renderer : renderers) {
             try {

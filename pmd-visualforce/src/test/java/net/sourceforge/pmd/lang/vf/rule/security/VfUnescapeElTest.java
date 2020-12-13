@@ -34,7 +34,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Verify that CustomFields stored in sfdx project format are correctly parsed
      */
     @Test
-    public void testSfdxCustomFields() {
+    public void testSfdxCustomFields() throws Exception {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve("StandardAccount.page");
 
@@ -59,7 +59,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Verify that CustomFields stored in mdapi format are correctly parsed
      */
     @Test
-    public void testMdapiCustomFields() {
+    public void testMdapiCustomFields() throws Exception {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Vf).resolve("StandardAccount.page");
 
         Report report = runRule(vfPagePath);
@@ -77,7 +77,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Tests a page with a single Apex controller
      */
     @Test
-    public void testApexController() {
+    public void testApexController() throws Exception {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("ApexController.page");
 
         Report report = runRule(vfPagePath);
@@ -96,7 +96,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Tests a page with a standard controller and two Apex extensions
      */
     @Test
-    public void testExtensions() {
+    public void testExtensions() throws Exception {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve(Paths.get("StandardAccountWithExtensions.page"));
 
@@ -114,7 +114,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
     /**
      * Runs a rule against a Visualforce page on the file system.
      */
-    private Report runRule(Path vfPagePath) {
+    private Report runRule(Path vfPagePath) throws Exception {
         Node node = VfParsingHelper.DEFAULT.parseFile(vfPagePath);
         assertNotNull(node);
 
