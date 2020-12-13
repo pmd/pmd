@@ -17,6 +17,7 @@ import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.internal.RulesetStageDependencyHelper;
 import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
@@ -129,11 +130,16 @@ abstract class PmdRunnable implements Runnable {
             languageVersion,
             filename,
             sourceCode,
-            SemanticErrorReporter.noop(), // TODO
-            configuration.getSuppressMarker()
+            SemanticErrorReporter.noop() // TODO
         );
 
-        Parser parser = languageVersion.getLanguageVersionHandler().getParser();
+
+        LanguageVersionHandler handler = languageVersion.getLanguageVersionHandler();
+
+        handler.declareParserTaskProperties(task.getProperties());
+        task.getProperties().setProperty(ParserTask.COMMENT_MARKER, configuration.getSuppressMarker());
+
+        Parser parser = handler.getParser();
 
         RootNode rootNode = parse(parser, task);
 

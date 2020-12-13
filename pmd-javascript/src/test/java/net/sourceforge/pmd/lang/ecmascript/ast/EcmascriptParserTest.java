@@ -16,7 +16,6 @@ import org.mozilla.javascript.ast.AstRoot;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 
@@ -150,9 +149,8 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
         assertEquals(" I know what I'm doing", root.getAstInfo().getSuppressionComments().get(2));
         assertEquals(1, root.getAstInfo().getSuppressionComments().size());
 
-        ParserOptions parserOptions = new ParserOptions();
-        parserOptions.setSuppressMarker("FOOOO");
-        root = js.withParserOptions(parserOptions).parse("function(x) {\n" + "y = y; //NOPMD xyz\n" + "x = x; //FOOOO I know what I'm doing\n" + "}\n");
+        root = js.withSuppressMarker("FOOOO")
+                 .parse("function(x) {\n" + "y = y; //NOPMD xyz\n" + "x = x; //FOOOO I know what I'm doing\n" + "}\n");
         assertEquals(" I know what I'm doing", root.getAstInfo().getSuppressionComments().get(3));
         assertEquals(1, root.getAstInfo().getSuppressionComments().size());
     }

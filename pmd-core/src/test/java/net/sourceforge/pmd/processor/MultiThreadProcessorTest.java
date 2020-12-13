@@ -15,10 +15,9 @@ import org.junit.Test;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -33,7 +32,7 @@ public class MultiThreadProcessorTest {
     private SimpleReportListener reportListener;
     private PMDConfiguration configuration;
 
-    public RuleSets setUpForTest(final String ruleset) throws RuleSetNotFoundException {
+    public RuleSets setUpForTest(final String ruleset) {
         configuration = new PMDConfiguration();
         configuration.setThreads(2);
         files = listOf(
@@ -47,7 +46,7 @@ public class MultiThreadProcessorTest {
             reportListener
         ));
 
-        return new RuleSets(RulesetsFactoryUtils.defaultFactory().createRuleSets(ruleset));
+        return new RuleSets(new RuleSetLoader().loadFromResource(ruleset));
     }
 
     // Dysfunctional rules are pruned upstream of the processor.

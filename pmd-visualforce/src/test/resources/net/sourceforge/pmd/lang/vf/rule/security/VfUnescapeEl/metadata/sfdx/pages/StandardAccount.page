@@ -1,0 +1,33 @@
+<apex:page standardController="Account">
+    <!-- Safe -->
+    <apex:outputText value="{!Account.CreatedDate}" escape="false"/>
+    {!Account.CreatedDate}
+    <apex:outputText value="{!Account.Checkbox__c}" escape="false"/>
+    {!Account.Checkbox__c}
+    <apex:outputText value="{!Account.DateTime__c}" escape="false"/>
+    <apex:outputText value="{!Account.CreatedDate}{!Account.Checkbox__c}" escape="false"/>
+    <apex:outputText value="{!Account.CreatedDate + 'A string' + Account.Checkbox__c}" escape="false"/>
+    {!Account.DateTime__c}
+    <apex:outputText value="{!Account.Name}"/> <!-- This will be escaped and is safe -->
+    <apex:outputText value="{!Account.Text__c}" /> <!-- This will be escaped and is safe -->
+    <!-- Unsafe -->
+    <apex:outputText value="{!Account['CreatedDate']}" escape="false"/> <!-- Array indexing is always considered unsafe -->
+    <apex:outputText value="{!Account['CreatedDate']}{!Account.CreatedDate}" escape="false"/> <!-- Array indexing is always considered unsafe -->
+    <apex:outputText value="{!Account.CreatedDate + ' Some Text ' +  Account['CreatedDate']}" escape="false"/> <!-- Array indexing is always considered unsafe -->
+    <apex:outputText value="{!Account.Name}" escape="false"/>
+    <apex:outputText value="{!Account['Name']}" escape="false"/>
+    <script>function someFunc() {var foo = "{!Account.Name}";}</script>
+    <apex:outputText value="{!Account.Text__c}" escape="false"/>
+    <script>function someFunc() {var foo = "{!Account.Text__c}";}</script>
+    <td><apex:outputText value="{!Account.TextArea__c}" escape="false"/>
+    <script>function someFunc() {var foo = "{!Account.TextArea__c}";}</script>
+    <apex:outputText value="{!Account.LongTextArea__c}" escape="false"/>
+    <script>function someFunc() {var foo = "{!Account.LongTextArea__c};}</script>
+    <apex:outputText value="{!Account.Picklist__c}" escape="false"/>
+    <script>function someFunc() {var foo = "{!Account.Picklist__c}";}</script>
+    <apex:outputText value="{!Account.NotFoundField__c}" escape="false"/> <!-- This field doesn't exist on Account -->
+    <script>function someFunc() {var foo = "{!Account.NotFoundField__c}";}</script>
+    <apex:outputText value="{!Account.Name}{!Account.Checkbox__c}" escape="false"/>
+    <apex:outputText value="{!Account.Name + 'A string' + Account.Checkbox__c}" escape="false"/>
+    <apex:outputText value="{!Account.Name}{!Account.Text__c}" escape="false"/>
+</apex:page>

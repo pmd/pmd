@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 
@@ -48,12 +49,11 @@ public interface LanguageVersionHandler {
 
 
     /**
-     * Get the default ParserOptions.
-     *
-     * @return ParserOptions
+     * @deprecated This is transitional
      */
-    default ParserOptions getDefaultParserOptions() {
-        return new ParserOptions();
+    @Deprecated
+    default void declareParserTaskProperties(PropertySource source) {
+        // do nothing
     }
 
 
@@ -62,12 +62,8 @@ public interface LanguageVersionHandler {
      *
      * @return Parser
      */
-    Parser getParser(ParserOptions parserOptions);
+    Parser getParser();
 
-
-    default Parser getParser() {
-        return getParser(getDefaultParserOptions());
-    }
 
 
     /**

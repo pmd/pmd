@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public final class ASTLiteral extends AbstractVfNode {
+public final class ASTLiteral extends AbstractVFDataNode {
 
     ASTLiteral(int id) {
         super(id);

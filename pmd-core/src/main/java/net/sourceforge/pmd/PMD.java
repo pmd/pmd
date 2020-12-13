@@ -14,6 +14,7 @@ import java.io.Writer;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -31,6 +33,7 @@ import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PMDParameters;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -129,14 +132,7 @@ public final class PMD {
 
         // Load the RuleSets
         final RuleSetLoader ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration);
-
-        final List<RuleSet> ruleSets;
-        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
-            ruleSets = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), ruleSetFactory);
-        }
-        if (ruleSets == null) {
-            return PMDCommandLineInterface.NO_ERRORS_STATUS;
-        }
+        final List<RuleSet> ruleSets = getRuleSetsWithBenchmark(configuration.getRuleSetPaths(), ruleSetFactory);
 
         final Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
 
@@ -172,29 +168,114 @@ public final class PMD {
              * Make sure it's our own classloader before attempting to close it....
              * Maven + Jacoco provide us with a cloaseable classloader that if closed
              * will throw a ClassNotFoundException.
-            */
+             */
             if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
                 IOUtil.tryCloseClassLoader(configuration.getClassLoader());
             }
         }
     }
 
+    private static List<RuleSet> getRuleSetsWithBenchmark(List<String> rulesetPaths, RuleSetLoader factory) {
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
+            List<RuleSet> ruleSets;
+            try {
+                ruleSets = factory.loadFromResources(rulesetPaths);
+                printRuleNamesInDebug(ruleSets);
+                if (isEmpty(ruleSets)) {
+                    String msg = "No rules found. Maybe you misspelled a rule name? ("
+                        + String.join(",", rulesetPaths) + ')';
+                    LOG.log(Level.SEVERE, msg);
+                    throw new IllegalArgumentException(msg);
+                }
+            } catch (RuleSetLoadException rsnfe) {
+                LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
+                throw rsnfe;
+            }
+            return ruleSets;
+        }
+    }
+
+    private static boolean isEmpty(List<RuleSet> rsets) {
+        return rsets.stream().noneMatch(it -> it.size() > 0);
+    }
+
     /**
-     * Run PMD on a list of files using the number of threads specified
-     * by the configuration.
+     * If in debug modus, print the names of the rules.
      *
-     * TODO rulesets should be validated more strictly upon construction.
-     *   We shouldn't be removing rules after construction.
-     *
-     * @param configuration Configuration
-     * @param ruleSets      RuleSetFactory
-     * @param files         List of {@link DataSource}s
-     * @param listener      RuleContext
-     *
-     * @throws Exception If an exception occurs while closing the data sources
-     *                   Todo wrap that into a known exception type
+     * @param rulesets the RuleSets to print
      */
-    @Deprecated
+    private static void printRuleNamesInDebug(List<RuleSet> rulesets) {
+        if (LOG.isLoggable(Level.FINER)) {
+            for (RuleSet rset : rulesets) {
+                for (Rule r : rset.getRules()) {
+                    LOG.finer("Loaded rule " + r.getName());
+                }
+            }
+        }
+    }
+
+    /**
+     * Run PMD using the given configuration. This replaces the other overload.
+     *
+     * @param configuration Configuration for the run. Note that the files,
+     *                      and rulesets, are ignored, as they are supplied
+     *                      as parameters
+     * @param ruleSets      Parsed rulesets
+     * @param files         Files to process, will be closed by this method.
+     * @param renderers     Renderers that render the report
+     *
+     * @return Report in which violations are accumulated
+     *
+     * @throws Exception If there was a problem when opening or closing the renderers
+     */
+    @SuppressWarnings("PMD.CloseResource")
+    public static Report processFiles(PMDConfiguration configuration,
+                                      List<RuleSet> ruleSets,
+                                      List<DataSource> files,
+                                      List<Renderer> renderers) throws Exception {
+
+
+        GlobalAnalysisListener rendererListeners = createComposedRendererListener(renderers);
+        GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
+
+        List<GlobalAnalysisListener> allListeners = listOf(reportBuilder, rendererListeners);
+
+        try (GlobalAnalysisListener listener = GlobalAnalysisListener.tee(allListeners)) {
+            processFiles(configuration, ruleSets, files, listener);
+        }
+
+        return reportBuilder.getResult();
+    }
+
+    private static GlobalAnalysisListener createComposedRendererListener(List<Renderer> renderers) throws Exception {
+        List<GlobalAnalysisListener> rendererListeners = new ArrayList<>(renderers.size());
+        for (Renderer renderer : renderers) {
+            try {
+                rendererListeners.add(renderer.newListener());
+            } catch (IOException ioe) {
+                // close listeners so far, throw their close exception or the ioe
+                IOUtil.ensureClosed(rendererListeners, ioe);
+                throw AssertionUtil.shouldNotReachHere("ensureClosed should have thrown");
+            }
+        }
+        return GlobalAnalysisListener.tee(rendererListeners);
+    }
+
+
+    /**
+     * Run PMD using the given configuration. This replaces the other overload.
+     *
+     * @param configuration Configuration for the run. Note that the files,
+     *                      and rulesets, are ignored, as they are supplied
+     *                      as parameters
+     * @param ruleSets      Parsed rulesets
+     * @param files         Files to process, will be closed by this method.
+     * @param listener      Listener to which analysis events are forwarded.
+     *                      The listener is NOT closed by this routine and should
+     *                      be closed by the caller.
+     *
+     * @throws Exception If there was a problem when opening or closing the renderers
+     */
     public static void processFiles(PMDConfiguration configuration,
                                     List<RuleSet> ruleSets,
                                     List<DataSource> files,
@@ -212,7 +293,7 @@ public final class PMD {
 
         encourageToUseIncrementalAnalysis(configuration);
 
-        files = sortFiles(configuration, files);
+        List<DataSource> sortedFiles = sortFiles(configuration, files);
 
         // Make sure the cache is listening for analysis results
         listener = GlobalAnalysisListener.tee(listOf(listener, configuration.getAnalysisCache()));
@@ -221,27 +302,12 @@ public final class PMD {
 
         Exception ex = null;
         try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
-            processor.processFiles(rs, files, listener);
+            processor.processFiles(rs, sortedFiles, listener);
         } catch (Exception e) {
             ex = e;
         } finally {
             configuration.getAnalysisCache().persist();
-
-            // in case we analyzed files within Zip Files/Jars, we need to close them after
-            // the analysis is finished
-            Exception closed = IOUtil.closeAll(files);
-
-            if (closed != null) {
-                if (ex != null) {
-                    ex.addSuppressed(closed);
-                } else {
-                    ex = closed;
-                }
-            }
-        }
-
-        if (ex != null) {
-            throw ex;
+            IOUtil.ensureClosed(sortedFiles, ex);
         }
     }
 
@@ -269,24 +335,24 @@ public final class PMD {
     }
 
 
-    private static List<DataSource> sortFiles(final PMDConfiguration configuration, List<DataSource> files) {
+    private static List<DataSource> sortFiles(final PMDConfiguration configuration, Collection<? extends DataSource> files) {
         // the input collection may be unmodifiable
-        files = new ArrayList<>(files);
+        List<DataSource> result = new ArrayList<>(files);
 
         if (configuration.isStressTest()) {
             // randomize processing order
-            Collections.shuffle(files);
+            Collections.shuffle(result);
         } else {
             final boolean useShortNames = configuration.isReportShortNames();
             final String inputPaths = configuration.getInputPaths();
-            files.sort((left, right) -> {
+            result.sort((left, right) -> {
                 String leftString = left.getNiceFileName(useShortNames, inputPaths);
                 String rightString = right.getNiceFileName(useShortNames, inputPaths);
                 return leftString.compareTo(rightString);
             });
         }
 
-        return files;
+        return result;
     }
 
     private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {

@@ -38,10 +38,9 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RuleSetLoadException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -101,15 +100,15 @@ public abstract class RuleTst {
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
-            List<RuleSet> ruleSets = RulesetsFactoryUtils.defaultFactory().createRuleSets(ruleSet);
-            Rule rule = new RuleSets(ruleSets).getRuleByName(ruleName);
+            RuleSet parsedRset = new RuleSetLoader().loadFromResource(ruleSet);
+            Rule rule = parsedRset.getRuleByName(ruleName);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             } else {
                 rule.setRuleSetName(ruleSet);
             }
             return rule;
-        } catch (RuleSetNotFoundException e) {
+        } catch (RuleSetLoadException e) {
             e.printStackTrace();
             fail("Couldn't find ruleset " + ruleSet);
             return null;
@@ -287,7 +286,7 @@ public abstract class RuleTst {
                  GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder))) {
 
                 AbstractPMDProcessor.runSingleFile(
-                    listOf(RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule)),
+                    listOf(RuleSet.forSingleRule(rule)),
                     DataSource.forString(code, "test." + languageVersion.getLanguage().getExtensions().get(0)),
                     listener,
                     config

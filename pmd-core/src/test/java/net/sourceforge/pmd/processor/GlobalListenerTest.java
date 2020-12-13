@@ -25,7 +25,6 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
@@ -35,10 +34,6 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterList
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class GlobalListenerTest {
-
-    static RuleSet mockRuleset(Rule rule) {
-        return RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
-    }
 
     static final int NUM_DATA_SOURCES = 3;
 
@@ -149,7 +144,7 @@ public class GlobalListenerTest {
         try {
             PMD.processFiles(
                 config,
-                listOf(mockRuleset(rule)),
+                listOf(RuleSet.forSingleRule(rule)),
                 mockDataSources(),
                 listener
             );

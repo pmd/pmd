@@ -49,7 +49,7 @@ public class RuleSets {
         this.ruleSets = Collections.unmodifiableList(rsets);
     }
 
-    public RuleSets(Collection<RuleSet> ruleSets) {
+    public RuleSets(Collection<? extends RuleSet> ruleSets) {
         this.ruleSets = Collections.unmodifiableList(new ArrayList<>(ruleSets));
     }
 

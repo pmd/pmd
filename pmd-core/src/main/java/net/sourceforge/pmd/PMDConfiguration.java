@@ -6,11 +6,15 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
@@ -45,7 +49,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  *
  * <p>The aspects related to Rules and Source files are:</p>
  * <ul>
- * <li>A comma separated list of RuleSets URIs. {@link #getRuleSets()}</li>
+ * <li>RuleSets URIs: {@link #getRuleSetPaths()}</li>
  * <li>A minimum priority threshold when loading Rules from RuleSets, defaults
  * to {@link RulePriority#LOW}. {@link #getMinimumPriority()}</li>
  * <li>The character encoding of source files, defaults to the system default as
@@ -54,7 +58,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * <li>A comma separated list of input paths to process for source files. This
  * may include files, directories, archives (e.g. ZIP files), etc.
  * {@link #getInputPaths()}</li>
- * <li>A flag which controls, whether {@link RuleSetFactoryCompatibility} filter
+ * <li>A flag which controls, whether {@link RuleSetLoader#enableCompatibility(boolean)} filter
  * should be used or not: #isRuleSetFactoryCompatibilityEnabled;
  * </ul>
  *
@@ -87,7 +91,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
 
     // Rule and source file options
-    private String ruleSets;
+    private List<String> ruleSets;
     private RulePriority minimumPriority = RulePriority.LOW;
     private String inputPaths;
     private String inputUri;
@@ -260,19 +264,44 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the comma separated list of RuleSet URIs.
      *
      * @return The RuleSet URIs.
+     *
+     * @deprecated Use {@link #getRuleSetPaths()}
      */
+    @Deprecated
+    @DeprecatedUntil700
     public String getRuleSets() {
+        return String.join(",", ruleSets);
+    }
+
+    /**
+     * Returns the list of ruleset URIs.
+     *
+     * @see RuleSetLoader#loadFromResource(String)
+     */
+    public List<String> getRuleSetPaths() {
         return ruleSets;
+    }
+
+    /**
+     * Sets the rulesets.
+     *
+     * @throws NullPointerException If the parameter is null
+     */
+    public void setRuleSets(@NonNull List<String> ruleSets) {
+        this.ruleSets = new ArrayList<>(ruleSets);
     }
 
     /**
      * Set the comma separated list of RuleSet URIs.
      *
-     * @param ruleSets
-     *            the rulesets to set
+     * @param ruleSets the rulesets to set
+     *
+     * @deprecated Use {@link #setRuleSets(List)}
      */
+    @Deprecated
+    @DeprecatedUntil700
     public void setRuleSets(String ruleSets) {
-        this.ruleSets = ruleSets;
+        this.ruleSets = Arrays.asList(ruleSets.split(","));
     }
 
     /**
@@ -563,7 +592,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return true, if the rule set factory compatibility feature is enabled
      *
-     * @see RuleSetFactoryCompatibility
+     * @see RuleSetLoader#enableCompatibility(boolean)
      */
     public boolean isRuleSetFactoryCompatibilityEnabled() {
         return ruleSetFactoryCompatibilityEnabled;
@@ -574,7 +603,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param ruleSetFactoryCompatibilityEnabled {@code true} if the feature should be enabled
      *
-     * @see RuleSetFactoryCompatibility
+     * @see RuleSetLoader#enableCompatibility(boolean)
      */
     public void setRuleSetFactoryCompatibilityEnabled(boolean ruleSetFactoryCompatibilityEnabled) {
         this.ruleSetFactoryCompatibilityEnabled = ruleSetFactoryCompatibilityEnabled;
