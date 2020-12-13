@@ -22,7 +22,7 @@ import java.util.*
 val TextAvailableNode.textStr: String
     get() = text.toString()
 
-infix fun TextAvailableNode.textEquals(str:String) {
+infix fun TextAvailableNode.shouldHaveText(str:String) {
     this::textStr shouldBe str
 }
 

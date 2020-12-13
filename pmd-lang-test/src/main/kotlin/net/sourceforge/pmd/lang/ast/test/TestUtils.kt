@@ -95,8 +95,10 @@ fun assertSuppressed(report: Report, size: Int): List<Report.SuppressedViolation
 
 /** Checks the coordinates of this node. */
 fun Node.assertPosition(bline: Int, bcol: Int, eline: Int, ecol: Int) {
-    this::getBeginLine shouldBe bline
-    this::getBeginColumn shouldBe bcol
-    this::getEndLine shouldBe eline
-    this::getEndColumn shouldBe ecol
+    reportLocation.apply {
+        this::getBeginLine shouldBe bline
+        this::getBeginColumn shouldBe bcol
+        this::getEndLine shouldBe eline
+        this::getEndColumn shouldBe ecol
+    }
 }
