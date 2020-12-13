@@ -4,9 +4,11 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.*
-import net.sourceforge.pmd.lang.*
+import net.sourceforge.pmd.lang.Language
+import net.sourceforge.pmd.lang.LanguageRegistry
+import net.sourceforge.pmd.lang.LanguageVersion
+import net.sourceforge.pmd.lang.LanguageVersionHandler
 import net.sourceforge.pmd.lang.ast.*
-import net.sourceforge.pmd.properties.PropertySource
 import net.sourceforge.pmd.util.datasource.DataSource
 import org.apache.commons.io.IOUtils
 import java.io.File
@@ -15,7 +17,6 @@ import java.io.StringReader
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.function.Consumer
 
 /**
  * Language-independent base for a parser utils class.
@@ -32,7 +33,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             val defaultVerString: String?,
             val resourceLoader: Class<*>?,
             val resourcePrefix: String,
-            val configureParser: (PropertySource) -> Unit = {},
+            val suppressMarker: String = PMD.SUPPRESS_MARKER,
     ) {
         companion object {
 
@@ -94,13 +95,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             clone(params.copy(resourceLoader = contextClass, resourcePrefix = resourcePrefix))
 
 
-    /**
-     * Returns an instance of [Self] which configures the parser task with the
-     * given closure.
-     */
-    fun withParserConfig(configFun: Consumer<PropertySource>): Self =
-            clone(params.copy(configureParser = { configFun.accept(it) }))
-
+    fun withSuppressMarker(marker: String): Self =
+            clone(params.copy(suppressMarker = marker))
 
     fun getHandler(version: String): LanguageVersionHandler {
         return getVersion(version).languageVersionHandler
@@ -125,11 +121,11 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val handler = lversion.languageVersionHandler
         val parser = handler.parser
         val source = DataSource.forString(sourceCode, filename)
-        val toString = DataSource.readToString(source, StandardCharsets.UTF_8)
+        val toString = DataSource.readToString(source, StandardCharsets.UTF_8) // this removed the BOM
         val task = Parser.ParserTask(lversion, filename, toString, SemanticErrorReporter.noop())
         task.properties.also {
             handler.declareParserTaskProperties(it)
-            params.configureParser(it)
+            it.setProperty(Parser.ParserTask.COMMENT_MARKER, params.suppressMarker)
         }
         val rootNode = rootClass.cast(parser.parse(task))
         if (params.doProcess) {
@@ -226,12 +222,13 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     @JvmOverloads
     fun executeRule(rule: Rule, code: String, filename: String = "testfile.${language.extensions[0]}"): Report {
         val p = PMD()
-        // p.configuration.suppressMarker = this.params.parserOptions?.suppressMarker ?: PMD.SUPPRESS_MARKER
+        p.configuration.suppressMarker = this.params.suppressMarker
         val ctx = RuleContext()
         val report = Report()
         ctx.report = report
         ctx.sourceCodeFile = File(filename)
         ctx.isIgnoreExceptions = false
+
         val rules = RuleSet.forSingleRule(rule)
         try {
             p.sourceCodeProcessor.processSourceCode(StringReader(code), RuleSets(rules), ctx)

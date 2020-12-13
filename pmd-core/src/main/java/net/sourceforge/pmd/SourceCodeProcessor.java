@@ -149,8 +149,8 @@ public class SourceCodeProcessor {
             SemanticErrorReporter.noop() // TODO
         );
 
+        // todo following 2 lines should be deleted
         languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
-
         task.getProperties().setProperty(ParserTask.COMMENT_MARKER, configuration.getSuppressMarker());
 
         Parser parser = languageVersion.getLanguageVersionHandler().getParser();
