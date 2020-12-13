@@ -189,6 +189,7 @@ function pmd_ci_build_and_upload_doc() {
         gh_release_updateRelease "$GH_RELEASE" "$release_name" "$rendered_release_notes"
         sourceforge_uploadReleaseNotes "${VERSION}" "${rendered_release_notes}"
 
+        # updates https://pmd.github.io/latest/ and https://pmd.github.io/pmd-${VERSION}
         publish_release_documentation_github
         sourceforge_rsyncSnapshotDocumentation "${VERSION}" "pmd-${VERSION}"
     fi

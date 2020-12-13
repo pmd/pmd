@@ -9,8 +9,10 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageHandler;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
@@ -24,7 +26,7 @@ import scala.meta.tokenizers.TokenizeException;
 import scala.meta.tokens.Token;
 
 /**
- * Scala Tokenizer class. Uses the Scala Meta Tokenizer.
+ * Scala Tokenizer class. Uses the Scala Meta Tokenizer, but adapts it for use with generic filtering
  */
 public class ScalaTokenizer implements Tokenizer {
 
@@ -72,19 +74,21 @@ public class ScalaTokenizer implements Tokenizer {
         // tokenize with a filter
         try {
             scala.meta.tokens.Tokens tokens = tokenizer.tokenize();
-            ScalaTokenFilter filter = new ScalaTokenFilter(tokens.iterator());
 
-            Token token;
+            // use extensions to the standard PMD TokenManager and Filter
+            ScalaTokenManager scalaTokenManager = new ScalaTokenManager(tokens.iterator());
+            ScalaTokenFilter filter = new ScalaTokenFilter(scalaTokenManager);
+
+            ScalaTokenAdapter token;
             while ((token = filter.getNextToken()) != null) {
-                if (StringUtils.isEmpty(token.text())) {
+                if (StringUtils.isEmpty(token.getImage())) {
                     continue;
                 }
-                Position pos = token.pos();
-                TokenEntry cpdToken = new TokenEntry(token.text(),
+                TokenEntry cpdToken = new TokenEntry(token.getImage(),
                                                      filename,
-                                                     pos.startLine() + 1,
-                                                     pos.startColumn() + 1,
-                                                     pos.endColumn() + 2);
+                                                     token.getBeginLine(),
+                                                     token.getBeginColumn(),
+                                                     token.getEndColumn());
                 tokenEntries.add(cpdToken);
             }
         } catch (Exception e) {
@@ -103,19 +107,25 @@ public class ScalaTokenizer implements Tokenizer {
     }
 
     /**
-     * Token Filter skips un-helpful tokens to only register important tokens
+     * Implementation of the generic Token Manager, also skips un-helpful tokens and comments to only register important tokens
      * and patterns.
+     *
+     * Keeps track of comments, for special comment processing
      */
-    private static class ScalaTokenFilter {
+    private static class ScalaTokenManager implements TokenManager<ScalaTokenAdapter> {
+
         Iterator<Token> tokenIter;
         Class<?>[] skippableTokens = new Class<?>[] { Token.Space.class, Token.Tab.class, Token.CR.class,
-            Token.LF.class, Token.FF.class, Token.LFLF.class, Token.EOF.class };
+            Token.LF.class, Token.FF.class, Token.LFLF.class, Token.EOF.class, Token.Comment.class };
 
-        ScalaTokenFilter(Iterator<Token> iterator) {
+        ScalaTokenAdapter previousComment = null;
+
+        ScalaTokenManager(Iterator<Token> iterator) {
             this.tokenIter = iterator;
         }
 
-        Token getNextToken() {
+        @Override
+        public ScalaTokenAdapter getNextToken() {
             if (!tokenIter.hasNext()) {
                 return null;
             }
@@ -123,9 +133,12 @@ public class ScalaTokenizer implements Tokenizer {
             Token token;
             do {
                 token = tokenIter.next();
+                if (isComment(token)) {
+                    previousComment = new ScalaTokenAdapter(token, previousComment);
+                }
             } while (token != null && skipToken(token) && tokenIter.hasNext());
 
-            return token;
+            return new ScalaTokenAdapter(token, previousComment);
         }
 
         private boolean skipToken(Token token) {
@@ -137,5 +150,22 @@ public class ScalaTokenizer implements Tokenizer {
             }
             return skip;
         }
+
+        private boolean isComment(Token token) {
+            return token instanceof Token.Comment;
+        }
     }
+
+    private static class ScalaTokenFilter extends BaseTokenFilter<ScalaTokenAdapter> {
+        ScalaTokenFilter(TokenManager<ScalaTokenAdapter> tokenManager) {
+            super(tokenManager);
+        }
+
+        @Override
+        protected boolean shouldStopProcessing(ScalaTokenAdapter currentToken) {
+            return currentToken == null;
+        }
+
+    }
+
 }

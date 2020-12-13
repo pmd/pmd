@@ -10,6 +10,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.properties.AbstractPropertySource;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
@@ -46,17 +50,25 @@ public interface Parser {
         private final TextDocument textDoc;
         private final SemanticErrorReporter reporter;
 
-        private final String commentMarker;
-
+        private final PropertySource propertySource;
 
         public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter) {
-            this(textDoc, reporter, PMD.SUPPRESS_MARKER);
-        }
-
-        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter, String commentMarker) {
             this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
             this.reporter = Objects.requireNonNull(reporter, "reporter was null");
-            this.commentMarker = Objects.requireNonNull(commentMarker, "commentMarker was null");
+
+            this.propertySource = new ParserTaskProperties();
+            propertySource.definePropertyDescriptor(COMMENT_MARKER);
+        }
+
+        public static final PropertyDescriptor<String> COMMENT_MARKER =
+            PropertyFactory.stringProperty("suppressionCommentMarker")
+                           .desc("deprecated! NOPMD")
+                           .defaultValue(PMD.SUPPRESS_MARKER)
+                           .build();
+
+        @Deprecated // transitional until language properties are implemented
+        public PropertySource getProperties() {
+            return propertySource;
         }
 
 
@@ -97,7 +109,39 @@ public interface Parser {
          * The suppression marker for comments.
          */
         public @NonNull String getCommentMarker() {
-            return commentMarker;
+            return getProperties().getProperty(COMMENT_MARKER);
+        }
+
+
+        private static final class ParserTaskProperties extends AbstractPropertySource {
+
+            @Override
+            protected String getPropertySourceType() {
+                return "ParserOptions";
+            }
+
+            @Override
+            public String getName() {
+                return "n/a";
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (this == obj) {
+                    return true;
+                }
+                if (!(obj instanceof ParserTaskProperties)) {
+                    return false;
+                }
+                final ParserTaskProperties that = (ParserTaskProperties) obj;
+                return Objects.equals(getPropertiesByPropertyDescriptor(),
+                                      that.getPropertiesByPropertyDescriptor());
+            }
+
+            @Override
+            public int hashCode() {
+                return getPropertiesByPropertyDescriptor().hashCode();
+            }
         }
     }
 

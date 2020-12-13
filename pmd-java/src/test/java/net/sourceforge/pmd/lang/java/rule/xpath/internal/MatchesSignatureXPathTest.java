@@ -4,13 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
+import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
 
 /**
  * @author Clément Fournier
- * @since 6.0.0
+ * @since 7.0.0
  */
 public class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
 
@@ -51,6 +56,14 @@ public class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
         Rule rule = makeXpathRuleFromXPath("//EnumDeclaration[pmd-java:matchesSig('_#_(int,int)')]");
 
         assertFinds(rule, 0, "enum O {; { \"\".substring(1, 2); this.foo(1, 'c');} void foo(int a, int b) {} }");
+    }
+
+    @Test
+    public void testMatchInvalidSig() {
+        Rule rule = makeXpathRuleFromXPath("//*[pmd-java:matchesSig('_#')]");
+
+        PmdXPathException e = Assert.assertThrows(PmdXPathException.class, rule::getTargetSelector);
+        assertEquals(Phase.INITIALIZATION, e.getPhase());
     }
 
 

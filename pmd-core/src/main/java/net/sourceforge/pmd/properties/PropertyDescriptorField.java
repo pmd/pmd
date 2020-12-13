@@ -6,15 +6,12 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Objects;
 
-import net.sourceforge.pmd.RuleSetFactory;
-
 
 /**
  * Field names for parsing the properties out of the ruleset xml files. These are intended to be used as the keys to a
  * map of fields to values. Most property descriptors can be built directly from such a map using their factory.
  *
  * @author Brian Remedios
- * @see RuleSetFactory
  * @see PropertyTypeId
  * @deprecated Will be removed with 7.0.0
  */

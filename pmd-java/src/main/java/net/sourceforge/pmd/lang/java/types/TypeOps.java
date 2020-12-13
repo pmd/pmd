@@ -434,7 +434,7 @@ public final class TypeOps {
      * implies convertibility (the conversion is technically called
      * "widening reference conversion"). You can check those cases using:
      *
-     * {@link #bySubtyping() t.isConvertibleTo(s).naturally()}
+     * {@link #bySubtyping() t.isConvertibleTo(s).bySubtyping()}
      *
      * <p>Unchecked conversion may go backwards from subtyping. For example,
      * {@code List<String>} is a subtype of the raw type {@code List}, and
@@ -475,8 +475,8 @@ public final class TypeOps {
          * {@code T <: |S|} and {@code T </: S}, but S is
          * parameterized with only unbounded wildcards. This is a special
          * case of unchecked conversion that produces no warning. We keep
-         * it distinct from subtyping to help some algorithms that subtyping
-         * to be a partial order.
+         * it distinct from subtyping to help some algorithms that require
+         * subtyping to be a partial order.
          *
          * <p>For example, {@code List<String>} is a subtype of the raw
          * {@code Collection}, not a subtype of {@code Collection<?>},

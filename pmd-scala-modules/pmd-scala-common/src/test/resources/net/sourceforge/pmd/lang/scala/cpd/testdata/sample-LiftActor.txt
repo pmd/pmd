@@ -1,6 +1,4 @@
     [Image] or [Truncated image[            Bcol      Ecol
-L1
-    [/* Example source code copied from[    1         5
 L19
     [package]                               1         9
     [net]                                   9         13
@@ -40,14 +38,10 @@ L26
     [Unit]                                  19        24
 L27
     [}]                                     1         3
-L29
-    [/**\n * The definition of a schedu[    1         5
 L32
     [trait]                                 1         7
     [LAScheduler]                           7         19
     [{]                                     19        21
-L33
-    [/**\n   * Execute some code on ano[    3         7
 L38
     [def]                                   3         7
     [execute]                               7         15
@@ -79,8 +73,6 @@ L43
     [onSameThread]                          7         20
     [=]                                     20        22
     [false]                                 22        28
-L45
-    [/**\n   * Set this variable to the[    3         7
 L48
     [@]                                     3         5
     [volatile]                              4         13
@@ -88,7 +80,6 @@ L48
     [threadPoolSize]                        17        32
     [=]                                     32        34
     [16]                                    34        37
-    [// issue 194]                          37        50
 L50
     [@]                                     3         5
     [volatile]                              4         13
@@ -98,8 +89,6 @@ L50
     [threadPoolSize]                        37        52
     [*]                                     52        54
     [25]                                    54        57
-L52
-    [/**\n   * If it's Full, then creat[    3         7
 L57
     [@]                                     3         5
     [volatile]                              4         13
@@ -149,7 +138,6 @@ L64
     [val]                                   15        19
     [es]                                    19        22
     [=]                                     22        24
-    [// Executors.newFixedThreadPool(th[    24        72
 L65
     [new]                                   9         13
     [ThreadPoolExecutor]                    13        32
@@ -282,8 +270,6 @@ L91
     [ILAExecute]                            13        24
     [=]                                     24        26
     [_]                                     26        28
-L93
-    [/**\n   * Execute some code on ano[    3         7
 L98
     [def]                                   3         7
     [execute]                               7         15
@@ -464,8 +450,6 @@ L127
     [MailboxItem]                           15        27
     [=]                                     27        29
     [_]                                     29        31
-L129
-    [/*\n    def find(f: MailboxItem =>[    5         8
 L134
     [def]                                   5         9
     [remove]                                9         16
@@ -588,8 +572,6 @@ L157
     [\]]                                    71        73
     [)]                                     72        74
     [{]                                     74        76
-L158
-    [// override def find(f: MailboxIte[    5         79
 L159
     [next]                                  5         10
     [=]                                     10        12
@@ -659,8 +641,6 @@ L167
     [)]                                     42        44
 L168
     [}]                                     5         7
-L170
-    [/**\n   * Send a message to the Ac[    3         7
 L175
     [def]                                   3         7
     [send]                                  7         12
@@ -675,8 +655,6 @@ L175
     [this]                                  28        33
     [!]                                     33        35
     [msg]                                   35        39
-L177
-    [/**\n   * Send a message to the Ac[    3         7
 L182
     [def]                                   3         7
     [!]                                     7         9
@@ -793,8 +771,6 @@ L199
     [)]                                     10        12
 L200
     [}]                                     3         5
-L202
-    [/**\n   * This method inserts the [    3         7
 L207
     [protected]                             3         13
     [def]                                   13        17
@@ -936,8 +912,6 @@ L230
     [}]                                     5         7
 L231
     [}]                                     3         5
-L233
-    [/**\n   * A list of LoanWrappers t[    3         7
 L236
     [protected]                             3         13
     [def]                                   13        17
@@ -949,8 +923,6 @@ L236
     [\]]                                    52        54
     [=]                                     54        56
     [Nil]                                   56        60
-L238
-    [/**\n   * You can wrap calls aroun[    3         7
 L242
     [protected]                             3         13
     [def]                                   13        17
@@ -1574,8 +1546,6 @@ L349
     [}]                                     3         5
 L350
     [}]                                     1         3
-L352
-    [/**\n * A SpecializedLiftActor des[    1         5
 L362
     [class]                                 1         7
     [MockSpecializedLiftActor]              7         32
@@ -1602,8 +1572,6 @@ L363
     [\]]                                    45        47
     [=]                                     47        49
     [Nil]                                   49        53
-L365
-    [/**\n   * Send a message to the mo[    3         7
 L369
     [override]                              3         12
     [def]                                   12        16
@@ -1630,10 +1598,6 @@ L372
     [}]                                     5         7
 L373
     [}]                                     3         5
-L375
-    [// We aren't required to implement[    3         80
-L376
-    [// since the message handler never[    3         44
 L377
     [override]                              3         12
     [def]                                   12        16
@@ -1653,8 +1617,6 @@ L378
     [=>]                                    12        15
 L379
     [}]                                     3         5
-L381
-    [/**\n   * Test to see if this acto[    3         7
 L384
     [def]                                   3         7
     [hasReceivedMessage_?]                  7         28
@@ -1672,8 +1634,6 @@ L384
     [(]                                     72        74
     [msg]                                   73        77
     [)]                                     76        78
-L386
-    [/**\n   * Returns the list of mess[    3         7
 L389
     [def]                                   3         7
     [messages]                              7         16
@@ -1684,8 +1644,6 @@ L389
     [\]]                                    23        25
     [=]                                     25        27
     [messagesReceived]                      27        44
-L391
-    [/**\n   * Return the number of mes[    3         7
 L394
     [def]                                   3         7
     [messageCount]                          7         20
@@ -1830,8 +1788,6 @@ L417
     [msg]                                   24        28
 L418
     [}]                                     3         5
-L420
-    [/**\n  * Send a message to the Act[    3         6
 L425
     [def]                                   3         7
     [sendAndGetFuture]                      7         24
@@ -1849,8 +1805,6 @@ L425
     [this]                                  51        56
     [!<]                                    56        59
     [msg]                                   59        63
-L427
-    [/**\n  * Send a message to the Act[    3         6
 L431
     [def]                                   3         7
     [!<]                                    7         10
@@ -1888,8 +1842,6 @@ L434
     [future]                                5         12
 L435
     [}]                                     3         5
-L437
-    [/**\n  * Send a message to the Act[    3         6
 L442
     [def]                                   3         7
     [sendAndGetReply]                       7         23
@@ -1904,8 +1856,6 @@ L442
     [this]                                  40        45
     [!?]                                    45        48
     [msg]                                   48        52
-L444
-    [/**\n  * Send a message to the Act[    3         6
 L448
     [def]                                   3         7
     [!?]                                    7         10
@@ -1942,8 +1892,6 @@ L451
     [get]                                   12        16
 L452
     [}]                                     3         5
-L455
-    [/**\n  * Send a message to the Act[    3         6
 L461
     [def]                                   3         7
     [sendAndGetReply]                       7         23
@@ -1967,8 +1915,6 @@ L461
     [,]                                     70        72
     [msg]                                   72        76
     [)]                                     75        77
-L463
-    [/**\n  * Send a message to the Act[    3         6
 L468
     [def]                                   3         7
     [!?]                                    7         10
@@ -1995,8 +1941,6 @@ L469
     [,]                                     21        23
     [timeout]                               23        31
     [)]                                     30        32
-L472
-    [/**\n    * Send a message to the A[    5         8
 L477
     [def]                                   3         7
     [!!]                                    7         10
@@ -2043,8 +1987,6 @@ L480
     [)]                                     23        25
 L481
     [}]                                     3         5
-L483
-    [/**\n  * Send a message to the Act[    3         6
 L487
     [def]                                   3         7
     [!!]                                    7         10
@@ -2193,8 +2135,6 @@ L506
     [)]                                     18        20
 L507
     [}]                                     3         5
-L509
-    [/**\n  * The Actor should call thi[    3         6
 L513
     [protected]                             3         13
     [def]                                   13        17
@@ -2226,8 +2166,6 @@ L517
     [}]                                     3         5
 L518
     [}]                                     1         3
-L520
-    [/**\n * A MockLiftActor for use in[    1         5
 L529
     [class]                                 1         7
     [MockLiftActor]                         7         21
@@ -2503,7 +2441,6 @@ L565
     [(]                                     24        26
     [true]                                  25        30
     [)]                                     29        31
-    [// access private and protected me[    31        71
 L566
     [m]                                     9         11
     [.]                                     10        12
@@ -2826,8 +2763,6 @@ L604
     [}]                                     5         7
 L605
     [}]                                     1         3
-L607
-    [/**\n * Java versions of Actors sh[    1         5
 L612
     [class]                                 1         7
     [LiftActorJ]                            7         18

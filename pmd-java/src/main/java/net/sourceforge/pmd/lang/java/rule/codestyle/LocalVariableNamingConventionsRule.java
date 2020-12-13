@@ -27,6 +27,8 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
 
 
     public LocalVariableNamingConventionsRule() {
+        super(ASTVariableDeclaratorId.class);
+
         definePropertyDescriptor(localVarRegex);
         definePropertyDescriptor(finalVarRegex);
         definePropertyDescriptor(exceptionBlockParameterRegex);
@@ -52,6 +54,12 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
     @Override
     String defaultConvention() {
         return CAMEL_CASE;
+    }
+
+
+    @Override
+    String nameExtractor(ASTVariableDeclaratorId node) {
+        return node.getName();
     }
 
 

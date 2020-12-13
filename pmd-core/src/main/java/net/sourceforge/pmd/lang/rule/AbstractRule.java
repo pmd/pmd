@@ -18,7 +18,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
@@ -226,18 +225,6 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     @Override
     public void setPriority(RulePriority priority) {
         this.priority = priority;
-    }
-
-    /**
-     * This implementation returns a new instance of {@link ParserOptions} using
-     * default settings.
-     *
-     * @see Rule#setPriority(RulePriority)
-     */
-    @Override
-    @Deprecated
-    public ParserOptions getParserOptions() {
-        return new ParserOptions();
     }
 
 
