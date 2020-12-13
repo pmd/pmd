@@ -145,6 +145,7 @@ public final class TextFileContent {
     static TextFileContent fromInputStream(InputStream inputStream, Charset sourceEncoding, String fallbackLineSep) throws IOException {
         Checksum checksum = newChecksum();
         try (CheckedInputStream checkedIs = new CheckedInputStream(new BufferedInputStream(inputStream), checksum);
+             // no need to buffer this reader as we already use our own char buffer
              Reader reader = new InputStreamReader(checkedIs, sourceEncoding)) {
             return normalizingRead(reader, DEFAULT_BUFSIZE, fallbackLineSep, checksum, false);
         }

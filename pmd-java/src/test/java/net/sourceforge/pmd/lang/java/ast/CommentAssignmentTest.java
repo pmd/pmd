@@ -68,7 +68,7 @@ public class CommentAssignmentTest extends BaseNonParserTest {
                                                  + "        /** Comment 3 */\n"
                                                  + "        public void method2() {}" + "}");
 
-        List<ASTMethodDeclaration> methods = node.findDescendantsOfType(ASTMethodDeclaration.class);
+        List<ASTMethodDeclaration> methods = node.descendants(ASTMethodDeclaration.class).toList();
         assertCommentEquals(methods.get(0), "/** Comment 1 */");
         assertCommentEquals(methods.get(1), "/** Comment 2 */");
     }

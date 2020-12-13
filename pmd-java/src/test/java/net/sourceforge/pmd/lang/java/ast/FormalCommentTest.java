@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,14 +40,14 @@ public class FormalCommentTest extends BaseParserTest {
         comment = comment.getPreviousComment();
         assertEquals("Formal comment", JavaTokenKinds.FORMAL_COMMENT, comment.kind);
 
-        FormalComment commentNode = new FormalComment(comment);
+        List<JavadocElement> javadocs = new FormalComment(comment).getChildren();
 
-        Assert.assertEquals(2, commentNode.getNumChildren());
+        Assert.assertEquals(2, javadocs.size());
 
-        JavadocElement paramTag = (JavadocElement) commentNode.getChild(0);
+        JavadocElement paramTag = javadocs.get(0);
         Assert.assertEquals("param", paramTag.tag().label);
 
-        JavadocElement returnTag = (JavadocElement) commentNode.getChild(1);
+        JavadocElement returnTag = javadocs.get(1);
         Assert.assertEquals("return", returnTag.tag().label);
     }
 }

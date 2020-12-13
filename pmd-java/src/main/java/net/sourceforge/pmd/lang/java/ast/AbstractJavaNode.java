@@ -24,15 +24,6 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         super(id);
     }
 
-    /**
-     * Temporary hack so that classes and methods are reported on their
-     * identifier token and not the first annotation. Changes about text
-     * documents make that more general, in a future PR.
-     */
-    protected @Nullable JavaccToken getPreferredReportLocation() {
-        return null;
-    }
-
 
     @Override
     public void jjtClose() {

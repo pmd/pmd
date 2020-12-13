@@ -28,8 +28,4 @@ public class JavadocElement extends Comment {
         return reportLoc;
     }
 
-    @Override
-    public String getXPathNodeName() {
-        return tag.label + " : " + tag.description;
-    }
 }

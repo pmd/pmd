@@ -33,7 +33,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
         return comments;
     }
 
-    public void setAstInfo(AstInfo<ASTCompilationUnit> task) {
+    void setAstInfo(AstInfo<ASTCompilationUnit> task) {
         this.astInfo = task;
     }
 

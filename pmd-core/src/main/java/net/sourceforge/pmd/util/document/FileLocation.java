@@ -7,6 +7,8 @@ package net.sourceforge.pmd.util.document;
 import java.util.Comparator;
 import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.GenericToken;
@@ -41,14 +43,19 @@ public final class FileLocation {
     private final int beginColumn;
     private final int endColumn;
     private final String fileName;
+    private final @Nullable TextRegion region;
 
-    /** @see #location(String, int, int, int, int) */
     FileLocation(String fileName, int beginLine, int beginColumn, int endLine, int endColumn) {
+        this(fileName, beginLine, beginColumn, endLine, endColumn, null);
+    }
+
+    FileLocation(String fileName, int beginLine, int beginColumn, int endLine, int endColumn, @Nullable TextRegion region) {
         this.fileName = Objects.requireNonNull(fileName);
         this.beginLine = AssertionUtil.requireOver1("Begin line", beginLine);
         this.endLine = AssertionUtil.requireOver1("End line", endLine);
         this.beginColumn = AssertionUtil.requireOver1("Begin column", beginColumn);
         this.endColumn = AssertionUtil.requireOver1("End column", endColumn);
+        this.region = region;
 
         requireLinesCorrectlyOrdered();
     }
@@ -86,6 +93,11 @@ public final class FileLocation {
     /** <b>Exclusive</b>, 1-based column number. */
     public int getEndColumn() {
         return endColumn;
+    }
+
+    /** Returns the region in the file, or null if this was not available. */
+    public @Nullable TextRegion getRegionInFile() {
+        return region;
     }
 
     /**

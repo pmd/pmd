@@ -8,7 +8,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -181,10 +180,6 @@ public final class InternalApiBridge {
 
     public static void assignComments(ASTCompilationUnit root) {
         CommentAssignmentPass.assignCommentsToDeclarations(root);
-    }
-
-    public static @Nullable JavaccToken getReportLocation(JavaNode node) {
-        return ((AbstractJavaNode) node).getPreferredReportLocation();
     }
 
     public static JavaccTokenDocument javaTokenDoc(TextDocument fullText) {

@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.ant.internal;
 
-import java.io.File;
-import static java.util.Arrays.asList;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
