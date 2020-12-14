@@ -295,6 +295,40 @@ public void bar(Integer a, Integer b) {
         </example>
     </rule>
 
+        <rule name="OverrideBothEqualsAndHashcode"
+          language="apex"
+          since="6.31.0"
+          message="Ensure you override both equals() and hashCode()"
+          class="net.sourceforge.pmd.lang.apex.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#overridebothequalsandhashcode">
+        <description>
+Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Bar {        // poor, missing a hashcode() method
+    public Boolean equals(Object o) {
+      // do some comparison
+    }
+}
+public class Baz {        // poor, missing an equals() method
+    public Integer hashCode() {
+      // return some hash value
+    }
+}
+public class Foo {        // perfect, both methods provided
+    public Boolean equals(Object other) {
+      // do some comparison
+    }
+    public Integer hashCode() {
+      // return some hash value
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="MethodWithSameNameAsEnclosingClass"
           language="apex"
           since="5.5.0"
