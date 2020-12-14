@@ -60,15 +60,17 @@ function regression_tester_uploadBaseline() {
         log_info "Generating and uploading baseline for pmdtester..."
         cd ..
         bundle config --local gemfile pmd/Gemfile
+        bundle config set --local path pmd/vendor/bundle
         bundle exec pmdtester \
             --mode single \
             --local-git-repo ./pmd \
-            --patch-branch ${PMD_CI_BRANCH} \
+            --patch-branch ${PMD_CI_BRANCH:-$PMD_CI_TAG} \
             --patch-config ./pmd/.ci/files/all-java.xml \
             --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
             --error-recovery
         cd target/reports
-        BRANCH_FILENAME="${PMD_CI_BRANCH/\//_}"
+        BRANCH_FILENAME="${PMD_CI_BRANCH:-$PMD_CI_TAG}"
+        BRANCH_FILENAME="${BRANCH_FILENAME/\//_}"
         zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
         # ssh-key for pmd-code.org is setup already by pmd_ci_setup_ssh
         scp ${BRANCH_FILENAME}-baseline.zip pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
