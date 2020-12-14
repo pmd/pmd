@@ -1,69 +1,48 @@
 +- document[]
    +- deployment-plan[@global-variables = "false", @xmlns = "http://xmlns.oracle.com/weblogic/deployment-plan", @xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance", @xsi:schemaLocation = "http://xmlns.oracle.com/weblogic/deployment-plan http://xmlns.oracle.com/weblogic/deployment-plan/1.0/deployment-plan.xsd"]
-      +- text[@Image = "
-    "]
+      +- text[@Image = "\n    "]
       +- application-name[]
       |  +- text[@Image = "app"]
-      +- text[@Image = "
-    "]
+      +- text[@Image = "\n    "]
       +- variable-definition[]
-      |  +- text[@Image = "
-        "]
+      |  +- text[@Image = "\n        "]
       |  +- variable[]
-      |  |  +- text[@Image = "
-            "]
+      |  |  +- text[@Image = "\n            "]
       |  |  +- name[]
       |  |  |  +- text[@Image = "Application_Module_Web_ContextRoot"]
-      |  |  +- text[@Image = "
-            "]
+      |  |  +- text[@Image = "\n            "]
       |  |  +- value[@xsi:nil = "false"]
       |  |  |  +- text[@Image = "ikb.adf.kreda.abw.webapp-Abnahmetest-ohne-SSO"]
-      |  |  +- text[@Image = "
-        "]
-      |  +- text[@Image = "
-    "]
-      +- text[@Image = "
-    "]
+      |  |  +- text[@Image = "\n        "]
+      |  +- text[@Image = "\n    "]
+      +- text[@Image = "\n    "]
       +- module-override[]
-      |  +- text[@Image = "
-        "]
+      |  +- text[@Image = "\n        "]
       |  +- module-name[]
       |  |  +- text[@Image = "ikb.adf.kreda.abw.ear"]
-      |  +- text[@Image = "
-        "]
+      |  +- text[@Image = "\n        "]
       |  +- module-type[]
       |  |  +- text[@Image = "ear"]
-      |  +- text[@Image = "
-        "]
+      |  +- text[@Image = "\n        "]
       |  +- module-descriptor[@external = "false"]
-      |  |  +- text[@Image = "
-            "]
+      |  |  +- text[@Image = "\n            "]
       |  |  +- root-element[]
       |  |  |  +- text[@Image = "application"]
-      |  |  +- text[@Image = "
-            "]
+      |  |  +- text[@Image = "\n            "]
       |  |  +- uri[]
       |  |  |  +- text[@Image = "META-INF/application.xml"]
-      |  |  +- text[@Image = "
-            "]
+      |  |  +- text[@Image = "\n            "]
       |  |  +- variable-assignment[]
-      |  |  |  +- text[@Image = "
-                "]
+      |  |  |  +- text[@Image = "\n                "]
       |  |  |  +- name[]
       |  |  |  |  +- text[@Image = "Application_Module_Web_ContextRoot"]
-      |  |  |  +- text[@Image = "
-                "]
+      |  |  |  +- text[@Image = "\n                "]
       |  |  |  +- xpath[]
-      |  |  |  |  +- text[@Image = "/application/module/web/[context-root="ikb.adf.kreda.abw.webapp-Local-ohne-SSO"]"]
-      |  |  |  +- text[@Image = "
-                "]
+      |  |  |  |  +- text[@Image = "/application/module/web/[context-root=\"ikb.adf.kreda.abw.webapp-Local-ohne-SSO\"]"]
+      |  |  |  +- text[@Image = "\n                "]
       |  |  |  +- operation[]
       |  |  |  |  +- text[@Image = "replace"]
-      |  |  |  +- text[@Image = "
-            "]
-      |  |  +- text[@Image = "
-        "]
-      |  +- text[@Image = "
-    "]
-      +- text[@Image = "
-"]
+      |  |  |  +- text[@Image = "\n            "]
+      |  |  +- text[@Image = "\n        "]
+      |  +- text[@Image = "\n    "]
+      +- text[@Image = "\n"]
