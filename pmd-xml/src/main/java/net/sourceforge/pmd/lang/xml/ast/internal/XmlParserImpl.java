@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.xml.ast.internal;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -16,6 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -25,6 +27,8 @@ import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
 
 public final class XmlParserImpl {
+    // never throws on unresolved resource
+    private static final EntityResolver SILENT_ENTITY_RESOLVER = (publicId, systemId) -> new InputSource(new ByteArrayInputStream("".getBytes()));
 
     private final Map<org.w3c.dom.Node, XmlNode> nodeCache = new HashMap<>();
 
@@ -44,6 +48,7 @@ public final class XmlParserImpl {
             dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
             dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
+            documentBuilder.setEntityResolver(SILENT_ENTITY_RESOLVER);
             return documentBuilder.parse(new InputSource(new StringReader(xmlData)));
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new ParseException(e);
