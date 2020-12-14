@@ -20,5 +20,4 @@ public final class ScalaParsingHelper extends BaseParsingHelper<ScalaParsingHelp
         return new ScalaParsingHelper(params);
     }
 
-
 }

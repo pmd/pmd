@@ -39,7 +39,7 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     }
 
     @Override
-    protected ASTCompilationUnit parseImpl(CharStream cs, ParserOptions options) throws ParseException {
+    protected ASTCompilationUnit parseImpl(CharStream cs, ParserOptions options, String fileName) throws ParseException {
         JavaParserImpl parser = new JavaParserImpl(cs);
         String suppressMarker = options.getSuppressMarker();
         if (suppressMarker != null) {

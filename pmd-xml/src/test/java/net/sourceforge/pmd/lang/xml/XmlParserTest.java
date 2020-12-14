@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.xml;
 
+import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertPosition;
 import static net.sourceforge.pmd.lang.xml.XmlParsingHelper.XML;
 
 import java.io.ByteArrayOutputStream;
@@ -52,37 +53,37 @@ public class XmlParserTest {
         Node document = XML.parse(XML_TEST);
 
         assertNode(document, "document", 2);
-        assertLineNumbers(document, 1, 1, 19, 14);
+        assertPosition(document, 1, 1, 19, 14);
         Node dtdElement = document.getChild(0);
         assertNode(dtdElement, "rootElement", 0);
-        assertLineNumbers(dtdElement, 2, 1, 11, 1);
+        assertPosition(dtdElement, 2, 1, 11, 1);
         Node rootElement = document.getChild(1);
         assertNode(rootElement, "rootElement", 7);
-        assertLineNumbers(rootElement, 12, 1, 19, 14);
+        assertPosition(rootElement, 12, 1, 19, 14);
         assertTextNode(rootElement.getChild(0), "\\n    ");
-        assertLineNumbers(rootElement.getChild(0), 12, 14, 13, 4);
+        assertPosition(rootElement.getChild(0), 12, 14, 13, 4);
         assertNode(rootElement.getChild(1), "comment", 0);
-        assertLineNumbers(rootElement.getChild(1), 13, 5, 13, 29);
+        assertPosition(rootElement.getChild(1), 13, 5, 13, 29);
         assertTextNode(rootElement.getChild(2), "\\n    ");
-        assertLineNumbers(rootElement.getChild(2), 13, 30, 14, 4);
+        assertPosition(rootElement.getChild(2), 13, 30, 14, 4);
         Node child1 = rootElement.getChild(3);
         assertNode(child1, "child1", 1, "test", "1");
-        assertLineNumbers(child1, 14, 5, 15, 13);
+        assertPosition(child1, 14, 5, 15, 13);
         assertTextNode(child1.getChild(0), "entity: Copyright: PMD\\n    ");
-        assertLineNumbers(child1.getChild(0), 14, 22, 15, 4);
+        assertPosition(child1.getChild(0), 14, 22, 15, 4);
         assertTextNode(rootElement.getChild(4), "\\n    ");
-        assertLineNumbers(rootElement.getChild(4), 15, 14, 16, 4);
+        assertPosition(rootElement.getChild(4), 15, 14, 16, 4);
         Node child2 = rootElement.getChild(5);
         assertNode(child2, "child2", 3);
-        assertLineNumbers(child2, 16, 5, 18, 13);
+        assertPosition(child2, 16, 5, 18, 13);
         assertTextNode(child2.getChild(0), "\\n      ");
-        assertLineNumbers(child2.getChild(0), 16, 13, 17, 6);
+        assertPosition(child2.getChild(0), 16, 13, 17, 6);
         assertTextNode(child2.getChild(1), " cdata section ", "cdata-section");
-        assertLineNumbers(child2.getChild(1), 17, 7, 17, 33);
+        assertPosition(child2.getChild(1), 17, 7, 17, 33);
         assertTextNode(child2.getChild(2), "\\n    ");
-        assertLineNumbers(child2.getChild(2), 17, 34, 18, 4);
+        assertPosition(child2.getChild(2), 17, 34, 18, 4);
         assertTextNode(rootElement.getChild(6), "\\n");
-        assertLineNumbers(rootElement.getChild(6), 18, 14, 18, 14);
+        assertPosition(rootElement.getChild(6), 18, 14, 18, 14);
     }
 
     /**
@@ -330,7 +331,7 @@ public class XmlParserTest {
         Node document = XmlParsingHelper.XML.withParserOptions(options).parse(xml);
         Assert.assertNotNull(document);
         assertNode(document.getChild(0), "mypi", 0);
-        assertLineNumbers(document.getChild(0), 1, 22, 1, 29);
+        assertPosition(document.getChild(0), 1, 22, 1, 29);
     }
 
     @Test
@@ -341,7 +342,7 @@ public class XmlParserTest {
     @Test
     public void testAutoclosingElementLength() {
         final String xml = "<elementName att1='foo' att2='bar' att3='other' />";
-        assertLineNumbers(XML.parse(xml), 1, 1, 1, xml.length());
+        assertPosition(XML.parse(xml), 1, 1, 1, xml.length());
     }
 
     /**
@@ -408,24 +409,4 @@ public class XmlParserTest {
         Assert.assertFalse(attributeIterator.hasNext());
     }
 
-    /**
-     * Assert the line numbers of a node.
-     *
-     * @param node
-     *            the node
-     * @param beginLine
-     *            the begin line
-     * @param beginColumn
-     *            the begin column
-     * @param endLine
-     *            the end line
-     * @param endColumn
-     *            the end column
-     */
-    private void assertLineNumbers(Node node, int beginLine, int beginColumn, int endLine, int endColumn) {
-        Assert.assertEquals("begin line wrong", beginLine, node.getBeginLine());
-        Assert.assertEquals("begin column wrong", beginColumn, node.getBeginColumn());
-        Assert.assertEquals("end line wrong", endLine, node.getEndLine());
-        Assert.assertEquals("end column wrong", endColumn, node.getEndColumn());
-    }
 }

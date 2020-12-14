@@ -24,7 +24,7 @@ import org.junit.Test;
  * @author sergey.gorbaty - VF adaptation
  *
  */
-public class VfDocStyleTest extends AbstractVfNodesTest {
+public class VfDocStyleTest extends AbstractVfTest {
 
     /**
      * Smoke test for VF parser.

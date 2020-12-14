@@ -46,13 +46,13 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
         CharStream charStream = newCharStream(doc);
 
         try {
-            return parseImpl(charStream, getParserOptions());
+            return parseImpl(charStream, getParserOptions(), fileName);
         } catch (TokenMgrError tme) {
             throw tme.withFileName(fileName);
         }
     }
 
-    protected abstract R parseImpl(CharStream cs, ParserOptions options) throws ParseException;
+    protected abstract R parseImpl(CharStream cs, ParserOptions options, String fileName) throws ParseException;
 
 
     @Override
