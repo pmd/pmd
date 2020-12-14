@@ -2,21 +2,14 @@
    +- comment[]
    +- rootElement[]
    +- rootElement[]
-      +- text[@Image = "
-    "]
+      +- text[@Image = "\n    "]
       +- comment[]
-      +- text[@Image = "
-    "]
+      +- text[@Image = "\n    "]
       +- child1[@test = "1"]
-      |  +- text[@Image = "entity: Copyright: PMD
-    "]
-      +- text[@Image = "
-    "]
+      |  +- text[@Image = "entity: Copyright: PMD\n    "]
+      +- text[@Image = "\n    "]
       +- child2[]
-      |  +- text[@Image = "
-        "]
+      |  +- text[@Image = "\n        "]
       |  +- cdata-section[@Image = " cdata section "]
-      |  +- text[@Image = "
-    "]
-      +- text[@Image = "
-"]
+      |  +- text[@Image = "\n    "]
+      +- text[@Image = "\n"]
