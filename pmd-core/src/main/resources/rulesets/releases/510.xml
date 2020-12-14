@@ -12,7 +12,7 @@ This ruleset contains links to rules that are new in PMD v5.1.0
     <rule ref="rulesets/java/logging-java.xml/GuardLogStatementJavaUtil"/>
     <rule ref="rulesets/java/comments.xml/CommentRequired"/>
     <rule ref="rulesets/java/design.xml/AvoidProtectedMethodInFinalClassNotExtending"/>
-    <rule ref="rulesets/java/design.xml/PositionLiteralsFirstInCaseInsensitiveComparisons"/>
+    <!-- <rule ref="rulesets/java/design.xml/PositionLiteralsFirstInCaseInsensitiveComparisons"/> -->
     <rule ref="rulesets/java/strings.xml/ConsecutiveAppendsShouldReuse"/>
 
     <rule ref="rulesets/plsql/codesize.xml/NPathComplexity"/>

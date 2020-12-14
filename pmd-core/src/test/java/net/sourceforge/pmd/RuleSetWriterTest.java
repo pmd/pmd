@@ -81,7 +81,7 @@ public class RuleSetWriterTest {
         ruleRef.setRuleSetReference(ruleSetReference);
         ruleRef.setName("Foo"); // override the name
 
-        RuleSet ruleSet = ruleSetFactory.createSingleRuleRuleSet(ruleRef);
+        RuleSet ruleSet = RuleSet.forSingleRule(ruleRef);
 
         writer.write(ruleSet);
 
