@@ -243,35 +243,27 @@ final class PolyResolution {
      * context, that context must not be called.
      */
     JTypeMirror getContextTypeForStandaloneFallback(ASTExpression e) {
+        // The case mentioned by the doc is removed. We could be smarter
+        // with how we retry failed invocation resolution, see history
+        // of this comment
+
         @NonNull ExprContext ctx = contextOf(e, false);
 
-        if (ctx instanceof InvocCtx) {
-            // This is the case mentioned in the doc
-            // TODO we could do that by setting a sentinel value to prevent
-            //  reentry (most likely, UNKNOWN).
-
-            // OverloadSelectionResult ctxInvoc = ((InvocationNode) ctx).getOverloadSelectionInfo();
-            // return getFormalTypeForArgument(e, ctxInvoc);
-            return ts.UNKNOWN;
-
-        } else {
-
-            if (e.getParent() instanceof ASTSwitchLabel) {
-                ASTSwitchLike switchLike = e.ancestors(ASTSwitchLike.class).firstOrThrow();
-                // this may trigger some inference, which doesn't matter
-                // as it is out of context
-                return switchLike.getTestedExpression().getTypeMirror();
-            }
-
-            if (ctx instanceof RegularCtx) {
-                JTypeMirror targetType = ((RegularCtx) ctx).getTargetType(false);
-                if (targetType != null) {
-                    return targetType;
-                }
-            }
-
-            return ts.UNKNOWN;
+        if (e.getParent() instanceof ASTSwitchLabel) {
+            ASTSwitchLike switchLike = e.ancestors(ASTSwitchLike.class).firstOrThrow();
+            // this may trigger some inference, which doesn't matter
+            // as it is out of context
+            return switchLike.getTestedExpression().getTypeMirror();
         }
+
+        if (ctx instanceof RegularCtx) {
+            JTypeMirror targetType = ((RegularCtx) ctx).getTargetType(false);
+            if (targetType != null) {
+                return targetType;
+            }
+        }
+
+        return ts.UNKNOWN;
     }
 
     private static @Nullable JTypeMirror returnTargetType(ASTReturnStatement context) {
@@ -481,7 +473,11 @@ final class PolyResolution {
     }
 
     /** Context of an expression. This determines the target type. */
-    static abstract class ExprContext {
+    abstract static class ExprContext {
+
+        ExprContext() {
+            // sealed class
+        }
 
         static ExprContext newAssignmentCtx(JTypeMirror targetType) {
             return new RegularCtx(targetType, CtxKind.Assignment);
