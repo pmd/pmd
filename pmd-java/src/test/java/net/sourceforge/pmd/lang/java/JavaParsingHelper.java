@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java;
 
+import static net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+
 import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -15,16 +17,15 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.NotNull;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.ast.SemanticException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageHandler;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
@@ -59,9 +60,15 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
     }
 
     @Override
-    protected void postProcessing(@NotNull LanguageVersionHandler handler, @NotNull LanguageVersion lversion, @NotNull ASTCompilationUnit rootNode) {
-        JavaAstProcessor.create(ts, lversion, semanticLogger, typeInfLogger)
-                        .process(rootNode);
+    protected @NonNull ASTCompilationUnit doParse(@NonNull Params params, @NonNull ParserTask task) {
+        JavaLanguageHandler handler = (JavaLanguageHandler) task.getLanguageVersion().getLanguageVersionHandler();
+        JavaParser parser = handler.getParserWithoutProcessing();
+        ASTCompilationUnit rootNode = parser.parse(task);
+        if (params.getDoProcess()) {
+            JavaAstProcessor.create(ts, task.getLanguageVersion(), semanticLogger, typeInfLogger)
+                            .process(rootNode);
+        }
+        return rootNode;
     }
 
     public TypeInferenceLogger getTypeInfLogger() {

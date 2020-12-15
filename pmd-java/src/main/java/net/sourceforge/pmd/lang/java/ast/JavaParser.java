@@ -22,9 +22,11 @@ import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
     private final LanguageLevelChecker<?> checker;
+    private final boolean postProcess;
 
-    public JavaParser(LanguageLevelChecker<?> checker) {
+    public JavaParser(LanguageLevelChecker<?> checker, boolean postProcess) {
         this.checker = checker;
+        this.postProcess = postProcess;
     }
 
 
@@ -49,10 +51,12 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
         root.setAstInfo(new AstInfo<>(task, root, parser.getSuppressMap()));
         checker.check(root);
 
-        JavaAstProcessor processor = JavaAstProcessor.create(task.getAuxclasspathClassLoader(),
-                                                             task.getLanguageVersion(),
-                                                             task.getReporter());
-        processor.process(root);
+        if (postProcess) {
+            JavaAstProcessor processor = JavaAstProcessor.create(task.getAuxclasspathClassLoader(),
+                                                                 task.getLanguageVersion(),
+                                                                 task.getReporter());
+            processor.process(root);
+        }
 
         return root;
     }

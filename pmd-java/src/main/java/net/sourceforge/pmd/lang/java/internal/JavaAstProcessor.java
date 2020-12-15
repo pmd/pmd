@@ -145,8 +145,8 @@ public final class JavaAstProcessor {
         TimeTracker.bench("2. Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
         TimeTracker.bench("3. AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
         TimeTracker.bench("4. Comment assignment", () -> InternalApiBridge.assignComments(acu));
-        bench("5. Usage resolution", () -> InternalApiBridge.usageResolution(this, acu));
-        bench("6. Override resolution", () -> InternalApiBridge.overrideResolution(this, acu));
+        TimeTracker.bench("5. Usage resolution", () -> InternalApiBridge.usageResolution(this, acu));
+        TimeTracker.bench("6. Override resolution", () -> InternalApiBridge.overrideResolution(this, acu));
     }
 
     public TypeSystem getTypeSystem() {
