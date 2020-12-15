@@ -48,17 +48,23 @@ public interface Parser {
         private final String filepath;
         private final String sourceText;
         private final SemanticErrorReporter reporter;
+        private final ClassLoader auxclasspathClassLoader;
 
         private final PropertySource propertySource;
 
-        public ParserTask(LanguageVersion lv, String filepath, String sourceText, SemanticErrorReporter reporter) {
+        public ParserTask(LanguageVersion lv, String filepath, String sourceText, SemanticErrorReporter reporter, ClassLoader auxclasspathClassLoader) {
             this.lv = Objects.requireNonNull(lv, "lv was null");
             this.filepath = Objects.requireNonNull(filepath, "filepath was null");
             this.sourceText = Objects.requireNonNull(sourceText, "sourceText was null");
             this.reporter = Objects.requireNonNull(reporter, "reporter was null");
+            this.auxclasspathClassLoader = Objects.requireNonNull(auxclasspathClassLoader);
 
             this.propertySource = new ParserTaskProperties();
             propertySource.definePropertyDescriptor(COMMENT_MARKER);
+        }
+
+        public ParserTask(LanguageVersion lv, String filepath, String sourceText, SemanticErrorReporter reporter) {
+            this(lv, filepath, sourceText, reporter, Parser.class.getClassLoader());
         }
 
         public static final PropertyDescriptor<String> COMMENT_MARKER =
@@ -72,6 +78,10 @@ public interface Parser {
             return propertySource;
         }
 
+        @Deprecated // transitional until language properties are implemented
+        public ClassLoader getAuxclasspathClassLoader() {
+            return auxclasspathClassLoader;
+        }
 
         public LanguageVersion getLanguageVersion() {
             return lv;

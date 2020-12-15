@@ -186,6 +186,13 @@ public final class JavaAstProcessor {
         );
     }
 
+
+    public static JavaAstProcessor create(ClassLoader classLoader,
+                                          LanguageVersion languageVersion,
+                                          SemanticErrorReporter logger) {
+        return create(classLoader, languageVersion, logger, defaultTypeInfLogger());
+    }
+
     public static JavaAstProcessor create(TypeSystem typeSystem,
                                           LanguageVersion languageVersion,
                                           SemanticErrorReporter semanticLogger,
