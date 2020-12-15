@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+
 /**
  * Represents an expression, in the most general sense.
  * This corresponds to the <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-Expression">Expression</a>
@@ -89,6 +91,26 @@ public interface ASTExpression
     /** Returns true if this expression is a compile-time constant, and is inlined. */
     default boolean isCompileTimeConstant() {
         return getConstValue() != null;
+    }
+
+    /**
+     * Returns the type expected by the context. This type may determine
+     * an implicit conversion of this value to that type (eg a boxing
+     * conversion, widening numeric conversion, or widening reference
+     * conversion).
+     *
+     * <p>There are many different cases.
+     * For example, in {@code arr['c']}, {@link #getTypeMirror()} would
+     * return {@code char} for the char literal, but the context type
+     * is {@code int} since it's used as an array index. Similarly,
+     * the context type of an expression in a return statement is the
+     * return type of the method, etc.
+     *
+     * <p>This returns null when that type is undefined, for example,
+     * when this expression is used as a statement.
+     */
+    default @Nullable JTypeMirror getConversionContextType() {
+        return PolyResolution.getConversionContextTypeForExternalUse(this);
     }
 
 }

@@ -266,6 +266,13 @@ final class PolyResolution {
         return ts.UNKNOWN;
     }
 
+    /**
+     * Not meant to be used by the main typeres paths, only for rules.
+     */
+    static JTypeMirror getConversionContextTypeForExternalUse(ASTExpression e) {
+        return contextOf(e, false).getTargetTypeAfterResolution();
+    }
+
     private static @Nullable JTypeMirror returnTargetType(ASTReturnStatement context) {
         Node methodDecl =
             context.ancestors().first(
@@ -491,6 +498,8 @@ final class PolyResolution {
             return new RegularCtx(superclassType, CtxKind.Other);
         }
 
+        abstract @Nullable JTypeMirror getTargetTypeAfterResolution();
+
         static final class InvocCtx extends ExprContext {
 
             final int arg;
@@ -499,6 +508,15 @@ final class PolyResolution {
             InvocCtx(int arg, InvocationNode node) {
                 this.arg = arg;
                 this.node = node;
+            }
+
+            @Override
+            @Nullable JTypeMirror getTargetTypeAfterResolution() {
+                OverloadSelectionResult overload = node.getOverloadSelectionInfo();
+                if (overload.isFailed()) {
+                    return null;
+                }
+                return overload.ithFormalParam(arg);
             }
         }
 
@@ -545,6 +563,11 @@ final class PolyResolution {
                 if (!allowCasts && kind == CtxKind.Cast) {
                     return null;
                 }
+                return targetType;
+            }
+
+            @Override
+            @Nullable JTypeMirror getTargetTypeAfterResolution() {
                 return targetType;
             }
         }
