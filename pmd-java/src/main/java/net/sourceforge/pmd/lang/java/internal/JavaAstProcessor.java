@@ -6,13 +6,10 @@ package net.sourceforge.pmd.lang.java.internal;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
-import net.sourceforge.pmd.benchmark.TimedOperation;
-import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
@@ -136,7 +133,7 @@ public final class JavaAstProcessor {
      */
     public void process(ASTCompilationUnit acu) {
 
-        SymbolResolver knownSyms = bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
+        SymbolResolver knownSyms = TimeTracker.bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
 
         // Now symbols are on the relevant nodes
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
@@ -145,9 +142,9 @@ public final class JavaAstProcessor {
         // as scopes depend on type resolution in some cases.
         InternalApiBridge.initTypeResolver(acu, this, typeInferenceLogger);
 
-        bench("2. Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
-        bench("3. AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
-        bench("4. Comment assignment", () -> InternalApiBridge.assignComments(acu));
+        TimeTracker.bench("2. Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
+        TimeTracker.bench("3. AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
+        TimeTracker.bench("4. Comment assignment", () -> InternalApiBridge.assignComments(acu));
         bench("5. Usage resolution", () -> InternalApiBridge.usageResolution(this, acu));
         bench("6. Override resolution", () -> InternalApiBridge.overrideResolution(this, acu));
     }
@@ -202,15 +199,4 @@ public final class JavaAstProcessor {
         );
     }
 
-    public static void bench(String label, Runnable runnable) {
-        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
-            runnable.run();
-        }
-    }
-
-    public static <T> T bench(String label, Supplier<T> runnable) {
-        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
-            return runnable.get();
-        }
-    }
 }

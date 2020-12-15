@@ -13,11 +13,11 @@ import java.util.Iterator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
-import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
@@ -57,7 +57,7 @@ final class AstDisambiguationPass {
      */
     public static void disambigWithCtx(NodeStream<? extends JavaNode> nodes, ReferenceCtx ctx) {
         assert ctx != null : "Null context";
-        JavaAstProcessor.bench("AST disambiguation", () -> nodes.forEach(it -> it.acceptVisitor(DisambigVisitor.INSTANCE, ctx)));
+        TimeTracker.bench("AST disambiguation", () -> nodes.forEach(it -> it.acceptVisitor(DisambigVisitor.INSTANCE, ctx)));
     }
 
 
