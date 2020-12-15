@@ -140,27 +140,10 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     }
 
     /**
-     * Select the processing stages that this should run in [postProcessing],
-     * by default runs everything.
-     */
-    protected open fun selectProcessingStages(handler: LanguageVersionHandler): List<AstProcessingStage<*>> =
-            handler.processingStages
-
-    /**
      * Called only if [Params.doProcess] is true.
      */
     protected open fun postProcessing(handler: LanguageVersionHandler, lversion: LanguageVersion, rootNode: T) {
-        val astAnalysisContext = object : AstAnalysisContext {
-            override fun getTypeResolutionClassLoader(): ClassLoader = javaClass.classLoader
 
-            override fun getLanguageVersion(): LanguageVersion = lversion
-        }
-
-        val stages = selectProcessingStages(handler).sortedWith { o1, o2 -> o1.compare(o2) }
-
-        stages.forEach {
-            it.processAST(rootNode, astAnalysisContext)
-        }
     }
 
     /**

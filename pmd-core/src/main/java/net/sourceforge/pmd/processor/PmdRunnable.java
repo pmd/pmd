@@ -14,7 +14,6 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.internal.RulesetStageDependencyHelper;
 import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -38,8 +37,6 @@ abstract class PmdRunnable implements Runnable {
 
     private final PMDConfiguration configuration;
 
-    private final RulesetStageDependencyHelper dependencyHelper;
-
     PmdRunnable(DataSource dataSource,
                 GlobalAnalysisListener globalListener,
                 PMDConfiguration configuration) {
@@ -50,7 +47,6 @@ abstract class PmdRunnable implements Runnable {
         this.file = new File(realFileName);
         this.globalListener = globalListener;
         this.configuration = configuration;
-        this.dependencyHelper = new RulesetStageDependencyHelper(configuration);
     }
 
     /**
@@ -142,8 +138,6 @@ abstract class PmdRunnable implements Runnable {
         Parser parser = handler.getParser();
 
         RootNode rootNode = parse(parser, task);
-
-        dependencyHelper.runLanguageSpecificStages(ruleSets, languageVersion, rootNode);
 
         ruleSets.apply(rootNode, listener);
     }

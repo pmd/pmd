@@ -27,7 +27,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -185,20 +184,6 @@ public class TreeExportCli {
             String fullSource = IOUtils.toString(source);
             ParserTask task = new ParserTask(langVersion, filename, fullSource, SemanticErrorReporter.noop());
             RootNode root = parser.parse(task);
-
-            AstAnalysisContext ctx = new AstAnalysisContext() {
-                @Override
-                public ClassLoader getTypeResolutionClassLoader() {
-                    return getClass().getClassLoader();
-                }
-
-                @Override
-                public LanguageVersion getLanguageVersion() {
-                    return langVersion;
-                }
-            };
-
-            languageHandler.getProcessingStages().forEach(it -> it.processAST(root, ctx));
 
             renderer.renderSubtree(root, System.out);
         } finally {
