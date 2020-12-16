@@ -19,6 +19,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
@@ -123,14 +127,15 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
 
     private boolean isStringLiteralFirstArgumentOfSuffix(ASTPrimarySuffix primarySuffix) {
         try {
-            JavaNode firstArg = getFirstArgument(primarySuffix);
-            return isStringLiteral(firstArg);
+            JavaNode firstLiteralArg = getFirstLiteralArgument(primarySuffix);
+            JavaNode firstNameArg = getFirstNameArgument(primarySuffix);
+            return isStringLiteral(firstLiteralArg) || isConstantString(firstNameArg);
         } catch (NullPointerException e) {
             return false;
         }
     }
 
-    private JavaNode getFirstArgument(ASTPrimarySuffix primarySuffix) {
+    private JavaNode getFirstLiteralArgument(ASTPrimarySuffix primarySuffix) {
         ASTArguments arguments = primarySuffix.getFirstChildOfType(ASTArguments.class);
         ASTArgumentList argumentList = arguments.getFirstChildOfType(ASTArgumentList.class);
         ASTExpression expression = argumentList.getFirstChildOfType(ASTExpression.class);
@@ -139,10 +144,38 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
         return primaryPrefix.getFirstChildOfType(ASTLiteral.class);
     }
 
+    private JavaNode getFirstNameArgument(ASTPrimarySuffix primarySuffix) {
+        ASTArguments arguments = primarySuffix.getFirstChildOfType(ASTArguments.class);
+        ASTArgumentList argumentList = arguments.getFirstChildOfType(ASTArgumentList.class);
+        ASTExpression expression = argumentList.getFirstChildOfType(ASTExpression.class);
+        ASTPrimaryExpression primaryExpression = expression.getFirstChildOfType(ASTPrimaryExpression.class);
+        ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+        return primaryPrefix.getFirstChildOfType(ASTName.class);
+    }
+
     private boolean isStringLiteral(JavaNode node) {
         if (node instanceof ASTLiteral) {
             ASTLiteral literal = (ASTLiteral) node;
             return literal.isStringLiteral();
+        }
+        return false;
+    }
+
+    private boolean isConstantString(JavaNode node) {
+        if (node instanceof ASTName) {
+            ASTName name = (ASTName) node;
+            ASTClassOrInterfaceBody classBody = name.getFirstParentOfType(ASTClassOrInterfaceBody.class);
+            ASTClassOrInterfaceBodyDeclaration classOrInterfaceBodyDeclaration = classBody.getFirstChildOfType(ASTClassOrInterfaceBodyDeclaration.class);
+            List<ASTFieldDeclaration> fieldDeclarations = classOrInterfaceBodyDeclaration.findChildrenOfType(ASTFieldDeclaration.class);
+            for (ASTFieldDeclaration fieldDeclaration : fieldDeclarations) {
+                ASTVariableDeclarator declaration = fieldDeclaration.getFirstChildOfType(ASTVariableDeclarator.class);
+                if (declaration.getName().equals(name.getImage())
+                        && "class java.lang.String".equals(declaration.getType().toString())
+                        && fieldDeclaration.isFinal()
+                        && fieldDeclaration.isStatic()) {
+                    return true;
+                }
+            }
         }
         return false;
     }
