@@ -136,21 +136,19 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
     }
 
     private JavaNode getFirstLiteralArgument(ASTPrimarySuffix primarySuffix) {
-        ASTArguments arguments = primarySuffix.getFirstChildOfType(ASTArguments.class);
-        ASTArgumentList argumentList = arguments.getFirstChildOfType(ASTArgumentList.class);
-        ASTExpression expression = argumentList.getFirstChildOfType(ASTExpression.class);
-        ASTPrimaryExpression primaryExpression = expression.getFirstChildOfType(ASTPrimaryExpression.class);
-        ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
-        return primaryPrefix.getFirstChildOfType(ASTLiteral.class);
+        return getArgumentPrimaryPrefixFromSuffix(primarySuffix).getFirstChildOfType(ASTLiteral.class);
     }
 
     private JavaNode getFirstNameArgument(ASTPrimarySuffix primarySuffix) {
+        return getArgumentPrimaryPrefixFromSuffix(primarySuffix).getFirstChildOfType(ASTName.class);
+    }
+
+    private JavaNode getArgumentPrimaryPrefixFromSuffix(ASTPrimarySuffix primarySuffix) {
         ASTArguments arguments = primarySuffix.getFirstChildOfType(ASTArguments.class);
         ASTArgumentList argumentList = arguments.getFirstChildOfType(ASTArgumentList.class);
         ASTExpression expression = argumentList.getFirstChildOfType(ASTExpression.class);
         ASTPrimaryExpression primaryExpression = expression.getFirstChildOfType(ASTPrimaryExpression.class);
-        ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
-        return primaryPrefix.getFirstChildOfType(ASTName.class);
+        return primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
     }
 
     private boolean isStringLiteral(JavaNode node) {
