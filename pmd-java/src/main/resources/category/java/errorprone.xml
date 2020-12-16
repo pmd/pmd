@@ -1114,7 +1114,10 @@ Use equals() to compare object references; avoid comparing them with ==.
         [not(pmd-java:typeIs('java.lang.Enum'))]
         [not(pmd-java:typeIs('java.lang.Class'))]) = 2
     ]
-    [not(PrimaryExpression[PrimaryPrefix/@ThisModifier = true()][not(PrimarySuffix)])]
+    [not(PrimaryExpression[PrimaryPrefix/@ThisModifier = true()]
+                          [not(PrimarySuffix)]
+                          [ancestor::MethodDeclaration[@Name = 'equals']])
+    ]
 ]]>
                 </value>
             </property>

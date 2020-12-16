@@ -252,4 +252,5 @@ public abstract class AbstractPropertySource implements PropertySource {
     private <T> String errorForPropCapture(PropertyDescriptor<T> descriptor) {
         return descriptor.errorFor(getProperty(descriptor));
     }
+
 }
