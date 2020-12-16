@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.vf.rule.security.lib.ElEscapeDetector;
 
 public class VfHtmlStyleTagXssRule extends AbstractVfRule {
     private static final String STYLE_TAG = "style";
-    private static final String APEX_PREFIX = "apex:";
+    private static final String APEX_PREFIX = "apex";
 
     private final ElEscapeDetector escapeDetector = new ElEscapeDetector();
 
