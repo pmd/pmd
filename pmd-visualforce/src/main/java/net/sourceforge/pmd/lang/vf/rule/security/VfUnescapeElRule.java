@@ -12,20 +12,17 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.vf.ast.ASTArguments;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTContent;
-import net.sourceforge.pmd.lang.vf.ast.ASTDotExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
 import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
-import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.vf.ast.ASTNegationExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
-import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
+import net.sourceforge.pmd.lang.vf.rule.security.lib.ElEscapeDetector;
+
 
 /**
  * @author sergey.gorbaty February 2017
@@ -49,6 +46,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final String FALSE = "false";
     private static final Pattern ON_EVENT = Pattern.compile("^on(\\w)+$");
     private static final Pattern PLACEHOLDERS = Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}");
+
+    private ElEscapeDetector escapeDetector = new ElEscapeDetector();
 
     @Override
     public Object visit(ASTHtmlScript node, Object data) {
@@ -87,16 +86,16 @@ public class VfUnescapeElRule extends AbstractVfRule {
         }
         if (quoted) {
             // check escaping too
-            if (!(jsonParse || startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
-                if (doesElContainAnyUnescapedIdentifiers(elExpression,
-                        EnumSet.of(Escaping.JSENCODE, Escaping.JSINHTMLENCODE))) {
+            if (!(jsonParse || escapeDetector.startsWithSafeResource(elExpression) || escapeDetector.containsSafeFields(elExpression))) {
+                if (escapeDetector.doesElContainAnyUnescapedIdentifiers(elExpression,
+                        EnumSet.of(ElEscapeDetector.Escaping.JSENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE))) {
                     addViolation(data, elExpression);
                 }
             }
         } else {
-            if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
-                final boolean hasUnscaped = doesElContainAnyUnescapedIdentifiers(elExpression,
-                        EnumSet.of(Escaping.JSENCODE, Escaping.JSINHTMLENCODE));
+            if (!(escapeDetector.startsWithSafeResource(elExpression) || escapeDetector.containsSafeFields(elExpression))) {
+                final boolean hasUnscaped = escapeDetector.doesElContainAnyUnescapedIdentifiers(elExpression,
+                        EnumSet.of(ElEscapeDetector.Escaping.JSENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE));
                 if (!(jsonParse && !hasUnscaped)) {
                     addViolation(data, elExpression);
                 }
@@ -180,11 +179,11 @@ public class VfUnescapeElRule extends AbstractVfRule {
                             break;
                         }
 
-                        if (startsWithSafeResource(el)) {
+                        if (escapeDetector.startsWithSafeResource(el)) {
                             break;
                         }
 
-                        if (doesElContainAnyUnescapedIdentifiers(el, Escaping.URLENCODE)) {
+                        if (escapeDetector.doesElContainAnyUnescapedIdentifiers(el, ElEscapeDetector.Escaping.URLENCODE)) {
                             isEL = true;
                             toReport.add(el);
                         }
@@ -215,12 +214,12 @@ public class VfUnescapeElRule extends AbstractVfRule {
             if (ON_EVENT.matcher(name).matches()) {
                 final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
                 for (ASTElExpression el : elsInVal) {
-                    if (startsWithSafeResource(el)) {
+                    if (escapeDetector.startsWithSafeResource(el)) {
                         continue;
                     }
 
-                    if (doesElContainAnyUnescapedIdentifiers(el,
-                            EnumSet.of(Escaping.ANY))) {
+                    if (escapeDetector.doesElContainAnyUnescapedIdentifiers(el,
+                            EnumSet.of(ElEscapeDetector.Escaping.ANY))) {
                         isEL = true;
                         toReport.add(el);
                     }
@@ -235,78 +234,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
             }
         }
 
-    }
-
-    private boolean startsWithSafeResource(final ASTElExpression el) {
-        final ASTExpression expression = el.getFirstChildOfType(ASTExpression.class);
-        if (expression != null) {
-            final ASTNegationExpression negation = expression.getFirstChildOfType(ASTNegationExpression.class);
-            if (negation != null) {
-                return true;
-            }
-
-            final ASTIdentifier id = expression.getFirstChildOfType(ASTIdentifier.class);
-            if (id != null) {
-                String lowerCaseId = id.getImage().toLowerCase(Locale.ROOT);
-                List<ASTArguments> args = expression.findChildrenOfType(ASTArguments.class);
-                if (!args.isEmpty()) {
-                    switch (lowerCaseId) {
-                    case "urlfor":
-                    case "casesafeid":
-                    case "begins":
-                    case "contains":
-                    case "len":
-                    case "getrecordids":
-                    case "linkto":
-                    case "sqrt":
-                    case "round":
-                    case "mod":
-                    case "log":
-                    case "ln":
-                    case "exp":
-                    case "abs":
-                    case "floor":
-                    case "ceiling":
-                    case "nullvalue":
-                    case "isnumber":
-                    case "isnull":
-                    case "isnew":
-                    case "isblank":
-                    case "isclone":
-                    case "year":
-                    case "month":
-                    case "day":
-                    case "datetimevalue":
-                    case "datevalue":
-                    case "date":
-                    case "now":
-                    case "today":
-                        return true;
-
-                    default:
-                    }
-                } else {
-                    // has no arguments
-                    switch (lowerCaseId) {
-                    case "$action":
-                    case "$page":
-                    case "$site":
-                    case "$resource":
-                    case "$label":
-                    case "$objecttype":
-                    case "$component":
-                    case "$remoteaction":
-                    case "$messagechannel":
-                        return true;
-
-                    default:
-                    }
-                }
-            }
-
-        }
-
-        return false;
     }
 
     private boolean startsWithSlashLiteral(final ASTElExpression elExpression) {
@@ -351,11 +278,11 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
                 final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
                 for (ASTElExpression el : elsInVal) {
-                    if (startsWithSafeResource(el)) {
+                    if (escapeDetector.startsWithSafeResource(el)) {
                         continue;
                     }
 
-                    if (doesElContainAnyUnescapedIdentifiers(el, Escaping.HTMLENCODE)) {
+                    if (escapeDetector.doesElContainAnyUnescapedIdentifiers(el, ElEscapeDetector.Escaping.HTMLENCODE)) {
                         isEL = true;
                         toReport.add(el);
                     }
@@ -389,96 +316,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
         }
     }
 
-    private boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression, Escaping escape) {
-        return doesElContainAnyUnescapedIdentifiers(elExpression, EnumSet.of(escape));
-
-    }
-
-    private boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression,
-            EnumSet<Escaping> escapes) {
-        if (elExpression == null) {
-            return false;
-        }
-
-        final Set<ASTIdentifier> nonEscapedIds = new HashSet<>();
-
-        final List<ASTExpression> exprs = elExpression.findChildrenOfType(ASTExpression.class);
-        for (final ASTExpression expr : exprs) {
-
-            if (innerContainsSafeFields(expr)) {
-                continue;
-            }
-
-            final List<ASTIdentifier> ids = expr.findChildrenOfType(ASTIdentifier.class);
-
-            for (final ASTIdentifier id : ids) {
-                boolean isEscaped = false;
-
-                for (Escaping e : escapes) {
-
-                    if (id.getImage().equalsIgnoreCase(e.toString())) {
-                        isEscaped = true;
-                        break;
-                    }
-
-                    if (e.equals(Escaping.ANY)) {
-                        for (Escaping esc : Escaping.values()) {
-                            if (id.getImage().equalsIgnoreCase(esc.toString())) {
-                                isEscaped = true;
-                                break;
-                            }
-                        }
-                    }
-
-                }
-
-                if (!isEscaped) {
-                    nonEscapedIds.add(id);
-                }
-            }
-
-        }
-
-        return !nonEscapedIds.isEmpty();
-    }
-
-    private boolean containsSafeFields(final AbstractVFNode expression) {
-        final ASTExpression ex = expression.getFirstChildOfType(ASTExpression.class);
-
-        return ex != null && innerContainsSafeFields(ex);
-
-    }
-
-    private boolean innerContainsSafeFields(final AbstractVFNode expression) {
-        for (int i = 0; i < expression.getNumChildren(); i++) {
-            Node child = expression.getChild(i);
-
-            if (child instanceof ASTIdentifier) {
-                switch (child.getImage().toLowerCase(Locale.ROOT)) {
-                case "id":
-                case "size":
-                case "caseNumber":
-                    return true;
-                default:
-                }
-            }
-
-            if (child instanceof ASTArguments) {
-                if (containsSafeFields((ASTArguments) child)) {
-                    return true;
-                }
-            }
-
-            if (child instanceof ASTDotExpression) {
-                if (innerContainsSafeFields((ASTDotExpression) child)) {
-                    return true;
-                }
-            }
-
-        }
-
-        return false;
-    }
 
     private boolean doesTagSupportEscaping(final ASTElement node) {
         if (node.getName() == null) {
@@ -508,11 +345,11 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     for (ASTAttribute attrib : innerAttributes) {
                         final List<ASTElExpression> elsInVal = attrib.findDescendantsOfType(ASTElExpression.class);
                         for (final ASTElExpression el : elsInVal) {
-                            if (startsWithSafeResource(el)) {
+                            if (escapeDetector.startsWithSafeResource(el)) {
                                 continue;
                             }
 
-                            if (doesElContainAnyUnescapedIdentifiers(el, Escaping.HTMLENCODE)) {
+                            if (escapeDetector.doesElContainAnyUnescapedIdentifiers(el, ElEscapeDetector.Escaping.HTMLENCODE)) {
                                 toReturn.add(el);
                             }
 
@@ -523,25 +360,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
         }
 
         return toReturn;
-    }
-
-    enum Escaping {
-        HTMLENCODE("HTMLENCODE"),
-        URLENCODE("URLENCODE"),
-        JSINHTMLENCODE("JSINHTMLENCODE"),
-        JSENCODE("JSENCODE"),
-        ANY("ANY");
-
-        private final String text;
-
-        Escaping(final String text) {
-            this.text = text;
-        }
-
-        @Override
-        public String toString() {
-            return text;
-        }
     }
 
 }
