@@ -43,7 +43,7 @@ public class BigIntegerInstantiationRule extends AbstractJavaRule {
             if (args.size() == 1) {
                 ASTLiteral literal = node.getFirstDescendantOfType(ASTLiteral.class);
                 if (literal == null
-                        || literal.getParent().getParent().getParent().getParent().getParent() != args) {
+                        || !args.equals(literal.getNthParent(5))) {
                     return super.visit(node, data);
                 }
 

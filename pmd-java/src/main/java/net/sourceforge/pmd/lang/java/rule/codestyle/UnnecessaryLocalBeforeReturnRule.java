@@ -100,7 +100,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
         ASTBlockStatement returnBlockStatement = returnStatement.getFirstParentOfType(ASTBlockStatement.class);
 
         // double check: we should now be at the same level in the AST - both block statements are children of the same parent
-        if (declarationStatement.getParent() == returnBlockStatement.getParent()) {
+        if (declarationStatement.getParent().equals(returnBlockStatement.getParent())) {
             return returnBlockStatement.getIndexInParent() - declarationStatement.getIndexInParent() > 1;
         }
         return false;

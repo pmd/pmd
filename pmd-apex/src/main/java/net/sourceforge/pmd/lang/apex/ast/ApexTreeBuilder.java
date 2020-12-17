@@ -328,7 +328,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     private void buildFormalComment(AstNode node) {
-        if (parents.peek() == node) {
+        if (node.equals(parents.peek())) {
             ApexNode<?> parent = (ApexNode<?>) nodes.peek();
             assignApexDocTokenToNode(node, parent);
         }
@@ -427,7 +427,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     private boolean visit(AstNode node) {
-        if (parents.peek() == node) {
+        if (node.equals(parents.peek())) {
             return true;
         } else {
             build(node);

@@ -1157,7 +1157,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         VarLocalInfo absorb(VarLocalInfo other) {
-            if (other == this) {
+            if (this.equals(other)) {
                 return this;
             }
             Set<AssignmentEntry> merged = new HashSet<>(reachingDefs.size() + other.reachingDefs.size());
@@ -1228,7 +1228,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 for (AssignmentEntry killed : previous.reachingDefs) {
                     if (killed.rhs instanceof ASTVariableDeclaratorId
                         && killed.rhs.getParent() instanceof ASTVariableDeclarator
-                        && killed.rhs != rhs) {
+                        && !killed.rhs.equals(rhs)) {
                         continue;
                     }
                     // java8: computeIfAbsent
@@ -1386,7 +1386,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             // a spanInfo may be absorbed several times so this method should not
             // destroy the parameter
-            if (other == this || other == null || other.symtable.isEmpty()) {
+            if (this.equals(other) || other == null || other.symtable.isEmpty()) {
                 return this;
             }
 

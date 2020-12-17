@@ -41,7 +41,7 @@ public class ASTName extends AbstractEcmascriptNode<Name> {
      */
     public boolean isFunctionNodeName() {
         return getParent() instanceof ASTFunctionNode
-                && ((ASTFunctionNode) getParent()).getFunctionName() == this;
+                && this.equals(((ASTFunctionNode) getParent()).getFunctionName());
     }
 
     /**
@@ -55,7 +55,7 @@ public class ASTName extends AbstractEcmascriptNode<Name> {
         if (getParent() instanceof ASTFunctionNode) {
             ASTFunctionNode functionNode = (ASTFunctionNode) getParent();
             for (int i = 0; i < functionNode.getNumParams(); i++) {
-                if (functionNode.getParam(i) == this) {
+                if (this.equals(functionNode.getParam(i))) {
                     return true;
                 }
             }
@@ -70,7 +70,7 @@ public class ASTName extends AbstractEcmascriptNode<Name> {
      *         otherwise.
      */
     public boolean isFunctionCallName() {
-        return getParent() instanceof ASTFunctionCall && ((ASTFunctionCall) getParent()).getTarget() == this;
+        return getParent() instanceof ASTFunctionCall && this.equals(((ASTFunctionCall) getParent()).getTarget());
     }
 
     /**
@@ -81,6 +81,6 @@ public class ASTName extends AbstractEcmascriptNode<Name> {
      */
     public boolean isVariableDeclaration() {
         return getParent() instanceof ASTVariableInitializer
-                && ((ASTVariableInitializer) getParent()).getTarget() == this;
+                && this.equals(((ASTVariableInitializer) getParent()).getTarget());
     }
 }

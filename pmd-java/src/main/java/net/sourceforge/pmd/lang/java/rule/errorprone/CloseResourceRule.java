@@ -441,7 +441,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private boolean areStatementsOfSameBlock(ASTBlockStatement bs0, ASTBlockStatement bs1) {
-        return bs0.getParent() == bs1.getParent();
+        return bs0.getParent().equals(bs1.getParent());
     }
 
     private List<ASTBlockStatement> getBlockStatementsBetween(ASTBlockStatement top, ASTBlockStatement bottom) {

@@ -154,7 +154,7 @@ public class TccAttributeAccessCollector extends JavaParserVisitorReducedAdapter
             for (VariableNameDeclaration decl : currentScope.getDeclarations(VariableNameDeclaration.class).keySet()) {
                 if (decl.getImage().equals(varName)) {
                     if (currentScope instanceof ClassScope
-                            && ((ClassScope) currentScope).getClassDeclaration().getNode() == exploredClass) {
+                            && ((ClassScope) currentScope).getClassDeclaration().getNode().equals(exploredClass)) {
                         return true;
                     }
                 }

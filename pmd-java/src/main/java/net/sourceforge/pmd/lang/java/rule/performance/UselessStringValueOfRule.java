@@ -53,10 +53,10 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
             if (parent instanceof ASTPrimaryExpression && gp instanceof ASTAdditiveExpression
                     && "+".equals(gp.getImage())) {
                 boolean ok = false;
-                if (gp.getChild(0) == parent) {
+                if (parent.equals(gp.getChild(0))) {
                     ok = !isPrimitive(gp.getChild(1));
                 } else {
-                    for (int i = 0; !ok && gp.getChild(i) != parent; i++) {
+                    for (int i = 0; !ok && !parent.equals(gp.getChild(i)); i++) {
                         ok = !isPrimitive(gp.getChild(i));
                     }
                 }

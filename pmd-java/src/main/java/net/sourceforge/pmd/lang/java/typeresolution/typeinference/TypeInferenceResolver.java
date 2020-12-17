@@ -245,7 +245,7 @@ public final class TypeInferenceResolver {
     public static List<JavaTypeDefinition> getLowerBoundsOf(Variable var, List<Bound> bounds) {
         List<JavaTypeDefinition> result = new ArrayList<>();
         for (Bound bound : bounds) {
-            if (bound.ruleType() == SUBTYPE && bound.rightVariable() == var) {
+            if (bound.ruleType() == SUBTYPE && var.equals(bound.rightVariable())) {
                 // TODO: add support for variables depending on other variables
                 if (bound.isLeftVariable()) {
                     throw new ResolutionFailedException();
@@ -297,8 +297,8 @@ public final class TypeInferenceResolver {
         for (Bound bound : bounds) {
             for (Variable first : firstList) {
                 if (bound.ruleType == EQUALITY
-                        && (bound.leftVariable() == first && bound.rightVariable() == second
-                        || bound.leftVariable() == second && bound.rightVariable() == first)) {
+                        && (first.equals(bound.leftVariable()) && second.equals(bound.rightVariable())
+                        || second.equals(bound.leftVariable()) && first.equals(bound.rightVariable()))) {
                     return true;
                 }
             }
@@ -579,15 +579,15 @@ public final class TypeInferenceResolver {
 
     private static Sides getUnequalSides(BoundOrConstraint first, BoundOrConstraint second) {
         if (first.leftVariable() != null) {
-            if (first.leftVariable() == second.leftVariable()) {
+            if (first.leftVariable().equals(second.leftVariable())) {
                 return new Sides(Side.RIGHT, Side.RIGHT);
-            } else if (first.leftVariable() == second.rightVariable()) {
+            } else if (first.leftVariable().equals(second.rightVariable())) {
                 return new Sides(Side.RIGHT, Side.LEFT);
             }
         } else if (first.rightVariable() != null) {
-            if (first.rightVariable() == second.leftVariable()) {
+            if (first.rightVariable().equals(second.leftVariable())) {
                 return new Sides(Side.LEFT, Side.RIGHT);
-            } else if (first.rightVariable() == second.rightVariable()) {
+            } else if (first.rightVariable().equals(second.rightVariable())) {
                 return new Sides(Side.LEFT, Side.LEFT);
             }
         }

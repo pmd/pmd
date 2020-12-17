@@ -69,7 +69,7 @@ abstract class AbstractModelicaNode extends AbstractJjtreeNode<ModelicaNode> imp
     public void jjtClose() {
 
         // in jjtClose, jjtSetLastToken has not been called yet, so we use parser.token.next
-        if (parser.token.next == jjtGetFirstToken()) {
+        if (jjtGetFirstToken().equals(parser.token.next)) {
             // Reversed, this node consumed no token.
             // Forge a token with the correct coordinates, and zero length
 

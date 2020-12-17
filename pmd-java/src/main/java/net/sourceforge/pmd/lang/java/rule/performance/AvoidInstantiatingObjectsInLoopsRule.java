@@ -119,7 +119,7 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRule {
                  */
                 n = n.getParent();
             } else if (n.getParent() instanceof ASTForStatement && n.getParent().getNumChildren() > 1
-                    && n == n.getParent().getChild(1)) {
+                    && n.equals(n.getParent().getChild(1))) {
                 // it is the second child of a ForStatement - which means
                 // we are dealing with a for-each construct
                 // In that case, we can ignore this allocation expression, as

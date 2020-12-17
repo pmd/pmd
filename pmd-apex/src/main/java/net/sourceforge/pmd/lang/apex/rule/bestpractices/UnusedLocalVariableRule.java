@@ -39,7 +39,7 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
         potentialUsages.addAll(variableContext.findDescendantsOfType(ASTReferenceExpression.class));
 
         for (ApexNode<?> usage : potentialUsages) {
-            if (usage.getParent() == node) {
+            if (node.equals(usage.getParent())) {
                 continue;
             }
 
