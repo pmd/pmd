@@ -47,7 +47,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final Pattern ON_EVENT = Pattern.compile("^on(\\w)+$");
     private static final Pattern PLACEHOLDERS = Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}");
 
-    private ElEscapeDetector escapeDetector = new ElEscapeDetector();
+    private final ElEscapeDetector escapeDetector = new ElEscapeDetector();
 
     @Override
     public Object visit(ASTHtmlScript node, Object data) {

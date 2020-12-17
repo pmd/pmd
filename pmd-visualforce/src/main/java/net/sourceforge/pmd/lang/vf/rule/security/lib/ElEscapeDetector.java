@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.vf.rule.security.lib;
 
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -27,17 +26,7 @@ import net.sourceforge.pmd.lang.vf.ast.VfTypedNode;
  * (porting over code previously living in VfUnescapeElRule for reusability)
  */
 
-public class ElEscapeDetector {
-
-    private static final List<String> FUNCTIONS_WITH_ARGS = Arrays.asList(
-            "urlfor", "casesafeid", "begins", "contains", "len", "getrecordids", "linkto",
-            "sqrt", "round", "mod", "log", "ln", "exp", "abs", "floor", "ceiling",
-            "nullvalue", "isnumber", "isnull", "isnew", "isblank", "isclone",
-            "year", "month", "day", "datetimevalue", "datevalue", "date", "now", "today");
-
-    private static final List<String> FUNCTIONS_NO_ARGS = Arrays.asList(
-            "$action", "$page", "$site", "$resource", "$label", "$objecttype",
-            "$component", "$remoteaction", "$messagechannel");
+public final class ElEscapeDetector {
 
     public boolean innerContainsSafeFields(final AbstractVFNode expression) {
         for (int i = 0; i < expression.getNumChildren(); i++) {
@@ -90,7 +79,59 @@ public class ElEscapeDetector {
                 String lowerCaseId = id.getImage().toLowerCase(Locale.ROOT);
                 List<ASTArguments> args = expression.findChildrenOfType(ASTArguments.class);
 
-                return args.isEmpty() ? FUNCTIONS_NO_ARGS.contains(lowerCaseId) : FUNCTIONS_WITH_ARGS.contains(lowerCaseId);
+                if (!args.isEmpty()) {
+                    switch (lowerCaseId) {
+                    case "urlfor":
+                    case "casesafeid":
+                    case "begins":
+                    case "contains":
+                    case "len":
+                    case "getrecordids":
+                    case "linkto":
+                    case "sqrt":
+                    case "round":
+                    case "mod":
+                    case "log":
+                    case "ln":
+                    case "exp":
+                    case "abs":
+                    case "floor":
+                    case "ceiling":
+                    case "nullvalue":
+                    case "isnumber":
+                    case "isnull":
+                    case "isnew":
+                    case "isblank":
+                    case "isclone":
+                    case "year":
+                    case "month":
+                    case "day":
+                    case "datetimevalue":
+                    case "datevalue":
+                    case "date":
+                    case "now":
+                    case "today":
+                        return true;
+
+                    default:
+                    }
+                } else {
+                    // has no arguments
+                    switch (lowerCaseId) {
+                    case "$action":
+                    case "$page":
+                    case "$site":
+                    case "$resource":
+                    case "$label":
+                    case "$objecttype":
+                    case "$component":
+                    case "$remoteaction":
+                    case "$messagechannel":
+                        return true;
+
+                    default:
+                    }
+                }
             }
         }
         return false;
@@ -156,7 +197,7 @@ public class ElEscapeDetector {
      * Return true if the type of all data nodes can be determined and none of them require escaping
      * @param expression
      */
-    private boolean expressionContainsSafeDataNodes(ASTExpression expression) {
+    public boolean expressionContainsSafeDataNodes(ASTExpression expression) {
         try {
             for (VfTypedNode node : expression.getDataNodes().keySet()) {
                 DataType dataType = node.getDataType();
@@ -189,4 +230,5 @@ public class ElEscapeDetector {
             return text;
         }
     }
+
 }

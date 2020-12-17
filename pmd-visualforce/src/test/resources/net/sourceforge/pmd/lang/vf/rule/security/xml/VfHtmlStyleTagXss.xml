@@ -5,42 +5,6 @@
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>sObject field assigned to non-style html</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-<apex:page>
-    <div>
-    ${!XSSHere}
-    </div>
-</apex:page>
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>sObject field assigned to apex tag value</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-<apex:page>
-    <apex:outputPanel>
-    ${!XSSHere}
-    </apex:outputPanel>
-</apex:page>
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>sObject field assigned to apex tag attribute</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-<apex:page>
-    <apex:outputPanel rendered="{!XSSHere}">
-    some output content
-    </apex:outputPanel>
-</apex:page>
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>sObject field (from controller) assigned to url variable in style tag (html encoded)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -144,18 +108,6 @@ a { {!JSENCODE(XSSHere)} }
   background:url({!URLFOR($Resource.valid)});
 }
 </style>
-</apex:page>
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>EL assigned to plain html within safe resource</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-<apex:page>
-    <div>
-    {!URLFOR($Resource.valid)}
-    </div>
 </apex:page>
         ]]></code>
     </test-code>
