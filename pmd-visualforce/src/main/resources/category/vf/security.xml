@@ -26,6 +26,29 @@ Avoid calling VF action upon page load as the action becomes vulnerable to CSRF.
         </example>
     </rule>
 
+    <rule name="VfHtmlStyleTagXss"
+          language="vf"
+          since="6.29.0"
+          message="Use correct encoding for expressions within Style tag"
+          class="net.sourceforge.pmd.lang.vf.rule.security.VfHtmlStyleTagXssRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_vf_security.html#vfhtmlstyletagxss">
+        <description>
+            Use relevant encoding with EL in html tags
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+<apex:page>
+<style>
+ div {
+  background: url('{!XSSHere}');
+}
+</style>
+</apex:page>
+]]>
+        </example>
+    </rule>
+
     <rule name="VfUnescapeEl"
           language="vf"
           since="5.6.0"
