@@ -100,6 +100,11 @@ public class CsTokenizerTest extends CpdTextComparisonTest {
         doTest("listOfNumbers", "_ignored", skipLiteralSequences());
     }
 
+    @Test
+    public void testCSharp7And8Additions() {
+        doTest("csharp7And8Additions");
+    }
+
     private Properties ignoreUsings() {
         return properties(true, false);
     }
