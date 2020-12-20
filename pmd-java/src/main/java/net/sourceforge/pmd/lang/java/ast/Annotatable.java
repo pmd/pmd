@@ -20,29 +20,31 @@ public interface Annotatable extends JavaNode {
     List<ASTAnnotation> getDeclaredAnnotations();
 
     /**
-     * Get specific annotaion on this node.
+     * Returns a specific annotation on this node, or null if absent.
      *
-     * @param annotQualifiedName
-     *            qulified name of the annotation.
-     * @return <code>ASTAnnotaion</code> node if the annotation is present on this node, else <code>null</code>
+     * @param binaryName
+     *            Binary name of the annotation type.
+     *            Note: for now, canonical names are tolerated, this may be changed in PMD 7.
      */
-    ASTAnnotation getAnnotation(String annotQualifiedName);
+    ASTAnnotation getAnnotation(String binaryName);
 
     /**
      * Checks whether any annotation is present on this node.
      *
-     * @param annotQualifiedNames
-     *            collection that cotains qulified name of annotations.
+     * @param binaryNames
+     *            Collection that contains binary names of annotations.
+     *            Note: for now, canonical names are tolerated, this may be changed in PMD 7.
      * @return <code>true</code> if any annotation is present on this node, else <code>false</code>
      */
-    boolean isAnyAnnotationPresent(Collection<String> annotQualifiedNames);
+    boolean isAnyAnnotationPresent(Collection<String> binaryNames);
 
     /**
      * Checks whether the annotation is present on this node.
      *
-     * @param annotQualifiedName
-     *            qulified name of the annotation.
+     * @param binaryName
+     *            Binary name of the annotation type.
+     *            Note: for now, canonical names are tolerated, this may be changed in PMD 7.
      * @return <code>true</code> if the annotation is present on this node, else <code>false</code>
      */
-    boolean isAnnotationPresent(String annotQualifiedName);
+    boolean isAnnotationPresent(String binaryName);
 }
