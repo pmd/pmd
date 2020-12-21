@@ -357,4 +357,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#575 PositionLiteralsFirstInComparisons must not trigger if the constant field is not a String</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final Integer TEST_CONSTANT = 5;
+    public boolean test(String someString) {
+        return someString.equals(TEST_CONSTANT);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
