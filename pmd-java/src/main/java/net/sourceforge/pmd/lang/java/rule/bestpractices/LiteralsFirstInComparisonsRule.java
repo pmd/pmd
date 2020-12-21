@@ -136,14 +136,14 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
     }
 
     private JavaNode getFirstLiteralArgument(ASTPrimarySuffix primarySuffix) {
-        return getArgumentPrimaryPrefixFromSuffix(primarySuffix).getFirstChildOfType(ASTLiteral.class);
+        return getArgumentPrimaryPrefix(primarySuffix).getFirstChildOfType(ASTLiteral.class);
     }
 
     private JavaNode getFirstNameArgument(ASTPrimarySuffix primarySuffix) {
-        return getArgumentPrimaryPrefixFromSuffix(primarySuffix).getFirstChildOfType(ASTName.class);
+        return getArgumentPrimaryPrefix(primarySuffix).getFirstChildOfType(ASTName.class);
     }
 
-    private JavaNode getArgumentPrimaryPrefixFromSuffix(ASTPrimarySuffix primarySuffix) {
+    private JavaNode getArgumentPrimaryPrefix(ASTPrimarySuffix primarySuffix) {
         ASTArguments arguments = primarySuffix.getFirstChildOfType(ASTArguments.class);
         ASTArgumentList argumentList = arguments.getFirstChildOfType(ASTArgumentList.class);
         ASTExpression expression = argumentList.getFirstChildOfType(ASTExpression.class);
