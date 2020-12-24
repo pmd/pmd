@@ -41,7 +41,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractApexRule {
         return data;
     }
 
-    private Boolean isEquals(ASTMethod node) {
+    private boolean isEquals(ASTMethod node) {
         int numParams = 0;
         String paramType = null;
         for (int ix = 0; ix < node.getNumChildren(); ix++) {
@@ -54,7 +54,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractApexRule {
         return numParams == 1 && node.hasImageEqualTo("equals") && "Object".equalsIgnoreCase(paramType);
     }
 
-    private Boolean isHashCode(ASTMethod node) {
+    private boolean isHashCode(ASTMethod node) {
         int numParams = 0;
         for (int ix = 0; ix < node.getNumChildren(); ix++) {
             ApexNode<?> sn = node.getChild(ix);
