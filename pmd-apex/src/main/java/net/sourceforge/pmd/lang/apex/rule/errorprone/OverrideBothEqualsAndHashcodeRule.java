@@ -12,10 +12,12 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class OverrideBothEqualsAndHashcodeRule extends AbstractApexRule {
 
+    public OverrideBothEqualsAndHashcodeRule() {
+        addRuleChainVisit(ASTUserClass.class);
+    }
+
     @Override
     public Object visit(ASTUserClass node, Object data) {
-        super.visit(node, data);
-
         ApexNode<?> equalsNode = null;
         ApexNode<?> hashNode = null;
         for (ASTMethod method : node.findChildrenOfType(ASTMethod.class)) {
