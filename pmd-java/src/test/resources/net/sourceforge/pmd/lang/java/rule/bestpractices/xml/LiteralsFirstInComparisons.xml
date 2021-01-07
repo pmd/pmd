@@ -320,7 +320,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#575 PositionLiteralsFirstInComparisons to consider constant fields, i.e. static final Strings</description>
+        <description>#575 LiteralsFirstInComparisons to consider constant fields, i.e. static final Strings</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -333,7 +333,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#575 PositionLiteralsFirstInComparisons must not trigger if the field is not final</description>
+        <description>#575 LiteralsFirstInComparisons must not trigger if the field is not final</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -346,7 +346,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#575 PositionLiteralsFirstInComparisons must not trigger if the field is not static</description>
+        <description>#575 LiteralsFirstInComparisons must not trigger if the field is not static</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -359,7 +359,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#575 PositionLiteralsFirstInComparisons must not trigger if the constant field is not a String</description>
+        <description>#575 LiteralsFirstInComparisons must not trigger if the constant field is not a String</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {

@@ -168,7 +168,7 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
             for (ASTFieldDeclaration fieldDeclaration : fieldDeclarations) {
                 ASTVariableDeclarator declaration = fieldDeclaration.getFirstChildOfType(ASTVariableDeclarator.class);
                 if (declaration.getName().equals(name.getImage())
-                        && "class java.lang.String".equals(declaration.getType().toString())
+                        && String.class.equals(declaration.getType())
                         && fieldDeclaration.isFinal()
                         && fieldDeclaration.isStatic()) {
                     return true;
