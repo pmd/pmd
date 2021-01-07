@@ -16,9 +16,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   core
+    *   [#2994](https://github.com/pmd/pmd/pull/2994): \[core] Fix code climate severity strings
+
 ### API Changes
 
 ### External Contributions
+
+*   [#2994](https://github.com/pmd/pmd/pull/2994): \[core] Fix code climate severity strings - [Vincent Maurin](https://github.com/vmaurin)
 
 {% endtocmaker %}
 
