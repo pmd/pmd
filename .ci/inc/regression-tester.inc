@@ -64,42 +64,24 @@ function regression_tester_uploadBaseline() {
 #
 # Execute danger, which executes pmd-regression-tester (via Dangerfile).
 #
-# Note: this function always succeeds, even if the danger fails.
-# In that case, just a error logging is provided.
-#
 function regression_tester_executeDanger() {
     log_debug "$FUNCNAME"
 
-    local errexitstate="$(shopt -po errexit)"
-    set +e # disable errexit
-    (
-        # This handler is called if any command fails
-        function danger_failed() {
-            log_error "Error while executing danger/pmd-regression-tester"
-        }
+    # Create a corresponding remote branch locally
+    if ! git show-ref --verify --quiet refs/heads/${PMD_CI_BRANCH}; then
+        git fetch --no-tags --depth=1 origin +refs/heads/${PMD_CI_BRANCH}:refs/remotes/origin/${PMD_CI_BRANCH}
+        git branch ${PMD_CI_BRANCH} origin/${PMD_CI_BRANCH}
+        log_debug "Created local branch ${PMD_CI_BRANCH}"
+    fi
+    # Fetch more commits of the PR for danger and regression tester
+    git fetch --no-tags --depth=50 origin +$(git rev-parse HEAD^2):
+    # Fetch more commits from master branch for regression tester
+    if [[ "${PMD_CI_BRANCH}" != "master" ]]; then
+        git fetch --no-tags --depth=50 origin +master:
+        git branch master origin/master
+    fi
 
-        # exit subshell after trap
-        set -e
-        trap danger_failed ERR
-
-        # Create a corresponding remote branch locally
-        if ! git show-ref --verify --quiet refs/heads/${PMD_CI_BRANCH}; then
-            git fetch --no-tags --depth=1 origin +refs/heads/${PMD_CI_BRANCH}:refs/remotes/origin/${PMD_CI_BRANCH}
-            git branch ${PMD_CI_BRANCH} origin/${PMD_CI_BRANCH}
-            log_debug "Created local branch ${PMD_CI_BRANCH}"
-        fi
-        # Fetch more commits of the PR for danger and regression tester
-        git fetch --no-tags --depth=50 origin +$(git rev-parse HEAD^2):
-        # Fetch more commits from master branch for regression tester
-        if [[ "${PMD_CI_BRANCH}" != "master" ]]; then
-            git fetch --no-tags --depth=50 origin +master:
-            git branch master origin/master
-        fi
-
-        log_info "Running danger on branch ${PMD_CI_BRANCH}"
-        bundle exec danger --verbose
-        log_success "Executing danger successfully"
-    )
-    # restore errexit state
-    eval "$errexitstate"
+    log_info "Running danger on branch ${PMD_CI_BRANCH}"
+    bundle exec danger --verbose
+    log_success "Executed danger successfully"
 }

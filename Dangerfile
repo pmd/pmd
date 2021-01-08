@@ -39,7 +39,7 @@ def upload_report
     `tar -cf #{tar_filename} diff/`
     report_url = `curl -u #{ENV['PMD_CI_CHUNK_TOKEN']} -T #{tar_filename} https://chunk.io`
     if $?.success?
-      @logger.info "Successfully uploaded #{tar_filename} to chunk.io"
+      @logger.info "Successfully uploaded #{tar_filename} to #{report_url}"
 
       # set value of sticky to true and the message is kept after new commits are submitted to the PR
       message("This changeset " \
