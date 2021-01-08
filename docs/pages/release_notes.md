@@ -20,5 +20,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 
+- [#2964](https://github.com/pmd/pmd/pull/2964) \[cs] Update C# grammar for additional C# 7 and C# 8 features -- [Maikel Steneker](https://github.com/maikelsteneker)
+
 {% endtocmaker %}
 
