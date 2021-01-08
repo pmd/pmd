@@ -181,6 +181,10 @@ function pmd_ci_build_and_upload_doc() {
         pmd_code_removeJavadoc "${VERSION}-SNAPSHOT"
 
         # updating github release text
+        rm -f .bundle/config
+        bundle config set --local path vendor/bundle
+        bundle config set --local with release_notes_preprocessing
+        bundle install
         # renders, and skips the first 6 lines - the Jekyll front-matter
         local rendered_release_notes=$(bundle exec .ci/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
         local release_name="PMD ${VERSION} ($(date -u +%d-%B-%Y))"

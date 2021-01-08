@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Question
+    url: https://github.com/pmd/pmd/discussions?discussions_q=category%3AQ%26A
+    about: Feel free to ask any question about PMD and its usage
   - name: PMD Designer Issues
     url: https://github.com/pmd/pmd-designer/issues
     about: Issues about the rule designer
