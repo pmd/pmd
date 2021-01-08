@@ -28,6 +28,11 @@ public class VfHandler extends AbstractLanguageVersionHandler {
         return new VfParser(parserOptions);
     }
 
+    @Override
+    public ParserOptions getDefaultParserOptions() {
+        return new VfParserOptions();
+    }
+
     @Deprecated
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {

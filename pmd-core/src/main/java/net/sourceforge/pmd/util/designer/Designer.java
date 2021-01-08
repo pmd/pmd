@@ -103,7 +103,6 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -564,7 +563,7 @@ public class Designer implements ClipboardOwner {
             LanguageVersion languageVersion = getLanguageVersion();
             DFAGraphRule dfaGraphRule = languageVersion.getLanguageVersionHandler().getDFAGraphRule();
             if (dfaGraphRule != null) {
-                final RuleSet rs = new RuleSetFactory().createSingleRuleRuleSet(dfaGraphRule);
+                final RuleSet rs = RuleSet.forSingleRule(dfaGraphRule);
                 RuleContext ctx = new RuleContext();
                 ctx.setSourceCodeFile(new File("[no filename]." + languageVersion.getLanguage().getExtensions().get(0)));
                 PMDConfiguration config = new PMDConfiguration();
@@ -610,7 +609,7 @@ public class Designer implements ClipboardOwner {
                 xpathRule.setXPath(xpathQueryArea.getText());
                 xpathRule.setVersion(xpathVersionButtonGroup.getSelection().getActionCommand());
 
-                final RuleSet ruleSet = new RuleSetFactory().createSingleRuleRuleSet(xpathRule);
+                final RuleSet ruleSet = RuleSet.forSingleRule(xpathRule);
 
                 RuleSets ruleSets = new RuleSets(ruleSet);
 

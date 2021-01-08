@@ -30,7 +30,6 @@ import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
 
@@ -57,7 +56,7 @@ public class PropertyDescriptorTest {
         FooRule rule = new FooRule();
         rule.definePropertyDescriptor(intProperty);
         rule.setProperty(intProperty, 1000);
-        RuleSet ruleSet = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
+        RuleSet ruleSet = RuleSet.forSingleRule(rule);
 
         List<net.sourceforge.pmd.Rule> dysfunctional = new ArrayList<>();
         ruleSet.removeDysfunctionalRules(dysfunctional);
@@ -78,7 +77,7 @@ public class PropertyDescriptorTest {
         FooRule rule = new FooRule();
         rule.definePropertyDescriptor(descriptor);
         rule.setProperty(descriptor, Collections.singletonList(1000d)); // not in range
-        RuleSet ruleSet = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
+        RuleSet ruleSet = RuleSet.forSingleRule(rule);
 
         List<net.sourceforge.pmd.Rule> dysfunctional = new ArrayList<>();
         ruleSet.removeDysfunctionalRules(dysfunctional);

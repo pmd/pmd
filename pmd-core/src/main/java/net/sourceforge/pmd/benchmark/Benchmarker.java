@@ -175,13 +175,12 @@ public final class Benchmarker {
     private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources,
             Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
 
-        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         for (Rule rule: ruleSet.getRules()) {
             if (debug) {
                 System.out.println("Starting " + rule.getName());
             }
 
-            final RuleSet working = factory.createSingleRuleRuleSet(rule);
+            final RuleSet working = RuleSet.forSingleRule(rule);
             RuleSets ruleSets = new RuleSets(working);
 
             PMDConfiguration config = new PMDConfiguration();

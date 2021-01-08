@@ -11,16 +11,18 @@ import java.io.Writer;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -41,11 +43,9 @@ import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
@@ -89,7 +89,10 @@ public class PMD {
     /**
      * Create a PMD instance using a default Configuration. Changes to the
      * configuration may be required.
+     *
+     * @deprecated Just use the static methods, and maintain your {@link PMDConfiguration} separately.
      */
+    @Deprecated
     public PMD() {
         this(new PMDConfiguration());
     }
@@ -97,9 +100,11 @@ public class PMD {
     /**
      * Create a PMD instance using the specified Configuration.
      *
-     * @param configuration
-     *            The runtime Configuration of PMD to use.
+     * @param configuration The runtime Configuration of PMD to use.
+     *
+     * @deprecated Just use the static methods, and maintain your {@link PMDConfiguration} separately.
      */
+    @Deprecated
     public PMD(PMDConfiguration configuration) {
         this.configuration = configuration;
         this.rulesetsFileProcessor = new SourceCodeProcessor(configuration);
@@ -115,7 +120,10 @@ public class PMD {
      * @throws PMDException
      *             if the URI couldn't be parsed
      * @see DBURI
+     *
+     * @deprecated Will be hidden as part of the parsing of {@link PMD#getApplicableFiles(PMDConfiguration, Set)}
      */
+    @Deprecated
     public static List<DataSource> getURIDataSources(String uriString) throws PMDException {
         List<DataSource> dataSources = new ArrayList<>();
 
@@ -161,7 +169,11 @@ public class PMD {
      * @param configuration
      *            the given configuration
      * @return the pre-configured parser
+     *
+     * @deprecated This is internal
      */
+    @Deprecated
+    @InternalApi
     public static Parser parserFor(LanguageVersion languageVersion, PMDConfiguration configuration) {
 
         // TODO Handle Rules having different parser options.
@@ -179,7 +191,10 @@ public class PMD {
      *
      * @return The configuration.
      * @see PMDConfiguration
+     *
+     * @deprecated Don't create a PMD instance just to create a {@link PMDConfiguration}
      */
+    @Deprecated
     public PMDConfiguration getConfiguration() {
         return configuration;
     }
@@ -188,7 +203,9 @@ public class PMD {
      * Gets the source code processor.
      *
      * @return SourceCodeProcessor
+     * @deprecated Source code processor is internal
      */
+    @Deprecated
     public SourceCodeProcessor getSourceCodeProcessor() {
         return rulesetsFileProcessor;
     }
@@ -203,7 +220,7 @@ public class PMD {
     public static int doPMD(PMDConfiguration configuration) {
 
         // Load the RuleSets
-        final RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, new ResourceLoader());
+        final RuleSetFactory ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration).toFactory();
         final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;
@@ -221,28 +238,15 @@ public class PMD {
                 renderer.start();
             }
 
-            RuleContext ctx = new RuleContext();
-            final AtomicInteger violations = new AtomicInteger(0);
-            ctx.getReport().addListener(new ThreadSafeReportListener() {
-                @Override
-                public void ruleViolationAdded(RuleViolation ruleViolation) {
-                    violations.getAndIncrement();
-                }
-
-                @Override
-                public void metricAdded(Metric metric) {
-                    // ignored - not needed for counting violations
-                }
-            });
-
+            Report report;
             try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-                processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+                report = processFiles(configuration, Arrays.asList(ruleSets.getAllRuleSets()), files, renderers);
             }
 
             try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                 renderer.end();
                 renderer.flush();
-                return violations.get();
+                return report.getViolations().size();
             }
         } catch (Exception e) {
             String message = e.getMessage();
@@ -274,7 +278,10 @@ public class PMD {
      * @param sourceCodeFile
      *            the source code file
      * @return the rule context
+     *
+     * @deprecated Not useful
      */
+    @Deprecated
     public static RuleContext newRuleContext(String sourceCodeFilename, File sourceCodeFile) {
 
         RuleContext context = new RuleContext();
@@ -297,17 +304,58 @@ public class PMD {
      *            RuleContext
      * @param renderers
      *            List of {@link Renderer}s
+     *
+     * @deprecated Use {@link #processFiles(PMDConfiguration, List, Collection, List)}
+     * so as not to depend on {@link RuleSetFactory}. Note that this sorts the list of data sources in-place,
+     * which won't be fixed
      */
+    @Deprecated
     public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
-            final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
+                                    final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
+        // Note that this duplicates the other routine, because the old behavior was
+        // that we parsed rulesets (a second time) inside the processor execution.
+        // To not mess up error handling, we keep this behavior.
+
         encourageToUseIncrementalAnalysis(configuration);
         sortFiles(configuration, files);
         // Make sure the cache is listening for analysis results
         ctx.getReport().addListener(configuration.getAnalysisCache());
 
-        final RuleSetFactory silentFactory = new RuleSetFactory(ruleSetFactory, false);
+        final RuleSetFactory silentFactory = ruleSetFactory.toLoader().warnDeprecated(false).toFactory();
         newFileProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
         configuration.getAnalysisCache().persist();
+    }
+
+    /**
+     * Run PMD using the given configuration. This replaces the other overload.
+     *
+     * @param configuration Configuration for the run. Note that the files,
+     *                      and rulesets, are ignored, as they are supplied
+     *                      as parameters
+     * @param rulesets      Parsed rulesets
+     * @param files         Files to process, will be closed by this method.
+     * @param renderers     Renderers that render the report
+     *
+     * @return Report in which violations are accumulated
+     *
+     * @throws RuntimeException If processing fails
+     */
+    public static Report processFiles(final PMDConfiguration configuration,
+                                      final List<RuleSet> rulesets,
+                                      final Collection<? extends DataSource> files,
+                                      final List<Renderer> renderers) {
+        encourageToUseIncrementalAnalysis(configuration);
+        Report report = new Report();
+        report.addListener(configuration.getAnalysisCache());
+
+        List<DataSource> sortedFiles = new ArrayList<>(files);
+        sortFiles(configuration, sortedFiles);
+
+        RuleContext ctx = new RuleContext();
+        ctx.setReport(report);
+        newFileProcessor(configuration).processFiles(new RuleSets(rulesets), sortedFiles, ctx, renderers);
+        configuration.getAnalysisCache().persist();
+        return report;
     }
 
     private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {
@@ -442,7 +490,7 @@ public class PMD {
     }
 
     /**
-     * Entry to invoke PMD as command line tool
+     * Entry to invoke PMD as command line tool. Note that this will invoke {@link System#exit(int)}.
      *
      * @param args
      *            command line arguments
@@ -452,7 +500,8 @@ public class PMD {
     }
 
     /**
-     * Parses the command line arguments and executes PMD.
+     * Parses the command line arguments and executes PMD. Returns the
+     * exit code without exiting the VM.
      *
      * @param args
      *            command line arguments
