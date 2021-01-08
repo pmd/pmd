@@ -33,54 +33,31 @@ function regression_tester_setup_ci() {
 }
 
 #
-# Generate a new baseline and upload it to sourceforge
-#
-# Note: this function always succeeds, even if the upload fails.
-# In that case, just a error logging is provided.
+# Generate a new baseline and upload it to pmd-code.org
 #
 function regression_tester_uploadBaseline() {
     log_debug "$FUNCNAME branch=${PMD_CI_BRANCH}"
-    local targetUrl="https://sourceforge.net/projects/pmd/files/pmd-regression-tester/"
     local pmdcodeUrl="https://pmd-code.org/pmd-regression-tester/"
 
-    local errexitstate="$(shopt -po errexit)"
-    set +e # disable errexit
-    (
-        # This handler is called if any command fails
-        function upload_failed() {
-            log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to pmd-code.org!"
-            log_error "Please upload manually: ${pmdcodeUrl}"
-            #log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to sourceforge!"
-            #log_error "Please upload manually: ${targetUrl}"
-        }
-
-        # exit subshell after trap
-        set -e
-        trap upload_failed ERR
-
-        log_info "Generating and uploading baseline for pmdtester..."
-        cd ..
-        bundle config --local gemfile pmd/Gemfile
-        bundle config set --local path pmd/vendor/bundle
-        bundle exec pmdtester \
-            --mode single \
-            --local-git-repo ./pmd \
-            --patch-branch ${PMD_CI_BRANCH:-$PMD_CI_TAG} \
-            --patch-config ./pmd/.ci/files/all-java.xml \
-            --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
-            --error-recovery
-        cd target/reports
-        BRANCH_FILENAME="${PMD_CI_BRANCH:-$PMD_CI_TAG}"
-        BRANCH_FILENAME="${BRANCH_FILENAME/\//_}"
-        zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
-        # ssh-key for pmd-code.org is setup already by pmd_ci_setup_ssh
-        scp ${BRANCH_FILENAME}-baseline.zip pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
-        log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${pmdcodeUrl}"
-        #../../pmd/.ci/travis_wait "rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/"
-        #log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${targetUrl}"
-    )
-    # restore errexit state
-    eval "$errexitstate"
+    log_info "Generating and uploading baseline for pmdtester..."
+    pushd ..
+    bundle config --local gemfile pmd/Gemfile
+    bundle config set --local path pmd/vendor/bundle
+    bundle exec pmdtester \
+        --mode single \
+        --local-git-repo ./pmd \
+        --patch-branch ${PMD_CI_BRANCH:-$PMD_CI_TAG} \
+        --patch-config ./pmd/.ci/files/all-java.xml \
+        --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
+        --error-recovery
+    cd target/reports
+    BRANCH_FILENAME="${PMD_CI_BRANCH:-$PMD_CI_TAG}"
+    BRANCH_FILENAME="${BRANCH_FILENAME/\//_}"
+    zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
+    # ssh-key for pmd-code.org is setup already by pmd_ci_setup_ssh
+    scp ${BRANCH_FILENAME}-baseline.zip pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
+    log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${pmdcodeUrl}"
+    popd
 }
 
 #
