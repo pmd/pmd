@@ -36,27 +36,28 @@ function regression_tester_setup_ci() {
 # Generate a new baseline and upload it to pmd-code.org
 #
 function regression_tester_uploadBaseline() {
-    log_debug "$FUNCNAME branch=${PMD_CI_BRANCH}"
     local pmdcodeUrl="https://pmd-code.org/pmd-regression-tester/"
+    local baseline_branch="${PMD_CI_BRANCH:-$PMD_CI_TAG}"
+    log_debug "$FUNCNAME branch=${baseline_branch}"
 
-    log_info "Generating and uploading baseline for pmdtester..."
+    log_info "Generating and uploading baseline for pmdtester (${baseline_branch})..."
     pushd ..
-    bundle config --local gemfile pmd/Gemfile
-    bundle config set --local path pmd/vendor/bundle
+    rm -f .bundle/config
+    bundle config set --local gemfile pmd/Gemfile
     bundle exec pmdtester \
         --mode single \
         --local-git-repo ./pmd \
-        --patch-branch ${PMD_CI_BRANCH:-$PMD_CI_TAG} \
+        --patch-branch ${baseline_branch} \
         --patch-config ./pmd/.ci/files/all-java.xml \
         --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
         --error-recovery
-    cd target/reports
-    BRANCH_FILENAME="${PMD_CI_BRANCH:-$PMD_CI_TAG}"
-    BRANCH_FILENAME="${BRANCH_FILENAME/\//_}"
+    pushd target/reports
+    BRANCH_FILENAME="${baseline_branch/\//_}"
     zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
     # ssh-key for pmd-code.org is setup already by pmd_ci_setup_ssh
     scp ${BRANCH_FILENAME}-baseline.zip pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
     log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${pmdcodeUrl}"
+    popd
     popd
 }
 
