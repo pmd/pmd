@@ -35,7 +35,7 @@ public class AbstractClassWithoutAbstractMethodRule extends AbstractJavaRule {
             }
         }
         if (countOfAbstractMethods == 0) {
-            addViolation(data, node);
+            //addViolation(data, node);
         }
         return data;
     }
