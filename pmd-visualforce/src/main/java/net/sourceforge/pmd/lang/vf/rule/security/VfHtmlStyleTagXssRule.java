@@ -13,12 +13,15 @@ import net.sourceforge.pmd.lang.vf.ast.ASTElement;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
-import net.sourceforge.pmd.lang.vf.rule.security.lib.ElEscapeDetector;
+import net.sourceforge.pmd.lang.vf.rule.security.internal.ElEscapeDetector;
 
 
 public class VfHtmlStyleTagXssRule extends AbstractVfRule {
     private static final String STYLE_TAG = "style";
     private static final String APEX_PREFIX = "apex";
+    private static final EnumSet<ElEscapeDetector.Escaping> URLENCODE_JSINHTMLENCODE = EnumSet.of(ElEscapeDetector.Escaping.URLENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
+    private static final EnumSet<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
+    private static final String URL_METHOD_PATTERN = "url\\s*\\([^)]*$";
 
     private final ElEscapeDetector escapeDetector = new ElEscapeDetector();
 
@@ -78,14 +81,17 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
             ASTElement elementNode,
             Object data) {
         final String previousText = getPreviousText(contentNode, node);
+        final boolean isWithinSafeResource = escapeDetector.startsWithSafeResource(node);
 
-        if (isStyleTag(elementNode)) {
-            final boolean isWithinSafeResource = escapeDetector.startsWithSafeResource(node);
+        // if El is inside a <style></style> tag
+        // and is not surrounded by a safe resource, check for violations
+        if (isStyleTag(elementNode) && !isWithinSafeResource) {
+
             // check if we are within a URL expression
             if (isWithinUrlMethod(previousText)) {
-                verifyEncodingWithinUrl(node, isWithinSafeResource, data);
+                verifyEncodingWithinUrl(node, data);
             } else {
-                verifyEncodingWithoutUrl(node, isWithinSafeResource, data);
+                verifyEncodingWithoutUrl(node, data);
             }
         }
     }
@@ -95,13 +101,12 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
         return STYLE_TAG.equalsIgnoreCase(elementNode.getLocalName());
     }
 
-    private void verifyEncodingWithinUrl(ASTElExpression elExpressionNode, boolean isWithinSafeResource, Object data) {
+    private void verifyEncodingWithinUrl(ASTElExpression elExpressionNode, Object data) {
 
         // only allow URLENCODING or JSINHTMLENCODING
         if (escapeDetector.doesElContainAnyUnescapedIdentifiers(
                 elExpressionNode,
-                EnumSet.of(ElEscapeDetector.Escaping.URLENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE))
-                && !isWithinSafeResource) {
+                URLENCODE_JSINHTMLENCODE)) {
             addViolationWithMessage(
                     data,
                     elExpressionNode,
@@ -110,11 +115,10 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
 
     }
 
-    private void verifyEncodingWithoutUrl(ASTElExpression elExpressionNode, boolean isWithinSafeResource, Object data) {
+    private void verifyEncodingWithoutUrl(ASTElExpression elExpressionNode, Object data) {
         if (escapeDetector.doesElContainAnyUnescapedIdentifiers(
                 elExpressionNode,
-                EnumSet.of(ElEscapeDetector.Escaping.ANY))
-                && !isWithinSafeResource) {
+                ANY_ENCODE)) {
             addViolationWithMessage(
                     data,
                     elExpressionNode,
@@ -146,7 +150,7 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
     }
 
     // visible for unit testing
-    boolean isWithinUrlMethod(String previousText) {
+    static boolean isWithinUrlMethod(String previousText) {
         // match for a pattern that
         // 1. contains "url" (case insensitive),
         // 2. followed by any number of whitespaces,
@@ -156,8 +160,7 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
         // Matches: "div { background: url('", "div { background: Url  ( blah"
         // Does not match: "div { background: url('myUrl')", "div { background: myStyle('"
 
-        final String urlMethodPattern = "url\\s*\\([^)]*$";
-        return Pattern.compile(urlMethodPattern, Pattern.CASE_INSENSITIVE)
+        return Pattern.compile(URL_METHOD_PATTERN, Pattern.CASE_INSENSITIVE)
                 .matcher(previousText)
                 .find();
     }

@@ -2,15 +2,15 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.vf.rule.security.lib;
+package net.sourceforge.pmd.lang.vf.rule.security.internal;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.ast.ASTArguments;
 import net.sourceforge.pmd.lang.vf.ast.ASTDotExpression;
@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTNegationExpression;
 import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
+import net.sourceforge.pmd.lang.vf.ast.VfNode;
 import net.sourceforge.pmd.lang.vf.ast.VfTypedNode;
 
 /**
@@ -28,18 +29,19 @@ import net.sourceforge.pmd.lang.vf.ast.VfTypedNode;
 
 public final class ElEscapeDetector {
 
-    public boolean innerContainsSafeFields(final AbstractVFNode expression) {
-        for (int i = 0; i < expression.getNumChildren(); i++) {
-            Node child = expression.getChild(i);
+    private static final Set<String> SAFE_EXPRESSIONS = new HashSet<>(Arrays.asList("id", "size", "caseNumber"));
+    private static final Set NON_EMPTY_ARG_SAFE_RESOURCE = new HashSet<>(Arrays.asList("urlfor", "casesafeid", "begins", "contains",
+            "len", "getrecordids", "linkto", "sqrt", "round", "mod", "log", "ln", "exp", "abs", "floor", "ceiling",
+            "nullvalue", "isnumber", "isnull", "isnew", "isblank", "isclone", "year", "month", "day", "datetimevalue",
+            "datevalue", "date", "now", "today"));
+    private static final Set EMPTY_ARG_SAFE_RESOURCE = new HashSet<>(Arrays.asList("$action", "$page", "$site",
+            "$resource", "$label", "$objecttype", "$component", "$remoteaction", "$messagechannel"));
 
-            if (child instanceof ASTIdentifier) {
-                switch (child.getImage().toLowerCase(Locale.ROOT)) {
-                case "id":
-                case "size":
-                case "caseNumber":
-                    return true;
-                default:
-                }
+    public boolean innerContainsSafeFields(final VfNode expression) {
+        for (VfNode child : expression.children()) {
+
+            if (child instanceof ASTIdentifier && SAFE_EXPRESSIONS.contains(child.getImage().toLowerCase(Locale.ROOT))) {
+                return true;
             }
 
             if (child instanceof ASTArguments) {
@@ -79,59 +81,14 @@ public final class ElEscapeDetector {
                 String lowerCaseId = id.getImage().toLowerCase(Locale.ROOT);
                 List<ASTArguments> args = expression.findChildrenOfType(ASTArguments.class);
 
-                if (!args.isEmpty()) {
-                    switch (lowerCaseId) {
-                    case "urlfor":
-                    case "casesafeid":
-                    case "begins":
-                    case "contains":
-                    case "len":
-                    case "getrecordids":
-                    case "linkto":
-                    case "sqrt":
-                    case "round":
-                    case "mod":
-                    case "log":
-                    case "ln":
-                    case "exp":
-                    case "abs":
-                    case "floor":
-                    case "ceiling":
-                    case "nullvalue":
-                    case "isnumber":
-                    case "isnull":
-                    case "isnew":
-                    case "isblank":
-                    case "isclone":
-                    case "year":
-                    case "month":
-                    case "day":
-                    case "datetimevalue":
-                    case "datevalue":
-                    case "date":
-                    case "now":
-                    case "today":
-                        return true;
-
-                    default:
-                    }
-                } else {
-                    // has no arguments
-                    switch (lowerCaseId) {
-                    case "$action":
-                    case "$page":
-                    case "$site":
-                    case "$resource":
-                    case "$label":
-                    case "$objecttype":
-                    case "$component":
-                    case "$remoteaction":
-                    case "$messagechannel":
-                        return true;
-
-                    default:
-                    }
+                if (!args.isEmpty() && NON_EMPTY_ARG_SAFE_RESOURCE.contains(lowerCaseId)) {
+                    return true;
                 }
+
+                if (args.isEmpty() && EMPTY_ARG_SAFE_RESOURCE.contains(lowerCaseId)) {
+                    return true;
+                }
+
             }
         }
         return false;

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
-import net.sourceforge.pmd.lang.vf.rule.security.lib.ElEscapeDetector;
+import net.sourceforge.pmd.lang.vf.rule.security.internal.ElEscapeDetector;
 
 
 /**
@@ -46,6 +46,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final String FALSE = "false";
     private static final Pattern ON_EVENT = Pattern.compile("^on(\\w)+$");
     private static final Pattern PLACEHOLDERS = Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}");
+    private static final EnumSet<ElEscapeDetector.Escaping> JSENCODE_JSINHTMLENCODE = EnumSet.of(ElEscapeDetector.Escaping.JSENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
+    private static final EnumSet<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
 
     private final ElEscapeDetector escapeDetector = new ElEscapeDetector();
 
@@ -88,14 +90,14 @@ public class VfUnescapeElRule extends AbstractVfRule {
             // check escaping too
             if (!(jsonParse || escapeDetector.startsWithSafeResource(elExpression) || escapeDetector.containsSafeFields(elExpression))) {
                 if (escapeDetector.doesElContainAnyUnescapedIdentifiers(elExpression,
-                        EnumSet.of(ElEscapeDetector.Escaping.JSENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE))) {
+                        JSENCODE_JSINHTMLENCODE)) {
                     addViolation(data, elExpression);
                 }
             }
         } else {
             if (!(escapeDetector.startsWithSafeResource(elExpression) || escapeDetector.containsSafeFields(elExpression))) {
                 final boolean hasUnscaped = escapeDetector.doesElContainAnyUnescapedIdentifiers(elExpression,
-                        EnumSet.of(ElEscapeDetector.Escaping.JSENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE));
+                        JSENCODE_JSINHTMLENCODE);
                 if (!(jsonParse && !hasUnscaped)) {
                     addViolation(data, elExpression);
                 }
@@ -219,7 +221,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     }
 
                     if (escapeDetector.doesElContainAnyUnescapedIdentifiers(el,
-                            EnumSet.of(ElEscapeDetector.Escaping.ANY))) {
+                            ANY_ENCODE)) {
                         isEL = true;
                         toReport.add(el);
                     }
