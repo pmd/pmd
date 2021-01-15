@@ -1,3 +1,15 @@
+GIT
+  remote: https://github.com/pmd/pmd-regression-tester.git
+  revision: d9756a1fbfbae5869d618fda94b6af2509bce612
+  specs:
+    pmdtester (1.1.1.pre.SNAPSHOT)
+      differ (~> 0.1)
+      liquid (>= 4.0)
+      logger-colors (~> 1.0)
+      nokogiri (>= 1.11.0.rc4)
+      rufus-scheduler (~> 3.5)
+      slop (~> 4.6)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -31,7 +43,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday-http-cache (1.3.1)
       faraday (~> 0.8)
-    fugit (1.4.1)
+    fugit (1.4.2)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.4)
     git (1.8.1)
@@ -50,13 +62,6 @@ GEM
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     open4 (1.3.4)
-    pmdtester (1.1.0)
-      differ (~> 0.1)
-      liquid (>= 4.0)
-      logger-colors (~> 1.0)
-      nokogiri (~> 1.8)
-      rufus-scheduler (~> 3.5)
-      slop (~> 4.6)
     public_suffix (4.0.6)
     raabro (1.4.0)
     racc (1.5.2)
@@ -81,7 +86,7 @@ PLATFORMS
 DEPENDENCIES
   danger (~> 5.6, >= 5.6)
   liquid (>= 4.0.0)
-  pmdtester (~> 1.1)
+  pmdtester!
   rouge (>= 1.7, < 4)
   safe_yaml (>= 1.0)
 
