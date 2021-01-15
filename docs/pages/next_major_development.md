@@ -131,7 +131,7 @@ we may decide to remove some APIs that were not tagged as deprecated, though we'
 
 ###### Around RuleSet parsing
 
-* {% jdoc core::RuleSetFactory %} and {% jdoc core::RuleSetFactoryUtils %} have been deprecated in favor of {% jdoc core::RuleSetLoader %}. This is easier to configure, and more maintainable than the multiple overloads of `RuleSetFactoryUtils`.
+* {% jdoc core::RuleSetFactory %} and {% jdoc core::RulesetsFactoryUtils %} have been deprecated in favor of {% jdoc core::RuleSetLoader %}. This is easier to configure, and more maintainable than the multiple overloads of `RulesetsFactoryUtils`.
 * Some static creation methods have been added to {% jdoc core::RuleSet %} for simple cases, eg {% jdoc core::RuleSet#forSingleRule(core::Rule) %}. These replace some counterparts in {% jdoc core::RuleSetFactory %}
 * Since {% jdoc core::RuleSets %} is also deprecated, many APIs that require a RuleSets instance now are deprecated, and have a counterpart that expects a `List<RuleSet>`.
 * {% jdoc core::RuleSetReferenceId %}, {% jdoc core::RuleSetReference %}, {% jdoc core::RuleSetFactoryCompatibility %} are deprecated. They are most likely not relevant outside of the implementation of pmd-core.
