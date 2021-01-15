@@ -275,6 +275,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         // FIXME, we should discard the array depth on this node, it should only be known to ASTReferenceType (#910)
         populateType(node, typeName, node.getArrayDepth());
 
+        if (node.isAnonymousClass() && node.getTypeDefinition() == null) {
+            // eg for `new Runnable() { }`, retry with just "Runnable"
+            // instead of just "Enclosing$1"
+            populateType(node, node.getImage(), node.getArrayDepth());
+        }
+
+
         ASTTypeArguments typeArguments = node.getFirstChildOfType(ASTTypeArguments.class);
 
         if (typeArguments != null) {
@@ -435,7 +442,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                                                                 Collections.<JavaTypeDefinition>emptyList(),
                                                                 methodArgsArity, accessingClass);
 
-                previousType = getBestMethodReturnType(previousType, methods, astArgumentList);
+                JavaTypeDefinition resultType = getBestMethodReturnType(previousType, methods, astArgumentList);
+                ((ASTPrimarySuffix) astArguments.getParent()).setTypeDefinition(resultType);
+                break; // last iteration anyway
             } else { // field
                 previousType = getFieldType(previousType, dotSplitImage[i], accessingClass);
             }
