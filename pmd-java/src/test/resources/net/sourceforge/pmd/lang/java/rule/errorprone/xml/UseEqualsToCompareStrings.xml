@@ -129,4 +129,15 @@ public class ClassWithStringFields {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#3004 UseEqualsToCompareStrings false positive with PMD 6.30.0</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class O {
+    boolean f(String s) {
+        return s.charAt(0) == s.charAt(1);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
