@@ -587,9 +587,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
      */
     private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class<?>
             accessingClass) {
-        if (accessingClass == null) {
-            return null;
-        }
 
         for (/* empty */; scope != null; scope = scope.getParent()) {
             // search each enclosing scope one by one
