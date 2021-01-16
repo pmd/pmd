@@ -1402,7 +1402,7 @@ public class ClassTypeResolverTest {
 
         // Number e = field.noArguments();
         assertEquals(Number.class, expressions.get(index).getType());
-        assertEquals(Number.class, getChildType(expressions.get(index), 0));
+        assertEquals(MethodPotentialApplicability.class, getChildType(expressions.get(index), 0));
         assertEquals(Number.class, getChildType(expressions.get(index++), 1));
 
         // int f = this.vararg("");
