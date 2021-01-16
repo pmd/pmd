@@ -1477,4 +1477,22 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2977 6.30.0 introduces new false positive in CloseResource rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+
+public class Foo {
+    void bar() {
+        File file = new File("name", "r");
+        try {
+            boolean isHundredBytes = file.length() == 100;
+        } finally {
+            file.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
