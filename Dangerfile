@@ -16,7 +16,7 @@ def run_pmdtester
             '--auto-gen-config',
             '--error-recovery',
             '--baseline-download-url', 'https://pmd-code.org/pmd-regression-tester/',
-            '--debug',
+            #'--debug',
             ]
     begin
       @summary = PmdTester::Runner.new(argv).run

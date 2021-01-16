@@ -50,8 +50,7 @@ function regression_tester_uploadBaseline() {
         --patch-branch ${baseline_branch} \
         --patch-config ./pmd/.ci/files/all-java.xml \
         --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
-        --error-recovery \
-        --debug
+        --error-recovery
     pushd target/reports
     BRANCH_FILENAME="${baseline_branch/\//_}"
     zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
