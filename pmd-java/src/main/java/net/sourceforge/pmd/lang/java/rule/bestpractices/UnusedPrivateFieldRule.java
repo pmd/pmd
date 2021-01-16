@@ -42,16 +42,18 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        boolean classHasLombok = hasLombokAnnotation(node);
+        if (hasIgnoredAnnotation(node)) {
+            return super.visit(node, data);
+        }
 
         Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
-                .getDeclarations(VariableNameDeclaration.class);
+                                                                      .getDeclarations(VariableNameDeclaration.class);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
             VariableNameDeclaration decl = entry.getKey();
             AccessNode accessNodeParent = decl.getAccessNodeParent();
-            if (!accessNodeParent.isPrivate() || isOK(decl.getImage()) || classHasLombok
-                || hasIgnoredAnnotation((Annotatable) accessNodeParent)
-                || hasIgnoredAnnotation(node)) {
+            if (!accessNodeParent.isPrivate()
+                || isOK(decl.getImage())
+                || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
                 continue;
             }
             if (!actuallyUsed(entry.getValue())) {
