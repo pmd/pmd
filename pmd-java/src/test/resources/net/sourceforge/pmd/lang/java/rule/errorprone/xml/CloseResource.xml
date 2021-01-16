@@ -1135,7 +1135,8 @@ public class CloseResourcePrintWriter {
         <expected-linenumbers>7,8,10</expected-linenumbers>
         <expected-messages>
             <message>Ensure that resources like this FileInputStream object are closed after use</message>
-            <message>Ensure that resources like this Scanner object are closed after use</message>
+            <!-- Note: it picks up on System.in -->
+            <message>Ensure that resources like this InputStream object are closed after use</message>
             <message>Ensure that resources like this FileInputStream object are closed after use</message>
         </expected-messages>
         <code><![CDATA[
