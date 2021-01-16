@@ -609,11 +609,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                         return null;
                     }
 
-                    if (typeNode.getChild(0) instanceof ASTReferenceType) {
-                        return ((TypeNode) typeNode.getChild(0)).getTypeDefinition();
-                    } else { // primitive type
-                        return JavaTypeDefinition.forClass(typeNode.getType());
-                    }
+                    return entry.getKey().getDeclaratorId().getTypeDefinition();
                 }
             }
 
