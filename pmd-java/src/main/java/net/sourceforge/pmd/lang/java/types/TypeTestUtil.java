@@ -60,7 +60,7 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class parameter is null
      */
     public static boolean isA(/*@NonNull*/ Class<?> clazz, /*@Nullable*/ TypeNode node) {
-        AssertionUtil.requireParamNotNull("class",  clazz);
+        AssertionUtil.requireParamNotNull("class", clazz);
         if (node == null) {
             return false;
         } else if (node.getType() == clazz) {
