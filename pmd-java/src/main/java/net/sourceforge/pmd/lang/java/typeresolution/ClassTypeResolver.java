@@ -1014,22 +1014,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                     primaryNodeType = currentChild.getTypeDefinition();
                 }
 
-                // if this expression is a method call, then make sure, PrimaryPrefix has the type
-                // on which the method is executed (type of the target reference)
-                if (currentChild.getFirstChildOfType(ASTArguments.class) != null && previousChild.getFirstChildOfType(ASTName.class) != null) {
-                    // restore type of the name and search again
-                    ASTName name = previousChild.getFirstChildOfType(ASTName.class);
-                    name.setTypeDefinition(null);
-                    searchNodeNameForClass(name, name.getImage().split("\\."));
-                    if (name.getTypeDefinition() != null) {
-                        // rollup from Name -> PrimaryPrefix
-                        previousChild.setTypeDefinition(name.getTypeDefinition());
-                    } else if (name.getTypeDefinition() == null) {
-                        // if there is no better type, use the type of the expression
-                        name.setTypeDefinition(primaryNodeType);
-                    }
-                }
-
                 // maybe array access?
                 if (primaryNodeType != null && primaryNodeType.isArrayType()) {
                     if (currentChild instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) currentChild).isArrayDereference()) {
