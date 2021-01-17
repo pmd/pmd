@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -51,7 +51,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractApexRule {
                 paramType = ((ASTParameter) sn).getType();
             }
         }
-        return numParams == 1 && node.hasImageEqualTo("equals") && "Object".equalsIgnoreCase(paramType);
+        return numParams == 1 && "equals".equalsIgnoreCase(node.getImage()) && "Object".equalsIgnoreCase(paramType);
     }
 
     private boolean isHashCode(ASTMethod node) {
@@ -63,6 +63,6 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractApexRule {
             }
         }
 
-        return numParams == 0 && node.hasImageEqualTo("hashCode");
+        return numParams == 0 && "hashCode".equalsIgnoreCase(node.getImage());
     }
 }

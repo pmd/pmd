@@ -111,6 +111,30 @@ public without sharing class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidNonExistentAnnotations"
+          language="apex"
+          since="6.5.0"
+          message="Use of non existent annotations will lead to broken Apex code which will not compile in the future."
+          class="net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidNonExistentAnnotationsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoidnonexistentannotations">
+        <description>
+            Apex supported non existent annotations for legacy reasons.
+            In the future, use of such non-existent annotations could result in broken apex code that will not compile.
+            This will prevent users of garbage annotations from being able to use legitimate annotations added to Apex in the future.
+            A full list of supported annotations can be found at https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+@NonExistentAnnotation public class ClassWithNonexistentAnnotation {
+    @NonExistentAnnotation public void methodWithNonExistentAnnotation() {
+        // ...
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="EmptyCatchBlock"
           language="apex"
           since="6.0.0"
@@ -295,40 +319,6 @@ public void bar(Integer a, Integer b) {
         </example>
     </rule>
 
-        <rule name="OverrideBothEqualsAndHashcode"
-          language="apex"
-          since="6.31.0"
-          message="Ensure you override both equals() and hashCode()"
-          class="net.sourceforge.pmd.lang.apex.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#overridebothequalsandhashcode">
-        <description>
-Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Bar {        // poor, missing a hashcode() method
-    public Boolean equals(Object o) {
-      // do some comparison
-    }
-}
-public class Baz {        // poor, missing an equals() method
-    public Integer hashCode() {
-      // return some hash value
-    }
-}
-public class Foo {        // perfect, both methods provided
-    public Boolean equals(Object other) {
-      // do some comparison
-    }
-    public Integer hashCode() {
-      // return some hash value
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="MethodWithSameNameAsEnclosingClass"
           language="apex"
           since="5.5.0"
@@ -351,24 +341,39 @@ public class MyClass {
         </example>
     </rule>
 
-    <rule name="AvoidNonExistentAnnotations"
+    <rule name="OverrideBothEqualsAndHashcode"
           language="apex"
-          since="6.5.0"
-          message="Use of non existent annotations will lead to broken Apex code which will not compile in the future."
-          class="net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidNonExistentAnnotationsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoidnonexistentannotations">
+          since="6.31.0"
+          message="Ensure you override both equals() and hashCode()"
+          class="net.sourceforge.pmd.lang.apex.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#overridebothequalsandhashcode">
         <description>
-            Apex supported non existent annotations for legacy reasons.
-            In the future, use of such non-existent annotations could result in broken apex code that will not compile.
-            This will prevent users of garbage annotations from being able to use legitimate annotations added to Apex in the future.
-            A full list of supported annotations can be found at https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm
+Override both `public Boolean equals(Object obj)`, and `public Integer hashCode()`, or override neither.
+Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly
+delegating to your superclass.
+
+This is especially important when [Using Custom Types in Map Keys and Sets](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_collections_maps_keys_userdefined.htm).
         </description>
         <priority>3</priority>
         <example>
-            <![CDATA[@NonExistentAnnotation public class ClassWithNonexistentAnnotation {
-	@NonExistentAnnotation public void methodWithNonExistentAnnotation() {
-		// ...
-	}
+<![CDATA[
+public class Bar {        // poor, missing a hashCode() method
+    public Boolean equals(Object o) {
+      // do some comparison
+    }
+}
+public class Baz {        // poor, missing an equals() method
+    public Integer hashCode() {
+      // return some hash value
+    }
+}
+public class Foo {        // perfect, both methods provided
+    public Boolean equals(Object other) {
+      // do some comparison
+    }
+    public Integer hashCode() {
+      // return some hash value
+    }
 }
 ]]>
         </example>

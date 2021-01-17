@@ -37,12 +37,12 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>nested equals only</description>
+        <description>nested equals only, checking case insensitiveness</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public class Bar {
-        public Integer equals(Object other) {}
+        public Integer eQuAlS(Object other) {}
     }
 }
         ]]></code>
@@ -106,7 +106,7 @@ public interface Foo {
     </test-code>
 
     <test-code>
-        <description>implements equals but with 2 args</description>
+        <description>implements equals but with 2 args, hashCode overloaded as well</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
