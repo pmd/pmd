@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass, AvoidNonExistentAnnotations, TestMethodsMustBeInTestClasses">
+<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidNonExistentAnnotations, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses">
 <title>Error Prone | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1621,9 +1621,9 @@ A full list of supported annotations can be found at https://developer.salesforc
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@NonExistentAnnotation</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">ClassWithNonexistentAnnotation</span> <span class="o">{</span>
-	<span class="nd">@NonExistentAnnotation</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methodWithNonExistentAnnotation</span><span class="o">()</span> <span class="o">{</span>
-		<span class="c1">// ...</span>
-	<span class="o">}</span>
+    <span class="nd">@NonExistentAnnotation</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methodWithNonExistentAnnotation</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -2040,6 +2040,79 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/MethodWithSameNameAsEnclosingClass"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="overridebothequalsandhashcode">OverrideBothEqualsAndHashcode</h2>
+
+<p><strong>Since:</strong> PMD 6.31.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Override both <code class="language-plaintext highlighter-rouge">public Boolean equals(Object obj)</code>, and <code class="language-plaintext highlighter-rouge">public Integer hashCode()</code>, or override neither.
+Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly
+delegating to your superclass.</p>
+
+<p>This is especially important when <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_collections_maps_keys_userdefined.htm">Using Custom Types in Map Keys and Sets</a>.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/OverrideBothEqualsAndHashcodeRule.java">net.sourceforge.pmd.lang.apex.rule.errorprone.OverrideBothEqualsAndHashcodeRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{</span>        <span class="c1">// poor, missing a hashCode() method</span>
+    <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="nc">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// do some comparison</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Baz</span> <span class="o">{</span>        <span class="c1">// poor, missing an equals() method</span>
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
+      <span class="c1">// return some hash value</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>        <span class="c1">// perfect, both methods provided</span>
+    <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="nc">Object</span> <span class="n">other</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// do some comparison</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
+      <span class="c1">// return some hash value</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cc_categories</td>
+      <td>Style</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>cc_remediation_points_multiplier</td>
+      <td>1</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>cc_block_highlighting</td>
+      <td>false</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/OverrideBothEqualsAndHashcode"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="testmethodsmustbeintestclasses">TestMethodsMustBeInTestClasses</h2>
 
 <p><strong>Since:</strong> PMD 6.22.0</p>
@@ -2148,7 +2221,7 @@ dealing with legacy code.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 16, 2021 <br />
+ Site last generated: Jan 17, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

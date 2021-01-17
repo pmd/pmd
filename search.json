@@ -3016,6 +3016,15 @@
 ,
 
 {
+"title": "AvoidNonExistentAnnotations (Apex, Error Prone)",
+"tags": "",
+"keywords": "AvoidNonExistentAnnotations",
+"url": "pmd_rules_apex_errorprone.html#avoidnonexistentannotations",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
 "title": "EmptyCatchBlock (Apex, Error Prone)",
 "tags": "",
 "keywords": "EmptyCatchBlock",
@@ -3070,10 +3079,10 @@
 ,
 
 {
-"title": "AvoidNonExistentAnnotations (Apex, Error Prone)",
+"title": "OverrideBothEqualsAndHashcode (Apex, Error Prone)",
 "tags": "",
-"keywords": "AvoidNonExistentAnnotations",
-"url": "pmd_rules_apex_errorprone.html#avoidnonexistentannotations",
+"keywords": "OverrideBothEqualsAndHashcode",
+"url": "pmd_rules_apex_errorprone.html#overridebothequalsandhashcode",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
