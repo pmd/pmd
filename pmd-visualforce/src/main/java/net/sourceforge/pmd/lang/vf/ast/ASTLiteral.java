@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTLiteral extends AbstractVFNode {
+public class ASTLiteral extends AbstractVFDataNode {
     @Deprecated
     @InternalApi
     public ASTLiteral(int id) {
