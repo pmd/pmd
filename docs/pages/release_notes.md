@@ -27,6 +27,7 @@ This is a {{ site.pmd.release_type }} release.
 
 * {% jdoc xml::lang.xml.rule.AbstractDomXmlRule %}
 * {% jdoc xml::lang.wsdl.rule.AbstractWsdlRule %}
+* A few methods of {% jdoc xml::lang.xml.rule.AbstractXmlRule %}
 
 ### External Contributions
 
