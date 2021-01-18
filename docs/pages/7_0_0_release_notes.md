@@ -118,6 +118,7 @@ The following previously deprecated rules have been finally removed:
 
 * java-bestpractices
     * [#342](https://github.com/pmd/pmd/issues/342): \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
+    * [#755](https://github.com/pmd/pmd/issues/755): \[java] AccessorClassGeneration false positive for private constructors
     * [#807](https://github.com/pmd/pmd/issues/807): \[java] AccessorMethodGeneration false positive with overloads
     * [#1212](https://github.com/pmd/pmd/issues/1212): \[java] Don't raise JUnitTestContainsTooManyAsserts on JUnit 5's assertAll
     * [#1422](https://github.com/pmd/pmd/issues/1422): \[java] JUnitTestsShouldIncludeAssert false positive with inherited @Rule field
