@@ -11,12 +11,12 @@ import java.util.*;
 public class SarifRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "sarif";
 
-    private Gson gson;
-    private SarifLog sarifLog;
-    SarifLog.Component driver;
-    private List<SarifLog.ReportingDescriptor> violatedRules;
+    private SarifLog sarifLog = new SarifLog();
     private SarifLog.Run run;
-    private List<SarifLog.Result> results;
+    private SarifLog.Tool tool;
+    private SarifLog.Component driver;
+    private List<SarifLog.ReportingDescriptor> ruleDescriptors = new LinkedList<>();
+    private List<SarifLog.Result> results = new LinkedList<>();
 
     public SarifRenderer() {
         super(NAME, "Sarif integration.");
@@ -29,17 +29,9 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void start() throws IOException {
-        gson = new GsonBuilder()
-                .disableHtmlEscaping()
-                .setPrettyPrinting()
-                .create();
-
-        run = new SarifLog.Run();
-        defineRunTool();
-
-        sarifLog = new SarifLog();
-        violatedRules = new LinkedList<>();
-        results = new LinkedList<>();
+        driver = getDriverComponent();
+        tool = new SarifLog.Tool().setDriver(driver);
+        run = new SarifLog.Run().setTool(tool);
     }
 
     @Override
@@ -48,21 +40,22 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
         while (violations.hasNext()) {
             RuleViolation rv = violations.next();
 
-            Integer violatedRuleIndex = getRuleViolationIndex(rv);
-            if (violatedRuleIndex != -1) {
-                SarifLog.Result existingResult = getResultByRuleIndex(violatedRuleIndex);
+            Integer ruleIndex = getRuleViolationIndex(rv);
+
+            if (ruleIndex != -1) {
+                SarifLog.Result existingResult = getResultByRuleIndex(ruleIndex);
 
                 List<SarifLog.Location> locations = existingResult.getLocations();
                 locations.add(getRuleViolationLocation(rv));
                 existingResult.setLocations(locations);
             } else {
-                SarifLog.ReportingDescriptor rule = createReportingDescriptor(rv);
-                violatedRules.add(rule);
-                violatedRuleIndex = violatedRules.indexOf(rule);
+                SarifLog.ReportingDescriptor ruleDescriptor = getReportingDescriptor(rv);
+                ruleDescriptors.add(ruleDescriptor);
+                ruleIndex = ruleDescriptors.indexOf(ruleDescriptor);
 
                 SarifLog.Result result = new SarifLog.Result();
                 result.setRuleId(rv.getRule().getName());
-                result.setRuleIndex(violatedRuleIndex);
+                result.setRuleIndex(ruleIndex);
 
                 SarifLog.Message message = new SarifLog.Message();
                 message.setText(rv.getDescription());
@@ -80,43 +73,46 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
     @Override
     public void end() throws IOException {
         if (errors.isEmpty() && configErrors.isEmpty()) {
-            driver.setRules(violatedRules);
+            driver.setRules(ruleDescriptors);
             run.setResults(results);
 
             List<SarifLog.Run> runs = new LinkedList<>();
             runs.add(run);
             sarifLog.setRuns(runs);
 
-            String json = gson.toJson(sarifLog);
+            Gson gson = new GsonBuilder()
+                    .disableHtmlEscaping()
+                    .setPrettyPrinting()
+                    .create();
 
+            String json = gson.toJson(sarifLog);
             writer.write(json);
         }
     }
 
-    private void defineRunTool() {
-        driver = new SarifLog.Component();
-        driver.setName("PMD"); // to improve
-        driver.setVersion(PMDVersion.VERSION);
-        driver.setInformationUri("https://github.com/pmd"); // to improve
+    private SarifLog.Component getDriverComponent() {
+        SarifLog.Component result = new SarifLog.Component();
 
-        SarifLog.Tool tool = new SarifLog.Tool();
-        tool.setDriver(driver);
+        result.setName("PMD"); // to improve
+        result.setVersion(PMDVersion.VERSION);
+        result.setInformationUri("https://github.com/pmd"); // to improve
 
-        run.setTool(tool);
+        return result;
     }
 
     private Integer getRuleViolationIndex(RuleViolation rv) {
         Integer result = -1;
-        for (SarifLog.ReportingDescriptor rule : violatedRules) {
+        for (SarifLog.ReportingDescriptor rule : ruleDescriptors) {
             if (rule.getId() == rv.getRule().getName()) {
-                result = violatedRules.indexOf(rule);
+                result = ruleDescriptors.indexOf(rule);
             }
         }
         return result;
     }
 
-    private SarifLog.ReportingDescriptor createReportingDescriptor(RuleViolation rv) {
+    private SarifLog.ReportingDescriptor getReportingDescriptor(RuleViolation rv) {
         SarifLog.ReportingDescriptor result = new SarifLog.ReportingDescriptor();
+
         result.setId(rv.getRule().getName());
         result.setName(rv.getRule().getName());
         result.setShortDescription(new SarifLog.MultiformatMessage(rv.getDescription()));
@@ -151,19 +147,19 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
         physicalLocation.setArtifactLocation(artifactLocation);
         physicalLocation.setRegion(region);
 
-        SarifLog.Location location = new SarifLog.Location();
-        location.setPhysicalLocation(physicalLocation);
+        SarifLog.Location result = new SarifLog.Location();
+        result.setPhysicalLocation(physicalLocation);
 
-        return location;
+        return result;
     }
 
     private SarifLog.PropertyBag getRuleProperties(RuleViolation rv) {
-        SarifLog.PropertyBag propertyBag = new SarifLog.PropertyBag();
+        SarifLog.PropertyBag result = new SarifLog.PropertyBag();
 
-        propertyBag.setRuleset(rv.getRule().getRuleSetName());
-        propertyBag.setPriority(rv.getRule().getPriority().getPriority());
+        result.setRuleset(rv.getRule().getRuleSetName());
+        result.setPriority(rv.getRule().getPriority().getPriority());
 
-        return propertyBag;
+        return result;
     }
 
 

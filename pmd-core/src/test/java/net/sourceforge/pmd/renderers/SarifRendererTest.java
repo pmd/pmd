@@ -40,8 +40,13 @@ public class SarifRendererTest extends AbstractRendererTest{
     @Override
     @Test
     public void testRendererMultiple() throws Exception {
+        // Setup
         Report rep = reportTwoViolations();
+
+        // Exercise
         String actual = ReportTest.render(getRenderer(), rep);
+
+        // Verify
         assertEquals(filter(getExpectedMultiple()), filter(actual));
     }
 
