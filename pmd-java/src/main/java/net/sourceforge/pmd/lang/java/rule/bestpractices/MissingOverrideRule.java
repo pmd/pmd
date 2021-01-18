@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -131,7 +132,8 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
             return new MethodLookup(result, overridden);
         } catch (final LinkageError e) {
-            // we may have an incomplete auxclasspath
+            // This is an incomplete classpath, report the missing class
+            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
             return null;
         }
     }
@@ -170,7 +172,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
                     }
 
                     if (cand.getName().equals(dm.getName()) && Arrays.equals(cand.getParameterTypes(), dm.getParameterTypes())) {
-                        // cand is overriden
+                        // cand is overridden
                         result.add(cand);
                         toRemove.add(cand);
                         // Several methods are eligible, because of return type covariance

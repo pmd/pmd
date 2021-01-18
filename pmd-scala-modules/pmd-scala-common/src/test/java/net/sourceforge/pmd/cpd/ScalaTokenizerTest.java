@@ -37,8 +37,18 @@ public class ScalaTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
+    public void testSuppressionComments() {
+        doTest("special_comments");
+    }
+
+    @Test
     public void tokenizeFailTest() {
         ex.expect(TokenMgrError.class);
         doTest("unlexable_sample");
+    }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
     }
 }

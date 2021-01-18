@@ -10,12 +10,17 @@ Rules that flag suboptimal code.
     </description>
 
     <rule name="AvoidDmlStatementsInLoops"
+          language="apex"
           since="5.5.0"
+          deprecated="true"
           message="Avoid DML statements inside loops"
           class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidDmlStatementsInLoopsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoiddmlstatementsinloops">
         <description>
 Avoid DML statements inside loops to avoid hitting the DML governor limit. Instead, try to batch up the data into a list and invoke your DML once on that list of data outside the loop.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule "apex/performance/OperationWithLimitsInLoop" %}.
         </description>
         <priority>3</priority>
         <example>
@@ -34,12 +39,17 @@ public class Something {
     </rule>
 
     <rule name="AvoidSoqlInLoops"
+          language="apex"
           since="5.5.0"
+          deprecated="true"
           message="Avoid Soql queries inside loops"
           class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoqlInLoopsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoidsoqlinloops">
         <description>
 New objects created within loops should be checked to see if they can created outside them and reused.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule "apex/performance/OperationWithLimitsInLoop" %}.
         </description>
         <priority>3</priority>
         <example>
@@ -56,12 +66,17 @@ public class Something {
     </rule>
 
     <rule name="AvoidSoslInLoops"
+          language="apex"
           since="6.0.0"
+          deprecated="true"
           message="Avoid Sosl queries inside loops"
           class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoslInLoopsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoidsoslinloops">
         <description>
 Sosl calls within loops can cause governor limit exceptions.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule "apex/performance/OperationWithLimitsInLoop" %}.
         </description>
         <priority>3</priority>
         <example>
@@ -77,4 +92,46 @@ public class Something {
         </example>
     </rule>
 
+    <rule name="OperationWithLimitsInLoop"
+          language="apex"
+          since="6.29.0"
+          message="Avoid operations in loops that may hit governor limits"
+          class="net.sourceforge.pmd.lang.apex.rule.performance.OperationWithLimitsInLoopRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#operationwithlimitsinloop">
+        <description>
+            Database class methods, DML operations, SOQL queries, or SOSL queries within loops can cause governor limit exceptions. Instead, try to batch up the data into a list and invoke the operation once on that list of data outside the loop.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Something {
+    public void databaseMethodInsideOfLoop(List<Account> accounts) {
+        for (Account a : accounts) {
+            Database.insert(a);
+        }
+    }
+
+    public void dmlInsideOfLoop() {
+        for (Integer i = 0; i < 151; i++) {
+            Account account;
+            // ...
+            insert account;
+        }
+    }
+
+    public void soqlInsideOfLoop() {
+        for (Integer i = 0; i < 10; i++) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+    }
+
+    public void soslInsideOfLoop() {
+        for (Integer i = 0; i < 10; i++) {
+            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
 </ruleset>

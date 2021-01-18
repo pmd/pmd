@@ -1,7 +1,11 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.matchers.string.shouldContain
-import io.kotlintest.shouldThrow
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.string.shouldContain
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.Assertions
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
@@ -15,8 +19,9 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper
 enum class JavaVersion : Comparable<JavaVersion> {
     J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11,
     J12,
-    J13, J13__PREVIEW,
-    J14, J14__PREVIEW;
+    J13,
+    J14, J14__PREVIEW,
+    J15, J15__PREVIEW;
 
     /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
     val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
@@ -56,7 +61,7 @@ enum class JavaVersion : Comparable<JavaVersion> {
  *
  * These are implicitly used by [matchExpr] and [matchStmt], which specify a matcher directly
  * on the strings, using their type parameter and the info in this test context to parse, find
- * the node, and execute the matcher in a single call. These may be used by [io.kotlintest.should],
+ * the node, and execute the matcher in a single call. These may be used by [io.kotest.matchers.should],
  * e.g.
  *
  *      parserTest("Test ShiftExpression operator") {
@@ -69,7 +74,7 @@ enum class JavaVersion : Comparable<JavaVersion> {
  * Import statements in the parsing contexts can be configured by adding types to [importedTypes],
  * or strings to [otherImports].
  *
- * Technically the utilities provided by this class may be used outside of [io.kotlintest.specs.FunSpec]s,
+ * Technically the utilities provided by this class may be used outside of [io.kotest.specs.FunSpec]s,
  * e.g. in regular JUnit tests, but I think we should strive to uniformize our testing style,
  * especially since KotlinTest defines so many.
  *

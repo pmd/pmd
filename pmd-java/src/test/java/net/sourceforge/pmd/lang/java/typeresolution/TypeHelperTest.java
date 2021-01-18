@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClas
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -94,7 +93,7 @@ public class TypeHelperTest extends BaseNonParserTest {
         Assert.assertNull(annotation.getType());
         Assert.assertTrue(TypeHelper.isA(annotation, "foo.Stuff"));
         Assert.assertFalse(TypeHelper.isA(annotation, "other.Stuff"));
-        // if the searched class name is not fully qualified, then the search should still be successfull
+        // if the searched class name is not fully qualified, then the search should still be successful
         Assert.assertTrue(TypeHelper.isA(annotation, "Stuff"));
     }
 
@@ -103,49 +102,6 @@ public class TypeHelperTest extends BaseNonParserTest {
                           TypeHelper.isA(node, type));
         Assert.assertTrue("TypeHelper::isA with string arg: " + type.getCanonicalName(),
                           TypeHelper.isA(node, type.getCanonicalName()));
-    }
-
-    private void assertIsExactlyA(TypeNode node, Class<?> type) {
-        Assert.assertTrue(TypeHelper.isExactlyA(node, type.getCanonicalName()));
-        assertIsA(node, type);
-    }
-
-
-    @Test
-    public void testNestedClass() {
-        Class<?> c = TypeHelper.loadClass(LOADER, "java.util.Map.Entry");
-        Assert.assertEquals(Map.Entry.class, c);
-    }
-
-
-    @Test
-    public void testPrimitiveArray() {
-        Class<?> c = TypeHelper.loadClass(LOADER, "int[ ]");
-        Assert.assertEquals(int[].class, c);
-    }
-
-    @Test
-    public void testNestedClassArray() {
-        Class<?> c = TypeHelper.loadClass(LOADER, "java.util.Map.Entry[ ]");
-        Assert.assertEquals(Map.Entry[].class, c);
-    }
-
-    @Test
-    public void testInvalidName() {
-        expect.expect(IllegalArgumentException.class);
-        TypeHelper.loadClass(LOADER, "java.util.Map ]");
-    }
-
-    @Test
-    public void testInvalidName2() {
-        expect.expect(IllegalArgumentException.class);
-        TypeHelper.loadClass(LOADER, "[]");
-    }
-
-    @Test
-    public void testNullName() {
-        expect.expect(NullPointerException.class);
-        TypeHelper.loadClass(LOADER, null);
     }
 
 }

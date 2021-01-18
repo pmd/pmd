@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,13 +18,20 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Provides a simple filter mechanism to avoid failing to parse an old ruleset,
  * which references rules, that have either been removed from PMD already or
  * renamed or moved to another ruleset.
  *
  * @see <a href="https://sourceforge.net/p/pmd/bugs/1360/">issue 1360</a>
+ *
+ * @deprecated Use {@link RuleSetLoader#enableCompatibility(boolean)} to enable this feature.
+ *  This implementation is internal API.
  */
+@InternalApi
+@Deprecated
 public class RuleSetFactoryCompatibility {
     private static final Logger LOG = Logger.getLogger(RuleSetFactoryCompatibility.class.getName());
 
@@ -138,9 +145,9 @@ public class RuleSetFactoryCompatibility {
      */
     String determineEncoding(byte[] bytes) {
         String firstBytes = new String(bytes, 0, bytes.length > 1024 ? 1024 : bytes.length,
-                Charset.forName("ISO-8859-1"));
+                StandardCharsets.ISO_8859_1);
         Matcher matcher = ENCODING_PATTERN.matcher(firstBytes);
-        String encoding = Charset.forName("UTF-8").name();
+        String encoding = StandardCharsets.UTF_8.name();
         if (matcher.find()) {
             encoding = matcher.group(1);
         }

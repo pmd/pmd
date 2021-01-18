@@ -23,7 +23,7 @@ folder: pmd/devdocs
 *   The name of the AST class should be “AST” + “whatever is the name of the node in JJT file”.
     *   For example, if JJT contains a node called “IfStatement”, there should be a class called “ASTIfStatement”
 *   Each AST class should have two constructors: one that takes an int id; and one that takes an instance of the parser, and an int id
-*   It’s a good idea to create a parent AST class for all AST classes of the language. This simplies rule creation later. *(see SimpleNode for Velocity and AbstractJavaNode for Java for example)*
+*   It’s a good idea to create a parent AST class for all AST classes of the language. This simplifies rule creation later. *(see SimpleNode for Velocity and AbstractJavaNode for Java for example)*
 *   Note: These AST node classes are generated usually once by javacc/jjtree and can then be modified as needed.
 
 ## 4.  Compile your parser (if using JJT)
@@ -43,7 +43,7 @@ folder: pmd/devdocs
 
 ## 7.  Create a rule violation factory
 *   Extend `AbstractRuleViolationFactory` *(see VmRuleViolationFactory for example)*
-*   The purpose of this class is to createa rule violation instance specific to your language
+*   The purpose of this class is to create a rule violation instance specific to your language
 
 ## 8.  Create a version handler
 *   Extend `AbstractLanguageVersionHandler` *(see VmHandler for example)*

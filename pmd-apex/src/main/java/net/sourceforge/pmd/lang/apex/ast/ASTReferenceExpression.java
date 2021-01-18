@@ -55,4 +55,8 @@ public class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression
         }
         return Collections.emptyList();
     }
+
+    public boolean isSafeNav() {
+        return node.isSafeNav();
+    }
 }

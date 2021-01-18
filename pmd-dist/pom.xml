@@ -8,7 +8,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.27.0-SNAPSHOT</version>
+        <version>6.31.0-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
@@ -80,9 +80,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.19.1</version>
                 <executions>
                     <execution>
+                        <id>failsafe-default</id>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
@@ -150,11 +150,6 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-visualforce</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-kotlin</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -196,11 +191,6 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-ruby</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-scala_2.13</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -261,10 +251,51 @@
                 </dependency>
                 <dependency>
                     <groupId>net.sourceforge.pmd</groupId>
+                    <artifactId>pmd-scala_2.13</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>net.sourceforge.pmd</groupId>
                     <artifactId>pmd-ui</artifactId>
                     <version>${pmd-designer.version}</version>
                 </dependency>
+                <dependency>
+                    <groupId>net.sourceforge.pmd</groupId>
+                    <artifactId>pmd-visualforce</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
             </dependencies>
+        </profile>
+        <profile>
+            <id>jdk7-compat-it</id>
+            <activation>
+                <property>
+                    <name>java7.home</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jdk7-compat-it</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <environmentVariables>
+                                        <JAVA_HOME>${java7.home}</JAVA_HOME>
+                                        <PATH>${java7.home}/bin:${env.PATH}</PATH>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

@@ -31,7 +31,7 @@ public class PLSQLRuleChainVisitor extends AbstractRuleChainVisitor {
     @Override
     protected void indexNodes(List<Node> nodes, RuleContext ctx) {
         LOGGER.entering(CLASS_NAME, "indexNodes");
-        PLSQLParserVisitor plsqlParserVistor = new PLSQLParserVisitorAdapter() {
+        PLSQLParserVisitor plsqlParserVisitor = new PLSQLParserVisitorAdapter() {
             // Perform a visitation of the AST to index nodes which need
             // visiting by type
             @Override
@@ -42,7 +42,7 @@ public class PLSQLRuleChainVisitor extends AbstractRuleChainVisitor {
         };
 
         for (int i = 0; i < nodes.size(); i++) {
-            plsqlParserVistor.visit((ASTInput) nodes.get(i), ctx);
+            plsqlParserVisitor.visit((ASTInput) nodes.get(i), ctx);
         }
         LOGGER.exiting(CLASS_NAME, "indexNodes");
     }

@@ -45,7 +45,7 @@ public class ASTStringLiteral extends AbstractVmNode {
     /**
      * Adjust all the line and column numbers that comprise a node so that they
      * are corrected for the string literals position within the template file.
-     * This is neccessary if an exception is thrown while processing the node so
+     * This is necessary if an exception is thrown while processing the node so
      * that the line and column position reported reflects the error position
      * within the template and not just relative to the error position within
      * the string literal.
@@ -55,7 +55,7 @@ public class ASTStringLiteral extends AbstractVmNode {
     @Deprecated
     public void adjTokenLineNums(final AbstractVmNode node) {
         Token tok = node.getFirstToken();
-        // Test against null is probably not neccessary, but just being safe
+        // Test against null is probably not necessary, but just being safe
         while (tok != null && tok != node.getLastToken()) {
             // If tok is on the first line, then the actual column is
             // offset by the template column.

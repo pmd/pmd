@@ -23,12 +23,17 @@ public class RubyTokenizerTest extends CpdTextComparisonTest {
 
     @Override
     public Tokenizer newTokenizer(Properties properties) {
-        return new RubyTokenizer();
+        return new RubyLanguage().getTokenizer();
     }
 
 
     @Test
     public void testSimple() {
         doTest("server");
+    }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
     }
 }

@@ -10,7 +10,10 @@ import java.util.ArrayList;
  * Tokenizer implementation for Fortran
  *
  * @author Romain PELISSE - romain.pelisse@atosorigin.com
+ *
+ * @deprecated Was replaced by an {@link AnyTokenizer}. Use {@link FortranLanguage#getTokenizer()} anyway
  */
+@Deprecated
 public class FortranTokenizer extends AbstractTokenizer implements Tokenizer {
 
     /**

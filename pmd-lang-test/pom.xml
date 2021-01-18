@@ -12,12 +12,21 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.27.0-SNAPSHOT</version>
+        <version>6.31.0-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
     <build>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+            </testResource>
+            <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
+            <testResource>
+                <directory>${project.basedir}/src/main/kotlin</directory>
+            </testResource>
+        </testResources>
         <plugins>
             <!-- The kotlin plugin has to run before the java plugin-->
             <plugin>
@@ -53,29 +62,8 @@
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <!--
-                              once https://github.com/Kotlin/dokka/issues/294 is fixed, use goal javadocJar instead
-                              and remove the additional jar plugin execution
-                             -->
-                            <goal>dokka</goal>
+                            <goal>javadocJar</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>kotlin-javadoc</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <classesDirectory>${project.build.directory}/dokka/pmd-lang-test</classesDirectory>
-                            <classifier>javadoc</classifier>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -105,13 +93,14 @@
              of the pmd-lang-test module
         -->
         <dependency>
-            <groupId>io.kotlintest</groupId>
-            <artifactId>kotlintest-assertions</artifactId>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-core-jvm</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
+            <!-- Contains stuff like FunSpec, etc -->
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-runner-junit5-jvm</artifactId>
             <scope>compile</scope>
         </dependency>
 

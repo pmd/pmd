@@ -81,4 +81,11 @@ public class PMDCommandLineInterfaceTest {
         PMDCommandLineInterface.setStatusCodeOrExit(0);
         Assert.assertEquals(System.getProperty(PMDCommandLineInterface.STATUS_CODE_PROPERTY), "0");
     }
+
+    @Test
+    public void testBuildUsageText() {
+        // no exception..
+        Assert.assertNotNull(PMDCommandLineInterface.buildUsageText());
+    }
+
 }

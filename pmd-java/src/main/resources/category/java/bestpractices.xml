@@ -35,6 +35,7 @@ public abstract class Foo {
     </rule>
 
     <rule name="AccessorClassGeneration"
+          language="java"
           since="1.04"
           maximumLanguageVersion="10"
           message="Avoid instantiation through private constructors from outside of the constructor's class."
@@ -70,7 +71,7 @@ public class Outer {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AccessorMethodGenerationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#accessormethodgeneration">
         <description>
-When accessing a private field / method from another class, the Java compiler will generate a accessor methods
+When accessing private fields / methods from another class, the Java compiler will generate accessor methods
 with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
 be avoided by changing the visibility of the field / method from private to package-private.
         </description>
@@ -96,6 +97,7 @@ public class OuterClass {
     </rule>
 
     <rule name="ArrayIsStoredDirectly"
+          language="java"
           since="2.2"
           message="The user-supplied array ''{0}'' is stored directly."
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.ArrayIsStoredDirectlyRule"
@@ -209,7 +211,42 @@ class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidReassigningCatchVariables"
+          language="java"
+          since="6.27.0"
+          message="Avoid reassigning caught exception ''{0}''"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningCatchVariablesRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidreassigningcatchvariables">
+        <description>
+Reassigning exception variables caught in a catch statement should be avoided because of:
+
+1) If it is needed, multi catch can be easily added and code will still compile.
+
+2) Following the principle of least surprise we want to make sure that a variable caught in a catch statement
+is always the one thrown in a try block.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+public class Foo {
+    public void foo() {
+        try {
+            // do something
+        } catch (Exception e) {
+            e = new NullPointerException(); // not recommended
+        }
+
+        try {
+            // do something
+        } catch (MyException | ServerException e) {
+            e = new RuntimeException(); // won't compile
+        }
+    }
+}
+        ]]></example>
+    </rule>
+
     <rule name="AvoidReassigningLoopVariables"
+          language="java"
           since="6.11.0"
           message="Avoid reassigning the loop control variable ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningLoopVariablesRule"
@@ -258,6 +295,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidReassigningParameters"
+          language="java"
           since="1.0"
           message="Avoid reassigning parameters such as ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningParametersRule"
@@ -308,6 +346,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidUsingHardCodedIP"
+          language="java"
           since="4.1"
           message="Do not hard code the IP address ${variableName}"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidUsingHardCodedIPRule"
@@ -751,6 +790,7 @@ public class MyTest {
     </rule>
 
     <rule name="JUnitAssertionsShouldIncludeMessage"
+          language="java"
           since="1.04"
           message="JUnit assertions should include a message"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitAssertionsShouldIncludeMessageRule"
@@ -831,6 +871,7 @@ public class MyTestCase extends TestCase {
     </rule>
 
     <rule name="JUnitTestsShouldIncludeAssert"
+          language="java"
           since="2.0"
           message="JUnit tests should include assert() or fail()"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestsShouldIncludeAssertRule"
@@ -855,6 +896,7 @@ public class Foo extends TestCase {
     </rule>
 
     <rule name="JUnitUseExpected"
+          language="java"
           since="4.0"
           message="In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitUseExpectedRule"
@@ -920,6 +962,7 @@ class Foo {
     </rule>
 
     <rule name="LooseCoupling"
+          language="java"
           since="0.7"
           message="Avoid using implementation types like ''{0}''; use the interface instead"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.LooseCouplingRule"
@@ -956,6 +999,7 @@ public class Bar {
     </rule>
 
     <rule name="MethodReturnsInternalArray"
+          language="java"
           since="2.2"
           message="Returning ''{0}'' may expose an internal array."
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.MethodReturnsInternalArrayRule"
@@ -980,6 +1024,7 @@ public class SecureSystem {
 
 
     <rule name="MissingOverride"
+          language="java"
           since="6.2.0"
           minimumLanguageVersion="1.5"
           message="The method ''{0}'' is missing an @Override annotation."
@@ -1099,6 +1144,7 @@ class Foo {
     </rule>
 
     <rule name="PreserveStackTrace"
+          language="java"
           since="3.7"
           message="New exception is thrown in catch block, original stack trace may be lost"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.PreserveStackTraceRule"
@@ -1321,6 +1367,16 @@ class Foo{
             out by default, in case you already have enabled those rules, but may be enabled with the property
             `reportUnusedVariables`. Variables whose name starts with `ignored` are filtered out, as
             is standard practice for exceptions.
+
+            Limitations:
+            * The rule currently cannot know which method calls throw exceptions, or which exceptions they throw.
+            In the body of a try block, every method or constructor call is assumed to throw.  This may cause false-negatives.
+            The only other language construct that is assumed to throw is the `throw` statement, in particular,
+            things like `assert` statements, or NullPointerExceptions on dereference are ignored.
+            * The rule cannot resolve assignments across constructors, when they're called with the special
+            `this(...)` syntax. This may cause false-negatives.
+
+            Both of those limitations may be partly relaxed in PMD 7.
         </description>
         <priority>3</priority>
         <example>
@@ -1438,6 +1494,7 @@ public class Foo {
     </rule>
 
     <rule name="UnusedImports"
+          language="java"
           since="1.0"
           message="Avoid unused imports such as ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedImportsRule"
@@ -1726,6 +1783,7 @@ public class MyTestCase extends TestCase {
     </rule>
 
     <rule name="UseCollectionIsEmpty"
+          language="java"
           since="3.9"
           message="Substitute calls to size() == 0 (or size() != 0, size() &gt; 0, size() &lt; 1) with calls to isEmpty()"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.UseCollectionIsEmptyRule"

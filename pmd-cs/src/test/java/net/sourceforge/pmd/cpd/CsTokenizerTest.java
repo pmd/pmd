@@ -85,13 +85,38 @@ public class CsTokenizerTest extends CpdTextComparisonTest {
         doTest("usingDirectives", "_ignored", ignoreUsings());
     }
 
-    private Properties ignoreUsings() {
-        return properties(true);
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
     }
 
-    private Properties properties(boolean ignoreUsings) {
+    @Test
+    public void testLongListsOfNumbersAreNotIgnored() {
+        doTest("listOfNumbers");
+    }
+
+    @Test
+    public void testLongListsOfNumbersAreIgnored() {
+        doTest("listOfNumbers", "_ignored", skipLiteralSequences());
+    }
+
+    @Test
+    public void testCSharp7And8Additions() {
+        doTest("csharp7And8Additions");
+    }
+
+    private Properties ignoreUsings() {
+        return properties(true, false);
+    }
+
+    private Properties skipLiteralSequences() {
+        return properties(false, true);
+    }
+
+    private Properties properties(boolean ignoreUsings, boolean ignoreLiteralSequences) {
         Properties properties = new Properties();
         properties.setProperty(Tokenizer.IGNORE_USINGS, Boolean.toString(ignoreUsings));
+        properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, Boolean.toString(ignoreLiteralSequences));
         return properties;
     }
 }

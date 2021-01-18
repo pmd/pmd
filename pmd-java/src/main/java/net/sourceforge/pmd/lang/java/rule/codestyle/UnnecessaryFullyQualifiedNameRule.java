@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,6 +34,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
+    private static final Logger LOG = Logger.getLogger(UnnecessaryFullyQualifiedNameRule.class.getName());
 
     private List<ASTImportDeclaration> imports = new ArrayList<>();
     private String currentPackage;
@@ -51,7 +54,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTPackageDeclaration node, Object data) {
-        currentPackage = node.getPackageNameImage();
+        currentPackage = node.getName();
         return data;
     }
 
@@ -335,10 +338,15 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                         // We need type resolution to make sure there is a
                         // conflicting method
                         if (importDeclaration.getType() != null) {
-                            for (final Method m : importDeclaration.getType().getMethods()) {
-                                if (m.getName().equals(methodCalled)) {
-                                    return true;
+                            try {
+                                for (final Method m : importDeclaration.getType().getMethods()) {
+                                    if (m.getName().equals(methodCalled)) {
+                                        return true;
+                                    }
                                 }
+                            } catch (LinkageError e) {
+                                // This is an incomplete classpath, report the missing class
+                                LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
                             }
                         }
                     } else if (importDeclaration.getImportedName().endsWith(methodCalled)) {

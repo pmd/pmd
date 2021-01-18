@@ -31,7 +31,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
@@ -56,7 +55,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node.getNameDeclaration() == null
-                || !TypeHelper.isExactlyAny(node.getNameDeclaration(), StringBuffer.class, StringBuilder.class)) {
+                || !ConsecutiveLiteralAppendsRule.isStringBuilderOrBuffer(node)) {
             return data;
         }
         Node rootNode = node;

@@ -1,4 +1,12 @@
 /**
+ * Remove support for Java 13 preview language features.
+ * Promote text blocks as a permanent language features with Java 15.
+ * Support Pattern Matching for instanceof with Java 15 Preview.
+ * Support Records with Java 15 Preview.
+ * Support Local Records with Java 15 Preview.
+ * Support Sealed Classes with Java 15 Preview.
+ * Andreas Dangel 08/2020
+ *====================================================================
  * Add support for record types introduced as a preview language
  * feature with Java 14. See JEP 359.
  * Andreas Dangel 02/2020
@@ -231,9 +239,11 @@ options {
 PARSER_BEGIN(JavaParser)
 package net.sourceforge.pmd.lang.java.ast;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 public class JavaParser {
 
@@ -368,8 +378,8 @@ public class JavaParser {
   }
 
   private void checkforBadInstanceOfPattern() {
-    if (jdkVersion != 14 || !preview) {
-      throwParseException("Cannot use type test patterns in instanceof when running in JDK other than 14-preview");
+    if (jdkVersion != 14 && jdkVersion != 15 || !preview) {
+      throwParseException("Pattern Matching for instanceof is only supported with Java 14 Preview and Java 15 Preview");
     }
   }
 
@@ -413,13 +423,22 @@ public class JavaParser {
     if (jdkVersion >= 10 && "var".equals(image)) {
       throwParseException("With JDK 10, 'var' is a restricted local variable type and cannot be used for type declarations!");
     }
+    if (jdkVersion >= 14 && "yield".equals(image)) {
+      throwParseException("With JDK 14, 'yield' is a restricted local variable type and cannot be used for type declarations!");
+    }
     if (jdkVersion >= 14 && preview && "record".equals(image)) {
-      throwParseException("With JDK 14 Preview, 'record' is a restricted identifier and cannot be used for type declarations!");
+      throwParseException("With JDK 14 Preview and JDK 15 Preview, 'record' is a restricted identifier and cannot be used for type declarations!");
+    }
+    if (jdkVersion >= 15 && preview && "sealed".equals(image)) {
+      throwParseException("With JDK 15 Preview, 'sealed' is a restricted identifier and cannot be used for type declarations!");
+    }
+    if (jdkVersion >= 15 && preview && "permits".equals(image)) {
+      throwParseException("With JDK 15 Preview, 'permits' is a restricted identifier and cannot be used for type declarations!");
     }
   }
   private void checkForMultipleCaseLabels() {
-    if (!isJava13PreviewOr14()) {
-      throwParseException("Multiple case labels in switch statements are only supported with Java 13 Preview, or Java >= 14");
+    if (jdkVersion < 14) {
+      throwParseException("Multiple case labels in switch statements are only supported with Java >= 14");
     }
   }
   /**
@@ -432,45 +451,60 @@ public class JavaParser {
    */
   private boolean inSwitchLabel = false;
 
-  private boolean isJava13PreviewOr14() {
-      return jdkVersion >= 14 || jdkVersion >= 13 && preview;
-  }
-
   private void checkForSwitchRules() {
-    if (!isJava13PreviewOr14()) {
-      throwParseException("Switch rules in switch statements are only supported with Java 13 Preview, or Java >= 14");
+    if (jdkVersion < 14) {
+      throwParseException("Switch rules in switch statements are only supported with Java >= 14");
     }
   }
   private void checkForSwitchExpression() {
-    if (!isJava13PreviewOr14()) {
-      throwParseException("Switch expressions are only supported with Java 13 Preview, or Java >= 14");
+    if (jdkVersion < 14) {
+      throwParseException("Switch expressions are only supported with Java >= 14");
     }
   }
 
   private void checkForYieldStatement() {
-    if (!isJava13PreviewOr14()) {
-      throwParseException("Yield statements are only supported with Java 13 Preview or Java >= 14");
+    if (jdkVersion < 14) {
+      throwParseException("Yield statements are only supported with Java >= 14");
     }
   }
 
   private void checkForTextBlockLiteral() {
-    if (jdkVersion != 13 && jdkVersion != 14 || !preview) {
-      throwParseException("Text block literals are only supported with Java 13 Preview or Java 14 Preview");
+    if (jdkVersion < 15 && !preview) {
+      throwParseException("Text block literals are only supported with Java 14 Preview and Java >= 15");
     }
   }
 
   private void checkForNewStringSpaceEscape(String s) {
-    if ((jdkVersion != 14 || !preview) && s.contains("\\s") && !s.contains("\\\\s")) {
-      throwParseException("The escape sequence \"\\s\" is only supported with Java 14 Preview");
+    if ((jdkVersion < 15 && !preview) && s.contains("\\s") && !s.contains("\\\\s")) {
+      throwParseException("The escape sequence \"\\s\" is only supported with Java 14 Preview and Java >= 15");
     }
   }
 
   private void checkForRecordType() {
-    if (jdkVersion != 14 || !preview) {
-      throwParseException("Records are only supported with Java 14 Preview");
+    if (!isRecordTypeSupported()) {
+      throwParseException("Records are only supported with Java 14 Preview and Java 15 Preview");
     }
   }
 
+  private void checkForLocalInterfaceOrEnumType() {
+      if (!isRecordTypeSupported()) {
+          throwParseException("Local interfaces and enums are only supported with Java 14 Preview and Java 15 Preview");
+      }
+  }
+
+  private boolean isRecordTypeSupported() {
+    return (jdkVersion == 14 || jdkVersion == 15) && preview;
+  }
+
+  private boolean isSealedClassSupported() {
+      return jdkVersion == 15 && preview;
+  }
+
+  private void checkForSealedClassUsage() {
+     if (!isSealedClassSupported()) {
+        throwParseException("Sealed Classes are only supported with Java 15 Preview");
+     }
+  }
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -497,9 +531,65 @@ public class JavaParser {
   /**
    * Semantic lookahead to check if the next identifier is a
    * specific restricted keyword.
+   *
+   * <p>Restricted keywords are:
+   * var, yield, record, sealed, permits, "non" + "-" + "sealed"
+   *
+   * <p>enum and assert is used like restricted keywords, as they were not keywords
+   * in the early java versions.
    */
-  private boolean isKeyword(String keyword) {
-    return getToken(1).kind == IDENTIFIER && getToken(1).image.equals(keyword);
+  private boolean isKeyword(String image) {
+    return isKeyword(1, image);
+  }
+
+  private boolean isKeyword(int index, String image) {
+      Token token = getToken(index);
+      return token.kind == IDENTIFIER && token.image.equals(image);
+  }
+
+  private boolean isToken(int index, int kind) {
+      return getToken(index).kind == kind;
+  }
+
+  /**
+   * Semantic lookahead which matches "non-sealed".
+   *
+   * <p>"non-sealed" cannot be a token, for several reasons:
+   * It is only a keyword with java15 preview+, it consists actually
+   * of several separate tokens, which are valid on their own.
+   */
+  private boolean isNonSealedModifier() {
+      if (isKeyword(1, "non") && isToken(2, MINUS) && isKeyword(3, "sealed")) {
+          Token nonToken = getToken(1);
+          Token minusToken = getToken(2);
+          Token sealedToken = getToken(3);
+          return nonToken.endColumn + 1 == minusToken.beginColumn
+            && minusToken.endColumn + 1 == sealedToken.beginColumn;
+      }
+      return false;
+  }
+
+  private boolean classModifierLookahead() {
+      Token next = getToken(1);
+      return next.kind == AT
+        || next.kind == PUBLIC
+        || next.kind == PROTECTED
+        || next.kind == PRIVATE
+        || next.kind == ABSTRACT
+        || next.kind == STATIC
+        || next.kind == FINAL
+        || next.kind == STRICTFP
+        || isSealedClassSupported() && isKeyword("sealed")
+        || isSealedClassSupported() && isNonSealedModifier();
+  }
+
+  private boolean localTypeDeclLookahead() {
+      Token next = getToken(1);
+      return next.kind == CLASS
+        || isRecordTypeSupported() && next.kind == INTERFACE
+        || isRecordTypeSupported() && next.kind == AT && isToken(2, INTERFACE)
+        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("enum")
+        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("record");
   }
 
   /**
@@ -509,7 +599,7 @@ public class JavaParser {
   private boolean inSwitchExprBlock = false;
 
   private boolean isYieldStart() {
-    return inSwitchExprBlock && isJava13PreviewOr14()
+    return inSwitchExprBlock && jdkVersion >= 14
     && isKeyword("yield")
     && mayStartExprAfterYield(2);
   }
@@ -1051,6 +1141,8 @@ int Modifiers() #void:
   | "volatile" { modifiers |= AccessNode.VOLATILE; }
   | "strictfp" { modifiers |= AccessNode.STRICTFP; }
   | "default" { modifiers |= AccessNode.DEFAULT; checkForBadDefaultImplementationUsage(); }
+  | LOOKAHEAD({isKeyword("sealed")}) <IDENTIFIER> { modifiers |= AccessNode.SEALED; checkForSealedClassUsage(); }
+  | LOOKAHEAD({isNonSealedModifier()}) <IDENTIFIER> <MINUS> <IDENTIFIER> { modifiers |= AccessNode.NON_SEALED; checkForSealedClassUsage(); }
   | Annotation()
   )
  )*
@@ -1092,6 +1184,7 @@ void ClassOrInterfaceDeclaration(int modifiers):
   [ TypeParameters() ]
   [ ExtendsList() ]
   [ ImplementsList() ]
+  [ LOOKAHEAD({isKeyword("permits")}) PermittedSubclasses() ]
   ClassOrInterfaceBody()
   { inInterface = inInterfaceOld; } // always restore the flag after leaving the node
 }
@@ -1110,6 +1203,21 @@ void ImplementsList():
 {
    "implements" (TypeAnnotation())* ClassOrInterfaceType()
    ( "," (TypeAnnotation())* ClassOrInterfaceType() )*
+}
+
+void PermittedSubclasses() #PermitsList:
+{
+    Token t;
+    checkForSealedClassUsage();
+}
+{
+    t = <IDENTIFIER> {
+        if (!"permits".equals(t.image)) {
+          throw new ParseException("ERROR: expecting permits");
+        }
+    }
+    (TypeAnnotation())* ClassOrInterfaceType()
+    ( "," (TypeAnnotation())* ClassOrInterfaceType() )*
 }
 
 void EnumDeclaration(int modifiers):
@@ -1643,12 +1751,24 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 /*
  * This is really ugly... we are repeating the CastExpression lookahead and full expression...
  * If we don't the lookahead within CastExpression is ignored, and it simply looks for the expression,
- * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwhise)
+ * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwise)
 */
 | LOOKAHEAD("(" (Annotation())* PrimitiveType() ")") CastExpression()
-| LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExpressionNotPlusMinus()) CastExpression()
-| PostfixExpression()
+| LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExprNotPmStart()) CastExpression()
+| PostfixExpression() // this may be a parenthesized expr, which is why we have lookaheads
 | SwitchExpression()
+}
+
+
+private void UnaryExprNotPmStart() #void:
+{}
+{
+   //  Condensed FIRST set of UnaryExpressionNotPlusMinus
+   //  Avoid looking ahead for a whole UnaryExpressionNotPlusMinus, but just for a token
+
+   "~" | "!" | "(" | "switch" | "new" | "this" | "super" | Literal() | "@"
+   | <IDENTIFIER>
+   | "void" | PrimitiveType()
 }
 
 void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
@@ -1874,36 +1994,66 @@ void Block() :
 }
 
 void BlockStatement():
-{}
+{int mods = 0;}
 {
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
 | LOOKAHEAD( { isYieldStart() } ) YieldStatement()
-|
-  LOOKAHEAD(( "final" | Annotation() )* Type() <IDENTIFIER>)
-  LocalVariableDeclaration() ";"
+| LOOKAHEAD( "@" | "final" )
+    // this eagerly parses all modifiers and annotations. After that, either a local type declaration
+    // or a local variable declaration follows.
+    // This allows more modifiers for local variables than actually allowed
+    // and the annotations for local variables need to be moved in the AST down again.
+    mods=Modifiers()
+    (
+        LOOKAHEAD({localTypeDeclLookahead()}) LocalTypeDecl(mods)
+        |
+        {
+            List<Node> annotationsAndChildren = new ArrayList<Node>();
+            if (jjtree.nodeArity() > 0) { // peekNode would throw if the stack is empty
+                while (jjtree.peekNode() instanceof ASTAnnotation) {
+                  annotationsAndChildren.add(jjtree.popNode());
+                }
+            }
+        }
+        LocalVariableDeclaration()
+        {
+            ASTLocalVariableDeclaration localVarDecl = (ASTLocalVariableDeclaration) jjtree.peekNode();
+            if ((mods & AccessNode.FINAL) == AccessNode.FINAL) {
+                localVarDecl.setFinal(true);
+            }
+            if (!annotationsAndChildren.isEmpty()) {
+                Collections.reverse(annotationsAndChildren);
+                for (int i = 0; i < localVarDecl.getNumChildren(); i++) {
+                    annotationsAndChildren.add(localVarDecl.getChild(i));
+                }
+                for (int i = 0; i < annotationsAndChildren.size(); i++) {
+                    Node child = annotationsAndChildren.get(i);
+                    child.jjtSetParent(localVarDecl);
+                    localVarDecl.jjtAddChild(child, i);
+                }
+            }
+        }
+        ";"
+    )
+| LOOKAHEAD({classModifierLookahead() || localTypeDeclLookahead()})
+    mods=Modifiers()
+    LocalTypeDecl(mods)
+| LOOKAHEAD(Type() <IDENTIFIER>)
+    LocalVariableDeclaration() ";"
 |
   Statement()
-|
-  // we don't need to lookahead further here
-  // the ambiguity between start of local class and local variable decl
-  // is already handled in the lookahead guarding LocalVariableDeclaration above.
-  LocalClassDecl()
 }
 
-void LocalClassDecl() #void:
-{int mods = 0;}
+void LocalTypeDecl(int mods) #void:
+{}
 {
-    // this preserves the modifiers of the local class.
-    // it allows for modifiers that are forbidden for local classes,
-    // but anyway we are *not* checking modifiers for incompatibilities
-    // anywhere else in this grammar (and indeed the production Modifiers
-    // accepts any modifier explicitly for the purpose of forgiving modifier errors,
-    // and reporting them later if needed --see its documentation).
-
-    // In particular, it unfortunately allows local class declarations to start
-    // with a "default" modifier, which introduces an ambiguity with default
-    // switch labels. This is guarded by a custom lookahead around SwitchLabel
-    mods=Modifiers() ClassOrInterfaceDeclaration(mods)
+    (
+          LOOKAHEAD(<CLASS>) ClassOrInterfaceDeclaration(mods)
+        | LOOKAHEAD(<INTERFACE>) ClassOrInterfaceDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
+        | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
+        | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
+        | AnnotationTypeDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
+    )
 }
 
 /*

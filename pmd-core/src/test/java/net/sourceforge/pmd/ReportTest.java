@@ -9,16 +9,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
@@ -200,22 +195,5 @@ public class ReportTest implements ThreadSafeReportListener {
         renderer.renderFileReport(report);
         renderer.end();
         return writer.toString();
-    }
-
-    public static String renderTempFile(Renderer renderer, Report report, Charset expectedCharset) throws IOException {
-        Path tempFile = Files.createTempFile("pmd-report-test", null);
-        String absolutePath = tempFile.toAbsolutePath().toString();
-
-        renderer.setReportFile(absolutePath);
-        renderer.start();
-        renderer.renderFileReport(report);
-        renderer.end();
-        renderer.flush();
-
-        try (FileInputStream input = new FileInputStream(absolutePath)) {
-            return IOUtils.toString(input, expectedCharset);
-        } finally {
-            Files.delete(tempFile);
-        }
     }
 }

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
@@ -17,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * Avoid instantiating Boolean objects; you can reference Boolean.TRUE,
@@ -67,8 +66,8 @@ public class BooleanInstantiationRule extends AbstractJavaRule {
                 return super.visit(node, data);
             }
 
-            Node n1 = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
-            if (TypeHelper.isA((ASTClassOrInterfaceType) n1, Boolean.class)) {
+            ASTClassOrInterfaceType n1 = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
+            if (TypeTestUtil.isA(Boolean.class, n1)) {
                 super.addViolation(data, node);
                 return data;
             }

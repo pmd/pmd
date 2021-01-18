@@ -4,11 +4,20 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.WeakHashMap;
 
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDmlUndeleteStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
+import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -21,45 +30,103 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
  */
 public class ApexSharingViolationsRule extends AbstractApexRule {
 
+    /**
+     * Keep track of previously reported violations to avoid duplicates.
+     */
     private WeakHashMap<ApexNode<?>, Object> localCacheOfReportedNodes = new WeakHashMap<>();
 
     public ApexSharingViolationsRule() {
         setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+        addRuleChainVisit(ASTDmlDeleteStatement.class);
+        addRuleChainVisit(ASTDmlInsertStatement.class);
+        addRuleChainVisit(ASTDmlMergeStatement.class);
+        addRuleChainVisit(ASTDmlUndeleteStatement.class);
+        addRuleChainVisit(ASTDmlUpdateStatement.class);
+        addRuleChainVisit(ASTDmlUpsertStatement.class);
+        addRuleChainVisit(ASTMethodCallExpression.class);
+        addRuleChainVisit(ASTSoqlExpression.class);
+        addRuleChainVisit(ASTSoslExpression.class);
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
-
-        if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
-            return data; // stops all the rules
-        }
-
-        if (!Helper.isTestMethodOrClass(node)) {
-            boolean sharingFound = isSharingPresent(node);
-            checkForSharingDeclaration(node, data, sharingFound);
-            checkForDatabaseMethods(node, data, sharingFound);
-        }
-
+    public void start(RuleContext ctx) {
+        super.start(ctx);
         localCacheOfReportedNodes.clear();
+    }
+
+    @Override
+    public Object visit(ASTSoqlExpression node, Object data) {
+        checkForViolation(node, data);
         return data;
     }
 
-    /**
-     * Check if class contains any Database.query / Database.insert [ Database.*
-     * ] methods
-     *
-     * @param node
-     * @param data
-     */
-    private void checkForDatabaseMethods(ASTUserClass node, Object data, boolean sharingFound) {
-        List<ASTMethodCallExpression> calls = node.findDescendantsOfType(ASTMethodCallExpression.class);
-        for (ASTMethodCallExpression call : calls) {
-            if (Helper.isMethodName(call, "Database", Helper.ANY_METHOD)) {
-                if (!sharingFound) {
-                    reportViolation(node, data);
-                }
+    @Override
+    public Object visit(ASTSoslExpression node, Object data) {
+        checkForViolation(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTDmlUpsertStatement node, Object data) {
+        checkForViolation(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTDmlUpdateStatement node, Object data) {
+        checkForViolation(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTDmlUndeleteStatement node, Object data) {
+        checkForViolation(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTDmlMergeStatement node, Object data) {
+        checkForViolation(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTDmlInsertStatement node, Object data) {
+        checkForViolation(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTDmlDeleteStatement node, Object data) {
+        checkForViolation(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTMethodCallExpression node, Object data) {
+        if (Helper.isAnyDatabaseMethodCall(node)) {
+            checkForViolation(node, data);
+        }
+
+        return data;
+    }
+
+    private void checkForViolation(ApexNode<?> node, Object data) {
+        // The closest ASTUserClass class in the tree hierarchy is the node that requires the sharing declaration
+        ASTUserClass sharingDeclarationClass = node.getFirstParentOfType(ASTUserClass.class);
+
+        // This is null in the case of triggers
+        if (sharingDeclarationClass != null) {
+            // Apex allows a single level of class nesting. Check to see if sharingDeclarationClass has an outer class
+            ASTUserClass outerClass = sharingDeclarationClass.getFirstParentOfType(ASTUserClass.class);
+            // The test annotation needs to be on the outermost class
+            ASTUserClass testAnnotationClass = Optional.ofNullable(outerClass).orElse(sharingDeclarationClass);
+
+            if (!Helper.isTestMethodOrClass(testAnnotationClass) && !Helper.isSystemLevelClass(sharingDeclarationClass) && !isSharingPresent(sharingDeclarationClass)) {
+                // The violation is reported on the class, not the node that performs data access
+                reportViolation(sharingDeclarationClass, data);
             }
         }
     }
@@ -74,19 +141,6 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
             if (localCacheOfReportedNodes.put(node, data) == null) {
                 addViolation(data, node);
             }
-        }
-    }
-
-    /**
-     * Check if class has no sharing declared
-     *
-     * @param node
-     * @param data
-     */
-    private void checkForSharingDeclaration(ApexNode<?> node, Object data, boolean sharingFound) {
-        final boolean foundAnyDMLorSOQL = Helper.foundAnyDML(node) || Helper.foundAnySOQLorSOSL(node);
-        if (!sharingFound && !Helper.isTestMethodOrClass(node) && foundAnyDMLorSOQL) {
-            reportViolation(node, data);
         }
     }
 

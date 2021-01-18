@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
@@ -37,6 +36,114 @@ public final class StringUtil {
           + "\\x19|\\x1a|\\x1b|\\x1c|\\x1d|\\x1e|\\x1f");
 
     private StringUtil() {
+    }
+
+
+    /**
+     * Returns the (1-based) line number of the character at the given index.
+     * Line terminators (\r, \n) are assumed to be on the line they *end*
+     * and not on the following line. The method also accepts that the given
+     * offset be the length of the string (in which case there's no targeted character),
+     * to get the line number of a character that would be inserted at
+     * the end of the string.
+     *
+     * <pre>
+     *
+     *     lineNumberAt("a\nb", 0)  = 1
+     *     lineNumberAt("a\nb", 1)  = 1
+     *     lineNumberAt("a\nb", 2)  = 2
+     *     lineNumberAt("a\nb", 3)  = 2  // charAt(3) doesn't exist though
+     *     lineNumberAt("a\nb", 4)  = -1
+     *
+     *     lineNumberAt("", 0) = 1
+     *     lineNumberAt("", _) = -1
+     *
+     * </pre>
+     *
+     * @param charSeq         Char sequence
+     * @param offsetInclusive Offset in the sequence of the targeted character.
+     *                        May be the length of the sequence.
+     * @return -1 if the offset is not in {@code [0, length]}, otherwise
+     * the line number
+     */
+    public static int lineNumberAt(CharSequence charSeq, int offsetInclusive) {
+        int len = charSeq.length();
+
+        if (offsetInclusive > len || offsetInclusive < 0) {
+            return -1;
+        }
+
+        int l = 1;
+        for (int curOffset = 0; curOffset < offsetInclusive; curOffset++) {
+            // if we end up outside the string, then the line is undefined
+            if (curOffset >= len) {
+                return -1;
+            }
+
+            char c = charSeq.charAt(curOffset);
+            if (c == '\n') {
+                l++;
+            } else if (c == '\r') {
+                if (curOffset + 1 < len && charSeq.charAt(curOffset + 1) == '\n') {
+                    if (curOffset == offsetInclusive - 1) {
+                        // the CR is assumed to be on the same line as the LF
+                        return l;
+                    }
+                    curOffset++; // SUPPRESS CHECKSTYLE jump to after the \n
+                }
+                l++;
+            }
+        }
+        return l;
+    }
+
+    /**
+     * Returns the (1-based) column number of the character at the given index.
+     * Line terminators are by convention taken to be part of the line they end,
+     * and not the new line they start. Each character has width 1 (including {@code \t}).
+     * The method also accepts that the given offset be the length of the
+     * string (in which case there's no targeted character), to get the column
+     * number of a character that would be inserted at the end of the string.
+     *
+     * <pre>
+     *
+     *     columnNumberAt("a\nb", 0)  = 1
+     *     columnNumberAt("a\nb", 1)  = 2
+     *     columnNumberAt("a\nb", 2)  = 1
+     *     columnNumberAt("a\nb", 3)  = 2   // charAt(3) doesn't exist though
+     *     columnNumberAt("a\nb", 4)  = -1
+     *
+     *     columnNumberAt("a\r\n", 2)  = 3
+     *
+     * </pre>
+     *
+     * @param charSeq         Char sequence
+     * @param offsetInclusive Offset in the sequence
+     * @return -1 if the offset is not in {@code [0, length]}, otherwise
+     * the column number
+     */
+    public static int columnNumberAt(CharSequence charSeq, final int offsetInclusive) {
+        if (offsetInclusive == charSeq.length()) {
+            return charSeq.length() == 0 ? 1 : 1 + columnNumberAt(charSeq, offsetInclusive - 1);
+        } else if (offsetInclusive > charSeq.length() || offsetInclusive < 0) {
+            return -1;
+        }
+
+        int col = 0;
+        char next = 0;
+        for (int i = offsetInclusive; i >= 0; i--) {
+            char c = charSeq.charAt(i);
+
+            if (offsetInclusive != i) {
+                if (c == '\n' || c == '\r' && next != '\n') {
+                    return col;
+                }
+            }
+
+            col++;
+            next = c;
+        }
+        return col;
     }
 
     /**
@@ -220,7 +327,9 @@ public final class StringUtil {
      * @param src
      * @param supportUTF8 override the default setting, whether special characters should be replaced with entities (
      *                    <code>false</code>) or should be included as is ( <code>true</code>).
-     * @deprecated for removal. Use {@link StringEscapeUtils#escapeXml10(String)} instead.
+     * @deprecated for removal. Use Java's XML implementations, that do the escaping,
+     *             use {@link #removedInvalidXml10Characters(String)} for fixing invalid characters in XML 1.0
+     *             documents or use {@code StringEscapeUtils#escapeXml10(String)} from apache commons-text instead.
      */
     @Deprecated
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {

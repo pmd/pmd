@@ -64,7 +64,7 @@ public class ASTAnnotation extends AbstractJavaTypeNode {
      *     <li>"all" (conventional value to suppress all warnings).
      * </ul>
      *
-     * <p>Additionnally, the following values suppress a specific set of rules:
+     * <p>Additionally, the following values suppress a specific set of rules:
      * <ul>
      *     <li>{@code "unused"}: suppresses rules like UnusedLocalVariable or UnusedPrivateField;
      *     <li>{@code "serial"}: suppresses BeanMembersShouldSerialize and MissingSerialVersionUID;

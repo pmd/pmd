@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 
+@Deprecated
+@InternalApi
 public class SymbolFacade {
     public void initializeWith(ASTCompilationUnit node) {
         initializeWith(SymbolFacade.class.getClassLoader(), node);

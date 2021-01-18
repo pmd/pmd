@@ -36,7 +36,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class InvalidLogMessageFormatRule extends AbstractJavaRule {
@@ -89,9 +89,14 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
         final List<ASTExpression> argumentList = parentNode.getFirstChildOfType(ASTPrimarySuffix.class)
                 .getFirstDescendantOfType(ASTArgumentList.class).findChildrenOfType(ASTExpression.class);
 
-        // ignore the first argument if it is a known non-string value, e.g. a slf4j-Marker
         if (argumentList.get(0).getType() != null && !argumentList.get(0).getType().equals(String.class)) {
-            argumentList.remove(0);
+            if (argumentList.size() == 1) {
+                // no need to check for message params in case no string and no params found
+                return data;
+            } else {
+                // ignore the first argument if it is a known non-string value, e.g. a slf4j-Marker
+                argumentList.remove(0);
+            }
         }
 
         // remove the message parameter
@@ -123,14 +128,12 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
     private boolean isNewThrowable(ASTPrimaryExpression last) {
         // in case a new exception is created or the exception class is
         // mentioned.
-        ASTClassOrInterfaceType classOrInterface = last.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        return classOrInterface != null && classOrInterface.getType() != null
-                && TypeHelper.isA(classOrInterface, Throwable.class);
+        return TypeTestUtil.isA(Throwable.class, last.getFirstDescendantOfType(ASTClassOrInterfaceType.class));
     }
 
     private boolean hasTypeThrowable(ASTPrimaryExpression last) {
         // if the type could be determined already
-        return last.getType() != null && TypeHelper.isA(last, Throwable.class);
+        return last.getType() != null && TypeTestUtil.isA(Throwable.class, last);
     }
 
     private boolean isReferencingThrowable(ASTPrimaryExpression last) {

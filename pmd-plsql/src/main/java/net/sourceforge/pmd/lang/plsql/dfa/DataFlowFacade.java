@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.DataFlowHandler;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCompoundTriggerBlock;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
@@ -22,7 +23,9 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
  * constructors.
  *
  * @author raik
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public class DataFlowFacade extends PLSQLParserVisitorAdapter {
     private static final String CLASS_PATH = DataFlowFacade.class.getCanonicalName();
     private static final Logger LOGGER = Logger.getLogger(DataFlowFacade.class.getName());

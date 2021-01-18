@@ -103,7 +103,6 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -179,11 +178,11 @@ public class Designer implements ClipboardOwner {
         frame.setSize(screenWidth * 3 / 4, screenHeight * 3 / 4);
         frame.setLocation((screenWidth - frame.getWidth()) / 2, (screenHeight - frame.getHeight()) / 2);
         frame.setVisible(true);
-        int horozontalMiddleLocation = controlSplitPane.getMaximumDividerLocation() * 3 / 5;
-        controlSplitPane.setDividerLocation(horozontalMiddleLocation);
+        int horizontalMiddleLocation = controlSplitPane.getMaximumDividerLocation() * 3 / 5;
+        controlSplitPane.setDividerLocation(horizontalMiddleLocation);
         containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
         astAndSymbolTablePane.setDividerLocation(astAndSymbolTablePane.getMaximumDividerLocation() / 3);
-        resultsSplitPane.setDividerLocation(horozontalMiddleLocation);
+        resultsSplitPane.setDividerLocation(horizontalMiddleLocation);
 
         loadSettings();
     }
@@ -564,7 +563,7 @@ public class Designer implements ClipboardOwner {
             LanguageVersion languageVersion = getLanguageVersion();
             DFAGraphRule dfaGraphRule = languageVersion.getLanguageVersionHandler().getDFAGraphRule();
             if (dfaGraphRule != null) {
-                final RuleSet rs = new RuleSetFactory().createSingleRuleRuleSet(dfaGraphRule);
+                final RuleSet rs = RuleSet.forSingleRule(dfaGraphRule);
                 RuleContext ctx = new RuleContext();
                 ctx.setSourceCodeFile(new File("[no filename]." + languageVersion.getLanguage().getExtensions().get(0)));
                 PMDConfiguration config = new PMDConfiguration();
@@ -610,7 +609,7 @@ public class Designer implements ClipboardOwner {
                 xpathRule.setXPath(xpathQueryArea.getText());
                 xpathRule.setVersion(xpathVersionButtonGroup.getSelection().getActionCommand());
 
-                final RuleSet ruleSet = new RuleSetFactory().createSingleRuleRuleSet(xpathRule);
+                final RuleSet ruleSet = RuleSet.forSingleRule(xpathRule);
 
                 RuleSets ruleSets = new RuleSets(ruleSet);
 
@@ -660,9 +659,9 @@ public class Designer implements ClipboardOwner {
                                 entry.getKey().getClass().getSimpleName() + ": " + entry.getKey());
                         scopeTreeNode.add(nameDeclarationTreeNode);
                         for (NameOccurrence nameOccurrence : entry.getValue()) {
-                            DefaultMutableTreeNode nameOccurranceTreeNode = new DefaultMutableTreeNode(
+                            DefaultMutableTreeNode nameOccurrenceTreeNode = new DefaultMutableTreeNode(
                                     "Name occurrence: " + nameOccurrence);
-                            nameDeclarationTreeNode.add(nameOccurranceTreeNode);
+                            nameDeclarationTreeNode.add(nameOccurrenceTreeNode);
                         }
                     }
                 }
@@ -710,7 +709,7 @@ public class Designer implements ClipboardOwner {
             String text;
             if (value instanceof Node) {
                 Node node = (Node) value;
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
                 if (Proxy.isProxyClass(value.getClass())) {
                     name = value.toString();
@@ -890,16 +889,16 @@ public class Designer implements ClipboardOwner {
         return b;
     }
 
-    private static void makeTextComponentUndoable(JTextComponent textConponent) {
+    private static void makeTextComponentUndoable(JTextComponent textComponent) {
         final UndoManager undoManager = new UndoManager();
-        textConponent.getDocument().addUndoableEditListener(new UndoableEditListener() {
+        textComponent.getDocument().addUndoableEditListener(new UndoableEditListener() {
             @Override
             public void undoableEditHappened(UndoableEditEvent evt) {
                 undoManager.addEdit(evt.getEdit());
             }
         });
-        ActionMap actionMap = textConponent.getActionMap();
-        InputMap inputMap = textConponent.getInputMap();
+        ActionMap actionMap = textComponent.getActionMap();
+        InputMap inputMap = textComponent.getInputMap();
         actionMap.put("Undo", new AbstractAction("Undo") {
             @Override
             public void actionPerformed(ActionEvent evt) {

@@ -7,7 +7,6 @@ package net.sourceforge.pmd.ant;
 import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -71,14 +70,14 @@ public class PMDTaskTest {
     }
 
     @Test
-    public void testWithShortFilenames() throws FileNotFoundException, IOException {
+    public void testWithShortFilenames() throws IOException {
         buildRule.executeTarget("testWithShortFilenames");
 
         try (InputStream in = new FileInputStream("target/pmd-ant-test.txt")) {
             String actual = IOUtils.toString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.replaceAll("\n|\r", "");
-            Assert.assertEquals("sample.dummy:0:\tTest Rule 2", actual);
+            Assert.assertEquals("sample.dummy:0:\tSampleXPathRule:\tTest Rule 2", actual);
         }
     }
 }

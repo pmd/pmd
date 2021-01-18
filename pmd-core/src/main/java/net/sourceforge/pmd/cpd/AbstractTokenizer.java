@@ -11,7 +11,10 @@ import java.util.Locale;
  *
  * @author Zev Blut zb@ubit.com
  * @author Romain PELISSE belaran@gmail.com
+ *
+ * @deprecated Use an {@link AnyTokenizer} instead, it's basically as powerful.
  */
+@Deprecated
 public abstract class AbstractTokenizer implements Tokenizer {
 
     // FIXME depending on subclasses to assign local vars is rather fragile -

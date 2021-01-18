@@ -88,6 +88,8 @@ public interface ApexParserVisitor {
 
     Object visit(ASTInstanceOfExpression node, Object data);
 
+    Object visit(ASTInvalidDependentCompilation node, Object data);
+
     Object visit(ASTJavaMethodCallExpression node, Object data);
 
     Object visit(ASTJavaVariableExpression node, Object data);

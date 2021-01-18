@@ -164,7 +164,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
                 return false;
             }
 
-            // All the intermediate parts must be hexidecimal, or
+            // All the intermediate parts must be hexadecimal, or
             int count = 0;
             boolean ipv4Mapped = false;
             String[] parts = s.split(":");
@@ -182,7 +182,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
                 } else {
                     count++;
                 }
-                // Should be a hexidecimal number in range [0, 65535]
+                // Should be a hexadecimal number in range [0, 65535]
                 try {
                     int value = Integer.parseInt(part, 16);
                     if (value < 0 || value > 65535) {

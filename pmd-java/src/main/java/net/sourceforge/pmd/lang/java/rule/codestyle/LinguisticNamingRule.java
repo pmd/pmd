@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
@@ -150,8 +150,8 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
 
     private boolean isBooleanType(ASTType node) {
         return "boolean".equalsIgnoreCase(node.getTypeImage())
-                || TypeHelper.isA(node, "java.util.concurrent.atomic.AtomicBoolean")
-                || TypeHelper.isA(node, "java.util.function.Predicate");
+                || TypeTestUtil.isA("java.util.concurrent.atomic.AtomicBoolean", node)
+                || TypeTestUtil.isA("java.util.function.Predicate", node);
     }
 
     private void checkBooleanMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {

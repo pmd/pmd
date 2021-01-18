@@ -24,8 +24,7 @@ echo "-------------------------------------------"
 echo "Releasing PMD"
 echo "-------------------------------------------"
 
-# see also https://gist.github.com/pdunnavant/4743895
-CURRENT_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec)
+CURRENT_VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
 RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
 MAJOR=$(echo $RELEASE_VERSION | cut -d . -f 1)
 MINOR=$(echo $RELEASE_VERSION | cut -d . -f 2)
@@ -122,11 +121,13 @@ echo "Press enter to continue..."
 read
 
 # install bundles needed for rendering release notes
-bundle install --with=release_notes_preprocessing --path vendor/bundle
+bundle config set --local path vendor/bundle
+bundle config set --local with release_notes_preprocessing
+bundle install
 
 export RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
 echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
-NEW_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+NEW_RELEASE_NOTES=$(bundle exec .ci/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
 cat > ../pmd.github.io/${RELEASE_NOTES_POST} <<EOF
 ---
 layout: post
@@ -161,7 +162,7 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 
 
 echo
-echo "Tag has been pushed.... now check travis build: <https://travis-ci.org/pmd/pmd>"
+echo "Tag has been pushed.... now check github actions: <https://github.com/pmd/pmd/actions>"
 echo
 echo
 echo "Press enter to continue..."
@@ -226,6 +227,8 @@ echo
 echo
 echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
 echo
+echo "*   Wait until the new version is synced to maven central and appears as latest version in"
+echo "    <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/maven-metadata.xml>."
 echo "*   Submit news to SF on <https://sourceforge.net/p/pmd/news/> page. Use same text as in the email below."
 echo "*   Send out an announcement mail to the mailing list:"
 echo

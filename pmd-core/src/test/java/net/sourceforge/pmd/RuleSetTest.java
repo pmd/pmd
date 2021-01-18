@@ -22,6 +22,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report.ProcessingError;
@@ -59,7 +60,7 @@ public class RuleSetTest {
     public void testNoDFA() {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
         mock.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
+        RuleSet rs = RuleSet.forSingleRule(mock);
         assertFalse(rs.usesDFA(LanguageRegistry.getLanguage(DummyLanguageModule.NAME)));
     }
 
@@ -68,7 +69,7 @@ public class RuleSetTest {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
         mock.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         mock.setDfa(true);
-        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
+        RuleSet rs = RuleSet.forSingleRule(mock);
         assertTrue(rs.usesDFA(LanguageRegistry.getLanguage(DummyLanguageModule.NAME)));
     }
 
@@ -87,21 +88,21 @@ public class RuleSetTest {
     @Test
     public void testGetRuleByName() {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
+        RuleSet rs = RuleSet.forSingleRule(mock);
         assertEquals("unable to fetch rule by name", mock, rs.getRuleByName("name"));
     }
 
     @Test
     public void testGetRuleByName2() {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
+        RuleSet rs = RuleSet.forSingleRule(mock);
         assertNull("the rule FooRule must not be found!", rs.getRuleByName("FooRule"));
     }
 
     @Test
     public void testRuleList() {
         MockRule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleSet ruleset = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
+        RuleSet ruleset = RuleSet.forSingleRule(rule);
 
         assertEquals("Size of RuleSet isn't one.", 1, ruleset.size());
 
@@ -526,8 +527,8 @@ public class RuleSetTest {
         context.setIgnoreExceptions(true); // the default
         ruleset.apply(makeCompilationUnits(), context);
 
-        assertTrue("Report should have processing errors", context.getReport().hasErrors());
-        List<ProcessingError> errors = CollectionUtil.toList(context.getReport().errors());
+        List<ProcessingError> errors = context.getReport().getProcessingErrors();
+        assertTrue("Report should have processing errors", !errors.isEmpty());
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
@@ -569,15 +570,19 @@ public class RuleSetTest {
         RuleContext context = new RuleContext();
         context.setReport(new Report());
         context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
+        context.setSourceCodeFile(new File(RuleSetTest.class.getName(), "ruleExceptionShouldBeReported.java"));
         context.setIgnoreExceptions(true); // the default
         ruleset.apply(makeCompilationUnits(), context);
 
         assertTrue("Report should have processing errors", context.getReport().hasErrors());
         List<ProcessingError> errors = CollectionUtil.toList(context.getReport().errors());
         assertEquals("Errors expected", 1, errors.size());
-        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
-        assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
+        ProcessingError processingError = errors.get(0);
+        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", processingError.getMsg());
+        assertTrue("Should be a RuntimeException", processingError.getError() instanceof RuntimeException);
+        assertEquals("Wrong filename in processing error",
+                "net.sourceforge.pmd.RuleSetTest/ruleExceptionShouldBeReported.java",
+                FilenameUtils.normalize(processingError.getFile(), true));
 
         assertEquals("There should be a violation", 1, context.getReport().size());
     }

@@ -27,7 +27,7 @@ public class FortranTokenizerTest extends CpdTextComparisonTest {
 
     @Override
     public Tokenizer newTokenizer(Properties properties) {
-        return new FortranTokenizer();
+        return new FortranLanguage().getTokenizer();
     }
 
     @Test

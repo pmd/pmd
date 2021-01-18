@@ -24,6 +24,8 @@ public interface AccessNode extends Node {
     int VOLATILE = 0x0200;
     int STRICTFP = 0x1000;
     int DEFAULT = 0x2000;
+    int SEALED = 0x4000;
+    int NON_SEALED = 0x8000;
 
 
     int getModifiers();

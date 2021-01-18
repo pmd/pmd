@@ -45,7 +45,7 @@ There are various channels, on which you can ask questions:
 
 *   On [StackOverflow](https://stackoverflow.com/questions/tagged/pmd): Make sure, to tag your question with "pmd".
 
-*   Create a issue for your question at <https://github.com/pmd/pmd/issues>.
+*   Create a new discussion for your question at <https://github.com/pmd/pmd/discussions>.
 
 *   Ask your question on Gitter <https://gitter.im/pmd/pmd>.
 

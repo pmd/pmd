@@ -54,7 +54,15 @@ public class DartTokenizerTest extends CpdTextComparisonTest {
         doTest("imports");
     }
 
+    @Test
+    public void testStringInterpolation() {
+        doTest("string_interpolation");
+    }
 
+    @Test
+    public void testEscapedDollar() {
+        doTest("escaped_dollar");
+    }
 
     @Test
     public void testRegex() {
@@ -80,6 +88,11 @@ public class DartTokenizerTest extends CpdTextComparisonTest {
     @Test
     public void testMultiline() {
         doTest("string_multiline");
+    }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
     }
 
 }

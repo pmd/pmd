@@ -6,7 +6,6 @@ package net.sourceforge.pmd.it;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import net.sourceforge.pmd.PMDVersion;
@@ -96,22 +96,24 @@ public class PMDExecutor {
     /**
      * Executes the PMD found in tempDir against the given sourceDirectory path with the given ruleset.
      *
+     * @param reportFile the file to write the report to
      * @param tempDir the directory, to which the binary distribution has been extracted
      * @param sourceDirectory the source directory, that PMD should analyze
      * @param ruleset the ruleset, that PMD should execute
      * @return collected result of the execution
      * @throws Exception if the execution fails for any reason (executable not found, ...)
      */
-    public static ExecutionResult runPMDRules(Path tempDir, String sourceDirectory, String ruleset) throws Exception {
-        Path reportFile = Files.createTempFile("pmd-it-report", "txt");
-        reportFile.toFile().deleteOnExit();
+    public static ExecutionResult runPMDRules(Path reportFile, Path tempDir, String sourceDirectory, String ruleset) throws Exception {
+        return runPMDRules(reportFile, tempDir, sourceDirectory, ruleset, FORMATTER);
+    }
 
+    public static ExecutionResult runPMDRules(Path reportFile, Path tempDir, String sourceDirectory, String ruleset, String formatter) throws Exception {
         if (SystemUtils.IS_OS_WINDOWS) {
             return runPMDWindows(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, FORMATTER, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
+                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
         } else {
             return runPMDUnix(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, FORMATTER, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
+                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
         }
     }
 
@@ -128,5 +130,9 @@ public class PMDExecutor {
         } else {
             return runPMDUnix(tempDir, null, arguments);
         }
+    }
+
+    public static boolean isJava7Test() {
+        return StringUtils.equals(System.getenv("JAVA_HOME"), System.getProperty("java7.home"));
     }
 }

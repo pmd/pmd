@@ -7,9 +7,13 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.27.0-SNAPSHOT</version>
+        <version>6.31.0-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
+
+    <properties>
+        <java.version>8</java.version>
+    </properties>
 
     <build>
         <resources>
@@ -75,6 +79,12 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-apex</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 
 /**
- * context sensetive menu for the AST Panel
+ * context sensitive menu for the AST Panel
  *
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$

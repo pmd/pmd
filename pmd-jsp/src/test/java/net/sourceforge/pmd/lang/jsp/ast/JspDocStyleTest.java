@@ -784,8 +784,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
      * @return
      */
     private List<ASTElement> sortNodesByName(Collection<ASTElement> elements) {
-        List<ASTElement> list = new ArrayList<>();
-        list.addAll(elements);
+        List<ASTElement> list = new ArrayList<>(elements);
         Collections.sort(list, new Comparator<ASTElement>() {
             public int compare(ASTElement o1, ASTElement o2) {
                 if (o1.getName() == null) {
@@ -812,8 +811,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
      * @return
      */
     private <T extends Node> List<T> sortByImage(Collection<T> elements) {
-        List<T> list = new ArrayList<>();
-        list.addAll(elements);
+        List<T> list = new ArrayList<>(elements);
         Collections.sort(list, new Comparator<Node>() {
             public int compare(Node o1, Node o2) {
                 if (o1.getImage() == null) {
@@ -913,12 +911,12 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 
     private static final String TEST_NO_QUOTE_ATTR_WITH_HASH = "<tag:if something=#{something >  <a href=#{url} >foo</a> </tag:if>";
 
-    private static final String TEST_UNCLOSED_SIMPLE = "<tag:someTag> <tag:if someting=\"x\" > </tag:someTag>";
+    private static final String TEST_UNCLOSED_SIMPLE = "<tag:someTag> <tag:if something=\"x\" > </tag:someTag>";
 
     /**
      * someTag is closed just once
      */
-    private static final String TEST_UNCLOSED_MULTIPLE_LEVELS = "<tag:x> <tag:someTag> <tag:someTag someting=\"x\" > </tag:someTag> </tag:x>";
+    private static final String TEST_UNCLOSED_MULTIPLE_LEVELS = "<tag:x> <tag:someTag> <tag:someTag something=\"x\" > </tag:someTag> </tag:x>";
 
     /**
      * nested empty tags
@@ -949,5 +947,5 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 
     private static final String TEST_UNCLOSED_END_OF_DOC = "<tag:x> <tag:y>";
 
-    private static final String TEST_UNCLOSED_NO_QUOTE_ATTR = "<tag:someTag> <tag:if someting=x > </tag:someTag>";
+    private static final String TEST_UNCLOSED_NO_QUOTE_ATTR = "<tag:someTag> <tag:if something=x > </tag:someTag>";
 }

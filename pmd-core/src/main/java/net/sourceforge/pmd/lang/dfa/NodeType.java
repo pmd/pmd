@@ -8,7 +8,9 @@ package net.sourceforge.pmd.lang.dfa;
  * Represents the type (DFA-wise) of a DataFlowNode.
  *
  * @author raik
+ * @deprecated See {@link DataFlowNode}
  */
+@Deprecated
 public enum NodeType {
     ROOT,
 

@@ -10,6 +10,7 @@ Rules to detect constructs that are either broken, extremely confusing or prone 
     </description>
 
     <rule name="AssignmentInOperand"
+          language="java"
           since="1.03"
           message="Avoid assignments in operands"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AssignmentInOperandRule"
@@ -31,6 +32,7 @@ public void bar() {
     </rule>
 
     <rule name="AssignmentToNonFinalStatic"
+          language="java"
           since="2.2"
           message="Possible unsafe assignment to a non-final static field in a constructor."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AssignmentToNonFinalStaticRule"
@@ -155,6 +157,7 @@ public class A {
     </rule>
 
     <rule name="AvoidBranchingStatementAsLastInLoop"
+          language="java"
           since="5.0"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule"
           message="Avoid using a branching statement as the last in a loop."
@@ -185,6 +188,7 @@ for (int i = 0; i < 10; i++) {
     </rule>
 
     <rule name="AvoidCallingFinalize"
+          language="java"
           since="3.0"
           message="Avoid calling finalize() explicitly"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCallingFinalizeRule"
@@ -243,6 +247,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidCatchingThrowable"
+          language="java"
           since="1.2"
           message="A catch statement should never catch throwable since it includes errors."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCatchingThrowableRule"
@@ -313,6 +318,7 @@ BigDecimal bd = new BigDecimal(12);          // preferred approach, ok for integ
     </rule>
 
     <rule name="AvoidDuplicateLiterals"
+          language="java"
           since="1.0"
           message="The String literal {0} appears {1} times in this file; the first occurrence is on line {2}"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidDuplicateLiteralsRule"
@@ -362,6 +368,7 @@ public class A {
     </rule>
 
     <rule name="AvoidFieldNameMatchingMethodName"
+          language="java"
           since="3.0"
           message="Field {0} has the same name as a method"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingMethodNameRule"
@@ -385,6 +392,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidFieldNameMatchingTypeName"
+          language="java"
           since="3.0"
           message="It is somewhat confusing to have a field name matching the declaring class name"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingTypeNameRule"
@@ -574,6 +582,7 @@ public void bar() {
     </rule>
 
     <rule name="AvoidMultipleUnaryOperators"
+          language="java"
           since="4.2"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidMultipleUnaryOperatorsRule"
           message="Using multiple unary operators may be a bug, and/or is confusing."
@@ -607,6 +616,7 @@ int j = -~7;
     </rule>
 
     <rule name="AvoidUsingOctalValues"
+          language="java"
           since="3.9"
           message="Do not start a literal by 0 unless it's an octal value"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidUsingOctalValuesRule"
@@ -656,6 +666,7 @@ boolean x = (y == Double.NaN);
     </rule>
 
     <rule name="BeanMembersShouldSerialize"
+          language="java"
           since="1.1"
           message="Found non-transient, non-static member. Please mark as transient or provide accessors."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.BeanMembersShouldSerializeRule"
@@ -686,6 +697,7 @@ private int getMoreFoo(){
     </rule>
 
     <rule name="BrokenNullCheck"
+          language="java"
           since="3.8"
           message="Method call on object which may be null"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.BrokenNullCheckRule"
@@ -1032,6 +1044,7 @@ public class MyClass implements Cloneable{
     </rule>
 
     <rule name="CloseResource"
+          language="java"
           since="1.2.2"
           message="Ensure that resources like this {0} object are closed after use"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.CloseResourceRule"
@@ -1081,14 +1094,34 @@ public class Bar {
     </rule>
 
     <rule name="CompareObjectsWithEquals"
+          language="java"
           since="3.2"
           message="Use equals() to compare object references."
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.CompareObjectsWithEqualsRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#compareobjectswithequals">
         <description>
 Use equals() to compare object references; avoid comparing them with ==.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//EqualityExpression
+    [count(PrimaryExpression
+        [pmd-java:typeIs('java.lang.Object')]
+        [not(pmd-java:typeIs('java.lang.Enum'))]
+        [not(pmd-java:typeIs('java.lang.Class'))]) = 2
+    ]
+    [not(PrimaryExpression[PrimaryPrefix/@ThisModifier = true()]
+                          [not(PrimarySuffix)]
+                          [ancestor::MethodDeclaration[@Name = 'equals']])
+    ]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 class Foo {
@@ -1102,6 +1135,7 @@ class Foo {
     </rule>
 
     <rule name="ConstructorCallsOverridableMethod"
+          language="java"
           since="1.04"
           message="Overridable {0} called during object construction"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.ConstructorCallsOverridableMethodRule"
@@ -1141,16 +1175,20 @@ public class JuniorClass extends SeniorClass {
     </rule>
 
     <rule name="DataflowAnomalyAnalysis"
+          language="java"
           since="3.9"
           message="Found ''{0}''-anomaly for variable ''{1}'' (lines ''{2}''-''{3}'')."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.DataflowAnomalyAnalysisRule"
           dfa="true"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#dataflowanomalyanalysis">
         <description>The dataflow analysis tracks local definitions, undefinitions and references to variables on different paths on the data flow.
 From those informations there can be found various problems.
 
 1. DU - Anomaly: A recently defined variable is undefined. These anomalies may appear in normal source text.
 2. DD - Anomaly: A recently defined variable is redefined. This is ominous but don't have to be a bug.
+
+This rule is deprecated. Use {% rule "java/bestpractices/UnusedAssignment" %} in category bestpractices instead.
         </description>
         <priority>5</priority>
         <example>
@@ -1277,42 +1315,7 @@ public class GCCall {
         </example>
     </rule>
 
-    <rule name="DoNotCallSystemExit"
-          language="java"
-          since="4.1"
-          message="System.exit() should not be used in J2EE/JEE apps"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotcallsystemexit">
-        <description>
-Web applications should not call System.exit(), since only the web container or the
-application server should stop the JVM. This rule also checks for the equivalent call Runtime.getRuntime().exit().
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//Name[
-    starts-with(@Image,'System.exit')
-    or
-    (starts-with(@Image,'Runtime.getRuntime') and ../../PrimarySuffix[ends-with(@Image,'exit')])
-]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public void bar() {
-    System.exit(0);                 // never call this when running in an application server!
-}
-public void foo() {
-    Runtime.getRuntime().exit(0);   // never stop the JVM manually, the container will do this.
-}
-]]>
-        </example>
-    </rule>
+    <rule name="DoNotCallSystemExit" ref="category/java/errorprone.xml/DoNotTerminateVM" deprecated="true" />
 
     <rule name="DoNotExtendJavaLangThrowable"
           language="java"
@@ -1371,6 +1374,48 @@ public class MyActivity extends Activity {
         </example>
     </rule>
 
+    <rule name="DoNotTerminateVM"
+          language="java"
+          since="4.1"
+          message="System.exit() should not be used in J2EE/JEE apps"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotterminatevm">
+        <description>
+Web applications should not call `System.exit()`, since only the web container or the
+application server should stop the JVM. Otherwise a web application would terminate all other applications
+running on the same application server.
+
+This rule also checks for the equivalent calls `Runtime.getRuntime().exit()` and `Runtime.getRuntime().halt()`.
+
+This rule was called *DoNotCallSystemExit* until PMD 6.29.0.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Name[
+    starts-with(@Image,'System.exit')
+    or
+    (starts-with(@Image,'Runtime.getRuntime') and ../../PrimarySuffix[ends-with(@Image,'exit') or ends-with(@Image,'halt')])
+][not(ancestor::MethodDeclaration[1][@Name="main" and @Static = true()])]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public void bar() {
+    System.exit(0);                 // never call this when running in an application server!
+}
+public void foo() {
+    Runtime.getRuntime().exit(0);   // never stop the JVM manually, the container will do this.
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="DoNotThrowExceptionInFinally"
           language="java"
           since="4.2"
@@ -1408,6 +1453,7 @@ public class Foo {
     </rule>
 
     <rule name="DontImportSun"
+          language="java"
           since="1.5"
           message="Avoid importing anything from the 'sun.*' packages"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.DontImportSunRule"
@@ -2029,6 +2075,7 @@ public void finalize() {
     </rule>
 
     <rule name="IdempotentOperations"
+          language="java"
           since="2.0"
           message="Avoid idempotent operations (like assigning a variable to itself)."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.IdempotentOperationsRule"
@@ -2050,6 +2097,7 @@ public class Foo {
     </rule>
 
     <rule name="ImportFromSamePackage"
+          language="java"
           since="1.02"
           message="No need to import a type that lives in the same package"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.ImportFromSamePackageRule"
@@ -2256,6 +2304,7 @@ public class Foo{
     </rule>
 
     <rule name="MethodWithSameNameAsEnclosingClass"
+          language="java"
           since="1.5"
           message="Classes should not have non-constructor methods with the same name as the class"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.MethodWithSameNameAsEnclosingClassRule"
@@ -2507,6 +2556,7 @@ public class Foo {
     </rule>
 
     <rule name="MoreThanOneLogger"
+          language="java"
           since="2.0"
           message="Class contains more than one logger."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.MoreThanOneLoggerRule"
@@ -2599,6 +2649,7 @@ public class MyClass {
     </rule>
 
     <rule name="NullAssignment"
+          language="java"
           since="1.02"
           message="Assigning an Object to null is a code smell.  Consider refactoring."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.NullAssignmentRule"
@@ -2855,6 +2906,7 @@ public class Foo {
     </rule>
 
     <rule name="SingleMethodSingleton"
+          language="java"
           since="5.4"
           message="Class contains multiple getInstance methods. Please review."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.SingleMethodSingletonRule"
@@ -2887,6 +2939,7 @@ public class Singleton {
     </rule>
 
     <rule name="SingletonClassReturningNewInstance"
+          language="java"
           since="5.4"
           message="getInstance method always creates a new object and hence does not comply to Singleton Design Pattern behaviour. Please review"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.SingletonClassReturningNewInstanceRule"
@@ -3025,8 +3078,12 @@ StringBuilder sb4 = new StringBuilder("c");
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#suspiciousequalsmethodname">
         <description>
-The method name and parameter number are suspiciously close to equals(Object), which can denote an
-intention to override the equals(Object) method.
+The method name and parameter number are suspiciously close to `Object.equals`, which can denote an
+intention to override it. However, the method does not override `Object.equals`, but overloads it instead.
+Overloading `Object.equals` method is confusing for other programmers, error-prone and hard to maintain,
+especially when using inheritance, because `@Override` annotations used in subclasses can provide a false
+sense of security. For more information on `Object.equals` method, see Effective Java, 3rd Edition,
+Item 10: Obey the general contract when overriding equals.
         </description>
         <priority>2</priority>
         <properties>
@@ -3075,6 +3132,7 @@ public class Foo {
     </rule>
 
     <rule name="SuspiciousHashcodeMethodName"
+          language="java"
           since="1.5"
           message="The method name and return type are suspiciously close to hashCode()"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.SuspiciousHashcodeMethodNameRule"
@@ -3095,6 +3153,7 @@ public class Foo {
     </rule>
 
     <rule name="SuspiciousOctalEscape"
+          language="java"
           since="1.5"
           message="Suspicious decimal characters following octal escape in string literal"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.SuspiciousOctalEscapeRule"
@@ -3123,6 +3182,7 @@ public void foo() {
     </rule>
 
     <rule name="TestClassWithoutTestCases"
+          language="java"
           since="3.0"
           message="This class name ends with 'Test' but contains no test cases"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.TestClassWithoutTestCasesRule"
@@ -3238,6 +3298,7 @@ public class SimpleTest extends TestCase {
     </rule>
 
     <rule name="UnnecessaryCaseChange"
+          language="java"
           since="3.3"
           message="Using equalsIgnoreCase() is cleaner than using toUpperCase/toLowerCase().equals()."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UnnecessaryCaseChangeRule"
@@ -3256,6 +3317,7 @@ boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");    // another unnec
     </rule>
 
     <rule name="UnnecessaryConversionTemporary"
+          language="java"
           since="0.1"
           message="Avoid unnecessary temporaries when converting primitives to Strings"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UnnecessaryConversionTemporaryRule"
@@ -3406,11 +3468,8 @@ Use the equals() method instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//EqualityExpression/PrimaryExpression
-[not(PrimarySuffix)]
-[PrimaryPrefix/Literal
-   [starts-with(@Image, '"')]
-   [ends-with(@Image, '"')]]
+//EqualityExpression
+    [count(PrimaryExpression[pmd-java:typeIs('java.lang.String')]) = 2]
 ]]>
                 </value>
             </property>
@@ -3427,6 +3486,7 @@ public boolean test(String s) {
     </rule>
 
     <rule name="UselessOperationOnImmutable"
+          language="java"
           since="3.5"
           message="An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessOperationOnImmutableRule"

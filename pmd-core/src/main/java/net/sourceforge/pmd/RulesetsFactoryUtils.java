@@ -13,6 +13,10 @@ import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.util.ResourceLoader;
 
+/**
+ * @deprecated Use a {@link RuleSetLoader} instead
+ */
+@Deprecated
 public final class RulesetsFactoryUtils {
 
     private static final Logger LOG = Logger.getLogger(RulesetsFactoryUtils.class.getName());
@@ -42,7 +46,7 @@ public final class RulesetsFactoryUtils {
             ruleSets = factory.createRuleSets(rulesets);
             printRuleNamesInDebug(ruleSets);
             if (ruleSets.ruleCount() == 0) {
-                String msg = "No rules found. Maybe you mispelled a rule name? (" + rulesets + ')';
+                String msg = "No rules found. Maybe you misspelled a rule name? (" + rulesets + ')';
                 LOG.log(Level.SEVERE, msg);
                 throw new IllegalArgumentException(msg);
             }
@@ -76,7 +80,7 @@ public final class RulesetsFactoryUtils {
     }
 
     /**
-     * @deprecated Use {@link #createFactory(PMDConfiguration)} or {@link #createFactory(PMDConfiguration, ClassLoader)}
+     * @deprecated Use a {@link RuleSetLoader}
      */
     @InternalApi
     @Deprecated
@@ -96,7 +100,10 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration, ClassLoader)
+     *
+     * @deprecated Use {@link RuleSetLoader#fromPmdConfig(PMDConfiguration)}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(final PMDConfiguration configuration) {
         return createFactory(configuration, RulesetsFactoryUtils.class.getClassLoader());
     }
@@ -107,7 +114,7 @@ public final class RulesetsFactoryUtils {
      *
      * @return A ruleset factory
      *
-     * @see #createFactory(PMDConfiguration, ClassLoader)
+     * @see RuleSetLoader
      */
     public static RuleSetFactory defaultFactory() {
         return new RuleSetFactory();
@@ -124,7 +131,10 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration)
+     *
+     * @deprecated Use a {@link RuleSetLoader}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(final PMDConfiguration configuration, ClassLoader classLoader) {
         return createFactory(classLoader,
                              configuration.getMinimumPriority(),
@@ -145,7 +155,10 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration)
+     *
+     * @deprecated Use a {@link RuleSetLoader}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(ClassLoader classLoader,
                                                RulePriority minimumPriority,
                                                boolean warnDeprecated,
@@ -166,12 +179,42 @@ public final class RulesetsFactoryUtils {
      * @return A ruleset factory
      *
      * @see #createFactory(PMDConfiguration)
+     *
+     * @deprecated Use a {@link RuleSetLoader}
      */
+    @Deprecated
     public static RuleSetFactory createFactory(RulePriority minimumPriority,
                                                boolean warnDeprecated,
                                                boolean enableCompatibility) {
-
         return new RuleSetFactory(new ResourceLoader(), minimumPriority, warnDeprecated, enableCompatibility);
+    }
+
+    /**
+     * Returns a ruleset factory which uses the classloader for PMD
+     * classes to resolve resource references.
+     *
+     * @param minimumPriority     Minimum priority for rules to be included
+     * @param warnDeprecated      If true, print warnings when deprecated rules are included
+     * @param enableCompatibility If true, rule references to moved rules are mapped to their
+     *                            new location if they are known
+     * @param includeDeprecatedRuleReferences If true, deprecated rule references are retained. Usually, these
+     *                            references are ignored, since they indicate renamed/moved rules, and the referenced
+     *                            rule is often included in the same ruleset. Enabling this might result in
+     *                            duplicated rules.
+     *
+     * @return A ruleset factory
+     *
+     * @see #createFactory(PMDConfiguration)
+     * @deprecated Use a {@link RuleSetLoader}
+     */
+    @Deprecated
+    public static RuleSetFactory createFactory(RulePriority minimumPriority,
+                                               boolean warnDeprecated,
+                                               boolean enableCompatibility,
+                                               boolean includeDeprecatedRuleReferences) {
+
+        return new RuleSetFactory(new ResourceLoader(), minimumPriority, warnDeprecated, enableCompatibility,
+                                  includeDeprecatedRuleReferences);
     }
 
     /**
