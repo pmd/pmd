@@ -43,6 +43,11 @@ print(x[keyPath: id]) // prints 3
 let rawString = #"Press "Continue" to close this dialog."#
 extension URL {
     func html(withTitle title: String) -> String {
-        return #"<a href="\#(absoluteString)">\#(title)</a>"#
+        return ##"<a \href="\#(absoluteString)">\#(title)</a>"##
     }
 }
+
+let rawMultiString = ###"a\###"###
+let rawMultiString2 = ###"""a\###
+""hey""
+"""###

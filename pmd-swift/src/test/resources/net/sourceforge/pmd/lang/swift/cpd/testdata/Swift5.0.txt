@@ -220,14 +220,19 @@ L45
     [{]                                     50        50
 L46
     [return]                                9         14
-    [#"<a href="\\#(absoluteString)">\\[    16        61
+    [##"<a \\href="\\#(absoluteString)"[    16        64
 L47
     [}]                                     5         5
 L48
     [}]                                     1         1
-L49
+L50
     [let]                                   1         3
-    [regex]                                 5         9
-    [=]                                     11        11
-    [#"w+"#]                                13        18
+    [rawMultiString]                        5         18
+    [=]                                     20        20
+    [###"a\\###"###]                        22        34
+L51
+    [let]                                   1         3
+    [rawMultiString2]                       5         19
+    [=]                                     21        21
+    [###"""a\\###\n""hey""\n"""###]         23        6
 EOF
