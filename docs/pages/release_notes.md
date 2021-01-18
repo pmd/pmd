@@ -32,6 +32,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+### Deprecated rules
+
+* java-performance
+  * [SimplifyStartsWith](https://pmd.github.io/latest/pmd_rules_java_performance.html#simplifystartswith): the suggested code transformation has an insignificant performance impact, and decreases readability.
+
+
 ### External Contributions
 
 *   [#2666](https://github.com/pmd/pmd/pull/2666): \[swift] Manage swift5 string literals - [kenji21](https://github.com/kenji21)

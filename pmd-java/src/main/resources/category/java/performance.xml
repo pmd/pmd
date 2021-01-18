@@ -696,8 +696,11 @@ public class C {
           since="3.1"
           message="This call to String.startsWith can be rewritten using String.charAt(0)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#simplifystartswith">
         <description>
+Note: this rule is deprecated for removal, as the optimization is insignificant.
+
 Calls to `string.startsWith("x")` with a string literal of length 1 can be rewritten using `string.charAt(0)`,
 at the expense of some readability. To prevent `IndexOutOfBoundsException` being thrown by the `charAt` method,
 ensure that the string is not empty by making an additional check first.
