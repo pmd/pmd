@@ -19,6 +19,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New Rules
+
+*   The new Apex rule {% rule "apex/errorprone/OverrideBothEqualsAndHashcode" %} brings the well known Java rule
+    to Apex. In Apex the same principle applies: `equals` and `hashCode` should always be overridden
+    together to ensure collection classes such as Maps and Sets work as expected.
+
 ### Fixed Issues
 
 *   core
@@ -26,12 +32,17 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2994](https://github.com/pmd/pmd/pull/2994): \[core] Fix code climate severity strings
 *   java-bestpractices
     *   [#575](https://github.com/pmd/pmd/issues/575): \[java] LiteralsFirstInComparisons should consider constant fields
+*   java-codestyle
+    *   [#2960](https://github.com/pmd/pmd/issues/2960): \[java] Thread issue in MethodNamingConventionsRule
 
 ### API Changes
 
 ### External Contributions
 
+*   [#2666](https://github.com/pmd/pmd/pull/2666): \[swift] Manage swift5 string literals - [kenji21](https://github.com/kenji21)
+*   [#2959](https://github.com/pmd/pmd/pull/2959): \[apex] New Rule: override equals and hashcode rule - [recdevs](https://github.com/recdevs)
 *   [#2964](https://github.com/pmd/pmd/pull/2964): \[cs] Update C# grammar for additional C# 7 and C# 8 features - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#2965](https://github.com/pmd/pmd/pull/2965): \[cs] Improvements for ignore sequences of literals functionality - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#2983](https://github.com/pmd/pmd/pull/2983): \[java] LiteralsFirstInComparisons should consider constant fields - [Ozan Gulle](https://github.com/ozangulle)
 *   [#2994](https://github.com/pmd/pmd/pull/2994): \[core] Fix code climate severity strings - [Vincent Maurin](https://github.com/vmaurin)
 
