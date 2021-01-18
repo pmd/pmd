@@ -28,15 +28,23 @@
     <target name="modelicajjtree" description="Generates the Modelica parser and AST source files" unless="javaccBuildNotRequired">
         <delete dir="${target}/net/sourceforge/pmd/lang/modelica/ast" />
         <mkdir dir="${target}/net/sourceforge/pmd/lang/modelica/ast" />
-        <jjtree target="etc/grammar/Modelica.jjt"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/modelica/ast"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="jjtree"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-OUTPUT_DIRECTORY:${target}/net/sourceforge/pmd/lang/modelica/ast" />
+            <arg value="etc/grammar/Modelica.jjt" />
+        </java>
         <!-- Ensure generated using CharStream interface -->
-        <javacc static="false"
-                usercharstream="true"
-                target="${target}/net/sourceforge/pmd/lang/modelica/ast/Modelica.jj"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/modelica/ast"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="javacc"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-STATIC:false" />
+            <arg value="-USER_CHAR_STREAM:true" />
+            <arg value="-OUTPUT_DIRECTORY:${target}/net/sourceforge/pmd/lang/modelica/ast" />
+            <arg value="${target}/net/sourceforge/pmd/lang/modelica/ast/Modelica.jj" />
+        </java>
         <delete file="${target}/net/sourceforge/pmd/lang/modelica/ast/Node.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/modelica/ast/SimpleNode.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/modelica/ast/CharStream.java" />
