@@ -63,7 +63,7 @@ public class CsTokenizer extends AntlrTokenizer {
         private final boolean ignoreLiteralSequences;
         private boolean discardingUsings = false;
         private boolean discardingNL = false;
-        private boolean discardingLiterals = false;
+        private AntlrToken discardingLiteralsUntil = null;
         private boolean discardCurrent = false;
 
         CsTokenFilter(final AntlrTokenManager tokenManager, boolean ignoreUsings, boolean ignoreLiteralSequences) {
@@ -161,19 +161,24 @@ public class CsTokenizer extends AntlrTokenizer {
         private void skipLiteralSequences(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
             if (ignoreLiteralSequences) {
                 final int type = currentToken.getKind();
-                if (type == CSharpLexer.OPEN_BRACE && isSequenceOfLiterals(remainingTokens)) {
-                    discardingLiterals = true;
-                } else if (type == CSharpLexer.CLOSE_BRACE && discardingLiterals) {
-                    discardingLiterals = false;
-                    discardCurrent = true;
+                if (isDiscardingLiterals()) {
+                    if (currentToken == discardingLiteralsUntil) { // NOPMD - intentional check for reference equality
+                        discardingLiteralsUntil = null;
+                        discardCurrent = true;
+                    }
+                } else if (type == CSharpLexer.OPEN_BRACE) {
+                    final AntlrToken finalToken = findEndOfSequenceOfLiterals(remainingTokens);
+                    discardingLiteralsUntil = finalToken;
                 }
             }
         }
 
-        private boolean isSequenceOfLiterals(final Iterable<AntlrToken> remainingTokens) {
+        private AntlrToken findEndOfSequenceOfLiterals(final Iterable<AntlrToken> remainingTokens) {
             boolean seenLiteral = false;
+            int braceCount = 0;
             for (final AntlrToken token : remainingTokens) {
                 switch (token.getKind()) {
+                case CSharpLexer.BIN_INTEGER_LITERAL:
                 case CSharpLexer.CHARACTER_LITERAL:
                 case CSharpLexer.HEX_INTEGER_LITERAL:
                 case CSharpLexer.INTEGER_LITERAL:
@@ -182,20 +187,33 @@ public class CsTokenizer extends AntlrTokenizer {
                     break; // can be skipped; continue to the next token
                 case CSharpLexer.COMMA:
                     break; // can be skipped; continue to the next token
+                case CSharpLexer.OPEN_BRACE:
+                    braceCount++;
+                    break; // curly braces are allowed, as long as they're balanced
                 case CSharpLexer.CLOSE_BRACE:
-                    // end of the list; skip all contents
-                    return seenLiteral;
+                    braceCount--;
+                    if (braceCount < 0) {
+                        // end of the list; skip all contents
+                        return seenLiteral ? token : null;
+                    } else {
+                        // curly braces are not yet balanced; continue to the next token
+                        break;
+                    }
                 default:
                     // some other token than the expected ones; this is not a sequence of literals
-                    return false;
+                    return null;
                 }
             }
-            return false;
+            return null;
+        }
+
+        public boolean isDiscardingLiterals() {
+            return discardingLiteralsUntil != null;
         }
 
         @Override
         protected boolean isLanguageSpecificDiscarding() {
-            return discardingUsings || discardingNL || discardingLiterals || discardCurrent;
+            return discardingUsings || discardingNL || isDiscardingLiterals() || discardCurrent;
         }
     }
 }
