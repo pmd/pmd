@@ -35,6 +35,7 @@ This is a {{ site.pmd.release_type }} release.
 ### Deprecated rules
 
 * java-performance
+  * [AvoidUsingShortType](https://pmd.github.io/latest/pmd_rules_java_performance.html#avoidusingshorttype): arithmetic on shorts is not significantly slower than on ints, whereas using shorts may provide significant memory savings in arrays.
   * [SimplifyStartsWith](https://pmd.github.io/latest/pmd_rules_java_performance.html#simplifystartswith): the suggested code transformation has an insignificant performance impact, and decreases readability.
 
 
