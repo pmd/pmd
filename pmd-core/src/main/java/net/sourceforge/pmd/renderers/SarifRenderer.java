@@ -18,11 +18,11 @@ import com.google.gson.GsonBuilder;
 public class SarifRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "sarif";
 
-    private SarifLog sarifLog = new SarifLog();
+    private SarifLog sarifLog;
     private SarifLog.Run run;
     private SarifLog.Component driver;
-    private List<SarifLog.ReportingDescriptor> ruleDescriptors = new LinkedList<>();
-    private List<SarifLog.Result> results = new LinkedList<>();
+    private List<SarifLog.ReportingDescriptor> ruleDescriptors;
+    private List<SarifLog.Result> results;
 
     public SarifRenderer() {
         super(NAME, "Sarif integration.");
@@ -35,6 +35,10 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void start() throws IOException {
+        sarifLog = new SarifLog();
+        ruleDescriptors = new LinkedList<>();
+        results = new LinkedList<>();
+
         driver = getDriverComponent();
         SarifLog.Tool tool = new SarifLog.Tool().setDriver(driver);
         run = new SarifLog.Run().setTool(tool);
