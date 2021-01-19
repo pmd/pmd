@@ -21,7 +21,7 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
     private static final String APEX_PREFIX = "apex";
     private static final EnumSet<ElEscapeDetector.Escaping> URLENCODE_JSINHTMLENCODE = EnumSet.of(ElEscapeDetector.Escaping.URLENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
     private static final EnumSet<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
-    private static final String URL_METHOD_PATTERN = "url\\s*\\([^)]*$";
+    private static final Pattern URL_METHOD_PATTERN = Pattern.compile("url\\s*\\([^)]*$", Pattern.CASE_INSENSITIVE);
 
     private final ElEscapeDetector escapeDetector = new ElEscapeDetector();
 
@@ -160,9 +160,7 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
         // Matches: "div { background: url('", "div { background: Url  ( blah"
         // Does not match: "div { background: url('myUrl')", "div { background: myStyle('"
 
-        return Pattern.compile(URL_METHOD_PATTERN, Pattern.CASE_INSENSITIVE)
-                .matcher(previousText)
-                .find();
+        return URL_METHOD_PATTERN.matcher(previousText).find();
     }
 
 }
