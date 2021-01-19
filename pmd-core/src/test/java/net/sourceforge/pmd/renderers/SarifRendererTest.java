@@ -1,22 +1,31 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
-
-import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-public class SarifRendererTest extends AbstractRendererTest{
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
+
+import net.sourceforge.pmd.FooRule;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.ReportTest;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+
+public class SarifRendererTest extends AbstractRendererTest {
     @Override
     public Renderer getRenderer() {
         return new SarifRenderer();

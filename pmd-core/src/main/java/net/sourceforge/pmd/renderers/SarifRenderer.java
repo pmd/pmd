@@ -1,19 +1,25 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.renderers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleViolation;
 
-import java.io.IOException;
-import java.util.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class SarifRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "sarif";
 
     private SarifLog sarifLog = new SarifLog();
     private SarifLog.Run run;
-    private SarifLog.Tool tool;
     private SarifLog.Component driver;
     private List<SarifLog.ReportingDescriptor> ruleDescriptors = new LinkedList<>();
     private List<SarifLog.Result> results = new LinkedList<>();
@@ -30,7 +36,7 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
     @Override
     public void start() throws IOException {
         driver = getDriverComponent();
-        tool = new SarifLog.Tool().setDriver(driver);
+        SarifLog.Tool tool = new SarifLog.Tool().setDriver(driver);
         run = new SarifLog.Run().setTool(tool);
     }
 
@@ -164,6 +170,4 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
 
         return result;
     }
-
-
 }
