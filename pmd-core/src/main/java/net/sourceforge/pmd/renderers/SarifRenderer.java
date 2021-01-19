@@ -38,35 +38,22 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
 
         while (violations.hasNext()) {
+            SarifLog.Result result;
+            List<SarifLog.Location> locations = new LinkedList<>();
+
             RuleViolation rv = violations.next();
 
             Integer ruleIndex = getRuleViolationIndex(rv);
-
             if (ruleIndex != -1) {
-                SarifLog.Result existingResult = getResultByRuleIndex(ruleIndex);
-
-                List<SarifLog.Location> locations = existingResult.getLocations();
-                locations.add(getRuleViolationLocation(rv));
-                existingResult.setLocations(locations);
+                result = getResultByRuleIndex(ruleIndex);
+                locations = result.getLocations();
             } else {
-                SarifLog.ReportingDescriptor ruleDescriptor = getReportingDescriptor(rv);
-                ruleDescriptors.add(ruleDescriptor);
-                ruleIndex = ruleDescriptors.indexOf(ruleDescriptor);
-
-                SarifLog.Result result = new SarifLog.Result();
-                result.setRuleId(rv.getRule().getName());
-                result.setRuleIndex(ruleIndex);
-
-                SarifLog.Message message = new SarifLog.Message();
-                message.setText(rv.getDescription());
-                result.setMessage(message);
-
-                List<SarifLog.Location> locations = new LinkedList<>();
-                locations.add(getRuleViolationLocation(rv));
-                result.setLocations(locations);
-
+                result = resultFrom(rv);
                 results.add(result);
             }
+
+            locations.add(getRuleViolationLocation(rv));
+            result.setLocations(locations);
         }
     }
 
@@ -88,6 +75,22 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
             String json = gson.toJson(sarifLog);
             writer.write(json);
         }
+    }
+
+    private SarifLog.Result resultFrom(RuleViolation violation) {
+        SarifLog.ReportingDescriptor ruleDescriptor = getReportingDescriptor(violation);
+        ruleDescriptors.add(ruleDescriptor);
+        Integer ruleIndex = ruleDescriptors.indexOf(ruleDescriptor);
+
+        SarifLog.Result result = new SarifLog.Result();
+        result.setRuleId(violation.getRule().getName());
+        result.setRuleIndex(ruleIndex);
+
+        SarifLog.Message message = new SarifLog.Message();
+        message.setText(violation.getDescription());
+        result.setMessage(message);
+
+        return result;
     }
 
     private SarifLog.Component getDriverComponent() {
