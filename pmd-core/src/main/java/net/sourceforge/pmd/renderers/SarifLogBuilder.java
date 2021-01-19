@@ -23,11 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.NoArgsConstructor;
-
-import net.sourceforge.pmd.renderers.SarifLog.Run;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.renderers.SarifLog.Run;
+
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 class SarifLogBuilder {
