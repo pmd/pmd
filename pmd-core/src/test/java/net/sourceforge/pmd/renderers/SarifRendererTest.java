@@ -47,6 +47,31 @@ public class SarifRendererTest extends AbstractRendererTest {
     }
 
     @Override
+    public String getExpectedError(Report.ProcessingError error) {
+        String expected = readFile("expected-error.sarif.json");
+        expected = expected.replace("###REPLACE_ME###", error.getDetail()
+                .replaceAll("\r", "\\\\r")
+                .replaceAll("\n", "\\\\n")
+                .replaceAll("\t", "\\\\t"));
+        return expected;
+    }
+
+    @Override
+    public String getExpectedError(Report.ConfigurationError error) {
+        return readFile("expected-configerror.sarif.json");
+    }
+
+    @Override
+    public String getExpectedErrorWithoutMessage(Report.ProcessingError error) {
+        String expected = readFile("expected-error-nomessage.sarif.json");
+        expected = expected.replace("###REPLACE_ME###", error.getDetail()
+                .replaceAll("\r", "\\\\r")
+                .replaceAll("\n", "\\\\n")
+                .replaceAll("\t", "\\\\t"));
+        return expected;
+    }
+
+    @Override
     @Test
     public void testRendererMultiple() throws Exception {
         // Setup

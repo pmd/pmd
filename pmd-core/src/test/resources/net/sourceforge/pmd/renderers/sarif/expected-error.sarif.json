@@ -1,0 +1,8 @@
+{
+  "processing-errors": {
+    "filename": "file",
+    "detail": "###REPLACE_ME###",
+    "message": "RuntimeException: Error"
+  },
+  "config-errors": {}
+}

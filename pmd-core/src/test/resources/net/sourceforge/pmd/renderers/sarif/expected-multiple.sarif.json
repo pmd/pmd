@@ -10,16 +10,6 @@
           "informationUri": "https://pmd.github.io/pmd/",
           "rules": [
             {
-              "id": "Foo",
-              "shortDescription": {
-                "text": "blah"
-              },
-              "properties": {
-                "ruleset": "RuleSet",
-                "priority": 5
-              }
-            },
-            {
               "id": "Boo",
               "shortDescription": {
                 "text": "blah"
@@ -28,13 +18,23 @@
                 "ruleset": "RuleSet",
                 "priority": 1
               }
+            },
+            {
+              "id": "Foo",
+              "shortDescription": {
+                "text": "blah"
+              },
+              "properties": {
+                "ruleset": "RuleSet",
+                "priority": 5
+              }
             }
           ]
         }
       },
       "results": [
         {
-          "ruleId": "Foo",
+          "ruleId": "Boo",
           "ruleIndex": 0,
           "message": {
             "text": "blah"
@@ -49,14 +49,14 @@
                   "startLine": 1,
                   "startColumn": 1,
                   "endLine": 1,
-                  "endColumn": 1
+                  "endColumn": 2
                 }
               }
             }
           ]
         },
         {
-          "ruleId": "Boo",
+          "ruleId": "Foo",
           "ruleIndex": 1,
           "message": {
             "text": "blah"
@@ -71,7 +71,7 @@
                   "startLine": 1,
                   "startColumn": 1,
                   "endLine": 1,
-                  "endColumn": 2
+                  "endColumn": 1
                 }
               }
             }

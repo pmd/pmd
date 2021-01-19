@@ -6,23 +6,30 @@ package net.sourceforge.pmd.renderers;
 
 import java.util.List;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
+@Builder
 public class SarifLog {
 
     /**
      * The URI of the JSON schema corresponding to the version.
      */
-    private String $schema = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json";
+    @Builder.Default
+    @SerializedName("$schema")
+    private String schema = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json";
 
     /**
      * The SARIF format version of this log file.
      */
+    @Builder.Default
     private String version = "2.1.0";
 
     /**
@@ -199,6 +206,7 @@ public class SarifLog {
      */
     @Data
     @Accessors(chain = true)
+    @Builder
     public static class Run {
 
         /**
@@ -212,6 +220,7 @@ public class SarifLog {
          * The set of results contained in an SARIF log. The results array can be omitted when a run is solely exporting
          * rules metadata. It must be present (but may be empty) if a log file represents an actual scan.
          */
+        @Singular
         private List<Result> results;
     }
 
@@ -220,6 +229,7 @@ public class SarifLog {
      */
     @Data
     @Accessors(chain = true)
+    @Builder
     public static class Tool {
 
         /**
@@ -232,6 +242,7 @@ public class SarifLog {
      * A component, such as a plug-in or the driver, of the analysis tool that was run.
      */
     @Data
+    @Builder(toBuilder = true)
     public static class Component {
         /**
          * The name of the tool component.

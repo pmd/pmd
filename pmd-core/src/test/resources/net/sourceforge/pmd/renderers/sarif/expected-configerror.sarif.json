@@ -1,0 +1,8 @@
+{
+  "processing-errors": {},
+  "config-errors": {
+    "ruleset": "RuleSet",
+    "rule": "Foo",
+    "message": "a configuration error"
+  }
+}
