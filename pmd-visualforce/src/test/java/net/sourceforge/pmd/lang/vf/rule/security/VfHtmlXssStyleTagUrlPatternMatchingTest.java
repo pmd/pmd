@@ -14,7 +14,6 @@ import org.junit.Test;
  */
 public class VfHtmlXssStyleTagUrlPatternMatchingTest {
 
-    final VfHtmlStyleTagXssRule rule = new VfHtmlStyleTagXssRule();
 
     @Test
     public void testUrlMethodPatternMatchForPositive() {
