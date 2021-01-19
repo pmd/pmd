@@ -19,7 +19,7 @@ those can be specified with the `-property` / `-P` option on the command-line.
 
 {% include note.html content="Suppressed violations are only reported, if the CLI parameter `-showsuppressed` is set." %}
 
-## SARIF
+## sarif
 
 "SARIF, the Static Analysis Results Interchange Format, is a standard, JSON-based format for the output of static
 analysis tools. It has been approved as an OASIS standard" - <https://docs.oasis-open.org/sarif/sarif/v2.0/sarif-v2.0.html>.
