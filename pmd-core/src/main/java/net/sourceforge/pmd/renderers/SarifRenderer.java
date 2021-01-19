@@ -102,9 +102,9 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
     private SarifLog.Component getDriverComponent() {
         SarifLog.Component result = new SarifLog.Component();
 
-        result.setName("PMD"); // to improve
+        result.setName("PMD");
         result.setVersion(PMDVersion.VERSION);
-        result.setInformationUri("https://github.com/pmd"); // to improve
+        result.setInformationUri("https://pmd.github.io/pmd/");
 
         return result;
     }
