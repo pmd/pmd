@@ -123,7 +123,6 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
         SarifLog.ReportingDescriptor result = new SarifLog.ReportingDescriptor();
 
         result.setId(rv.getRule().getName());
-        result.setName(rv.getRule().getName());
         result.setShortDescription(new SarifLog.MultiformatMessage(rv.getDescription()));
         result.setHelpUri(rv.getRule().getExternalInfoUrl());
         result.setProperties(getRuleProperties(rv));
