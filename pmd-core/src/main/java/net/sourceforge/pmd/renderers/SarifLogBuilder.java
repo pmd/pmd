@@ -37,6 +37,17 @@ class SarifLogBuilder {
         return new SarifLogBuilder();
     }
 
+    public SarifLogBuilder add(RuleViolation violation) {
+        final ReportingDescriptor ruleDescriptor = getReportingDescriptor(violation);
+        final Location location = getRuleViolationLocation(violation);
+
+        final List<Location> ruleLocation = locationsByRule.containsKey(ruleDescriptor) ? locationsByRule.get(ruleDescriptor) : new ArrayList<Location>();
+        ruleLocation.add(location);
+        locationsByRule.put(ruleDescriptor, ruleLocation);
+
+        return this;
+    }
+
     public SarifLog build() {
         final List<ReportingDescriptor> rules = new ArrayList<>(locationsByRule.keySet());
 
@@ -54,17 +65,6 @@ class SarifLogBuilder {
         List<SarifLog.Run> runs = Collections.singletonList(run);
 
         return SarifLog.builder().runs(runs).build();
-    }
-
-    public SarifLogBuilder add(RuleViolation violation) {
-        final ReportingDescriptor ruleDescriptor = getReportingDescriptor(violation);
-        final Location location = getRuleViolationLocation(violation);
-
-        final List<Location> ruleLocation = locationsByRule.containsKey(ruleDescriptor) ? locationsByRule.get(ruleDescriptor) : new ArrayList<Location>();
-        ruleLocation.add(location);
-        locationsByRule.put(ruleDescriptor, ruleLocation);
-
-        return this;
     }
 
     private Result resultFrom(ReportingDescriptor rule, Integer ruleIndex, List<Location> locations) {

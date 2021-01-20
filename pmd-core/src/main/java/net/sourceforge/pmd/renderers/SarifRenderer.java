@@ -64,7 +64,6 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
 
     private void writeLog() throws IOException {
         final SarifLog sarifLog = sarifLogBuilder.build();
-
         final String json = gson.toJson(sarifLog);
         writer.write(json);
     }
