@@ -6,7 +6,10 @@ package net.sourceforge.pmd.renderers;
 
 import static lombok.AccessLevel.PRIVATE;
 import static net.sourceforge.pmd.renderers.SarifLog.ArtifactLocation;
+import static net.sourceforge.pmd.renderers.SarifLog.AssociatedRule;
 import static net.sourceforge.pmd.renderers.SarifLog.Component;
+import static net.sourceforge.pmd.renderers.SarifLog.Exception;
+import static net.sourceforge.pmd.renderers.SarifLog.Invocation;
 import static net.sourceforge.pmd.renderers.SarifLog.Location;
 import static net.sourceforge.pmd.renderers.SarifLog.Message;
 import static net.sourceforge.pmd.renderers.SarifLog.MultiformatMessage;
@@ -15,7 +18,10 @@ import static net.sourceforge.pmd.renderers.SarifLog.PropertyBag;
 import static net.sourceforge.pmd.renderers.SarifLog.Region;
 import static net.sourceforge.pmd.renderers.SarifLog.ReportingDescriptor;
 import static net.sourceforge.pmd.renderers.SarifLog.Result;
+import static net.sourceforge.pmd.renderers.SarifLog.Run;
 import static net.sourceforge.pmd.renderers.SarifLog.Tool;
+import static net.sourceforge.pmd.renderers.SarifLog.ToolConfigurationNotification;
+import static net.sourceforge.pmd.renderers.SarifLog.ToolExecutionNotification;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,14 +30,16 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.renderers.SarifLog.Run;
 
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 class SarifLogBuilder {
     private final Map<ReportingDescriptor, List<Location>> locationsByRule = new HashMap<>();
+    private final List<ToolConfigurationNotification> toolConfigurationNotifications = new ArrayList<>();
+    private final List<ToolExecutionNotification> toolExecutionNotifications = new ArrayList<>();
 
     public static SarifLogBuilder sarifLogBuilder() {
         return new SarifLogBuilder();
@@ -48,6 +56,56 @@ class SarifLogBuilder {
         return this;
     }
 
+    public SarifLogBuilder addRunTimeError(Report.ProcessingError error) {
+        ArtifactLocation artifactLocation = ArtifactLocation.builder()
+                .uri(error.getFile())
+                .build();
+
+        PhysicalLocation physicalLocation = PhysicalLocation.builder()
+                .artifactLocation(artifactLocation)
+                .build();
+
+        Location location = Location
+                .builder()
+                .physicalLocation(physicalLocation)
+                .build();
+
+        Message message = Message.builder()
+                .text(error.getMsg())
+                .build();
+
+        Exception exception = Exception.builder()
+                .message(error.getDetail())
+                .build();
+
+        ToolExecutionNotification toolExecutionNotification = ToolExecutionNotification.builder()
+                .locations(Collections.singletonList(location))
+                .message(message)
+                .exception(exception)
+                .build();
+
+        toolExecutionNotifications.add(toolExecutionNotification);
+
+        return this;
+    }
+
+    public SarifLogBuilder addConfigurationError(Report.ConfigurationError error) {
+        AssociatedRule associatedRule = AssociatedRule.builder()
+                .id(error.rule().getName())
+                .build();
+
+        Message message = Message.builder().text(error.issue()).build();
+
+        ToolConfigurationNotification toolConfigurationNotification = ToolConfigurationNotification.builder()
+                .associatedRule(associatedRule)
+                .message(message)
+                .build();
+
+        toolConfigurationNotifications.add(toolConfigurationNotification);
+
+        return this;
+    }
+
     public SarifLog build() {
         final List<ReportingDescriptor> rules = new ArrayList<>(locationsByRule.keySet());
 
@@ -60,65 +118,78 @@ class SarifLogBuilder {
 
         final Component driver = getDriverComponent().toBuilder().rules(rules).build();
         final Tool tool = Tool.builder().driver(driver).build();
-        final Run run = Run.builder().tool(tool).results(results).build();
+        final Invocation invocation = Invocation.builder()
+                .toolExecutionNotifications(toolExecutionNotifications)
+                .toolConfigurationNotifications(toolConfigurationNotifications)
+                .executionSuccessful(isExecutionSuccessful())
+                .build();
+        final Run run = Run.builder()
+                .tool(tool)
+                .results(results)
+                .invocations(Collections.singletonList(invocation))
+                .build();
 
-        List<SarifLog.Run> runs = Collections.singletonList(run);
+        List<Run> runs = Collections.singletonList(run);
 
         return SarifLog.builder().runs(runs).build();
     }
 
+    private boolean isExecutionSuccessful() {
+        return toolExecutionNotifications.isEmpty() && toolConfigurationNotifications.isEmpty();
+    }
+
     private Result resultFrom(ReportingDescriptor rule, Integer ruleIndex, List<Location> locations) {
-        final Result result = new Result();
-        result.setRuleId(rule.getId());
-        result.setRuleIndex(ruleIndex);
+        final Result result = Result.builder()
+                .ruleId(rule.getId())
+                .ruleIndex(ruleIndex)
+                .build();
 
-        final Message message = new Message();
-        message.setText(rule.getShortDescription().getText());
+        final Message message = Message.builder()
+                .text(rule.getShortDescription().getText())
+                .build();
+
         result.setMessage(message);
-
         result.setLocations(locations);
 
         return result;
     }
 
     private Location getRuleViolationLocation(RuleViolation rv) {
-        ArtifactLocation artifactLocation = new ArtifactLocation();
-        artifactLocation.setUri(rv.getFilename());
+        ArtifactLocation artifactLocation = ArtifactLocation.builder()
+                .uri(rv.getFilename())
+                .build();
 
-        Region region = new Region();
-        region.setStartLine(rv.getBeginLine());
-        region.setEndLine(rv.getEndLine());
-        region.setStartColumn(rv.getBeginColumn());
-        region.setEndColumn(rv.getEndColumn());
+        Region region = Region.builder()
+            .startLine(rv.getBeginLine())
+            .endLine(rv.getEndLine())
+            .startColumn(rv.getBeginColumn())
+            .endColumn(rv.getEndColumn())
+            .build();
 
-        PhysicalLocation physicalLocation = new PhysicalLocation();
-        physicalLocation.setArtifactLocation(artifactLocation);
-        physicalLocation.setRegion(region);
+        PhysicalLocation physicalLocation = PhysicalLocation.builder()
+                .artifactLocation(artifactLocation)
+                .region(region)
+                .build();
 
-        Location result = new Location();
-        result.setPhysicalLocation(physicalLocation);
-
-        return result;
+        return Location.builder()
+            .physicalLocation(physicalLocation)
+            .build();
     }
 
     private ReportingDescriptor getReportingDescriptor(RuleViolation rv) {
-        ReportingDescriptor result = new ReportingDescriptor();
-
-        result.setId(rv.getRule().getName());
-        result.setShortDescription(new MultiformatMessage(rv.getDescription()));
-        result.setHelpUri(rv.getRule().getExternalInfoUrl());
-        result.setProperties(getRuleProperties(rv));
-
-        return result;
+        return ReportingDescriptor.builder()
+            .id(rv.getRule().getName())
+            .shortDescription(new MultiformatMessage(rv.getDescription()))
+            .helpUri(rv.getRule().getExternalInfoUrl())
+            .properties(getRuleProperties(rv))
+            .build();
     }
 
     private PropertyBag getRuleProperties(RuleViolation rv) {
-        PropertyBag result = new PropertyBag();
-
-        result.setRuleset(rv.getRule().getRuleSetName());
-        result.setPriority(rv.getRule().getPriority().getPriority());
-
-        return result;
+        return PropertyBag.builder()
+                .ruleset(rv.getRule().getRuleSetName())
+                .priority(rv.getRule().getPriority().getPriority())
+                .build();
     }
 
     private Component getDriverComponent() {

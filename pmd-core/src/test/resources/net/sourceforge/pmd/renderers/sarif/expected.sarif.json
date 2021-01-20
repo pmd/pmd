@@ -45,6 +45,13 @@
             }
           ]
         }
+      ],
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolConfigurationNotifications": [],
+          "toolExecutionNotifications": []
+        }
       ]
     }
   ]

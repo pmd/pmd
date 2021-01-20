@@ -42,6 +42,7 @@ public class SarifLog {
      */
     @Data
     @Accessors(chain = true)
+    @Builder
     public static class Location {
 
         /**
@@ -59,6 +60,7 @@ public class SarifLog {
      * Specifies the location of an artifact.
      */
     @Data
+    @Builder
     public static class ArtifactLocation {
 
         /**
@@ -85,6 +87,7 @@ public class SarifLog {
      */
     @Data
     @Accessors(chain = true)
+    @Builder
     public static class PhysicalLocation {
 
         /**
@@ -102,6 +105,7 @@ public class SarifLog {
      * Key/value pairs that provide additional information about the object.
      */
     @Data
+    @Builder
     public static class PropertyBag {
 
         /**
@@ -120,6 +124,7 @@ public class SarifLog {
      */
     @Data
     @Accessors(chain = true)
+    @Builder
     public static class Region {
 
         /**
@@ -148,6 +153,7 @@ public class SarifLog {
      */
     @Data
     @Accessors(chain = true)
+    @Builder
     public static class Result {
 
         /**
@@ -183,6 +189,7 @@ public class SarifLog {
      */
     @Data
     @Accessors(chain = true)
+    @Builder
     public static class Message {
 
         /**
@@ -222,6 +229,12 @@ public class SarifLog {
          */
         @Singular
         private List<Result> results;
+
+        /**
+         * The set of invocations providing information about the tool execution such as configuration errors or runtime
+         * exceptions
+         */
+        private List<Invocation> invocations;
     }
 
     /**
@@ -271,6 +284,7 @@ public class SarifLog {
      */
     @Data
     @Accessors(chain = true)
+    @Builder
     public static class ReportingDescriptor {
 
         /**
@@ -324,6 +338,7 @@ public class SarifLog {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class MultiformatMessage {
 
         /**
@@ -340,4 +355,91 @@ public class SarifLog {
             this.text = text;
         }
     }
+
+    /**
+     * A exception information object, for the tool runtime errors.
+     */
+    @Data
+    @Builder(toBuilder = true)
+    public static class Exception {
+        /**
+         * A plain text message string or format string.
+         */
+        private String message;
+    }
+
+    /**
+     * A associated rule to the toolConfigurationNotification.
+     */
+    @Data
+    @Builder(toBuilder = true)
+    public static class AssociatedRule {
+        /**
+         * The stable, unique identifier of the rule, if any, to which this result is relevant.
+         */
+        private String id;
+    }
+
+    /**
+     * An invocation property to specify tool configuration errors.
+     */
+    @Data
+    @Builder(toBuilder = true)
+    public static class ToolConfigurationNotification {
+        /**
+         * An associated rule
+         */
+        private AssociatedRule associatedRule;
+
+        /**
+         * A message component to detail the configuration error
+         */
+        private Message message;
+    }
+
+    /**
+     * An invocation property to specify tool runtime errors.
+     */
+    @Data
+    @Builder(toBuilder = true)
+    public static class ToolExecutionNotification {
+        /**
+         * A list of related locations to the error
+         */
+        private List<Location> locations;
+
+        /**
+         * A message component to detail the runtime error
+         */
+        private Message message;
+
+        /**
+         * A exception component to detail the tool exception
+         */
+        private Exception exception;
+    }
+
+    /**
+     * An invocation component to specify tool invocation details/errors.
+     */
+    @Data
+    @Builder(toBuilder = true)
+    public static class Invocation {
+        /**
+         * An indicator of execution status
+         */
+        private Boolean executionSuccessful;
+
+        /**
+         * A list of associated tool configuration errors
+         */
+        private List<ToolConfigurationNotification> toolConfigurationNotifications;
+
+        /**
+         * A list of associated tool runtime errors
+         */
+        private List<ToolExecutionNotification> toolExecutionNotifications;
+    }
+
+
 }

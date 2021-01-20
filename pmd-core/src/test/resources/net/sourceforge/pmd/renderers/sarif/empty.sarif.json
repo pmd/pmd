@@ -11,7 +11,14 @@
           "rules": []
         }
       },
-      "results": []
+      "results": [],
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolConfigurationNotifications": [],
+          "toolExecutionNotifications": []
+        }
+      ]
     }
   ]
 }
