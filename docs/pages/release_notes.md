@@ -20,6 +20,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2994](https://github.com/pmd/pmd/pull/2994): \[core] Fix code climate severity strings
 *   java-bestpractices
     *   [#575](https://github.com/pmd/pmd/issues/575): \[java] LiteralsFirstInComparisons should consider constant fields
+*   java-errorprone
+    *   [#3062](https://github.com/pmd/pmd/issues/3062): \[java] CloseResource FP with reassigned stream
 
 ### API Changes
 
