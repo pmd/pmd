@@ -1625,6 +1625,19 @@ public class ClassTypeResolverTest {
     }
 
     @Test
+    public void testGenericArrayUnresolved() {
+        // InnerClass cannot be resolved as no compiled code is available
+        // we should not throw a NPE when trying to parse/type resolve.
+        java11.parse("import java.util.*;"
+                + "class Foo {"
+                + "  private static class InnerClass {}"
+                + "  void useInnerClass(InnerClass... classes) {"
+                + "    List<InnerClass> result = new ArrayList<>(Arrays.<InnerClass>asList(classes));"
+                + "  }"
+                + "}");
+    }
+
+    @Test
     public void testMethodTypeInference() throws JaxenException {
         List<AbstractJavaTypeNode> expressions = selectNodes(GenericMethodsImplicit.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
