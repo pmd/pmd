@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTNegationExpression;
-import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
 import net.sourceforge.pmd.lang.vf.ast.VfTypedNode;
 
@@ -30,14 +29,18 @@ import net.sourceforge.pmd.lang.vf.ast.VfTypedNode;
 public final class ElEscapeDetector {
 
     private static final Set<String> SAFE_EXPRESSIONS = new HashSet<>(Arrays.asList("id", "size", "caseNumber"));
-    private static final Set NON_EMPTY_ARG_SAFE_RESOURCE = new HashSet<>(Arrays.asList("urlfor", "casesafeid", "begins", "contains",
-            "len", "getrecordids", "linkto", "sqrt", "round", "mod", "log", "ln", "exp", "abs", "floor", "ceiling",
-            "nullvalue", "isnumber", "isnull", "isnew", "isblank", "isclone", "year", "month", "day", "datetimevalue",
-            "datevalue", "date", "now", "today"));
-    private static final Set EMPTY_ARG_SAFE_RESOURCE = new HashSet<>(Arrays.asList("$action", "$page", "$site",
+    private static final Set<String> NON_EMPTY_ARG_SAFE_RESOURCE = new HashSet<>(Arrays.asList("urlfor", "casesafeid",
+            "begins", "contains", "len", "getrecordids", "linkto", "sqrt", "round", "mod", "log", "ln", "exp", "abs",
+            "floor", "ceiling", "nullvalue", "isnumber", "isnull", "isnew", "isblank", "isclone", "year", "month",
+            "day", "datetimevalue", "datevalue", "date", "now", "today"));
+    private static final Set<String> EMPTY_ARG_SAFE_RESOURCE = new HashSet<>(Arrays.asList("$action", "$page", "$site",
             "$resource", "$label", "$objecttype", "$component", "$remoteaction", "$messagechannel"));
 
-    public boolean innerContainsSafeFields(final VfNode expression) {
+    private ElEscapeDetector() {
+        // utility class
+    }
+
+    private static boolean innerContainsSafeFields(final VfNode expression) {
         for (VfNode child : expression.children()) {
 
             if (child instanceof ASTIdentifier && SAFE_EXPRESSIONS.contains(child.getImage().toLowerCase(Locale.ROOT))) {
@@ -61,14 +64,13 @@ public final class ElEscapeDetector {
         return false;
     }
 
-    public boolean containsSafeFields(final AbstractVFNode expression) {
+    public static boolean containsSafeFields(final VfNode expression) {
         final ASTExpression ex = expression.getFirstChildOfType(ASTExpression.class);
 
         return ex != null && innerContainsSafeFields(ex);
-
     }
 
-    public boolean startsWithSafeResource(final ASTElExpression el) {
+    public static boolean startsWithSafeResource(final ASTElExpression el) {
         final ASTExpression expression = el.getFirstChildOfType(ASTExpression.class);
         if (expression != null) {
             final ASTNegationExpression negation = expression.getFirstChildOfType(ASTNegationExpression.class);
@@ -94,12 +96,11 @@ public final class ElEscapeDetector {
         return false;
     }
 
-    public boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression, Escaping escape) {
+    public static boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression, Escaping escape) {
         return doesElContainAnyUnescapedIdentifiers(elExpression, EnumSet.of(escape));
-
     }
 
-    public boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression,
+    public static boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression,
                                                          EnumSet<Escaping> escapes) {
         if (elExpression == null) {
             return false;
@@ -154,7 +155,7 @@ public final class ElEscapeDetector {
      * Return true if the type of all data nodes can be determined and none of them require escaping
      * @param expression
      */
-    public boolean expressionContainsSafeDataNodes(ASTExpression expression) {
+    private static boolean expressionContainsSafeDataNodes(ASTExpression expression) {
         try {
             for (VfTypedNode node : expression.getDataNodes().keySet()) {
                 DataType dataType = node.getDataType();
@@ -187,5 +188,4 @@ public final class ElEscapeDetector {
             return text;
         }
     }
-
 }

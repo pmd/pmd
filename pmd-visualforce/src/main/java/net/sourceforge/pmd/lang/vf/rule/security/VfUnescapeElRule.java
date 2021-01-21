@@ -49,8 +49,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final EnumSet<ElEscapeDetector.Escaping> JSENCODE_JSINHTMLENCODE = EnumSet.of(ElEscapeDetector.Escaping.JSENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
     private static final EnumSet<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
 
-    private final ElEscapeDetector escapeDetector = new ElEscapeDetector();
-
     @Override
     public Object visit(ASTHtmlScript node, Object data) {
         checkIfCorrectlyEscaped(node, data);
@@ -88,15 +86,18 @@ public class VfUnescapeElRule extends AbstractVfRule {
         }
         if (quoted) {
             // check escaping too
-            if (!(jsonParse || escapeDetector.startsWithSafeResource(elExpression) || escapeDetector.containsSafeFields(elExpression))) {
-                if (escapeDetector.doesElContainAnyUnescapedIdentifiers(elExpression,
+            if (!(jsonParse
+                    || ElEscapeDetector.startsWithSafeResource(elExpression)
+                    || ElEscapeDetector.containsSafeFields(elExpression))) {
+                if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(elExpression,
                         JSENCODE_JSINHTMLENCODE)) {
                     addViolation(data, elExpression);
                 }
             }
         } else {
-            if (!(escapeDetector.startsWithSafeResource(elExpression) || escapeDetector.containsSafeFields(elExpression))) {
-                final boolean hasUnscaped = escapeDetector.doesElContainAnyUnescapedIdentifiers(elExpression,
+            if (!(ElEscapeDetector.startsWithSafeResource(elExpression)
+                    || ElEscapeDetector.containsSafeFields(elExpression))) {
+                final boolean hasUnscaped = ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(elExpression,
                         JSENCODE_JSINHTMLENCODE);
                 if (!(jsonParse && !hasUnscaped)) {
                     addViolation(data, elExpression);
@@ -181,11 +182,11 @@ public class VfUnescapeElRule extends AbstractVfRule {
                             break;
                         }
 
-                        if (escapeDetector.startsWithSafeResource(el)) {
+                        if (ElEscapeDetector.startsWithSafeResource(el)) {
                             break;
                         }
 
-                        if (escapeDetector.doesElContainAnyUnescapedIdentifiers(el, ElEscapeDetector.Escaping.URLENCODE)) {
+                        if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(el, ElEscapeDetector.Escaping.URLENCODE)) {
                             isEL = true;
                             toReport.add(el);
                         }
@@ -216,12 +217,11 @@ public class VfUnescapeElRule extends AbstractVfRule {
             if (ON_EVENT.matcher(name).matches()) {
                 final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
                 for (ASTElExpression el : elsInVal) {
-                    if (escapeDetector.startsWithSafeResource(el)) {
+                    if (ElEscapeDetector.startsWithSafeResource(el)) {
                         continue;
                     }
 
-                    if (escapeDetector.doesElContainAnyUnescapedIdentifiers(el,
-                            ANY_ENCODE)) {
+                    if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(el, ANY_ENCODE)) {
                         isEL = true;
                         toReport.add(el);
                     }
@@ -280,11 +280,12 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
                 final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
                 for (ASTElExpression el : elsInVal) {
-                    if (escapeDetector.startsWithSafeResource(el)) {
+                    if (ElEscapeDetector.startsWithSafeResource(el)) {
                         continue;
                     }
 
-                    if (escapeDetector.doesElContainAnyUnescapedIdentifiers(el, ElEscapeDetector.Escaping.HTMLENCODE)) {
+                    if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(el,
+                            ElEscapeDetector.Escaping.HTMLENCODE)) {
                         isEL = true;
                         toReport.add(el);
                     }
@@ -347,11 +348,12 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     for (ASTAttribute attrib : innerAttributes) {
                         final List<ASTElExpression> elsInVal = attrib.findDescendantsOfType(ASTElExpression.class);
                         for (final ASTElExpression el : elsInVal) {
-                            if (escapeDetector.startsWithSafeResource(el)) {
+                            if (ElEscapeDetector.startsWithSafeResource(el)) {
                                 continue;
                             }
 
-                            if (escapeDetector.doesElContainAnyUnescapedIdentifiers(el, ElEscapeDetector.Escaping.HTMLENCODE)) {
+                            if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(el,
+                                    ElEscapeDetector.Escaping.HTMLENCODE)) {
                                 toReturn.add(el);
                             }
 
@@ -363,5 +365,4 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
         return toReturn;
     }
-
 }

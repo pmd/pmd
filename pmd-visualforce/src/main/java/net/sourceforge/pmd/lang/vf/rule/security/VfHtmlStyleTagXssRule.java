@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -23,8 +23,6 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
     private static final EnumSet<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
     private static final Pattern URL_METHOD_PATTERN = Pattern.compile("url\\s*\\([^)]*$", Pattern.CASE_INSENSITIVE);
 
-    private final ElEscapeDetector escapeDetector = new ElEscapeDetector();
-
     public VfHtmlStyleTagXssRule() {
         addRuleChainVisit(ASTElExpression.class);
     }
@@ -34,12 +32,13 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
      * placed inside an ASTContent, which in turn is placed inside
      * an ASTElement, where the element is not an inbuilt vf tag.
      *
+     * <pre>{@code
      * <ASTElement>
      *     <ASTContent>
      *         <ASTElExpression></ASTElExpression>
      *     </ASTContent>
      * </ASTElement>
-     *
+     * }</pre>
      */
     @Override
     public Object visit(ASTElExpression node, Object data) {
@@ -81,7 +80,7 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
             ASTElement elementNode,
             Object data) {
         final String previousText = getPreviousText(contentNode, node);
-        final boolean isWithinSafeResource = escapeDetector.startsWithSafeResource(node);
+        final boolean isWithinSafeResource = ElEscapeDetector.startsWithSafeResource(node);
 
         // if El is inside a <style></style> tag
         // and is not surrounded by a safe resource, check for violations
@@ -104,7 +103,7 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
     private void verifyEncodingWithinUrl(ASTElExpression elExpressionNode, Object data) {
 
         // only allow URLENCODING or JSINHTMLENCODING
-        if (escapeDetector.doesElContainAnyUnescapedIdentifiers(
+        if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(
                 elExpressionNode,
                 URLENCODE_JSINHTMLENCODE)) {
             addViolationWithMessage(
@@ -116,7 +115,7 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
     }
 
     private void verifyEncodingWithoutUrl(ASTElExpression elExpressionNode, Object data) {
-        if (escapeDetector.doesElContainAnyUnescapedIdentifiers(
+        if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(
                 elExpressionNode,
                 ANY_ENCODE)) {
             addViolationWithMessage(
@@ -132,15 +131,18 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
     }
 
     /**
-     * Get text content within style tag that leads upto the ElExpression.
+     * Get text content within style tag that leads up to the ElExpression.
      * For example, in this snippet:
-     * <style>
+     * 
+     * <pre>
+     * &lt;style>
      *  div {
      *   background: url('{!HTMLENCODE(XSSHere)}');
      * }
-     * </style>
+     * &lt;/style>
+     * </pre>
      *
-     * getPreviousText(...) would return "\n div {\n background: url("
+     * {@code getPreviousText(...)} would return <code>"\n div {\n background: url("</code>.
      *
      */
     private String getPreviousText(ASTContent content, ASTElExpression elExpressionNode) {
