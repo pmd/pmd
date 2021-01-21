@@ -35,6 +35,7 @@ public class CPPTokenizer extends JavaCCTokenizer {
      * @param properties the properties
      * @see #OPTION_SKIP_BLOCKS
      * @see #OPTION_SKIP_BLOCKS_PATTERN
+     * @see #OPTION_IGNORE_LITERAL_SEQUENCES
      */
     public void setProperties(Properties properties) {
         skipBlocks = Boolean.parseBoolean(properties.getProperty(OPTION_SKIP_BLOCKS, Boolean.TRUE.toString()));

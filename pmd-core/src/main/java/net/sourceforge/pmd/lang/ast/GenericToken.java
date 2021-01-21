@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
  *  Represents a language-independent token such as constants, values language reserved keywords, or comments.
  */
@@ -57,5 +59,6 @@ public interface GenericToken {
      *
      * The semantics of this kind depend on the language.
      */
+    @Experimental
     int getKind();
 }
