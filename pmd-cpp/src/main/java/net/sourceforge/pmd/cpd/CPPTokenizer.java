@@ -49,7 +49,8 @@ public class CPPTokenizer extends JavaCCTokenizer {
                 skipBlocksEnd = split[1];
             }
         }
-        ignoreLiteralSequences = Boolean.parseBoolean(properties.getProperty(OPTION_IGNORE_LITERAL_SEQUENCES, "false"));
+        ignoreLiteralSequences = Boolean.parseBoolean(properties.getProperty(OPTION_IGNORE_LITERAL_SEQUENCES,
+                Boolean.FALSE.toString()));
     }
 
     private String maybeSkipBlocks(String test) throws IOException {

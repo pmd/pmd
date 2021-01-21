@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
 /**
@@ -133,6 +134,7 @@ public class AntlrToken implements GenericToken {
     }
 
     @Override
+    @Experimental
     public int getKind() {
         return token.getType();
     }

@@ -38,7 +38,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
-#### Deprecated API
+#### Deprecated APIs
 
 *   {% jdoc !!java::lang.java.ast.ASTPackageDeclaration#getPackageNameImage() %},
     {% jdoc !!java::lang.java.ast.ASTTypeParameter#getParameterName() %}
@@ -48,7 +48,15 @@ This is a {{ site.pmd.release_type }} release.
     and {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceBody#isEnumChild() %},
     refs [#905](https://github.com/pmd/pmd/issues/905)
 
-#### Internal API
+#### Experimental APIs
+
+*   The method {% jdoc !!core::lang.ast.GenericToken#getKind() %} has been added as experimental. This
+    unifies the token interface for both JavaCC and Antlr. The already existing method
+    {% jdoc !!core::cpd.token.AntlrToken#getKind() %} is therefore experimental as well. The
+    returned constant depends on the actual language and might change whenever the grammar
+    of the language is changed.
+
+#### Internal APIs
 
 Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
