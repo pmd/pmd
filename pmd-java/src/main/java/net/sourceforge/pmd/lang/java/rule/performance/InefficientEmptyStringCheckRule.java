@@ -57,7 +57,7 @@ public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroChec
 
     @Override
     public boolean appliesToClassName(String name) {
-        return "String".equals(name);
+        return "String".equals(name) || "java.lang.String".equals(name);
     }
 
     @Override
