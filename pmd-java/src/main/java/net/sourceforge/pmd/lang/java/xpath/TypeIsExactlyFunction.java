@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.xpath;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jaxen.Context;
 import org.jaxen.Function;
 import org.jaxen.FunctionCallException;
@@ -48,8 +49,9 @@ public class TypeIsExactlyFunction implements Function {
      * @param fullTypeName The fully qualified name of the class or any supertype
      * @return True if the type of the node matches, false otherwise.
      */
-    public static boolean typeIsExactly(final Node n, final String fullTypeName) {
+    public static boolean typeIsExactly(Node n, String fullTypeName) {
         if (n instanceof TypeNode) {
+            fullTypeName = StringUtils.deleteWhitespace(fullTypeName);
             return TypeTestUtil.isExactlyA(fullTypeName, (TypeNode) n);
         } else {
             throw new IllegalArgumentException("typeIsExactly function may only be called on a TypeNode.");

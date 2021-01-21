@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -26,6 +27,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
  * <li>Take the node as the second parameter
  * <li>Systematically return false if the node argument is null
  * <li>Systematically throw if the other argument is null
+ * <li>Do not sanitize string arguments, they must be exactly canonical names,
+ * with no whitespace characters.
  * </ul>
  */
 public final class TypeTestUtil {
@@ -57,7 +60,7 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class parameter is null
      */
     public static boolean isA(/*@NonNull*/ Class<?> clazz, /*@Nullable*/ TypeNode node) {
-        requireParamNotNull("class", clazz);
+        AssertionUtil.requireParamNotNull("class", clazz);
         if (node == null) {
             return false;
         } else if (node.getType() == clazz) {
@@ -94,7 +97,7 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class name parameter is null
      */
     public static boolean isA(/*@NonNull*/ String canonicalName, /*@Nullable*/ TypeNode node) {
-        requireParamNotNull("canonicalName", canonicalName);
+        AssertionUtil.assertValidJavaBinaryName(canonicalName);
         if (node == null) {
             return false;
         }
@@ -142,7 +145,7 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class parameter is null
      */
     public static boolean isExactlyA(/*@NonNull*/ Class<?> clazz, /*@Nullable*/ TypeNode node) {
-        requireParamNotNull("class", clazz);
+        AssertionUtil.requireParamNotNull("class", clazz);
         if (node == null) {
             return false;
         }
@@ -174,7 +177,7 @@ public final class TypeTestUtil {
      * @throws NullPointerException if the class name parameter is null
      */
     public static boolean isExactlyA(/*@Nullable*/ String canonicalName, TypeNode node /*@NonNull*/) {
-        requireParamNotNull("canonicalName", canonicalName);
+        AssertionUtil.assertValidJavaBinaryName(canonicalName);
         if (node == null) {
             return false;
         }
@@ -190,14 +193,6 @@ public final class TypeTestUtil {
             return false;
         }
         return canoname.equals(canonicalName);
-    }
-
-
-    // this is in AssertionUtil in 7.0
-    private static void requireParamNotNull(String name, Object o) {
-        if (o == null) {
-            throw new NullPointerException("Parameter '" + name + "' was null");
-        }
     }
 
 

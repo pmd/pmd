@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -37,7 +39,7 @@ public final class TypeHelper {
     @Deprecated
     public static boolean isA(final TypeNode n, final String clazzName) {
         Objects.requireNonNull(n);
-        return clazzName != null && TypeTestUtil.isA(clazzName, n);
+        return clazzName != null && TypeTestUtil.isA(StringUtils.deleteWhitespace(clazzName), n);
     }
 
     /**
@@ -52,7 +54,7 @@ public final class TypeHelper {
     @Deprecated
     public static boolean isExactlyA(final TypeNode n, final String clazzName) {
         Objects.requireNonNull(n);
-        return clazzName != null && TypeTestUtil.isExactlyA(clazzName, n);
+        return clazzName != null && TypeTestUtil.isExactlyA(StringUtils.deleteWhitespace(clazzName), n);
     }
 
 
