@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.SimpleCharStream;
+import net.sourceforge.pmd.lang.vf.ast.ASTCompilationUnit;
 
 /**
  * Adapter for the VfParser.
@@ -26,7 +27,6 @@ import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 @Deprecated
 @InternalApi
 public class VfParser extends AbstractParser {
-
     public VfParser(ParserOptions parserOptions) {
         super(parserOptions);
     }
@@ -44,7 +44,13 @@ public class VfParser extends AbstractParser {
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
-        return new net.sourceforge.pmd.lang.vf.ast.VfParser(new SimpleCharStream(source)).CompilationUnit();
+        ASTCompilationUnit astCompilationUnit = new net.sourceforge.pmd.lang.vf.ast.VfParser(
+                new SimpleCharStream(source)).CompilationUnit();
+        // Add type information to the AST
+        VfExpressionTypeVisitor visitor = new VfExpressionTypeVisitor(fileName, (VfParserOptions) this.getParserOptions());
+        visitor.visit(astCompilationUnit, null);
+
+        return astCompilationUnit;
     }
 
     @Override

@@ -197,4 +197,42 @@ L40
     [id]                                    18        19
     [\]]                                    20        20
     [)]                                     21        21
+L43
+    [let]                                   1         3
+    [rawString]                             5         13
+    [=]                                     15        15
+    [#"Press "Continue" to close this d[    17        58
+L44
+    [extension]                             1         9
+    [URL]                                   11        13
+    [{]                                     15        15
+L45
+    [func]                                  5         8
+    [html]                                  10        13
+    [(]                                     14        14
+    [withTitle]                             15        23
+    [title]                                 25        29
+    [:]                                     30        30
+    [String]                                32        37
+    [)]                                     38        38
+    [->]                                    40        41
+    [String]                                43        48
+    [{]                                     50        50
+L46
+    [return]                                9         14
+    [##"<a \\href="\\#(absoluteString)"[    16        64
+L47
+    [}]                                     5         5
+L48
+    [}]                                     1         1
+L50
+    [let]                                   1         3
+    [rawMultiString]                        5         18
+    [=]                                     20        20
+    [###"a\\###"###]                        22        34
+L51
+    [let]                                   1         3
+    [rawMultiString2]                       5         19
+    [=]                                     21        21
+    [###"""a\\###\n""hey""\n"""###]         23        6
 EOF

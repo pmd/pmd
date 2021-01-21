@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
  *  Represents a language-independent token such as constants, values language reserved keywords, or comments.
  */
@@ -51,4 +53,17 @@ public interface GenericToken {
      * @return a non-negative integer containing the begin column
      */
     int getEndColumn();
+
+    /**
+     * Gets a unique integer representing the kind of token this is.
+     * The semantics of this kind depend on the language.
+     *
+     * <p><strong>Note:</strong> This is an experimental API.
+     *
+     * <p>The returned constants can be looked up in the language's "*ParserConstants",
+     * e.g. CppParserConstants or JavaParserConstants. These constants are considered
+     * internal API and may change at any time when the language's grammar is changed.
+     */
+    @Experimental
+    int getKind();
 }

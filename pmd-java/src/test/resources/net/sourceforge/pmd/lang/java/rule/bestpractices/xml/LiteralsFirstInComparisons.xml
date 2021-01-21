@@ -318,4 +318,56 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#575 LiteralsFirstInComparisons to consider constant fields, i.e. static final Strings</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final String TEST_CONSTANT = "Test-Constant";
+    public boolean test(String someString) {
+        return someString.equals(TEST_CONSTANT);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#575 LiteralsFirstInComparisons must not trigger if the field is not final</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static String TEST_CONSTANT = "Test-Constant";
+    public boolean test(String someString) {
+        return someString.equals(TEST_CONSTANT);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#575 LiteralsFirstInComparisons must not trigger if the field is not static</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final String TEST_CONSTANT = "Test-Constant";
+    public boolean test(String someString) {
+        return someString.equals(TEST_CONSTANT);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#575 LiteralsFirstInComparisons must not trigger if the constant field is not a String</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final Integer TEST_CONSTANT = 5;
+    public boolean test(String someString) {
+        return someString.equals(TEST_CONSTANT);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

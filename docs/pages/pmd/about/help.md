@@ -1,8 +1,8 @@
 ---
 title: Getting Help
 permalink: pmd_about_help.html
-author: Andreas Dangel <andreas.dangel@adangel.org>
-last_updated: September 2017
+author: Andreas Dangel <andreas.dangel@pmd-code.org>
+last_updated: January 2021
 ---
 
 There are numerous ways of getting help:
@@ -13,7 +13,7 @@ There are numerous ways of getting help:
 
 *   If you found a bug, please create a new [github issue](https://github.com/pmd/pmd/issues).
 
-*   You can also ask questions in our [sourceforge forum](https://sourceforge.net/p/pmd/discussion/).
+*   You can also ask questions on [github discussions](https://github.com/pmd/pmd/discussions).
 
 *   Or you can join the [Mailing List](https://lists.sourceforge.net/lists/listinfo/pmd-devel) or browse
     through the archives ([archive1](http://java-pmd.30631.n5.nabble.com/), [archive2](http://web.archive.org/web/20160715035623/http://blog.gmane.org:80/gmane.comp.java.audit.pmd.devel)).

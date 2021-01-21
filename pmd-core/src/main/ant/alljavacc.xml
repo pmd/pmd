@@ -30,15 +30,23 @@
         <delete dir="${target}/net/sourceforge/pmd/lang/ast/dummy" />
         <mkdir dir="${target}/net/sourceforge/pmd/lang/ast/dummy" />
         <echo>Using JavaCC home: ${javacc-home.path}</echo>
-        <jjtree target="etc/grammar/dummy.jjt"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/ast/dummy"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="jjtree"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-OUTPUT_DIRECTORY:${target}/net/sourceforge/pmd/lang/ast/dummy" />
+            <arg value="etc/grammar/dummy.jjt" />
+        </java>
 
         <!-- Generate CharStream interface -->
-        <javacc usercharstream="true"
-                target="${target}/net/sourceforge/pmd/lang/ast/dummy/dummy.jj"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/ast/dummy"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="javacc"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-USER_CHAR_STREAM:true" />
+            <arg value="-OUTPUT_DIRECTORY:${target}/net/sourceforge/pmd/lang/ast/dummy" />
+            <arg value="${target}/net/sourceforge/pmd/lang/ast/dummy/dummy.jj" />
+        </java>
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/CharStream.java"
                  token="net.sourceforge.pmd.lang.ast.dummy"
                  value="net.sourceforge.pmd.lang.ast" />

@@ -14,61 +14,47 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-##### CPD
+#### CPD
 
-* The C# module now supports the new option [`--ignore-literal-sequences`](https://pmd.github.io/latest/pmd_userdocs_cpd.html#-ignore-literal-sequences), which can be used to avoid detection of some uninteresting clones. Support for other languages may be added in the future. See [#2945](https://github.com/pmd/pmd/pull/2945)
+*   The C++ module now supports the new option [`--ignore-literal-sequences`](https://pmd.github.io/latest/pmd_userdocs_cpd.html#-ignore-literal-sequences),
+    which can be used to avoid detection of some uninteresting clones. This options has been
+    introduced with PMD 6.30.0 for C# and is now available for C++ as well. See [#2963](https://github.com/pmd/pmd/pull/2963).
 
-* The Scala module now supports [suppression](https://pmd.github.io/latest/pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs. See [#2929](https://github.com/pmd/pmd/pull/2929)
+#### New Rules
+
+*   The new Apex rule {% rule "apex/errorprone/OverrideBothEqualsAndHashcode" %} brings the well known Java rule
+    to Apex. In Apex the same principle applies: `equals` and `hashCode` should always be overridden
+    together to ensure collection classes such as Maps and Sets work as expected.
 
 ### Fixed Issues
 
 *   core
-    * [#1939](https://github.com/pmd/pmd/issues/1939): \[core] XPath expressions return handling
-    * [#1961](https://github.com/pmd/pmd/issues/1961): \[core] Text renderer should include name of violated rule
-    * [#2874](https://github.com/pmd/pmd/pull/2874): \[core] Fix XMLRenderer with UTF-16
-*   cs
-    * [#2938](https://github.com/pmd/pmd/pull/2938): \[cs] CPD: ignoring using directives could not be disabled
-*   java
-    * [#2911](https://github.com/pmd/pmd/issues/2911): \[java] `ClassTypeResolver#searchNodeNameForClass` leaks memory
-    * [#2934](https://github.com/pmd/pmd/pull/2934): \[java] CompareObjectsWithEquals / UseEqualsToCompareStrings - False negatives with fields
-    * [#2940](https://github.com/pmd/pmd/pull/2940): \[java] Catch additional TypeNotPresentExceptions / LinkageErrors
-*   scala
-    * [#2480](https://github.com/pmd/pmd/issues/2480): \[scala] Support CPD suppressions
-
+    *   [#2970](https://github.com/pmd/pmd/issues/2970): \[core] PMD 6.30.0 release is not reproducible
+    *   [#2994](https://github.com/pmd/pmd/pull/2994): \[core] Fix code climate severity strings
+*   java-bestpractices
+    *   [#575](https://github.com/pmd/pmd/issues/575): \[java] LiteralsFirstInComparisons should consider constant fields
+*   java-codestyle
+    *   [#2960](https://github.com/pmd/pmd/issues/2960): \[java] Thread issue in MethodNamingConventionsRule
 
 ### API Changes
 
-#### Deprecated API
+#### Experimental APIs
 
-*   {% jdoc !!java::lang.java.ast.ASTPackageDeclaration#getPackageNameImage() %},
-    {% jdoc !!java::lang.java.ast.ASTTypeParameter#getParameterName() %}
-    and the corresponding XPath attributes. In both cases they're replaced with a new method `getName`,
-    the attribute is `@Name`.
-*   {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceBody#isAnonymousInnerClass() %},
-    and {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceBody#isEnumChild() %},
-    refs [#905](https://github.com/pmd/pmd/issues/905)
-
-#### Internal API
-
-Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
-You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
-
-*   {% jdoc !!javascript::lang.ecmascript.Ecmascript3Handler %}
-*   {% jdoc !!javascript::lang.ecmascript.Ecmascript3Parser %}
-*   {% jdoc !!javascript::lang.ecmascript.ast.EcmascriptParser#parserOptions %}
-*   {% jdoc !!javascript::lang.ecmascript.ast.EcmascriptParser#getSuppressMap() %}
-*   {% jdoc !!core::lang.rule.ParametricRuleViolation %}
-*   {% jdoc !!core::lang.ParserOptions#suppressMarker %}
-*   {% jdoc !!modelica::lang.modelica.rule.ModelicaRuleViolationFactory %}
-
+*   The method {% jdoc !!core::lang.ast.GenericToken#getKind() %} has been added as experimental. This
+    unifies the token interface for both JavaCC and Antlr. The already existing method
+    {% jdoc !!core::cpd.token.AntlrToken#getKind() %} is therefore experimental as well. The
+    returned constant depends on the actual language and might change whenever the grammar
+    of the language is changed.
 
 ### External Contributions
 
-*   [#2914](https://github.com/pmd/pmd/pull/2914): \[core] Include rule name in text renderer - [Gunther Schrijvers](https://github.com/GuntherSchrijvers)
-*   [#2925](https://github.com/pmd/pmd/pull/2925): Cleanup: Correct annotation array initializer indents from checkstyle #8083 - [Abhishek Kumar](https://github.com/Abhishek-kumar09)
-*   [#2929](https://github.com/pmd/pmd/pull/2929): \[scala] Add support for CPD-ON and CPD-OFF special comments - [Andy Robinson](https://github.com/andyrobinson)
-*   [#2936](https://github.com/pmd/pmd/pull/2936): \[java] (doc) Fix typo: "an accessor" not "a" - [Igor Moreno](https://github.com/igormoreno)
-*   [#2938](https://github.com/pmd/pmd/pull/2938): \[cs] CPD: fix issue where ignoring using directives could not be disabled - [Maikel Steneker](https://github.com/maikelsteneker)
-*   [#2945](https://github.com/pmd/pmd/pull/2945): \[cs] Add option to ignore sequences of literals - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#2666](https://github.com/pmd/pmd/pull/2666): \[swift] Manage swift5 string literals - [kenji21](https://github.com/kenji21)
+*   [#2959](https://github.com/pmd/pmd/pull/2959): \[apex] New Rule: override equals and hashcode rule - [recdevs](https://github.com/recdevs)
+*   [#2963](https://github.com/pmd/pmd/pull/2963): \[cpp] Add option to ignore sequences of literals - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#2964](https://github.com/pmd/pmd/pull/2964): \[cs] Update C# grammar for additional C# 7 and C# 8 features - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#2965](https://github.com/pmd/pmd/pull/2965): \[cs] Improvements for ignore sequences of literals functionality - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#2983](https://github.com/pmd/pmd/pull/2983): \[java] LiteralsFirstInComparisons should consider constant fields - [Ozan Gulle](https://github.com/ozangulle)
+*   [#2994](https://github.com/pmd/pmd/pull/2994): \[core] Fix code climate severity strings - [Vincent Maurin](https://github.com/vmaurin)
 
 {% endtocmaker %}
+

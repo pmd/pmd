@@ -10,6 +10,10 @@ jobs:
     continue-on-error: false
     steps:
       - uses: actions/checkout@v2
+      - name: Set up Ruby 2.7
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
       - name: Check Environment
         run: .ci/check-environment.sh
         shell: bash

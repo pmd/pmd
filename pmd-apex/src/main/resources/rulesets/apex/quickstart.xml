@@ -472,5 +472,6 @@
       </properties>
    </rule>
    <!-- <rule ref="category/apex/bestpractices.xml/UnusedLocalVariable"/> -->
+   <!-- <rule ref="category/apex/errorprone.xml/OverrideBothEqualsAndHashcode" /> -->
 
 </ruleset>

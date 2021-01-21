@@ -28,17 +28,25 @@
     <target name="vmjjtree" description="Generates the VM parser and AST source files" unless="javaccBuildNotRequired">
         <delete dir="${target}/net/sourceforge/pmd/lang/vm/ast/" />
         <mkdir dir="${target}/net/sourceforge/pmd/lang/vm/ast/" />
-        <jjtree target="etc/grammar/VmParser.jjt"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/vm/ast/"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="jjtree"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-OUTPUT_DIRECTORY:${target}/net/sourceforge/pmd/lang/vm/ast" />
+            <arg value="etc/grammar/VmParser.jjt" />
+        </java>
         <!-- Ensure generated using CharStream interface -->
-        <javacc static="false"
-                usercharstream="true"
-                unicodeinput="true"
-                javaunicodeescape="false"
-                target="${target}/net/sourceforge/pmd/lang/vm/ast/VmParser.jj"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/vm/ast"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="javacc"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-STATIC:false" />
+            <arg value="-USER_CHAR_STREAM:true" />
+            <arg value="-UNICODE_INPUT:true" />
+            <arg value="-JAVA_UNICODE_ESCAPE:false" />
+            <arg value="-OUTPUT_DIRECTORY:${target}/net/sourceforge/pmd/lang/vm/ast" />
+            <arg value="${target}/net/sourceforge/pmd/lang/vm/ast/VmParser.jj" />
+        </java>
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/Node.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/SimpleNode.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/CharStream.java" />
@@ -119,6 +127,11 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
   @Override
   public int getEndColumn() {
     return endColumn;
+  }
+
+  @Override
+  public int getKind() {
+    return kind;
   }
 
 ]]></replacevalue>
