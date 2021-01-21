@@ -44,6 +44,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2977](https://github.com/pmd/pmd/issues/2977): \[java] 6.30.0 introduces new false positive in CloseResource rule?
     *   [#2979](https://github.com/pmd/pmd/issues/2979): \[java] UseEqualsToCompareStrings: FP with "var" variables
     *   [#3004](https://github.com/pmd/pmd/issues/3004): \[java] UseEqualsToCompareStrings false positive with PMD 6.30.0
+    *   [#3062](https://github.com/pmd/pmd/issues/3062): \[java] CloseResource FP with reassigned stream
 
 ### API Changes
 

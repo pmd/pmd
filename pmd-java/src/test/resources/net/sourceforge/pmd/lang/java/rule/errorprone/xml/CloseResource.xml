@@ -1430,7 +1430,7 @@ public class CloseResourceWithVar {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#2764 false-negative when re-assigning connection</description>
         <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
@@ -1477,6 +1477,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#2977 6.30.0 introduces new false positive in CloseResource rule</description>
         <expected-problems>0</expected-problems>
@@ -1490,6 +1491,23 @@ public class Foo {
             boolean isHundredBytes = file.length() == 100;
         } finally {
             file.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3062 CloseResource FP with reassigned stream</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.stream.Stream;
+
+public class Foo {
+    void bar() {
+        Stream<T> stream = Stream.of(2);
+        if (condition) {
+            stream = stream.skip(2);
         }
     }
 }
