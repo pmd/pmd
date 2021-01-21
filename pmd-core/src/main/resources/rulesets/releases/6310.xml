@@ -10,4 +10,6 @@ This ruleset contains links to rules that are new in PMD v6.31.0
 
     <rule ref="category/apex/errorprone.xml/OverrideBothEqualsAndHashcode" />
 
+    <rule ref="category/vf/security.xml/VfHtmlStyleTagXss" />
+
 </ruleset>
