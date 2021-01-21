@@ -13,18 +13,20 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -79,11 +81,11 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
 
     private boolean isSizeMethodCall(ASTPrimarySuffix primarySuffix) {
         String calledMethodName = primarySuffix.getImage();
-        return calledMethodName != null && calledMethodName.endsWith("size");
+        return calledMethodName != null && "size".equals(calledMethodName);
     }
 
     private boolean isCalledOnCollection(ASTPrimarySuffix primarySuffix) {
-        ASTClassOrInterfaceType calledOnType = getTypeOfVariable(primarySuffix);
+        JavaTypeDefinition calledOnType = getTypeOfVariable(primarySuffix);
         if (calledOnType == null) {
             calledOnType = getTypeOfMethodCall(primarySuffix);
         }
@@ -91,11 +93,11 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
                 && CollectionUtil.isCollectionType(calledOnType.getType(), true);
     }
 
-    private ASTClassOrInterfaceType getTypeOfVariable(ASTPrimarySuffix primarySuffix) {
+    private JavaTypeDefinition getTypeOfVariable(ASTPrimarySuffix primarySuffix) {
         ASTPrimaryExpression primaryExpression = primarySuffix.getFirstParentOfType(ASTPrimaryExpression.class);
         ASTPrimaryPrefix varPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
         if (prefixWithNoModifiers(varPrefix)) {
-            return varPrefix.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+            return varPrefix.getTypeDefinition();
         }
         String varName = getVariableNameBySuffix(primaryExpression);
         return varName != null ? getTypeOfVariableByName(varName, primaryExpression) : null;
@@ -111,19 +113,22 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
         return varSuffix.getImage();
     }
 
-    private ASTClassOrInterfaceType getTypeOfVariableByName(String varName, ASTPrimaryExpression expr) {
-        ASTClassOrInterfaceBody classBody = expr.getFirstParentOfType(ASTClassOrInterfaceBody.class);
-        List<ASTVariableDeclarator> varDeclarators = classBody.findDescendantsOfType(ASTVariableDeclarator.class);
+    private JavaTypeDefinition getTypeOfVariableByName(String varName, ASTPrimaryExpression expr) {
+        Node classOrEnumBody = expr.getFirstParentOfType(ASTClassOrInterfaceBody.class);
+        if (classOrEnumBody == null) {
+            classOrEnumBody = expr.getFirstParentOfType(ASTEnumBody.class);
+        }                 
+        List<ASTVariableDeclarator> varDeclarators = classOrEnumBody.findDescendantsOfType(ASTVariableDeclarator.class);
         for (ASTVariableDeclarator varDeclarator : varDeclarators) {
             if (varDeclarator.getName().equals(varName)) {
-                return varDeclarator.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+                return varDeclarator.getVariableId().getTypeNode().getTypeDefinition();
             }
         }
         return null;
     }
 
-    private ASTClassOrInterfaceType getTypeOfMethodCall(ASTPrimarySuffix node) {
-        ASTClassOrInterfaceType type = null;
+    private JavaTypeDefinition getTypeOfMethodCall(ASTPrimarySuffix node) {
+        JavaTypeDefinition type = null;
         ASTName methodName = node.getParent().getFirstChildOfType(ASTPrimaryPrefix.class)
                 .getFirstChildOfType(ASTName.class);
         if (methodName != null) {
@@ -133,7 +138,8 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
                 if (e.getKey().getName().equals(methodName.getImage())) {
                     type = e.getKey().getNode().getFirstParentOfType(ASTMethodDeclaration.class)
                             .getFirstChildOfType(ASTResultType.class)
-                            .getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+                            .getFirstDescendantOfType(ASTType.class)
+                            .getTypeDefinition();
                     break;
                 }
             }
