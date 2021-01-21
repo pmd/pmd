@@ -565,7 +565,7 @@ public final class MethodTypeResolution {
      */
     public static boolean isMemberVisibleFromClass(Class<?> classWithMember, int modifiers, Class<?> accessingClass) {
         if (accessingClass == null) {
-            return false;
+            return true;
         }
 
         // public members

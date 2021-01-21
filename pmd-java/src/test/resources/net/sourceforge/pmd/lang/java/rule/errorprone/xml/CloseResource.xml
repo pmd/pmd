@@ -1135,7 +1135,8 @@ public class CloseResourcePrintWriter {
         <expected-linenumbers>7,8,10</expected-linenumbers>
         <expected-messages>
             <message>Ensure that resources like this FileInputStream object are closed after use</message>
-            <message>Ensure that resources like this Scanner object are closed after use</message>
+            <!-- Note: it picks up on System.in -->
+            <message>Ensure that resources like this InputStream object are closed after use</message>
             <message>Ensure that resources like this FileInputStream object are closed after use</message>
         </expected-messages>
         <code><![CDATA[
@@ -1471,6 +1472,24 @@ public class Foo {
         } catch (Exception e) {
         } finally {
             c.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2977 6.30.0 introduces new false positive in CloseResource rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+
+public class Foo {
+    void bar() {
+        File file = new File("name", "r");
+        try {
+            boolean isHundredBytes = file.length() == 100;
+        } finally {
+            file.close();
         }
     }
 }
