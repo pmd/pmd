@@ -13,7 +13,6 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
@@ -38,7 +37,7 @@ public final class ScalaParsingHelper extends BaseParsingHelper<ScalaParsingHelp
         Report report = new Report();
         ctx.setReport(report);
         ctx.setSourceCodeFile(new File("test.scala"));
-        RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
+        RuleSet rules = RuleSet.forSingleRule(rule);
         try {
             p.getSourceCodeProcessor().processSourceCode(new StringReader(testSourceCode), new RuleSets(rules), ctx);
         } catch (PMDException e) {

@@ -9,11 +9,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -25,11 +26,9 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ant.Formatter;
@@ -41,7 +40,6 @@ import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.log.AntLogHandler;
@@ -103,21 +101,19 @@ public class PMDTaskImpl {
         setupClassLoader();
 
         // Setup RuleSetFactory and validate RuleSets
-        final ResourceLoader rl = setupResourceLoader();
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, rl);
+        RuleSetLoader rulesetLoader = RuleSetLoader.fromPmdConfig(configuration)
+                                                   .loadResourcesWith(setupResourceLoader());
 
-        try {
-            // This is just used to validate and display rules. Each thread will create its own ruleset
-            String ruleSets = configuration.getRuleSets();
-            if (StringUtils.isNotBlank(ruleSets)) {
-                // Substitute env variables/properties
-                configuration.setRuleSets(project.replaceProperties(ruleSets));
-            }
-            RuleSets rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
-            logRulesUsed(rules);
-        } catch (RuleSetNotFoundException e) {
-            throw new BuildException(e.getMessage(), e);
+        // This is just used to validate and display rules. Each thread will create its own ruleset
+        String ruleSetString = configuration.getRuleSets();
+        if (StringUtils.isNotBlank(ruleSetString)) {
+            // Substitute env variables/properties
+            configuration.setRuleSets(project.replaceProperties(ruleSetString));
         }
+
+        final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), rulesetLoader.toFactory());
+        List<RuleSet> rulesetList = Arrays.asList(ruleSets.getAllRuleSets());
+        logRulesUsed(ruleSets);
 
         if (configuration.getSuppressMarker() != null) {
             project.log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
@@ -134,9 +130,8 @@ public class PMDTaskImpl {
 
         // TODO Do we really need all this in a loop over each FileSet? Seems
         // like a lot of redundancy
-        RuleContext ctx = new RuleContext();
         Report errorReport = new Report();
-        final AtomicInteger reportSize = new AtomicInteger();
+        int problemCount = 0;
         final String separator = System.getProperty("file.separator");
 
         for (FileSet fs : filesets) {
@@ -169,10 +164,7 @@ public class PMDTaskImpl {
 
                 @Override
                 public void renderFileReport(Report r) {
-                    int size = r.size();
-                    if (size > 0) {
-                        reportSize.addAndGet(size);
-                    }
+                    // Nothing to do
                 }
 
                 @Override
@@ -193,13 +185,19 @@ public class PMDTaskImpl {
                 renderers.add(renderer);
             }
             try {
-                PMD.processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+                Report report = PMD.processFiles(configuration, rulesetList, files, renderers);
+                problemCount += report.getViolations().size();
+            } catch (ContextedRuntimeException e) {
+                if (e.getFirstContextValue("filename") instanceof String) {
+                    handleError((String) e.getFirstContextValue("filename"), errorReport, e);
+                } else {
+                    handleError("(unknown file)", errorReport, e);
+                }
             } catch (RuntimeException pmde) {
-                handleError(ctx, errorReport, pmde);
+                handleError("(unknown file)", errorReport, pmde);
             }
         }
 
-        int problemCount = reportSize.get();
         project.log(problemCount + " problems found", Project.MSG_VERBOSE);
 
         for (Formatter formatter : formatters) {
@@ -216,7 +214,7 @@ public class PMDTaskImpl {
         }
     }
 
-    private ResourceLoader setupResourceLoader() {
+    private ClassLoader setupResourceLoader() {
         if (classpath == null) {
             classpath = new Path(project);
         }
@@ -233,11 +231,11 @@ public class PMDTaskImpl {
         // are loaded twice
         // and exist in multiple class loaders
         final boolean parentFirst = true;
-        return new ResourceLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(),
-                project, classpath, parentFirst));
+        return new AntClassLoader(Thread.currentThread().getContextClassLoader(),
+                                  project, classpath, parentFirst);
     }
 
-    private void handleError(RuleContext ctx, Report errorReport, RuntimeException pmde) {
+    private void handleError(String filename, Report errorReport, RuntimeException pmde) {
 
         pmde.printStackTrace();
         project.log(pmde.toString(), Project.MSG_VERBOSE);
@@ -260,7 +258,7 @@ public class PMDTaskImpl {
         if (failOnError) {
             throw new BuildException(pmde);
         }
-        errorReport.addError(new Report.ProcessingError(pmde, String.valueOf(ctx.getSourceCodeFile())));
+        errorReport.addError(new Report.ProcessingError(pmde, filename));
     }
 
     private void setupClassLoader() {
@@ -279,6 +277,10 @@ public class PMDTaskImpl {
         final ScopedLogHandlersManager logManager = new ScopedLogHandlersManager(antLogHandler.getAntLogLevel(), antLogHandler);
         try {
             doTask();
+        } catch (BuildException e) {
+            throw e;
+        } catch (Exception other) {
+            throw new BuildException(other);
         } finally {
             logManager.close();
             // only close the classloader, if it is ours. Otherwise we end up with class not found

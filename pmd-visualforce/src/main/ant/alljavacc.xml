@@ -28,18 +28,27 @@
     <target name="jspjjtree" description="Generates the VF parser and AST source files" unless="javaccBuildNotRequired">
         <delete dir="${target}/net/sourceforge/pmd/lang/vf/ast/" />
         <mkdir dir="${target}/net/sourceforge/pmd/lang/vf/ast/" />
-        <jjtree target="etc/grammar/VfParser.jjt"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/vf/ast/"
-                javacchome="${javacc-home.path}" />
-        <!-- Ensure generated using CharStream interface debugparser="true"
-        		debugtokenmanager="true"-->
-        <javacc static="false"
-                usercharstream="true"
-                unicodeinput="true"
-                javaunicodeescape="false"
-                target="${target}/net/sourceforge/pmd/lang/vf/ast/VfParser.jj"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/vf/ast"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="jjtree"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-OUTPUT_DIRECTORY:${target}/net/sourceforge/pmd/lang/vf/ast" />
+            <arg value="etc/grammar/VfParser.jjt" />
+        </java>
+        <!-- Ensure generated using CharStream interface -->
+        <java fork="true"
+              classname="javacc"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-STATIC:false" />
+            <arg value="-USER_CHAR_STREAM:true" />
+            <arg value="-UNICODE_INPUT:true" />
+            <arg value="-JAVA_UNICODE_ESCAPE:false" />
+            <!-- <arg value="-DEBUG_PARSER:true" /> -->
+            <!-- <arg value="-DEBUG_TOKEN_MANAGER:true" /> -->
+            <arg value="-OUTPUT_DIRECTORY:${target}/net/sourceforge/pmd/lang/vf/ast" />
+            <arg value="${target}/net/sourceforge/pmd/lang/vf/ast/VfParser.jj" />
+        </java>
         <delete file="${target}/net/sourceforge/pmd/lang/vf/ast/Node.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/vf/ast/SimpleNode.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/vf/ast/CharStream.java" />
