@@ -86,7 +86,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 EOF
 ) | patch
 
-./gradlew build -x javadoc -x dokka -x asciidoctor -x test -x testNG -x api -x distZip
+./gradlew build testClasses -x javadoc -x dokka -x asciidoctor -x test -x testNG -x api -x distZip
 ./gradlew createSquishClasspath -q > classpath.txt
 ]]></build-command>
     <auxclasspath-command>cat classpath.txt</auxclasspath-command>
