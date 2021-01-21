@@ -32,6 +32,8 @@ mvn dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=classpath.t
     <connection>https://github.com/spring-projects/spring-framework</connection>
     <tag>v5.0.6.RELEASE</tag>
 
+    <exclude-pattern>.*/build/generated-sources/.*</exclude-pattern>
+
     <build-command><![CDATA[#!/usr/bin/env bash
 if test -e classpath.txt; then
   exit
