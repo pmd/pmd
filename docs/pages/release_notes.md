@@ -26,6 +26,9 @@ This is a {{ site.pmd.release_type }} release.
     to Apex. In Apex the same principle applies: `equals` and `hashCode` should always be overridden
     together to ensure collection classes such as Maps and Sets work as expected.
 
+*   The new Visualforce rule {% rule "vf/security/VfHtmlStyleTagXss" %} checks for potential XSS problems
+    when using `<style>` tags on Visualforce pages.
+
 ### Fixed Issues
 
 *   core
@@ -57,6 +60,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2968](https://github.com/pmd/pmd/pull/2968): \[java] NPE in UseCollectionIsEmptyRule with enums - [foxmason](https://github.com/foxmason)
 *   [#2983](https://github.com/pmd/pmd/pull/2983): \[java] LiteralsFirstInComparisons should consider constant fields - [Ozan Gulle](https://github.com/ozangulle)
 *   [#2994](https://github.com/pmd/pmd/pull/2994): \[core] Fix code climate severity strings - [Vincent Maurin](https://github.com/vmaurin)
+*   [#3005](https://github.com/pmd/pmd/pull/3005): \[vf] \[New Rule] Handle XSS violations that can occur within Html Style tags - [rmohan20](https://github.com/rmohan20)
 
 {% endtocmaker %}
 
