@@ -1422,9 +1422,15 @@ introduced with PMD 6.30.0 for C# and is now available for C++ as well. See <a h
 <h4 id="new-rules">New Rules</h4>
 
 <ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_errorprone.html#overridebothequalsandhashcode"><code class="language-plaintext highlighter-rouge">OverrideBothEqualsAndHashcode</code></a> brings the well known Java rule
+  <li>
+    <p>The new Apex rule <a href="pmd_rules_apex_errorprone.html#overridebothequalsandhashcode"><code class="language-plaintext highlighter-rouge">OverrideBothEqualsAndHashcode</code></a> brings the well known Java rule
 to Apex. In Apex the same principle applies: <code class="language-plaintext highlighter-rouge">equals</code> and <code class="language-plaintext highlighter-rouge">hashCode</code> should always be overridden
-together to ensure collection classes such as Maps and Sets work as expected.</li>
+together to ensure collection classes such as Maps and Sets work as expected.</p>
+  </li>
+  <li>
+    <p>The new Visualforce rule <a href="pmd_rules_vf_security.html#vfhtmlstyletagxss"><code class="language-plaintext highlighter-rouge">VfHtmlStyleTagXss</code></a> checks for potential XSS problems
+when using <code class="language-plaintext highlighter-rouge">&lt;style&gt;</code> tags on Visualforce pages.</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1472,6 +1478,7 @@ of the language is changed.</li>
   <li><a href="https://github.com/pmd/pmd/pull/2968">#2968</a>: [java] NPE in UseCollectionIsEmptyRule with enums - <a href="https://github.com/foxmason">foxmason</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2983">#2983</a>: [java] LiteralsFirstInComparisons should consider constant fields - <a href="https://github.com/ozangulle">Ozan Gulle</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2994">#2994</a>: [core] Fix code climate severity strings - <a href="https://github.com/vmaurin">Vincent Maurin</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3005">#3005</a>: [vf] [New Rule] Handle XSS violations that can occur within Html Style tags - <a href="https://github.com/rmohan20">rmohan20</a></li>
 </ul>
 
 

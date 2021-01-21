@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that flag potential security flaws.">
-<meta name="keywords" content=" Security, VfCsrf, VfUnescapeEl">
+<meta name="keywords" content=" Security, VfCsrf, VfHtmlStyleTagXss, VfUnescapeEl">
 <title>Security | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1423,6 +1423,43 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/vf/security.xml/VfCsrf"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="vfhtmlstyletagxss">VfHtmlStyleTagXss</h2>
+
+<p><strong>Since:</strong> PMD 6.31.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Checks for the correct encoding in <code class="language-plaintext highlighter-rouge">&lt;style/&gt;</code> tags in Visualforce pages.</p>
+
+<p>The rule is based on Salesforce Security’s recommendation to prevent XSS in Visualforce as mentioned
+on <a href="https://developer.salesforce.com/docs/atlas.en-us.secure_coding_guide.meta/secure_coding_guide/secure_coding_cross_site_scripting.htm">Secure Coding Cross Site Scripting</a>.</p>
+
+<p>In order to avoid cross site scripting, the relevant encoding must be used in HTML tags. The rule expects
+<code class="language-plaintext highlighter-rouge">URLENCODING</code> or <code class="language-plaintext highlighter-rouge">JSINHTMLENCODING</code> for URL-based style values and any kind of encoding
+(e.g. <code class="language-plaintext highlighter-rouge">HTMLENCODING</code>) for non-url style values.</p>
+
+<p>See also <a href="pmd_rules_vf_security.html#vfunescapeel"><code class="language-plaintext highlighter-rouge">VfUnescapeEl</code></a> to check escaping in other places on Visualforce pages.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-visualforce/src/main/java/net/sourceforge/pmd/lang/vf/rule/security/VfHtmlStyleTagXssRule.java">net.sourceforge.pmd.lang.vf.rule.security.VfHtmlStyleTagXssRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<pre><code class="language-vf">&lt;apex:page&gt;
+    &lt;style&gt;
+        div {
+            background: url('{!XSSHere}'); // Potential XSS
+        }
+        div {
+            background: url('{!URLENCODE(XSSHere)}'); // correct encoding
+        }
+    &lt;/style&gt;
+&lt;/apex:page&gt;
+</code></pre>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/vf/security.xml/VfHtmlStyleTagXss"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="vfunescapeel">VfUnescapeEl</h2>

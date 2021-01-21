@@ -5483,6 +5483,15 @@
 ,
 
 {
+"title": "VfHtmlStyleTagXss (Salesforce VisualForce, Security)",
+"tags": "",
+"keywords": "VfHtmlStyleTagXss",
+"url": "pmd_rules_vf_security.html#vfhtmlstyletagxss",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
 "title": "VfUnescapeEl (Salesforce VisualForce, Security)",
 "tags": "",
 "keywords": "VfUnescapeEl",
