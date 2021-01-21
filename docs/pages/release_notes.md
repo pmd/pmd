@@ -38,6 +38,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#575](https://github.com/pmd/pmd/issues/575): \[java] LiteralsFirstInComparisons should consider constant fields
     *   [#2454](https://github.com/pmd/pmd/issues/2454): \[java] UnusedPrivateMethod violation for disabled class in 6.23.0
     *   [#2833](https://github.com/pmd/pmd/issues/2833): \[java] NPE in UseCollectionIsEmptyRule with enums
+    *   [#2876](https://github.com/pmd/pmd/issues/2876): \[java] UnusedPrivateField cannot override ignored annotations property
 *   java-codestyle
     *   [#2960](https://github.com/pmd/pmd/issues/2960): \[java] Thread issue in MethodNamingConventionsRule
 *   java-errorprone
