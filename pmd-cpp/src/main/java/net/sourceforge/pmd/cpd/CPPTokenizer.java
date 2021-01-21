@@ -19,9 +19,6 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.cpp.ast.CppCharStream;
 import net.sourceforge.pmd.lang.cpp.ast.CppTokenKinds;
-import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.cpp.CppTokenManager;
-import net.sourceforge.pmd.lang.cpp.ast.CppParserConstants;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**
@@ -107,27 +104,27 @@ public class CPPTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected TokenFilter getTokenFilter(final TokenManager tokenManager) {
+    protected TokenFilter<JavaccToken> getTokenFilter(final TokenManager<JavaccToken> tokenManager) {
         return new CppTokenFilter(tokenManager, ignoreLiteralSequences);
     }
 
     private static class CppTokenFilter extends JavaCCTokenFilter {
         private final boolean ignoreLiteralSequences;
-        private GenericToken discardingLiteralsUntil = null;
+        private JavaccToken discardingLiteralsUntil = null;
         private boolean discardCurrent = false;
 
-        CppTokenFilter(final TokenManager tokenManager, final boolean ignoreLiteralSequences) {
+        CppTokenFilter(final TokenManager<JavaccToken> tokenManager, final boolean ignoreLiteralSequences) {
             super(tokenManager);
             this.ignoreLiteralSequences = ignoreLiteralSequences;
         }
 
         @Override
-        protected void analyzeTokens(final GenericToken currentToken, final Iterable<GenericToken> remainingTokens) {
+        protected void analyzeTokens(final JavaccToken currentToken, final Iterable<JavaccToken> remainingTokens) {
             discardCurrent = false;
             skipLiteralSequences(currentToken, remainingTokens);
         }
 
-        private void skipLiteralSequences(final GenericToken currentToken, final Iterable<GenericToken> remainingTokens) {
+        private void skipLiteralSequences(final JavaccToken currentToken, final Iterable<JavaccToken> remainingTokens) {
             if (ignoreLiteralSequences) {
                 final int kind = currentToken.getKind();
                 if (isDiscardingLiterals()) {
@@ -135,32 +132,32 @@ public class CPPTokenizer extends JavaCCTokenizer {
                         discardingLiteralsUntil = null;
                         discardCurrent = true;
                     }
-                } else if (kind == CppParserConstants.LCURLYBRACE) {
-                    final GenericToken finalToken = findEndOfSequenceOfLiterals(remainingTokens);
+                } else if (kind == CppTokenKinds.LCURLYBRACE) {
+                    final JavaccToken finalToken = findEndOfSequenceOfLiterals(remainingTokens);
                     discardingLiteralsUntil = finalToken;
                 }
             }
         }
 
-        private static GenericToken findEndOfSequenceOfLiterals(final Iterable<GenericToken> remainingTokens) {
+        private static JavaccToken findEndOfSequenceOfLiterals(final Iterable<JavaccToken> remainingTokens) {
             boolean seenLiteral = false;
             int braceCount = 0;
-            for (final GenericToken token : remainingTokens) {
+            for (final JavaccToken token : remainingTokens) {
                 switch (token.getKind()) {
-                case CppParserConstants.BINARY_INT_LITERAL:
-                case CppParserConstants.DECIMAL_INT_LITERAL:
-                case CppParserConstants.FLOAT_LITERAL:
-                case CppParserConstants.HEXADECIMAL_INT_LITERAL:
-                case CppParserConstants.OCTAL_INT_LITERAL:
-                case CppParserConstants.ZERO:
+                case CppTokenKinds.BINARY_INT_LITERAL:
+                case CppTokenKinds.DECIMAL_INT_LITERAL:
+                case CppTokenKinds.FLOAT_LITERAL:
+                case CppTokenKinds.HEXADECIMAL_INT_LITERAL:
+                case CppTokenKinds.OCTAL_INT_LITERAL:
+                case CppTokenKinds.ZERO:
                     seenLiteral = true;
                     break; // can be skipped; continue to the next token
-                case CppParserConstants.COMMA:
+                case CppTokenKinds.COMMA:
                     break; // can be skipped; continue to the next token
-                case CppParserConstants.LCURLYBRACE:
+                case CppTokenKinds.LCURLYBRACE:
                     braceCount++;
                     break; // curly braces are allowed, as long as they're balanced
-                case CppParserConstants.RCURLYBRACE:
+                case CppTokenKinds.RCURLYBRACE:
                     braceCount--;
                     if (braceCount < 0) {
                         // end of the list; skip all contents

@@ -20,8 +20,6 @@ import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
-import net.sourceforge.pmd.lang.vf.ast.VfNode;
-import net.sourceforge.pmd.lang.vf.ast.VfTypedNode;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
 import net.sourceforge.pmd.lang.vf.rule.security.internal.ElEscapeDetector;
 
