@@ -641,4 +641,16 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2673 UnusedPrivateField false positive with lombok annotation EqualsAndHashCode</description>
+        <rule-property name="ignoredAnnotations">lombok.Getter|lombok.Data</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.RequiredArgsConstructor;
+@RequiredArgsConstructor
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
 </test-data>
