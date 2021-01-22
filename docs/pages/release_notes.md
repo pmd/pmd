@@ -29,6 +29,14 @@ This is a {{ site.pmd.release_type }} release.
 *   The new Visualforce rule {% rule "vf/security/VfHtmlStyleTagXss" %} checks for potential XSS problems
     when using `<style>` tags on Visualforce pages.
 
+#### Deprecated rules
+
+*   java-performance
+    *   {% rule "java/performance/AvoidUsingShortType" %}: arithmetic on shorts is not significantly
+        slower than on ints, whereas using shorts may provide significant memory savings in arrays.
+    *   {% rule "java/performance/SimplifyStartsWith" %}: the suggested code transformation has an
+        insignificant performance impact, and decreases readability.
+
 ### Fixed Issues
 
 *   core
@@ -50,6 +58,9 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2979](https://github.com/pmd/pmd/issues/2979): \[java] UseEqualsToCompareStrings: FP with "var" variables
     *   [#3004](https://github.com/pmd/pmd/issues/3004): \[java] UseEqualsToCompareStrings false positive with PMD 6.30.0
     *   [#3062](https://github.com/pmd/pmd/issues/3062): \[java] CloseResource FP with reassigned stream
+*   java-performance
+    *   [#2296](https://github.com/pmd/pmd/issues/2296): \[java] Deprecate rule AvoidUsingShortType
+    *   [#2740](https://github.com/pmd/pmd/issues/2740): \[java] Deprecate rule SimplifyStartsWith
 
 ### API Changes
 
