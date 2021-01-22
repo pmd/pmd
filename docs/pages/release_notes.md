@@ -20,6 +20,14 @@ This is a {{ site.pmd.release_type }} release.
     to Apex. In Apex the same principle applies: `equals` and `hashCode` should always be overridden
     together to ensure collection classes such as Maps and Sets work as expected.
 
+#### Deprecated rules
+
+*   java-performance
+    *   {% rule "java/performance/AvoidUsingShortType" %}: arithmetic on shorts is not significantly
+        slower than on ints, whereas using shorts may provide significant memory savings in arrays.
+    *   {% rule "java/performance/SimplifyStartsWith" %}: the suggested code transformation has an
+        insignificant performance impact, and decreases readability.
+
 ### Fixed Issues
 
 *   core
@@ -29,15 +37,11 @@ This is a {{ site.pmd.release_type }} release.
     *   [#575](https://github.com/pmd/pmd/issues/575): \[java] LiteralsFirstInComparisons should consider constant fields
 *   java-codestyle
     *   [#2960](https://github.com/pmd/pmd/issues/2960): \[java] Thread issue in MethodNamingConventionsRule
+*   java-performance
+    *   [#2296](https://github.com/pmd/pmd/issues/2296): \[java] Deprecate rule AvoidUsingShortType
+    *   [#2740](https://github.com/pmd/pmd/issues/2740): \[java] Deprecate rule SimplifyStartsWith
 
 ### API Changes
-
-### Deprecated rules
-
-* java-performance
-  * [AvoidUsingShortType](https://pmd.github.io/latest/pmd_rules_java_performance.html#avoidusingshorttype): arithmetic on shorts is not significantly slower than on ints, whereas using shorts may provide significant memory savings in arrays.
-  * [SimplifyStartsWith](https://pmd.github.io/latest/pmd_rules_java_performance.html#simplifystartswith): the suggested code transformation has an insignificant performance impact, and decreases readability.
-
 
 ### External Contributions
 
