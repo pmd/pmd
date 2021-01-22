@@ -1652,9 +1652,13 @@ that one covers both.</p>
 
 <h2 id="avoidusingshorttype">AvoidUsingShortType</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 4.1</p>
 
 <p><strong>Priority:</strong> High (1)</p>
+
+<p>Note: this rule is deprecated, as its rationale does not hold.</p>
 
 <p>Java uses the ‘short’ type to reduce memory usage, not to optimize calculation. In fact, the JVM does not have any
 arithmetic capabilities for the short type: the JVM must convert the short into an int, do the proper calculation
@@ -2110,9 +2114,13 @@ Note that new Short() is deprecated since JDK 9 for that reason.</p>
 
 <h2 id="simplifystartswith">SimplifyStartsWith</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.1</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Note: this rule is deprecated for removal, as the optimization is insignificant.</p>
 
 <p>Calls to <code class="language-plaintext highlighter-rouge">string.startsWith("x")</code> with a string literal of length 1 can be rewritten using <code class="language-plaintext highlighter-rouge">string.charAt(0)</code>,
 at the expense of some readability. To prevent <code class="language-plaintext highlighter-rouge">IndexOutOfBoundsException</code> being thrown by the <code class="language-plaintext highlighter-rouge">charAt</code> method,
@@ -2551,7 +2559,7 @@ or StringBuffer.toString().length() == …</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 21, 2021 <br />
+ Site last generated: Jan 22, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

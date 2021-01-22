@@ -1451,9 +1451,9 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">SwitchStmtsShouldHaveDefault</a>: All switch statements should include a default option to catch any unspecified values.</li>
   <li><a href="pmd_rules_java_bestpractices.html#systemprintln">SystemPrintln</a>: References to System.(out|err).print are usually intended for debugging purposes and can remain …</li>
   <li><a href="pmd_rules_java_bestpractices.html#unusedassignment">UnusedAssignment</a>: Reports assignments to variables that are never used before the variable is overwritten,         …</li>
-  <li><a href="pmd_rules_java_bestpractices.html#unusedformalparameter">UnusedFormalParameter</a>: Avoid passing parameters to methods or constructors without actually referencing them in the meth…</li>
+  <li><a href="pmd_rules_java_bestpractices.html#unusedformalparameter">UnusedFormalParameter</a>: Reports parameters of methods and constructors that are not referenced them in the method body. P…</li>
   <li><a href="pmd_rules_java_bestpractices.html#unusedimports">UnusedImports</a>: Avoid unused import statements to prevent unwanted dependencies. This rule will also find unused …</li>
-  <li><a href="pmd_rules_java_bestpractices.html#unusedlocalvariable">UnusedLocalVariable</a>: Detects when a local variable is declared and/or assigned, but not used.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#unusedlocalvariable">UnusedLocalVariable</a>: Detects when a local variable is declared and/or assigned, but not used. Variables whose name sta…</li>
   <li><a href="pmd_rules_java_bestpractices.html#unusedprivatefield">UnusedPrivateField</a>: Detects when a private field is declared and/or assigned a value, but not used.</li>
   <li><a href="pmd_rules_java_bestpractices.html#unusedprivatemethod">UnusedPrivateMethod</a>: Unused Private Method detects when a private method is declared but is unused.</li>
   <li><a href="pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue">UseAssertEqualsInsteadOfAssertTrue</a>: This rule detects JUnit assertions in object equality. These assertions should be made by more sp…</li>
@@ -1735,7 +1735,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_performance.html#avoidcalendardatecreation">AvoidCalendarDateCreation</a>: Problem: A Calendar is a heavyweight object and expensive to create. Solution: Use ‘new Date()’, …</li>
   <li><a href="pmd_rules_java_performance.html#avoidfilestream">AvoidFileStream</a>: The FileInputStream and FileOutputStream classes contains a finalizer method which will cause gar…</li>
   <li><a href="pmd_rules_java_performance.html#avoidinstantiatingobjectsinloops">AvoidInstantiatingObjectsInLoops</a>: New objects created within loops should be checked to see if they can created outside them and re…</li>
-  <li><a href="pmd_rules_java_performance.html#avoidusingshorttype">AvoidUsingShortType</a>: Java uses the ‘short’ type to reduce memory usage, not to optimize calculation. In fact, the JVM …</li>
+  <li><a href="pmd_rules_java_performance.html#avoidusingshorttype">AvoidUsingShortType</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Note: this rule is deprecated, as its rationale does not hold. Java uses the ‘short’ type to redu…</li>
   <li><a href="pmd_rules_java_performance.html#bigintegerinstantiation">BigIntegerInstantiation</a>: Don’t create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and for J…</li>
   <li><a href="pmd_rules_java_performance.html#booleaninstantiation">BooleanInstantiation</a>: Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boole…</li>
   <li><a href="pmd_rules_java_performance.html#byteinstantiation">ByteInstantiation</a>: Calling new Byte() causes memory allocation that can be avoided by the static Byte.valueOf(). It …</li>
@@ -1749,7 +1749,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_performance.html#optimizabletoarraycall">OptimizableToArrayCall</a>: Calls to a collection’s ‘toArray(E[])’ method should specify a target array of zero size. This al…</li>
   <li><a href="pmd_rules_java_performance.html#redundantfieldinitializer">RedundantFieldInitializer</a>: Java will initialize fields with known default values so any explicit initialization of those sam…</li>
   <li><a href="pmd_rules_java_performance.html#shortinstantiation">ShortInstantiation</a>: Calling new Short() causes memory allocation that can be avoided by the static Short.valueOf(). I…</li>
-  <li><a href="pmd_rules_java_performance.html#simplifystartswith">SimplifyStartsWith</a>: Calls to ‘string.startsWith("x")’ with a string literal of length 1 can be rewritten using ‘strin…</li>
+  <li><a href="pmd_rules_java_performance.html#simplifystartswith">SimplifyStartsWith</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Note: this rule is deprecated for removal, as the optimization is insignificant. Calls to ‘string…</li>
   <li><a href="pmd_rules_java_performance.html#stringinstantiation">StringInstantiation</a>: Avoid instantiating String objects; this is usually unnecessary since they are immutable and can …</li>
   <li><a href="pmd_rules_java_performance.html#stringtostring">StringToString</a>: Avoid calling toString() on objects already known to be string instances; this is unnecessary.</li>
   <li><a href="pmd_rules_java_performance.html#toofewbranchesforaswitchstatement">TooFewBranchesForASwitchStatement</a>: Switch statements are intended to be used to support complex branching behaviour. Using a switch …</li>
@@ -2073,7 +2073,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 21, 2021 <br />
+ Site last generated: Jan 22, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

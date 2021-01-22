@@ -2973,7 +2973,7 @@ or static fields of the current class in static initializers.</p>
 <p>The rule subsumes <a href="pmd_rules_java_bestpractices.html#unusedlocalvariable"><code class="language-plaintext highlighter-rouge">UnusedLocalVariable</code></a>, and <a href="pmd_rules_java_bestpractices.html#unusedformalparameter"><code class="language-plaintext highlighter-rouge">UnusedFormalParameter</code></a>.
 Those violations are filtered
 out by default, in case you already have enabled those rules, but may be enabled with the property
-<code class="language-plaintext highlighter-rouge">reportUnusedVariables</code>. Variables whose name starts with <code class="language-plaintext highlighter-rouge">ignored</code> are filtered out, as
+<code class="language-plaintext highlighter-rouge">reportUnusedVariables</code>. Variables whose name starts with <code class="language-plaintext highlighter-rouge">ignored</code> or <code class="language-plaintext highlighter-rouge">unused</code> are filtered out, as
 is standard practice for exceptions.</p>
 
 <p>Limitations:</p>
@@ -3118,8 +3118,10 @@ things like <code class="language-plaintext highlighter-rouge">assert</code> sta
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Avoid passing parameters to methods or constructors without actually referencing them in the method body.
-Removing unused formal parameters from public methods could cause a ripple effect through the code base.
+<p>Reports parameters of methods and constructors that are not referenced them in the method body.
+Parameters whose name starts with <code class="language-plaintext highlighter-rouge">ignored</code> or <code class="language-plaintext highlighter-rouge">unused</code> are filtered out.</p>
+
+<p>Removing unused formal parameters from public methods could cause a ripple effect through the code base.
 Hence, by default, this rule only considers private methods. To include non-private methods, set the
 <code class="language-plaintext highlighter-rouge">checkAll</code> property to <code class="language-plaintext highlighter-rouge">true</code>.</p>
 
@@ -3196,7 +3198,8 @@ This rule will also find unused on demand imports, i.e. import com.foo.*.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Detects when a local variable is declared and/or assigned, but not used.</p>
+<p>Detects when a local variable is declared and/or assigned, but not used.
+Variables whose name starts with <code class="language-plaintext highlighter-rouge">ignored</code> or <code class="language-plaintext highlighter-rouge">unused</code> are filtered out.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedLocalVariableRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedLocalVariableRule</a></p>
 
@@ -3713,7 +3716,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 21, 2021 <br />
+ Site last generated: Jan 22, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

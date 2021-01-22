@@ -1433,6 +1433,19 @@ when using <code class="language-plaintext highlighter-rouge">&lt;style&gt;</cod
   </li>
 </ul>
 
+<h4 id="deprecated-rules">Deprecated rules</h4>
+
+<ul>
+  <li>java-performance
+    <ul>
+      <li><a href="pmd_rules_java_performance.html#avoidusingshorttype"><code class="language-plaintext highlighter-rouge">AvoidUsingShortType</code></a>: arithmetic on shorts is not significantly
+slower than on ints, whereas using shorts may provide significant memory savings in arrays.</li>
+      <li><a href="pmd_rules_java_performance.html#simplifystartswith"><code class="language-plaintext highlighter-rouge">SimplifyStartsWith</code></a>: the suggested code transformation has an
+insignificant performance impact, and decreases readability.</li>
+    </ul>
+  </li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1448,11 +1461,17 @@ when using <code class="language-plaintext highlighter-rouge">&lt;style&gt;</cod
       <li><a href="https://github.com/pmd/pmd/issues/2454">#2454</a>: [java] UnusedPrivateMethod violation for disabled class in 6.23.0</li>
       <li><a href="https://github.com/pmd/pmd/issues/2833">#2833</a>: [java] NPE in UseCollectionIsEmptyRule with enums</li>
       <li><a href="https://github.com/pmd/pmd/issues/2876">#2876</a>: [java] UnusedPrivateField cannot override ignored annotations property</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2957">#2957</a>: [java] Ignore unused declarations that have special name</li>
     </ul>
   </li>
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2960">#2960</a>: [java] Thread issue in MethodNamingConventionsRule</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3006">#3006</a>: [java] NPE in SingularFieldRule with concise resource syntax</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -1464,9 +1483,23 @@ when using <code class="language-plaintext highlighter-rouge">&lt;style&gt;</cod
       <li><a href="https://github.com/pmd/pmd/issues/3062">#3062</a>: [java] CloseResource FP with reassigned stream</li>
     </ul>
   </li>
+  <li>java-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2296">#2296</a>: [java] Deprecate rule AvoidUsingShortType</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2740">#2740</a>: [java] Deprecate rule SimplifyStartsWith</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<h4 id="deprecated-api">Deprecated API</h4>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.31.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/AbstractDomXmlRule.html#"><code>AbstractDomXmlRule</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.31.0-SNAPSHOT/net/sourceforge/pmd/lang/wsdl/rule/AbstractWsdlRule.html#"><code>AbstractWsdlRule</code></a></li>
+  <li>A few methods of <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.31.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/AbstractXmlRule.html#"><code>AbstractXmlRule</code></a></li>
+</ul>
 
 <h4 id="experimental-apis">Experimental APIs</h4>
 
@@ -1508,7 +1541,7 @@ of the language is changed.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 21, 2021 <br />
+ Site last generated: Jan 22, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
