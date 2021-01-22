@@ -117,6 +117,11 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
     }
 
     @Override
+    public int getKind() {
+        return kind;
+    }
+
+    @Override
     public JavaccToken getNext() {
         return next;
     }

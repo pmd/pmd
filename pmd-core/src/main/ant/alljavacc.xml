@@ -41,15 +41,23 @@
         <delete dir="${tmp-package.dir}" />
         <mkdir dir="${tmp-package.dir}" />
         <echo>Using JavaCC home: ${javacc-home.path}</echo>
-        <jjtree target="etc/grammar/dummy.jjt"
-                outputdirectory="${tmp-package.dir}"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="jjtree"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-OUTPUT_DIRECTORY:${tmp-package.dir}" />
+            <arg value="etc/grammar/dummy.jjt" />
+        </java>
 
         <!-- Generate CharStream interface -->
-        <javacc usercharstream="true"
-                target="${tmp-package.dir}/dummy.jj"
-                outputdirectory="${tmp-package.dir}"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="javacc"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-USER_CHAR_STREAM:true" />
+            <arg value="-OUTPUT_DIRECTORY:${tmp-package.dir}" />
+            <arg value="${tmp-package.dir}/dummy.jj" />
+        </java>
 
         <replace file="${tmp-package.dir}/CharStream.java"
                  token="interface"

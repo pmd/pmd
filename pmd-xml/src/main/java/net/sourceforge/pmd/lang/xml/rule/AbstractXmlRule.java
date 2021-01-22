@@ -67,6 +67,8 @@ public class AbstractXmlRule extends AbstractRule {
         visit((XmlNode) target, ctx);
     }
 
+    /** @deprecated Not useful, will be removed in PMD 7. */
+    @Deprecated
     protected void visit(XmlNode node, RuleContext ctx) {
         final int numChildren = node.getNumChildren();
         for (int i = 0; i < numChildren; i++) {

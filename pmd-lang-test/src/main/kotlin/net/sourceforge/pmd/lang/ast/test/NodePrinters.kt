@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.rule.xpath.Attribute
+import net.sourceforge.pmd.util.StringUtil
 import net.sourceforge.pmd.util.treeexport.TextTreeRenderer
-import org.apache.commons.lang3.StringEscapeUtils
 
 /**
  * Prints just the structure, like so:
@@ -68,7 +68,7 @@ open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
 
     protected open fun valueToString(value: Any?): String? {
         return when (value) {
-            is String -> "\"" + StringEscapeUtils.unescapeJava(value) + "\""
+            is String -> "\"" + StringUtil.escapeJava(value) + "\""
             is Char -> '\''.toString() + value.toString().replace("'".toRegex(), "\\'") + '\''.toString()
             is Enum<*> -> value.enumDeclaringClass.simpleName + "." + value.name
             is Class<*> -> value.canonicalName?.let { "$it.class" }
