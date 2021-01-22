@@ -51,6 +51,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated API
+
+*   {% jdoc xml::lang.xml.rule.AbstractDomXmlRule %}
+*   {% jdoc xml::lang.wsdl.rule.AbstractWsdlRule %}
+*   A few methods of {% jdoc xml::lang.xml.rule.AbstractXmlRule %}
+
 #### Experimental APIs
 
 *   The method {% jdoc !!core::lang.ast.GenericToken#getKind() %} has been added as experimental. This
