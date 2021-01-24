@@ -167,7 +167,16 @@ public class GUI implements CPDListener {
 
                 @Override
                 public boolean canIgnoreLiteralSequences() {
-                    return "cs".equals(terseName);
+                    if (terseName == null) {
+                        return false;
+                    }
+                    switch(terseName) {
+                        case "cpp":
+                        case "cs":
+                            return true;
+                        default:
+                            return false;
+                    }
                 }
             };
         }

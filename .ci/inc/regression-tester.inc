@@ -32,93 +32,55 @@ function regression_tester_setup_ci() {
 }
 
 #
-# Generate a new baseline and upload it to sourceforge
-#
-# Note: this function always succeeds, even if the upload fails.
-# In that case, just a error logging is provided.
+# Generate a new baseline and upload it to pmd-code.org
 #
 function regression_tester_uploadBaseline() {
-    log_debug "$FUNCNAME branch=${PMD_CI_BRANCH}"
-    local targetUrl="https://sourceforge.net/projects/pmd/files/pmd-regression-tester/"
     local pmdcodeUrl="https://pmd-code.org/pmd-regression-tester/"
+    local baseline_branch="${PMD_CI_BRANCH:-$PMD_CI_TAG}"
+    log_debug "$FUNCNAME branch=${baseline_branch}"
 
-    local errexitstate="$(shopt -po errexit)"
-    set +e # disable errexit
-    (
-        # This handler is called if any command fails
-        function upload_failed() {
-            log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to pmd-code.org!"
-            log_error "Please upload manually: ${pmdcodeUrl}"
-            #log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to sourceforge!"
-            #log_error "Please upload manually: ${targetUrl}"
-        }
-
-        # exit subshell after trap
-        set -e
-        trap upload_failed ERR
-
-        log_info "Generating and uploading baseline for pmdtester..."
-        cd ..
-        bundle config --local gemfile pmd/Gemfile
-        bundle exec pmdtester \
-            --mode single \
-            --local-git-repo ./pmd \
-            --patch-branch ${PMD_CI_BRANCH} \
-            --patch-config ./pmd/.ci/files/all-java.xml \
-            --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
-            --error-recovery
-        cd target/reports
-        BRANCH_FILENAME="${PMD_CI_BRANCH/\//_}"
-        zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
-        # ssh-key for pmd-code.org is setup already by pmd_ci_setup_ssh
-        scp ${BRANCH_FILENAME}-baseline.zip pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
-        log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${pmdcodeUrl}"
-        #../../pmd/.ci/travis_wait "rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/"
-        #log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${targetUrl}"
-    )
-    # restore errexit state
-    eval "$errexitstate"
+    log_info "Generating and uploading baseline for pmdtester (${baseline_branch})..."
+    pushd ..
+    rm -f .bundle/config
+    bundle config set --local gemfile pmd/Gemfile
+    bundle exec pmdtester \
+        --mode single \
+        --local-git-repo ./pmd \
+        --patch-branch ${baseline_branch} \
+        --patch-config ./pmd/.ci/files/all-java.xml \
+        --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
+        --error-recovery
+    pushd target/reports
+    BRANCH_FILENAME="${baseline_branch/\//_}"
+    zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
+    # ssh-key for pmd-code.org is setup already by pmd_ci_setup_ssh
+    scp ${BRANCH_FILENAME}-baseline.zip pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
+    log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${pmdcodeUrl}"
+    popd
+    popd
 }
 
 #
 # Execute danger, which executes pmd-regression-tester (via Dangerfile).
 #
-# Note: this function always succeeds, even if the danger fails.
-# In that case, just a error logging is provided.
-#
 function regression_tester_executeDanger() {
     log_debug "$FUNCNAME"
 
-    local errexitstate="$(shopt -po errexit)"
-    set +e # disable errexit
-    (
-        # This handler is called if any command fails
-        function danger_failed() {
-            log_error "Error while executing danger/pmd-regression-tester"
-        }
+    # Create a corresponding remote branch locally
+    if ! git show-ref --verify --quiet refs/heads/${PMD_CI_BRANCH}; then
+        git fetch --no-tags --depth=1 origin +refs/heads/${PMD_CI_BRANCH}:refs/remotes/origin/${PMD_CI_BRANCH}
+        git branch ${PMD_CI_BRANCH} origin/${PMD_CI_BRANCH}
+        log_debug "Created local branch ${PMD_CI_BRANCH}"
+    fi
+    # Fetch more commits of the PR for danger and regression tester
+    git fetch --no-tags --depth=50 origin +$(git rev-parse HEAD^2):
+    # Fetch more commits from master branch for regression tester
+    if [[ "${PMD_CI_BRANCH}" != "master" ]]; then
+        git fetch --no-tags --depth=50 origin +master:
+        git branch master origin/master
+    fi
 
-        # exit subshell after trap
-        set -e
-        trap danger_failed ERR
-
-        # Create a corresponding remote branch locally
-        if ! git show-ref --verify --quiet refs/heads/${PMD_CI_BRANCH}; then
-            git fetch --no-tags --depth=1 origin +refs/heads/${PMD_CI_BRANCH}:refs/remotes/origin/${PMD_CI_BRANCH}
-            git branch ${PMD_CI_BRANCH} origin/${PMD_CI_BRANCH}
-            log_debug "Created local branch ${PMD_CI_BRANCH}"
-        fi
-        # Fetch more commits of the PR for danger and regression tester
-        git fetch --no-tags --depth=50 origin +$(git rev-parse HEAD^2):
-        # Fetch more commits from master branch for regression tester
-        if [[ "${PMD_CI_BRANCH}" != "master" ]]; then
-            git fetch --no-tags --depth=50 origin +master:
-            git branch master origin/master
-        fi
-
-        log_info "Running danger on branch ${PMD_CI_BRANCH}"
-        bundle exec danger --verbose
-        log_success "Executing danger successfully"
-    )
-    # restore errexit state
-    eval "$errexitstate"
+    log_info "Running danger on branch ${PMD_CI_BRANCH}"
+    bundle exec danger --verbose
+    log_success "Executed danger successfully"
 }

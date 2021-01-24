@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -97,7 +98,8 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
                     continue;
                 }
 
-                if (actuallyUsed(nameDecl, entry.getValue())) {
+                if (actuallyUsed(nameDecl, entry.getValue())
+                    || JavaRuleUtil.isExplicitUnusedVarName(nameDecl.getName())) {
                     continue;
                 }
                 addViolation(data, nameDecl.getNode(), new Object[] {
