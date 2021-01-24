@@ -23,7 +23,7 @@ public class XmlParser extends AbstractParser {
 
     @Override
     public RootXmlNode parse(String fileName, Reader source) throws ParseException {
-        return new XmlParserImpl((XmlParserOptions) parserOptions).parse(source);
+        return new XmlParserImpl().parse(source);
     }
 
 }

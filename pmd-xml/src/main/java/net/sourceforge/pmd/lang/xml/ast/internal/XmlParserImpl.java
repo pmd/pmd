@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.xml.ast.internal;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -16,24 +17,20 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
 
-public class XmlParserImpl {
+public final class XmlParserImpl {
+    // never throws on unresolved resource
+    private static final EntityResolver SILENT_ENTITY_RESOLVER = (publicId, systemId) -> new InputSource(new ByteArrayInputStream("".getBytes()));
 
-    private final XmlParserOptions parserOptions;
-    private Map<org.w3c.dom.Node, XmlNode> nodeCache = new HashMap<>();
-
-
-    public XmlParserImpl(XmlParserOptions parserOptions) {
-        this.parserOptions = parserOptions;
-    }
+    private final Map<org.w3c.dom.Node, XmlNode> nodeCache = new HashMap<>();
 
 
     private Document parseDocument(String xmlData) throws ParseException {
@@ -41,17 +38,17 @@ public class XmlParserImpl {
         try {
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(parserOptions.isNamespaceAware());
-            dbf.setValidating(parserOptions.isValidating());
-            dbf.setIgnoringComments(parserOptions.isIgnoringComments());
-            dbf.setIgnoringElementContentWhitespace(parserOptions.isIgnoringElementContentWhitespace());
-            dbf.setExpandEntityReferences(parserOptions.isExpandEntityReferences());
-            dbf.setCoalescing(parserOptions.isCoalescing());
-            dbf.setXIncludeAware(parserOptions.isXincludeAware());
+            dbf.setNamespaceAware(true);
+            dbf.setValidating(false);
+            dbf.setIgnoringComments(false);
+            dbf.setIgnoringElementContentWhitespace(false);
+            dbf.setExpandEntityReferences(true);
+            dbf.setCoalescing(false);
+            dbf.setXIncludeAware(false);
             dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
             dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
-            documentBuilder.setEntityResolver(parserOptions.getEntityResolver());
+            documentBuilder.setEntityResolver(SILENT_ENTITY_RESOLVER);
             return documentBuilder.parse(new InputSource(new StringReader(xmlData)));
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new ParseException(e);
