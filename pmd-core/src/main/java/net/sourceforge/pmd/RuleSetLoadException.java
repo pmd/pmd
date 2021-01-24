@@ -11,9 +11,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * {@linkplain RuleSetLoader loading rulesets}. This may be because the
  * XML is not well-formed, does not respect the ruleset schema, is
  * not a valid ruleset or is otherwise unparsable.
- *
- * <p>In the new {@link RuleSetLoader} API, this is thrown instead of
- * {@link RuleSetNotFoundException}.
  */
 public final class RuleSetLoadException extends RuntimeException {
 

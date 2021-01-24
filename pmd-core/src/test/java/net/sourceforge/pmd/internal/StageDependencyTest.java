@@ -18,7 +18,6 @@ import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -142,9 +141,9 @@ public class StageDependencyTest {
 
     private static RuleSets withRules(Rule r, Rule... rs) {
         List<RuleSet> rsets = new ArrayList<>();
-        rsets.add(new RuleSetFactory().createSingleRuleRuleSet(r));
+        rsets.add(RuleSet.forSingleRule(r));
         for (Rule rule : rs) {
-            rsets.add(new RuleSetFactory().createSingleRuleRuleSet(rule));
+            rsets.add(RuleSet.forSingleRule(rule));
         }
 
         return new RuleSets(rsets);
