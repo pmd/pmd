@@ -64,6 +64,9 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
+/**
+ * Utilities shared between rules.
+ */
 public final class JavaRuleUtil {
 
     private JavaRuleUtil() {
@@ -221,6 +224,15 @@ public final class JavaRuleUtil {
 
     private static boolean isNonPrivate(ASTBodyDeclaration decl) {
         return ((AccessNode) decl).getVisibility() != Visibility.V_PRIVATE;
+    }
+
+    /**
+     * Whether the name may be ignored by unused rules like UnusedAssignment.
+     */
+    public static boolean isExplicitUnusedVarName(String name) {
+        return name.startsWith("ignored")
+            || name.startsWith("unused")
+            || "_".equals(name); // before java 9 it's ok
     }
 
 

@@ -1651,6 +1651,21 @@ public class UnusedPrivateMethodFP {
         ]]></code>
     </test-code>
     <test-code>
+        <description>#2454 [java] UnusedPrivateMethod violation for disabled annotation in 6.23.0</description>
+        <!-- Note: weird whitespace in the property is important        -->
+        <rule-property name="ignoredAnnotations">java
+            .lang.Deprecated</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OOO {
+    @Deprecated
+    private void shutdown() {
+        server.shutdown();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
         <description>UnusedPrivateMethod false positive #2890</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

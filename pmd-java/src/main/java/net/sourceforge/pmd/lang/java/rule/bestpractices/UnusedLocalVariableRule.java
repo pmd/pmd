@@ -22,7 +22,8 @@ public class UnusedLocalVariableRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTLocalVariableDeclaration decl, Object data) {
         for (ASTVariableDeclaratorId varId : decl.getVarIds()) {
-            if (JavaRuleUtil.isNeverUsed(varId)) {
+            if (JavaRuleUtil.isNeverUsed(varId)
+                && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
                 addViolation(data, varId, varId.getName());
             }
         }

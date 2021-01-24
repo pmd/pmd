@@ -382,6 +382,19 @@ public class UnusedLocalVariable {
         ]]></code>
     </test-code>
     <test-code>
+        <description>#2957 Unused rules should ignore some names</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class UnusedLocalVariable {
+    public void testSomething() {
+        int ignored, unused = 0;
+        int notok = 0;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
         <description>#2130 [java] UnusedLocalVariable: false-negative with array</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

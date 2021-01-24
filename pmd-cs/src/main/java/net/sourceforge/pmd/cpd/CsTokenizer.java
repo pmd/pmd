@@ -22,9 +22,17 @@ public class CsTokenizer extends AntlrTokenizer {
     private boolean ignoreUsings = false;
     private boolean ignoreLiteralSequences = false;
 
+    /**
+     * Sets the possible options for the C# tokenizer.
+     *
+     * @param properties the properties
+     * @see #IGNORE_USINGS
+     * @see #OPTION_IGNORE_LITERAL_SEQUENCES
+     */
     public void setProperties(Properties properties) {
-        ignoreUsings = Boolean.parseBoolean(properties.getProperty(IGNORE_USINGS, "false"));
-        ignoreLiteralSequences = Boolean.parseBoolean(properties.getProperty(OPTION_IGNORE_LITERAL_SEQUENCES, "false"));
+        ignoreUsings = Boolean.parseBoolean(properties.getProperty(IGNORE_USINGS, Boolean.FALSE.toString()));
+        ignoreLiteralSequences = Boolean.parseBoolean(properties.getProperty(OPTION_IGNORE_LITERAL_SEQUENCES,
+            Boolean.FALSE.toString()));
     }
 
     public void setIgnoreUsings(boolean ignoreUsings) {

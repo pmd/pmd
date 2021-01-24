@@ -8,8 +8,11 @@
         <description>OK, guard is here - log4j</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 public class Foo {
-    private static final Logger logger = Logger.getLogger(Foo.class);
+    private static final Logger logger = LogManager.getLogger(Foo.class);
 
     private void foo() {
         if ( logger.isDebugEnabled() )
@@ -23,6 +26,9 @@ public class Foo {
         <description>ok, no error expected - apache commons logging</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 public class Test {
     private static final Log __log = LogFactory.getLog(Test.class);
     public void test() {
@@ -39,6 +45,8 @@ public class Test {
         <description>Guarded call - OK - java util</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.logging.Logger;
+
 public class Foo {
 
     private void foo(Logger logger) {
@@ -54,8 +62,11 @@ public class Foo {
         <description>KO, missing guard 1 - log4j</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 public class Foo {
-    private static final Logger logger = Logger.getLogger(Foo.class);
+    private static final Logger logger = LogManager.getLogger(Foo.class);
 
     private void foo() {
         logger.debug("Debug statement" + "");
@@ -70,8 +81,11 @@ public class Foo {
         <rule-property name="guardsMethods">isDebugEnabled,isTraceEnabled</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 public class Foo {
-    private static final Logger logger = Logger.getLogger(Foo.class);
+    private static final Logger logger = LogManager.getLogger(Foo.class);
 
     private void foo() {
         logger.debug("Debug statement" + "");
@@ -88,6 +102,9 @@ public class Foo {
         <description>Complex logging without guard - apache commons logging</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 public class Test {
     private static final Log __log = LogFactory.getLog(Test.class);
     public void test() {
@@ -111,6 +128,9 @@ public class Test {
         <description>Complex logging with misplaced guard - apache commons logging</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.loggong.Log;
+
 public class Test {
     private static final Log __log = LogFactory.getLog(Test.class);
     public void test() {
@@ -129,6 +149,8 @@ public class Test {
         <description>Unguarded call - KO - java util</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.logging.Logger;
+
 public class Foo {
 
     private void foo(Logger logger) {
@@ -142,8 +164,14 @@ public class Foo {
         <description>ok #1189 GuardLogStatementRule and GuardDebugLoggingRule broken for log4j2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+
 public class Test {
-    public void test() {
+    public void test(String mymarker) {
+        final Logger logger = LogManager.getLogger(Test.class);
         final Marker m = MarkerManager.getMarker(mymarker);
         if (logger.isDebugEnabled(m)) {
           logger.debug(m, message + "");
@@ -159,9 +187,16 @@ public class Test {
     <test-code>
         <description>violation - wrong guard #1189 GuardLogStatementRule and GuardDebugLoggingRule broken for log4j2</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>11,14</expected-linenumbers>
         <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+
 public class Test {
-    public void test() {
+    public void test(String mymarker) {
+        final Logger logger = LogManager.getLogger(Test.class);
         final Marker m = MarkerManager.getMarker(mymarker);
         if (logger.isTraceEnabled(m)) { // should have been isDebugEnabled
           logger.debug(m, message + "");
@@ -177,9 +212,16 @@ public class Test {
     <test-code>
         <description>violation - no if #1189 GuardLogStatementRule and GuardDebugLoggingRule broken for log4j2</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
         <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+
 public class Test {
-    public void test() {
+    public void test(String mymarker) {
+        final Logger logger = LogManager.getLogger(Test.class);
         final Marker m = MarkerManager.getMarker(mymarker);
         logger.isDebugEnabled(m); // must be within an if
         logger.debug(m, message + "");
@@ -192,6 +234,9 @@ public class Test {
         <description>#1224 GuardDebugLogging broken in 5.1.1 - missing additive statement check in log statement - apache commons logging</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 public class Test {
     private static final Log __log = LogFactory.getLog(Test.class);
     public void test() {
@@ -214,7 +259,11 @@ public class Test {
         <description>#1341 pmd:GuardDebugLogging violates LOGGER.debug with format "{}" - slf4j</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GuardDebugFalsePositive {
+    private static final Logger LOGGER = LoggerFactory.getLogger("GuardDebugFalsePositive");
     public void test() {
         String tempSelector = "a";
         LOGGER.debug("MessageSelector={}" , tempSelector);
