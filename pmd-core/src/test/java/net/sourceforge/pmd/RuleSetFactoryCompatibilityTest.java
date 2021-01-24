@@ -22,8 +22,8 @@ public class RuleSetFactoryCompatibilityTest {
         compat.addFilterRuleMoved("dummy", "notexisting", "basic", "DummyBasicMockRule");
 
 
-        RuleSetLoader factory = new RuleSetLoader().setCompatibility(compat);
-        RuleSet createdRuleSet = factory.loadFromString("dummy.xml", ruleset);
+        RuleSetLoader rulesetLoader = new RuleSetLoader().setCompatibility(compat);
+        RuleSet createdRuleSet = rulesetLoader.loadFromString("dummy.xml", ruleset);
 
         Assert.assertNotNull(createdRuleSet.getRuleByName("DummyBasicMockRule"));
     }
@@ -52,8 +52,8 @@ public class RuleSetFactoryCompatibilityTest {
         RuleSetFactoryCompatibility compat = new RuleSetFactoryCompatibility();
         compat.addFilterRuleRenamed("dummy", "basic", "OldNameOfSampleXPathRule", "SampleXPathRule");
 
-        RuleSetLoader factory = new RuleSetLoader().setCompatibility(compat);
-        RuleSet createdRuleSet = factory.loadFromString("dummy.xml", ruleset);
+        RuleSetLoader rulesetLoader = new RuleSetLoader().setCompatibility(compat);
+        RuleSet createdRuleSet = rulesetLoader.loadFromString("dummy.xml", ruleset);
 
         Assert.assertNotNull(createdRuleSet.getRuleByName("DummyBasicMockRule"));
         Assert.assertNull(createdRuleSet.getRuleByName("SampleXPathRule"));
