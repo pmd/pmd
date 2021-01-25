@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.ast.ASTArguments;
 import net.sourceforge.pmd.lang.vf.ast.ASTDotExpression;
@@ -59,6 +58,14 @@ public final class ElEscapeDetector {
         // utility class
     }
 
+    private static VfNode getNextSibling(VfNode node) {
+        VfNode parent = node.getParent();
+        if (parent != null && node.getIndexInParent() < (parent.getNumChildren() - 1)) {
+            return parent.getChild(node.getIndexInParent() + 1);
+        }
+        return null;
+    }
+
     /**
      * Given an ASTExpression node, determines whether that expression and any expressions under it are properly escaped.
      * @param expression - Represents a VF expression
@@ -71,21 +78,20 @@ public final class ElEscapeDetector {
         String prevId = "";
         List<ASTExpression> relevantChildren = new ArrayList<>();
         for (int i = 0; i < childCount; i++) {
-            Node child = expression.getChild(i);
+            VfNode child = expression.getChild(i);
 
             if (child instanceof ASTIdentifier) {
                 // How we deal with an Identifier depends on what the next node after it is.
-                if (i < childCount - 1) {
-                    VfNode nextNode = expression.getChild(i + 1);
-                    // If the next node is Arguments or a Dot expression, that means this Identifier represents the name
+                VfNode nextNode = getNextSibling(child);
+                if (nextNode instanceof ASTArguments || nextNode instanceof ASTDotExpression) {
+                    // If the next node is Arguments or Dot expression, that means this Identifier represents the name
                     // of a function, or some kind of object. In that case, we might be okay. So we'll store the name
                     // and keep going.
-                    if (nextNode instanceof ASTArguments || nextNode instanceof ASTDotExpression) {
-                        prevId = child.getImage();
-                        continue;
-                    }
+                    prevId = child.getImage();
+                    continue;
                 }
-                // If there's no next node, or the next node isn't one of those types, then this Identifier is a raw variable.
+                // If there's no next node, or the next node isn't one of the desired types, then this Identifier is a raw
+                // variable.
                 if (typedNodeIsSafe((ASTIdentifier) child)) {
                     // If the raw variable is of an inherently safe type, we can keep going.
                     continue;
@@ -110,7 +116,7 @@ public final class ElEscapeDetector {
                 }
                 // If the node after this one is also a Dot expression, then this is a chained access, and we can't make
                 // any final judgements.
-                if (i < childCount - 1 && expression.getChild(i + 1) instanceof ASTDotExpression) {
+                if (getNextSibling(child) instanceof ASTDotExpression) {
                     continue;
                 }
                 // If none of those things are true, then we need to determine whether the field being accessed is
