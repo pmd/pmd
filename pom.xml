@@ -726,12 +726,6 @@
                 <artifactId>groovy</artifactId>
                 <version>2.4.21</version>
             </dependency>
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>1.18.12</version>
-                <scope>provided</scope>
-            </dependency>
 
             <!-- TEST DEPENDENCIES -->
             <dependency>

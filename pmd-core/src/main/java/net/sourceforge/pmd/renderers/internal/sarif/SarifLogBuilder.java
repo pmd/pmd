@@ -2,26 +2,25 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.renderers;
+package net.sourceforge.pmd.renderers.internal.sarif;
 
-import static lombok.AccessLevel.PRIVATE;
-import static net.sourceforge.pmd.renderers.SarifLog.ArtifactLocation;
-import static net.sourceforge.pmd.renderers.SarifLog.AssociatedRule;
-import static net.sourceforge.pmd.renderers.SarifLog.Component;
-import static net.sourceforge.pmd.renderers.SarifLog.Exception;
-import static net.sourceforge.pmd.renderers.SarifLog.Invocation;
-import static net.sourceforge.pmd.renderers.SarifLog.Location;
-import static net.sourceforge.pmd.renderers.SarifLog.Message;
-import static net.sourceforge.pmd.renderers.SarifLog.MultiformatMessage;
-import static net.sourceforge.pmd.renderers.SarifLog.PhysicalLocation;
-import static net.sourceforge.pmd.renderers.SarifLog.PropertyBag;
-import static net.sourceforge.pmd.renderers.SarifLog.Region;
-import static net.sourceforge.pmd.renderers.SarifLog.ReportingDescriptor;
-import static net.sourceforge.pmd.renderers.SarifLog.Result;
-import static net.sourceforge.pmd.renderers.SarifLog.Run;
-import static net.sourceforge.pmd.renderers.SarifLog.Tool;
-import static net.sourceforge.pmd.renderers.SarifLog.ToolConfigurationNotification;
-import static net.sourceforge.pmd.renderers.SarifLog.ToolExecutionNotification;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ArtifactLocation;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.AssociatedRule;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Component;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Exception;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Invocation;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Location;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Message;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.MultiformatMessage;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.PhysicalLocation;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.PropertyBag;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Region;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ReportingDescriptor;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Result;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Run;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Tool;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ToolConfigurationNotification;
+import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ToolExecutionNotification;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,10 +32,7 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor(access = PRIVATE)
-class SarifLogBuilder {
+public class SarifLogBuilder {
     private final Map<ReportingDescriptor, List<Location>> locationsByRule = new HashMap<>();
     private final List<ToolConfigurationNotification> toolConfigurationNotifications = new ArrayList<>();
     private final List<ToolExecutionNotification> toolExecutionNotifications = new ArrayList<>();

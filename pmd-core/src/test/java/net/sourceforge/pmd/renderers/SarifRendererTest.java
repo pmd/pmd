@@ -72,6 +72,11 @@ public class SarifRendererTest extends AbstractRendererTest {
     }
 
     @Override
+    public String filter(String expected) {
+        return expected.replaceAll("\r\n", "\n"); // make the test run on Windows, too
+    }
+
+    @Override
     @Test
     public void testRendererMultiple() throws Exception {
         // Setup
