@@ -22,7 +22,7 @@ those can be specified with the `-property` / `-P` option on the command-line.
 ## sarif
 
 "SARIF, the Static Analysis Results Interchange Format, is a standard, JSON-based format for the output of static
-analysis tools. It has been approved as an OASIS standard" - <https://docs.oasis-open.org/sarif/sarif/v2.0/sarif-v2.0.html>.
+analysis tools. It has been approved as an OASIS standard" - <https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html>.
 
 SARIF schema can be found here: <https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json>.
 
