@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
@@ -20,8 +19,8 @@ abstract class HardCodedConstructorArgsBaseRule extends AbstractJavaRulechainRul
 
     private final Class<?> type;
 
-    HardCodedConstructorArgsBaseRule(Class<? extends JavaNode> ruleChainType, Class<?> constructorType) {
-        super(ruleChainType);
+    HardCodedConstructorArgsBaseRule(Class<?> constructorType) {
+        super(ASTConstructorCall.class);
         this.type = constructorType;
     }
 

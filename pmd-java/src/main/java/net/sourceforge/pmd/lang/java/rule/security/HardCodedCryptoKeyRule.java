@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.security;
 
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-
 /**
  * Finds hard coded encryption keys that are passed to
  * javax.crypto.spec.SecretKeySpec(key, algorithm).
@@ -16,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 public class HardCodedCryptoKeyRule extends HardCodedConstructorArgsBaseRule {
 
     public HardCodedCryptoKeyRule() {
-        super(ASTConstructorCall.class, javax.crypto.spec.SecretKeySpec.class);
+        super(javax.crypto.spec.SecretKeySpec.class);
     }
 
 }

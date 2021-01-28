@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.security;
 
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-
 /**
  * Finds hardcoded static Initialization Vectors vectors used with cryptographic
  * operations.
@@ -25,6 +23,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 public class InsecureCryptoIvRule extends HardCodedConstructorArgsBaseRule {
 
     public InsecureCryptoIvRule() {
-        super(ASTConstructorCall.class, javax.crypto.spec.IvParameterSpec.class);
+        super(javax.crypto.spec.IvParameterSpec.class);
     }
 }
