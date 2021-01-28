@@ -147,7 +147,6 @@
             <version>2.8.5</version>
         </dependency>
 
-
         <dependency>
             <groupId>net.sourceforge.saxon</groupId>
             <artifactId>saxon</artifactId>
