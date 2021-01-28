@@ -1417,6 +1417,18 @@ those can be specified with the <code class="language-plaintext highlighter-roug
 
 <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Suppressed violations are only reported, if the CLI parameter <code class="language-plaintext highlighter-rouge">-showsuppressed</code> is set.</div>
 
+<h2 id="sarif">sarif</h2>
+
+<p>“SARIF, the Static Analysis Results Interchange Format, is a standard, JSON-based format for the output of static
+analysis tools. It has been approved as an OASIS standard” - <a href="https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html">https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html</a>.</p>
+
+<p>SARIF schema can be found here: <a href="https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json">https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json</a>.</p>
+
+<p>PMD holds an initial implementation version of SARIF rendering. This means SARIF allows for more complexity and the
+current implementation can be extended.</p>
+
+<p><a href="report-examples/pmd-report.sarif.json">Example</a></p>
+
 <h2 id="codeclimate">codeclimate</h2>
 
 <p>Renderer for Code Climate JSON format.</p>
@@ -1791,7 +1803,7 @@ The output directory must exist. If not specified, the html files are created in
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 25, 2021 <br />
+ Site last generated: Jan 28, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
