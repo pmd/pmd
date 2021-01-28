@@ -1,21 +1,18 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.rule.security;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
-import net.sourceforge.pmd.lang.java.ast.ASTArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -34,58 +31,51 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  * @since 6.3.0
  *
  */
-public class InsecureCryptoIvRule extends AbstractJavaRule {
+public class InsecureCryptoIvRule extends AbstractJavaRulechainRule {
+
+    private static final Class<?> IV_PARAMETER_SPEC = javax.crypto.spec.IvParameterSpec.class;
 
     public InsecureCryptoIvRule() {
-        addRuleChainVisit(ASTAllocationExpression.class);
+        super(ASTConstructorCall.class);
     }
 
     @Override
-    public Object visit(ASTAllocationExpression node, Object data) {
-        if (TypeTestUtil.isA(javax.crypto.spec.IvParameterSpec.class, node.getFirstChildOfType(ASTClassOrInterfaceType.class))) {
-            Node firstArgument = null;
-
-            ASTArguments arguments = node.getFirstChildOfType(ASTArguments.class);
+    public Object visit(ASTConstructorCall node, Object data) {
+        if (TypeTestUtil.isA(IV_PARAMETER_SPEC, node)) {
+            ASTArgumentList arguments = node.getArguments();
             if (arguments.size() > 0) {
-                firstArgument = arguments.getFirstChildOfType(ASTArgumentList.class).getChild(0);
-            }
-
-            if (firstArgument != null) {
-                ASTPrimaryPrefix prefix = firstArgument.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-                validateProperIv(data, prefix);
+                validateProperIv(data, arguments.get(0));
             }
         }
         return data;
     }
 
-    private void validateProperIv(Object data, ASTPrimaryPrefix firstArgumentExpression) {
+    private void validateProperIv(Object data, ASTExpression firstArgumentExpression) {
         if (firstArgumentExpression == null) {
             return;
         }
 
         // named variable
-        ASTName namedVar = firstArgumentExpression.getFirstDescendantOfType(ASTName.class);
-        if (namedVar != null) {
-            // find where it's declared, if possible
-            if (namedVar != null && namedVar.getNameDeclaration() instanceof VariableNameDeclaration) {
-                VariableNameDeclaration varDecl = (VariableNameDeclaration) namedVar.getNameDeclaration();
-                ASTVariableInitializer initializer = varDecl.getAccessNodeParent().getFirstDescendantOfType(ASTVariableInitializer.class);
-                if (initializer != null) {
-                    validateProperIv(data, initializer.getFirstDescendantOfType(ASTPrimaryPrefix.class));
-                }
+        if (firstArgumentExpression instanceof ASTVariableAccess) {
+            ASTVariableAccess varAccess = (ASTVariableAccess) firstArgumentExpression;
+            if (varAccess.getSignature() != null && varAccess.getSignature().getSymbol() != null) {
+                ASTVariableDeclaratorId varDecl = varAccess.getSignature().getSymbol().tryGetNode();
+                validateProperIv(data, varDecl.getInitializer());
             }
         }
 
         // hard coded array
-        ASTArrayInitializer arrayInit = firstArgumentExpression.getFirstDescendantOfType(ASTArrayInitializer.class);
-        if (arrayInit != null) {
-            addViolation(data, firstArgumentExpression);
+        if (firstArgumentExpression instanceof ASTArrayAllocation) {
+            ASTArrayInitializer arrayInit = ((ASTArrayAllocation) firstArgumentExpression).getArrayInitializer();
+            if (arrayInit != null) {
+                addViolation(data, arrayInit);
+            }
         }
 
         // string literal
-        ASTLiteral literal = firstArgumentExpression.getFirstDescendantOfType(ASTLiteral.class);
-        if (literal != null && literal.isStringLiteral()) {
-            addViolation(data, firstArgumentExpression);
+        ASTStringLiteral literal = firstArgumentExpression.descendants(ASTStringLiteral.class).first();
+        if (literal != null) {
+            addViolation(data, literal);
         }
     }
 }

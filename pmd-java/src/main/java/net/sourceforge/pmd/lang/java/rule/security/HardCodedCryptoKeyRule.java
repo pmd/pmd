@@ -51,11 +51,13 @@ public class HardCodedCryptoKeyRule extends AbstractJavaRulechainRule {
         // named variable
         if (firstArgumentExpression instanceof ASTVariableAccess) {
             ASTVariableAccess varAccess = (ASTVariableAccess) firstArgumentExpression;
-            ASTVariableDeclaratorId varDecl = varAccess.getSignature().getSymbol().tryGetNode();
-            validateProperKeyArgument(data, varDecl.getInitializer());
+            if (varAccess.getSignature() != null && varAccess.getSignature().getSymbol() != null) {
+                ASTVariableDeclaratorId varDecl = varAccess.getSignature().getSymbol().tryGetNode();
+                validateProperKeyArgument(data, varDecl.getInitializer());
+            }
         }
 
-        // hard coded array ASTArrayAllocation
+        // hard coded array
         if (firstArgumentExpression instanceof ASTArrayAllocation) {
             ASTArrayInitializer arrayInit = ((ASTArrayAllocation) firstArgumentExpression).getArrayInitializer();
             if (arrayInit != null) {
