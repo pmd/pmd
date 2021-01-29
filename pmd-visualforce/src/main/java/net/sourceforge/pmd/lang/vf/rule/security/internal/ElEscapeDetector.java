@@ -41,7 +41,7 @@ public final class ElEscapeDetector {
             // These Text functions are safe, either because of what they accept or what they return.
             "begins", "br", "casesafeid", "contains", "find", "getsessionid", "ispickval", "len",
             // These Advanced functions are safe because of what they accept or what they return.
-            "currencyrate", "getrecordids", "ischanged", "junctionidlist", "regex", "urlfor"
+            "currencyrate", "getrecordids", "ischanged", "junctionidlist", "linkto", "regex", "urlfor"
     ));
     private static final Set<String> FUNCTIONS_WITH_XSSABLE_ARG0 = new HashSet<>(Arrays.asList(
             // For these methods, the first argument is a string that must be escaped.
