@@ -70,6 +70,8 @@ An example report can be found in the documentation in [Report formats for PMD](
 *   java-performance
     *   [#2296](https://github.com/pmd/pmd/issues/2296): \[java] Deprecate rule AvoidUsingShortType
     *   [#2740](https://github.com/pmd/pmd/issues/2740): \[java] Deprecate rule SimplifyStartsWith
+*   vf-security
+    *   [#3081](https://github.com/pmd/pmd/issues/3081): \[vf] VfUnescapeEl: Inherently un-XSS-able built-in functions trigger false positives
 
 ### API Changes
 
@@ -99,6 +101,7 @@ An example report can be found in the documentation in [Report formats for PMD](
 *   [#2994](https://github.com/pmd/pmd/pull/2994): \[core] Fix code climate severity strings - [Vincent Maurin](https://github.com/vmaurin)
 *   [#3005](https://github.com/pmd/pmd/pull/3005): \[vf] \[New Rule] Handle XSS violations that can occur within Html Style tags - [rmohan20](https://github.com/rmohan20)
 *   [#3073](https://github.com/pmd/pmd/pull/3073): \[core] Include SARIF renderer - [Manuel Moya Ferrer](https://github.com/mmoyaferrer)
+*   [#3084](https://github.com/pmd/pmd/pull/3084): \[vf] VfUnescapeEl false-positive with builtin functions - [Josh Feingold](https://github.com/jfeingold35)
 
 {% endtocmaker %}
 
