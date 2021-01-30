@@ -70,6 +70,7 @@ An example report can be found in the documentation in [Report formats for PMD](
 *   java-performance
     *   [#2296](https://github.com/pmd/pmd/issues/2296): \[java] Deprecate rule AvoidUsingShortType
     *   [#2740](https://github.com/pmd/pmd/issues/2740): \[java] Deprecate rule SimplifyStartsWith
+    *   [#3088](https://github.com/pmd/pmd/issues/3088): \[java] AvoidInstantiatingObjectsInLoops - false positive with Collections
 *   vf-security
     *   [#3081](https://github.com/pmd/pmd/issues/3081): \[vf] VfUnescapeEl: Inherently un-XSS-able built-in functions trigger false positives
 
