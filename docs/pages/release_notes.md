@@ -104,5 +104,10 @@ An example report can be found in the documentation in [Report formats for PMD](
 *   [#3073](https://github.com/pmd/pmd/pull/3073): \[core] Include SARIF renderer - [Manuel Moya Ferrer](https://github.com/mmoyaferrer)
 *   [#3084](https://github.com/pmd/pmd/pull/3084): \[vf] VfUnescapeEl false-positive with builtin functions - [Josh Feingold](https://github.com/jfeingold35)
 
+### Stats
+* 116 commits
+* 40 closed tickets & PRs
+* Days since last release: 49
+
 {% endtocmaker %}
 
