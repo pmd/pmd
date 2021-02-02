@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.documentation;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -20,8 +22,13 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class ApexDocRule extends AbstractApexRule {
+
+    private boolean reportPrivate;
+    private boolean reportProtected;
+
     private static final Pattern DESCRIPTION_PATTERN = Pattern.compile("@description\\s");
     private static final Pattern RETURN_PATTERN = Pattern.compile("@return\\s");
     private static final Pattern PARAM_PATTERN = Pattern.compile("@param\\s+(\\w+)\\s");
@@ -32,7 +39,18 @@ public class ApexDocRule extends AbstractApexRule {
     private static final String UNEXPECTED_RETURN_MESSAGE = "Unexpected ApexDoc @return";
     private static final String MISMATCHED_PARAM_MESSAGE = "Missing or mismatched ApexDoc @param";
 
+    private static final PropertyDescriptor<Boolean> REPORT_PRIVATE_DESCRIPTOR =
+            booleanProperty("reportPrivate")
+                .desc("Report private classes and methods").defaultValue(false).build();
+
+    private static final PropertyDescriptor<Boolean> REPORT_PROTECTED_DESCRIPTOR =
+            booleanProperty("reportProtected")
+                .desc("Report protected methods").defaultValue(false).build();
+
     public ApexDocRule() {
+        definePropertyDescriptor(REPORT_PRIVATE_DESCRIPTOR);
+        definePropertyDescriptor(REPORT_PROTECTED_DESCRIPTOR);
+
         addRuleChainVisit(ASTUserClass.class);
         addRuleChainVisit(ASTUserInterface.class);
         addRuleChainVisit(ASTMethod.class);
@@ -41,18 +59,21 @@ public class ApexDocRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
+        init();
         handleClassOrInterface(node, data);
         return data;
     }
 
     @Override
     public Object visit(ASTUserInterface node, Object data) {
+        init();
         handleClassOrInterface(node, data);
         return data;
     }
 
     @Override
     public Object visit(ASTMethod node, Object data) {
+        init();
         if (node.getParent() instanceof ASTProperty) {
             // Skip property methods, doc is required on the property itself
             return data;
@@ -92,6 +113,7 @@ public class ApexDocRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTProperty node, Object data) {
+        init();
         ApexDocComment comment = getApexDocComment(node);
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
@@ -104,6 +126,11 @@ public class ApexDocRule extends AbstractApexRule {
         }
 
         return data;
+    }
+
+    protected void init() {
+        reportPrivate = getProperty(REPORT_PRIVATE_DESCRIPTOR);
+        reportProtected = getProperty(REPORT_PROTECTED_DESCRIPTOR);
     }
 
     private void handleClassOrInterface(ApexNode<?> node, Object data) {
@@ -133,7 +160,9 @@ public class ApexDocRule extends AbstractApexRule {
 
         ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
         if (modifier != null) {
-            return (modifier.isPublic() || modifier.isGlobal()) && !modifier.isOverride();
+            Boolean flagPrivate = reportPrivate && modifier.isPrivate();
+            Boolean flagProtected = reportProtected && modifier.isProtected();
+            return (modifier.isPublic() || modifier.isGlobal() || flagPrivate || flagProtected) && !modifier.isOverride();
         }
         return false;
     }
