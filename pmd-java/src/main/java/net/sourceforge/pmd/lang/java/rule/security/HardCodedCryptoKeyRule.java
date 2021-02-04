@@ -11,7 +11,7 @@ package net.sourceforge.pmd.lang.java.rule.security;
  * @author sergeygorbaty
  * @since 6.4.0
  */
-public class HardCodedCryptoKeyRule extends HardCodedConstructorArgsBaseRule {
+public class HardCodedCryptoKeyRule extends AbstractHardCodedConstructorArgsVisitor {
 
     public HardCodedCryptoKeyRule() {
         super(javax.crypto.spec.SecretKeySpec.class);

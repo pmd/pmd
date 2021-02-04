@@ -15,11 +15,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
-abstract class HardCodedConstructorArgsBaseRule extends AbstractJavaRulechainRule {
+abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulechainRule {
 
     private final Class<?> type;
 
-    HardCodedConstructorArgsBaseRule(Class<?> constructorType) {
+    AbstractHardCodedConstructorArgsVisitor(Class<?> constructorType) {
         super(ASTConstructorCall.class);
         this.type = constructorType;
     }

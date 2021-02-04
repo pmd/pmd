@@ -20,7 +20,7 @@ package net.sourceforge.pmd.lang.java.rule.security;
  * @since 6.3.0
  *
  */
-public class InsecureCryptoIvRule extends HardCodedConstructorArgsBaseRule {
+public class InsecureCryptoIvRule extends AbstractHardCodedConstructorArgsVisitor {
 
     public InsecureCryptoIvRule() {
         super(javax.crypto.spec.IvParameterSpec.class);
