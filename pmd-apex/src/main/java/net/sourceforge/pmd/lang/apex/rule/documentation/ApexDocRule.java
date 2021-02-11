@@ -26,9 +26,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class ApexDocRule extends AbstractApexRule {
 
-    private boolean reportPrivate;
-    private boolean reportProtected;
-
     private static final Pattern DESCRIPTION_PATTERN = Pattern.compile("@description\\s");
     private static final Pattern RETURN_PATTERN = Pattern.compile("@return\\s");
     private static final Pattern PARAM_PATTERN = Pattern.compile("@param\\s+(\\w+)\\s");
@@ -59,21 +56,18 @@ public class ApexDocRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
-        init();
         handleClassOrInterface(node, data);
         return data;
     }
 
     @Override
     public Object visit(ASTUserInterface node, Object data) {
-        init();
         handleClassOrInterface(node, data);
         return data;
     }
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        init();
         if (node.getParent() instanceof ASTProperty) {
             // Skip property methods, doc is required on the property itself
             return data;
@@ -113,7 +107,6 @@ public class ApexDocRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTProperty node, Object data) {
-        init();
         ApexDocComment comment = getApexDocComment(node);
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
@@ -126,11 +119,6 @@ public class ApexDocRule extends AbstractApexRule {
         }
 
         return data;
-    }
-
-    protected void init() {
-        reportPrivate = getProperty(REPORT_PRIVATE_DESCRIPTOR);
-        reportProtected = getProperty(REPORT_PROTECTED_DESCRIPTOR);
     }
 
     private void handleClassOrInterface(ApexNode<?> node, Object data) {
