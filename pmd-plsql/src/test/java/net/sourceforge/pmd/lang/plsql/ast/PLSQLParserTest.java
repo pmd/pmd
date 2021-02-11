@@ -73,4 +73,9 @@ public class PLSQLParserTest extends AbstractPLSQLParserTst {
     public void testCaseIssue1454() {
         plsql.parseResource("CaseIssue1454.pls");
     }
+
+    @Test
+    public void testCaseIssue3106() {
+        plsql.parse("CREATE OR REPLACE PROCEDURE bar\nIS\n  v_link varchar2(10) := 'xxx';\nBEGIN\n  EXECUTE IMMEDIATE 'drop database link ' || v_link;\nEND bar;");
+    }
 }
