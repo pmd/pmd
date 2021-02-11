@@ -160,8 +160,8 @@ public class ApexDocRule extends AbstractApexRule {
 
         ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
         if (modifier != null) {
-            Boolean flagPrivate = reportPrivate && modifier.isPrivate();
-            Boolean flagProtected = reportProtected && modifier.isProtected();
+            boolean flagPrivate = getProperty(REPORT_PRIVATE_DESCRIPTOR) && modifier.isPrivate();
+            boolean flagProtected = getProperty(REPORT_PROTECTED_DESCRIPTOR) && modifier.isProtected();
             return (modifier.isPublic() || modifier.isGlobal() || flagPrivate || flagProtected) && !modifier.isOverride();
         }
         return false;
