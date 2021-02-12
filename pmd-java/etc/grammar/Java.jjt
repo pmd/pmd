@@ -1,4 +1,7 @@
 /**
+ * JEP 394: Pattern Matching for instanceof for Java16
+ * Andreas Dangel 02/2021
+ *====================================================================
  * Remove support for Java 13 preview language features.
  * Promote text blocks as a permanent language features with Java 15.
  * Support Pattern Matching for instanceof with Java 15 Preview.
@@ -378,8 +381,8 @@ public class JavaParser {
   }
 
   private void checkforBadInstanceOfPattern() {
-    if (jdkVersion != 14 && jdkVersion != 15 || !preview) {
-      throwParseException("Pattern Matching for instanceof is only supported with Java 14 Preview and Java 15 Preview");
+    if (!(jdkVersion == 14 && preview || jdkVersion == 15 && preview || jdkVersion == 16)) {
+      throwParseException("Pattern Matching for instanceof is only supported with Java 14 Preview and Java 15 Preview and Java 16");
     }
   }
 
@@ -1682,10 +1685,26 @@ void EqualityExpression() #EqualityExpression(>1):
   InstanceOfExpression()  ( LOOKAHEAD(2) ( "==" {jjtThis.setImage("==");} | "!=" {jjtThis.setImage("!=");} ) InstanceOfExpression()  )*
 }
 
+void TypePattern() #TypeTestPattern:
+{}
+{
+  ( "final" {jjtThis.setFinal(true);} | Annotation() )*
+  Type()
+  VariableDeclaratorId()
+}
+
 void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
-  RelationalExpression() [ LOOKAHEAD(2) "instanceof" Type() [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypeTestPattern(2) ] ]
+  RelationalExpression()
+  [ "instanceof"
+      (
+        LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} TypePattern()
+      |
+        Type()
+        [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypeTestPattern(2) ]
+      )
+  ]
 }
 
 void RelationalExpression() #RelationalExpression(>1):

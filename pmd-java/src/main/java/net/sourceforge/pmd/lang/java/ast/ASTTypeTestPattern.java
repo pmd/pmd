@@ -1,24 +1,29 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.List;
+
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
- * A type test pattern (JDK 14 preview feature). This can be found on
+ * A type pattern (JDK16). This can be found on
  * the right-hand side of an {@link ASTInstanceOfExpression InstanceOfExpression}.
  *
  * <pre class="grammar">
  *
- * TypeTestPattern ::= {@linkplain ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * TypeTestPattern ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
  *
  * </pre>
- */
+ *
+ * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
+*/
 @Experimental
-public final class ASTTypeTestPattern extends AbstractJavaNode implements ASTPattern {
+public final class ASTTypeTestPattern extends AbstractJavaAnnotatableNode implements ASTPattern {
 
+    private boolean isFinal;
 
     ASTTypeTestPattern(int id) {
         super(id);
@@ -34,17 +39,28 @@ public final class ASTTypeTestPattern extends AbstractJavaNode implements ASTPat
         return visitor.visit(this, data);
     }
 
+    @Override
+    public List<ASTAnnotation> getDeclaredAnnotations() {
+        return this.findChildrenOfType(ASTAnnotation.class);
+    }
 
     /**
      * Gets the type against which the expression is tested.
      */
     public ASTType getTypeNode() {
-        return (ASTType) getChild(0);
+        return getFirstChildOfType(ASTType.class);
     }
 
     /** Returns the declared variable. */
     public ASTVariableDeclaratorId getVarId() {
-        return (ASTVariableDeclaratorId) getChild(1);
+        return getFirstChildOfType(ASTVariableDeclaratorId.class);
     }
 
+    void setFinal(boolean isFinal) {
+        this.isFinal = isFinal;
+    }
+
+    boolean isFinal() {
+        return isFinal;
+    }
 }

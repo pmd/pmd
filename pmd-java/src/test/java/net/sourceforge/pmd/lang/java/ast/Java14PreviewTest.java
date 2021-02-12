@@ -83,7 +83,7 @@ public class Java14PreviewTest {
             Assert.assertEquals(String.class, variable.getType());
             Assert.assertEquals("s", variable.getVariableName());
             Assert.assertTrue(variable.isPatternBinding());
-            Assert.assertTrue(variable.isFinal());
+            Assert.assertFalse(variable.isFinal());
             // Note: these variables are not part of the symbol table
             // See ScopeAndDeclarationFinder#visit(ASTVariableDeclaratorId, Object)
             Assert.assertNull(variable.getNameDeclaration());
