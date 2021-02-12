@@ -15,7 +15,7 @@ class ASTPatternTest : ParserTestSpec({
     parserTest("Test patterns only available on JDK 14+15 (preview) and JDK16 and JDK16 (preview)",
         javaVersions = JavaVersion.values().asList().minus(J14__PREVIEW).minus(J15__PREVIEW).minus(J16).minus(J16__PREVIEW)) {
 
-        expectParseException("Pattern Matching for instanceof is only supported with Java 14 Preview and Java 15 Preview and Java 16") {
+        expectParseException("Pattern Matching for instanceof is only supported with Java 14 Preview and Java 15 Preview and Java >= 16") {
             parseAstExpression("obj instanceof Class c")
         }
 
@@ -27,7 +27,7 @@ class ASTPatternTest : ParserTestSpec({
 
         "obj instanceof Class c" should matchExpr<ASTInstanceOfExpression> {
             unspecifiedChild()
-            child<ASTTypeTestPattern> {
+            child<ASTTypePattern> {
                 it.isAnnotationPresent("java.lang.Deprecated") shouldBe false
                 it::getTypeNode typeShouldBe child(ignoreChildren = true) {}
 
@@ -40,7 +40,7 @@ class ASTPatternTest : ParserTestSpec({
 
         "obj instanceof final Class c" should matchExpr<ASTInstanceOfExpression> {
             unspecifiedChild()
-            child<ASTTypeTestPattern> {
+            child<ASTTypePattern> {
                 it.isAnnotationPresent("java.lang.Deprecated") shouldBe false
                 it::getTypeNode typeShouldBe child(ignoreChildren = true) {}
 
@@ -53,7 +53,7 @@ class ASTPatternTest : ParserTestSpec({
 
         "obj instanceof @Deprecated Class c" should matchExpr<ASTInstanceOfExpression> {
             unspecifiedChild()
-            child<ASTTypeTestPattern> {
+            child<ASTTypePattern> {
                 child<ASTAnnotation>(ignoreChildren = true) {
                     it.annotationName shouldBe "Deprecated"
                 }

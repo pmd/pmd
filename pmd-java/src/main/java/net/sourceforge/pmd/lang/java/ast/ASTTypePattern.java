@@ -6,30 +6,27 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 /**
  * A type pattern (JDK16). This can be found on
  * the right-hand side of an {@link ASTInstanceOfExpression InstanceOfExpression}.
  *
  * <pre class="grammar">
  *
- * TypeTestPattern ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * TypePattern ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
  *
  * </pre>
  *
  * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
 */
-@Experimental
-public final class ASTTypeTestPattern extends AbstractJavaAnnotatableNode implements ASTPattern {
+public final class ASTTypePattern extends AbstractJavaAnnotatableNode implements ASTPattern {
 
     private boolean isFinal;
 
-    ASTTypeTestPattern(int id) {
+    ASTTypePattern(int id) {
         super(id);
     }
 
-    ASTTypeTestPattern(JavaParser p, int id) {
+    ASTTypePattern(JavaParser p, int id) {
         super(p, id);
     }
 

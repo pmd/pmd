@@ -381,8 +381,8 @@ public class JavaParser {
   }
 
   private void checkforBadInstanceOfPattern() {
-    if (!(jdkVersion == 14 && preview || jdkVersion == 15 && preview || jdkVersion == 16)) {
-      throwParseException("Pattern Matching for instanceof is only supported with Java 14 Preview and Java 15 Preview and Java 16");
+    if (!(jdkVersion == 14 && preview || jdkVersion == 15 && preview || jdkVersion >= 16)) {
+      throwParseException("Pattern Matching for instanceof is only supported with Java 14 Preview and Java 15 Preview and Java >= 16");
     }
   }
 
@@ -1685,7 +1685,7 @@ void EqualityExpression() #EqualityExpression(>1):
   InstanceOfExpression()  ( LOOKAHEAD(2) ( "==" {jjtThis.setImage("==");} | "!=" {jjtThis.setImage("!=");} ) InstanceOfExpression()  )*
 }
 
-void TypePattern() #TypeTestPattern:
+void TypePattern():
 {}
 {
   ( "final" {jjtThis.setFinal(true);} | Annotation() )*
@@ -1702,7 +1702,7 @@ void InstanceOfExpression() #InstanceOfExpression(>1):
         LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} TypePattern()
       |
         Type()
-        [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypeTestPattern(2) ]
+        [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypePattern(2) ]
       )
   ]
 }

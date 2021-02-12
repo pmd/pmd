@@ -78,7 +78,7 @@ public class Java14PreviewTest {
         List<ASTInstanceOfExpression> instanceOfExpressions = compilationUnit.findDescendantsOfType(ASTInstanceOfExpression.class);
         Assert.assertEquals(4, instanceOfExpressions.size());
         for (ASTInstanceOfExpression expr : instanceOfExpressions) {
-            Assert.assertTrue(expr.getChild(1) instanceof ASTTypeTestPattern);
+            Assert.assertTrue(expr.getChild(1) instanceof ASTTypePattern);
             ASTVariableDeclaratorId variable = expr.getChild(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
             Assert.assertEquals(String.class, variable.getType());
             Assert.assertEquals("s", variable.getVariableName());
