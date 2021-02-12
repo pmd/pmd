@@ -672,7 +672,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.0-beta</version>
+                <version>9.1</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>

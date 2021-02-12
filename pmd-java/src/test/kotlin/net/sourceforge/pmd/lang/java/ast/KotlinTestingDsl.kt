@@ -21,7 +21,8 @@ enum class JavaVersion : Comparable<JavaVersion> {
     J12,
     J13,
     J14, J14__PREVIEW,
-    J15, J15__PREVIEW;
+    J15, J15__PREVIEW,
+    J16, J16__PREVIEW;
 
     /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
     val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
