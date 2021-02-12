@@ -838,7 +838,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     }
 
     @Override
-    @Experimental
     public Object visit(ASTTypePattern node, Object data) {
         return visit((JavaNode) node, data);
     }
