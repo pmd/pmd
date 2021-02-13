@@ -221,4 +221,20 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] StringBuilder/Buffer false negatives with typeres #2881</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void a() {
+                    StringBuilder sb = new StringBuilder();
+                    int start = sb.indexOf(" ");
+                    if (start == -1) {
+                        sb.append("Bar");
+                        sb.append(" "); // warning expected: Avoid appending characters as strings in StringBuffer.append.
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
