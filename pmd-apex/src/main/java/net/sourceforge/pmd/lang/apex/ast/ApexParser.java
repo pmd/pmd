@@ -21,12 +21,12 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 @InternalApi
 public final class ApexParser implements Parser {
 
-    private static final String NO_VALUE_SENTINEL = "sentinel_not_a_directory";
     @InternalApi // todo change that to optional<file> when properties are updated
     public static final PropertyDescriptor<String> MULTIFILE_DIRECTORY =
-        PropertyFactory.stringProperty("apexRootDirectory")
-                       .desc("The root directory of the Salesforce metadata, where `sfdx-project.json` resides")
-                       .defaultValue(NO_VALUE_SENTINEL)
+        PropertyFactory.stringProperty("rootDirectory")
+                       .desc("The root directory of the Salesforce metadata, where `sfdx-project.json` resides. "
+                                 + "Set environment variable PMD_APEX_ROOTDIRECTORY to use this.")
+                       .defaultValue("") // is this ok?
                        .build();
 
     public ApexParser() {
@@ -45,9 +45,6 @@ public final class ApexParser implements Parser {
             }
 
             String property = task.getProperties().getProperty(MULTIFILE_DIRECTORY);
-            if (property == NO_VALUE_SENTINEL) { // NOPMD we want reference identity
-                property = null;
-            }
             @Nullable ApexMultifileAnalysis analysisHandler = ApexMultifileAnalysis.getAnalysisInstance(property);
 
             SourceCodePositioner positioner = new SourceCodePositioner(sourceCode);

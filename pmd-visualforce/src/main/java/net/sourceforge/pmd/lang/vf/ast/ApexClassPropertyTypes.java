@@ -85,6 +85,8 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
             SemanticErrorReporter.noop()
         );
 
+        languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
+
         return parser.parse(task);
     }
 
