@@ -462,7 +462,7 @@ public interface ExprMirror {
          *  <li>e.g. for {@code new Runnable() {}} (anonymous), returns {@code Runnable}.
          * </ul>
          */
-        JClassType getNewType();
+        @NonNull JTypeMirror getNewType();
 
         /**
          * True if this creates an anonymous class. Since java 9 those
