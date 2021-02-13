@@ -320,7 +320,7 @@
 
     <!-- security.xml -->
 
-    <!-- <rule ref="category/java/security.xml/HardCodedCryptoKey"/> -->
-    <!-- <rule ref="category/java/security.xml/InsecureCryptoIv"/> -->
+    <rule ref="category/java/security.xml/HardCodedCryptoKey"/>
+    <rule ref="category/java/security.xml/InsecureCryptoIv"/>
 
 </ruleset>
