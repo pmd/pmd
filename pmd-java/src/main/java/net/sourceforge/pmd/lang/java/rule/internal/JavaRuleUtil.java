@@ -37,7 +37,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
@@ -337,15 +336,6 @@ public final class JavaRuleUtil {
     }
 
     /**
-     * True if the variable is incremented or decremented via a compound
-     * assignment operator, or a unary increment/decrement expression.
-     */
-    public static boolean isInIfCondition(ASTExpression expr) {
-        ASTExpression toplevel = getTopLevelExpr(expr);
-        return toplevel.getIndexInParent() == 0 && toplevel.getParent() instanceof ASTIfStatement;
-    }
-
-    /**
      * Will cut through argument lists, except those of enum constants
      * and explicit invocation nodes.
      */
@@ -374,10 +364,7 @@ public final class JavaRuleUtil {
      */
     public static boolean isSerialPersistentFields(final ASTFieldDeclaration field) {
         return field.hasModifiers(JModifier.FINAL, JModifier.STATIC, JModifier.PRIVATE)
-            && field.getVarIds().any(
-            it -> "serialPersistentFields".equals(it.getName())
-                && TypeTestUtil.isA(ObjectStreamField[].class, it)
-        );
+            && field.getVarIds().any(it -> "serialPersistentFields".equals(it.getName()) && TypeTestUtil.isA(ObjectStreamField[].class, it));
     }
 
     /**
@@ -386,10 +373,7 @@ public final class JavaRuleUtil {
      */
     public static boolean isSerialVersionUID(ASTFieldDeclaration field) {
         return field.hasModifiers(JModifier.FINAL, JModifier.STATIC)
-            && field.getVarIds().any(
-            it -> "serialVersionUID".equals(it.getName())
-                && it.getTypeMirror().isPrimitive(LONG)
-        );
+            && field.getVarIds().any(it -> "serialVersionUID".equals(it.getName()) && it.getTypeMirror().isPrimitive(LONG));
     }
 
     /**

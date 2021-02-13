@@ -35,6 +35,7 @@ public final class ASTDoStatement extends AbstractStatement implements ASTLoopSt
      * Returns the statement that will be run while the guard
      * evaluates to true.
      */
+    @Override
     public ASTStatement getBody() {
         return (ASTStatement) getChild(0);
     }
