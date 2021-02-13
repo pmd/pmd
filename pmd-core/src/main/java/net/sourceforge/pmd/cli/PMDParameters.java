@@ -294,8 +294,7 @@ public class PMDParameters {
         return reportfile;
     }
 
-    @Nullable
-    private LanguageVersion getLangVersion() {
+    private @Nullable LanguageVersion getLangVersion() {
         Language lang = language != null ? LanguageRegistry.findLanguageByTerseName(language)
                                          : LanguageRegistry.getDefaultLanguage();
 

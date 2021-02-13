@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
@@ -22,8 +22,7 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
     private final LanguageLevelChecker<?> checker;
 
-    public JavaParser(LanguageLevelChecker<?> checker, ParserOptions parserOptions) {
-        super(parserOptions);
+    public JavaParser(LanguageLevelChecker<?> checker) {
         this.checker = checker;
     }
 
@@ -39,17 +38,14 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     }
 
     @Override
-    protected ASTCompilationUnit parseImpl(CharStream cs, ParserOptions options, String fileName) throws ParseException {
+    protected ASTCompilationUnit parseImpl(CharStream cs, ParserTask task) throws ParseException {
         JavaParserImpl parser = new JavaParserImpl(cs);
-        String suppressMarker = options.getSuppressMarker();
-        if (suppressMarker != null) {
-            parser.setSuppressMarker(suppressMarker);
-        }
+        parser.setSuppressMarker(task.getCommentMarker());
         parser.setJdkVersion(checker.getJdkVersion());
         parser.setPreview(checker.isPreviewEnabled());
 
         ASTCompilationUnit acu = parser.CompilationUnit();
-        acu.setNoPmdComments(parser.getSuppressMap());
+        acu.setAstInfo(new AstInfo<>(task, acu, parser.getSuppressMap()));
         checker.check(acu);
         return acu;
     }
