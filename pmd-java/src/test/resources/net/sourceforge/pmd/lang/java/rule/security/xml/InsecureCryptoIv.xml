@@ -101,9 +101,9 @@ import java.security.SecureRandom;
 
 public class Foo {
     void encrypt() {
-        byte[] iv = new byte[16];
+        byte[] ivBytes = new byte[16];
         SecureRandom sprng = new SecureRandom();
-        sprng.nextBytes(iv);
+        sprng.nextBytes(ivBytes);
         IvParameterSpec ivs = new IvParameterSpec(ivBytes);
     }
 }

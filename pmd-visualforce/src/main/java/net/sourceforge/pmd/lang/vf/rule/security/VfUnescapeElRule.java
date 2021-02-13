@@ -57,78 +57,33 @@ public class VfUnescapeElRule extends AbstractVfRule {
     }
 
     private void checkIfCorrectlyEscaped(ASTHtmlScript node, Object data) {
-        ASTText prevText = null;
-
         // churn thru every child just once instead of twice
         for (int i = 0; i < node.getNumChildren(); i++) {
             Node n = node.getChild(i);
 
-            if (n instanceof ASTText) {
-                prevText = (ASTText) n;
-                continue;
-            }
-
             if (n instanceof ASTElExpression) {
-                processElInScriptContext((ASTElExpression) n, prevText, data);
+                processElInScriptContext((ASTElExpression) n, data);
             }
         }
     }
 
-    private void processElInScriptContext(ASTElExpression elExpression, ASTText prevText, Object data) {
-        boolean quoted = false;
-        boolean jsonParse = false;
-
-        if (prevText != null) {
-            jsonParse = isJsonParse(prevText);
-            if (isUnbalanced(prevText.getImage(), '\'') || isUnbalanced(prevText.getImage(), '\"')) {
-                quoted = true;
-            }
-        }
-        if (quoted) {
-            // check escaping too
-            if (!(jsonParse
-                    || ElEscapeDetector.startsWithSafeResource(elExpression)
-                    || ElEscapeDetector.containsSafeFields(elExpression))) {
-                if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(elExpression,
-                        JSENCODE_JSINHTMLENCODE)) {
-                    addViolation(data, elExpression);
-                }
-            }
-        } else {
-            if (!(ElEscapeDetector.startsWithSafeResource(elExpression)
-                    || ElEscapeDetector.containsSafeFields(elExpression))) {
-                final boolean hasUnscaped = ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(elExpression,
-                        JSENCODE_JSINHTMLENCODE);
-                if (!(jsonParse && !hasUnscaped)) {
-                    addViolation(data, elExpression);
-                }
-            }
+    private void processElInScriptContext(ASTElExpression elExpression, Object data) {
+        if (!properlyEscaped(elExpression)) {
+            addViolation(data, elExpression);
         }
     }
 
-    private boolean isJsonParse(ASTText prevText) {
-        final String text = prevText.getImage().endsWith("'")
-                ? prevText.getImage().substring(0, prevText.getImage().length() - 1) : prevText.getImage();
+    private boolean properlyEscaped(ASTElExpression el) {
+        // Find the first Expression-type child of this top-level node.
+        ASTExpression expression = el.getFirstChildOfType(ASTExpression.class);
 
-        return text.endsWith("JSON.parse(") || text.endsWith("jQuery.parseJSON(") || text.endsWith("$.parseJSON(");
-    }
-
-    private boolean isUnbalanced(String image, char pattern) {
-        char[] array = image.toCharArray();
-
-        boolean foundPattern = false;
-
-        for (int i = array.length - 1; i > 0; i--) {
-            if (array[i] == pattern) {
-                foundPattern = true;
-            }
-
-            if (array[i] == ';') {
-                return foundPattern;
-            }
+        // If no such node was found, then there's nothing to escape, so we're fine.
+        if (expression == null) {
+            return true;
         }
 
-        return foundPattern;
+        // Otherwise, we should pass the expression node into our recursive checker.
+        return ElEscapeDetector.expressionRecursivelyValid(expression, JSENCODE_JSINHTMLENCODE);
     }
 
     @Override
