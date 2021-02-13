@@ -75,12 +75,12 @@ fun JavaNode.declaredTypeSignatures(): List<JClassType> = typeDeclarations().toL
 fun JavaNode.declaredMethodSignatures(): List<JMethodSig> = methodDeclarations().toList { it.genericSignature }
 
 fun JavaNode.methodCalls(): DescendantNodeStream<ASTMethodCall> = descendants(ASTMethodCall::class.java)
-fun JavaNode.firstMethodCall() = descendants(ASTMethodCall::class.java).firstOrThrow()
+fun JavaNode.firstMethodCall() = methodCalls().crossFindBoundaries().firstOrThrow()
 
 fun JavaNode.ctorCalls(): DescendantNodeStream<ASTConstructorCall> = descendants(ASTConstructorCall::class.java)
-fun JavaNode.firstCtorCall() = descendants(ASTConstructorCall::class.java).firstOrThrow()
+fun JavaNode.firstCtorCall() = ctorCalls().crossFindBoundaries().firstOrThrow()
 
 fun JavaNode.typeVariables(): MutableList<JTypeVar> = descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
 fun JavaNode.varAccesses(name: String): NodeStream<ASTVariableAccess> = descendants(ASTVariableAccess::class.java).filter { it.name == name }
 fun JavaNode.varId(name: String) = descendants(ASTVariableDeclaratorId::class.java).filter { it.name == name }.firstOrThrow()
-fun JavaNode.typeVar(name: String) = descendants(ASTTypeParameter::class.java).filter { it.parameterName == name }.firstOrThrow().typeMirror
+fun JavaNode.typeVar(name: String) = descendants(ASTTypeParameter::class.java).filter { it.name == name }.firstOrThrow().typeMirror

@@ -294,6 +294,23 @@ public final class CollectionUtil {
         return newM;
     }
 
+    /**
+     * Returns an unmodifiable set containing the set union of the collection,
+     * and the new elements.
+     */
+    @SafeVarargs
+    @SuppressWarnings("unchecked")
+    public static <V> Set<V> setUnion(Collection<? extends V> set, V first, V... newElements) {
+        if (set instanceof PSet) {
+            return ((PSet<V>) set).plus(first).plusAll(Arrays.asList(newElements));
+        }
+        Set<V> newSet = new LinkedHashSet<>(set.size() + 1 + newElements.length);
+        newSet.addAll(set);
+        newSet.add(first);
+        Collections.addAll(newSet, newElements);
+        return Collections.unmodifiableSet(newSet);
+    }
+
 
     /**
      * Returns a map associating each key in the first list to its
@@ -459,16 +476,19 @@ public final class CollectionUtil {
      * @param <T> Type of accumulated values
      */
     public static <T> Collector<T, ?, List<T>> toMutableList() {
-        return Collector.<T, ArrayList<T>, List<T>>of(
-            ArrayList::new,
-            ArrayList::add,
-            (left, right) -> {
-                left.addAll(right);
-                return left;
-            },
-            a -> a,
-            Characteristics.IDENTITY_FINISH
-        );
+        return Collectors.toCollection(ArrayList::new);
+    }
+
+
+    /**
+     * A collector that returns a mutable set. This contrasts with
+     * {@link Collectors#toSet()}, which makes no guarantee about the
+     * mutability of the set.
+     *
+     * @param <T> Type of accumulated values
+     */
+    public static <T> Collector<T, ?, Set<T>> toMutableSet() {
+        return Collectors.toCollection(HashSet::new);
     }
 
     /**

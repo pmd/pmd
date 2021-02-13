@@ -40,10 +40,10 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetLoadException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -100,14 +100,14 @@ public abstract class RuleTst {
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
-            Rule rule = RulesetsFactoryUtils.defaultFactory().createRuleSets(ruleSet).getRuleByName(ruleName);
+            Rule rule = new RuleSetLoader().loadFromResource(ruleSet).getRuleByName(ruleName);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             } else {
                 rule.setRuleSetName(ruleSet);
             }
             return rule;
-        } catch (RuleSetNotFoundException e) {
+        } catch (RuleSetLoadException e) {
             e.printStackTrace();
             fail("Couldn't find ruleset " + ruleSet);
             return null;
@@ -282,7 +282,7 @@ public abstract class RuleTst {
             ctx.setSourceCodeFile(new File("n/a"));
             ctx.setLanguageVersion(languageVersion);
             ctx.setIgnoreExceptions(false);
-            RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
+            RuleSet rules = RuleSet.forSingleRule(rule);
             p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
             return report;
         } catch (Exception e) {

@@ -119,13 +119,6 @@ public class ConfigurationTest {
         Assert.assertArrayEquals(expectedUris, uris);
     }
 
-    @Test
-    public void testRuleSets() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default RuleSets", null, configuration.getRuleSets());
-        configuration.setRuleSets("/rulesets/basic.xml");
-        assertEquals("Changed RuleSets", "/rulesets/basic.xml", configuration.getRuleSets());
-    }
 
     @Test
     public void testMinimumPriority() {

@@ -50,7 +50,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
      */
     public final int kind;
 
-    protected final JavaccTokenDocument document;
+    private final JavaccTokenDocument document;
     private final CharSequence image;
     private final int startInclusive;
     private final int endExclusive;
@@ -81,15 +81,6 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
 
 
     /**
-     * @deprecated This is used by a few deprecated tests about comments,
-     *     will be removed when they're updated.
-     */
-    @Deprecated
-    public JavaccToken(String image) {
-        this(-1, image, -1, -1, null);
-    }
-
-    /**
      * Builds a new token of the specified kind.
      *
      * @param kind           Kind of token
@@ -116,13 +107,18 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
     /**
      * Returns the document owning this token.
      */
-    public JavaccTokenDocument getDocument() {
+    public final JavaccTokenDocument getDocument() {
         return document;
     }
 
     @Override
     public boolean isEof() {
         return kind == EOF;
+    }
+
+    @Override
+    public int getKind() {
+        return kind;
     }
 
     @Override

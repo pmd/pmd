@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.AMBIGUOUS_NAME_REFERENCE;
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_MEMBER;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.AMBIGUOUS_NAME_REFERENCE;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_MEMBER;
 import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 
 import java.util.HashSet;
@@ -14,6 +14,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -135,7 +136,7 @@ public final class ReferenceCtx {
         this.processor.getLogger().warning(location, CANNOT_RESOLVE_MEMBER, memberName, ownerName, fallbackStrategy);
     }
 
-    public SemanticChecksLogger getLogger() {
+    public SemanticErrorReporter getLogger() {
         return processor.getLogger();
     }
 

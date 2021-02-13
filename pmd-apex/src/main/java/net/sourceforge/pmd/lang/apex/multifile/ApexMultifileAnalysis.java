@@ -64,12 +64,7 @@ public final class ApexMultifileAnalysis {
             ServerOps.setDebugLogging(new String[] {"ALL"});
         }
 
-        ApexMultifileAnalysis instance = instanceMap.get(multiFileAnalysisDirectory);
-        if (null == instance) {
-            instance = create(multiFileAnalysisDirectory);
-            instanceMap.put(multiFileAnalysisDirectory, instance);
-        }
-        return instance;
+        return instanceMap.computeIfAbsent(multiFileAnalysisDirectory, ApexMultifileAnalysis::create);
     }
 
     private static ApexMultifileAnalysis create(String multiFileAnalysisDirectory) {

@@ -180,7 +180,7 @@ class AnonCtorsTest : ProcessorTestSpec({
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
-                        
+
             class Scratch {
 
                 class Inner {}
@@ -293,7 +293,7 @@ class AnonCtorsTest : ProcessorTestSpec({
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
-                    
+
             package p.q;
 
             class Scratch<S> {
@@ -313,19 +313,19 @@ class AnonCtorsTest : ProcessorTestSpec({
                         }
                     };
                 }
-                
-                static class Foo<Q> { 
-                
+
+                static class Foo<Q> {
+
                     // this return type is ambiguous
                     static <T> p.q.Scratch<T> getScratch() { return new Scratch<>(); }
-                    
+
                     Q fooField;
                 }
             }
             """)
 
         val (t_Scratch, t_Inner, t_Anon, t_Foo) = acu.declaredTypeSignatures()
-        
+
 
         val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
         val fieldAccess = acu.descendants(ASTVariableAccess::class.java).crossFindBoundaries().firstOrThrow()
@@ -468,4 +468,79 @@ class AnonCtorsTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("Anon in anon") {
+        // this used to be a stackoverflow
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+            public class InputMissingOverrideBadAnnotation {
+
+                Runnable r = new Runnable() {
+                    public void run() {
+                        Throwable t = new Throwable() {
+                            public String toString() {
+                                return "junk";
+                            }
+                        };
+                    }
+                };
+            }
+            """)
+
+        val call = acu.firstCtorCall()
+                .firstCtorCall()
+
+        spy.shouldBeOk {
+            call.typeMirror shouldBe java.lang.Throwable::class.decl
+        }
+    }
+
+    parserTest("Disambiguation of foreach when deferred") {
+        enableProcessing()
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+package p;
+import java.util.function.Consumer;
+class Assert {
+    static void main(String... args) {
+        for (String s : args) {
+            // body of the runnable is deferred,
+            // when it's processed, the type of the consumer
+            // depends on the type of `s`, so the foreach node
+            // needs to have been disambiged
+            foo(s, new Consumer<>() { });
+        }
+    }
+
+    static <T> void foo(T a, Consumer<T> i) {}
+}
+        """)
+
+        spy.shouldBeOk {
+            acu.descendants(ASTConstructorCall::class.java)
+                    .firstOrThrow() shouldHaveType java.util.function.Consumer::class[gen.t_String]
+        }
+    }
+
+    parserTest("Disambiguation of when deferred, local var decl") {
+        enableProcessing()
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+package p;
+import java.util.function.Consumer;
+class Assert {
+    static void main(String... args) {
+        String s = args[0];
+        foo(s, new Consumer<>() { });
+    }
+
+    static <T> void foo(T a, Consumer<T> i) {}
+}
+        """)
+
+        spy.shouldBeOk {
+            acu.descendants(ASTConstructorCall::class.java)
+                    .firstOrThrow() shouldHaveType java.util.function.Consumer::class[gen.t_String]
+        }
+    }
 })

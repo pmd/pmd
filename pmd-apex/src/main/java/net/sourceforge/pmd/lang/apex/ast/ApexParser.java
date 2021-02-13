@@ -4,54 +4,52 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.io.IOException;
-import java.io.Reader;
-
-
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.AbstractParser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.Compilation;
 
 @InternalApi
-public final class ApexParser extends AbstractParser {
+public final class ApexParser implements Parser {
 
-    public ApexParser(ParserOptions parserOptions) {
-        super(parserOptions);
+    private static final String NOT_A_DIRECTORY = "not_a_directory";
+    @InternalApi
+    public static final PropertyDescriptor<String> MULTIFILE_DIRECTORY =
+        PropertyFactory.stringProperty("apexRootDirectory")
+                       .desc("The root directory of the Salesforce metadata, where `sfdx-project.json` resides")
+                       .defaultValue(NOT_A_DIRECTORY)
+                       .build();
+
+    public ApexParser() {
         ApexJorjeLogging.disableLogging();
         Locations.useIndexFactory();
     }
 
     @Override
-    public RootNode parse(final String filename, final Reader reader) {
+    public ASTApexFile parse(final ParserTask task) {
         try {
-            final String sourceCode = IOUtils.toString(reader);
-            final Compilation astRoot = CompilerService.INSTANCE.parseApex(filename, sourceCode);
+            String sourceCode = task.getSourceText();
+            final Compilation astRoot = CompilerService.INSTANCE.parseApex(task.getFileDisplayName(), sourceCode);
 
             if (astRoot == null) {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
             ApexMultifileAnalysis analysisHandler =
-                    ApexMultifileAnalysis.getAnalysisInstance(getParserOptions().getMultiFileAnalysisDirectory());
+                ApexMultifileAnalysis.getAnalysisInstance(task.getProperties().getProperty(MULTIFILE_DIRECTORY));
 
             SourceCodePositioner positioner = new SourceCodePositioner(sourceCode);
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, getParserOptions(), positioner);
+            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, task.getCommentMarker(), positioner);
             AbstractApexNode<Compilation> treeRoot = treeBuilder.build(astRoot);
-            ASTApexFile fileNode = new ASTApexFile(positioner, treeRoot);
-            fileNode.setNoPmdComments(treeBuilder.getSuppressMap());
-            fileNode.setMultifileAnalysis(filename, analysisHandler);
-            return fileNode;
-        } catch (IOException | apex.jorje.services.exception.ParseException e) {
+            return new ASTApexFile(positioner, task, treeRoot, treeBuilder.getSuppressMap(), analysisHandler);
+        } catch (apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);
         }
     }

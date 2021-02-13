@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
@@ -22,20 +24,31 @@ import com.nawforce.common.diagnostics.Issue;
 
 public final class ASTApexFile extends AbstractApexNode<AstNode> implements RootNode {
 
-    private Map<Integer, String> suppressMap = Collections.emptyMap();
+    private final AstInfo<ASTApexFile> astInfo;
 
     private String fileName;
 
     private ApexMultifileAnalysis multifileAnalysis;
 
-    ASTApexFile(SourceCodePositioner source, AbstractApexNode<? extends Compilation> child) {
+    ASTApexFile(SourceCodePositioner source,
+                ParserTask task,
+                AbstractApexNode<? extends Compilation> child,
+                Map<Integer, String> suppressMap,
+                ApexMultifileAnalysis multifileAnalysis) {
         super(child.getNode());
+        this.astInfo = new AstInfo<>(task, this, suppressMap);
         addChild(child, 0);
+        this.multifileAnalysis = multifileAnalysis;
         this.beginLine = 1;
         this.endLine = source.getLastLine();
         this.beginColumn = 1;
         this.endColumn = source.getLastLineColumn();
         child.setCoords(child.getBeginLine(), child.getBeginColumn(), source.getLastLine(), source.getLastLineColumn());
+    }
+
+    @Override
+    public AstInfo<ASTApexFile> getAstInfo() {
+        return astInfo;
     }
 
     @Override
@@ -64,15 +77,6 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public Map<Integer, String> getNoPmdComments() {
-        return suppressMap;
-    }
-
-    void setNoPmdComments(Map<Integer, String> suppressMap) {
-        this.suppressMap = suppressMap;
     }
 
     void setMultifileAnalysis(String fileName, ApexMultifileAnalysis multifileAnalysis) {

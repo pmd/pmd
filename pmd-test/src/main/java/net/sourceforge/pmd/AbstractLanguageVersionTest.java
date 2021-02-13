@@ -19,7 +19,6 @@ import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
  * Base test class for {@link LanguageVersion} implementations. <br>
@@ -101,13 +100,15 @@ public class AbstractLanguageVersionTest {
             return;
         }
 
-        ResourceLoader rl = new ResourceLoader();
         Properties props = new Properties();
-        String rulesetsProperties = "category/" + simpleTerseName + "/categories.properties";
-        try (InputStream inputStream = rl.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
+        String rulesetsProperties = "/category/" + simpleTerseName + "/categories.properties";
+        try (InputStream inputStream = getClass().getResourceAsStream(rulesetsProperties)) {
+            if (inputStream == null) {
+                throw new IOException();
+            }
             props.load(inputStream);
         }
-        assertRulesetsAndCategoriesProperties(rl, props);
+        assertRulesetsAndCategoriesProperties(props);
     }
 
     /**
@@ -123,16 +124,15 @@ public class AbstractLanguageVersionTest {
             return;
         }
 
-        ResourceLoader rl = new ResourceLoader();
         Properties props = new Properties();
-        String rulesetsProperties = "rulesets/" + simpleTerseName + "/rulesets.properties";
-        InputStream inputStream = rl.loadClassPathResourceAsStream(rulesetsProperties);
+        String rulesetsProperties = "/rulesets/" + simpleTerseName + "/rulesets.properties";
+        InputStream inputStream = getClass().getResourceAsStream(rulesetsProperties);
         if (inputStream != null) {
             // rulesets.properties file exists
             try (InputStream in = inputStream) {
                 props.load(in);
             }
-            assertRulesetsAndCategoriesProperties(rl, props);
+            assertRulesetsAndCategoriesProperties(props);
         }
     }
 
@@ -155,12 +155,11 @@ public class AbstractLanguageVersionTest {
                          + " in the language versions of its language", 1, count);
     }
 
-    private void assertRulesetsAndCategoriesProperties(ResourceLoader rl, Properties props)
-            throws IOException, RuleSetNotFoundException {
+    private void assertRulesetsAndCategoriesProperties(Properties props) throws IOException {
         String rulesetFilenames = props.getProperty("rulesets.filenames");
         assertNotNull(rulesetFilenames);
 
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
+        RuleSetLoader rulesetLoader = new RuleSetLoader();
 
         if (rulesetFilenames.trim().isEmpty()) {
             return;
@@ -168,10 +167,7 @@ public class AbstractLanguageVersionTest {
 
         String[] rulesets = rulesetFilenames.split(",");
         for (String r : rulesets) {
-            try (InputStream stream = rl.loadClassPathResourceAsStream(r)) {
-                assertNotNull(stream);
-            }
-            RuleSet ruleset = factory.createRuleSet(r);
+            RuleSet ruleset = rulesetLoader.loadFromResource(r);
             assertNotNull(ruleset);
         }
     }

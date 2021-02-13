@@ -62,8 +62,6 @@ are suggested.
     <rule ref="category/java/bestpractices.xml/AvoidReassigningParameters" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/ConstantsInInterface" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt" deprecated="true" />
-    <rule ref="category/java/bestpractices.xml/PositionLiteralsFirstInCaseInsensitiveComparisons" deprecated="true" />
-    <rule ref="category/java/bestpractices.xml/PositionLiteralsFirstInComparisons" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/PreserveStackTrace" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/UseCollectionIsEmpty" deprecated="true" />

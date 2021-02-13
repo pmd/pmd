@@ -46,6 +46,44 @@ Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath
  * The deprecated support for sequence-valued attributes is removed. Sequence-valued properties are still supported.
  * Refer to [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html) for an introduction to new features in XPath 3.1.
 
+
+#### Node stream API
+
+This version includes a powerful API to navigate trees, similar in usage to the Java 8 Stream API:
+```java
+node.descendants(ASTMethodCall.class)
+    .filter(m -> "toString".equals(m.getMethodName()))
+    .map(m -> m.getQualifier())
+    .filter(q -> TypeTestUtil.isA(String.class, q))
+    .foreach(System.out::println);
+```
+
+A pipeline like shown here traverses the tree lazily, which is more efficient than traversing eagerly to put all descendants in a list. It is also much easier to change than the old imperative way.
+
+To make this API as accessible as possible, the {% jdoc core::lang.ast.Node %} interface has been fitted with new methods producing node streams. Those methods replace previous tree traversal methods like `Node#findDescendantsOfType`. In all cases, they should be more efficient and more convenient.
+
+See {% jdoc core::lang.ast.NodeStream %} for more details.
+
+
+#### JavaScript support
+
+The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
+The language module registers only one version (as before), now correctly with version "ES6" instead of "3".
+Since there is only one version available for JavaScript there is actually no need to selected a specific version.
+The default version is always ES6.
+
+#### Changed Rules
+
+##### Java
+
+*   {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %} has two new properties, to selectively disable reporting on
+    static field and method qualifiers. The rule also has been improved to be more precise.
+*   The rule {% rule "java/codestyle/UselessParentheses" %} has two new properties which control how strict
+    the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
+    not necessary are allowed, if they separate expressions of different precedence.
+    The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
+    reading and understanding the expressions.
+
 #### Removed Rules
 
 The following previously deprecated rules have been finally removed:
@@ -60,6 +98,8 @@ The following previously deprecated rules have been finally removed:
 *   LoggerIsNotStaticFinal (java-errorprone)
 *   MIsLeadingVariableName (java-codestyle)
 *   ModifiedCyclomaticComplexity (java-design)
+*   PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices)
+*   PositionLiteralsFirstInComparisons (java-bestpractices)
 *   StdCyclomaticComplexity (java-design)
 *   SuspiciousConstantFieldName (java-codestyle)
 *   UnsynchronizedStaticDateFormatter (java-multithreading)
@@ -67,11 +107,52 @@ The following previously deprecated rules have been finally removed:
 *   VariableNamingConventions (java-codestyle)
 *   WhileLoopsMustUseBraces (java-codestyle)
 
+#### Changed rules
+
+##### Java
+
+* {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+
+
 ### Fixed Issues
 
-* java-bestpractices
+*   core
+    *   [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
+
+*   java-bestpractices
+    * [#342](https://github.com/pmd/pmd/issues/342): \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
+    * [#755](https://github.com/pmd/pmd/issues/755): \[java] AccessorClassGeneration false positive for private constructors
+    * [#807](https://github.com/pmd/pmd/issues/807): \[java] AccessorMethodGeneration false positive with overloads
+    * [#1212](https://github.com/pmd/pmd/issues/1212): \[java] Don't raise JUnitTestContainsTooManyAsserts on JUnit 5's assertAll
+    * [#1422](https://github.com/pmd/pmd/issues/1422): \[java] JUnitTestsShouldIncludeAssert false positive with inherited @Rule field
+    * [#1565](https://github.com/pmd/pmd/issues/1565): \[java] JUnitAssertionsShouldIncludeMessage false positive with AssertJ
+    * [#1969](https://github.com/pmd/pmd/issues/1969): \[java] MissingOverride false-positive triggered by package-private method overwritten in another package by extending class
+    * [#1998](https://github.com/pmd/pmd/issues/1998): \[java] AccessorClassGeneration false-negative: subclass calls private constructor
+    * [#2147](https://github.com/pmd/pmd/issues/2147): \[java] JUnitTestsShouldIncludeAssert - false positives with lambdas and static methods
+    * [#2542](https://github.com/pmd/pmd/issues/2542): \[java] UseCollectionIsEmpty can not detect the case `foo.bar().size()`
     * [#2796](https://github.com/pmd/pmd/issue/2796): \[java] UnusedAssignment false positive with call chains
     * [#2797](https://github.com/pmd/pmd/issues/2797): \[java] MissingOverride long-standing issues
+    * [#2806](https://github.com/pmd/pmd/issues/2806): \[java] SwitchStmtsShouldHaveDefault false-positive with Java 14 switch non-fallthrough branches
+    * [#2883](https://github.com/pmd/pmd/issues/2883): \[java] JUnitAssertionsShouldIncludeMessage false positive with method call
+* java-codestyle
+    * [#1673](https://github.com/pmd/pmd/issues/1673): \[java] UselessParentheses false positive with conditional operator
+    * [#1790](https://github.com/pmd/pmd/issues/1790): \[java] UnnecessaryFullyQualifiedName false positive with enum constant
+    * [#1918](https://github.com/pmd/pmd/issues/1918): \[java] UselessParentheses false positive with boolean operators
+    * [#2299](https://github.com/pmd/pmd/issues/2299): \[java] UnnecessaryFullyQualifiedName false positive with similar package name
+    * [#2528](https://github.com/pmd/pmd/issues/2528): \[java] MethodNamingConventions - JUnit 5 method naming not support ParameterizedTest
+    * [#2739](https://github.com/pmd/pmd/issues/2739): \[java] UselessParentheses false positive for string concatenation
+* java-errorprone
+    * [#1005](https://github.com/pmd/pmd/issues/1005): \[java] CloneMethodMustImplementCloneable triggers for interfaces
+    * [#2532](https://github.com/pmd/pmd/issues/2532): \[java] AvoidDecimalLiteralsInBigDecimalConstructor can not detect the case new BigDecimal(Expression)
+    * [#2716](https://github.com/pmd/pmd/issues/2716): \[java] CompareObjectsWithEqualsRule: False positive with Enums
+    * [#2880](https://github.com/pmd/pmd/issues/2880): \[java] CompareObjectsWithEquals - false negative with type res
+* java-multithreading
+    * [#2537](https://github.com/pmd/pmd/issues/2537): \[java] DontCallThreadRun can't detect the case that call run() in `this.run()`
+    * [#2538](https://github.com/pmd/pmd/issues/2538): \[java] DontCallThreadRun can't detect the case that call run() in `foo.bar.run()`
+    * [#2577](https://github.com/pmd/pmd/issues/2577): \[java] UseNotifyAllInsteadOfNotify falsely detect a special case with argument: `foo.notify(bar)`
+* java-performance
+    * [#1224](https://github.com/pmd/pmd/issues/1224): \[java] InefficientEmptyStringCheck false negative in anonymous class
+    * [#2712](https://github.com/pmd/pmd/issues/2712): \[java] SimplifyStartsWith false-positive with AssertJ
 
 ### API Changes
 

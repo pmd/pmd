@@ -70,6 +70,27 @@ public interface AccessNode extends Annotatable {
         }
     }
 
+    /**
+     * Returns the "effective" visibility of a member. This is the minimum
+     * visibility of its enclosing type declarations. For example, a public
+     * method of a private class is "effectively private".
+     *
+     * <p>Local declarations keep local visibility, eg a local variable
+     * somewhere in an anonymous class doesn't get anonymous visibility.
+     */
+    default Visibility getEffectiveVisibility() {
+        Visibility minv = getVisibility();
+        if (minv == Visibility.V_LOCAL) {
+            return minv;
+        }
+        for (ASTAnyTypeDeclaration enclosing : ancestors(ASTAnyTypeDeclaration.class)) {
+            minv = Visibility.min(minv, enclosing.getVisibility());
+            if (minv == Visibility.V_LOCAL) {
+                return minv;
+            }
+        }
+        return minv;
+    }
 
     /**
      * Returns true if this node has <i>all</i> the given modifiers
@@ -244,6 +265,12 @@ public interface AccessNode extends Annotatable {
         public boolean isAtMost(Visibility other) {
             return this.compareTo(other) < 0;
         }
-    }
 
+        /**
+         * The minimum of both visibilities.
+         */
+        static Visibility min(Visibility v1, Visibility v2) {
+            return v1.compareTo(v2) <= 0 ? v1 : v2;
+        }
+    }
 }

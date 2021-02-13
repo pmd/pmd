@@ -24,6 +24,7 @@ public class Foo extends TestCase {
 import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void test1() {
+        Object a, b;
         assertFalse(a != null);
     }
 }
@@ -37,6 +38,7 @@ public class Foo extends TestCase {
 import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void test1() {
+        Object a, b;
         assertTrue(a == b);
     }
 }
@@ -49,6 +51,7 @@ public class Foo extends TestCase {
         <code><![CDATA[
 public class Foo {
     public void test1() {
+        Object a;
         assertTrue(a==null);
     }
 }
@@ -59,10 +62,12 @@ public class Foo {
         <description>JUnit 4 - assertTrue with null</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 public class Foo {
     @Test
     public void test1() {
+        Object a, b;
         assertTrue(a==null);
     }
 }
@@ -78,6 +83,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class Foo {
     @Test
     public void test1() {
+        Object a, b;
         assertTrue(a==null);
     }
 }

@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.util.StringUtil;
 
-public class ParseException extends RuntimeException {
+public class ParseException extends FileAnalysisException {
 
     /**
      * This is the last token that has been consumed successfully.  If

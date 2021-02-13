@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -21,6 +22,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
@@ -65,9 +68,25 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRule {
     private boolean notCollectionAccess(ASTAllocationExpression node) {
         if (node.getNthParent(4) instanceof ASTArgumentList && node.getNthParent(8) instanceof ASTStatementExpression) {
             ASTStatementExpression statement = (ASTStatementExpression) node.getNthParent(8);
-            return !TypeTestUtil.isA(Collection.class, statement);
+            return !isCallOnReceiverOfType(Collection.class, statement);
         }
         return true;
+    }
+
+    private static boolean isCallOnReceiverOfType(Class<?> receiverType, JavaNode expression) {
+        if ((expression instanceof ASTExpression || expression instanceof ASTStatementExpression)
+            && expression.getNumChildren() == 1) {
+            expression = expression.getChild(0);
+        }
+        int numChildren = expression.getNumChildren();
+        if (expression instanceof ASTPrimaryExpression && numChildren >= 2) {
+            JavaNode lastChild = expression.getChild(numChildren - 1);
+            if (lastChild instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) lastChild).isArguments()) {
+                JavaNode receiverExpr = expression.getChild(numChildren - 2);
+                return receiverExpr instanceof TypeNode && TypeTestUtil.isA(receiverType, (TypeNode) receiverExpr);
+            }
+        }
+        return false;
     }
 
     private boolean notBreakFollowing(ASTAllocationExpression node) {
