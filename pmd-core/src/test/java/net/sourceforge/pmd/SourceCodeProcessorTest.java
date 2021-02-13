@@ -43,7 +43,7 @@ public class SourceCodeProcessorTest {
         processor = new SourceCodeProcessor(new PMDConfiguration());
         sourceCode = new StringReader("test");
         Rule rule = new RuleThatThrows();
-        rulesets = Arrays.asList(RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule));
+        rulesets = Arrays.asList(RuleSet.forSingleRule(rule));
 
         ctx = new RuleContext();
     }

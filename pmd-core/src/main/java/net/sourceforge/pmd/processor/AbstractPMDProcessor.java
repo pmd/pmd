@@ -18,9 +18,7 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -68,22 +66,6 @@ public abstract class AbstractPMDProcessor {
         return dataSource.getNiceFileName(configuration.isReportShortNames(), configuration.getInputPaths());
     }
 
-    /**
-     * Create instances for each rule defined in the ruleset(s) in the
-     * configuration. Please note, that the returned instances <strong>must
-     * not</strong> be used by different threads. Each thread must create its
-     * own copy of the rules.
-     *
-     * @param factory The factory used to create the configured rule sets
-     * @param report The base report on which to report any configuration errors
-     * @return the rules within a rulesets
-     */
-    protected RuleSets createRuleSets(RuleSetFactory factory, Report report) {
-        final RuleSets rs = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
-        reportBrokenRules(report, rs);
-        return rs;
-    }
-
     public static void reportBrokenRules(Report report, RuleSets rs) {
         final Set<Rule> brokenRules = removeBrokenRules(rs);
         for (final Rule rule : brokenRules) {
@@ -110,13 +92,6 @@ public abstract class AbstractPMDProcessor {
         }
 
         return brokenRules;
-    }
-
-    @Deprecated
-    public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
-                             List<Renderer> renderers) {
-        RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
-        processFiles(rs, files, ctx, renderers);
     }
 
     @SuppressWarnings("PMD.CloseResource")

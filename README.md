@@ -22,10 +22,12 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift, 
 
 ## Support
 
-*   How do I? -- Ask a question on [StackOverflow](https://stackoverflow.com/questions/tagged/pmd).
-*   I got this error, why? -- Ask a question on [StackOverflow](https://stackoverflow.com/questions/tagged/pmd).
+*   How do I? -- Ask a question on [StackOverflow](https://stackoverflow.com/questions/tagged/pmd)
+    or on [discussions](https://github.com/pmd/pmd/discussions).
+*   I got this error, why? -- Ask a question on [StackOverflow](https://stackoverflow.com/questions/tagged/pmd)
+    or on [discussions](https://github.com/pmd/pmd/discussions).
 *   I got this error and I'm sure it's a bug -- file an [issue](https://github.com/pmd/pmd/issues).
-*   I have an idea/request/question -- file an [issue](https://github.com/pmd/pmd/issues).
+*   I have an idea/request/question -- create a new [discussion](https://github.com/pmd/pmd/discussions).
 *   I have a quick question -- ask on our [Gitter chat](https://gitter.im/pmd/pmd).
 *   Where's your documentation? -- <https://pmd.github.io/latest/>
 

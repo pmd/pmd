@@ -44,6 +44,7 @@ public final class RendererFactory {
         map.put(VBHTMLRenderer.NAME, VBHTMLRenderer.class);
         map.put(EmptyRenderer.NAME, EmptyRenderer.class);
         map.put(JsonRenderer.NAME, JsonRenderer.class);
+        map.put(SarifRenderer.NAME, SarifRenderer.class);
         REPORT_FORMAT_TO_RENDERER = Collections.unmodifiableMap(map);
     }
 

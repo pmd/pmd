@@ -1290,7 +1290,7 @@ class Foo{
             The rule subsumes {% rule "UnusedLocalVariable" %}, and {% rule "UnusedFormalParameter" %}.
             Those violations are filtered
             out by default, in case you already have enabled those rules, but may be enabled with the property
-            `reportUnusedVariables`. Variables whose name starts with `ignored` are filtered out, as
+            `reportUnusedVariables`. Variables whose name starts with `ignored` or `unused` are filtered out, as
             is standard practice for exceptions.
 
             Limitations:
@@ -1401,10 +1401,13 @@ class C {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedFormalParameterRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedformalparameter">
         <description>
-Avoid passing parameters to methods or constructors without actually referencing them in the method body.
+Reports parameters of methods and constructors that are not referenced them in the method body.
+Parameters whose name starts with `ignored` or `unused` are filtered out.
+
 Removing unused formal parameters from public methods could cause a ripple effect through the code base.
 Hence, by default, this rule only considers private methods. To include non-private methods, set the
 `checkAll` property to `true`.
+
         </description>
         <priority>3</priority>
         <example>
@@ -1447,6 +1450,7 @@ public class Foo {}
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedlocalvariable">
         <description>
 Detects when a local variable is declared and/or assigned, but not used.
+Variables whose name starts with `ignored` or `unused` are filtered out.
         </description>
         <priority>3</priority>
         <example>

@@ -352,7 +352,7 @@ public final class Infer {
     }
 
 
-    private JMethodSig instantiateMethodOrCtor(MethodCallSite site, MethodResolutionPhase phase, JMethodSig m) {
+    private @Nullable JMethodSig instantiateMethodOrCtor(MethodCallSite site, MethodResolutionPhase phase, JMethodSig m) {
         return site.getExpr() instanceof CtorInvocationMirror ? instantiateConstructor(m, site, phase)
                                                               : instantiateMethod(m, site, phase);
     }
@@ -367,9 +367,9 @@ public final class Infer {
      * @param site  Descriptor of the context of the call.
      * @param phase Phase in which the method is reviewed
      */
-    private JMethodSig instantiateMethod(JMethodSig m,
-                                         MethodCallSite site,
-                                         MethodResolutionPhase phase) {
+    private @Nullable JMethodSig instantiateMethod(JMethodSig m,
+                                                   MethodCallSite site,
+                                                   MethodResolutionPhase phase) {
         if (phase.requiresVarargs() && !m.isVarargs()) {
             return null; // don't log such a dumb mistake
         }
@@ -383,13 +383,21 @@ public final class Infer {
         }
     }
 
-    private JMethodSig instantiateConstructor(JMethodSig cons,
-                                              MethodCallSite site,
-                                              MethodResolutionPhase phase) {
+    private @Nullable JMethodSig instantiateConstructor(JMethodSig cons,
+                                                        MethodCallSite site,
+                                                        MethodResolutionPhase phase) {
 
         CtorInvocationMirror expr = (CtorInvocationMirror) site.getExpr();
 
-        JClassType newType = expr.getNewType();
+        JTypeMirror newTypeMaybeInvalid = expr.getNewType();
+        if (!(newTypeMaybeInvalid instanceof JClassType)) {
+            // no constructor, note also, that array type constructors
+            // don't go through these routines because there's no overloading
+            // of array ctors. They're handled entirely in LazyTypeResolver.
+            return null;
+        }
+
+        JClassType newType = (JClassType) newTypeMaybeInvalid;
         boolean isAdapted = needsAdaptation(expr, newType);
         JMethodSig adapted = isAdapted
                              ? adaptGenericConstructor(cons, newType, expr)
@@ -397,7 +405,7 @@ public final class Infer {
 
         site.maySkipInvocation(!isAdapted);
 
-        JMethodSig result = instantiateMethod(adapted, site, phase);
+        @Nullable JMethodSig result = instantiateMethod(adapted, site, phase);
         if (isAdapted && result != null) {
             // undo the adaptation
 
