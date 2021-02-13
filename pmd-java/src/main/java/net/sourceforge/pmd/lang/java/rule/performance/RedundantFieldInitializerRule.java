@@ -32,7 +32,7 @@ public class RedundantFieldInitializerRule extends AbstractJavaRulechainRule {
             for (ASTVariableDeclaratorId varId : fieldDeclaration.getVarIds()) {
                 ASTExpression init = varId.getInitializer();
                 if (init != null) {
-                    if (JavaRuleUtil.isDefaultValue(varId.getTypeMirror(), init) && !isOkExpr(init)) {
+                    if (!isWhitelisted(init) && JavaRuleUtil.isDefaultValue(varId.getTypeMirror(), init)) {
                         addViolation(data, varId);
                     }
                 }
@@ -41,7 +41,8 @@ public class RedundantFieldInitializerRule extends AbstractJavaRulechainRule {
         return data;
     }
 
-    private static boolean isOkExpr(ASTExpression e) {
-        return e.descendantsOrSelf().none(it -> it instanceof ASTVariableAccess || it instanceof ASTFieldAccess);
+    // whitelist if there are named variables in there
+    private static boolean isWhitelisted(ASTExpression e) {
+        return e.descendantsOrSelf().any(it -> it instanceof ASTVariableAccess || it instanceof ASTFieldAccess);
     }
 }

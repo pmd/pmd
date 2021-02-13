@@ -39,7 +39,7 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
     public Object visitJavaNode(JavaNode node, Object data) {
         if (node instanceof ASTAnyTypeDeclaration) {
             ASTAnyTypeDeclaration type = (ASTAnyTypeDeclaration) node;
-            if (hasIgnoredAnnotation(type) || hasLombokAnnotation(type)) {
+            if (hasIgnoredAnnotation(type)) {
                 return null;
             }
 

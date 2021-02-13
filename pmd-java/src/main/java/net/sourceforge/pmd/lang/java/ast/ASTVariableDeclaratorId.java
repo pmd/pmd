@@ -36,7 +36,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  * <p>Since this node conventionally represents the declared variable in PMD, our symbol table
  * populates it with a {@link VariableNameDeclaration}, and its usages can be accessed through
- * the method {@link #getUsages ()}.
+ * the method {@link #getUsages()}.
  *
  * <p>Type resolution assigns the type of the variable to this node. See {@link #getType()}'s
  * documentation for the contract of this method.
@@ -105,11 +105,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         usages.add(usage);
     }
 
-    @Override
-    public Visibility getVisibility() {
-        return getModifierOwnerParent().getVisibility();
-    }
-
     /**
      * Returns the extra array dimensions associated with this variable.
      * For example in the declaration {@code int a[]}, {@link #getTypeNode()}
@@ -132,6 +127,12 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
 
         // delegates modifiers
         return getModifierOwnerParent().getModifiers();
+    }
+
+    @Override
+    public Visibility getVisibility() {
+        return isPatternBinding() ? Visibility.V_LOCAL
+                                  : getModifierOwnerParent().getVisibility();
     }
 
 

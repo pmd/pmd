@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
-
 /**
  * A return statement in a method or constructor body.
  *
@@ -28,13 +26,6 @@ public final class ASTReturnStatement extends AbstractStatement {
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    /**
-     * Returns the method, ctor or lambda that this statement terminates.
-     */
-    public JavaNode getTarget() {
-        return ancestors().map(NodeStream.asInstanceOf(ASTMethodOrConstructorDeclaration.class, ASTLambdaExpression.class)).first();
     }
 
     /**

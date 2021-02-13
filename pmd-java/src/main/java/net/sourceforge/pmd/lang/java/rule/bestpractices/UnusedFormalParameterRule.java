@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -47,7 +46,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
         if (!node.getEnclosingType().isInterface()) {
             for (ASTFormalParameter formal : node.getFormalParameters()) {
                 ASTVariableDeclaratorId varId = formal.getVarId();
-                if (JavaRuleUtil.isNeverUsed(varId)) {
+                if (JavaRuleUtil.isNeverUsed(varId) && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
                     addViolation(data, varId, new Object[] {node instanceof ASTMethodDeclaration ? "method" : "constructor", varId.getName(),});
                 }
             }
