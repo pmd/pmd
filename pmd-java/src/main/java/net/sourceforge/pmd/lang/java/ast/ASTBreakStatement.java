@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  */
 public final class ASTBreakStatement extends AbstractStatement {
 
-    private static final Function<JavaNode, ASTStatement> BREAK_TARGET_MAPPER =
+    private static final Function<Object, ASTStatement> BREAK_TARGET_MAPPER =
         NodeStream.asInstanceOf(ASTLoopStatement.class, ASTSwitchStatement.class);
 
     ASTBreakStatement(int id) {

@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 
@@ -95,7 +96,10 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
         /** The value of the variable is read. */
         READ,
 
-        /** The value is written to, possibly being read before or after. */
+        /**
+         * The value is written to, possibly being read before or after.
+         * Also see {@link JavaRuleUtil#isVarAccessReadAndWrite(ASTNamedReferenceExpr)}.
+         */
         WRITE
     }
 }

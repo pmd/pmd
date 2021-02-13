@@ -25,6 +25,7 @@ public final class ASTDoStatement extends AbstractStatement implements ASTLoopSt
      * Returns the node that represents the guard of this loop.
      * This may be any expression of type boolean.
      */
+    @Override
     public ASTExpression getCondition() {
         return (ASTExpression) getChild(1);
     }

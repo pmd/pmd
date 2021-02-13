@@ -208,8 +208,8 @@ public class UnnecessaryLocalBeforeReturnFP {
     <test-code>
         <description>#310 UnnecessaryLocalBeforeReturn statement order does not matter</description>
         <rule-property name="statementOrderMatters">false</rule-property>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,10</expected-linenumbers>
         <code><![CDATA[
 public class UnnecessaryLocalBeforeReturnFP {
     public int example1() {
