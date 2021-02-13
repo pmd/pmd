@@ -130,7 +130,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         }
 
         @Override
-        public JClassType getNewType() {
+        public @NonNull JClassType getNewType() {
             return getEnclosingType();
         }
 
@@ -169,7 +169,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         }
 
         @Override
-        public JClassType getNewType() {
+        public @NonNull JClassType getNewType() {
             // note that actually, for a qualified super ctor call,
             // the new type should be reparameterized using the LHS.
             // In valid code though, both are equivalent, todo unless the superclass is raw

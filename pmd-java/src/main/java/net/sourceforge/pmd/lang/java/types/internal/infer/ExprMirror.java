@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
@@ -461,6 +462,10 @@ public interface ExprMirror {
          *  <li>e.g. for {@code new ArrayList<String>()}, returns {@code ArrayList<String>}.
          *  <li>e.g. for {@code new Runnable() {}} (anonymous), returns {@code Runnable}.
          * </ul>
+         *
+         * <p>Note that this returns a {@link JClassType} in valid code.
+         * Other return values may be eg {@link TypeSystem#UNKNOWN}, or
+         * a {@link JTypeVar}, but indicate malformed code.
          */
         @NonNull JTypeMirror getNewType();
 
