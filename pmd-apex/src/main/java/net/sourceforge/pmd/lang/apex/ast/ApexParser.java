@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
@@ -19,12 +21,12 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 @InternalApi
 public final class ApexParser implements Parser {
 
-    private static final String NOT_A_DIRECTORY = "not_a_directory";
-    @InternalApi
+    private static final String NO_VALUE_SENTINEL = "sentinel_not_a_directory";
+    @InternalApi // todo change that to optional<file> when properties are updated
     public static final PropertyDescriptor<String> MULTIFILE_DIRECTORY =
         PropertyFactory.stringProperty("apexRootDirectory")
                        .desc("The root directory of the Salesforce metadata, where `sfdx-project.json` resides")
-                       .defaultValue(NOT_A_DIRECTORY)
+                       .defaultValue(NO_VALUE_SENTINEL)
                        .build();
 
     public ApexParser() {
@@ -42,8 +44,11 @@ public final class ApexParser implements Parser {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
-            ApexMultifileAnalysis analysisHandler =
-                ApexMultifileAnalysis.getAnalysisInstance(task.getProperties().getProperty(MULTIFILE_DIRECTORY));
+            String property = task.getProperties().getProperty(MULTIFILE_DIRECTORY);
+            if (property == NO_VALUE_SENTINEL) { // NOPMD we want reference identity
+                property = null;
+            }
+            @Nullable ApexMultifileAnalysis analysisHandler = ApexMultifileAnalysis.getAnalysisInstance(property);
 
             SourceCodePositioner positioner = new SourceCodePositioner(sourceCode);
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, task.getCommentMarker(), positioner);

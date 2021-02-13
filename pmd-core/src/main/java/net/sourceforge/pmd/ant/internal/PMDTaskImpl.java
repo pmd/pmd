@@ -63,7 +63,6 @@ public class PMDTaskImpl {
         if (task.getSuppressMarker() != null) {
             configuration.setSuppressMarker(task.getSuppressMarker());
         }
-        configuration.setMultiFileAnalysisDirectory(task.getMultiFileAnalysisDirectory());
         this.failOnError = task.isFailOnError();
         this.failOnRuleViolation = task.isFailOnRuleViolation();
         this.maxRuleViolations = task.getMaxRuleViolations();
