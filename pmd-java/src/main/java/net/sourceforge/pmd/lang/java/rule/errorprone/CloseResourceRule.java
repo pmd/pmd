@@ -167,7 +167,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             } else if (shouldVarOfTypeBeClosedInMethod(resVar, resVarType, methodOrConstructor)) {
                 reportedVarNames.add(resVar.getVarId().getName());
                 addCloseResourceViolation(resVar.getVarId(), resVarType, data);
-            } else {
+            } else if (isNotAllowedResourceType(resVarType)) {
                 ASTStatementExpression reassigningStatement = getFirstReassigningStatementBeforeBeingClosed(resVar, methodOrConstructor);
                 if (reassigningStatement != null) {
                     reportedVarNames.add(resVar.getVarId().getName());

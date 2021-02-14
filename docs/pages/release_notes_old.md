@@ -5,6 +5,123 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
+## 30-January-2021 - 6.31.0
+
+The PMD team is pleased to announce PMD 6.31.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [SARIF Format](#sarif-format)
+    * [CPD](#cpd)
+    * [New Rules](#new-rules)
+    * [Deprecated rules](#deprecated-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [Deprecated API](#deprecated-api)
+    * [Experimental APIs](#experimental-apis)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### SARIF Format
+
+PMD now supports the [Static Analysis Results Interchange Format (SARIF)](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif)
+as an additional report format. Just use the [command line parameter](pmd_userdocs_cli_reference.html#format) `-format sarif` to select it.
+SARIF is an OASIS standard format for static analysis tools.
+PMD creates SARIF JSON files in [SARIF version 2.1.0](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html).
+An example report can be found in the documentation in [Report formats for PMD](pmd_userdocs_report_formats.html#sarif).
+
+#### CPD
+
+*   The C++ module now supports the new option [`--ignore-literal-sequences`](https://pmd.github.io/latest/pmd_userdocs_cpd.html#-ignore-literal-sequences),
+    which can be used to avoid detection of some uninteresting clones. This options has been
+    introduced with PMD 6.30.0 for C# and is now available for C++ as well. See [#2963](https://github.com/pmd/pmd/pull/2963).
+
+#### New Rules
+
+*   The new Apex rule [`OverrideBothEqualsAndHashcode`](https://pmd.github.io/pmd-6.31.0/pmd_rules_apex_errorprone.html#overridebothequalsandhashcode) brings the well known Java rule
+    to Apex. In Apex the same principle applies: `equals` and `hashCode` should always be overridden
+    together to ensure collection classes such as Maps and Sets work as expected.
+
+*   The new Visualforce rule [`VfHtmlStyleTagXss`](https://pmd.github.io/pmd-6.31.0/pmd_rules_vf_security.html#vfhtmlstyletagxss) checks for potential XSS problems
+    when using `<style>` tags on Visualforce pages.
+
+#### Deprecated rules
+
+*   java-performance
+    *   [`AvoidUsingShortType`](https://pmd.github.io/pmd-6.31.0/pmd_rules_java_performance.html#avoidusingshorttype): arithmetic on shorts is not significantly
+        slower than on ints, whereas using shorts may provide significant memory savings in arrays.
+    *   [`SimplifyStartsWith`](https://pmd.github.io/pmd-6.31.0/pmd_rules_java_performance.html#simplifystartswith): the suggested code transformation has an
+        insignificant performance impact, and decreases readability.
+
+### Fixed Issues
+
+*   core
+    *   [#2953](https://github.com/pmd/pmd/issues/2953): \[core] Support SARIF JSON Format
+    *   [#2970](https://github.com/pmd/pmd/issues/2970): \[core] PMD 6.30.0 release is not reproducible
+    *   [#2994](https://github.com/pmd/pmd/pull/2994): \[core] Fix code climate severity strings
+*   java-bestpractices
+    *   [#575](https://github.com/pmd/pmd/issues/575): \[java] LiteralsFirstInComparisons should consider constant fields
+    *   [#2454](https://github.com/pmd/pmd/issues/2454): \[java] UnusedPrivateMethod violation for disabled class in 6.23.0
+    *   [#2833](https://github.com/pmd/pmd/issues/2833): \[java] NPE in UseCollectionIsEmptyRule with enums
+    *   [#2876](https://github.com/pmd/pmd/issues/2876): \[java] UnusedPrivateField cannot override ignored annotations property
+    *   [#2957](https://github.com/pmd/pmd/issues/2957): \[java] Ignore unused declarations that have special name
+*   java-codestyle
+    *   [#2960](https://github.com/pmd/pmd/issues/2960): \[java] Thread issue in MethodNamingConventionsRule
+*   java-design
+    *   [#3006](https://github.com/pmd/pmd/issues/3006): \[java] NPE in SingularFieldRule with concise resource syntax
+*   java-errorprone
+    *   [#2976](https://github.com/pmd/pmd/issues/2976): \[java] CompareObjectsWithEquals: FP with array.length
+    *   [#2977](https://github.com/pmd/pmd/issues/2977): \[java] 6.30.0 introduces new false positive in CloseResource rule?
+    *   [#2979](https://github.com/pmd/pmd/issues/2979): \[java] UseEqualsToCompareStrings: FP with "var" variables
+    *   [#3004](https://github.com/pmd/pmd/issues/3004): \[java] UseEqualsToCompareStrings false positive with PMD 6.30.0
+    *   [#3062](https://github.com/pmd/pmd/issues/3062): \[java] CloseResource FP with reassigned stream
+*   java-performance
+    *   [#2296](https://github.com/pmd/pmd/issues/2296): \[java] Deprecate rule AvoidUsingShortType
+    *   [#2740](https://github.com/pmd/pmd/issues/2740): \[java] Deprecate rule SimplifyStartsWith
+    *   [#3088](https://github.com/pmd/pmd/issues/3088): \[java] AvoidInstantiatingObjectsInLoops - false positive with Collections
+*   vf-security
+    *   [#3081](https://github.com/pmd/pmd/issues/3081): \[vf] VfUnescapeEl: Inherently un-XSS-able built-in functions trigger false positives
+
+### API Changes
+
+#### Deprecated API
+
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.31.0/net/sourceforge/pmd/lang/xml/rule/AbstractDomXmlRule.html#"><code>AbstractDomXmlRule</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.31.0/net/sourceforge/pmd/lang/wsdl/rule/AbstractWsdlRule.html#"><code>AbstractWsdlRule</code></a>
+*   A few methods of <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.31.0/net/sourceforge/pmd/lang/xml/rule/AbstractXmlRule.html#"><code>AbstractXmlRule</code></a>
+
+#### Experimental APIs
+
+*   The method <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.31.0/net/sourceforge/pmd/lang/ast/GenericToken.html#getKind()"><code>GenericToken#getKind</code></a> has been added as experimental. This
+    unifies the token interface for both JavaCC and Antlr. The already existing method
+    <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.31.0/net/sourceforge/pmd/cpd/token/AntlrToken.html#getKind()"><code>AntlrToken#getKind</code></a> is therefore experimental as well. The
+    returned constant depends on the actual language and might change whenever the grammar
+    of the language is changed.
+
+### External Contributions
+
+*   [#2666](https://github.com/pmd/pmd/pull/2666): \[swift] Manage swift5 string literals - [kenji21](https://github.com/kenji21)
+*   [#2959](https://github.com/pmd/pmd/pull/2959): \[apex] New Rule: override equals and hashcode rule - [recdevs](https://github.com/recdevs)
+*   [#2963](https://github.com/pmd/pmd/pull/2963): \[cpp] Add option to ignore sequences of literals - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#2964](https://github.com/pmd/pmd/pull/2964): \[cs] Update C# grammar for additional C# 7 and C# 8 features - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#2965](https://github.com/pmd/pmd/pull/2965): \[cs] Improvements for ignore sequences of literals functionality - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#2968](https://github.com/pmd/pmd/pull/2968): \[java] NPE in UseCollectionIsEmptyRule with enums - [foxmason](https://github.com/foxmason)
+*   [#2983](https://github.com/pmd/pmd/pull/2983): \[java] LiteralsFirstInComparisons should consider constant fields - [Ozan Gulle](https://github.com/ozangulle)
+*   [#2994](https://github.com/pmd/pmd/pull/2994): \[core] Fix code climate severity strings - [Vincent Maurin](https://github.com/vmaurin)
+*   [#3005](https://github.com/pmd/pmd/pull/3005): \[vf] \[New Rule] Handle XSS violations that can occur within Html Style tags - [rmohan20](https://github.com/rmohan20)
+*   [#3073](https://github.com/pmd/pmd/pull/3073): \[core] Include SARIF renderer - [Manuel Moya Ferrer](https://github.com/mmoyaferrer)
+*   [#3084](https://github.com/pmd/pmd/pull/3084): \[vf] VfUnescapeEl false-positive with builtin functions - [Josh Feingold](https://github.com/jfeingold35)
+
+### Stats
+* 116 commits
+* 40 closed tickets & PRs
+* Days since last release: 49
+
 ## 12-December-2020 - 6.30.0
 
 The PMD team is pleased to announce PMD 6.30.0.
@@ -70,7 +187,7 @@ Thanks to Jeff Bartolotta and Roopa Mohan for contributing this!
 
 ##### Around RuleSet parsing
 
-* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RuleSetFactory.html#"><code>RuleSetFactory</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RuleSetFactoryUtils.html#"><code>RuleSetFactoryUtils</code></a> have been deprecated in favor of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RuleSetLoader.html#"><code>RuleSetLoader</code></a>. This is easier to configure, and more maintainable than the multiple overloads of `RuleSetFactoryUtils`.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RuleSetFactory.html#"><code>RuleSetFactory</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RulesetsFactoryUtils.html#"><code>RulesetsFactoryUtils</code></a> have been deprecated in favor of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RuleSetLoader.html#"><code>RuleSetLoader</code></a>. This is easier to configure, and more maintainable than the multiple overloads of `RulesetsFactoryUtils`.
 * Some static creation methods have been added to <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RuleSet.html#"><code>RuleSet</code></a> for simple cases, eg <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RuleSet.html#forSingleRule(net.sourceforge.pmd.Rule)"><code>forSingleRule</code></a>. These replace some counterparts in <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RuleSetFactory.html#"><code>RuleSetFactory</code></a>
 * Since <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RuleSets.html#"><code>RuleSets</code></a> is also deprecated, many APIs that require a RuleSets instance now are deprecated, and have a counterpart that expects a `List<RuleSet>`.
 * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RuleSetReferenceId.html#"><code>RuleSetReferenceId</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RuleSetReference.html#"><code>RuleSetReference</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.30.0/net/sourceforge/pmd/RuleSetFactoryCompatibility.html#"><code>RuleSetFactoryCompatibility</code></a> are deprecated. They are most likely not relevant outside of the implementation of pmd-core.

@@ -22,6 +22,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -99,14 +100,14 @@ final class SymTableFactory {
         InternalApiBridge.disambigWithCtx(nodes, context);
     }
 
-    SemanticChecksLogger getLogger() {
+    SemanticErrorReporter getLogger() {
         return processor.getLogger();
     }
 
     JClassSymbol loadClassReportFailure(JavaNode location, String fqcn) {
         JClassSymbol loaded = loadClassOrFail(fqcn);
         if (loaded == null) {
-            getLogger().warning(location, SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL, fqcn);
+            getLogger().warning(location, JavaSemanticErrors.CANNOT_RESOLVE_SYMBOL, fqcn);
         }
 
         return loaded;

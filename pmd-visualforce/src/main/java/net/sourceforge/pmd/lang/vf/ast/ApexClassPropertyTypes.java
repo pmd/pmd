@@ -12,16 +12,17 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.vf.DataType;
 
 import apex.jorje.semantic.symbol.type.BasicType;
@@ -47,18 +48,12 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
             for (Path apexDirectory : apexDirectories) {
                 Path apexFilePath = apexDirectory.resolve(className + APEX_CLASS_FILE_SUFFIX);
                 if (Files.exists(apexFilePath) && Files.isRegularFile(apexFilePath)) {
-                    Parser parser = getApexParser();
-                    try (BufferedReader reader = Files.newBufferedReader(apexFilePath, StandardCharsets.UTF_8)) {
-                        Node node = parser.parse(apexFilePath.toString(), reader);
-                        ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
-                        visitor.visit((ApexNode<?>) node, null);
-                        for (Pair<String, BasicType> variable : visitor.getVariables()) {
-                            putDataType(variable.getKey(), DataType.fromBasicType(variable.getValue()));
-                        }
-                    } catch (IOException e) {
-                        throw new ContextedRuntimeException(e)
-                                .addContextValue("expression", expression)
-                                .addContextValue("apexFilePath", apexFilePath);
+                    Node node = parse(expression, apexFilePath);
+                    ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
+                    node.acceptVisitor(visitor, null);
+
+                    for (Pair<String, BasicType> variable : visitor.getVariables()) {
+                        putDataType(variable.getKey(), DataType.fromBasicType(variable.getValue()));
                     }
 
                     if (containsExpression(expression)) {
@@ -68,6 +63,29 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
                 }
             }
         }
+    }
+
+    private Node parse(String expression, Path apexFilePath) {
+        String fileText;
+        try (BufferedReader reader = Files.newBufferedReader(apexFilePath, StandardCharsets.UTF_8)) {
+            fileText = IOUtils.toString(reader);
+        } catch (IOException e) {
+            throw new ContextedRuntimeException(e)
+                .addContextValue("expression", expression)
+                .addContextValue("apexFilePath", apexFilePath);
+        }
+
+        LanguageVersion languageVersion = LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
+        Parser parser = languageVersion.getLanguageVersionHandler().getParser();
+
+        ParserTask task = new ParserTask(
+            languageVersion,
+            apexFilePath.toString(),
+            fileText,
+            SemanticErrorReporter.noop()
+        );
+
+        return parser.parse(task);
     }
 
     @Override
@@ -91,9 +109,4 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
         return previousType;
     }
 
-    private Parser getApexParser() {
-        LanguageVersion languageVersion = LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
-        ParserOptions parserOptions = languageVersion.getLanguageVersionHandler().getDefaultParserOptions();
-        return languageVersion.getLanguageVersionHandler().getParser(parserOptions);
-    }
 }

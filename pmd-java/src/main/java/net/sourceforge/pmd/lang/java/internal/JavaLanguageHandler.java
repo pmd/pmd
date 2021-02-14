@@ -9,8 +9,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
@@ -60,8 +59,8 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
     }
 
     @Override
-    public Parser getParser(ParserOptions parserOptions) {
-        return new JavaParser(levelChecker, parserOptions);
+    public Parser getParser() {
+        return new JavaParser(levelChecker);
     }
 
     @Override

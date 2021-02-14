@@ -95,8 +95,15 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
                 NameOccurrence no = usages.get(ix);
                 Node location = no.getLocation();
 
-                ASTPrimaryExpression primaryExpressionParent = location
-                        .getFirstParentOfType(ASTPrimaryExpression.class);
+                ASTPrimaryExpression primaryExpressionParent = location.getFirstParentOfType(ASTPrimaryExpression.class);
+
+                if (primaryExpressionParent == null) {
+                    // concise resource `try(field) {...}`, in pmd 7
+                    // there will be an expression there
+                    violation = false;
+                    break;
+                }
+
                 if (ix == 0 && !disallowNotAssignment) {
                     if (primaryExpressionParent.getFirstParentOfType(ASTIfStatement.class) != null) {
                         // the first usage is in an if, so it may be skipped

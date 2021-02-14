@@ -136,7 +136,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
 
         executeTarget("testFormatterEncodingWithXML");
         String report = FileUtils.readFileToString(currentTempFile(), "UTF-8");
-        assertTrue(report.contains("unusedVariableWithÜmlaut"));
+        assertTrue(report.contains("someVariableWithÜmlaut"));
     }
 
     private static String convert(String report) {
@@ -160,7 +160,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         executeTarget("testFormatterEncodingWithXMLConsole");
         String report = convert(buildRule.getOutput());
         assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
-        assertTrue(report.contains("unusedVariableWithÜmlaut"));
+        assertTrue(report.contains("someVariableWithÜmlaut"));
     }
 
     @Test

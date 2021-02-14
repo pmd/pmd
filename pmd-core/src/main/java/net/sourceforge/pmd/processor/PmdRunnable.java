@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.processor;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -82,6 +83,7 @@ public class PmdRunnable implements Callable<Report> {
 
         try (InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
             tc.ruleContext.setLanguageVersion(null);
+            tc.ruleContext.setSourceCodeFile(new File(dataSource.getNiceFileName(false, null)));
             sourceCodeProcessor.processSourceCode(stream, tc.ruleSets, tc.ruleContext);
         } catch (PMDException pmde) {
             addError(report, pmde, "Error while processing file: " + fileName);

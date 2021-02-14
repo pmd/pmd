@@ -87,8 +87,9 @@ def upload_report
     `tar -cf #{tar_filename} diff1/ diff2/`
     report_url = `curl -u #{ENV['PMD_CI_CHUNK_TOKEN']} -T #{tar_filename} https://chunk.io`
     if $?.success?
-      @logger.info "Successfully uploaded #{tar_filename} to chunk.io"
-      report_url.chomp
+      report_url.chomp!
+      @logger.info "Successfully uploaded #{tar_filename} to #{report_url}"
+      report_url
     else
       @logger.error "Error while uploading #{tar_filename} to chunk.io: #{report_url}"
       warn("Uploading the diff report failed, this message is mainly used to remind the maintainers of PMD.")

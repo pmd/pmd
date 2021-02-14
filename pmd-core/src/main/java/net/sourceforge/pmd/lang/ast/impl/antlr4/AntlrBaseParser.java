@@ -4,16 +4,12 @@
 
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
-import java.io.IOException;
-import java.io.Reader;
-
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Lexer;
 
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
@@ -28,29 +24,13 @@ public abstract class AntlrBaseParser<
     R extends BaseAntlrInnerNode<N> & RootNode
     > implements Parser {
 
-    protected final ParserOptions parserOptions;
-
-    public AntlrBaseParser(final ParserOptions parserOptions) {
-        this.parserOptions = parserOptions;
-    }
-
     @Override
-    public ParserOptions getParserOptions() {
-        return parserOptions;
+    public R parse(ParserTask task) throws ParseException {
+        CharStream cs = CharStreams.fromString(task.getSourceText(), task.getFileDisplayName());
+        return parse(getLexer(cs), task);
     }
 
-    @Override
-    public R parse(final String fileName, final Reader source) throws ParseException {
-        CharStream cs;
-        try {
-            cs = CharStreams.fromReader(source, fileName);
-        } catch (final IOException e) {
-            throw new ParseException(e);
-        }
-        return parse(getLexer(cs));
-    }
-
-    protected abstract R parse(Lexer parser);
+    protected abstract R parse(Lexer parser, ParserTask task);
 
     protected abstract Lexer getLexer(CharStream source);
 }
