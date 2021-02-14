@@ -4,14 +4,11 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstRoot;
@@ -19,24 +16,16 @@ import org.mozilla.javascript.ast.Comment;
 import org.mozilla.javascript.ast.ErrorCollector;
 import org.mozilla.javascript.ast.ParseProblem;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
-public final class EcmascriptParser implements net.sourceforge.pmd.lang.Parser {
+public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Parser {
     private final int esVersion;
-    private final String suppressMarker;
 
-    public EcmascriptParser(int version, String suppressMarker) {
+    public EcmascriptParser(int version) {
         this.esVersion = version;
-        this.suppressMarker = AssertionUtil.requireParamNotNull("suppression marker", suppressMarker);
-    }
-
-    @Override
-    public ParserOptions getParserOptions() {
-        ParserOptions options = new ParserOptions();
-        options.setSuppressMarker(suppressMarker);
-        return options;
     }
 
     private AstRoot parseEcmascript(final String sourceCode, final List<ParseProblem> parseProblems) throws ParseException {
@@ -62,30 +51,27 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.Parser {
     }
 
     @Override
-    public ASTAstRoot parse(String filename, final Reader reader) throws ParseException {
-        try {
-            final List<ParseProblem> parseProblems = new ArrayList<>();
-            final String sourceCode = IOUtils.toString(reader);
-            final AstRoot astRoot = parseEcmascript(sourceCode, parseProblems);
-            final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(sourceCode, parseProblems);
-            ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
+    public RootNode parse(ParserTask task) throws FileAnalysisException {
+        final List<ParseProblem> parseProblems = new ArrayList<>();
+        final String sourceCode = task.getSourceText();
+        final AstRoot astRoot = parseEcmascript(sourceCode, parseProblems);
+        final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(sourceCode, parseProblems);
+        final ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
 
-            Map<Integer, String> suppressMap = new HashMap<>();
-            if (astRoot.getComments() != null) {
-                for (Comment comment : astRoot.getComments()) {
-                    int nopmd = comment.getValue().indexOf(suppressMarker);
-                    if (nopmd > -1) {
-                        String suppression = comment.getValue().substring(nopmd + suppressMarker.length());
-                        EcmascriptNode<Comment> node = treeBuilder.build(comment);
-                        suppressMap.put(node.getBeginLine(), suppression);
-                    }
+        String suppressMarker = task.getCommentMarker();
+        Map<Integer, String> suppressMap = new HashMap<>();
+        if (astRoot.getComments() != null) {
+            for (Comment comment : astRoot.getComments()) {
+                int nopmd = comment.getValue().indexOf(suppressMarker);
+                if (nopmd > -1) {
+                    String suppression = comment.getValue().substring(nopmd + suppressMarker.length());
+                    EcmascriptNode<Comment> node = treeBuilder.build(comment);
+                    suppressMap.put(node.getBeginLine(), suppression);
                 }
             }
-            tree.setNoPmdComments(suppressMap);
-            return tree;
-        } catch (IOException e) {
-            throw new ParseException(e);
         }
+        tree.setAstInfo(new AstInfo<>(task, tree, suppressMap));
+        return tree;
     }
 
 }

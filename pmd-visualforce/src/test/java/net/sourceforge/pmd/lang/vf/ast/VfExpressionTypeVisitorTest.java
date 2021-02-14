@@ -9,8 +9,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -20,15 +18,10 @@ import java.util.Map.Entry;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
-import net.sourceforge.pmd.lang.vf.VfLanguageModule;
 import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer;
 
 public class VfExpressionTypeVisitorTest {
@@ -60,7 +53,7 @@ public class VfExpressionTypeVisitorTest {
      * Strings that use dot notation(Account.CreatedDate) result in ASTIdentifier nodes
      */
     @Test
-    public void testXpathQueryForCustomFieldIdentifiers() throws FileNotFoundException {
+    public void testXpathQueryForCustomFieldIdentifiers() {
         Node rootNode = compile("StandardAccount.page");
 
         for (Map.Entry<String, DataType> entry : EXPECTED_CUSTOM_FIELD_DATA_TYPES.entrySet()) {
@@ -82,7 +75,7 @@ public class VfExpressionTypeVisitorTest {
      * creates ambiguous situations with Apex methods that return Maps. This may be addressed in a future release.
      */
     @Test
-    public void testXpathQueryForCustomFieldLiteralsHaveNullDataType() throws FileNotFoundException {
+    public void testXpathQueryForCustomFieldLiteralsHaveNullDataType() {
         Node rootNode = compile("StandardAccount.page");
 
         for (Map.Entry<String, DataType> entry : EXPECTED_CUSTOM_FIELD_DATA_TYPES.entrySet()) {
@@ -107,7 +100,7 @@ public class VfExpressionTypeVisitorTest {
      * Nodes where the DataType can't be determined should have a null DataType
      */
     @Test
-    public void testDataTypeForCustomFieldsNotFound() throws FileNotFoundException {
+    public void testDataTypeForCustomFieldsNotFound() {
         Node rootNode = compile("StandardAccount.page");
 
         checkNodes(rootNode.descendants(ASTIdentifier.class)
@@ -129,7 +122,7 @@ public class VfExpressionTypeVisitorTest {
      * Apex properties result in ASTIdentifier nodes
      */
     @Test
-    public void testXpathQueryForProperties() throws FileNotFoundException {
+    public void testXpathQueryForProperties() {
         Node rootNode = compile("ApexController.page");
 
         for (Map.Entry<String, DataType> entry : EXPECTED_APEX_DATA_TYPES.entrySet()) {
@@ -157,7 +150,7 @@ public class VfExpressionTypeVisitorTest {
      * Nodes where the DataType can't be determined should have a null DataType
      */
     @Test
-    public void testDataTypeForApexPropertiesNotFound() throws FileNotFoundException {
+    public void testDataTypeForApexPropertiesNotFound() {
         Node rootNode = compile("ApexController.page");
 
         // Each string appears twice, it is set on a "value" attribute and inline
@@ -165,22 +158,18 @@ public class VfExpressionTypeVisitorTest {
                            .filterMatching(ASTIdentifier::getImage, "NotFoundProp"));
     }
 
-    private Node compile(String pageName) throws FileNotFoundException {
+    private Node compile(String pageName) {
         return compile(pageName, false);
     }
 
-    private Node compile(String pageName, boolean renderAST) throws FileNotFoundException {
+    private Node compile(String pageName, boolean renderAST) {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve(pageName);
         return compile(vfPagePath, renderAST);
     }
 
-    private Node compile(Path vfPagePath, boolean renderAST) throws FileNotFoundException {
-        LanguageVersion languageVersion = LanguageRegistry.getLanguage(VfLanguageModule.NAME).getDefaultVersion();
-        ParserOptions parserOptions = languageVersion.getLanguageVersionHandler().getDefaultParserOptions();
-        Parser parser = languageVersion.getLanguageVersionHandler().getParser(parserOptions);
-
-        Node node = parser.parse(vfPagePath.toString(), new FileReader(vfPagePath.toFile()));
+    private Node compile(Path vfPagePath, boolean renderAST) {
+        Node node = VfParsingHelper.DEFAULT.parseFile(vfPagePath);
         assertNotNull(node);
 
         if (renderAST) {
