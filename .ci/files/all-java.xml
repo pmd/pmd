@@ -37,7 +37,7 @@
     <rule ref="category/java/bestpractices.xml/JUnitUseExpected"/>
     <rule ref="category/java/bestpractices.xml/LiteralsFirstInComparisons"/>
     <!-- <rule ref="category/java/bestpractices.xml/LooseCoupling"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray"/> -->
+    <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray"/>
     <rule ref="category/java/bestpractices.xml/MissingOverride"/>
     <!-- <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/PositionLiteralsFirstInCaseInsensitiveComparisons"/> -->

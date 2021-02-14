@@ -15,8 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -28,10 +27,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> ALLOW_PRIVATE =
-            PropertyFactory.booleanProperty("allowPrivate")
-                .defaultValue(true)
-                .desc("If true, allow private methods/constructors to store arrays directly")
-                .build();
+        PropertyFactory.booleanProperty("allowPrivate")
+                       .defaultValue(true)
+                       .desc("If true, allow private methods/constructors to store arrays directly")
+                       .build();
 
     public ArrayIsStoredDirectlyRule() {
         super(ASTMethodDeclaration.class, ASTConstructorDeclaration.class);
@@ -69,16 +68,13 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
                     // the RHS of an assignment
                     if (usage.getParent() instanceof ASTAssignmentExpression && usage.getIndexInParent() == 1) {
                         ASTAssignableExpr assigned = ((ASTAssignmentExpression) usage.getParent()).getLeftOperand();
-                        if (assigned instanceof ASTNamedReferenceExpr) {
-                            JVariableSymbol sym = ((ASTNamedReferenceExpr) assigned).getReferencedSym();
-                            if (sym instanceof JFieldSymbol
-                                && ((JFieldSymbol) sym).getEnclosingClass().equals(method.getEnclosingType().getSymbol())) {
-                                addViolation(context, usage.getParent(), usage.getName());
-                            }
+                        if (JavaRuleUtil.isRefToFieldOfThisInstance(assigned)) {
+                            addViolation(context, usage.getParent(), usage.getName());
                         }
                     }
                 }
             }
         }
     }
+
 }
