@@ -45,6 +45,7 @@ public class Test {
         <description>Guarded call - OK - java util</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Foo {
@@ -386,6 +387,8 @@ public class Foo {
         <description>#370 rule not considering lambdas</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.logging.Level;
+import java.util.logging.Logger;
 public class Logger {
     private static final Logger LOGGER = new Logger();
 

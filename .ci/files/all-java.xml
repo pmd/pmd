@@ -26,7 +26,7 @@
     <rule ref="category/java/bestpractices.xml/DoubleBraceInitialization"/>
     <!-- <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach"/> -->
     <rule ref="category/java/bestpractices.xml/ForLoopVariableCount"/>
-    <!-- <rule ref="category/java/bestpractices.xml/GuardLogStatement"/> -->
+    <rule ref="category/java/bestpractices.xml/GuardLogStatement"/>
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation"/> -->
