@@ -1799,7 +1799,7 @@ a block `{}` is sufficient.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-  //DoStatement[BooleanLiteral]
+  //DoStatement/BooleanLiteral
 | //WhileStatement/BooleanLiteral[@True = false()]
                 ]]></value>
             </property>

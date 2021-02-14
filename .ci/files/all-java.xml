@@ -61,7 +61,7 @@
     <rule ref="category/java/bestpractices.xml/UseCollectionIsEmpty"/>
     <!-- <rule ref="category/java/bestpractices.xml/UseTryWithResources"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/UseVarargs"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/WhileLoopWithLiteralBoolean"/> -->
+    <rule ref="category/java/bestpractices.xml/WhileLoopWithLiteralBoolean"/>
 
     <!-- codestyle.xml -->
 
