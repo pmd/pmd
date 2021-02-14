@@ -35,6 +35,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -100,7 +101,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTRUNSIGNEDSHIFT;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordBody;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
-import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
@@ -843,32 +843,27 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     }
 
     @Override
-    @Experimental
     public Object visit(ASTRecordDeclaration node, Object data) {
         return visit((JavaNode) node, data);
     }
 
     @Override
-    @Experimental
     public Object visit(ASTRecordComponentList node, Object data) {
         return visit((JavaNode) node, data);
     }
 
     @Override
-    @Experimental
     public Object visit(ASTRecordComponent node, Object data) {
         return visit((JavaNode) node, data);
     }
 
     @Override
-    @Experimental
     public Object visit(ASTRecordBody node, Object data) {
         return visit((JavaNode) node, data);
     }
 
     @Override
-    @Experimental
-    public Object visit(ASTRecordConstructorDeclaration node, Object data) {
+    public Object visit(ASTCompactConstructorDeclaration node, Object data) {
         return visit((JavaNode) node, data);
     }
 
