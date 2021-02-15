@@ -1,4 +1,5 @@
 /**
+ * Remove support for Java 14 preview language features
  * JEP 397: Sealed Classes (Second Preview) for Java16 Preview
  * JEP 395: Records for Java16
  * JEP 394: Pattern Matching for instanceof for Java16
@@ -383,8 +384,8 @@ public class JavaParser {
   }
 
   private void checkforBadInstanceOfPattern() {
-    if (!(jdkVersion == 14 && preview || jdkVersion == 15 && preview || jdkVersion >= 16)) {
-      throwParseException("Pattern Matching for instanceof is only supported with Java 14 Preview and Java 15 Preview and Java >= 16");
+    if (!(jdkVersion == 15 && preview || jdkVersion >= 16)) {
+      throwParseException("Pattern Matching for instanceof is only supported with Java 15 Preview and Java >= 16");
     }
   }
 
@@ -431,8 +432,8 @@ public class JavaParser {
     if (jdkVersion >= 14 && "yield".equals(image)) {
       throwParseException("With JDK 14, 'yield' is a contextual keyword and cannot be used for type declarations!");
     }
-    if ((jdkVersion == 14 && preview || jdkVersion == 15 && preview || jdkVersion >= 16) && "record".equals(image)) {
-      throwParseException("With JDK 14 Preview and JDK 15 Preview and Java >= 16, 'record' is a contextual keyword and cannot be used for type declarations!");
+    if ((jdkVersion == 15 && preview || jdkVersion >= 16) && "record".equals(image)) {
+      throwParseException("With JDK 15 Preview and Java >= 16, 'record' is a contextual keyword and cannot be used for type declarations!");
     }
     if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview) && "sealed".equals(image)) {
       throwParseException("With JDK 15 Preview and JDK 16 Preview, 'sealed' is a contextual keyword and cannot be used for type declarations!");
@@ -474,31 +475,31 @@ public class JavaParser {
   }
 
   private void checkForTextBlockLiteral() {
-    if (jdkVersion < 15 && !preview) {
-      throwParseException("Text block literals are only supported with Java 14 Preview and Java >= 15");
+    if (!(jdkVersion >= 15)) {
+      throwParseException("Text block literals are only supported with Java >= 15");
     }
   }
 
   private void checkForNewStringSpaceEscape(String s) {
-    if ((jdkVersion < 15 && !preview) && s.contains("\\s") && !s.contains("\\\\s")) {
-      throwParseException("The escape sequence \"\\s\" is only supported with Java 14 Preview and Java >= 15");
+    if (!(jdkVersion >= 15) && s.contains("\\s") && !s.contains("\\\\s")) {
+      throwParseException("The escape sequence \"\\s\" is only supported with Java >= 15");
     }
   }
 
   private void checkForRecordType() {
     if (!isRecordTypeSupported()) {
-      throwParseException("Records are only supported with Java 14 Preview and Java 15 Preview and Java >= 16");
+      throwParseException("Records are only supported with Java 15 Preview and Java >= 16");
     }
   }
 
   private void checkForLocalInterfaceOrEnumType() {
       if (!isRecordTypeSupported()) {
-          throwParseException("Local interfaces and enums are only supported with Java 14 Preview and Java 15 Preview and Java >= 16");
+          throwParseException("Local interfaces and enums are only supported with Java 15 Preview and Java >= 16");
       }
   }
 
   private boolean isRecordTypeSupported() {
-    return jdkVersion == 14 && preview || jdkVersion == 15 && preview || jdkVersion >= 16;
+    return jdkVersion == 15 && preview || jdkVersion >= 16;
   }
 
   private boolean isSealedClassSupported() {

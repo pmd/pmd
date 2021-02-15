@@ -20,7 +20,7 @@ enum class JavaVersion : Comparable<JavaVersion> {
     J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11,
     J12,
     J13,
-    J14, J14__PREVIEW,
+    J14,
     J15, J15__PREVIEW,
     J16, J16__PREVIEW;
 

@@ -198,6 +198,6 @@ public class PatternMatchingInstanceof {
     }
 }
         ]]></code>
-        <source-type>java 14-preview</source-type>
+        <source-type>java 16</source-type>
     </test-code>
 </test-data>
