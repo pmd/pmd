@@ -1,4 +1,5 @@
 /**
+ * JEP 397: Sealed Classes (Second Preview) for Java16 Preview
  * JEP 395: Records for Java16
  * JEP 394: Pattern Matching for instanceof for Java16
  * Andreas Dangel 02/2021
@@ -425,19 +426,19 @@ public class JavaParser {
   }
   private void checkForBadTypeIdentifierUsage(String image) {
     if (jdkVersion >= 10 && "var".equals(image)) {
-      throwParseException("With JDK 10, 'var' is a restricted local variable type and cannot be used for type declarations!");
+      throwParseException("With JDK 10, 'var' is a contextual keyword and cannot be used for type declarations!");
     }
     if (jdkVersion >= 14 && "yield".equals(image)) {
-      throwParseException("With JDK 14, 'yield' is a restricted local variable type and cannot be used for type declarations!");
+      throwParseException("With JDK 14, 'yield' is a contextual keyword and cannot be used for type declarations!");
     }
-    if ((jdkVersion >= 14 && preview || jdkVersion >= 16) && "record".equals(image)) {
-      throwParseException("With JDK 14 Preview and JDK 15 Preview and Java >= 16, 'record' is a restricted identifier and cannot be used for type declarations!");
+    if ((jdkVersion == 14 && preview || jdkVersion == 15 && preview || jdkVersion >= 16) && "record".equals(image)) {
+      throwParseException("With JDK 14 Preview and JDK 15 Preview and Java >= 16, 'record' is a contextual keyword and cannot be used for type declarations!");
     }
-    if (jdkVersion >= 15 && preview && "sealed".equals(image)) {
-      throwParseException("With JDK 15 Preview, 'sealed' is a restricted identifier and cannot be used for type declarations!");
+    if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview) && "sealed".equals(image)) {
+      throwParseException("With JDK 15 Preview and JDK 16 Preview, 'sealed' is a contextual keyword and cannot be used for type declarations!");
     }
-    if (jdkVersion >= 15 && preview && "permits".equals(image)) {
-      throwParseException("With JDK 15 Preview, 'permits' is a restricted identifier and cannot be used for type declarations!");
+    if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview) && "permits".equals(image)) {
+      throwParseException("With JDK 15 Preview and JDK 16 Preview, 'permits' is a contextual keyword and cannot be used for type declarations!");
     }
   }
   private void checkForMultipleCaseLabels() {
@@ -501,7 +502,7 @@ public class JavaParser {
   }
 
   private boolean isSealedClassSupported() {
-      return jdkVersion == 15 && preview;
+      return jdkVersion == 15 && preview || jdkVersion == 16 && preview;
   }
 
   private void checkForSealedClassUsage() {
@@ -1219,8 +1220,8 @@ void PermittedSubclasses() #PermitsList:
           throw new ParseException("ERROR: expecting permits");
         }
     }
-    (TypeAnnotation())* ClassOrInterfaceType()
-    ( "," (TypeAnnotation())* ClassOrInterfaceType() )*
+    TypeName()
+    ( "," TypeName() )*
 }
 
 void EnumDeclaration(int modifiers):
@@ -1534,6 +1535,17 @@ void ClassOrInterfaceType():
   [ LOOKAHEAD(2) TypeArguments() ]
   ( LOOKAHEAD(2) "." t=<IDENTIFIER> {s.append('.').append(t.image);} [ LOOKAHEAD(2) TypeArguments() ] )*
   {jjtThis.setImage(s.toString());}
+}
+
+void TypeName() #ClassOrInterfaceType:
+{
+  StringBuilder s = new StringBuilder();
+  Token t;
+}
+{
+    t=<IDENTIFIER> {s.append(t.image);}
+    ( "." t=<IDENTIFIER> {s.append('.').append(t.image);} )*
+    {jjtThis.setImage(s.toString());}
 }
 
 void TypeArguments():

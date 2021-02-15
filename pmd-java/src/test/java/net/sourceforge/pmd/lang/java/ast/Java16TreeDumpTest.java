@@ -112,4 +112,10 @@ public class Java16TreeDumpTest extends BaseTreeDumpTest {
     public void recordIsARestrictedIdentifier() {
         java16.parse("public class record {}");
     }
+
+    @Test
+    public void sealedAndNonSealedIdentifiers() {
+        doTest("NonSealedIdentifier");
+        java16p.parseResource("NonSealedIdentifier.java"); // make sure we can parse it with preview as well
+    }
 }
