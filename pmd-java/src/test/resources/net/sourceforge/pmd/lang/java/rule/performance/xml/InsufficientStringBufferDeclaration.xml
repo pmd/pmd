@@ -1031,4 +1031,41 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] StringBuilder/Buffer false negatives with typeres #2881</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>StringBuffer constructor is initialized with size 16, but has at least 17 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+            package net.sourceforge.pmd.lang.java.types.testdata;
+
+            public class DummyCompiledClass {
+                public String toString() {
+
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("test ");
+                    sb.append("test2 ").append("test3 ");
+                    appendToSpringBuffer(sb, "test4");
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] StringBuilder/Buffer false negatives with typeres #2881  (countertest, no classpath)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>StringBuffer constructor is initialized with size 16, but has at least 17 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class NoCompiledClass {
+                public String toString(){
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("test ");
+                    sb.append("test2 ").append("test3 ");
+                    appendToSpringBuffer(sb, "test4");
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
