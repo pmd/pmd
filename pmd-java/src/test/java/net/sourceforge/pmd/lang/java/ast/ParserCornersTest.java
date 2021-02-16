@@ -185,6 +185,11 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
         doTest("GitHubBug309", java8);
     }
 
+    @Test
+    public void testInfiniteLoopInLookahead() {
+        // https://github.com/pmd/pmd/issues/3117
+        java8.parseResource("InfiniteLoopInLookahead.java");
+    }
 
     /**
      * Empty statements should be allowed.
