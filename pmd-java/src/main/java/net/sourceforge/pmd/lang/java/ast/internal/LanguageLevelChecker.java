@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -108,48 +107,12 @@ public class LanguageLevelChecker<T> {
     }
 
 
-    /** Those are just for the preview features. */
+    /**
+     * Those are just for the preview features.
+     * They are implemented in at least one preview language version.
+     * They might be also be standardized.
+     */
     private enum PreviewFeature implements LanguageFeature {
-        /**
-         * @see <a href="https://openjdk.java.net/jeps/325">JEP 325: Switch Expressions (Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/354">JEP 354: Switch Expressions (Second Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
-         */
-        COMPOSITE_CASE_LABEL(12, 13, true),
-        /**
-         * @see <a href="https://openjdk.java.net/jeps/325">JEP 325: Switch Expressions (Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/354">JEP 354: Switch Expressions (Second Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
-         */
-        SWITCH_EXPRESSIONS(12, 13, true),
-        /**
-         * @see <a href="https://openjdk.java.net/jeps/325">JEP 325: Switch Expressions (Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/354">JEP 354: Switch Expressions (Second Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
-         */
-        SWITCH_RULES(12, 13, true),
-        /**
-         * @see #SWITCH_EXPRESSIONS
-         * @see <a href="https://openjdk.java.net/jeps/354">JEP 354: Switch Expressions (Second Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
-         */
-        YIELD_STATEMENTS(13, 13, true),
-
-        /**
-         * @see <a href="https://openjdk.java.net/jeps/355">JEP 355: Text Blocks (Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/368">JEP 368: Text Blocks (Second Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a>
-         */
-        TEXT_BLOCK_LITERALS(13, 14, true),
-        /**
-         * The new escape sequence {@code \s} simply translates to a single space {@code \u0020}.
-         *
-         * @see #TEXT_BLOCK_LITERALS
-         * @see <a href="https://openjdk.java.net/jeps/368">JEP 368: Text Blocks (Second Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a>
-         */
-        SPACE_STRING_ESCAPES(14, 14, true),
-
         /**
          * @see <a href="https://openjdk.java.net/jeps/359">JEP 359: Records (Preview)</a>
          * @see <a href="https://openjdk.java.net/jeps/384">JEP 384: Records (Second Preview)</a>
@@ -309,7 +272,39 @@ public class LanguageLevelChecker<T> {
         MODULE_DECLARATIONS(9),
         DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES(9),
         PRIVATE_METHODS_IN_INTERFACES(9),
-        CONCISE_RESOURCE_SYNTAX(9);
+        CONCISE_RESOURCE_SYNTAX(9),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
+        COMPOSITE_CASE_LABEL(14),
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
+        SWITCH_EXPRESSIONS(14),
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
+        SWITCH_RULES(14),
+        /**
+         * @see #SWITCH_EXPRESSIONS
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
+        YIELD_STATEMENTS(14),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a>
+         */
+        TEXT_BLOCK_LITERALS(15),
+        /**
+         * The new escape sequence {@code \s} simply translates to a single space {@code \u0020}.
+         *
+         * @see #TEXT_BLOCK_LITERALS
+         * @see <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a>
+         */
+        SPACE_STRING_ESCAPES(15),
+
+        ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int minJdkLevel;
 
@@ -351,10 +346,10 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTStringLiteral node, T data) {
             if (node.isStringLiteral() && SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
-                check(node, PreviewFeature.SPACE_STRING_ESCAPES, data);
+                check(node, RegularLanguageFeature.SPACE_STRING_ESCAPES, data);
             }
             if (node.isTextBlock()) {
-                check(node, PreviewFeature.TEXT_BLOCK_LITERALS, data);
+                check(node, RegularLanguageFeature.TEXT_BLOCK_LITERALS, data);
             }
             return null;
         }
@@ -369,13 +364,13 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTYieldStatement node, T data) {
-            check(node, PreviewFeature.YIELD_STATEMENTS, data);
+            check(node, RegularLanguageFeature.YIELD_STATEMENTS, data);
             return null;
         }
 
         @Override
         public Void visit(ASTSwitchExpression node, T data) {
-            check(node, PreviewFeature.SWITCH_EXPRESSIONS, data);
+            check(node, RegularLanguageFeature.SWITCH_EXPRESSIONS, data);
             return null;
         }
 
@@ -532,7 +527,7 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTSwitchLabel node, T data) {
             if (IteratorUtil.count(node.iterator()) > 1) {
-                check(node, PreviewFeature.COMPOSITE_CASE_LABEL, data);
+                check(node, RegularLanguageFeature.COMPOSITE_CASE_LABEL, data);
             }
             return null;
         }
@@ -545,7 +540,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTSwitchArrowBranch node, T data) {
-            check(node, PreviewFeature.SWITCH_RULES, data);
+            check(node, RegularLanguageFeature.SWITCH_RULES, data);
             return null;
         }
 
