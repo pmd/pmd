@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,11 +15,6 @@ import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Java16PreviewTreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java16p =

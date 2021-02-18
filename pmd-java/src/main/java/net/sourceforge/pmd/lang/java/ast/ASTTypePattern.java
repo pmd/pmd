@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
-
 /**
  * A type pattern (JDK16). This can be found on
  * the right-hand side of an {@link ASTInfixExpression InstanceOfExpression},

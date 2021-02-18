@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,6 +14,8 @@ import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 
 public class Java16TreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java16 =
