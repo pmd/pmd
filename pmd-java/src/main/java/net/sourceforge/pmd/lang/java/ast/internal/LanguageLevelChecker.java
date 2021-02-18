@@ -111,13 +111,6 @@ public class LanguageLevelChecker<T> {
     /** Those are just for the preview features. */
     private enum PreviewFeature implements LanguageFeature {
         /**
-         * Note: Withdrawn with JEP 354, yield statement is used instead.
-         * @see #YIELD_STATEMENTS
-         * @see <a href="https://openjdk.java.net/jeps/325">JEP 325: Switch Expressions (Preview)</a>
-         */
-        BREAK__WITH__VALUE_STATEMENTS(12, 12, false),
-
-        /**
          * @see <a href="https://openjdk.java.net/jeps/325">JEP 325: Switch Expressions (Preview)</a>
          * @see <a href="https://openjdk.java.net/jeps/354">JEP 354: Switch Expressions (Second Preview)</a>
          * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
@@ -377,14 +370,6 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTYieldStatement node, T data) {
             check(node, PreviewFeature.YIELD_STATEMENTS, data);
-            return null;
-        }
-
-        @Override
-        public Void visit(ASTBreakStatement node, T data) {
-            if (node.getNumChildren() > 0) {
-                check(node, PreviewFeature.BREAK__WITH__VALUE_STATEMENTS, data);
-            }
             return null;
         }
 
