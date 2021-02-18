@@ -244,10 +244,28 @@ public class LanguageLevelChecker<T> {
          * ContextualKeyword since Java 10.
          */
         VAR_AS_A_TYPE_NAME(10, "var"),
-        // yield -> PreviewFeature.YIELD_STATEMENTS
-        RECORD_AS_A_TYPE_NAME(14, "record");
-        // sealed -> PreviewFeature.SEALED_CLASSES
-        // permits -> PreviewFeature.SEALED_CLASSES
+
+        /**
+         * ContextualKeyword since Java 13 Preview.
+         */
+        YIELD_AS_A_TYPE_NAME(13, "yield"),
+
+        /**
+         * ContextualKeyword since Java 14 Preview.
+         */
+        RECORD_AS_A_TYPE_NAME(14, "record"),
+
+        /**
+         * ContextualKeyword since Java 15 Preview.
+         */
+        SEALED_AS_A_TYPE_NAME(15, "sealed"),
+
+        /**
+         * ContextualKeyword since Java 15 Preview.
+         */
+        PERMITS_AS_A_TYPE_NAME(15, "permits"),
+
+        ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int maxJdkVersion;
         private final String reserved;
@@ -562,8 +580,14 @@ public class LanguageLevelChecker<T> {
             String simpleName = node.getSimpleName();
             if ("var".equals(simpleName)) {
                 check(node, Keywords.VAR_AS_A_TYPE_NAME, data);
+            } else if ("yield".equals(simpleName)) {
+                check(node, Keywords.YIELD_AS_A_TYPE_NAME, data);
             } else if ("record".equals(simpleName)) {
                 check(node, Keywords.RECORD_AS_A_TYPE_NAME, data);
+            } else if ("sealed".equals(simpleName)) {
+                check(node, Keywords.SEALED_AS_A_TYPE_NAME, data);
+            } else if ("permits".equals(simpleName)) {
+                check(node, Keywords.PERMITS_AS_A_TYPE_NAME, data);
             }
             checkIdent(node, simpleName, data);
             return null;
