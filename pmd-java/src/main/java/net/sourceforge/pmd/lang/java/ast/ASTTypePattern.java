@@ -19,9 +19,7 @@ import java.util.List;
  *
  * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
 */
-public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern {
-
-    private boolean isFinal;
+public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern, AccessNode {
 
     ASTTypePattern(int id) {
         super(id);
@@ -42,13 +40,5 @@ public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern
     /** Returns the declared variable. */
     public ASTVariableDeclaratorId getVarId() {
         return getFirstChildOfType(ASTVariableDeclaratorId.class);
-    }
-
-    void setFinal(boolean isFinal) {
-        this.isFinal = isFinal;
-    }
-
-    boolean isFinal() {
-        return isFinal;
     }
 }

@@ -490,6 +490,32 @@ class JavaParserImpl {
         jjtree.pushNode(emptyMods);
   }
 
+  private void insertEmptyModifierListWithAnnotations(AbstractJavaNode node, AbstractJavaNode nodeWithAnnotations) {
+        ASTModifierList emptyMods = new ASTModifierList(JJTMODIFIERLIST);
+
+        emptyMods.setDeclaredModifiers(Collections.emptySet());
+
+        JavaccToken tok = JavaccToken.implicitBefore(node.getFirstToken());
+        emptyMods.setFirstToken(tok);
+        emptyMods.setLastToken(tok);
+
+        List<ASTAnnotation> annotations = new ArrayList<ASTAnnotation>();
+        while (nodeWithAnnotations.getNumChildren() > 0 && nodeWithAnnotations.getChild(0) instanceof ASTAnnotation) {
+            ASTAnnotation annotation = (ASTAnnotation) nodeWithAnnotations.getChild(0);
+            nodeWithAnnotations.removeChildAtIndex(0);
+            annotations.add(annotation);
+        }
+        for (int i = 0; i < annotations.size(); i++) {
+            emptyMods.addChild(annotations.get(i), i);
+        }
+        if (!annotations.isEmpty()) {
+            emptyMods.setFirstToken(annotations.get(0).getFirstToken());
+            emptyMods.setLastToken(annotations.get(annotations.size() - 1).getLastToken());
+        }
+
+        node.insertChild(emptyMods, 0);
+  }
+
   private void forceTypeContext() {
       AbstractJavaNode top = jjtree.peekNode();
 
@@ -1196,12 +1222,6 @@ void VariableDeclaratorId() :
   <IDENTIFIER> { setLastTokenImage(jjtThis); }
 }
 
-void BindingVarId() #VariableDeclaratorId:
-{ pushEmptyModifierList(); }
-{
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }
-}
-
 void VariableIdWithDims() #VariableDeclaratorId :
 {}
 {
@@ -1691,21 +1711,24 @@ void InstanceOfExpression() #void:
     LOOKAHEAD(1)
     ("instanceof"
         (
-            AnnotatedRefType() [ BindingVarId() #TypePattern(2) ]
+            AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
             |
-            ( LocalVarModifierList() ReferenceType() BindingVarId() ) #TypePattern(3)
+            ( LocalVarModifierList() ReferenceType() VariableDeclaratorId() ) #TypePattern(3)
         )
         {
             jjtThis.setOp(BinaryOp.INSTANCEOF);
             AbstractJavaNode top = jjtree.popNode();
             if (top instanceof ASTPattern) {
+               if (top.getNumChildren() == 2) {
+                   insertEmptyModifierListWithAnnotations(top, (AbstractJavaNode) top.getChild(0));
+               }
                top = new ASTPatternExpression((ASTPattern) top);
             } else {
                top = new ASTTypeExpression((ASTType) top);
             }
             jjtree.pushNode(top);
         }
-        {}
+        {} // seems to be important?
     ) #InfixExpression(2)
   ]
 }

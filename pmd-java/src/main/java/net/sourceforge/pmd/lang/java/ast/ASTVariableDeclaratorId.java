@@ -90,12 +90,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     @NonNull
     @Override
     public ASTModifierList getModifiers() {
-        if (isPatternBinding()) {
-            JavaNode firstChild = getFirstChild();
-            assert firstChild != null : "Binding variable has no modifiers!";
-            return (ASTModifierList) firstChild;
-        }
-
         // delegates modifiers
         return getModifierOwnerParent().getModifiers();
     }
@@ -111,8 +105,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         JavaNode parent = getParent();
         if (parent instanceof ASTVariableDeclarator) {
             return (AccessNode) parent.getParent();
-        } else if (parent instanceof ASTTypePattern) {
-            return this; // this is pretty weird
         }
         return (AccessNode) parent;
     }
