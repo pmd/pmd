@@ -3,7 +3,7 @@
       +- ModifierList[@EffectiveModifiers = "{public}", @ExplicitModifiers = "{public}"]
       +- ClassOrInterfaceBody[@Size = "1"]
          +- Initializer[@Static = "false"]
-            +- Block[@Size = "4", @containsComment = "false"]
+            +- Block[@Size = "3", @containsComment = "true"]
                +- LocalClassStatement[]
                |  +- ClassOrInterfaceDeclaration[@Abstract = "false", @Annotation = "false", @Anonymous = "false", @BinaryName = "LocalInterfacesAndEnums$1MyLocalClass", @CanonicalName = null, @EffectiveVisibility = "local", @Enum = "false", @Final = "false", @Interface = "false", @Local = "true", @Nested = "false", @PackageName = "", @PackagePrivate = "false", @Record = "false", @RegularClass = "true", @SimpleName = "MyLocalClass", @TopLevel = "false", @Visibility = "local"]
                |     +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]

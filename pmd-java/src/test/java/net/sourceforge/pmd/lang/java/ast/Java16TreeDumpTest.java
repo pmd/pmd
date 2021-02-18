@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -78,12 +80,14 @@ public class Java16TreeDumpTest extends BaseTreeDumpTest {
 
         // extended tests for type resolution etc.
         ASTCompilationUnit compilationUnit = java16.parseResource("Point.java");
-        ASTRecordDeclaration recordDecl = compilationUnit.getFirstDescendantOfType(ASTRecordDeclaration.class);
-        List<ASTRecordComponent> components = recordDecl.getFirstChildOfType(ASTRecordComponentList.class)
-                .findChildrenOfType(ASTRecordComponent.class);
-        Assert.assertNull(components.get(0).getVarId().getNameDeclaration().getAccessNodeParent());
-        Assert.assertEquals(Integer.TYPE, components.get(0).getVarId().getNameDeclaration().getType());
-        Assert.assertEquals("int", components.get(0).getVarId().getNameDeclaration().getTypeImage());
+        ASTRecordDeclaration recordDecl = compilationUnit.descendants(ASTRecordDeclaration.class).first();
+        List<ASTRecordComponent> components = recordDecl.descendants(ASTRecordComponentList.class)
+                .children(ASTRecordComponent.class).toList();
+
+        ASTVariableDeclaratorId varId = components.get(0).getVarId();
+        JElementSymbol symbol = varId.getSymbol();
+        Assert.assertEquals("x", symbol.getSimpleName());
+        Assert.assertTrue(varId.getTypeMirror().isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT));
     }
 
     @Test(expected = ParseException.class)

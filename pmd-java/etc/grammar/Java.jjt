@@ -2283,7 +2283,6 @@ void LocalTypeDecl() #void:
 {  // waiting for the next node to open. We want that node to be the type declaration,
    // not the wrapper statement node.
   ( ClassOrInterfaceDeclaration()
-  | AnnotationTypeDeclaration()
   | LOOKAHEAD({isKeyword("record")}) RecordDeclaration()
   | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration()
   ) {

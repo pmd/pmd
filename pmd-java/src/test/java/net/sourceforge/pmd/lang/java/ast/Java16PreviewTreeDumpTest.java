@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -11,6 +12,11 @@ import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Java16PreviewTreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java16p =
@@ -35,11 +41,21 @@ public class Java16PreviewTreeDumpTest extends BaseTreeDumpTest {
     @Test
     public void sealedClass() {
         doTest("geometry/Shape");
+
+        ASTCompilationUnit compilationUnit = java16p.parseResource("geometry/Shape.java");
+        ASTClassOrInterfaceDeclaration sealedClass = compilationUnit.descendants(ASTClassOrInterfaceDeclaration.class).first();
+        Assert.assertEquals(new HashSet<>(Arrays.asList(JModifier.SEALED, JModifier.PUBLIC)),
+                sealedClass.getModifiers().getExplicitModifiers());
     }
 
     @Test
     public void nonSealedClass() {
         doTest("geometry/Square");
+
+        ASTCompilationUnit compilationUnit = java16p.parseResource("geometry/Square.java");
+        ASTClassOrInterfaceDeclaration sealedClass = compilationUnit.descendants(ASTClassOrInterfaceDeclaration.class).first();
+        Assert.assertEquals(new HashSet<>(Arrays.asList(JModifier.NON_SEALED, JModifier.PUBLIC)),
+                sealedClass.getModifiers().getExplicitModifiers());
     }
 
     @Test(expected = ParseException.class)
@@ -50,5 +66,10 @@ public class Java16PreviewTreeDumpTest extends BaseTreeDumpTest {
     @Test
     public void sealedInterface() {
         doTest("expression/Expr");
+
+        ASTCompilationUnit compilationUnit = java16p.parseResource("expression/Expr.java");
+        ASTClassOrInterfaceDeclaration sealedClass = compilationUnit.descendants(ASTClassOrInterfaceDeclaration.class).first();
+        Assert.assertEquals(new HashSet<>(Arrays.asList(JModifier.SEALED, JModifier.PUBLIC)),
+                sealedClass.getModifiers().getExplicitModifiers());
     }
 }
