@@ -1,5 +1,9 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 /**
- * @see <a href="https://openjdk.java.net/jeps/359">JEP 359: Records (Preview)</a>
+ * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a>
  */
 public record Point(int x, int y) {
 

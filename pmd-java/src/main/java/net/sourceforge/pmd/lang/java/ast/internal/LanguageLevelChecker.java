@@ -41,7 +41,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
@@ -110,21 +110,79 @@ public class LanguageLevelChecker<T> {
 
     /** Those are just for the preview features. */
     private enum PreviewFeature implements LanguageFeature {
+        /**
+         * Note: Withdrawn with JEP 354, yield statement is used instead.
+         * @see #YIELD_STATEMENTS
+         * @see <a href="https://openjdk.java.net/jeps/325">JEP 325: Switch Expressions (Preview)</a>
+         */
         BREAK__WITH__VALUE_STATEMENTS(12, 12, false),
 
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/325">JEP 325: Switch Expressions (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/354">JEP 354: Switch Expressions (Second Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
         COMPOSITE_CASE_LABEL(12, 13, true),
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/325">JEP 325: Switch Expressions (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/354">JEP 354: Switch Expressions (Second Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
         SWITCH_EXPRESSIONS(12, 13, true),
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/325">JEP 325: Switch Expressions (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/354">JEP 354: Switch Expressions (Second Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
         SWITCH_RULES(12, 13, true),
-
-        TEXT_BLOCK_LITERALS(13, 14, true),
+        /**
+         * @see #SWITCH_EXPRESSIONS
+         * @see <a href="https://openjdk.java.net/jeps/354">JEP 354: Switch Expressions (Second Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
         YIELD_STATEMENTS(13, 13, true),
 
-        /** \s */
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/355">JEP 355: Text Blocks (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/368">JEP 368: Text Blocks (Second Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a>
+         */
+        TEXT_BLOCK_LITERALS(13, 14, true),
+        /**
+         * The new escape sequence {@code \s} simply translates to a single space {@code \u0020}.
+         *
+         * @see #TEXT_BLOCK_LITERALS
+         * @see <a href="https://openjdk.java.net/jeps/368">JEP 368: Text Blocks (Second Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a>
+         */
         SPACE_STRING_ESCAPES(14, 14, true),
-        RECORD_DECLARATIONS(14, 15, false),
-        TYPE_TEST_PATTERNS_IN_INSTANCEOF(14, 15, false),
-        SEALED_CLASSES(15, 15, false),
-        STATIC_LOCAL_TYPE_DECLARATIONS(15, 15, false), // part of the sealed classes JEP
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/359">JEP 359: Records (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/384">JEP 384: Records (Second Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a>
+         */
+        RECORD_DECLARATIONS(14, 15, true),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/305">JEP 305: Pattern Matching for instanceof (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/375">JEP 375: Pattern Matching for instanceof (Second Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
+         */
+        TYPE_PATTERNS_IN_INSTANCEOF(14, 15, true),
+
+        /**
+         * Part of the records JEP 394.
+         * @see #RECORD_DECLARATIONS
+         * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8253374">JLS changes for Static Members of Inner Classes</a>
+         */
+        STATIC_LOCAL_TYPE_DECLARATIONS(15, 15, true),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/360">JEP 360: Sealed Classes (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/397">JEP 397: Sealed Classes (Second Preview)</a>
+         */
+        SEALED_CLASSES(15, 16, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -164,18 +222,37 @@ public class LanguageLevelChecker<T> {
         }
     }
 
-    /** Those use a max valid version. */
-    private enum ReservedIdentifiers implements LanguageFeature {
+    /**
+     * Those use a max valid version.
+     *
+     * @see <a href="http://cr.openjdk.java.net/~gbierman/jep397/jep397-20201204/specs/contextual-keywords-jls.html">Contextual Keywords</a>
+     */
+    private enum Keywords implements LanguageFeature {
+        /**
+         * ReservedKeyword since Java 1.4.
+         */
         ASSERT_AS_AN_IDENTIFIER(4, "assert"),
+        /**
+         * ReservedKeyword since Java 1.5.
+         */
         ENUM_AS_AN_IDENTIFIER(5, "enum"),
+        /**
+         * ReservedKeyword since Java 9.
+         */
         UNDERSCORE_AS_AN_IDENTIFIER(9, "_"),
+        /**
+         * ContextualKeyword since Java 10.
+         */
         VAR_AS_A_TYPE_NAME(10, "var"),
+        // yield -> PreviewFeature.YIELD_STATEMENTS
         RECORD_AS_A_TYPE_NAME(14, "record");
+        // sealed -> PreviewFeature.SEALED_CLASSES
+        // permits -> PreviewFeature.SEALED_CLASSES
 
         private final int maxJdkVersion;
         private final String reserved;
 
-        ReservedIdentifiers(int minJdkVersion, String reserved) {
+        Keywords(int minJdkVersion, String reserved) {
             this.maxJdkVersion = minJdkVersion;
             this.reserved = reserved;
         }
@@ -411,8 +488,8 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTTypeTestPattern node, T data) {
-            check(node, PreviewFeature.TYPE_TEST_PATTERNS_IN_INSTANCEOF, data);
+        public Void visit(ASTTypePattern node, T data) {
+            check(node, PreviewFeature.TYPE_PATTERNS_IN_INSTANCEOF, data);
             return null;
         }
 
@@ -484,9 +561,9 @@ public class LanguageLevelChecker<T> {
             }
             String simpleName = node.getSimpleName();
             if ("var".equals(simpleName)) {
-                check(node, ReservedIdentifiers.VAR_AS_A_TYPE_NAME, data);
+                check(node, Keywords.VAR_AS_A_TYPE_NAME, data);
             } else if ("record".equals(simpleName)) {
-                check(node, ReservedIdentifiers.RECORD_AS_A_TYPE_NAME, data);
+                check(node, Keywords.RECORD_AS_A_TYPE_NAME, data);
             }
             checkIdent(node, simpleName, data);
             return null;
@@ -494,11 +571,11 @@ public class LanguageLevelChecker<T> {
 
         private void checkIdent(JavaNode node, String simpleName, T acc) {
             if ("enum".equals(simpleName)) {
-                check(node, ReservedIdentifiers.ENUM_AS_AN_IDENTIFIER, acc);
+                check(node, Keywords.ENUM_AS_AN_IDENTIFIER, acc);
             } else if ("assert".equals(simpleName)) {
-                check(node, ReservedIdentifiers.ASSERT_AS_AN_IDENTIFIER, acc);
+                check(node, Keywords.ASSERT_AS_AN_IDENTIFIER, acc);
             } else if ("_".equals(simpleName)) {
-                check(node, ReservedIdentifiers.UNDERSCORE_AS_AN_IDENTIFIER, acc);
+                check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
             }
         }
 

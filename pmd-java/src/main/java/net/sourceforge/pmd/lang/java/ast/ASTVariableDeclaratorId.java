@@ -9,7 +9,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -112,7 +111,7 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         JavaNode parent = getParent();
         if (parent instanceof ASTVariableDeclarator) {
             return (AccessNode) parent.getParent();
-        } else if (parent instanceof ASTTypeTestPattern) {
+        } else if (parent instanceof ASTTypePattern) {
             return this; // this is pretty weird
         }
         return (AccessNode) parent;
@@ -239,7 +238,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      * Returns true if this is a binding variable in a
      * {@linkplain ASTPattern pattern}.
      */
-    @Experimental
     public boolean isPatternBinding() {
         return getParent() instanceof ASTPattern;
     }

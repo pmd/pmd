@@ -101,7 +101,7 @@
          |  |     +- PrimitiveType[@Kind = "int"]
          |  |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "private", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "true", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "false", @Name = "hi", @PatternBinding = "false", @RecordComponent = "true", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "private"]
          |  +- RecordBody[@Size = "2"]
-         |     +- RecordConstructorDeclaration[@EffectiveVisibility = "public", @Image = "Range", @Visibility = "public"]
+         |     +- CompactConstructorDeclaration[@EffectiveVisibility = "public", @Image = "Range", @Visibility = "public"]
          |     |  +- ModifierList[@EffectiveModifiers = "{public}", @ExplicitModifiers = "{public}"]
          |     |  |  +- Annotation[@SimpleName = "MyAnnotation"]
          |     |  |     +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "MyAnnotation"]

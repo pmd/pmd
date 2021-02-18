@@ -339,8 +339,8 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     @Override
     public JTypeMirror visit(ASTPatternExpression node, Void data) {
         ASTPattern pattern = node.getPattern();
-        if (pattern instanceof ASTTypeTestPattern) {
-            return ((ASTTypeTestPattern) pattern).getTypeNode().getTypeMirror();
+        if (pattern instanceof ASTTypePattern) {
+            return ((ASTTypePattern) pattern).getTypeNode().getTypeMirror();
         }
         throw new IllegalArgumentException("Unknown pattern " + pattern);
     }
