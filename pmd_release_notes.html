@@ -1411,11 +1411,59 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>The Apex rule <a href="pmd_rules_apex_documentation.html#apexdoc"><code class="language-plaintext highlighter-rouge">ApexDoc</code></a> has two new properties: <code class="language-plaintext highlighter-rouge">reportPrivate</code> and
+<code class="language-plaintext highlighter-rouge">reportProtected</code>. Previously the rule only considered public and global classes, methods, and
+properties. With these properties, you can verify the existence of ApexDoc comments for private
+and protected methods as well. By default, these properties are disabled to preserve backwards
+compatible behavior.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
+
+<ul>
+  <li>apex-documentation
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3075">#3075</a>: [apex] ApexDoc should support private access modifier</li>
+    </ul>
+  </li>
+  <li>plsql
+    <ul>
+      <li>
+        <table>
+          <tbody>
+            <tr>
+              <td><a href="https://github.com/pmd/pmd/issues/3106">#3106</a>: [plsql] ParseException while parsing EXECUTE IMMEDIATE ‘drop database link ‘</td>
+              <td> </td>
+              <td>linkname;</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
 <h3 id="external-contributions">External Contributions</h3>
+
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/3098">#3098</a>: [apex] ApexDoc optionally report private and protected - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td><a href="https://github.com/pmd/pmd/pull/3107">#3107</a>: [plsql] Fix ParseException for EXECUTE IMMEDIATE str1</td>
+          <td> </td>
+          <td>str2; - <a href="https://github.com/hvbtup">hvbtup</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
 
 
 
@@ -1433,7 +1481,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 13, 2021 <br />
+ Site last generated: Feb 19, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
