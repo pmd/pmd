@@ -7,11 +7,10 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * A record declaration is a special data class type (JDK 14 and JDK 15 preview feature).
+ * A record declaration is a special data class type (JDK 16 feature).
  * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
  * <pre class="grammar">
@@ -25,9 +24,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * </pre>
  *
- * @see <a href="https://openjdk.java.net/jeps/384">JEP 384: Records (Second Preview)</a>
+ * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a>
  */
-@Experimental
 public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
     ASTRecordDeclaration(int id) {
         super(id);

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
@@ -199,9 +198,10 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
             return true;
         } else if (isLambdaParamWithNoType()) {
             return false;
-        } else if (isPatternBinding()) {
-            // implicitly like final, assignment of a pattern binding is not allowed
-            return true;
+        }
+
+        if (getParent() instanceof ASTTypePattern) {
+            return ((ASTTypePattern) getParent()).isFinal();
         }
 
         if (getParent() instanceof ASTRecordComponent) {
@@ -276,7 +276,6 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * Returns true if this is a binding variable in a
      * {@linkplain ASTPattern pattern}.
      */
-    @Experimental
     public boolean isPatternBinding() {
         return getParent() instanceof ASTPattern;
     }
@@ -330,8 +329,8 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         } else if (isTypeInferred()) {
             // lambda expression with lax types. The type is inferred...
             return null;
-        } else if (getParent() instanceof ASTTypeTestPattern) {
-            return ((ASTTypeTestPattern) getParent()).getTypeNode();
+        } else if (getParent() instanceof ASTTypePattern) {
+            return ((ASTTypePattern) getParent()).getTypeNode();
         } else if (getParent() instanceof ASTRecordComponent) {
             return ((ASTRecordComponent) getParent()).getTypeNode();
         } else {

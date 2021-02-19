@@ -5,14 +5,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 /**
- * This defines a compact constructor for a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 and JDK 15 preview feature).
+ * This defines a compact constructor for a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 16 feature).
  *
  * <pre class="grammar">
  *
- * RecordConstructorDeclaration ::=  ({@linkplain ASTAnnotation Annotation})*
+ * CompactConstructorDeclaration ::=  ({@linkplain ASTAnnotation Annotation})*
  *                                   RecordModifiers
  *                                   &lt;IDENTIFIER&gt;
  *                                   {@link ASTBlock Block}
@@ -20,13 +18,12 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  *
  */
-@Experimental
-public final class ASTRecordConstructorDeclaration extends AbstractJavaAccessNode implements ASTAnyTypeBodyDeclaration {
-    ASTRecordConstructorDeclaration(int id) {
+public final class ASTCompactConstructorDeclaration extends AbstractJavaAccessNode implements ASTAnyTypeBodyDeclaration {
+    ASTCompactConstructorDeclaration(int id) {
         super(id);
     }
 
-    ASTRecordConstructorDeclaration(JavaParser p, int id) {
+    ASTCompactConstructorDeclaration(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -36,7 +33,7 @@ public final class ASTRecordConstructorDeclaration extends AbstractJavaAccessNod
     }
 
     @Override
-    public ASTRecordConstructorDeclaration getDeclarationNode() {
+    public ASTCompactConstructorDeclaration getDeclarationNode() {
         return this;
     }
 
