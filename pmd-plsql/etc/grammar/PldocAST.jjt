@@ -2686,7 +2686,7 @@ ASTFetchStatement FetchStatement()  :
 ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {}
 {
-   <EXECUTE> <IMMEDIATE> (StringLiteral() | Expression())
+   <EXECUTE> <IMMEDIATE> StringExpression()
 	[ <INTO> Name() ("," Name())* ]
 	[ <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())* ]
 	[ ( <RETURN> | <RETURNING> )  <INTO> Expression() ("," Expression())*] ";"
