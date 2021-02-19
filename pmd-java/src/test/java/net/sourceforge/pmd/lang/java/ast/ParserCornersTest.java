@@ -14,6 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
@@ -185,6 +186,12 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
         doTest("GitHubBug309", java8);
     }
 
+    @Test
+    public void testInfiniteLoopInLookahead() {
+        expect.expect(ParseException.class); // the code is invalid. The test fails if it times out
+        // https://github.com/pmd/pmd/issues/3117
+        java8.parseResource("InfiniteLoopInLookahead.java");
+    }
 
     /**
      * Empty statements should be allowed.
