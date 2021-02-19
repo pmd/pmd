@@ -50,7 +50,6 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return visitor.visit(this, data);
     }
 
-
     /**
      * Returns true if this method is overridden.
      * TODO for now, this just checks for an @Override annotation,

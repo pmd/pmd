@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -11,6 +13,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
@@ -50,6 +53,8 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
 
     private VariableNameDeclaration nameDeclaration;
 
+    private List<ASTNamedReferenceExpr> usages = Collections.emptyList();
+
     ASTVariableDeclaratorId(int id) {
         super(id);
     }
@@ -72,8 +77,31 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         nameDeclaration = decl;
     }
 
+    /**
+     * @deprecated transitional, use {@link #getLocalUsages()}
+     */
+    @Deprecated
     public List<NameOccurrence> getUsages() {
         return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
+    }
+
+    /**
+     * Returns an unmodifiable list of the usages of this variable that
+     * are made in this file. Note that for a record component, this returns
+     * usages both for the formal parameter symbol and its field counterpart.
+     *
+     * <p>Note that a variable initializer is not part of the usages
+     * (though this should be evident from the return type).
+     */
+    public List<ASTNamedReferenceExpr> getLocalUsages() {
+        return usages;
+    }
+
+    void addUsage(ASTNamedReferenceExpr usage) {
+        if (usages.isEmpty()) {
+            usages = new ArrayList<>(4); //make modifiable
+        }
+        usages.add(usage);
     }
 
     /**
@@ -94,12 +122,12 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         return getModifierOwnerParent().getModifiers();
     }
 
-
     @Override
     public Visibility getVisibility() {
         return isPatternBinding() ? Visibility.V_LOCAL
                                   : getModifierOwnerParent().getVisibility();
     }
+
 
     private AccessNode getModifierOwnerParent() {
         JavaNode parent = getParent();

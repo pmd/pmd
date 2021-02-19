@@ -161,4 +161,28 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
             return -1;
         }
     }
+
+
+    /**
+     * Complement, for boolean operators. Eg for {@code ==}, return {@code !=},
+     * for {@code <=}, returns {@code >}. Returns null if this is another kind
+     * of operator.
+     */
+    public BinaryOp getComplement() {
+        switch (this) {
+        case CONDITIONAL_OR: return CONDITIONAL_AND;
+        case CONDITIONAL_AND: return CONDITIONAL_OR;
+        case OR: return AND;
+        case AND: return OR;
+
+        case EQ: return NE;
+        case NE: return EQ;
+        case LE: return GT;
+        case GE: return LT;
+        case GT: return LE;
+        case LT: return GE;
+
+        default: return null;
+        }
+    }
 }

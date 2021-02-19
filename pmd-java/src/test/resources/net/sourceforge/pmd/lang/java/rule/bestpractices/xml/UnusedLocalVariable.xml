@@ -153,8 +153,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>a compound assignment operator doth a usage make</description>
-        <expected-problems>0</expected-problems>
+        <description>a compound assignment operator does not a usage make</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -393,5 +393,26 @@ public class UnusedLocalVariable {
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2130 [java] UnusedLocalVariable: false-negative with array</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            package pmdtests;
+
+            import java.lang.reflect.Constructor;
+
+            public final class Construct {
+
+                private Construct() {
+                    throw new IllegalStateException("Private constructor.");
+                }
+
+                public static void main(String... args) {
+                    // get all visible constructors
+                    Constructor<?>[] constructors = String.class.getConstructors();
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>
