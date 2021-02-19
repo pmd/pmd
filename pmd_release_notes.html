@@ -1411,6 +1411,21 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="java-16-support">Java 16 Support</h4>
+
+<p>This release of PMD brings support for Java 16. PMD supports <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a> and <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a>. Both have been promoted
+to be a standard language feature of Java 16.</p>
+
+<p>PMD also supports <a href="https://openjdk.java.net/jeps/397">JEP 397: Sealed Classes (Second Preview)</a> as a preview
+language feature. In order to analyze a project with PMD that uses these language features, you’ll need to enable
+it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version <code class="language-plaintext highlighter-rouge">16-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+./run.sh pmd -language java -version 16-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for Java 14 preview language features have been removed. The version “14-preview” is no longer available.</p>
+
 <h4 id="modified-rules">Modified Rules</h4>
 
 <ul>
@@ -1447,6 +1462,27 @@ compatible behavior.</li>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<h4 id="pmd-java">pmd-java</h4>
+
+<ul>
+  <li>The experimental class <code class="language-plaintext highlighter-rouge">ASTTypeTestPattern</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypePattern.html#"><code>ASTTypePattern</code></a>
+in order to align the naming to the JLS.</li>
+  <li>The experimental class <code class="language-plaintext highlighter-rouge">ASTRecordConstructorDeclaration</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#"><code>ASTCompactConstructorDeclaration</code></a>
+in order to align the naming to the JLS.</li>
+  <li>The AST types and APIs around Pattern Matching and Records are not experimental anymore:
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#isPatternBinding()"><code>ASTVariableDeclaratorId#isPatternBinding</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPattern.html#"><code>ASTPattern</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypePattern.html#"><code>ASTTypePattern</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordDeclaration.html#"><code>ASTRecordDeclaration</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordComponentList.html#"><code>ASTRecordComponentList</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordComponent.html#"><code>ASTRecordComponent</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordBody.html#"><code>ASTRecordBody</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#"><code>ASTCompactConstructorDeclaration</code></a></li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="external-contributions">External Contributions</h3>
 
