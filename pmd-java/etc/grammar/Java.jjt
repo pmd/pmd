@@ -481,7 +481,7 @@ public class JavaParser {
   }
 
   private void checkForNewStringSpaceEscape(String s) {
-    if (!(jdkVersion >= 15) && s.contains("\\s") && !s.contains("\\\\s")) {
+    if (jdkVersion < 15 && s.contains("\\s") && !s.contains("\\\\s")) {
       throwParseException("The escape sequence \"\\s\" is only supported with Java >= 15");
     }
   }

@@ -18,7 +18,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- *  PermittedSubclasses ::= "permits" ClassOrInterfaceType
+ *  PermitsList ::= "permits" ClassOrInterfaceType
  *                ( "," ClassOrInterfaceType )*
  * </pre>
  */
