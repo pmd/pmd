@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
  *
  * <pre class="grammar">
  *
- *  PermittedSubclasses ::= "permits" ClassOrInterfaceType
+ *  PermitsList ::= "permits" ClassOrInterfaceType
  *                ( "," ClassOrInterfaceType )*
  * </pre>
  */
