@@ -454,7 +454,7 @@ public interface Node {
     default @Nullable Node getNextSibling() {
         Node parent = getParent();
         int idx = getIndexInParent();
-        if (parent != null && idx < parent.getNumChildren()) {
+        if (parent != null && idx + 1 < parent.getNumChildren()) {
             return parent.getChild(idx + 1);
         }
         return null;

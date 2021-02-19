@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.types.captureMatcher
 import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
 import net.sourceforge.pmd.lang.java.types.typeDsl
+import net.sourceforge.pmd.lang.java.types.varId
 import java.util.function.Supplier
 
 /**
@@ -201,16 +202,17 @@ class SpecialMethodsTest : ProcessorTestSpec({
         """.trimIndent())
 
         val (compLhs, compRhs) = acu.descendants(ASTVariableAccess::class.java).toList()
+        val id = acu.varId("comp")
 
         spy.shouldBeOk {
             compLhs.referencedSym.shouldBeA<JFormalParamSymbol> {
-                it.tryGetNode() shouldBe null // this could be controversial
+                it.tryGetNode() shouldBe id
                 it.declaringSymbol.shouldBeA<JConstructorSymbol>()
             }
 
             // same spec
             compRhs.referencedSym.shouldBeA<JFormalParamSymbol> {
-                it.tryGetNode() shouldBe null
+                it.tryGetNode() shouldBe id
                 it.declaringSymbol.shouldBeA<JConstructorSymbol>()
             }
         }

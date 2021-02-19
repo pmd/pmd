@@ -162,7 +162,12 @@ public class Foo {
         <description>The rule should take into account uses of field names, inherited or not, matching the method parameter name.</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class AbstractClass {
+    String string;
+}
+
 public class RealClass extends AbstractClass {
+    String string;
     public void setString(String string) {
         super.string = string; //violation
         this.string = string; // or violation
