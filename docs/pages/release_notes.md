@@ -26,12 +26,15 @@ This is a {{ site.pmd.release_type }} release.
 
 *   apex-documentation
     *   [#3075](https://github.com/pmd/pmd/issues/3075): \[apex] ApexDoc should support private access modifier
+*   plsql
+    *   [#3106](https://github.com/pmd/pmd/issues/3106): \[plsql] ParseException while parsing EXECUTE IMMEDIATE 'drop database link ' || linkname;
 
 ### API Changes
 
 ### External Contributions
 
-*   [#3098](https://github.com/pmd/pmd/pull/3098): \[apex] ApexDoc optionally report private and protected
+*   [#3098](https://github.com/pmd/pmd/pull/3098): \[apex] ApexDoc optionally report private and protected - [Jonathan Wiesel](https://github.com/jonathanwiesel)
+*   [#3107](https://github.com/pmd/pmd/pull/3107): \[plsql] Fix ParseException for EXECUTE IMMEDIATE str1||str2; - [hvbtup](https://github.com/hvbtup)
 
 {% endtocmaker %}
 

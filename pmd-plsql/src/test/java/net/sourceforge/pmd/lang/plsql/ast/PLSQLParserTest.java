@@ -73,4 +73,9 @@ public class PLSQLParserTest extends AbstractPLSQLParserTst {
     public void testCaseIssue1454() {
         plsql.parseResource("CaseIssue1454.pls");
     }
+
+    @Test
+    public void testExecuteImmediateIssue3106() {
+        plsql.parseResource("ExecuteImmediateIssue3106.pls");
+    }
 }
