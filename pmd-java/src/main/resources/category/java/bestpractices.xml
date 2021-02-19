@@ -1202,7 +1202,7 @@ public void bar() {
     <rule name="SystemPrintln"
           language="java"
           since="2.1"
-          message="{0} is used"
+          message="Usage of System.out/err"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#systemprintln">
         <description>
@@ -1215,11 +1215,9 @@ will (and by priority) and avoid clogging the Standard out log.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Name[
-    starts-with(@Image, 'System.out.print')
-    or
-    starts-with(@Image, 'System.err.print')
-    ]
+//MethodCall[ starts-with(@MethodName, 'print') ]
+  /FieldAccess[ @Name = ('err', 'out') ]
+  /TypeExpression[ pmd-java:typeIsExactly('java.lang.System') ]
 ]]>
                 </value>
             </property>
@@ -1801,7 +1799,7 @@ a block `{}` is sufficient.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-  //DoStatement[BooleanLiteral]
+  //DoStatement/BooleanLiteral
 | //WhileStatement/BooleanLiteral[@True = false()]
                 ]]></value>
             </property>
