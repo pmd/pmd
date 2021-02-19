@@ -298,7 +298,7 @@
     <rule ref="category/java/performance.xml/ConsecutiveAppendsShouldReuse"/>
     <!-- <rule ref="category/java/performance.xml/ConsecutiveLiteralAppends"/> -->
     <rule ref="category/java/performance.xml/InefficientEmptyStringCheck"/>
-    <!-- <rule ref="category/java/performance.xml/InefficientStringBuffering"/> -->
+    <rule ref="category/java/performance.xml/InefficientStringBuffering"/>
     <!-- <rule ref="category/java/performance.xml/InsufficientStringBufferDeclaration"/> -->
     <rule ref="category/java/performance.xml/IntegerInstantiation"/>
     <rule ref="category/java/performance.xml/LongInstantiation"/>
