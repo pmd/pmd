@@ -35,6 +35,7 @@ This is a {{ site.pmd.release_type }} release.
 
 *   [#3098](https://github.com/pmd/pmd/pull/3098): \[apex] ApexDoc optionally report private and protected - [Jonathan Wiesel](https://github.com/jonathanwiesel)
 *   [#3107](https://github.com/pmd/pmd/pull/3107): \[plsql] Fix ParseException for EXECUTE IMMEDIATE str1||str2; - [hvbtup](https://github.com/hvbtup)
+*   [#3125](https://github.com/pmd/pmd/pull/3125): \[doc] Fix sample code indentation in documentation - [Artur Dryomov](https://github.com/arturdryomov)
 
 {% endtocmaker %}
 
