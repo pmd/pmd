@@ -1418,17 +1418,17 @@ latest available version, have a look at the official <a href="https://maven.apa
 report additionally in <code class="language-plaintext highlighter-rouge">&lt;reporting&gt;&lt;plugins/&gt;&lt;/reporting&gt;</code> elements. Here’s an example for the pluginManagement
 section:</p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;build&gt;</span>
-        <span class="nt">&lt;pluginManagement&gt;</span>
-            <span class="nt">&lt;plugins&gt;</span>
-                <span class="nt">&lt;plugin&gt;</span>
-                    <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
-                    <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
-                    <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span>
-                <span class="nt">&lt;/plugin&gt;</span>
-            <span class="nt">&lt;/plugins&gt;</span>
-        <span class="nt">&lt;/pluginManagement&gt;</span>
-    <span class="nt">&lt;/build&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;pluginManagement&gt;</span>
+        <span class="nt">&lt;plugins&gt;</span>
+            <span class="nt">&lt;plugin&gt;</span>
+                <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+                <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
+                <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span>
+            <span class="nt">&lt;/plugin&gt;</span>
+        <span class="nt">&lt;/plugins&gt;</span>
+    <span class="nt">&lt;/pluginManagement&gt;</span>
+<span class="nt">&lt;/build&gt;</span>
 </code></pre></div></div>
 
 <p>When defining the version in the pluginManagment section, then it doesn’t need to be specified in the normal plugins
@@ -1509,22 +1509,22 @@ you add <code class="language-plaintext highlighter-rouge">cpd-check</code> as a
 
 <p>To specify a ruleset, simply edit the previous configuration:</p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;reporting&gt;</span>
-        <span class="nt">&lt;plugins&gt;</span>
-            <span class="nt">&lt;plugin&gt;</span>
-                <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
-                <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
-                <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span>
-                <span class="nt">&lt;configuration&gt;</span>
-                    <span class="nt">&lt;rulesets&gt;</span>
-                        <span class="nt">&lt;ruleset&gt;</span>/rulesets/java/quickstart.xml<span class="nt">&lt;/ruleset&gt;</span>
-                        <span class="nt">&lt;ruleset&gt;</span>d:\rulesets\my-ruleset.xml<span class="nt">&lt;/ruleset&gt;</span>
-                        <span class="nt">&lt;ruleset&gt;</span>http://localhost/design.xml<span class="nt">&lt;/ruleset&gt;</span>
-                    <span class="nt">&lt;/rulesets&gt;</span>
-                <span class="nt">&lt;/configuration&gt;</span>
-            <span class="nt">&lt;/plugin&gt;</span>
-        <span class="nt">&lt;/plugins&gt;</span>
-    <span class="nt">&lt;/reporting&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;reporting&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+        <span class="nt">&lt;plugin&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span>
+            <span class="nt">&lt;configuration&gt;</span>
+                <span class="nt">&lt;rulesets&gt;</span>
+                    <span class="nt">&lt;ruleset&gt;</span>/rulesets/java/quickstart.xml<span class="nt">&lt;/ruleset&gt;</span>
+                    <span class="nt">&lt;ruleset&gt;</span>d:\rulesets\my-ruleset.xml<span class="nt">&lt;/ruleset&gt;</span>
+                    <span class="nt">&lt;ruleset&gt;</span>http://localhost/design.xml<span class="nt">&lt;/ruleset&gt;</span>
+                <span class="nt">&lt;/rulesets&gt;</span>
+            <span class="nt">&lt;/configuration&gt;</span>
+        <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+<span class="nt">&lt;/reporting&gt;</span>
 </code></pre></div></div>
 
 <p>The value of the ‘ruleset’ element can either be a relative address, an absolute address or even an url.</p>
@@ -1541,17 +1541,17 @@ will be able to resolve those other ruleset references.</p>
 <p>When using the Maven PMD plugin 3.8 or later along with PMD 5.6.0 or later, you can enable incremental analysis to
 speed up PMD’s execution while retaining the quality of the analysis. You can additionally customize where the cache is stored::</p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;plugin&gt;</span>
-        <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
-        <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
-        <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span> <span class="c">&lt;!-- or use version from pluginManagement --&gt;</span>
-        <span class="nt">&lt;configuration&gt;</span>
-            <span class="c">&lt;!-- enable incremental analysis --&gt;</span>
-            <span class="nt">&lt;analysisCache&gt;</span>true<span class="nt">&lt;/analysisCache&gt;</span>
-            <span class="c">&lt;!-- analysisCacheLocation: optional - points to the following location by default --&gt;</span>
-            <span class="nt">&lt;analysisCacheLocation&gt;</span>${project.build.directory}/pmd/pmd.cache<span class="nt">&lt;/analysisCacheLocation&gt;</span>
-        <span class="nt">&lt;/configuration&gt;</span>
-    <span class="nt">&lt;/plugin&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;plugin&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span> <span class="c">&lt;!-- or use version from pluginManagement --&gt;</span>
+    <span class="nt">&lt;configuration&gt;</span>
+        <span class="c">&lt;!-- enable incremental analysis --&gt;</span>
+        <span class="nt">&lt;analysisCache&gt;</span>true<span class="nt">&lt;/analysisCache&gt;</span>
+        <span class="c">&lt;!-- analysisCacheLocation: optional - points to the following location by default --&gt;</span>
+        <span class="nt">&lt;analysisCacheLocation&gt;</span>${project.build.directory}/pmd/pmd.cache<span class="nt">&lt;/analysisCacheLocation&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
+<span class="nt">&lt;/plugin&gt;</span>
 </code></pre></div></div>
 
 <h4 id="other-configurations">Other configurations</h4>
@@ -1559,17 +1559,17 @@ speed up PMD’s execution while retaining the quality of the analysis. You can 
 <p>The Maven PMD plugin allows you to configure CPD, targetJDK, and the use of XRef to link
 the report to html source files, and the file encoding:</p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;plugin&gt;</span>
-        <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
-        <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
-        <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span> <span class="c">&lt;!-- or use version from pluginManagement --&gt;</span>
-        <span class="nt">&lt;configuration&gt;</span>
-            <span class="nt">&lt;linkXRef&gt;</span>true<span class="nt">&lt;/linkXRef&gt;</span>
-            <span class="nt">&lt;sourceEncoding&gt;</span>ISO-8859-1<span class="nt">&lt;/sourceEncoding&gt;</span>
-            <span class="nt">&lt;minimumTokens&gt;</span>30<span class="nt">&lt;/minimumTokens&gt;</span>
-            <span class="nt">&lt;targetJdk&gt;</span>1.4<span class="nt">&lt;/targetJdk&gt;</span>
-        <span class="nt">&lt;/configuration&gt;</span>
-    <span class="nt">&lt;/plugin&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;plugin&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span> <span class="c">&lt;!-- or use version from pluginManagement --&gt;</span>
+    <span class="nt">&lt;configuration&gt;</span>
+        <span class="nt">&lt;linkXRef&gt;</span>true<span class="nt">&lt;/linkXRef&gt;</span>
+        <span class="nt">&lt;sourceEncoding&gt;</span>ISO-8859-1<span class="nt">&lt;/sourceEncoding&gt;</span>
+        <span class="nt">&lt;minimumTokens&gt;</span>30<span class="nt">&lt;/minimumTokens&gt;</span>
+        <span class="nt">&lt;targetJdk&gt;</span>1.4<span class="nt">&lt;/targetJdk&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
+<span class="nt">&lt;/plugin&gt;</span>
 </code></pre></div></div>
 
 <h4 id="upgrading-the-pmd-version-at-runtime">Upgrading the PMD version at runtime</h4>
@@ -1705,7 +1705,7 @@ the previous paragraph. Add the following property to your project now:</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> March 2020<br/> Site last generated: Feb 19, 2021 <br />
+<span>Page last updated:</span> March 2020<br/> Site last generated: Feb 22, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -2024,14 +2024,14 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 
 <p>Andy Glover wrote an Ant task for CPD; here’s how to use it:</p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">"cpd"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;taskdef</span> <span class="na">name=</span><span class="s">"cpd"</span> <span class="na">classname=</span><span class="s">"net.sourceforge.pmd.cpd.CPDTask"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;cpd</span> <span class="na">minimumTokenCount=</span><span class="s">"100"</span> <span class="na">outputFile=</span><span class="s">"/home/tom/cpd.txt"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;fileset</span> <span class="na">dir=</span><span class="s">"/home/tom/tmp/ant"</span><span class="nt">&gt;</span>
-                <span class="nt">&lt;include</span> <span class="na">name=</span><span class="s">"**/*.java"</span><span class="nt">/&gt;</span>
-            <span class="nt">&lt;/fileset&gt;</span>
-        <span class="nt">&lt;/cpd&gt;</span>
-    <span class="nt">&lt;/target&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">"cpd"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;taskdef</span> <span class="na">name=</span><span class="s">"cpd"</span> <span class="na">classname=</span><span class="s">"net.sourceforge.pmd.cpd.CPDTask"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;cpd</span> <span class="na">minimumTokenCount=</span><span class="s">"100"</span> <span class="na">outputFile=</span><span class="s">"/home/tom/cpd.txt"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;fileset</span> <span class="na">dir=</span><span class="s">"/home/tom/tmp/ant"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;include</span> <span class="na">name=</span><span class="s">"**/*.java"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/fileset&gt;</span>
+    <span class="nt">&lt;/cpd&gt;</span>
+<span class="nt">&lt;/target&gt;</span>
 </code></pre></div></div>
 
 <!--  TODO avoid duplicating the descriptions! -->
@@ -2353,7 +2353,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 <p>Also, you can get an HTML report from CPD by using the XSLT script in pmd/etc/xslt/cpdhtml.xslt.  Just run
 the CPD task as usual and right after it invoke the Ant XSLT script like this:</p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;xslt</span> <span class="na">in=</span><span class="s">"cpd.xml"</span> <span class="na">style=</span><span class="s">"etc/xslt/cpdhtml.xslt"</span> <span class="na">out=</span><span class="s">"cpd.html"</span> <span class="nt">/&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;xslt</span> <span class="na">in=</span><span class="s">"cpd.xml"</span> <span class="na">style=</span><span class="s">"etc/xslt/cpdhtml.xslt"</span> <span class="na">out=</span><span class="s">"cpd.html"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="gui">GUI</h2>
@@ -2379,23 +2379,23 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:</
 <p>Arbitrary blocks of code can be ignored through comments on <strong>Java</strong>, <strong>C/C++</strong>, <strong>Dart</strong>, <strong>Go</strong>, <strong>Javascript</strong>,
 <strong>Kotlin</strong>, <strong>Lua</strong>, <strong>Matlab</strong>, <strong>Objective-C</strong>, <strong>PL/SQL</strong>, <strong>Python</strong>, <strong>Scala</strong>, <strong>Swift</strong> and <strong>C#</strong> by including the keywords <code class="language-plaintext highlighter-rouge">CPD-OFF</code> and <code class="language-plaintext highlighter-rouge">CPD-ON</code>.</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">someParameterizedFactoryMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
-        <span class="c1">// some unignored code</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">Object</span> <span class="nf">someParameterizedFactoryMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+    <span class="c1">// some unignored code</span>
 
-        <span class="c1">// tell cpd to start ignoring code - CPD-OFF</span>
+    <span class="c1">// tell cpd to start ignoring code - CPD-OFF</span>
 
-        <span class="c1">// mission critical code, manually loop unroll</span>
-        <span class="n">goDoSomethingAwesome</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="o">);</span>
-        <span class="n">goDoSomethingAwesome</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="o">);</span>
-        <span class="n">goDoSomethingAwesome</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="o">);</span>
-        <span class="n">goDoSomethingAwesome</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="o">);</span>
-        <span class="n">goDoSomethingAwesome</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="o">);</span>
-        <span class="n">goDoSomethingAwesome</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="o">);</span>
+    <span class="c1">// mission critical code, manually loop unroll</span>
+    <span class="n">goDoSomethingAwesome</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="o">);</span>
+    <span class="n">goDoSomethingAwesome</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="o">);</span>
+    <span class="n">goDoSomethingAwesome</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="o">);</span>
+    <span class="n">goDoSomethingAwesome</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="o">);</span>
+    <span class="n">goDoSomethingAwesome</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="o">);</span>
+    <span class="n">goDoSomethingAwesome</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="o">);</span>
 
-        <span class="c1">// resume CPD analysis - CPD-ON</span>
+    <span class="c1">// resume CPD analysis - CPD-ON</span>
 
-        <span class="c1">// further code will *not* be ignored</span>
-    <span class="o">}</span>
+    <span class="c1">// further code will *not* be ignored</span>
+<span class="o">}</span>
 </code></pre></div></div>
 
 <p>Additionally, <strong>Java</strong> allows to toggle suppression by adding the annotations
@@ -2405,15 +2405,15 @@ all code within will be ignored by CPD.</p>
 <p>This approach however, is limited to the locations were <code class="language-plaintext highlighter-rouge">@SuppressWarnings</code> is accepted.
 It’s legacy and the new comment’s based approach should be favored.</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">//enable suppression</span>
-    <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">"CPD-START"</span><span class="o">)</span>
-    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">someParameterizedFactoryMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
-        <span class="c1">// any code here will be ignored for the duplication detection</span>
-    <span class="o">}</span>
-    <span class="c1">//disable suppression</span>
-    <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="err">"</span><span class="no">CPD</span><span class="o">-</span><span class="no">END</span><span class="o">)</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">nextMethod</span><span class="o">()</span> <span class="o">{</span>
-    <span class="o">}</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//enable suppression</span>
+<span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">"CPD-START"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="nc">Object</span> <span class="nf">someParameterizedFactoryMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+    <span class="c1">// any code here will be ignored for the duplication detection</span>
+<span class="o">}</span>
+<span class="c1">//disable suppression</span>
+<span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="err">"</span><span class="no">CPD</span><span class="o">-</span><span class="no">END</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">nextMethod</span><span class="o">()</span> <span class="o">{</span>
+<span class="o">}</span>
 </code></pre></div></div>
 
 <p>Other languages currently have no support to suppress CPD reports. In the future,
@@ -2462,7 +2462,7 @@ the comment based approach will be extended to those of them that can support it
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 19, 2021 <br />
+ Site last generated: Feb 22, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
