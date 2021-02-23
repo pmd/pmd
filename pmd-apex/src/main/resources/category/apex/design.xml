@@ -36,6 +36,44 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidUnusedMethod"
+          since="7.0.0"
+          message="Unused methods make understanding code harder"
+          class="net.sourceforge.pmd.lang.apex.rule.design.AvoidUnusedMethodRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#avoidunusedmethod">
+        <description>
+Avoid having unused methods since they make understanding and maintaining code harder.
+
+This rule finds not only unused private methods, but public methods as well.
+
+[ApexLink](https://github.com/nawforce/ApexLink) is used to make this possible and this needs
+additional configuration. The environment variable `PMD_APEX_ROOTDIRECTORY` needs to be set prior to executing
+PMD. With this variable the root directory of the Salesforce metadata, where `sfdx-project.json` resides, is
+specified. ApexLink can then load all the classes in the project and figure out, whether a method is used or not.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Triangle {
+    private Double side1;
+    private Double side2;
+    private Double side3;
+
+    public Triangle(Double side1, Double side2, Double side3) {
+        this.side1 = side1;
+        this.side2 = side2;
+        this.side3 = side3;
+    }
+
+    // Method is not invoked so can be removed
+    public Double area() {
+        return (side1 + side2 + side3)/2;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="CyclomaticComplexity"
           language="apex"
           message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
@@ -407,37 +445,6 @@ public class Person {
     // this is more manageable
     Date birthDate;
     BodyMeasurements measurements;
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="AvoidUnusedMethod"
-          since="7.0.0"
-          message="Unused methods make understanding code harder"
-          class="net.sourceforge.pmd.lang.apex.rule.design.AvoidUnusedMethodRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#avoidunusedmethod">
-        <description>
-            Avoid having unused methods since they make understanding and maintaining code harder.
-        </description>
-        <priority>3</priority>
-        <example>
-            <![CDATA[
-public class Triangle {
-    private Double side1;
-    private Double side2;
-    private Double side3;
-
-    public Triangle(Double side1, Double side2, Double side3) {
-        this.side1 = side1;
-        this.side2 = side2;
-        this.side3 = side3;
-    }
-
-    // Method is not invoked so can be removed
-    public Double area() {
-        return (side1 + side2 + side3)/2;
-    }
 }
 ]]>
         </example>
