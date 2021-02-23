@@ -72,6 +72,10 @@ The language module registers only one version (as before), now correctly with v
 Since there is only one version available for JavaScript there is actually no need to selected a specific version.
 The default version is always ES6.
 
+#### New Rules
+
+*   The Apex rule {% rule "apex/design/AvoidUnusedMethod" %} finds unused methods in your code.
+
 #### Changed Rules
 
 ##### Java
@@ -116,6 +120,8 @@ The following previously deprecated rules have been finally removed:
 
 ### Fixed Issues
 
+*   apex-design
+    *   [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
 *   core
     *   [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
 
@@ -182,6 +188,7 @@ The following previously deprecated rules have been finally removed:
 *   [#1774](https://github.com/pmd/pmd/pull/1774): \[core] Antlr visitor rules - [Lucas Soncini](https://github.com/lsoncini)
 *   [#1877](https://github.com/pmd/pmd/pull/1877): \[swift] Feature/swift rules - [Matias Fraga](https://github.com/matifraga)
 *   [#1882](https://github.com/pmd/pmd/pull/1882): \[swift] UnavailableFunction Swift rule - [Tomás de Lucca](https://github.com/tomidelucca)
+*   [#2830](https://github.com/pmd/pmd/pull/2830): \[apex] Apexlink POC - [Kevin Jones](https://github.com/nawforce)
 
 {% endtocmaker %}
 
