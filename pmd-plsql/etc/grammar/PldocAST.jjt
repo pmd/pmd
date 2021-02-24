@@ -301,7 +301,7 @@ ASTDDLCommand DDLCommand() :
 
 ASTSqlPlusCommand SqlPlusCommand() :
 {
-  StringBuffer sb = new StringBuffer();
+  StringBuilder sb = new StringBuilder();
 }
 {
   (
