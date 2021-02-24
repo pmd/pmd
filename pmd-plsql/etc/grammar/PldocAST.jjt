@@ -343,15 +343,6 @@ ASTSqlPlusCommand SqlPlusCommand() :
   { jjtThis.setImage(sb.toString()) ; return jjtThis ; }
 }
 
-/*
-SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced  in PL/SQL
-void attachLibrary() :
-{}
-{
-	<".attach"> <IDENTIFIER> <IDENTIFIER> <END> <IDENTIFIER>
-}
-*/
-
 /**
  * All global definitions of triggers, functions and procedures are evaluated here.
  * Every occurrence goes under a new PACKAGE-Node in the XML document.
@@ -5122,22 +5113,17 @@ TOKEN :
 	//( <LETTER> ( "#" ) )
   |
   (
-    "&"
-    (
-      ( <LETTER> | "_" ) ( <LETTER> | <DIGIT> | "$" | "_" | "#" )+
-      (".")?  
-    )?
+    <LEXICAL_PARAMETER> ( <LETTER> | <DIGIT> | "$" | "_" | "#" )*
   )
 	|
 	( (<LETTER> | "$" ) ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* )
 	|
-//SRT	( "\"" (<_CHARACTER_WO_ASTERISK>)* "\"" )
 	( "\""  <LETTER> ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* "\"" )
 >
 |
 < LEXICAL_PARAMETER:
   (
-    "&"
+    ("&&" | "&")
     (
       ( <LETTER> | <DIGIT> | "$" | "_" | "#" )+
       (".")?  
