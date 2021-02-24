@@ -301,7 +301,7 @@ ASTDDLCommand DDLCommand() :
 
 ASTSqlPlusCommand SqlPlusCommand() :
 {
- StringBuilder sb = new StringBuilder() ;
+  StringBuffer sb = new StringBuffer();
 }
 {
   (
@@ -337,11 +337,10 @@ ASTSqlPlusCommand SqlPlusCommand() :
   // Attach Library
   | "." <ATTACH>
   )
-  { sb.append(token.getImage()) ; sb.append(" ...") ; }
-  Skip2NextTokenOccurrence(EOL) //Tracker Issue 1433480 skip until next EOL Special Token
-  //[";" | "-"]
+  { sb.append(token.getImage()) ; sb.append(" ") ; sb.append(Read2NextTokenOccurrence(EOL).getImage()) ;
+  }
   )
-  { jjtThis.setImage(sb.toString()) ;  return jjtThis ; }
+  { jjtThis.setImage(sb.toString()) ; return jjtThis ; }
 }
 
 /*
@@ -1128,6 +1127,28 @@ ASTRead2NextOccurrence Read2NextOccurrence(String target) :
   Token nextToken = getToken(1);
   while (!nextToken.getImage().equals(target)
 	 && nextToken.kind!=EOF
+        )
+  {
+    nextToken = getNextToken();
+    sb.append(nextToken.getImage());
+    sb.append(' ');
+    nextToken = getToken(1);
+  }
+}
+{
+	{ jjtThis.setImage(sb.toString()) ;  jjtThis.value = sb.toString(); return jjtThis ;}
+}
+
+/*
+ Read Tokens up to but not including the target token.
+*/
+ASTRead2NextTokenOccurrence Read2NextTokenOccurrence(int target) :
+{
+  StringBuilder sb = new StringBuilder();
+  Token nextToken = getToken(1);
+  while (nextToken.kind!=target
+        && (null == nextToken.specialToken || nextToken.specialToken.kind!=target ) //In case the target is a Special Token
+        && nextToken.kind!=EOF
         )
   {
     nextToken = getNextToken();
@@ -5077,12 +5098,20 @@ TOKEN :
 |
 < #_CHARACTER_WO_ASTERISK: <LETTER> | <DIGIT> | "(" | ")" | "+" | "-" | "*" | "/" | "<" | ">"
  | "=" | "!" | "~" | "^" | ";" | ":" | "." | "@" | "%" | "," | "\"" | "#"
- | "$" | "&" | "_" | "|" | "{" | "}" | "?" | "[" | "]"
+ | "$" | "_" | "|" | "{" | "}" | "?" | "[" | "]"
  | " " | "\t" >
 |
 < #SPECIAL_CHARACTERS: "á" | "Ž" | "™" | "š" | "„" | "”" | "ý" | "²" | "€" | "³" | "µ">
 |
 < #DELIMITER: "+" | "%" | "'" | "\"" | "." | "/" | "(" | ")" | ":" | "," | "*" | "=" | "<" | ">" | "@" | ";" | "-">
+|
+<ESCAPED_AMPERSAND:
+  "\\&"
+>
+|
+<BACKSLASH:
+  "\\"
+>
 |
 < IDENTIFIER:
 	( ("$" | ":" | <LETTER>) ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* ) // 2006-05-17 - Matthias Hendler - Bind variablen werden nun als Identifier akzeptiert.
@@ -5091,11 +5120,29 @@ TOKEN :
 	//( <LETTER> ( "$" ) )
 	//( <LETTER> ( "_" ) )
 	//( <LETTER> ( "#" ) )
+  |
+  (
+    "&"
+    (
+      ( <LETTER> | "_" ) ( <LETTER> | <DIGIT> | "$" | "_" | "#" )+
+      (".")?  
+    )?
+  )
 	|
 	( (<LETTER> | "$" ) ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* )
 	|
 //SRT	( "\"" (<_CHARACTER_WO_ASTERISK>)* "\"" )
 	( "\""  <LETTER> ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* "\"" )
+>
+|
+< LEXICAL_PARAMETER:
+  (
+    "&"
+    (
+      ( <LETTER> | <DIGIT> | "$" | "_" | "#" )+
+      (".")?  
+    )?
+  )
 >
 |
 < UNSIGNED_NUMERIC_LITERAL: <FLOAT_LITERAL> ( ["e","E"] (["-","+"])? <FLOAT_LITERAL> )? (["f","F","d","D"])? >
