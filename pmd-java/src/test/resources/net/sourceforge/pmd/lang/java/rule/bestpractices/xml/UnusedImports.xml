@@ -571,4 +571,14 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>NPE with static import on interface</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import static javax.swing.WindowConstants.*; //warn
+
+class NPEImport {}
+        ]]></code>
+    </test-code>
 </test-data>

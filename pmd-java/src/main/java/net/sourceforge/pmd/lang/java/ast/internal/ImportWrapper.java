@@ -58,7 +58,7 @@ public class ImportWrapper {
         try {
             Set<String> names = new HashSet<>();
             Class<?> type = node.getType();
-            while (type != Object.class) {
+            while (type != null) {
                 // consider static fields, public and non-public
                 for (Field f : type.getDeclaredFields()) {
                     if (Modifier.isStatic(f.getModifiers())) {
