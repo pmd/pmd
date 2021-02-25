@@ -40,6 +40,8 @@ Note: Support for Java 14 preview language features have been removed. The versi
 
 *   apex-documentation
     *   [#3075](https://github.com/pmd/pmd/issues/3075): \[apex] ApexDoc should support private access modifier
+*   java-bestpractices
+    *   [#3132](https://github.com/pmd/pmd/issues/3132): \[java] UnusedImports with static imports on subclasses
 *   plsql
     *   [#3106](https://github.com/pmd/pmd/issues/3106): \[plsql] ParseException while parsing EXECUTE IMMEDIATE 'drop database link ' \|\| linkname;
 
