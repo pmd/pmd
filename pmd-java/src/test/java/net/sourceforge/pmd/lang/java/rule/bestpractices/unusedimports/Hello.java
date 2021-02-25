@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
 
-class Hello {
-    private Hello() { }
+abstract class Hello {
 
     public static void sayHello() {
         //...
