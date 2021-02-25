@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
 
 public class SelectIntoStatementTest extends AbstractPLSQLParserTst {

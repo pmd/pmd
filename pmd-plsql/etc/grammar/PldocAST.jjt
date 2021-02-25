@@ -307,27 +307,53 @@ ASTSqlPlusCommand SqlPlusCommand() :
   (
   // e.g. SHOW ERRORS, GRANT EXECUTE ON ... TO ...
   // SQLPLUS commands
-  ( "@"
-  | <ACCEPT>
+  ( "@@"
+  | "@"
+  | <ACCEPT> | "ACC"
+  | "ARCHIVE LOG LIST"
+  | <ATTRIBUTE>
+  | "BREAK"
+  | "BTITLE"
+  | LOOKAHEAD({isKeyword("CLEAR")}) KEYWORD("CLEAR")
   | <COLUMN>
-  | <CONNECT>
+  | LOOKAHEAD({isKeyword("COL")}) KEYWORD("COL")
+  | LOOKAHEAD({isKeyword("COMPUTE")}) KEYWORD("COMPUTE")
+  | LOOKAHEAD({isKeyword("COMP")}) KEYWORD("COMP")
+  | <CONNECT> | "CONN"
   | <COPY>
-  | <DEFINE>
-  | <DISCONNECT>
-  | <EXECUTE>
+  | <DEFINE> | "DEF"
+  | "DESCRIBE" | "DESCR" | LOOKAHEAD({isKeyword("DESC")}) KEYWORD("DESC")
+  | <DISCONNECT> | "DISC"
+  | <EXECUTE> | "EXEC"
   | <EXIT>
-  | <HOST>
+  | <HOST> ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | "$"    ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | "!"    ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  // These characters are platform-specific, anyway...
+  | "INPUT"
+  | LOOKAHEAD({isKeyword("PASSWORD")}) KEYWORD("PASSWORD")
+  | LOOKAHEAD({isKeyword("PASSW")}) KEYWORD("PASSW")
+  | "PAUSE"
   | <PRINT>
-  | <PROMPT>
+  | <PROMPT> ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
   | <QUIT>
-  | <REMARK>
+  | LOOKAHEAD({isKeyword("RECOVER")}) KEYWORD("RECOVER")
+  | <REMARK> ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | "REM" ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
   | <SET>
-  | <SHOW>
+  | <SHOW> | "SHO"
+  | <SHUTDOWN>
   | <SPOOL>
   | <START>
+  | <STARTUP>
+  | LOOKAHEAD({isKeyword("STORE")}) KEYWORD("STORE")
+  | "TIMING"
+  | "TTITLE"
   | <UNDEFINE>
-  | <VARIABLE>
+  | <VARIABLE> | "VAR"
   | <WHENEVER>
+  // XQUERY is not yet supported, because it is not a single-line command
+  // It should be handled as unknown, skipping to the next stand-alone "/".
   // DDL that might be encountered
   | LOOKAHEAD({isKeyword("COMMENT")}) KEYWORD("COMMENT")
   | <GRANT>
@@ -5078,23 +5104,6 @@ TOKEN [IGNORE_CASE]:
  */
 TOKEN :
 {
-< #GERMAN_SPECIAL_CHARACTERS: "Ä" | "Ö" | "Ü" | "ä" | "ü" | "ö" | "ß" >
-|
-< #LETTER: ["A"-"Z"] | ["a"-"z"] | <GERMAN_SPECIAL_CHARACTERS> >
-|
-< #DIGIT: ["0"-"9"]>
-|
-< #_CHARACTER: <_CHARACTER_WO_ASTERISK> | "'" >
-|
-< #_CHARACTER_WO_ASTERISK: <LETTER> | <DIGIT> | "(" | ")" | "+" | "-" | "*" | "/" | "<" | ">"
- | "=" | "!" | "~" | "^" | ";" | ":" | "." | "@" | "%" | "," | "\"" | "#"
- | "$" | "_" | "|" | "{" | "}" | "?" | "[" | "]"
- | " " | "\t" >
-|
-< #SPECIAL_CHARACTERS: "á" | "Ž" | "™" | "š" | "„" | "”" | "ý" | "²" | "€" | "³" | "µ">
-|
-< #DELIMITER: "+" | "%" | "'" | "\"" | "." | "/" | "(" | ")" | ":" | "," | "*" | "=" | "<" | ">" | "@" | ";" | "-">
-|
 <ESCAPED_AMPERSAND:
   "\\&"
 >
@@ -5153,6 +5162,23 @@ TOKEN :
 < JAVA_INTERFACE_CLASS: ( "SQLData" | "CustomDatum" | "OraData" ) >
 //|
 //< #BOOLEAN_LITERAL: "TRUE" | "FALSE" >
+|
+< #GERMAN_SPECIAL_CHARACTERS: "Ä" | "Ö" | "Ü" | "ä" | "ü" | "ö" | "ß" >
+|
+< #LETTER: ["A"-"Z"] | ["a"-"z"] | <GERMAN_SPECIAL_CHARACTERS> >
+|
+< #DIGIT: ["0"-"9"]>
+|
+< _CHARACTER: <_CHARACTER_WO_ASTERISK> | "'" >
+|
+< #_CHARACTER_WO_ASTERISK: <LETTER> | <DIGIT> | "(" | ")" | "+" | "-" | "*" | "/" | "<" | ">"
+ | "=" | "!" | "~" | "^" | ";" | ":" | "." | "@" | "%" | "," | "\"" | "#"
+ | "$" | "_" | "|" | "{" | "}" | "?" | "[" | "]"
+ | " " | "\t" >
+|
+< SPECIAL_CHARACTERS: "á" | "Ž" | "™" | "š" | "„" | "”" | "ý" | "²" | "€" | "³" | "µ">
+|
+< DELIMITER: "+" | "%" | "'" | "\"" | "." | "/" | "(" | ")" | ":" | "," | "*" | "=" | "<" | ">" | "@" | ";" | "-">
 }
 
 /**
@@ -6863,4 +6889,3 @@ ASTJavaInterfaceClass JavaInterfaceClass(): {}
         )
 	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
 }
-
