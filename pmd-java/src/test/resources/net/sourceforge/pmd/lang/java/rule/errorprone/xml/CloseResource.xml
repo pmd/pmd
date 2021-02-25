@@ -1482,11 +1482,12 @@ public class Foo {
         <description>#2977 6.30.0 introduces new false positive in CloseResource rule</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.io.File;
+import java.io.RandomAccessFile;
 
-public class Foo {
-    void bar() {
-        File file = new File("name", "r");
+public class FalsePositive {
+
+    public void bar() throws Exception {
+        RandomAccessFile file = new RandomAccessFile("name", "r");
         try {
             boolean isHundredBytes = file.length() == 100;
         } finally {
