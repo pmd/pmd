@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.plsql.ast;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
+import net.sourceforge.pmd.lang.ast.ParseException;
+
 
 public class SelectIntoStatementTest extends AbstractPLSQLParserTst {
 
@@ -17,7 +19,12 @@ public class SelectIntoStatementTest extends AbstractPLSQLParserTst {
 
     @Test
     public void testParsingExample1() {
-        plsql.parseResource("SelectIntoStatementExample1.pls");
+        try {
+            plsql.parseResource("SelectIntoStatementExample1.pls");
+            throw new AssertionError("The last line of this example must cause a ParseException.");
+        } catch (ParseException e) {
+            // This is expected, because the last line of the example is valid only inside BEGIN END.
+        }
     }
 
     @Test
