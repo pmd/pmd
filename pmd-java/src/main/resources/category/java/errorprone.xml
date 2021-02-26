@@ -2501,7 +2501,7 @@ See the property `annotations`.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="annotations" type="List[String]" delimiter="," value="org.springframework.beans.factory.annotation.Autowired, javax.inject.Inject" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
+            <property name="annotations" type="List[String]" delimiter="," value="org.springframework.beans.factory.annotation.Autowired,javax.inject.Inject" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
             <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>

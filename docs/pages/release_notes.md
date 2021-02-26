@@ -46,6 +46,7 @@ Note: Support for Java 14 preview language features have been removed. The versi
     *   [#3132](https://github.com/pmd/pmd/issues/3132): \[java] UnusedImports with static imports on subclasses
 *   java-errorprone
     *   [#2716](https://github.com/pmd/pmd/issues/2716): \[java] CompareObjectsWithEqualsRule: False positive with Enums
+    *   [#3089](https://github.com/pmd/pmd/issues/3089): \[java] CloseResource rule throws exception on spaces in property types
     *   [#3133](https://github.com/pmd/pmd/issues/3133): \[java] InvalidLogMessageFormat FP with StringFormattedMessage and ParameterizedMessage
 *   plsql
     *   [#3106](https://github.com/pmd/pmd/issues/3106): \[plsql] ParseException while parsing EXECUTE IMMEDIATE 'drop database link ' \|\| linkname;

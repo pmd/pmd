@@ -1518,4 +1518,28 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] CloseResource rule throws exception on spaces in property types #3089</description>
+        <!-- all whitespaces for the properties are important for the test: leading, tailing, and in the middle -->
+        <rule-property name="types"> java.sql.Connection , java.sql.Statement , java.sql.ResultSet </rule-property>
+        <rule-property name="allowedResourceTypes"> java.io.ByteArrayOutputStream | java.io.ByteArrayInputStream | java.io.StringWriter | java.io.CharArrayWriter | java.util.stream.Stream | java.util.stream.IntStream | java.util.stream.LongStream | java.util.stream.DoubleStream </rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+public class Foo {
+    public void bar() {
+        InputStream in = null;
+        try {
+            in = new FileInputStream("test");
+        } catch (IOException ignored) {
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

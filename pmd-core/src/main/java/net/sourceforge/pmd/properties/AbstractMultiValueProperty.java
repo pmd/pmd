@@ -179,7 +179,7 @@ import net.sourceforge.pmd.Rule;
             return Collections.emptyList();
         }
 
-        String[] strValues = valueString.split(Pattern.quote("" + multiValueDelimiter()));
+        String[] strValues = valueString.split(Pattern.quote(String.valueOf(multiValueDelimiter())));
 
         List<V> values = new ArrayList<>(strValues.length);
         for (String strValue : strValues) {
