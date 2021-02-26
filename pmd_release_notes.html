@@ -1444,6 +1444,23 @@ compatible behavior.</li>
       <li><a href="https://github.com/pmd/pmd/issues/3075">#3075</a>: [apex] ApexDoc should support private access modifier</li>
     </ul>
   </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3101">#3101</a>: [java] NullPointerException when running PMD under JRE 11</li>
+    </ul>
+  </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3132">#3132</a>: [java] UnusedImports with static imports on subclasses</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2716">#2716</a>: [java] CompareObjectsWithEqualsRule: False positive with Enums</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3089">#3089</a>: [java] CloseResource rule throws exception on spaces in property types</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3133">#3133</a>: [java] InvalidLogMessageFormat FP with StringFormattedMessage and ParameterizedMessage</li>
+    </ul>
+  </li>
   <li>plsql
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3106">#3106</a>: [plsql] ParseException while parsing EXECUTE IMMEDIATE ‘drop database link ‘ || linkname;</li>
@@ -1453,7 +1470,7 @@ compatible behavior.</li>
 
 <h3 id="api-changes">API Changes</h3>
 
-<h4 id="pmd-java">pmd-java</h4>
+<h4 id="experimental-apis">Experimental APIs</h4>
 
 <ul>
   <li>The experimental class <code class="language-plaintext highlighter-rouge">ASTTypeTestPattern</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypePattern.html#"><code>ASTTypePattern</code></a>
@@ -1472,6 +1489,16 @@ in order to align the naming to the JLS.</li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#"><code>ASTCompactConstructorDeclaration</code></a></li>
     </ul>
   </li>
+</ul>
+
+<h4 id="internal-api">Internal API</h4>
+
+<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+
+<ul>
+  <li>The protected or public member of the Java rule <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/bestpractices/AvoidUsingHardCodedIPRule.html#"><code>AvoidUsingHardCodedIPRule</code></a>
+are deprecated and considered to be internal API. They will be removed with PMD 7.</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>

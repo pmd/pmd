@@ -3769,11 +3769,15 @@ other classes may invoke it at inappropriate times.</p>
 
 <p>Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of arguments and placeholders.</p>
 
+<p>Since 6.32.0 in addition to parameterized message placeholders (<code class="language-plaintext highlighter-rouge">{}</code>) also format specifiers of string formatted
+messages are supported (<code class="language-plaintext highlighter-rouge">%s</code>).</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/InvalidLogMessageFormatRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.InvalidLogMessageFormatRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">LOGGER</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"forget the arg {}"</span><span class="o">);</span>
+<span class="no">LOGGER</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"forget the arg %s"</span><span class="o">);</span>
 <span class="no">LOGGER</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"too many args {}"</span><span class="o">,</span> <span class="s">"arg1"</span><span class="o">,</span> <span class="s">"arg2"</span><span class="o">);</span>
 <span class="no">LOGGER</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"param {}"</span><span class="o">,</span> <span class="s">"arg1"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">IllegalStateException</span><span class="o">(</span><span class="s">"arg"</span><span class="o">));</span> <span class="c1">//The exception is shown separately, so is correct.</span>
 </code></pre></div></div>
@@ -4136,7 +4140,7 @@ See the property <code class="language-plaintext highlighter-rouge">annotations<
   <tbody>
     <tr>
       <td>annotations</td>
-      <td>org.springframework.beans.factory.annotation.Autowired ,  javax.inject.Inject</td>
+      <td>org.springframework.beans.factory.annotation.Autowired , javax.inject.Inject</td>
       <td>If a constructor is annotated with one of these annotations, then the class is ignored.</td>
       <td>yes. Delimiter is ‘,’.</td>
     </tr>
@@ -4150,7 +4154,7 @@ See the property <code class="language-plaintext highlighter-rouge">annotations<
 <p><strong>Use this rule and customize it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"annotations"</span> <span class="na">value=</span><span class="s">"org.springframework.beans.factory.annotation.Autowired, javax.inject.Inject"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"annotations"</span> <span class="na">value=</span><span class="s">"org.springframework.beans.factory.annotation.Autowired,javax.inject.Inject"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
