@@ -1224,7 +1224,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 for (AssignmentEntry killed : previous.reachingDefs) {
                     if (killed.rhs instanceof ASTVariableDeclaratorId
                         && killed.rhs.getParent() instanceof ASTVariableDeclarator
-                        && !killed.rhs.equals(rhs)) {
+                        && killed.rhs != rhs) {
                         continue;
                     }
                     // java8: computeIfAbsent

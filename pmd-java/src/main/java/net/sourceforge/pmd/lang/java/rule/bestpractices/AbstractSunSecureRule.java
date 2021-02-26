@@ -140,7 +140,7 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
      */
     protected String getFirstNameImage(Node n) {
         ASTName name = n.getFirstDescendantOfType(ASTName.class);
-        if (name != null && name.getNthParent(3).equals(n)) {
+        if (name != null && name.getNthParent(3) == n) {
             return name.getImage();
         }
         return null;

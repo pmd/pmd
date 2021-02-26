@@ -44,7 +44,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
         Node parent = node.getParent();
         int childIndex = -1;
         for (int i = 0; i < parent.getNumChildren(); i++) {
-            if (parent.getChild(i).equals(node)) {
+            if (parent.getChild(i) == node) {
                 childIndex = i;
                 break;
             }

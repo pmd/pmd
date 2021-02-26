@@ -340,7 +340,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         // if the first descendant additive expression is deeper than 4 levels,
         // it belongs to a nested method call and not anymore to the append
         // argument.
-        return add != null && n.equals(add.getNthParent(4));
+        return add != null && add.getNthParent(4) == n;
     }
 
     /**
