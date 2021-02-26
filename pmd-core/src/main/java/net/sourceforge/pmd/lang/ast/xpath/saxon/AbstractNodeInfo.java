@@ -95,7 +95,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
             return true;
         }
         if (other instanceof ElementNode) {
-            return ((ElementNode) this).getUnderlyingNode() == ((ElementNode) other).getUnderlyingNode();
+            return this.getUnderlyingNode().equals(((ElementNode) other).getUnderlyingNode());
         }
         return false;
     }
