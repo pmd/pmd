@@ -78,6 +78,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -206,7 +207,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 } else {
                     reason = joinLines("overwritten on lines ", killers);
                 }
-                if (reason == null && hasExplicitIgnorableName(entry.var.getName())) {
+                if (reason == null && JavaRuleUtil.isExplicitUnusedVarName(entry.var.getName())) {
                     // Then the variable is never used (cf UnusedVariable)
                     // We ignore those that start with "ignored", as that is standard
                     // practice for exceptions, and may be useful for resources/foreach vars
@@ -215,11 +216,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 addViolationWithMessage(ruleCtx, entry.rhs, makeMessage(entry, reason, entry.var.isField()));
             }
         }
-    }
-
-    private boolean hasExplicitIgnorableName(String name) {
-        return name.startsWith("ignored")
-            || "_".equals(name); // before java 9 it's ok
     }
 
     private boolean suppressUnusedVariableRuleOverlap(AssignmentEntry entry) {

@@ -24,7 +24,6 @@ public class Java14Test {
             JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("14")
                                              .withResourceContext(Java14Test.class, "jdkversiontests/java14/");
 
-    private final JavaParsingHelper java14p = java14.withDefaultVersion("14-preview");
     private final JavaParsingHelper java13 = java14.withDefaultVersion("13");
 
     /**
@@ -33,7 +32,6 @@ public class Java14Test {
     @Test
     public void switchExpressions() {
         parseAndCheckSwitchExpression(java14);
-        parseAndCheckSwitchExpression(java14p);
     }
 
     /**
@@ -131,7 +129,6 @@ public class Java14Test {
     @Test
     public void multipleCaseLabels() {
         multipleCaseLabels(java14);
-        multipleCaseLabels(java14p);
     }
 
     private void multipleCaseLabels(JavaParsingHelper parser) {
@@ -146,7 +143,6 @@ public class Java14Test {
     @Test
     public void switchRules() {
         switchRules(java14);
-        switchRules(java14p);
     }
 
     private void switchRules(JavaParsingHelper parser) {
@@ -173,7 +169,6 @@ public class Java14Test {
     @Test
     public void simpleSwitchExpressions() {
         simpleSwitchExpressions(java14);
-        simpleSwitchExpressions(java14p);
     }
 
     private void simpleSwitchExpressions(JavaParsingHelper parser) {

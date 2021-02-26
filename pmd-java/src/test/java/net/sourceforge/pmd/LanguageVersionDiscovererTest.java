@@ -19,15 +19,27 @@ public class LanguageVersionDiscovererTest {
 
     /**
      * Test on Java file with default options.
+     * Always the latest non-preview version will be the default version.
      */
     @Test
     public void testJavaFileUsingDefaults() {
         LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
         File javaFile = new File("/path/to/MyClass.java");
 
+        LanguageVersion latest = determineLatestNonPreviewVersion();
+
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(javaFile);
-        assertEquals("LanguageVersion must be Java 15 !",
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("15"), languageVersion);
+        assertEquals("Latest language version must be default", latest, languageVersion);
+    }
+
+    private LanguageVersion determineLatestNonPreviewVersion() {
+        LanguageVersion latest = null;
+        for (LanguageVersion lv : LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersions()) {
+            if (!lv.getName().endsWith("preview")) {
+                latest = lv;
+            }
+        }
+        return latest;
     }
 
     /**
@@ -48,7 +60,7 @@ public class LanguageVersionDiscovererTest {
     public void testLanguageVersionDiscoverer() {
         PMDConfiguration configuration = new PMDConfiguration();
         LanguageVersionDiscoverer languageVersionDiscoverer = configuration.getLanguageVersionDiscoverer();
-        assertEquals("Default Java version", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("15"),
+        assertEquals("Default Java version", determineLatestNonPreviewVersion(),
                 languageVersionDiscoverer
                         .getDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)));
         configuration

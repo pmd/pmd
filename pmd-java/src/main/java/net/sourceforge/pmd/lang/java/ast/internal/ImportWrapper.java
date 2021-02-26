@@ -58,17 +58,22 @@ public class ImportWrapper {
         try {
             Set<String> names = new HashSet<>();
             Class<?> type = node.getType();
-            // consider static fields, public and non-public
-            for (Field f : type.getDeclaredFields()) {
-                if (Modifier.isStatic(f.getModifiers())) {
-                    names.add(f.getName());
+            while (type != null) {
+                // consider static fields, public and non-public
+                for (Field f : type.getDeclaredFields()) {
+                    if (Modifier.isStatic(f.getModifiers())) {
+                        names.add(f.getName());
+                    }
                 }
-            }
-            // and methods, too
-            for (Method m : type.getDeclaredMethods()) {
-                if (Modifier.isStatic(m.getModifiers())) {
-                    names.add(m.getName());
+                // and methods, too
+                for (Method m : type.getDeclaredMethods()) {
+                    if (Modifier.isStatic(m.getModifiers())) {
+                        names.add(m.getName());
+                    }
                 }
+
+                // consider statics of super classes as well
+                type = type.getSuperclass();
             }
             return names;
         } catch (LinkageError e) {

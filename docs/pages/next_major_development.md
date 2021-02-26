@@ -125,13 +125,29 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.31.0
+
+##### Deprecated API
+
+*   {% jdoc xml::lang.xml.rule.AbstractDomXmlRule %}
+*   {% jdoc xml::lang.wsdl.rule.AbstractWsdlRule %}
+*   A few methods of {% jdoc xml::lang.xml.rule.AbstractXmlRule %}
+
+##### Experimental APIs
+
+*   The method {% jdoc !!core::lang.ast.GenericToken#getKind() %} has been added as experimental. This
+    unifies the token interface for both JavaCC and Antlr. The already existing method
+    {% jdoc !!core::cpd.token.AntlrToken#getKind() %} is therefore experimental as well. The
+    returned constant depends on the actual language and might change whenever the grammar
+    of the language is changed.
+
 #### 6.30.0
 
 ##### Deprecated API
 
 ###### Around RuleSet parsing
 
-* {% jdoc core::RuleSetFactory %} and {% jdoc core::RuleSetFactoryUtils %} have been deprecated in favor of {% jdoc core::RuleSetLoader %}. This is easier to configure, and more maintainable than the multiple overloads of `RuleSetFactoryUtils`.
+* {% jdoc core::RuleSetFactory %} and {% jdoc core::RulesetsFactoryUtils %} have been deprecated in favor of {% jdoc core::RuleSetLoader %}. This is easier to configure, and more maintainable than the multiple overloads of `RulesetsFactoryUtils`.
 * Some static creation methods have been added to {% jdoc core::RuleSet %} for simple cases, eg {% jdoc core::RuleSet#forSingleRule(core::Rule) %}. These replace some counterparts in {% jdoc core::RuleSetFactory %}
 * Since {% jdoc core::RuleSets %} is also deprecated, many APIs that require a RuleSets instance now are deprecated, and have a counterpart that expects a `List<RuleSet>`.
 * {% jdoc core::RuleSetReferenceId %}, {% jdoc core::RuleSetReference %}, {% jdoc core::RuleSetFactoryCompatibility %} are deprecated. They are most likely not relevant outside of the implementation of pmd-core.

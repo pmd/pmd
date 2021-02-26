@@ -1402,7 +1402,7 @@ public class ClassTypeResolverTest {
 
         // Number e = field.noArguments();
         assertEquals(Number.class, expressions.get(index).getType());
-        assertEquals(Number.class, getChildType(expressions.get(index), 0));
+        assertEquals(MethodPotentialApplicability.class, getChildType(expressions.get(index), 0));
         assertEquals(Number.class, getChildType(expressions.get(index++), 1));
 
         // int f = this.vararg("");
@@ -1622,6 +1622,19 @@ public class ClassTypeResolverTest {
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    @Test
+    public void testGenericArrayUnresolved() {
+        // InnerClass cannot be resolved as no compiled code is available
+        // we should not throw a NPE when trying to parse/type resolve.
+        java11.parse("import java.util.*;"
+                + "class Foo {"
+                + "  private static class InnerClass {}"
+                + "  void useInnerClass(InnerClass... classes) {"
+                + "    List<InnerClass> result = new ArrayList<>(Arrays.<InnerClass>asList(classes));"
+                + "  }"
+                + "}");
     }
 
     @Test

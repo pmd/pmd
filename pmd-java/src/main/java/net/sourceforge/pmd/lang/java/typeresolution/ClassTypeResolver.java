@@ -275,6 +275,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         // FIXME, we should discard the array depth on this node, it should only be known to ASTReferenceType (#910)
         populateType(node, typeName, node.getArrayDepth());
 
+        if (node.isAnonymousClass() && node.getTypeDefinition() == null) {
+            // eg for `new Runnable() { }`, retry with just "Runnable"
+            // instead of just "Enclosing$1"
+            populateType(node, node.getImage(), node.getArrayDepth());
+        }
+
+
         ASTTypeArguments typeArguments = node.getFirstChildOfType(ASTTypeArguments.class);
 
         if (typeArguments != null) {
@@ -435,7 +442,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                                                                 Collections.<JavaTypeDefinition>emptyList(),
                                                                 methodArgsArity, accessingClass);
 
-                previousType = getBestMethodReturnType(previousType, methods, astArgumentList);
+                JavaTypeDefinition resultType = getBestMethodReturnType(previousType, methods, astArgumentList);
+                ((ASTPrimarySuffix) astArguments.getParent()).setTypeDefinition(resultType);
+                break; // last iteration anyway
             } else { // field
                 previousType = getFieldType(previousType, dotSplitImage[i], accessingClass);
             }
@@ -587,9 +596,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
      */
     private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class<?>
             accessingClass) {
-        if (accessingClass == null) {
-            return null;
-        }
 
         for (/* empty */; scope != null; scope = scope.getParent()) {
             // search each enclosing scope one by one
@@ -603,11 +609,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                         return null;
                     }
 
-                    if (typeNode.getChild(0) instanceof ASTReferenceType) {
-                        return ((TypeNode) typeNode.getChild(0)).getTypeDefinition();
-                    } else { // primitive type
-                        return JavaTypeDefinition.forClass(typeNode.getType());
-                    }
+                    return entry.getKey().getDeclaratorId().getTypeDefinition();
                 }
             }
 
@@ -1006,22 +1008,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                 // rollup type from the child: PrimaryPrefix/PrimarySuffx -> PrimaryExpression
                 if (primaryNodeType == null || !primaryNodeType.isArrayType()) {
                     primaryNodeType = currentChild.getTypeDefinition();
-                }
-
-                // if this expression is a method call, then make sure, PrimaryPrefix has the type
-                // on which the method is executed (type of the target reference)
-                if (currentChild.getFirstChildOfType(ASTArguments.class) != null && previousChild.getFirstChildOfType(ASTName.class) != null) {
-                    // restore type of the name and search again
-                    ASTName name = previousChild.getFirstChildOfType(ASTName.class);
-                    name.setTypeDefinition(null);
-                    searchNodeNameForClass(name, name.getImage().split("\\."));
-                    if (name.getTypeDefinition() != null) {
-                        // rollup from Name -> PrimaryPrefix
-                        previousChild.setTypeDefinition(name.getTypeDefinition());
-                    } else if (name.getTypeDefinition() == null) {
-                        // if there is no better type, use the type of the expression
-                        name.setTypeDefinition(primaryNodeType);
-                    }
                 }
 
                 // maybe array access?

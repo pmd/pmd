@@ -48,7 +48,7 @@ public class ASTInstanceOfExpression extends AbstractJavaTypeNode {
     public ASTType getTypeNode() {
         JavaNode child = getChild(1);
         return child instanceof ASTType ? (ASTType) child
-                                        : ((ASTTypeTestPattern) child).getTypeNode();
+                                        : ((ASTTypePattern) child).getTypeNode();
     }
 
 }

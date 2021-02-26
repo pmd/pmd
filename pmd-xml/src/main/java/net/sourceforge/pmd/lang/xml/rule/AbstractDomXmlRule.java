@@ -25,7 +25,10 @@ import net.sourceforge.pmd.lang.xml.ast.XmlNode;
  * This is a base class for XML Java bases rules that which to visit the nodes
  * using the DOM. Subclasses should override the DOM appropriate method and can
  * call <code>super</code> to visit children.
+ *
+ * @deprecated Not very useful, use XPath rules.
  */
+@Deprecated
 public class AbstractDomXmlRule extends AbstractXmlRule {
 
     @Override

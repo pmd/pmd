@@ -209,8 +209,11 @@ import java.util.logging.Logger;
             }
         } else if (type instanceof GenericArrayType) {
             JavaTypeDefinition component = resolveTypeDefinition(((GenericArrayType) type).getGenericComponentType(), method, methodTypeArgs);
-            // TODO: retain the generic types of the array component...
-            return forClass(Array.newInstance(component.getType(), 0).getClass());
+            // only if we could determine the actual type
+            if (component != null) {
+                // TODO: retain the generic types of the array component...
+                return forClass(Array.newInstance(component.getType(), 0).getClass());
+            }
         }
 
         // TODO : Shall we throw here?

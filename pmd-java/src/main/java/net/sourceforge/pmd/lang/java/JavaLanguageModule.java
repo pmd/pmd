@@ -28,9 +28,10 @@ public class JavaLanguageModule extends BaseLanguageModule {
         addVersion("12", new JavaLanguageHandler(12));
         addVersion("13", new JavaLanguageHandler(13));
         addVersion("14", new JavaLanguageHandler(14));
-        addVersion("14-preview", new JavaLanguageHandler(14, true));
-        addDefaultVersion("15", new JavaLanguageHandler(15)); // 15 is the default
+        addVersion("15", new JavaLanguageHandler(15));
         addVersion("15-preview", new JavaLanguageHandler(15, true));
+        addDefaultVersion("16", new JavaLanguageHandler(16)); // 16 is the default
+        addVersion("16-preview", new JavaLanguageHandler(16, true));
     }
 
 }

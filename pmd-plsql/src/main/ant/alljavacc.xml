@@ -28,15 +28,23 @@
     <target name="plsqljjtree" description="Generates the PlSQL parser and AST source files" unless="javaccBuildNotRequired">
         <delete dir="${target}/net/sourceforge/pmd/lang/plsql/ast" />
         <mkdir dir="${target}/net/sourceforge/pmd/lang/plsql/ast" />
-        <jjtree target="etc/grammar/PldocAST.jjt"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/plsql/ast"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="jjtree"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-OUTPUT_DIRECTORY:${target}/net/sourceforge/pmd/lang/plsql/ast" />
+            <arg value="etc/grammar/PldocAST.jjt" />
+        </java>
         <!-- Ensure generated using CharStream interface -->
-        <javacc static="false"
-                usercharstream="false"
-                target="${target}/net/sourceforge/pmd/lang/plsql/ast/PldocAST.jj"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/plsql/ast"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="javacc"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-STATIC:false" />
+            <arg value="-USER_CHAR_STREAM:false" />
+            <arg value="-OUTPUT_DIRECTORY:${target}/net/sourceforge/pmd/lang/plsql/ast" />
+            <arg value="${target}/net/sourceforge/pmd/lang/plsql/ast/PldocAST.jj" />
+        </java>
 
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/SimpleNode.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/Node.java" />
@@ -139,6 +147,11 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
   @Override
   public int getEndColumn() {
     return endColumn;
+  }
+
+  @Override
+  public int getKind() {
+    return kind;
   }
 
 ]]></replacevalue>

@@ -13,10 +13,10 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
@@ -62,10 +62,9 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        Node nameNode = node.getTypeNameNode();
-        if (nameNode == null || nameNode instanceof ASTPrimitiveType
-                || node.getNameDeclaration() == null
-                || !appliesToClassName(node.getNameDeclaration().getTypeImage())) {
+        VariableNameDeclaration varDecl = node.getNameDeclaration();
+        if (varDecl == null || varDecl.getType() == null
+                || !appliesToClassName(varDecl.getType().getName())) {
             return data;
         }
 

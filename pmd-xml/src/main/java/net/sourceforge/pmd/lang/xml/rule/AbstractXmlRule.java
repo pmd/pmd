@@ -70,6 +70,8 @@ public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
         visitAll(nodes, ctx);
     }
 
+    /** @deprecated Not useful, will be removed in PMD 7. */
+    @Deprecated
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
             if (element instanceof XmlNode) {
@@ -78,6 +80,8 @@ public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
         }
     }
 
+    /** @deprecated Not useful, will be removed in PMD 7. */
+    @Deprecated
     protected void visit(XmlNode node, RuleContext ctx) {
         final int numChildren = node.getNumChildren();
         for (int i = 0; i < numChildren; i++) {

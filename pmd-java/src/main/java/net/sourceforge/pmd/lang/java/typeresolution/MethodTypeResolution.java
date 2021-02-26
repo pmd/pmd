@@ -565,7 +565,7 @@ public final class MethodTypeResolution {
      */
     public static boolean isMemberVisibleFromClass(Class<?> classWithMember, int modifiers, Class<?> accessingClass) {
         if (accessingClass == null) {
-            return false;
+            return true;
         }
 
         // public members
@@ -728,7 +728,13 @@ public final class MethodTypeResolution {
         List<JavaTypeDefinition> result = new ArrayList<>();
 
         for (int childIndex = 0; childIndex < typeArguments.getNumChildren(); ++childIndex) {
-            result.add(((TypeNode) typeArguments.getChild(childIndex)).getTypeDefinition());
+            JavaTypeDefinition typeDefinition = ((TypeNode) typeArguments.getChild(childIndex)).getTypeDefinition();
+            // avoid returning null. Null means, we couldn't resolve the explicit type of the type argument
+            // probably because of incomplete auxclasspath. In that case, we just use Object as the type.
+            if (typeDefinition == null) {
+                typeDefinition = JavaTypeDefinition.forClass(Object.class);
+            }
+            result.add(typeDefinition);
         }
 
         return result;

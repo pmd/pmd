@@ -10,7 +10,10 @@ import net.sourceforge.pmd.lang.xml.rule.AbstractXmlRule;
 
 /**
  * Created by bernardo-macedo on 24.06.15.
+ *
+ * @deprecated Extend {@link AbstractXmlRule}
  */
+@Deprecated
 public class AbstractWsdlRule extends AbstractXmlRule {
 
     public AbstractWsdlRule() {

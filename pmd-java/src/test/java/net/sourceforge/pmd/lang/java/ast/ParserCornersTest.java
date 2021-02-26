@@ -307,4 +307,9 @@ public class ParserCornersTest {
 
     private static final String CAST_LOOKAHEAD_PROBLEM =
         "public class BadClass {\n  public Class foo() {\n    return (byte[].class);\n  }\n}";
+
+    @Test
+    public void testGithubBug3101UnresolvedTypeParams() {
+        java.parseResource("GitHubBug3101.java");
+    }
 }

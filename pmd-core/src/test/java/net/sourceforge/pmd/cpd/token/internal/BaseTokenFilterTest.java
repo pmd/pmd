@@ -63,6 +63,11 @@ public class BaseTokenFilterTest {
         public int getEndColumn() {
             return 0;
         }
+
+        @Override
+        public int getKind() {
+            return 0;
+        }
     }
 
     class StringTokenManager implements TokenManager {

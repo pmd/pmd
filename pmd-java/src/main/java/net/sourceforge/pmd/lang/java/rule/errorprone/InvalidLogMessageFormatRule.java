@@ -12,11 +12,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
@@ -34,21 +35,30 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class InvalidLogMessageFormatRule extends AbstractJavaRule {
+
+    /**
+     * Finds placeholder for ParameterizedMessages and format specifiers
+     * for StringFormattedMessages.
+     */
+    private static final Pattern PLACEHOLDER_AND_FORMAT_SPECIFIER = 
+            Pattern.compile("(\\{\\})|(%(?:\\d\\$)?(?:\\w+)?(?:\\d+)?(?:\\.\\d+)?\\w)");
+
     private static final Map<String, Set<String>> LOGGERS;
 
     static {
         Map<String, Set<String>> loggersMap = new HashMap<>();
 
         loggersMap.put("org.slf4j.Logger", Collections
-                .unmodifiableSet(new HashSet<String>(Arrays.asList("trace", "debug", "info", "warn", "error"))));
+                .unmodifiableSet(new HashSet<>(Arrays.asList("trace", "debug", "info", "warn", "error"))));
         loggersMap.put("org.apache.logging.log4j.Logger", Collections
-                .unmodifiableSet(new HashSet<String>(Arrays.asList("trace", "debug", "info", "warn", "error", "fatal", "all"))));
+                .unmodifiableSet(new HashSet<>(Arrays.asList("trace", "debug", "info", "warn", "error", "fatal", "all"))));
 
         LOGGERS = loggersMap;
     }
@@ -114,10 +124,20 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
             removeThrowableParam(argumentList);
         }
 
-        if (argumentList.size() < expectedArguments) {
+        int providedArguments = argumentList.size();
+
+        // last argument could be an array with parameters
+        if (argumentList.size() == 1 && TypeTestUtil.isA("java.lang.Object[]", argumentList.get(0))) {
+            ASTArrayInitializer arrayInitializer = argumentList.get(0).getFirstDescendantOfType(ASTArrayInitializer.class);
+            if (arrayInitializer != null) {
+                providedArguments = arrayInitializer.getNumChildren();
+            }
+        }
+
+        if (providedArguments < expectedArguments) {
             addViolationWithMessage(data, node,
                     "Missing arguments," + getExpectedMessage(argumentList, expectedArguments));
-        } else if (argumentList.size() > expectedArguments) {
+        } else if (providedArguments > expectedArguments) {
             addViolationWithMessage(data, node,
                     "Too many arguments," + getExpectedMessage(argumentList, expectedArguments));
         }
@@ -131,7 +151,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
         return TypeTestUtil.isA(Throwable.class, last.getFirstDescendantOfType(ASTClassOrInterfaceType.class));
     }
 
-    private boolean hasTypeThrowable(ASTPrimaryExpression last) {
+    private boolean hasTypeThrowable(TypeNode last) {
         // if the type could be determined already
         return last.getType() != null && TypeTestUtil.isA(Throwable.class, last);
     }
@@ -159,9 +179,10 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
             return;
         }
         int lastIndex = params.size() - 1;
-        ASTPrimaryExpression last = params.get(lastIndex).getFirstDescendantOfType(ASTPrimaryExpression.class);
+        ASTExpression lastExpression = params.get(lastIndex);
+        ASTPrimaryExpression last = lastExpression.getFirstDescendantOfType(ASTPrimaryExpression.class);
 
-        if (isNewThrowable(last) || hasTypeThrowable(last) || isReferencingThrowable(last) || isLambdaParameter(last)) {
+        if (isNewThrowable(last) || hasTypeThrowable(lastExpression) || isReferencingThrowable(last) || isLambdaParameter(last)) {
             params.remove(lastIndex);
         }
     }
@@ -250,7 +271,13 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
         // together...
         int result = 0;
         for (ASTLiteral stringLiteral : literals) {
-            result += StringUtils.countMatches(stringLiteral.getImage(), "{}");
+            Matcher matcher = PLACEHOLDER_AND_FORMAT_SPECIFIER.matcher(stringLiteral.getImage());
+            while (matcher.find()) {
+                String format = matcher.group();
+                if (!"%%".equals(format) && !"%n".equals(format)) {
+                    result++;
+                }
+            }
         }
         return result;
     }
