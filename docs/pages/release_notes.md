@@ -49,7 +49,7 @@ Note: Support for Java 14 preview language features have been removed. The versi
 
 ### API Changes
 
-#### pmd-java
+#### Experimental APIs
 
 *   The experimental class `ASTTypeTestPattern` has been renamed to {% jdoc java::lang.java.ast.ASTTypePattern %}
     in order to align the naming to the JLS.
@@ -64,6 +64,14 @@ Note: Support for Java 14 preview language features have been removed. The versi
     *   {% jdoc java::lang.java.ast.ASTRecordComponent %}
     *   {% jdoc java::lang.java.ast.ASTRecordBody %}
     *   {% jdoc java::lang.java.ast.ASTCompactConstructorDeclaration %}
+
+#### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   The protected or public member of the Java rule {% jdoc java::lang.java.rule.bestpractices.AvoidUsingHardCodedIPRule %}
+    are deprecated and considered to be internal API. They will be removed with PMD 7.
 
 ### External Contributions
 

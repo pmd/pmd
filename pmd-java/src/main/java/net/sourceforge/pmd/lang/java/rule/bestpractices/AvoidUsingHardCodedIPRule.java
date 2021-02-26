@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -24,8 +25,16 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 
     // why is everything public?
 
+    @Deprecated
+    @InternalApi
     public static final String IPV4 = "IPv4";
+
+    @Deprecated
+    @InternalApi
     public static final String IPV6 = "IPv6";
+
+    @Deprecated
+    @InternalApi
     public static final String IPV4_MAPPED_IPV6 = "IPv4 mapped IPv6";
 
     private static final Map<String, String> ADDRESSES_TO_CHECK;
@@ -45,17 +54,34 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
                            .defaultValue(ADDRESSES_TO_CHECK.keySet()).build();
 
     // Provides 4 capture groups that can be used for additional validation
+    @Deprecated
+    @InternalApi
     protected static final String IPV4_REGEXP = "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})";
 
     // Uses IPv4 pattern, but changes the groups to be non-capture
+    @Deprecated
+    @InternalApi
     protected static final String IPV6_REGEXP = "(?:(?:[0-9a-fA-F]{1,4})?\\:)+(?:[0-9a-fA-F]{1,4}|"
             + IPV4_REGEXP.replace("(", "(?:") + ")?";
 
+    @Deprecated
+    @InternalApi
     protected static final Pattern IPV4_PATTERN = Pattern.compile("^" + IPV4_REGEXP + "$");
+
+    @Deprecated
+    @InternalApi
     protected static final Pattern IPV6_PATTERN = Pattern.compile("^" + IPV6_REGEXP + "$");
 
+    @Deprecated
+    @InternalApi
     protected boolean checkIPv4;
+
+    @Deprecated
+    @InternalApi
     protected boolean checkIPv6;
+
+    @Deprecated
+    @InternalApi
     protected boolean checkIPv4MappedIPv6;
 
     public AvoidUsingHardCodedIPRule() {
@@ -103,14 +129,20 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
         return data;
     }
 
+    @Deprecated
+    @InternalApi
     protected boolean isLatinDigit(char c) {
         return '0' <= c && c <= '9';
     }
 
+    @Deprecated
+    @InternalApi
     protected boolean isHexCharacter(char c) {
         return isLatinDigit(c) || 'A' <= c && c <= 'F' || 'a' <= c && c <= 'f';
     }
 
+    @Deprecated
+    @InternalApi
     protected boolean isIPv4(final char firstChar, final String s) {
         // Quick check before using Regular Expression
         // 1) At least 7 characters
@@ -135,6 +167,8 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
         }
     }
 
+    @Deprecated
+    @InternalApi
     protected boolean isIPv6(final char firstChar, String s, final boolean checkIPv6,
             final boolean checkIPv4MappedIPv6) {
         // Quick check before using Regular Expression
@@ -216,6 +250,8 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
         }
     }
 
+    @Deprecated
+    @InternalApi
     public boolean hasChosenAddressTypes() {
         return getProperty(CHECK_ADDRESS_TYPES_DESCRIPTOR).size() > 0;
     }
