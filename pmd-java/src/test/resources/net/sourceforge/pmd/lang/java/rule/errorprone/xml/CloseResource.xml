@@ -1483,13 +1483,17 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.RandomAccessFile;
+import java.io.IOException;
 
 public class FalsePositive {
 
     public void bar() throws Exception {
-        RandomAccessFile file = new RandomAccessFile("name", "r");
+        RandomAccessFile file = null;
         try {
+            file = new RandomAccessFile("name", "r");
             boolean isHundredBytes = file.length() == 100;
+        } catch (IOException e) {
+            // no-op
         } finally {
             file.close();
         }
