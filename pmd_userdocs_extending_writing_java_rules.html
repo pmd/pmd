@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.32.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.32.0</li>
     
     
     
@@ -1425,9 +1425,9 @@ very similar for other languages.</p>
 
 <p>To write a rule in Java you’ll have to:</p>
 <ol>
-  <li>write a Java class that implements the interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.32.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#"><code>Rule</code></a>. Each
+  <li>write a Java class that implements the interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.32.0/net/sourceforge/pmd/Rule.html#"><code>Rule</code></a>. Each
 language implementation provides a base rule class to ease your pain,
-e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/AbstractJavaRule.html#"><code>AbstractJavaRule</code></a>.</li>
+e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0/net/sourceforge/pmd/lang/java/rule/AbstractJavaRule.html#"><code>AbstractJavaRule</code></a>.</li>
   <li>compile this class, linking it to PMD APIs (eg using PMD as a maven dependency)</li>
   <li>bundle this into a JAR and add it to the execution classpath of PMD</li>
   <li>declare the rule in your ruleset XML</li>
@@ -1455,7 +1455,7 @@ by default just visits the children.</p>
 <p>Generally, a rule wants to check for only some node types. In our XPath example
 in <a href="pmd_userdocs_extending_your_first_rule.html">Your First Rule</a>,
 we wanted to check for some <code class="language-plaintext highlighter-rouge">VariableDeclaratorId</code> nodes. That’s the XPath name,
-but in Java, you’ll get access to the <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a>
+but in Java, you’ll get access to the <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a>
 full API.</p>
 
 <p>If you want to check for some specific node types, you can override the
@@ -1503,7 +1503,7 @@ speed-up your rule by using the <strong>rulechain</strong>.</p>
 <p>That mechanism doesn’t recurse on all the tree, instead, your rule will only be
 passed the nodes it is interested in. To use the rulechain correctly:</p>
 <ul>
-  <li>Your rule must register those node types by calling <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.32.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#addRuleChainVisit(java.lang.Class)"><code>addRuleChainVisit</code></a>
+  <li>Your rule must register those node types by calling <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.32.0/net/sourceforge/pmd/Rule.html#addRuleChainVisit(java.lang.Class)"><code>addRuleChainVisit</code></a>
 in its constructor.</li>
   <li>Your visit methods <strong>must not recurse!</strong> In effect, you should call never
 call <code class="language-plaintext highlighter-rouge">super.visit</code> in the methods.</li>
@@ -1520,7 +1520,7 @@ by multiple threads.</p>
 <p>However, for performance reasons, the rule instances are used for multiple files.
 This means, that the constructor of the rule is only executed once (per thread)
 and the rule instance is reused. If you rely on a proper initialization of instance
-properties, you can do the initialization e.g. in the visit-method of the <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#"><code>ASTCompilationUnit</code></a>
+properties, you can do the initialization e.g. in the visit-method of the <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.32.0/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#"><code>ASTCompilationUnit</code></a>
 node - which is visited first and only once per file. However, this
 solution would only work for rules written for the Java language. A language
 independent way is to override the method <code class="language-plaintext highlighter-rouge">start</code> of the rule.
@@ -1555,11 +1555,11 @@ a different set of files to analyse. Then, for each such file, for each
 rule copy:</p>
 
 <ol>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.32.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#start(net.sourceforge.pmd.RuleContext)"><code>start</code></a> is called once, before parsing</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.32.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#apply(java.util.List,net.sourceforge.pmd.RuleContext)"><code>apply</code></a> is called with the root
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.32.0/net/sourceforge/pmd/Rule.html#start(net.sourceforge.pmd.RuleContext)"><code>start</code></a> is called once, before parsing</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.32.0/net/sourceforge/pmd/Rule.html#apply(java.util.List,net.sourceforge.pmd.RuleContext)"><code>apply</code></a> is called with the root
 of the AST. That method performs the AST traversal that ultimately calls visit methods.
 It’s not called for RuleChain rules.</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.32.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#end(net.sourceforge.pmd.RuleContext)"><code>end</code></a> is called when the rule is done processing
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.32.0/net/sourceforge/pmd/Rule.html#end(net.sourceforge.pmd.RuleContext)"><code>end</code></a> is called when the rule is done processing
 the file</li>
 </ol>
 
@@ -1590,7 +1590,7 @@ the file</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Feb 26, 2021 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Feb 27, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
