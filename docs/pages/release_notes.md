@@ -83,5 +83,10 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   [#3107](https://github.com/pmd/pmd/pull/3107): \[plsql] Fix ParseException for EXECUTE IMMEDIATE str1\|\|str2; - [hvbtup](https://github.com/hvbtup)
 *   [#3125](https://github.com/pmd/pmd/pull/3125): \[doc] Fix sample code indentation in documentation - [Artur Dryomov](https://github.com/arturdryomov)
 
+### Stats
+* 43 commits
+* 21 closed tickets & PRs
+* Days since last release: 27
+
 {% endtocmaker %}
 
