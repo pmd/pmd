@@ -98,6 +98,8 @@ public class MatchCollector {
     }
 
     private boolean matchEnded(TokenEntry token1, TokenEntry token2) {
-        return token1.getIdentifier() != token2.getIdentifier() || token1 == TokenEntry.EOF || token2 == TokenEntry.EOF;
+        return token1.getIdentifier() != token2.getIdentifier()
+                || TokenEntry.EOF.equals(token1)
+                || TokenEntry.EOF.equals(token2);
     }
 }
