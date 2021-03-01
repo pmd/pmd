@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-errorprone
+    *   [#2977](https://github.com/pmd/pmd/issues/2977): \[java] CloseResource: false positive with reassignment detection
+
 ### API Changes
 
 ### External Contributions
