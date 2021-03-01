@@ -188,11 +188,11 @@ The metrics framework has been made simpler and more general.
 
   For that reason, keeping around a hard distinction between "class metrics" and "operation metrics" is not useful. So in the Java framework for example, we removed the interfaces `JavaClassMetric`, `JavaOperationMetric`,  abstract classes for those, `JavaClassMetricKey`, and `JavaOperationMetricKey`. Metric constants are now all inside the `JavaMetrics` utility class. The same was done in the Apex framework.
 
-  We don't really need abstract classes for metrics now. So `AbstractMetric` is also removed from core. There is a factory method on the `Metric` interface to create a metric easily.
+  We don't really need abstract classes for metrics now. So `AbstractMetric` is also removed from pmd-core. There is a factory method on the `Metric` interface to create a metric easily.
 
-* This makes it so, that `LanguageMetricsProvider` does not need type parameters. It can just return a `Set<Metric<?, ?>>` to list available metrics.
+* This makes it so, that {% jdoc core::lang.metrics.LanguageMetricsProvider %} does not need type parameters. It can just return a `Set<Metric<?, ?>>` to list available metrics.
 
-* `Signature`s, their implementations, and the interface `SignedNode` have been deprecated until PMD 7. They don't carry their weight, and node streams allow replacing their usages very easily.
+* {% jdoc_old core::lang.metrics.Signature %}s, their implementations, and the interface `SignedNode` have been removed. Node streams allow replacing their usages very easily.
 
 ### External Contributions
 
