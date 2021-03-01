@@ -1393,7 +1393,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         boolean isUnaryReassign() {
             return rhs instanceof ASTUnaryExpression
-                && ReachingDefsVisitor.getVarIfUnaryAssignment((ASTUnaryExpression) rhs) == var;
+                && var.equals(ReachingDefsVisitor.getVarIfUnaryAssignment((ASTUnaryExpression) rhs));
         }
 
         @Override

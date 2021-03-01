@@ -193,7 +193,7 @@ class Graph<T> {
 
         /** Absorbs the given node into this node. */
         private void absorb(Vertex<T> toMerge) {
-            if (this == toMerge) {
+            if (this == toMerge) { // NOPMD CompareObjectsWithEquals
                 return;
             }
             this.data.addAll(toMerge.data);
