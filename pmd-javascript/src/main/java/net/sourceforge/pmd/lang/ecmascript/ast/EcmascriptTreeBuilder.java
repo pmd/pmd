@@ -211,7 +211,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
 
     @Override
     public boolean visit(AstNode node) {
-        if (parents.peek() == node) {
+        if (node.equals(parents.peek())) {
             return true;
         } else {
             buildInternal(node);

@@ -69,7 +69,7 @@ public class ParseExceptionHandler extends JDialog implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == okBtn) {
+        if (e.getSource().equals(okBtn)) {
             dispose();
         }
     }

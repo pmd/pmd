@@ -77,7 +77,7 @@ public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
                 exprField.setAccessible(true);
                 Optional<NameValueParameter> parameter = parent.node.getParameters().stream().filter(p -> {
                     try {
-                        return exprField.get(p) == this.node;
+                        return this.node.equals(exprField.get(p));
                     } catch (IllegalArgumentException | IllegalAccessException e) {
                         return false;
                     }

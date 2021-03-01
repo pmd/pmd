@@ -70,7 +70,7 @@ public class EvaluationResultsPanel extends JPanel implements ViewerModelListene
         switch (e.getReason()) {
         case ViewerModelEvent.PATH_EXPRESSION_EVALUATED:
 
-            if (e.getSource() != this) {
+            if (!e.getSource().equals(this)) {
                 list.setListData(new Vector(model.getLastEvaluationResults()));
             }
 
