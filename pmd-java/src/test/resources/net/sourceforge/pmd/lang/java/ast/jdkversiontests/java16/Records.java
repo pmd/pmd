@@ -1,9 +1,13 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 import java.io.IOException;
 import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
- * @see <a href="https://openjdk.java.net/jeps/359">JEP 359: Records (Preview)</a>
+ * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a>
  */
 public class Records {
 
@@ -21,7 +25,10 @@ public class Records {
             this.real = real;
             this.imaginary = imaginary;
         }
+
         public record Nested(int a) {}
+
+        public static class NestedClass { }
     }
 
 
@@ -38,7 +45,7 @@ public class Records {
 
     public record VarRec(@Nullable @Deprecated String @Nullable ... x) {}
 
-    public record ArrayRec(int x[]) {}
+    public record ArrayRec(int[] x) {}
 
     public record EmptyRec<Type>() {
         public void foo() { }

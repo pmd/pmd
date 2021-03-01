@@ -61,7 +61,7 @@ public interface JClassType extends JTypeMirror {
         }
 
         List<JTypeMirror> targs = getTypeArgs();
-        if (targs.isEmpty() && encl == getEnclosingType()) {
+        if (targs.isEmpty() && encl == getEnclosingType()) { // NOPMD CompareObjectsWithEquals
             return this;
         }
         List<JTypeMirror> newArgs = TypeOps.subst(targs, fun);

@@ -4,44 +4,60 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.List;
-import java.util.Map;
-
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.rule.performance.AbstractOptimizationRule;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 
-public class MethodArgumentCouldBeFinalRule extends AbstractOptimizationRule {
+public class MethodArgumentCouldBeFinalRule extends AbstractJavaRulechainRule {
+
+    public MethodArgumentCouldBeFinalRule() {
+        super(ASTMethodOrConstructorDeclaration.class);
+    }
 
     @Override
     public Object visit(ASTMethodDeclaration meth, Object data) {
-        if (meth.isNative() || meth.isAbstract()) {
+        if (meth.getBody() == null) {
             return data;
         }
-        this.lookForViolation(meth.getScope(), data);
-        return super.visit(meth, data);
-    }
-
-    private void lookForViolation(Scope scope, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> decls = scope.getDeclarations(VariableNameDeclaration.class);
-        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : decls.entrySet()) {
-            VariableNameDeclaration var = entry.getKey();
-            AccessNode node = var.getAccessNodeParent();
-            if (!node.isFinal() && node instanceof ASTFormalParameter && !assigned(entry.getValue())) {
-                addViolation(data, node, var.getImage());
-            }
-        }
+        lookForViolation(meth, data);
+        return data;
     }
 
     @Override
     public Object visit(ASTConstructorDeclaration constructor, Object data) {
-        this.lookForViolation(constructor.getScope(), data);
-        return super.visit(constructor, data);
+        lookForViolation(constructor, data);
+        return data;
+    }
+
+    private void lookForViolation(ASTMethodOrConstructorDeclaration node, Object data) {
+        checkForFinal((RuleContext) data, this, node.getFormalParameters().toStream().map(ASTFormalParameter::getVarId));
+    }
+
+    static void checkForFinal(RuleContext ruleContext, AbstractRule rule, NodeStream<ASTVariableDeclaratorId> variables) {
+        outer:
+        for (ASTVariableDeclaratorId var : variables) {
+            if (var.isFinal()) {
+                continue;
+            }
+            boolean used = false;
+            for (ASTNamedReferenceExpr usage : var.getLocalUsages()) {
+                used = true;
+                if (usage.getAccessType() == AccessType.WRITE) {
+                    continue outer;
+                }
+            }
+            if (used) {
+                rule.addViolation(ruleContext, var, var.getName());
+            }
+        }
     }
 
 }

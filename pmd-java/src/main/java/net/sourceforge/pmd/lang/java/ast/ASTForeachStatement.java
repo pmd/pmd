@@ -43,12 +43,5 @@ public final class ASTForeachStatement extends AbstractStatement implements Inte
         return getFirstChildOfType(ASTExpression.class);
     }
 
-    /**
-     * Returns the statement that represents the body of this
-     * loop.
-     */
-    public ASTStatement getBody() {
-        return (ASTStatement) getChild(getNumChildren() - 1);
-    }
 
 }

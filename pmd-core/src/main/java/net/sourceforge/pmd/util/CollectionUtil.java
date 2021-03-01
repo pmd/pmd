@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.util;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -259,7 +259,7 @@ public final class CollectionUtil {
         }
         List<T> union = new ArrayList<>();
         union.add(first);
-        union.addAll(Arrays.asList(rest));
+        union.addAll(asList(rest));
         return Collections.unmodifiableList(union);
     }
 
@@ -302,7 +302,7 @@ public final class CollectionUtil {
     @SuppressWarnings("unchecked")
     public static <V> Set<V> setUnion(Collection<? extends V> set, V first, V... newElements) {
         if (set instanceof PSet) {
-            return ((PSet<V>) set).plus(first).plusAll(Arrays.asList(newElements));
+            return ((PSet<V>) set).plus(first).plusAll(asList(newElements));
         }
         Set<V> newSet = new LinkedHashSet<>(set.size() + 1 + newElements.length);
         newSet.addAll(set);
@@ -325,7 +325,7 @@ public final class CollectionUtil {
         AssertionUtil.requireParamNotNull("values", to);
         Validate.isTrue(from.size() == to.size(), "Mismatched list sizes %s to %s", from, to);
 
-        if (from.isEmpty()) {
+        if (from.isEmpty()) { //NOPMD: we really want to compare references here
             return emptyMap();
         }
 
@@ -414,7 +414,7 @@ public final class CollectionUtil {
         if (from == null) {
             return emptyList();
         }
-        return map(Arrays.asList(from), f);
+        return map(asList(from), f);
     }
 
     /**

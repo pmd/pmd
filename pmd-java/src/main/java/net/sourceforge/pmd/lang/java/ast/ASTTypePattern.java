@@ -1,27 +1,25 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 /**
- * A type test pattern (JDK 14 preview feature). This can be found on
+ * A type pattern (JDK16). This can be found on
  * the right-hand side of an {@link ASTInfixExpression InstanceOfExpression},
  * in a {@link ASTPatternExpression PatternExpression}.
  *
  * <pre class="grammar">
  *
- * TypeTestPattern ::= {@linkplain ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * TypePattern ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
  *
  * </pre>
- */
-@Experimental
-public final class ASTTypeTestPattern extends AbstractJavaNode implements ASTPattern {
+ *
+ * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
+*/
+public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern, AccessNode {
 
-
-    ASTTypeTestPattern(int id) {
+    ASTTypePattern(int id) {
         super(id);
     }
 
@@ -34,12 +32,11 @@ public final class ASTTypeTestPattern extends AbstractJavaNode implements ASTPat
      * Gets the type against which the expression is tested.
      */
     public ASTType getTypeNode() {
-        return (ASTType) getChild(0);
+        return getFirstChildOfType(ASTType.class);
     }
 
     /** Returns the declared variable. */
     public ASTVariableDeclaratorId getVarId() {
-        return (ASTVariableDeclaratorId) getChild(1);
+        return getFirstChildOfType(ASTVariableDeclaratorId.class);
     }
-
 }
