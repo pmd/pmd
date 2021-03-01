@@ -42,14 +42,15 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
 
     private static class ApexMetricsProvider implements LanguageMetricsProvider {
 
+        private final Set<Metric<?, ?>> metrics = setOf(
+            ApexMetrics.COGNITIVE_COMPLEXITY,
+            ApexMetrics.CYCLO,
+            ApexMetrics.WEIGHED_METHOD_COUNT
+        );
 
         @Override
         public Set<Metric<?, ?>> getMetrics() {
-            return setOf(
-                ApexMetrics.COGNITIVE_COMPLEXITY,
-                ApexMetrics.CYCLO,
-                ApexMetrics.WEIGHED_METHOD_COUNT
-            );
+            return metrics;
         }
     }
 }

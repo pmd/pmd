@@ -87,21 +87,23 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
     public static class JavaMetricsProvider implements LanguageMetricsProvider {
 
+        private final Set<Metric<?, ?>> metrics = setOf(
+            JavaMetrics.ACCESS_TO_FOREIGN_DATA,
+            JavaMetrics.CYCLO,
+            JavaMetrics.NPATH,
+            JavaMetrics.NCSS,
+            JavaMetrics.LINES_OF_CODE,
+            JavaMetrics.FAN_OUT,
+            JavaMetrics.WEIGHED_METHOD_COUNT,
+            JavaMetrics.WEIGHT_OF_CLASS,
+            JavaMetrics.NUMBER_OF_ACCESSORS,
+            JavaMetrics.NUMBER_OF_PUBLIC_FIELDS,
+            JavaMetrics.TIGHT_CLASS_COHESION
+        );
+
         @Override
         public Set<Metric<?, ?>> getMetrics() {
-            return setOf(
-                JavaMetrics.ACCESS_TO_FOREIGN_DATA,
-                JavaMetrics.CYCLO,
-                JavaMetrics.NPATH,
-                JavaMetrics.NCSS,
-                JavaMetrics.LINES_OF_CODE,
-                JavaMetrics.FAN_OUT,
-                JavaMetrics.WEIGHED_METHOD_COUNT,
-                JavaMetrics.WEIGHT_OF_CLASS,
-                JavaMetrics.NUMBER_OF_ACCESSORS,
-                JavaMetrics.NUMBER_OF_PUBLIC_FIELDS,
-                JavaMetrics.TIGHT_CLASS_COHESION
-            );
+            return metrics;
         }
     }
 }
