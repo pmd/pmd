@@ -1658,4 +1658,23 @@ public class OOO {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false positive when passing in lombok.val as argument #3118</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.val;
+
+public class ValExample {
+    public void example() {
+        val example = "value";
+        aPrivateMethod(example);
+    }
+
+    private void aPrivateMethod(String s) {
+        System.out.println(s);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

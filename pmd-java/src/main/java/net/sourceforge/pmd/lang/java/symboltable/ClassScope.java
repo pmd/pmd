@@ -532,9 +532,10 @@ public class ClassScope extends AbstractJavaScope {
                     type = convertToSimpleType(classInterface);
                 }
             }
-            if (type == null && !parameterTypes.isEmpty()) {
+            if ((type == null || "lombok.val".equals(type.getTypeImage())) && !parameterTypes.isEmpty()) {
                 // replace the unknown type with the correct parameter type
-                // of the method.
+                // of the method. unknown type could be a "var" (local variable type inference)
+                // or a lombok.val type.
                 // in case the argument is itself a method call, we can't
                 // determine the result type of the called
                 // method. Therefore the parameter type is used.
