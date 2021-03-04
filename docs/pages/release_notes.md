@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-performance
+    *   [#3152](https://github.com/pmd/pmd/issues/3152): \[java] ConsecutiveLiteralAppends and InsufficientStringBufferDeclaration: FP with switch expressions
+
 ### API Changes
 
 ### External Contributions
