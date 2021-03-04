@@ -226,6 +226,13 @@ public class ParserCornersTest {
         java8.parseResource("GitHubBug309.java");
     }
 
+    @Test(timeout = 30000)
+    public void testInfiniteLoopInLookahead() {
+        expect.expect(ParseException.class);
+        // https://github.com/pmd/pmd/issues/3117
+        java8.parseResource("InfiniteLoopInLookahead.java");
+    }
+
     /**
      * This triggered bug #1484 UnusedLocalVariable - false positive -
      * parenthesis

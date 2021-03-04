@@ -237,6 +237,11 @@ options {
   TRACK_TOKENS = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
 
+  // disable the calculation of expected tokens when a parse error occurs
+  // depending on the possible allowed next tokens, this
+  // could be expensive (see https://github.com/pmd/pmd/issues/3117)
+  //ERROR_REPORTING = false;
+
   //DEBUG_PARSER = true;
   //DEBUG_LOOKAHEAD = true;
   //DEBUG_TOKEN_MANAGER = true;
@@ -2131,9 +2136,9 @@ void StatementExpression() :
 |
   PreDecrementExpression()
 |
-  LOOKAHEAD( PrimaryExpression() AssignmentOperator() ) PrimaryExpression() AssignmentOperator() Expression()
-|
-  PostfixExpression()
+  // using PostfixExpression here allows us to skip the part of the production tree
+  // between Expression() and PostfixExpression()
+  PostfixExpression() [ AssignmentOperator() Expression() ]
 }
 
 void SwitchStatement():
