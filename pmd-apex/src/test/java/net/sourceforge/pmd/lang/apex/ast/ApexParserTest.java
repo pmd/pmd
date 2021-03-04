@@ -183,6 +183,7 @@ public class ApexParserTest extends ApexParserTestBase {
     public void verifyLineColumnNumbersInnerClasses() throws Exception {
         String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("InnerClassLocations.cls"),
                 StandardCharsets.UTF_8);
+        source = source.replaceAll("\r\n", "\n");
         ApexNode<Compilation> rootNode = parse(source);
         Assert.assertNotNull(rootNode);
 
