@@ -1677,4 +1677,27 @@ public class ValExample {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negative with unused private method in nested classes</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
+        <code><![CDATA[
+public class Outer {
+    private void outerUnusedMethod() {}
+    public class Inner {
+        private void innerUnusedMethod() {} // false negative
+        private void innerUsedByInnerMethod() {}
+        public void publicInnerMethod() {
+            innerUsedByInnerMethod();
+        }
+        private void innerUsedByOuterMethod() {}
+    }
+    public void publicOuterMethod() {
+        Inner inner = new Inner();
+        inner.innerUsedByOuterMethod();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
