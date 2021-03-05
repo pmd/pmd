@@ -164,7 +164,7 @@ class TypeParamScopingTest : ParserTestSpec({
         val (vt, vx, vx2) = acu.descendants(ASTLocalVariableDeclaration::class.java).map { it.typeNode }.toList()
 
         // classes
-        val (_, localX, annotY) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList()
+        val (_, localX, annotY) = acu.descendants(ASTAnyTypeDeclaration::class.java).crossFindBoundaries().toList()
 
         doTest("TParams of class are in scope inside method tparam declaration") {
 
