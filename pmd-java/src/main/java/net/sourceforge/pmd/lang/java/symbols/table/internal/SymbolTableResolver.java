@@ -143,7 +143,7 @@ public final class SymbolTableResolver {
             task.node.acceptVisitor(this, task.enclosingCtx);
             JSymbolTable last = stack.pop();
 
-            assert last == task.localStackTop
+            assert last == task.localStackTop  // NOPMD CompareObjectsWithEquals
                 : "Unbalanced stack push/pop! Started with " + task.localStackTop + ", finished on " + last;
         }
 
@@ -448,7 +448,7 @@ public final class SymbolTableResolver {
         }
 
         private int pushOnStack(JSymbolTable table) {
-            if (table == top()) {
+            if (table == top()) { // NOPMD CompareObjectsWithEquals
                 return 0; // and don't set the stack top
             }
             stack.push(table);

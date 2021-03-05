@@ -253,14 +253,14 @@ For details, see [CPD Report Formats](pmd_userdocs_cpd_report_formats.html).
 Andy Glover wrote an Ant task for CPD; here's how to use it:
 
 ```xml
-    <target name="cpd">
-        <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
-        <cpd minimumTokenCount="100" outputFile="/home/tom/cpd.txt">
-            <fileset dir="/home/tom/tmp/ant">
-                <include name="**/*.java"/>
-            </fileset>
-        </cpd>
-    </target>
+<target name="cpd">
+    <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
+    <cpd minimumTokenCount="100" outputFile="/home/tom/cpd.txt">
+        <fileset dir="/home/tom/tmp/ant">
+            <include name="**/*.java"/>
+        </fileset>
+    </cpd>
+</target>
 ```
 
 <!--  TODO avoid duplicating the descriptions! -->
@@ -352,7 +352,7 @@ Also, you can get an HTML report from CPD by using the XSLT script in pmd/etc/xs
 the CPD task as usual and right after it invoke the Ant XSLT script like this:
 
 ```xml
-    <xslt in="cpd.xml" style="etc/xslt/cpdhtml.xslt" out="cpd.html" />
+<xslt in="cpd.xml" style="etc/xslt/cpdhtml.xslt" out="cpd.html" />
 ```
 
 ## GUI
@@ -378,23 +378,23 @@ Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**,
 **Kotlin**, **Lua**, **Matlab**, **Objective-C**, **PL/SQL**, **Python**, **Scala**, **Swift** and **C#** by including the keywords `CPD-OFF` and `CPD-ON`.
 
 ```java
-    public Object someParameterizedFactoryMethod(int x) throws Exception {
-        // some unignored code
+public Object someParameterizedFactoryMethod(int x) throws Exception {
+    // some unignored code
 
-        // tell cpd to start ignoring code - CPD-OFF
+    // tell cpd to start ignoring code - CPD-OFF
 
-        // mission critical code, manually loop unroll
-        goDoSomethingAwesome(x + x / 2);
-        goDoSomethingAwesome(x + x / 2);
-        goDoSomethingAwesome(x + x / 2);
-        goDoSomethingAwesome(x + x / 2);
-        goDoSomethingAwesome(x + x / 2);
-        goDoSomethingAwesome(x + x / 2);
+    // mission critical code, manually loop unroll
+    goDoSomethingAwesome(x + x / 2);
+    goDoSomethingAwesome(x + x / 2);
+    goDoSomethingAwesome(x + x / 2);
+    goDoSomethingAwesome(x + x / 2);
+    goDoSomethingAwesome(x + x / 2);
+    goDoSomethingAwesome(x + x / 2);
 
-        // resume CPD analysis - CPD-ON
+    // resume CPD analysis - CPD-ON
 
-        // further code will *not* be ignored
-    }
+    // further code will *not* be ignored
+}
 ```
 
 Additionally, **Java** allows to toggle suppression by adding the annotations
@@ -405,15 +405,15 @@ This approach however, is limited to the locations were `@SuppressWarnings` is a
 It's legacy and the new comment's based approach should be favored.
 
 ```java
-    //enable suppression
-    @SuppressWarnings("CPD-START")
-    public Object someParameterizedFactoryMethod(int x) throws Exception {
-        // any code here will be ignored for the duplication detection
-    }
-    //disable suppression
-    @SuppressWarnings("CPD-END)
-    public void nextMethod() {
-    }
+//enable suppression
+@SuppressWarnings("CPD-START")
+public Object someParameterizedFactoryMethod(int x) throws Exception {
+    // any code here will be ignored for the duplication detection
+}
+//disable suppression
+@SuppressWarnings("CPD-END)
+public void nextMethod() {
+}
 ```
 
 Other languages currently have no support to suppress CPD reports. In the future,

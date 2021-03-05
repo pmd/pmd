@@ -87,9 +87,9 @@ public final class JavaAstProcessor {
     }
 
     static TypeInferenceLogger defaultTypeInfLogger() {
-        if (INFERENCE_LOG_LEVEL == Level.FINEST) {
+        if (Level.FINEST.equals(INFERENCE_LOG_LEVEL)) {
             return new VerboseLogger(System.err);
-        } else if (INFERENCE_LOG_LEVEL == Level.FINE) {
+        } else if (Level.FINE.equals(INFERENCE_LOG_LEVEL)) {
             return new SimpleLogger(System.err);
         } else {
             return TypeInferenceLogger.noop();

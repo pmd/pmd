@@ -73,7 +73,7 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
 
         // both are primitive or primitive wrappers
 
-        if (thenType.unbox() == elseType.unbox()) {
+        if (elseType.unbox().equals(thenType.unbox())) {
             // eg (Integer, Integer) -> Integer but (Integer, int) -> int
             return thenType.equals(elseType) ? thenType : thenType.unbox();
         }
