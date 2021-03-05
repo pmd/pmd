@@ -81,4 +81,8 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
         return ASTList.orEmpty(children(ASTPermitsList.class).first());
     }
 
+    @Override
+    public boolean isFindBoundary() {
+        return isNested() || isLocal();
+    }
 }

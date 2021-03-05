@@ -42,9 +42,4 @@ public final class ASTLocalClassStatement extends AbstractStatement {
     public @NonNull ASTAnyTypeDeclaration getDeclaration() {
         return (ASTAnyTypeDeclaration) getChild(0);
     }
-
-    @Override
-    public boolean isFindBoundary() {
-        return true;
-    }
 }
