@@ -123,9 +123,12 @@ public final class JavaRuleUtil {
         return false;
     }
 
-    private static boolean isIntLit(JavaNode e, int value) {
+    /**
+     * Return true if the number is an int or long literal with the given int value.
+     */
+    public static boolean isIntLit(JavaNode e, int value) {
         if (e instanceof ASTNumericLiteral) {
-            return ((ASTNumericLiteral) e).getValueAsInt() == value;
+            return ((ASTNumericLiteral) e).isIntegral() && ((ASTNumericLiteral) e).getValueAsInt() == value;
         }
         return false;
     }

@@ -402,8 +402,8 @@ public class OuterClass {
 
     <test-code>
         <description>Detect returned static arrays</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>16</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,16</expected-linenumbers>
         <code><![CDATA[
 import java.util.concurrent.Callable;
 
@@ -412,7 +412,7 @@ public class MyClass {
     private final Callable<String[]> returnsFooBar = new Callable<String[]>() {
         @Override
         public String[] call() {
-            return FOO_BAR; // no violation, because FOO_BAR is final. See https://sourceforge.net/p/pmd/bugs/1475/
+            return FOO_BAR;
         }
     };
 

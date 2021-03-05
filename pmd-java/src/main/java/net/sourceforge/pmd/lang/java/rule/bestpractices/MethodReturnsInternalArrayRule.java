@@ -4,10 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayDimExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayTypeDim;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
@@ -43,7 +49,7 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
                     JVariableSymbol symbol = reference.getReferencedSym();
                     if (symbol instanceof JFieldSymbol) {
                         JFieldSymbol field = (JFieldSymbol) symbol;
-                        if (field.isStatic() && !field.isFinal()) {
+                        if (field.isStatic() && (!field.isFinal() || !hasZeroLengthArrayInitializer(field))) {
                             addViolation(data, returnStmt, reference.getName());
                         }
                     }
@@ -51,5 +57,32 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
             }
         }
         return data;
+    }
+
+    private static boolean hasZeroLengthArrayInitializer(JFieldSymbol sym) {
+        return NodeStream.of(sym.tryGetNode())
+                         .map(ASTVariableDeclaratorId::getInitializer)
+                         .filter(MethodReturnsInternalArrayRule::isZeroLengthArrayExpr)
+                         .nonEmpty();
+    }
+
+    private static boolean isZeroLengthArrayExpr(ASTExpression expr) {
+        if (expr instanceof ASTArrayInitializer) {
+            // {}
+            return ((ASTArrayInitializer) expr).length() == 0;
+        } else if (expr instanceof ASTArrayAllocation) {
+            ASTArrayInitializer init = ((ASTArrayAllocation) expr).getArrayInitializer();
+            if (init != null) {
+                // new int[] {}
+                return init.length() == 0;
+            } else {
+                // new int[0]
+                ASTArrayTypeDim lastChild = ((ASTArrayAllocation) expr).getTypeNode().getDimensions().getLastChild();
+                if (lastChild instanceof ASTArrayDimExpr) {
+                    return JavaRuleUtil.isIntLit(((ASTArrayDimExpr) lastChild).getLengthExpression(), 0);
+                }
+            }
+        }
+        return false;
     }
 }
