@@ -380,4 +380,50 @@ public class OuterClass {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Nested methods and local class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OuterClass {
+    public int[] arrayReturningMethod() {
+        class LocalClass {
+            private String s;
+            public String getString() {
+                return this.s;
+            }
+        }
+        LocalClass c = new LocalClass();
+        return new int[0];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Detect returned static arrays</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>16</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class MyClass {
+    private static final String[] FOO_BAR = new String[] { "foo", "bar" };
+    private final Callable<String[]> returnsFooBar = new Callable<String[]>() {
+        @Override
+        public String[] call() {
+            return FOO_BAR; // no violation, because FOO_BAR is final. See https://sourceforge.net/p/pmd/bugs/1475/
+        }
+    };
+
+    private static String[] fooBarNonFinal = new String[] { "foo", "bar" };
+    private final Callable<String[]> returnsFooBarNonFinal = new Callable<String[]>() {
+        @Override
+        public String[] call() {
+            return fooBarNonFinal; // violation
+        }
+    };
+}
+        ]]></code>
+    </test-code>
 </test-data>

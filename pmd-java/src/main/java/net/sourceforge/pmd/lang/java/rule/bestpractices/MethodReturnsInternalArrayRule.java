@@ -11,6 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
 /**
  * Implementation note: this rule currently ignores return types of y.x.z,
@@ -31,8 +33,21 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
 
         for (ASTReturnStatement returnStmt : method.descendants(ASTReturnStatement.class)) {
             ASTExpression expr = returnStmt.getExpr();
-            if (JavaRuleUtil.isRefToFieldOfThisInstance(expr)) {
-                addViolation(data, returnStmt, ((ASTNamedReferenceExpr) expr).getName());
+            if (expr instanceof ASTNamedReferenceExpr) {
+                ASTNamedReferenceExpr reference = (ASTNamedReferenceExpr) expr;
+
+                if (JavaRuleUtil.isRefToFieldOfThisInstance(reference)) {
+                    addViolation(data, returnStmt, reference.getName());
+                } else {
+                    // considers static, non-final fields
+                    JVariableSymbol symbol = reference.getReferencedSym();
+                    if (symbol instanceof JFieldSymbol) {
+                        JFieldSymbol field = (JFieldSymbol) symbol;
+                        if (field.isStatic() && !field.isFinal()) {
+                            addViolation(data, returnStmt, reference.getName());
+                        }
+                    }
+                }
             }
         }
         return data;
