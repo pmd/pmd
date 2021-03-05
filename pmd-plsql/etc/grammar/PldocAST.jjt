@@ -307,8 +307,8 @@ ASTSqlPlusCommand SqlPlusCommand() :
   (
   // e.g. SHOW ERRORS, GRANT EXECUTE ON ... TO ...
   // SQLPLUS commands
-  ( "@@"
-  | "@"
+  ( "@@" ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | "@" ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
   | <ACCEPT> | "ACC"
   | "ARCHIVE LOG LIST"
   | <ATTRIBUTE>
@@ -327,8 +327,8 @@ ASTSqlPlusCommand SqlPlusCommand() :
   | <EXECUTE> | "EXEC"
   | <EXIT>
   | <HOST> ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
-  | "$"    ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
-  | "!"    ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | "$"    ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) * // only works with a blank after the dollar
+  | "!"    ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) * // only works with a blank afer the exlamation mark
   // These characters are platform-specific, anyway...
   | "INPUT"
   | LOOKAHEAD({isKeyword("PASSWORD")}) KEYWORD("PASSWORD")
@@ -344,7 +344,7 @@ ASTSqlPlusCommand SqlPlusCommand() :
   | <SHOW> | "SHO"
   | <SHUTDOWN>
   | <SPOOL>
-  | <START>
+  | <START> ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
   | <STARTUP>
   | LOOKAHEAD({isKeyword("STORE")}) KEYWORD("STORE")
   | "TIMING"
