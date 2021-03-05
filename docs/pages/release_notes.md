@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java
+    *   [3145](https://github.com/pmd/pmd/issues/3145): \[java] Parse exception when using "record" as variable name
+
 ### API Changes
 
 ### External Contributions
