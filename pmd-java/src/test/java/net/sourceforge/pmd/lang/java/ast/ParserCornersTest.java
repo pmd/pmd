@@ -186,12 +186,21 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
         doTest("GitHubBug309", java8);
     }
 
-    @Test
+    @Test(timeout = 30000)
     public void testInfiniteLoopInLookahead() {
-        expect.expect(ParseException.class); // the code is invalid. The test fails if it times out
+        expect.expect(ParseException.class);
         // https://github.com/pmd/pmd/issues/3117
         java8.parseResource("InfiniteLoopInLookahead.java");
     }
+
+    @Test
+    public void stringConcatentationShouldNotBeCast() {
+        // https://github.com/pmd/pmd/issues/1484
+        String code = "public class Test {\n" + "    public static void main(String[] args) {\n"
+            + "        System.out.println(\"X\" + (args) + \"Y\");\n" + "    }\n" + "}";
+        Assert.assertEquals(0, java8.parse(code).findDescendantsOfType(ASTCastExpression.class).size());
+    }
+
 
     /**
      * Empty statements should be allowed.
