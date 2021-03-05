@@ -42,9 +42,4 @@ public final class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
     public ASTEnumBody getBody() {
         return (ASTEnumBody) getLastChild();
     }
-
-    @Override
-    public boolean isFindBoundary() {
-        return isNested();
-    }
 }

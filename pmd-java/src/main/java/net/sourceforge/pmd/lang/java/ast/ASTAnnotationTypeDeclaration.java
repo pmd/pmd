@@ -38,9 +38,4 @@ public final class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclarati
     public boolean isInterface() {
         return true;
     }
-
-    @Override
-    public boolean isFindBoundary() {
-        return isNested();
-    }
 }
