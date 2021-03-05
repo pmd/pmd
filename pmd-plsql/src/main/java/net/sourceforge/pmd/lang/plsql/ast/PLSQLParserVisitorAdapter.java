@@ -165,6 +165,11 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     public Object visit(ASTRead2NextOccurrence node, Object data) {
         return visit((PLSQLNode) node, data);
     }
+    
+    @Override
+    public Object visit(ASTRead2NextTokenOccurrence node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
 
     @Override
     public Object visit(ASTReadPastNextOccurrence node, Object data) {
