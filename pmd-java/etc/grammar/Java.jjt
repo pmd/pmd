@@ -1,4 +1,7 @@
 /**
+ * Fix #3117 - infinite loop when parsing invalid code nested in lambdas
+ * Andreas Dangel 03/2021
+ *====================================================================
  * Fix #3145 - parse exception with local records
  * Clément Fournier 03/2021
  *====================================================================
