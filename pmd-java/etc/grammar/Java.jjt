@@ -1,4 +1,7 @@
 /**
+ * Fix #3145 - parse exception with local records
+ * Clément Fournier 03/2021
+ *====================================================================
  * Remove support for Java 14 preview language features
  * JEP 397: Sealed Classes (Second Preview) for Java16 Preview
  * JEP 395: Records for Java16
@@ -594,7 +597,7 @@ public class JavaParser {
       return next.kind == CLASS
         || isRecordTypeSupported() && next.kind == INTERFACE
         || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("enum")
-        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("record");
+        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("record") && isToken(2, IDENTIFIER);
   }
 
   /**
