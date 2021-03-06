@@ -49,10 +49,6 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
                        .build();
 
     private static final PropertyDescriptor<List<NcssOption>> NCSS_OPTIONS_DESCRIPTOR;
-    private int methodReportLevel;
-    private int classReportLevel;
-    private MetricOptions ncssOptions;
-
 
     static {
         Map<String, NcssOption> options = new HashMap<>();
@@ -103,7 +99,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
             if (classSize >= level) {
                 String[] messageParams = {PrettyPrintingUtil.kindName(node),
                                           node.getSimpleName(),
-                                          classSize + " (Highest = " + classHighest + ")",};
+                                          classSize + " (Highest = " + classHighest + ")", };
 
                 addViolation(data, node, messageParams);
             }
@@ -121,7 +117,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
             if (methodSize >= level) {
                 addViolation(data, node, new String[] {
                     node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                    PrettyPrintingUtil.displaySignature(node), "" + methodSize,});
+                    PrettyPrintingUtil.displaySignature(node), "" + methodSize, });
             }
         }
     }
