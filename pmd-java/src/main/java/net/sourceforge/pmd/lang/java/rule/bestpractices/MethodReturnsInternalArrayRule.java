@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.lang.reflect.Modifier;
+
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimExpr;
@@ -49,7 +51,7 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
                     JVariableSymbol symbol = reference.getReferencedSym();
                     if (symbol instanceof JFieldSymbol) {
                         JFieldSymbol field = (JFieldSymbol) symbol;
-                        if (field.isStatic() && (!field.isFinal() || !hasZeroLengthArrayInitializer(field))) {
+                        if (field.isStatic() && isInternal(field) && !isZeroLengthArrayConstant(field)) {
                             addViolation(data, returnStmt, reference.getName());
                         }
                     }
@@ -59,7 +61,15 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
         return data;
     }
 
-    private static boolean hasZeroLengthArrayInitializer(JFieldSymbol sym) {
+    private static boolean isInternal(JFieldSymbol field) {
+        return !Modifier.isPublic(field.getModifiers()) // not public
+            && !field.isUnresolved(); // must be resolved to avoid FPs
+    }
+
+    private static boolean isZeroLengthArrayConstant(JFieldSymbol sym) {
+        if (!sym.isFinal()) {
+            return false;
+        }
         return NodeStream.of(sym.tryGetNode())
                          .map(ASTVariableDeclaratorId::getInitializer)
                          .filter(MethodReturnsInternalArrayRule::isZeroLengthArrayExpr)

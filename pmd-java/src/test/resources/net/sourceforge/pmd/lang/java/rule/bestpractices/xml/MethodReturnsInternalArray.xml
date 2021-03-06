@@ -225,6 +225,18 @@ public class MethodReturnsInternalArrayCase {
     </test-code>
 
     <test-code>
+        <description>Unresolved array: assume public</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class MethodReturnsInternalArrayCase {
+                protected final byte[] getData() {
+                    return SomeClass.UNRESOLVED;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description> #1738 MethodReturnsInternalArray in inner classes</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
