@@ -245,10 +245,10 @@ public class NPathTest {
         }
         var product = new Product();
         var description = switch (language) {
-            case FR -> description.setFr(title);
-            case IT -> description.setIt(title);
-            case EN -> description.setEn(title);
-            default -> description.setDe(title);
+            case FR -> new Description.Fr(title);
+            case IT -> new Description.It(title);
+            case EN -> new Description.En(title);
+            default -> new Description.De(title);
         };
         product.setDescription(description);
         product.setMagicNumber(3);
