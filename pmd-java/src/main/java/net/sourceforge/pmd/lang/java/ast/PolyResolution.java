@@ -454,7 +454,9 @@ final class PolyResolution {
         }
         return node instanceof ASTSwitchExpression && child.getIndexInParent() != 0 // not the condition
             || node instanceof ASTSwitchArrowBranch
-            || node instanceof ASTConditionalExpression && child.getIndexInParent() != 0; // not the condition
+            || node instanceof ASTConditionalExpression && child.getIndexInParent() != 0 // not the condition
+            // lambdas "forward the context" when you have nested lambdas, eg: `x -> y -> f(x, y)`
+            || node instanceof ASTLambdaExpression && child.getIndexInParent() == 1; // the body expression
     }
 
 
