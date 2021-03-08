@@ -385,4 +385,27 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Loop on this object #833</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            import java.util.Iterator;
+            class Foo<T> implements Iterable<T> {
+
+                @Override
+                public Iterator<T> iterator() {
+                    return null;
+                }
+
+                private void fofo() {
+                    for (Iterator<T> it = iterator(); it.hasNext();) {
+                        T item = it.next();
+                    }
+                    for (Iterator<T> it = this.iterator(); it.hasNext();) {
+                        T item = it.next();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
