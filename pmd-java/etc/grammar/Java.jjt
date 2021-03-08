@@ -1,4 +1,10 @@
 /**
+ * Fix #3117 - infinite loop when parsing invalid code nested in lambdas
+ * Andreas Dangel 03/2021
+ *====================================================================
+ * Fix #3145 - parse exception with local records
+ * Clément Fournier 03/2021
+ *====================================================================
  * Remove support for Java 14 preview language features
  * JEP 397: Sealed Classes (Second Preview) for Java16 Preview
  * JEP 395: Records for Java16
@@ -232,6 +238,11 @@ options {
   VISITOR = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
 
+  // disable the calculation of expected tokens when a parse error occurs
+  // depending on the possible allowed next tokens, this
+  // could be expensive (see https://github.com/pmd/pmd/issues/3117)
+  //ERROR_REPORTING = false;
+
   //DEBUG_PARSER = true;
   //DEBUG_LOOKAHEAD = true;
   //DEBUG_TOKEN_MANAGER = true;
@@ -312,7 +323,7 @@ class JavaParserImpl {
   }
 
   private boolean isRecordStart() {
-    return isRecordTypeSupported() && isKeyword("record");
+    return isRecordTypeSupported() && isKeyword("record") && isToken(2, IDENTIFIER);
   }
 
   private boolean isEnumStart() {
@@ -381,8 +392,7 @@ class JavaParserImpl {
               next.kind == INTERFACE
            || next.kind == AT && isToken(2, INTERFACE)
            || next.kind == IDENTIFIER && next.getImage().equals("enum")
-           ||
-           next.kind == IDENTIFIER && next.image.equals("record")
+           || next.kind == IDENTIFIER && next.getImage().equals("record") && isToken(2, IDENTIFIER)
       );
   }
 

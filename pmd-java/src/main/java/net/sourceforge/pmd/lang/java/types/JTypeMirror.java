@@ -261,7 +261,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * whose {@link #unbox()} method returns a {@link JPrimitiveType}.
      */
     default boolean isBoxedPrimitive() {
-        return unbox() != this;
+        return unbox() != this; // NOPMD CompareObjectsWithEquals
     }
 
 
@@ -283,7 +283,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * Returns true if this is {@link TypeSystem#OBJECT}.
      */
     default boolean isTop() {
-        return this == getTypeSystem().OBJECT;
+        return this == getTypeSystem().OBJECT; // NOPMD CompareObjectsWithEquals
     }
 
 
@@ -298,7 +298,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * Returns true if this is {@link TypeSystem#NO_TYPE}, ie {@code void}.
      */
     default boolean isVoid() {
-        return this == getTypeSystem().NO_TYPE;
+        return this == getTypeSystem().NO_TYPE; // NOPMD CompareObjectsWithEquals
     }
 
     /** Returns true if this is an {@linkplain JArrayType array type}. */

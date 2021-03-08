@@ -15,7 +15,7 @@ public class InfiniteLoopInLookahead {
                             resList.forEach(f -> {
                                 resList.forEach(g -> {
                                     resList.forEach(h -> {
-                                        resList
+                                        resList // note: missing semicolon -> parse error here...
                                     });
                                 });
                             });

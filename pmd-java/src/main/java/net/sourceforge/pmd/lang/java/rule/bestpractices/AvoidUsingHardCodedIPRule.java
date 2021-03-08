@@ -85,15 +85,15 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
         return data;
     }
 
-    protected boolean isLatinDigit(char c) {
+    private boolean isLatinDigit(char c) {
         return '0' <= c && c <= '9';
     }
 
-    protected boolean isHexCharacter(char c) {
+    private boolean isHexCharacter(char c) {
         return isLatinDigit(c) || 'A' <= c && c <= 'F' || 'a' <= c && c <= 'f';
     }
 
-    protected boolean isIPv4(final char firstChar, final String s) {
+    private boolean isIPv4(final char firstChar, final String s) {
         // Quick check before using Regular Expression
         // 1) At least 7 characters
         // 2) 1st character must be a digit from '0' - '9'
@@ -117,7 +117,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
         }
     }
 
-    protected boolean isIPv6(final char firstChar, String s, final boolean checkIPv6,
+    private boolean isIPv6(final char firstChar, String s, final boolean checkIPv6,
             final boolean checkIPv4MappedIPv6) {
         // Quick check before using Regular Expression
         // 1) At least 3 characters

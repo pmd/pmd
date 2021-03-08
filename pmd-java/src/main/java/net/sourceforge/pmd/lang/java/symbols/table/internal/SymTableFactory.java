@@ -121,12 +121,11 @@ final class SymTableFactory {
 
     // </editor-fold>
 
-    @NonNull
-    private JSymbolTable buildTable(JSymbolTable parent,
-                                    ShadowChainNode<JVariableSig, ScopeInfo> vars,
-                                    ShadowChainNode<JMethodSig, ScopeInfo> methods,
-                                    ShadowChainNode<JTypeMirror, ScopeInfo> types) {
-        if (vars == parent.variables() && methods == parent.methods() && types == parent.types()) {
+    private @NonNull JSymbolTable buildTable(JSymbolTable parent,
+                                             ShadowChainNode<JVariableSig, ScopeInfo> vars,
+                                             ShadowChainNode<JMethodSig, ScopeInfo> methods,
+                                             ShadowChainNode<JTypeMirror, ScopeInfo> types) {
+        if (vars == parent.variables() && methods == parent.methods() && types == parent.types()) { // NOPMD CompareObjectsWithEquals
             return parent;
         } else {
             return new SymbolTableImpl(vars, types, methods);
