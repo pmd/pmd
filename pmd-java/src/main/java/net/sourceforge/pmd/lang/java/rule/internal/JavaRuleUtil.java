@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKi
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +34,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -48,7 +50,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
@@ -58,6 +63,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -116,9 +123,12 @@ public final class JavaRuleUtil {
         return false;
     }
 
-    private static boolean isIntLit(JavaNode e, int value) {
+    /**
+     * Return true if the number is an int or long literal with the given int value.
+     */
+    public static boolean isIntLit(JavaNode e, int value) {
         if (e instanceof ASTNumericLiteral) {
-            return ((ASTNumericLiteral) e).getValueAsInt() == value;
+            return ((ASTNumericLiteral) e).isIntegral() && ((ASTNumericLiteral) e).getValueAsInt() == value;
         }
         return false;
     }
@@ -512,5 +522,32 @@ public final class JavaRuleUtil {
         } else {
             return expr instanceof ASTNullLiteral;
         }
+    }
+
+    /**
+     * Returns true if the expression has the form `field`, or `this.field`,
+     * where `field` is a field declared in the enclosing class.
+     * Assumes we're not in a static context.
+     * todo this should probs consider super.field and superclass
+     */
+    public static boolean isRefToFieldOfThisInstance(ASTExpression usage) {
+        if (!(usage instanceof ASTNamedReferenceExpr)) {
+            return false;
+        }
+        JVariableSymbol symbol = ((ASTNamedReferenceExpr) usage).getReferencedSym();
+        if (!(symbol instanceof JFieldSymbol)
+            || !((JFieldSymbol) symbol).getEnclosingClass().equals(usage.getEnclosingType().getSymbol())
+            || Modifier.isStatic(((JFieldSymbol) symbol).getModifiers())) {
+            return false;
+        }
+
+        if (usage instanceof ASTVariableAccess) {
+            return true;
+        } else if (usage instanceof ASTFieldAccess) {
+            ASTExpression qualifier = ((ASTFieldAccess) usage).getQualifier();
+            return qualifier instanceof ASTThisExpression
+                || qualifier instanceof ASTSuperExpression;
+        }
+        return false;
     }
 }

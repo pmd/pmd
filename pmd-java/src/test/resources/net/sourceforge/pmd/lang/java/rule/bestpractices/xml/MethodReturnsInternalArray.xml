@@ -242,6 +242,18 @@ public class MethodReturnsInternalArrayCase {
     </test-code>
 
     <test-code>
+        <description>Unresolved array: assume public</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class MethodReturnsInternalArrayCase {
+                protected final byte[] getData() {
+                    return SomeClass.UNRESOLVED;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description> #1738 MethodReturnsInternalArray in inner classes</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -418,7 +430,7 @@ public class OuterClass {
     </test-code>
 
     <test-code>
-        <description>Detect non-final static arrays returned</description>
+        <description>Detect returned static arrays</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>8,16</expected-linenumbers>
         <code><![CDATA[
@@ -432,12 +444,12 @@ public class MyClass {
             return FOO_BAR;
         }
     };
-    
+
     private static String[] fooBarNonFinal = new String[] { "foo", "bar" };
     private final Callable<String[]> returnsFooBarNonFinal = new Callable<String[]>() {
         @Override
         public String[] call() {
-            return fooBarNonFinal;
+            return fooBarNonFinal; // violation
         }
     };
 }

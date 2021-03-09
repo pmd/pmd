@@ -34,6 +34,13 @@ public final class ASTArrayInitializer extends AbstractJavaExpr implements ASTEx
         return visitor.visit(this, data);
     }
 
+    /**
+     * Return the number of elements.
+     */
+    public int length() {
+        return getNumChildren();
+    }
+
 
     @Override
     public Iterator<ASTExpression> iterator() {
