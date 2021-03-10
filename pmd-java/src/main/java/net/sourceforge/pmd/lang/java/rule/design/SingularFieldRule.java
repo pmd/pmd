@@ -117,7 +117,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         //Check usages for validity & group them by scope
         //They're valid if they don't escape the scope of their method, eg by being in a nested class or lambda
         Map<ASTBodyDeclaration, List<ASTNamedReferenceExpr>> usagesByScope = new HashMap<>();
-        for (ASTNamedReferenceExpr usage : varId.getUsages()) {
+        for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
             if (usage.getEnclosingType() != fieldOwner
                 || !JavaRuleUtil.isThisFieldAccess(usage)) {
                 return false; // give up

@@ -26,9 +26,6 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-/**
- * @author Olander
- */
 public class ImmutableFieldRule extends AbstractLombokAwareRule {
 
     @Override
@@ -52,7 +49,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
             for (ASTVariableDeclaratorId varId : field.getVarIds()) {
 
                 boolean hasWrite = false;
-                for (ASTNamedReferenceExpr usage : varId.getUsages()) {
+                for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
                     if (usage.getAccessType() == AccessType.WRITE) {
                         hasWrite = true;
 
@@ -72,27 +69,30 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
                 if (!hasWrite && !isBlank) {
                     //todo this case may also handle static fields easily.
                     addViolation(data, varId, varId.getName());
-                } else if (hasWrite) {
-                    AssignmentEntry fieldDef = DataflowPass.getFieldDefinition(varId);
-                    // ie, the default value does not reach the end of the ctor
-                    if (defaultValueIsOverwrittenOnAllPaths(dataflow, fieldDef)
-                        && noAssignmentIsOverwritten(dataflow, fieldDef)) {
-                        addViolation(data, varId, varId.getName());
-                    }
+                } else if (hasWrite && defaultValueDoesNotReachEndOfCtor(dataflow, varId)) {
+                    addViolation(data, varId, varId.getName());
                 }
             }
 
         }
-        return data;
+        return null;
     }
 
-    private boolean defaultValueIsOverwrittenOnAllPaths(DataflowResult dataflow, AssignmentEntry fieldDef) {
+    private boolean defaultValueDoesNotReachEndOfCtor(DataflowResult dataflow, ASTVariableDeclaratorId varId) {
+        AssignmentEntry fieldDef = DataflowPass.getFieldDefinition(varId);
+        // first assignments to the field
         Set<AssignmentEntry> killers = dataflow.getKillers(fieldDef);
-        return CollectionUtil.none(killers, AssignmentEntry::isFieldAssignmentAtEndOfCtor);
+        // no killer isFieldAssignmentAtEndOfCtor => the field is assigned on all code paths
+        // no killer isReassignedOnSomeCodePath => the field is assigned at most once
+        // => the field is assigned exactly once.
+        return CollectionUtil.none(
+            killers,
+            killer -> killer.isFieldAssignmentAtEndOfCtor() || isReassignedOnSomeCodePath(dataflow, killer)
+        );
     }
 
-    private boolean noAssignmentIsOverwritten(DataflowResult dataflow, AssignmentEntry fieldDef) {
-        return CollectionUtil.none(dataflow.getKillers(fieldDef),
-                                   killer -> CollectionUtil.any(dataflow.getKillers(killer), it -> !it.isFieldAssignmentAtEndOfCtor()));
+    private boolean isReassignedOnSomeCodePath(DataflowResult dataflow, AssignmentEntry anAssignment) {
+        Set<AssignmentEntry> killers = dataflow.getKillers(anAssignment);
+        return CollectionUtil.any(killers, killer -> !killer.isFieldAssignmentAtEndOfCtor());
     }
 }
