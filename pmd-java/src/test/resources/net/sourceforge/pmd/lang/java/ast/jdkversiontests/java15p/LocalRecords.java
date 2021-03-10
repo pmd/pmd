@@ -31,6 +31,12 @@ public class LocalRecords {
         final @Deprecated static record MyRecord4(String a) {}
     }
 
+    void statementThatStartsWithRecordAsRegularIdent() {
+        // https://github.com/pmd/pmd/issues/3145
+        final Map<String, String> record = new HashMap<>();
+        record.put("key", "value");
+    }
+
     void methodWithLocalClass() {
         class MyLocalClass {}
     }

@@ -116,7 +116,7 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
         if (fds != null) {
             for (ASTFieldDeclaration fd : fds) {
                 final ASTVariableDeclaratorId vid = fd.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-                if (vid != null && vid.hasImageEqualTo(varName)) {
+                if (fd.isFinal() && vid != null && vid.hasImageEqualTo(varName)) {
                     ASTVariableInitializer initializer = fd.getFirstDescendantOfType(ASTVariableInitializer.class);
                     if (initializer != null && initializer.getNumChildren() == 1) {
                         Node child = initializer.getChild(0);
