@@ -604,7 +604,7 @@ with lambdas. The available alternatives depend on the actual logging framework.
         <example>
 <![CDATA[
     // Add this for performance
-    if (log.isDebugEnabled() {
+    if (log.isDebugEnabled()) {
         log.debug("log something" + " and " + "concat strings");
     }
 
