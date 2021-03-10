@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
@@ -23,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -63,8 +65,29 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
         LOGGERS = loggersMap;
     }
 
+    private boolean formatIsStringFormat;
+
     public InvalidLogMessageFormatRule() {
+        addRuleChainVisit(ASTImportDeclaration.class);
         addRuleChainVisit(ASTName.class);
+    }
+
+    @Override
+    public void start(RuleContext ctx) {
+        formatIsStringFormat = false;
+    }
+
+    @Override
+    public Object visit(ASTImportDeclaration node, Object data) {
+        if (node.isStatic()) {
+            if ("java.lang.String.format".equals(node.getImportedName())) {
+                formatIsStringFormat = true;
+            }
+            if ("java.lang.String".equals(node.getImportedName()) && node.isImportOnDemand()) {
+                formatIsStringFormat = true;
+            }
+        }
+        return data;
     }
 
     @Override
@@ -111,8 +134,13 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
 
         // remove the message parameter
         final ASTExpression messageParam = argumentList.remove(0);
-        final int expectedArguments = expectedArguments(messageParam);
 
+        // ignore if String.format
+        if (isStringFormatCall(messageParam)) {
+            return data;
+        }
+
+        final int expectedArguments = expectedArguments(messageParam);
         if (expectedArguments == -1) {
             // ignore if we couldn't analyze the message parameter
             return data;
@@ -211,6 +239,17 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
     private String getExpectedMessage(final List<ASTExpression> params, final int expectedArguments) {
         return " expected " + expectedArguments + (expectedArguments > 1 ? " arguments " : " argument ") + "but have "
                 + params.size();
+    }
+
+    private boolean isStringFormatCall(ASTExpression node) {
+        if (node.getNumChildren() > 0 && node.getChild(0) instanceof ASTPrimaryExpression
+                && node.getChild(0).getNumChildren() > 0 && node.getChild(0).getChild(0) instanceof ASTPrimaryPrefix
+                && node.getChild(0).getChild(0).getNumChildren() > 0 && node.getChild(0).getChild(0).getChild(0) instanceof ASTName) {
+            String name = node.getChild(0).getChild(0).getChild(0).getImage();
+
+            return "String.format".equals(name) || formatIsStringFormat && "format".equals(name);
+        }
+        return false;
     }
 
     private int expectedArguments(final ASTExpression node) {
