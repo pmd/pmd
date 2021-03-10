@@ -223,7 +223,7 @@ public class DemoMissingBreakContinue {
     <test-code>
         <description>Possible fallthrough</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 public class DemoMissingBreakContinue {
 

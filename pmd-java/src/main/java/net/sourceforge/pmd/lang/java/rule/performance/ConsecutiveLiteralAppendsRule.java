@@ -81,7 +81,8 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * consecutive appends before a violation is created. The default is 1.</p>
  */
 public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
-
+    // todo this doesn't work, and cannot use the reaching definitions directly,
+    //  as we need to get the latest *usage* of the variable, not the latest write.
     private static final Set<Class<?>> BLOCK_PARENTS;
 
     static {
@@ -108,9 +109,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
     private int threshold = 1;
 
     public ConsecutiveLiteralAppendsRule() {
-        super(ASTMethodCall.class);
+        super(ASTMethodCall.class, ASTVariableDeclaratorId.class);
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
-        addRuleChainVisit(ASTVariableDeclaratorId.class);
     }
 
     private boolean isQualifierAnAppend(ASTMethodCall e) {
@@ -130,7 +130,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
             }
             return isStringBuilderCallWithLiteral(singleAssignment.getRhsAsExpression());
         } else {
-            return isStringBuilderCallWithLiteral(e);
+            return isStringBuilderCallWithLiteral(qual);
         }
     }
 
