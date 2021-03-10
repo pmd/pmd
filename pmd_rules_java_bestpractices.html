@@ -2127,13 +2127,26 @@ the loop iterates over. By default this rule allows a regular ‘for’ loop wit
 <p>Whenever using a log level, one should check if the loglevel is actually enabled, or
 otherwise skip the associate String creation and manipulation.</p>
 
+<p>An alternative to checking the log level are substituting parameters, formatters or lazy logging
+with lambdas. The available alternatives depend on the actual logging framework.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/GuardLogStatementRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.GuardLogStatementRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Add this for performance</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">log</span><span class="o">.</span><span class="na">isDebugEnabled</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">log</span><span class="o">.</span><span class="na">isDebugEnabled</span><span class="o">())</span> <span class="o">{</span>
         <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"log something"</span> <span class="o">+</span> <span class="s">" and "</span> <span class="o">+</span> <span class="s">"concat strings"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Avoid the guarding if statement with substituting parameters</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"log something {} and {}"</span><span class="o">,</span> <span class="n">param1</span><span class="o">,</span> <span class="n">param2</span><span class="o">);</span>
+
+    <span class="c1">// Avoid the guarding if statement with formatters</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"log something %s and %s"</span><span class="o">,</span> <span class="n">param1</span><span class="o">,</span> <span class="n">param2</span><span class="o">);</span>
+
+    <span class="c1">// Avoid the guarding if statement with lazy logging and lambdas</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"log something expensive: {}"</span><span class="o">,</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="n">calculateExpensiveLoggingText</span><span class="o">());</span>
 </code></pre></div></div>
 
 <p><strong>This rule has the following properties:</strong></p>
