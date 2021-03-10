@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -116,6 +117,28 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
             }
         }
         return null;
+    }
+
+    private boolean hasArgumentWithMethodCall(ASTPrimarySuffix node) {
+        if (!node.isArguments()) {
+            return false;
+        }
+
+        ASTArgumentList arguments = node.getFirstDescendantOfType(ASTArgumentList.class);
+        for (int i = 0; i < arguments.getNumChildren(); i++) {
+            JavaNode expression = arguments.getChild(i);
+            if (expression.getNumChildren() > 0) {
+                JavaNode primaryExpr = expression.getChild(0);
+                if (primaryExpr instanceof ASTPrimaryExpression && primaryExpr.getNumChildren() > 1) {
+                    JavaNode lastChild = primaryExpr.getChild(primaryExpr.getNumChildren() - 1);
+                    if (lastChild instanceof ASTPrimarySuffix) {
+                        return ((ASTPrimarySuffix) lastChild).isArguments();
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private boolean hasGuard(ASTMethodCall node, String logLevel) {

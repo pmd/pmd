@@ -430,4 +430,39 @@ public class GuardLogStatement {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3155 False negatives with unguarded method calls</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,6,7</expected-linenumbers>
+        <code><![CDATA[
+public class Logger {
+    private static final Logger LOGGER = new Logger();
+
+    public void bar() {
+        LOGGER.info("Message with param: {}", expensiveOperation()); // bad, expensiveOperation is executed regardless
+        LOGGER.info("Message with param: %s", this.expensiveOperation()); // bad, expensiveOperation is executed regardless
+        LOGGER.info(expensiveOperation()); // bad, expensiveOperation is executed regardless
+
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Message with param: {}", expensiveOperation());
+        }
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Message with param: %s", expensiveOperation());
+        }
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info(expensiveOperation());
+        }
+
+        LOGGER.info("Message with param: {}", () -> expensiveOperation());
+        LOGGER.info("Message with param: %s", () -> expensiveOperation());
+        LOGGER.info(()-> expensiveOperation());
+    }
+
+    private String expensiveOperation() {
+        return "...";
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
