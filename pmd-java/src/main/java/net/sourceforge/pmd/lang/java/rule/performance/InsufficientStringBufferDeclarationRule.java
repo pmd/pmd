@@ -25,8 +25,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -49,8 +47,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         BLOCK_PARENTS = new HashSet<>();
         BLOCK_PARENTS.add(ASTIfStatement.class);
         BLOCK_PARENTS.add(ASTSwitchStatement.class);
-        BLOCK_PARENTS.add(ASTSwitchLabeledBlock.class);
-        BLOCK_PARENTS.add(ASTSwitchLabeledExpression.class);
+        // BLOCK_PARENTS.add(ASTSwitchLabeledBlock.class);
+        // BLOCK_PARENTS.add(ASTSwitchLabeledExpression.class);
     }
 
     // as specified in StringBuffer and StringBuilder

@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -74,7 +74,7 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
                     .defaultValues("isTraceEnabled", "isDebugEnabled", "isInfoEnabled", "isWarnEnabled", "isErrorEnabled", "isLoggable")
                     .delim(',').build();
 
-    private Map<String, String> guardStmtByLogLevel = new HashMap<>(12);
+    private final Map<String, String> guardStmtByLogLevel = new HashMap<>(12);
 
     /*
      * java util methods, that need special handling, e.g. they require an argument, which
@@ -119,28 +119,6 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
         return null;
     }
 
-    private boolean hasArgumentWithMethodCall(ASTPrimarySuffix node) {
-        if (!node.isArguments()) {
-            return false;
-        }
-
-        ASTArgumentList arguments = node.getFirstDescendantOfType(ASTArgumentList.class);
-        for (int i = 0; i < arguments.getNumChildren(); i++) {
-            JavaNode expression = arguments.getChild(i);
-            if (expression.getNumChildren() > 0) {
-                JavaNode primaryExpr = expression.getChild(0);
-                if (primaryExpr instanceof ASTPrimaryExpression && primaryExpr.getNumChildren() > 1) {
-                    JavaNode lastChild = primaryExpr.getChild(primaryExpr.getNumChildren() - 1);
-                    if (lastChild instanceof ASTPrimarySuffix) {
-                        return ((ASTPrimarySuffix) lastChild).isArguments();
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
     private boolean hasGuard(ASTMethodCall node, String logLevel) {
         ASTIfStatement ifStatement = node.ancestors(ASTIfStatement.class).first();
         if (ifStatement == null) {
@@ -179,7 +157,7 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
      */
     private @Nullable String getLogLevelName(ASTMethodCall methodCall) {
         String methodName = methodCall.getMethodName();
-        if (!JAVA_UTIL_LOG_METHOD.equals(methodName) && !JAVA_UTIL_LOG_GUARD_METHOD.equals(methodName)) {
+        if (!JAVA_UTIL_LOG_METHOD.equals(methodName)) {
             if (isUnguardedAccessOk(methodCall, 0)) {
                 return null;
             }
@@ -191,7 +169,6 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
         if (isUnguardedAccessOk(methodCall, 1)) {
             return null;
         }
-
         return getJutilLogLevelInFirstArg(methodCall);
     }
 
@@ -206,8 +183,9 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
     private boolean isUnguardedAccessOk(ASTMethodCall call, int messageArgIndex) {
         // return true if the statement has limited overhead even if unguarded,
         // so that we can ignore it
-        ASTExpression messageArg = call.getArguments().toStream().get(messageArgIndex);
-        return messageArg instanceof ASTStringLiteral || messageArg instanceof ASTLambdaExpression;
+        return call.getArguments().toStream()
+                   .drop(messageArgIndex) // remove the level argument if needed
+                   .all(it -> it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression || it instanceof ASTVariableAccess);
     }
 
     private void extractProperties() {

@@ -28,8 +28,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
@@ -82,8 +80,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         BLOCK_PARENTS.add(ASTCatchClause.class);
         BLOCK_PARENTS.add(ASTFinallyClause.class);
         BLOCK_PARENTS.add(ASTLambdaExpression.class);
-        BLOCK_PARENTS.add(ASTSwitchLabeledBlock.class);
-        BLOCK_PARENTS.add(ASTSwitchLabeledExpression.class);
+        // BLOCK_PARENTS.add(ASTSwitchLabeledBlock.class);
+        // BLOCK_PARENTS.add(ASTSwitchLabeledExpression.class);
     }
 
     private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
