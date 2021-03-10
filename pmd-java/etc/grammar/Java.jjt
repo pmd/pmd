@@ -1,4 +1,10 @@
 /**
+ * Fix #3117 - infinite loop when parsing invalid code nested in lambdas
+ * Andreas Dangel 03/2021
+ *====================================================================
+ * Fix #3145 - parse exception with local records
+ * Clément Fournier 03/2021
+ *====================================================================
  * Remove support for Java 14 preview language features
  * JEP 397: Sealed Classes (Second Preview) for Java16 Preview
  * JEP 395: Records for Java16
@@ -236,6 +242,11 @@ options {
   NODE_USES_PARSER = true;
   TRACK_TOKENS = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
+
+  // disable the calculation of expected tokens when a parse error occurs
+  // depending on the possible allowed next tokens, this
+  // could be expensive (see https://github.com/pmd/pmd/issues/3117)
+  //ERROR_REPORTING = false;
 
   //DEBUG_PARSER = true;
   //DEBUG_LOOKAHEAD = true;
@@ -594,7 +605,7 @@ public class JavaParser {
       return next.kind == CLASS
         || isRecordTypeSupported() && next.kind == INTERFACE
         || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("enum")
-        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("record");
+        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("record") && isToken(2, IDENTIFIER);
   }
 
   /**
@@ -2131,9 +2142,9 @@ void StatementExpression() :
 |
   PreDecrementExpression()
 |
-  LOOKAHEAD( PrimaryExpression() AssignmentOperator() ) PrimaryExpression() AssignmentOperator() Expression()
-|
-  PostfixExpression()
+  // using PostfixExpression here allows us to skip the part of the production tree
+  // between Expression() and PostfixExpression()
+  PostfixExpression() [ AssignmentOperator() Expression() ]
 }
 
 void SwitchStatement():
