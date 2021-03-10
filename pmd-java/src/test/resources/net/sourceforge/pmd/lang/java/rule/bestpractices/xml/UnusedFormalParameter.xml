@@ -291,4 +291,19 @@ class Imp2 extends Base {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2957 Unused rules should ignore some names</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+class Imp1 {
+  private void m(int arg1,
+                String arg2,
+                int unusedArg1,
+                int ignoredArg2,
+                int unused,
+                String ignored) {}
+}
+        ]]></code>
+    </test-code>
 </test-data>

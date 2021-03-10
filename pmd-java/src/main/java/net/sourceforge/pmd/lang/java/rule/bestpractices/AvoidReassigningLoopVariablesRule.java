@@ -71,7 +71,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
         }
         ASTVariableDeclaratorId loopVar = loopStmt.getVarId();
         boolean ignoreNext = behavior == ForeachReassignOption.FIRST_ONLY;
-        for (ASTNamedReferenceExpr usage : loopVar.getUsages()) {
+        for (ASTNamedReferenceExpr usage : loopVar.getLocalUsages()) {
             if (usage.getAccessType() == AccessType.WRITE) {
                 if (ignoreNext) {
                     ignoreNext = false;
@@ -95,7 +95,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
         NodeStream<ASTVariableDeclaratorId> loopVars = JavaRuleUtil.getLoopVariables(loopStmt);
         if (behavior == ForReassignOption.DENY) {
             for (ASTVariableDeclaratorId loopVar : loopVars) {
-                for (ASTNamedReferenceExpr usage : loopVar.getUsages()) {
+                for (ASTNamedReferenceExpr usage : loopVar.getLocalUsages()) {
                     if (usage.getAccessType() == AccessType.WRITE) {
                         if (update != null && usage.ancestors(ASTForUpdate.class).first() == update) {
                             continue;
@@ -175,7 +175,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
 
                     ASTStatement body = ((ASTLoopStatement) stmt).getBody();
                     for (JavaNode child : stmt.children()) {
-                        if (child != body) {
+                        if (child != body) { // NOPMD
                             checkVorViolations(child);
                         }
                     }
@@ -195,10 +195,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                     checkVorViolations(ifStmt.getCondition());
                     mayExit |= withGuard(true).roamStatementsForExit(ifStmt.getThenBranch());
                     mayExit |= withGuard(this.guarded).roamStatementsForExit(ifStmt.getElseBranch());
-
-                }
-                // these two catch-all clauses implement other statements & eg switch branches
-                else if (stmt instanceof ASTExpression) {
+                } else if (stmt instanceof ASTExpression) { // these two catch-all clauses implement other statements & eg switch branches
                     checkVorViolations(stmt);
                 } else if (!(stmt instanceof ASTLocalClassStatement)) {
                     mayExit |= roamStatementsForExit(stmt.children());
@@ -211,10 +208,11 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
             if (node == null) {
                 return;
             }
+            final boolean onlyConsiderWrite = guarded || mayExit;
             node.descendants(ASTNamedReferenceExpr.class)
                 .filter(it -> loopVarNames.contains(it.getName()))
-                .filter(it -> (guarded || mayExit) ? JavaRuleUtil.isVarAccessStrictlyWrite(it)
-                                                   : JavaRuleUtil.isVarAccessReadAndWrite(it))
+                .filter(it -> onlyConsiderWrite ? JavaRuleUtil.isVarAccessStrictlyWrite(it)
+                                                : JavaRuleUtil.isVarAccessReadAndWrite(it))
                 .forEach(it -> addViolation(ruleCtx, it, it.getName()));
         }
     }

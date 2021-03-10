@@ -124,6 +124,7 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
         return false;
     }
 
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     private boolean internalEquals(Object obj) {
         if (this == obj) {
             return true;

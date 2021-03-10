@@ -35,7 +35,7 @@ public class AvoidReassigningParametersRule extends AbstractJavaRulechainRule {
     private void lookForViolations(ASTMethodOrConstructorDeclaration node, Object data) {
         for (ASTFormalParameter formal : node.getFormalParameters()) {
             ASTVariableDeclaratorId varId = formal.getVarId();
-            for (ASTNamedReferenceExpr usage : varId.getUsages()) {
+            for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
                 if (usage.getAccessType() == AccessType.WRITE) {
                     addViolation(data, usage, varId.getName());
                 }

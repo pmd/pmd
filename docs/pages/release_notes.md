@@ -21,36 +21,22 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
-*   pmd-core
-    * [#1939](https://github.com/pmd/pmd/issues/1939): \[core] XPath expressions return handling
-
+*   java
+    *   [#3117](https://github.com/pmd/pmd/issues/3117): \[java] Infinite loop when parsing invalid code nested in lambdas
+    *   [#3145](https://github.com/pmd/pmd/issues/3145): \[java] Parse exception when using "record" as variable name
+*   java-bestpractices
+    *   [#3144](https://github.com/pmd/pmd/issues/3144): \[java] GuardLogStatement can have more detailed example
+    *   [#3155](https://github.com/pmd/pmd/pull/3155): \[java] GuardLogStatement: False negative with unguarded method call
+    *   [#3160](https://github.com/pmd/pmd/issues/3160): \[java] MethodReturnsInternalArray does not consider static final fields and fields initialized with empty array
+*   java-errorprone
+    *   [#3146](https://github.com/pmd/pmd/issues/3146): \[java] InvalidLogMessageFormat detection failing when String.format used
+*   java-performance
+    *   [#2427](https://github.com/pmd/pmd/issues/2427): \[java] ConsecutiveLiteralAppend false-positive with builder inside lambda
+    *   [#3152](https://github.com/pmd/pmd/issues/3152): \[java] ConsecutiveLiteralAppends and InsufficientStringBufferDeclaration: FP with switch expressions
 
 ### API Changes
-
-#### Deprecated API
-
-*   {% jdoc !!java::lang.java.ast.ASTPackageDeclaration#getPackageNameImage() %},
-    {% jdoc !!java::lang.java.ast.ASTTypeParameter#getParameterName() %}
-    and the corresponding XPath attributes. In both cases they're replaced with a new method `getName`,
-    the attribute is `@Name`.
-*   {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceBody#isAnonymousInnerClass() %},
-    and {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceBody#isEnumChild() %},
-    refs [#905](https://github.com/pmd/pmd/issues/905)
-
-#### Internal API
-
-Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
-You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
-
-*   {% jdoc !!javascript::lang.ecmascript.Ecmascript3Handler %}
-*   {% jdoc !!javascript::lang.ecmascript.Ecmascript3Parser %}
-*   {% jdoc !!javascript::lang.ecmascript.ast.EcmascriptParser#parserOptions %}
-*   {% jdoc !!javascript::lang.ecmascript.ast.EcmascriptParser#getSuppressMap() %}
-*   {% jdoc !!core::lang.rule.ParametricRuleViolation %}
-*   {% jdoc !!core::lang.ParserOptions#suppressMarker %}
-*   {% jdoc !!modelica::lang.modelica.rule.ModelicaRuleViolationFactory %}
-
 
 ### External Contributions
 
 {% endtocmaker %}
+

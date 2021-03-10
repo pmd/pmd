@@ -383,6 +383,15 @@ public interface Node {
         return visitor.cannotVisit(this, data);
     }
 
+    /**
+     * Returns the {@link AstInfo} for this root node.
+     *
+     * @implNote This default implementation can not work unless overridden in the root node.
+     */
+    default AstInfo<? extends RootNode> getAstInfo() {
+        return getRoot().getAstInfo();
+    }
+
 
     /**
      * Gets the name of the node that is used to match it with XPath queries.
@@ -445,7 +454,7 @@ public interface Node {
     default @Nullable Node getNextSibling() {
         Node parent = getParent();
         int idx = getIndexInParent();
-        if (parent != null && idx < parent.getNumChildren()) {
+        if (parent != null && idx + 1 < parent.getNumChildren()) {
             return parent.getChild(idx + 1);
         }
         return null;

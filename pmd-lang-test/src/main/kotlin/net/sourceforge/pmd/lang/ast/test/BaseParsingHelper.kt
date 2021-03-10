@@ -4,16 +4,19 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.*
-import net.sourceforge.pmd.lang.*
-import net.sourceforge.pmd.lang.ast.AstAnalysisContext
-import net.sourceforge.pmd.lang.ast.AstProcessingStage
-import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.RootNode
+import net.sourceforge.pmd.lang.Language
+import net.sourceforge.pmd.lang.LanguageRegistry
+import net.sourceforge.pmd.lang.LanguageVersion
+import net.sourceforge.pmd.lang.LanguageVersionHandler
+import net.sourceforge.pmd.lang.ast.*
+import net.sourceforge.pmd.util.datasource.DataSource
 import org.apache.commons.io.IOUtils
 import java.io.File
 import java.io.InputStream
 import java.io.StringReader
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
 
 /**
  * Language-independent base for a parser utils class.
@@ -30,7 +33,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             val defaultVerString: String?,
             val resourceLoader: Class<*>?,
             val resourcePrefix: String,
-            val parserOptions: ParserOptions? = null
+            val suppressMarker: String = PMD.SUPPRESS_MARKER,
     ) {
         companion object {
 
@@ -60,7 +63,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
                else language.getVersion(version) ?: throw AssertionError("Unsupported version $version for language $language")
     }
 
-    private val language: Language
+    val language: Language
         get() = LanguageRegistry.getLanguage(langName)
                 ?: throw AssertionError("'$langName' is not a supported language (available ${LanguageRegistry.getLanguages()})")
 
@@ -92,13 +95,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             clone(params.copy(resourceLoader = contextClass, resourcePrefix = resourcePrefix))
 
 
-    /**
-     * Returns an instance of [Self] for which the [parse] methods use
-     * the provided [parserOptions].
-     */
-    fun withParserOptions(parserOptions: ParserOptions?): Self =
-            clone(params.copy(parserOptions = parserOptions))
-
+    fun withSuppressMarker(marker: String): Self =
+            clone(params.copy(suppressMarker = marker))
 
     fun getHandler(version: String): LanguageVersionHandler {
         return getVersion(version).languageVersionHandler
@@ -118,12 +116,18 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * so.
      */
     @JvmOverloads
-    fun parse(sourceCode: String, version: String? = null): T {
+    fun parse(sourceCode: String, version: String? = null, filename: String = FileAnalysisException.NO_FILE_NAME): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val handler = lversion.languageVersionHandler
-        val options = params.parserOptions ?: handler.defaultParserOptions
-        val parser = handler.getParser(options)
-        val rootNode = rootClass.cast(parser.parse(null, StringReader(sourceCode)))
+        val parser = handler.parser
+        val source = DataSource.forString(sourceCode, filename)
+        val toString = DataSource.readToString(source, StandardCharsets.UTF_8) // this removed the BOM
+        val task = Parser.ParserTask(lversion, filename, toString, SemanticErrorReporter.noop())
+        task.properties.also {
+            handler.declareParserTaskProperties(it)
+            it.setProperty(Parser.ParserTask.COMMENT_MARKER, params.suppressMarker)
+        }
+        val rootNode = rootClass.cast(parser.parse(task))
         if (params.doProcess) {
             postProcessing(handler, lversion, rootNode)
         }
@@ -147,7 +151,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             override fun getLanguageVersion(): LanguageVersion = lversion
         }
 
-        val stages = selectProcessingStages(handler).sortedWith(Comparator { o1, o2 -> o1.compare(o2) })
+        val stages = selectProcessingStages(handler).sortedWith { o1, o2 -> o1.compare(o2) }
 
         stages.forEach {
             it.processAST(rootNode, astAnalysisContext)
@@ -162,6 +166,13 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     @JvmOverloads
     open fun parseResource(resource: String, version: String? = null): T =
             parse(readResource(resource), version)
+
+    /**
+     * Fetches and [parse]s the [path].
+     */
+    @JvmOverloads
+    open fun parseFile(path: Path, version: String? = null): T =
+            parse(IOUtils.toString(Files.newBufferedReader(path)), version, filename = path.toAbsolutePath().toString())
 
     /**
      * Fetches the source of the given [clazz].
@@ -211,13 +222,14 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     @JvmOverloads
     fun executeRule(rule: Rule, code: String, filename: String = "testfile.${language.extensions[0]}"): Report {
         val p = PMD()
-        p.configuration.suppressMarker = this.params.parserOptions?.suppressMarker ?: PMD.SUPPRESS_MARKER
+        p.configuration.suppressMarker = this.params.suppressMarker
         val ctx = RuleContext()
         val report = Report()
         ctx.report = report
         ctx.sourceCodeFile = File(filename)
         ctx.isIgnoreExceptions = false
-        val rules = RuleSetFactory().createSingleRuleRuleSet(rule)
+
+        val rules = RuleSet.forSingleRule(rule)
         try {
             p.sourceCodeProcessor.processSourceCode(StringReader(code), RuleSets(rules), ctx)
         } catch (e: PMDException) {

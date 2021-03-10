@@ -1088,12 +1088,30 @@ public class Bar {
           language="java"
           since="3.2"
           message="Use equals() to compare object references."
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.CompareObjectsWithEqualsRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#compareobjectswithequals">
         <description>
 Use equals() to compare object references; avoid comparing them with ==.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//InfixExpression
+    [@Operator = ("==", "!=")]
+    [count(*
+        [not(self::NullLiteral)]
+        [pmd-java:typeIs('java.lang.Object')]
+        [not(pmd-java:typeIs('java.lang.Enum'))]
+        [not(pmd-java:typeIs('java.lang.Class'))]) = 2
+    ]
+    [not(ancestor::MethodDeclaration[1][@Name = "equals"])]
+]]>
+        </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 class Foo {
@@ -2067,11 +2085,15 @@ Class c = String.class;
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#invalidlogmessageformat">
         <description>
 Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of arguments and placeholders.
+
+Since 6.32.0 in addition to parameterized message placeholders (`{}`) also format specifiers of string formatted
+messages are supported (`%s`).
         </description>
         <priority>5</priority>
         <example>
 <![CDATA[
 LOGGER.error("forget the arg {}");
+LOGGER.error("forget the arg %s");
 LOGGER.error("too many args {}", "arg1", "arg2");
 LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The exception is shown separately, so is correct.
 ]]>
@@ -2337,7 +2359,7 @@ See the property `annotations`.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="annotations" type="List[String]" delimiter="," value="org.springframework.beans.factory.annotation.Autowired, javax.inject.Inject" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
+            <property name="annotations" type="List[String]" delimiter="," value="org.springframework.beans.factory.annotation.Autowired,javax.inject.Inject" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -3292,11 +3314,8 @@ Use the equals() method instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//EqualityExpression/PrimaryExpression
-[not(PrimarySuffix)]
-[PrimaryPrefix/Literal
-   [starts-with(@Image, '"')]
-   [ends-with(@Image, '"')]]
+//EqualityExpression
+    [count(PrimaryExpression[pmd-java:typeIs('java.lang.String')]) = 2]
 ]]>
                 </value>
             </property>

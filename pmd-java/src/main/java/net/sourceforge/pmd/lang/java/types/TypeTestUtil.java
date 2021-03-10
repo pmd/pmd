@@ -111,6 +111,7 @@ public final class TypeTestUtil {
      */
     public static boolean isA(final @NonNull String canonicalName, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("canonicalName", (Object) canonicalName);
+        AssertionUtil.assertValidJavaBinaryName(canonicalName);
         if (node == null) {
             return false;
         }
@@ -256,6 +257,7 @@ public final class TypeTestUtil {
      * @see #isExactlyA(Class, TypeNode)
      */
     public static boolean isExactlyA(@NonNull String canonicalName, final @Nullable TypeNode node) {
+        AssertionUtil.assertValidJavaBinaryName(canonicalName);
         if (node == null) {
             return false;
         }

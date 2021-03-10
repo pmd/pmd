@@ -11,7 +11,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -36,7 +35,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  * <p>Since this node conventionally represents the declared variable in PMD, our symbol table
  * populates it with a {@link VariableNameDeclaration}, and its usages can be accessed through
- * the method {@link #oldGetUsages ()}.
+ * the method {@link #getUsages()}.
  *
  * <p>Type resolution assigns the type of the variable to this node. See {@link #getType()}'s
  * documentation for the contract of this method.
@@ -79,10 +78,10 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     }
 
     /**
-     * @deprecated transitional, use {@link #getUsages()}
+     * @deprecated transitional, use {@link #getLocalUsages()}
      */
     @Deprecated
-    public List<NameOccurrence> oldGetUsages() {
+    public List<NameOccurrence> getUsages() {
         return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
     }
 
@@ -94,7 +93,7 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      * <p>Note that a variable initializer is not part of the usages
      * (though this should be evident from the return type).
      */
-    public List<ASTNamedReferenceExpr> getUsages() {
+    public List<ASTNamedReferenceExpr> getLocalUsages() {
         return usages;
     }
 
@@ -103,11 +102,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
             usages = new ArrayList<>(4); //make modifiable
         }
         usages.add(usage);
-    }
-
-    @Override
-    public Visibility getVisibility() {
-        return getModifierOwnerParent().getVisibility();
     }
 
     /**
@@ -124,14 +118,14 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     @NonNull
     @Override
     public ASTModifierList getModifiers() {
-        if (isPatternBinding()) {
-            JavaNode firstChild = getFirstChild();
-            assert firstChild != null : "Binding variable has no modifiers!";
-            return (ASTModifierList) firstChild;
-        }
-
         // delegates modifiers
         return getModifierOwnerParent().getModifiers();
+    }
+
+    @Override
+    public Visibility getVisibility() {
+        return isPatternBinding() ? Visibility.V_LOCAL
+                                  : getModifierOwnerParent().getVisibility();
     }
 
 
@@ -139,8 +133,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         JavaNode parent = getParent();
         if (parent instanceof ASTVariableDeclarator) {
             return (AccessNode) parent.getParent();
-        } else if (parent instanceof ASTTypeTestPattern) {
-            return this; // this is pretty weird
         }
         return (AccessNode) parent;
     }
@@ -266,7 +258,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      * Returns true if this is a binding variable in a
      * {@linkplain ASTPattern pattern}.
      */
-    @Experimental
     public boolean isPatternBinding() {
         return getParent() instanceof ASTPattern;
     }

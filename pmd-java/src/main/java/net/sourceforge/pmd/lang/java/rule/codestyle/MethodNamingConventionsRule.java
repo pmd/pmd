@@ -17,7 +17,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class MethodNamingConventionsRule extends AbstractNamingConventionRule<ASTMethodDeclaration> {
 
-    private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
+    private final Map<String, String> descriptorToDisplayName = new HashMap<>();
 
     private final PropertyDescriptor<Pattern> instanceRegex = defaultProp("", "instance").build();
     private final PropertyDescriptor<Pattern> staticRegex = defaultProp("static").build();
@@ -78,7 +78,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
         String display = (displayName + " method").trim();
         RegexPropertyBuilder prop = super.defaultProp(name.isEmpty() ? "method" : name, display);
 
-        DESCRIPTOR_TO_DISPLAY_NAME.put(prop.getName(), display);
+        descriptorToDisplayName.put(prop.getName(), display);
 
         return prop;
     }
@@ -86,6 +86,6 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
 
     @Override
     String kindDisplayName(ASTMethodDeclaration node, PropertyDescriptor<Pattern> descriptor) {
-        return DESCRIPTOR_TO_DISPLAY_NAME.get(descriptor.name());
+        return descriptorToDisplayName.get(descriptor.name());
     }
 }

@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * This is the base class for antlr generated parsers. The implementation
- * of PMD's {@link net.sourceforge.pmd.lang.Parser} interface is {@link AntlrBaseParser}.
+ * of PMD's {@link net.sourceforge.pmd.lang.ast.Parser} interface is {@link AntlrBaseParser}.
  *
  * <p>This class must implement the two abstract methods to create terminals
  * and error nodes that implement {@code <N>}. The inner nodes implement PMD

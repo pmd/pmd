@@ -95,6 +95,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
         BLOCK_PARENTS.add(ASTCatchClause.class);
         BLOCK_PARENTS.add(ASTFinallyClause.class);
         BLOCK_PARENTS.add(ASTLambdaExpression.class);
+        // BLOCK_PARENTS.add(ASTSwitchLabeledBlock.class);
+        // BLOCK_PARENTS.add(ASTSwitchLabeledExpression.class);
     }
 
 
@@ -108,6 +110,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
     public ConsecutiveLiteralAppendsRule() {
         super(ASTMethodCall.class);
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
+        addRuleChainVisit(ASTVariableDeclaratorId.class);
     }
 
     private boolean isQualifierAnAppend(ASTMethodCall e) {

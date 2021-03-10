@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertPosition;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
@@ -193,14 +194,5 @@ public class ApexParserTest extends ApexParserTestBase {
             result = visitPosition(node.getChild(i), result);
         }
         return result;
-    }
-
-    // TEST HELPER
-
-    private static void assertPosition(Node node, int beginLine, int beginColumn, int endLine, int endColumn) {
-        assertEquals("Wrong begin line", beginLine, node.getBeginLine());
-        assertEquals("Wrong begin column", beginColumn, node.getBeginColumn());
-        assertEquals("Wrong end line", endLine, node.getEndLine());
-        assertEquals("Wrong end column", endColumn, node.getEndColumn());
     }
 }

@@ -716,4 +716,38 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#3006 [java] NPE in SingularFieldRule with concise resource syntax</description>
+        <rule-property name="disallowNotAssignment">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package oo;
+
+            public class IPA {
+
+                private final LocalModel model;
+
+                public InternalAggregation reduce(String s) {
+                    try (model) { }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3006 [java] NPE in SingularFieldRule with concise resource syntax (disallowNotAssignment)</description>
+        <rule-property name="disallowNotAssignment">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package oo;
+
+            public class IPA {
+
+                private final LocalModel model;
+
+                public InternalAggregation reduce(String s) {
+                    try (model) { }
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

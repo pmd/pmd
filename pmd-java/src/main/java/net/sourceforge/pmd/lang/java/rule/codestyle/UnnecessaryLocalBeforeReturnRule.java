@@ -42,7 +42,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRulechainRule 
             return null;
         }
 
-        if (varDecl.getUsages().size() != 1) {
+        if (varDecl.getLocalUsages().size() != 1) {
             return null;
         }
         // then this is the only usage

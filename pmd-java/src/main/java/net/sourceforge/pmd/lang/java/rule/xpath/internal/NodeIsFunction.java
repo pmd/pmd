@@ -17,11 +17,11 @@ public final class NodeIsFunction extends BaseRewrittenFunction<Class<?>, JavaNo
     }
 
     @Override
-    protected Class<?> parseArgument(String constantArg) throws XPathException {
+    protected Class<?> parseArgument(String arg) throws XPathException {
         try {
-            return Class.forName("net.sourceforge.pmd.lang.java.ast.AST" + constantArg);
+            return Class.forName("net.sourceforge.pmd.lang.java.ast.AST" + arg);
         } catch (ClassNotFoundException e) {
-            throw new XPathException("No class named AST" + constantArg);
+            throw new XPathException("No class named AST" + arg);
         }
     }
 

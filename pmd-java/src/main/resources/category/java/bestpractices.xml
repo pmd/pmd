@@ -71,7 +71,7 @@ public class Outer {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AccessorMethodGenerationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#accessormethodgeneration">
         <description>
-When accessing a private field / method from another class, the Java compiler will generate a accessor methods
+When accessing private fields / methods from another class, the Java compiler will generate accessor methods
 with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
 be avoided by changing the visibility of the field / method from private to package-private.
         </description>
@@ -581,13 +581,26 @@ for (int i = 0, j = 0; i < 10; i++, j += 2) {
         <description>
 Whenever using a log level, one should check if the loglevel is actually enabled, or
 otherwise skip the associate String creation and manipulation.
+
+An alternative to checking the log level are substituting parameters, formatters or lazy logging
+with lambdas. The available alternatives depend on the actual logging framework.
         </description>
         <priority>2</priority>
         <example>
 <![CDATA[
     // Add this for performance
-    if (log.isDebugEnabled() { ...
+    if (log.isDebugEnabled()) {
         log.debug("log something" + " and " + "concat strings");
+    }
+
+    // Avoid the guarding if statement with substituting parameters
+    log.debug("log something {} and {}", param1, param2);
+
+    // Avoid the guarding if statement with formatters
+    log.debug("log something %s and %s", param1, param2);
+
+    // Avoid the guarding if statement with lazy logging and lambdas
+    log.debug("log something expensive: {}", () -> calculateExpensiveLoggingText());
 ]]>
         </example>
     </rule>
@@ -1043,56 +1056,6 @@ String name,
         </example>
     </rule>
 
-    <rule name="PositionLiteralsFirstInCaseInsensitiveComparisons"
-          language="java"
-          since="5.1"
-          message="Position literals first in String comparisons for EqualsIgnoreCase"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.PositionLiteralsFirstInCaseInsensitiveComparisonsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons"
-          deprecated="true">
-        <description>
-Position literals first in comparisons, if the second argument is null then NullPointerExceptions
-can be avoided, they will just return false.
-
-This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons" %}.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-class Foo {
-  boolean bar(String x) {
-    return x.equalsIgnoreCase("2"); // should be "2".equalsIgnoreCase(x)
-  }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="PositionLiteralsFirstInComparisons"
-          language="java"
-          since="3.3"
-          message="Position literals first in String comparisons"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.PositionLiteralsFirstInComparisonsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons"
-          deprecated="true">
-        <description>
-Position literals first in comparisons, if the second argument is null then NullPointerExceptions
-can be avoided, they will just return false.
-
-This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons" %}.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-class Foo {
-  boolean bar(String x) {
-    return x.equals("2"); // should be "2".equals(x)
-  }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="PreserveStackTrace"
           language="java"
           since="3.7"
@@ -1252,7 +1215,7 @@ public void bar() {
     <rule name="SystemPrintln"
           language="java"
           since="2.1"
-          message="{0} is used"
+          message="Usage of System.out/err"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#systemprintln">
         <description>
@@ -1265,11 +1228,9 @@ will (and by priority) and avoid clogging the Standard out log.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Name[
-    starts-with(@Image, 'System.out.print')
-    or
-    starts-with(@Image, 'System.err.print')
-    ]
+//MethodCall[ starts-with(@MethodName, 'print') ]
+  /FieldAccess[ @Name = ('err', 'out') ]
+  /TypeExpression[ pmd-java:typeIsExactly('java.lang.System') ]
 ]]>
                 </value>
             </property>
@@ -1309,7 +1270,7 @@ class Foo{
             The rule subsumes {% rule "UnusedLocalVariable" %}, and {% rule "UnusedFormalParameter" %}.
             Those violations are filtered
             out by default, in case you already have enabled those rules, but may be enabled with the property
-            `reportUnusedVariables`. Variables whose name starts with `ignored` are filtered out, as
+            `reportUnusedVariables`. Variables whose name starts with `ignored` or `unused` are filtered out, as
             is standard practice for exceptions.
 
             Limitations:
@@ -1420,10 +1381,13 @@ class C {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedFormalParameterRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedformalparameter">
         <description>
-Avoid passing parameters to methods or constructors without actually referencing them in the method body.
+Reports parameters of methods and constructors that are not referenced them in the method body.
+Parameters whose name starts with `ignored` or `unused` are filtered out.
+
 Removing unused formal parameters from public methods could cause a ripple effect through the code base.
 Hence, by default, this rule only considers private methods. To include non-private methods, set the
 `checkAll` property to `true`.
+
         </description>
         <priority>3</priority>
         <example>
@@ -1466,6 +1430,7 @@ public class Foo {}
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedlocalvariable">
         <description>
 Detects when a local variable is declared and/or assigned, but not used.
+Variables whose name starts with `ignored` or `unused` are filtered out.
         </description>
         <priority>3</priority>
         <example>
@@ -1847,7 +1812,7 @@ a block `{}` is sufficient.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-  //DoStatement[BooleanLiteral]
+  //DoStatement/BooleanLiteral
 | //WhileStatement/BooleanLiteral[@True = false()]
                 ]]></value>
             </property>

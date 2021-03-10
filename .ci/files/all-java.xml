@@ -9,24 +9,24 @@
 
     <!-- bestpractices.xml -->
 
-    <!-- <rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod"/> -->
+    <rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod"/>
     <rule ref="category/java/bestpractices.xml/AccessorClassGeneration"/>
     <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration"/>
-    <!-- <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly"/> -->
+    <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly"/>
     <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField"/>
     <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace"/>
     <rule ref="category/java/bestpractices.xml/AvoidReassigningCatchVariables"/>
     <rule ref="category/java/bestpractices.xml/AvoidReassigningLoopVariables"/>
     <rule ref="category/java/bestpractices.xml/AvoidReassigningParameters"/>
     <rule ref="category/java/bestpractices.xml/AvoidStringBufferField"/>
-    <!-- <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/CheckResultSet"/> -->
+    <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP"/>
+    <rule ref="category/java/bestpractices.xml/CheckResultSet"/>
     <rule ref="category/java/bestpractices.xml/ConstantsInInterface"/>
     <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt"/>
     <rule ref="category/java/bestpractices.xml/DoubleBraceInitialization"/>
     <!-- <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach"/> -->
     <rule ref="category/java/bestpractices.xml/ForLoopVariableCount"/>
-    <!-- <rule ref="category/java/bestpractices.xml/GuardLogStatement"/> -->
+    <rule ref="category/java/bestpractices.xml/GuardLogStatement"/>
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation"/> -->
@@ -37,7 +37,7 @@
     <rule ref="category/java/bestpractices.xml/JUnitUseExpected"/>
     <rule ref="category/java/bestpractices.xml/LiteralsFirstInComparisons"/>
     <!-- <rule ref="category/java/bestpractices.xml/LooseCoupling"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray"/> -->
+    <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray"/>
     <rule ref="category/java/bestpractices.xml/MissingOverride"/>
     <!-- <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/PositionLiteralsFirstInCaseInsensitiveComparisons"/> -->
@@ -47,7 +47,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList"/> -->
     <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault"/>
-    <!-- <rule ref="category/java/bestpractices.xml/SystemPrintln"/> -->
+    <rule ref="category/java/bestpractices.xml/SystemPrintln"/>
     <rule ref="category/java/bestpractices.xml/UnusedAssignment"/>
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>
     <!-- <rule ref="category/java/bestpractices.xml/UnusedImports"/> -->
@@ -61,7 +61,7 @@
     <rule ref="category/java/bestpractices.xml/UseCollectionIsEmpty"/>
     <!-- <rule ref="category/java/bestpractices.xml/UseTryWithResources"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/UseVarargs"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/WhileLoopWithLiteralBoolean"/> -->
+    <rule ref="category/java/bestpractices.xml/WhileLoopWithLiteralBoolean"/>
 
     <!-- codestyle.xml -->
 
@@ -298,7 +298,7 @@
     <rule ref="category/java/performance.xml/ConsecutiveAppendsShouldReuse"/>
     <!-- <rule ref="category/java/performance.xml/ConsecutiveLiteralAppends"/> -->
     <rule ref="category/java/performance.xml/InefficientEmptyStringCheck"/>
-    <!-- <rule ref="category/java/performance.xml/InefficientStringBuffering"/> -->
+    <rule ref="category/java/performance.xml/InefficientStringBuffering"/>
     <!-- <rule ref="category/java/performance.xml/InsufficientStringBufferDeclaration"/> -->
     <rule ref="category/java/performance.xml/IntegerInstantiation"/>
     <rule ref="category/java/performance.xml/LongInstantiation"/>
@@ -320,7 +320,7 @@
 
     <!-- security.xml -->
 
-    <!-- <rule ref="category/java/security.xml/HardCodedCryptoKey"/> -->
-    <!-- <rule ref="category/java/security.xml/InsecureCryptoIv"/> -->
+    <rule ref="category/java/security.xml/HardCodedCryptoKey"/>
+    <rule ref="category/java/security.xml/InsecureCryptoIv"/>
 
 </ruleset>

@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.apex.rule;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
-import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -18,11 +16,6 @@ public abstract class AbstractApexRule extends AbstractRule
 
     public AbstractApexRule() {
         super.setLanguage(LanguageRegistry.getLanguage(ApexLanguageModule.NAME));
-    }
-
-    @Override
-    public ParserOptions getParserOptions() {
-        return new ApexParserOptions();
     }
 
     @Override

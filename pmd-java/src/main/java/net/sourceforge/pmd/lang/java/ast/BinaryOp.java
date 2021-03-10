@@ -182,7 +182,8 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
         case GE: return LT;
         case GT: return LE;
         case LT: return GE;
+
+        default: return null;
         }
-        return null;
     }
 }

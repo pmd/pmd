@@ -22,9 +22,9 @@ jobs:
             ~/.m2/repository
             ~/.cache
             vendor/bundle
-          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          key: push-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-
+            push-${{ runner.os }}-
       - name: Set up Ruby 2.7
         uses: actions/setup-ruby@v1
         with:
@@ -79,9 +79,9 @@ jobs:
             ~/.m2/repository
             ~/.cache
             vendor/bundle
-          key: ${{ runner.os }}-coveralls-${{ hashFiles('**/pom.xml') }}
+          key: coveralls-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-coveralls-
+            coveralls-${{ runner.os }}-
       - name: Check Environment
         run: .ci/check-environment.sh
         shell: bash
@@ -104,9 +104,9 @@ jobs:
             ~/.m2/repository
             ~/.cache
             vendor/bundle
-          key: ${{ runner.os }}-sonar-${{ hashFiles('**/pom.xml') }}
+          key: sonar-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-sonar-
+            sonar-${{ runner.os }}-
       - name: Check Environment
         run: .ci/check-environment.sh
         shell: bash

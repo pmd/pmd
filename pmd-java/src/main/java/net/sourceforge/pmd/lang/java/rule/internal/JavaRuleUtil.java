@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -40,7 +41,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
@@ -52,6 +52,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
@@ -65,13 +66,16 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
+/**
+ * Utilities shared between rules.
+ */
 public final class JavaRuleUtil {
 
     public static final Set<String> LOMBOK_ANNOTATIONS = immutableSetOf(
@@ -133,9 +137,12 @@ public final class JavaRuleUtil {
         return false;
     }
 
-    private static boolean isIntLit(JavaNode e, int value) {
+    /**
+     * Return true if the number is an int or long literal with the given int value.
+     */
+    public static boolean isIntLit(JavaNode e, int value) {
         if (e instanceof ASTNumericLiteral) {
-            return ((ASTNumericLiteral) e).getValueAsInt() == value;
+            return ((ASTNumericLiteral) e).isIntegral() && ((ASTNumericLiteral) e).getValueAsInt() == value;
         }
         return false;
     }
@@ -245,6 +252,15 @@ public final class JavaRuleUtil {
         return ((AccessNode) decl).getVisibility() != Visibility.V_PRIVATE;
     }
 
+    /**
+     * Whether the name may be ignored by unused rules like UnusedAssignment.
+     */
+    public static boolean isExplicitUnusedVarName(String name) {
+        return name.startsWith("ignored")
+            || name.startsWith("unused")
+            || "_".equals(name); // before java 9 it's ok
+    }
+
 
     /**
      * Returns true if the formal parameters of the method or constructor
@@ -303,7 +319,7 @@ public final class JavaRuleUtil {
      * us to be sure of it.
      */
     public static boolean isNeverUsed(ASTVariableDeclaratorId varId) {
-        return CollectionUtil.none(varId.getUsages(), JavaRuleUtil::isReadUsage);
+        return CollectionUtil.none(varId.getLocalUsages(), JavaRuleUtil::isReadUsage);
     }
 
     private static boolean isReadUsage(ASTNamedReferenceExpr expr) {
@@ -347,15 +363,6 @@ public final class JavaRuleUtil {
     }
 
     /**
-     * True if the variable is incremented or decremented via a compound
-     * assignment operator, or a unary increment/decrement expression.
-     */
-    public static boolean isInIfCondition(ASTExpression expr) {
-        ASTExpression toplevel = getTopLevelExpr(expr);
-        return toplevel.getIndexInParent() == 0 && toplevel.getParent() instanceof ASTIfStatement;
-    }
-
-    /**
      * Will cut through argument lists, except those of enum constants
      * and explicit invocation nodes.
      */
@@ -384,10 +391,7 @@ public final class JavaRuleUtil {
      */
     public static boolean isSerialPersistentFields(final ASTFieldDeclaration field) {
         return field.hasModifiers(JModifier.FINAL, JModifier.STATIC, JModifier.PRIVATE)
-            && field.getVarIds().any(
-            it -> "serialPersistentFields".equals(it.getName())
-                && TypeTestUtil.isA(ObjectStreamField[].class, it)
-        );
+            && field.getVarIds().any(it -> "serialPersistentFields".equals(it.getName()) && TypeTestUtil.isA(ObjectStreamField[].class, it));
     }
 
     /**
@@ -396,10 +400,7 @@ public final class JavaRuleUtil {
      */
     public static boolean isSerialVersionUID(ASTFieldDeclaration field) {
         return field.hasModifiers(JModifier.FINAL, JModifier.STATIC)
-            && field.getVarIds().any(
-            it -> "serialVersionUID".equals(it.getName())
-                && it.getTypeMirror().isPrimitive(LONG)
-        );
+            && field.getVarIds().any(it -> "serialVersionUID".equals(it.getName()) && it.getTypeMirror().isPrimitive(LONG));
     }
 
     /**
@@ -580,5 +581,32 @@ public final class JavaRuleUtil {
         } else {
             return expr instanceof ASTNullLiteral;
         }
+    }
+
+    /**
+     * Returns true if the expression has the form `field`, or `this.field`,
+     * where `field` is a field declared in the enclosing class.
+     * Assumes we're not in a static context.
+     * todo this should probs consider super.field and superclass
+     */
+    public static boolean isRefToFieldOfThisInstance(ASTExpression usage) {
+        if (!(usage instanceof ASTNamedReferenceExpr)) {
+            return false;
+        }
+        JVariableSymbol symbol = ((ASTNamedReferenceExpr) usage).getReferencedSym();
+        if (!(symbol instanceof JFieldSymbol)
+            || !((JFieldSymbol) symbol).getEnclosingClass().equals(usage.getEnclosingType().getSymbol())
+            || Modifier.isStatic(((JFieldSymbol) symbol).getModifiers())) {
+            return false;
+        }
+
+        if (usage instanceof ASTVariableAccess) {
+            return true;
+        } else if (usage instanceof ASTFieldAccess) {
+            ASTExpression qualifier = ((ASTFieldAccess) usage).getQualifier();
+            return qualifier instanceof ASTThisExpression
+                || qualifier instanceof ASTSuperExpression;
+        }
+        return false;
     }
 }

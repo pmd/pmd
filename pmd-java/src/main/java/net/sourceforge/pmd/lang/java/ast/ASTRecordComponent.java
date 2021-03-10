@@ -5,13 +5,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.VariableIdOwner;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
- * Defines a single component of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 and JDK 15 preview feature).
+ * Defines a single component of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 16 feature).
  *
  * <p>The varargs ellipsis {@code "..."} is parsed as an {@linkplain ASTArrayTypeDim array dimension}
  * in the type node.
@@ -35,7 +34,6 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * </pre>
  */
-@Experimental
 public final class ASTRecordComponent extends AbstractJavaNode implements AccessNode, VariableIdOwner {
 
     ASTRecordComponent(int id) {

@@ -1722,6 +1722,10 @@ class Foo {
         <description>FP with anonymous classes on the way</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.lang.reflect.*;
+import java.lang.invoke.*;
+import java.security.*;
+
 class Foo {
     private static final Method privateLookupInMethod;
 
@@ -1897,8 +1901,8 @@ class Foo {
 
 	public void test() {
 		// Two calls
-		OptionalCollectionResourceInjectionBean bean = (OptionalCollectionResourceInjectionBean) bf.getBean("annotatedBean");
-		bean = (OptionalCollectionResourceInjectionBean) bf.getBean("annotatedBean");
+		Foo bean = (Foo) bf.getBean("annotatedBean");
+		bean = (Foo) bf.getBean("annotatedBean");
 		assertSame(tb, bean.getTestBean());
 		assertSame(tb, bean.getTestBean2());
 	}
@@ -2535,17 +2539,17 @@ class Foo {
         <description>false-positive in DD-part of DataflowAnomalyAnalysis #1675</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Test {
-                public void test() {
+            public class Formatter {
+                public Formatter test(String formatterClassName) {
                     Formatter formatter = null;
                     if (formatterClassName != null) {
                         try {
                             Class<? extends Formatter> formatterClass = findClass(formatterClassName);
                             formatter = formatterClass.getDeclaredConstructor().newInstance();
-                        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException ignored) {
+                        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException ignored) {
                         }
                     }
-                    setFormatter((formatter == null) ? new SimpleFormatter() : formatter);
+                    return ((formatter == null) ? new Formatter() : formatter);
                 }
             }
         ]]></code>
@@ -2797,10 +2801,10 @@ class Foo {
     <test-code>
         <description>Test ignored name 0</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
             class Foo {
-                int method(int param) {
+                int method(int param, int other) {
                     return 2;
                 }
             }
@@ -2814,7 +2818,7 @@ class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             class Foo {
-                int method(int ignored) {
+                int method(int ignored, int unused) {
                     return 2;
                 }
             }
@@ -3345,12 +3349,12 @@ public class UnusedAssignmentNative {
         <!-- https://chunk.io/pmd/22cd54bf483045218e268ee7580716c6/diff2/spring-framework/index.html#A33 -->
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            class Test {
-                private final List<CallableProcessingInterceptor> interceptors;
+            class Test<T> {
+                private final List<T> interceptors;
                 private int preProcessIndex = -1;
 
-                public void applyPreProcess(NativeWebRequest request, Callable<?> task) throws Exception {
-                    for (CallableProcessingInterceptor interceptor : this.interceptors) {
+                public void applyPreProcess(String request, java.util.concurrent.Callable<?> task) throws Exception {
+                    for (T interceptor : this.interceptors) {
                         interceptor.preProcess(request, task);
                         this.preProcessIndex++;
                     }

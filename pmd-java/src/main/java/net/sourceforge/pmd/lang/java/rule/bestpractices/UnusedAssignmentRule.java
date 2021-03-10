@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
@@ -146,7 +147,7 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
             } else {
                 reason = joinLines("overwritten on lines ", killers);
             }
-            if (reason == null && hasExplicitIgnorableName(entry.getVarId().getName())) {
+            if (reason == null && JavaRuleUtil.isExplicitUnusedVarName(entry.getVarId().getName())) {
                 // Then the variable is never used (cf UnusedVariable)
                 // We ignore those that start with "ignored", as that is standard
                 // practice for exceptions, and may be useful for resources/foreach vars
@@ -154,11 +155,6 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
             }
             addViolationWithMessage(ruleCtx, entry.getLocation(), makeMessage(entry, reason, entry.isField()));
         }
-    }
-
-    private boolean hasExplicitIgnorableName(String name) {
-        return name.startsWith("ignored")
-            || "_".equals(name); // before java 9 it's ok
     }
 
     private boolean suppressUnusedVariableRuleOverlap(AssignmentEntry entry) {
