@@ -135,6 +135,7 @@ options {
   NODE_CLASS = "net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode";
 }
 
+
 PARSER_BEGIN(PLSQLParser)
 
 /* Copyright (C) 2002 Albert Tumanov
@@ -158,6 +159,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.io.*;
+import java.util.List;
+import java.util.ArrayList;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
@@ -241,6 +244,35 @@ public class PLSQLParser {
 }
 
 PARSER_END(PLSQLParser)
+
+
+
+TOKEN_MGR_DECLS : {
+
+  public static final class Exclusion {
+
+    public int beginLine;
+    public int endLine;
+    public String source = null;
+    public String reason = null;
+
+    public Exclusion(int b, int e, String s) {
+      this.beginLine = b;
+      this.endLine = e;
+      this.source = s;
+      int i1 = s.toUpperCase().indexOf("PMD-EXCLUDE-BEGIN");
+      int i2 = s.toUpperCase().indexOf("\n");
+      this.reason = s.substring(i1 + 17, i2).trim();
+      if (this.reason.startsWith(":")) {
+        this.reason = this.reason.substring(2).trim(); 
+      }
+    }
+  }
+
+  public List<Exclusion> exclusions = new ArrayList<Exclusion>();
+}
+
+
 /**
  * 2006-05-22 - Matthias Hendler - Added parsing of triggers and global functions/procedures
  *                                 Refactored printing of custom tags into the XML/DOM.
@@ -251,7 +283,10 @@ PARSER_END(PLSQLParser)
 /**
  * 2006-05-22 - Matthias Hendler - added globalBody()
  */
-ASTInput Input(String sourcecode) : {}
+ASTInput Input(String sourcecode) :
+{
+  token_source.exclusions.clear();
+}
 {
 	// SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced (attachLibrary())*
 	(
@@ -277,7 +312,23 @@ ASTInput Input(String sourcecode) : {}
 	 ("/")*
 	)*
 	<EOF>
-      { jjtThis.setSourcecode(sourcecode); return jjtThis ; }
+      { jjtThis.setSourcecode(sourcecode); 
+        List<PLSQLParserTokenManager.Exclusion> exclusions = token_source.exclusions;
+        if (exclusions != null) {
+          // System.err.println("Exclusions:");
+          for (int i=0; i<exclusions.size(); i++) {
+            PLSQLParserTokenManager.Exclusion ex = exclusions.get(i);
+            // System.err.print("  Lines " + ex.beginLine + " - " + ex.endLine);
+            // if (ex.reason != null) {
+            //   System.err.println(": " + ex.reason);
+            // } else {
+            //   System.err.println("");
+            // }
+            jjtThis.addExcludedLineRange(ex.beginLine, ex.endLine);
+          }
+        }
+        return jjtThis ;
+      }
 }
 
 ASTDDLCommand DDLCommand() :
@@ -4632,10 +4683,15 @@ begin
   do_something_else();
 end;
 
-A future version of PMD might pass the existence of the exclusion to the AST
-as an "ASTParsingExclusion" statement, perhaps including the comment and the
-excluded source, to allow for detecting this workaround with a rule.
-But for now, it is just skipped.
+The existence of exclusions can be detected with the attributes
+excludedRangesCount and excludedLinesCount of the top-lvel ASTInput node.
+If nothing is excluded, both values are 0 (zero).
+Otherwise, excludedRangesCount contains the number of excluded line-ranges
+and excludedRangesCount is the total number of excluded lines.
+A future version of PMD might pass the line ecluded line ranges,
+source fragments and the corresponding reason comments
+as child nodes of the top-level ASTInput node.
+See the commented code in Input().
 */
 
 /* COMMENTS */
@@ -4652,7 +4708,11 @@ MORE :
 <IN_PARSING_EXCLUSION>
 SPECIAL_TOKEN :
 {
-  	<PARSING_EXCLUSION: "--" (" ")* "PMD-EXCLUDE-END" (~["\n", "\r"])* > : DEFAULT
+  	<PARSING_EXCLUSION: "--" (" ")* "PMD-EXCLUDE-END" (~["\n", "\r"])* >
+    {
+      String excluded_source = matchedToken.getImage();
+      exclusions.add(new Exclusion(matchedToken.getBeginLine(), matchedToken.getEndLine(), excluded_source));
+    } : DEFAULT
 }
 
 SPECIAL_TOKEN :
