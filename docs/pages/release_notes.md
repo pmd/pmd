@@ -33,5 +33,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 
+*   [#3167](https://github.com/pmd/pmd/pull/3167): \[java] Minor typo in quickstart ruleset - [Austin Tice](https://github.com/AustinTice)
+
 {% endtocmaker %}
 
