@@ -20,7 +20,7 @@ import net.sourceforge.pmd.properties.modules.PackagedPropertyModule;
  * @version Refactored June 2017 (6.0.0)
  */
 @Deprecated
-/* default */ abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValueProperty<T>
+abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValueProperty<T>
         implements PackagedPropertyDescriptor<List<T>> {
 
 
