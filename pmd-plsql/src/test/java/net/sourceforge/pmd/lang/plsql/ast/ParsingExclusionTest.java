@@ -8,10 +8,10 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class ParserExclusionTest extends AbstractPLSQLParserTst {
+public class ParsingExclusionTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void parseParserExclusion() {
-        plsql.parseResource("ParserExclusion.sql");
+    public void parseParsingExclusion() {
+        plsql.parseResource("ParsingExclusion.sql");
     }
 }

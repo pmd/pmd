@@ -161,7 +161,6 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTQueryBlock;
 import net.sourceforge.pmd.lang.plsql.ast.ASTQueryPartitionClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTRaiseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTRead2NextOccurrence;
-import net.sourceforge.pmd.lang.plsql.ast.ASTRead2NextTokenOccurrence;
 import net.sourceforge.pmd.lang.plsql.ast.ASTReadPastNextOccurrence;
 import net.sourceforge.pmd.lang.plsql.ast.ASTReferencesClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTRegexpLikeCondition;
@@ -480,11 +479,6 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
     @Override
     public Object visit(ASTRead2NextOccurrence node, Object data) {
-        return visit((PLSQLNode) node, data);
-    }
-
-    @Override
-    public Object visit(ASTRead2NextTokenOccurrence node, Object data) {
         return visit((PLSQLNode) node, data);
     }
     

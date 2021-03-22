@@ -10,4 +10,5 @@ BEGIN
   WHERE employee_id = 100;
 END;
 
-exec DBMS_OUTPUT.PUT_LINE('bonus = ' || TO_CHAR(bonus))
+DBMS_OUTPUT.PUT_LINE('bonus = ' || TO_CHAR(bonus));
+/

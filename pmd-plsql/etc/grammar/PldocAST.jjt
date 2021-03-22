@@ -249,27 +249,7 @@ PARSER_END(PLSQLParser)
 
 TOKEN_MGR_DECLS : {
 
-  public static final class Exclusion {
-
-    public int beginLine;
-    public int endLine;
-    public String source = null;
-    public String reason = null;
-
-    public Exclusion(int b, int e, String s) {
-      this.beginLine = b;
-      this.endLine = e;
-      this.source = s;
-      int i1 = s.toUpperCase().indexOf("PMD-EXCLUDE-BEGIN");
-      int i2 = s.toUpperCase().indexOf("\n");
-      this.reason = s.substring(i1 + 17, i2).trim();
-      if (this.reason.startsWith(":")) {
-        this.reason = this.reason.substring(2).trim(); 
-      }
-    }
-  }
-
-  public List<Exclusion> exclusions = new ArrayList<Exclusion>();
+  public List<ParsingExclusion> exclusions = new ArrayList<ParsingExclusion>();
 }
 
 
@@ -313,11 +293,11 @@ ASTInput Input(String sourcecode) :
 	)*
 	<EOF>
       { jjtThis.setSourcecode(sourcecode); 
-        List<PLSQLParserTokenManager.Exclusion> exclusions = token_source.exclusions;
+        List<ParsingExclusion> exclusions = token_source.exclusions;
         if (exclusions != null) {
-          // System.err.println("Exclusions:");
+          // System.err.println("ParsingExclusions:");
           for (int i=0; i<exclusions.size(); i++) {
-            PLSQLParserTokenManager.Exclusion ex = exclusions.get(i);
+            ParsingExclusion ex = exclusions.get(i);
             // System.err.print("  Lines " + ex.beginLine + " - " + ex.endLine);
             // if (ex.reason != null) {
             //   System.err.println(": " + ex.reason);
@@ -361,7 +341,7 @@ ASTSqlPlusCommand SqlPlusCommand() :
   ( "@@" ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
   | "@" ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
   | <ACCEPT> | "ACC"
-  | "ARCHIVE LOG LIST"
+  | LOOKAHEAD({isKeyword("ARCHIVE")}) KEYWORD("ARCHIVE") "LOG LIST"
   | <ATTRIBUTE>
   | "BREAK"
   | "BTITLE"
@@ -413,7 +393,7 @@ ASTSqlPlusCommand SqlPlusCommand() :
   // Attach Library
   | "." <ATTACH>
   )
-  { sb.append(token.getImage()) ; sb.append(" ") ; sb.append(Read2NextTokenOccurrence(EOL).getImage()) ;
+  { sb.append(token.getImage()) ; sb.append(" ") ; sb.append(Read2NextTokenOccurrence(EOL)) ;
   }
   )
   { jjtThis.setImage(sb.toString()) ; return jjtThis ; }
@@ -1206,11 +1186,11 @@ ASTRead2NextOccurrence Read2NextOccurrence(String target) :
 	{ jjtThis.setImage(sb.toString()) ;  jjtThis.value = sb.toString(); return jjtThis ;}
 }
 
+JAVACODE
 /*
  Read Tokens up to but not including the target token.
 */
-ASTRead2NextTokenOccurrence Read2NextTokenOccurrence(int target) :
-{
+String Read2NextTokenOccurrence(int target) #void {
   StringBuilder sb = new StringBuilder();
   Token nextToken = getToken(1);
   while (nextToken.kind!=target
@@ -1223,9 +1203,7 @@ ASTRead2NextTokenOccurrence Read2NextTokenOccurrence(int target) :
     sb.append(' ');
     nextToken = getToken(1);
   }
-}
-{
-	{ jjtThis.setImage(sb.toString()) ;  jjtThis.value = sb.toString(); return jjtThis ;}
+  return sb.toString();
 }
 
 /*
@@ -4711,7 +4689,7 @@ SPECIAL_TOKEN :
   	<PARSING_EXCLUSION: "--" (" ")* "PMD-EXCLUDE-END" (~["\n", "\r"])* >
     {
       String excluded_source = matchedToken.getImage();
-      exclusions.add(new Exclusion(matchedToken.getBeginLine(), matchedToken.getEndLine(), excluded_source));
+      exclusions.add(new ParsingExclusion(matchedToken.getBeginLine(), matchedToken.getEndLine(), excluded_source));
     } : DEFAULT
 }
 
