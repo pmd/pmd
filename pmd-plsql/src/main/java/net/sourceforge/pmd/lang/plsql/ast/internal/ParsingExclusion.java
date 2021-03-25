@@ -12,7 +12,7 @@ import java.util.Locale;
 public final class ParsingExclusion {
 
     private static final String BEGIN_MARKER = "PMD-EXCLUDE-BEGIN";
-    private static final String END_MARKER = "PMD-EXCLUDE-END";
+    //private static final String END_MARKER = "PMD-EXCLUDE-END";
     private static final int LEN_BEGIN_MARKER = BEGIN_MARKER.length();
 
     private final int beginLine;
