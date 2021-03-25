@@ -331,6 +331,9 @@ ASTDDLCommand DDLCommand() :
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
+/*
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/21/sqpug/SQL-Plus-reference.html#GUID-C3D4A718-56AD-4872-ADFF-A216FF70EDF2
+ */
 ASTSqlPlusCommand SqlPlusCommand() :
 {
   StringBuilder sb = new StringBuilder();
@@ -341,49 +344,58 @@ ASTSqlPlusCommand SqlPlusCommand() :
   // SQLPLUS commands
   ( "@@" ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
   | "@" ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
-  | <ACCEPT> | "ACC"
-  | LOOKAHEAD({isKeyword("ARCHIVE")}) KEYWORD("ARCHIVE") "LOG LIST"
+  | LOOKAHEAD({isKeyword("ACCEPT")}) KEYWORD("ACCEPT")
+  | LOOKAHEAD({isKeyword("ACC")}) KEYWORD("ACC")
+  | LOOKAHEAD({isKeyword("ARCHIVE")}) KEYWORD("ARCHIVE") {sb.append(token.getImage()).append(' ');} "LOG" {sb.append(token.getImage()).append(' ');} KEYWORD("LIST")
   | <ATTRIBUTE>
-  | "BREAK"
-  | "BTITLE"
+  | LOOKAHEAD({isKeyword("BREAK")}) KEYWORD("BREAK")
+  | LOOKAHEAD({isKeyword("BTITLE")}) KEYWORD("BTITLE")
   | LOOKAHEAD({isKeyword("CLEAR")}) KEYWORD("CLEAR")
   | <COLUMN>
   | LOOKAHEAD({isKeyword("COL")}) KEYWORD("COL")
   | LOOKAHEAD({isKeyword("COMPUTE")}) KEYWORD("COMPUTE")
   | LOOKAHEAD({isKeyword("COMP")}) KEYWORD("COMP")
-  | <CONNECT> | "CONN"
-  | <COPY>
-  | <DEFINE> | "DEF"
-  | "DESCRIBE" | "DESCR" | LOOKAHEAD({isKeyword("DESC")}) KEYWORD("DESC")
-  | <DISCONNECT> | "DISC"
-  | <EXECUTE> | "EXEC"
+  | <CONNECT>
+  | LOOKAHEAD({isKeyword("CONN")}) KEYWORD("CONN")
+  | LOOKAHEAD({isKeyword("COPY")}) KEYWORD("COPY")
+  | LOOKAHEAD({isKeyword("DEFINE")}) KEYWORD("DEFINE")
+  | LOOKAHEAD({isKeyword("DEF")}) KEYWORD("DEF")
+  | LOOKAHEAD({isKeyword("DESCRIBE")}) KEYWORD("DESCRIBE")
+  | LOOKAHEAD({isKeyword("DESCR")}) KEYWORD("DESCR")
+  | LOOKAHEAD({isKeyword("DESC")}) KEYWORD("DESC")
+  | LOOKAHEAD({isKeyword("DISCONNECT")}) KEYWORD("DISCONNECT")
+  | LOOKAHEAD({isKeyword("DISC")}) KEYWORD("DISC")
+  | <EXECUTE>
+  | LOOKAHEAD({isKeyword("EXEC")}) KEYWORD("EXEC")
   | <EXIT>
-  | <HOST> ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | LOOKAHEAD({isKeyword("HOST")}) KEYWORD("HOST") ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
   | "$"    ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) * // only works with a blank after the dollar
-  | "!"    ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) * // only works with a blank afer the exlamation mark
+  | "!"    ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) * // only works with a blank after the exclamation mark
   // These characters are platform-specific, anyway...
-  | "INPUT"
+  | LOOKAHEAD({isKeyword("INPUT")}) KEYWORD("INPUT")
   | LOOKAHEAD({isKeyword("PASSWORD")}) KEYWORD("PASSWORD")
   | LOOKAHEAD({isKeyword("PASSW")}) KEYWORD("PASSW")
-  | "PAUSE"
-  | <PRINT>
-  | <PROMPT> ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
-  | <QUIT>
+  | LOOKAHEAD({isKeyword("PAUSE")}) KEYWORD("PAUSE")
+  | LOOKAHEAD({isKeyword("PRINT")}) KEYWORD("PRINT")
+  | LOOKAHEAD({isKeyword("PROMPT")}) KEYWORD("PROMPT") ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | LOOKAHEAD({isKeyword("QUIT")}) KEYWORD("QUIT")
   | LOOKAHEAD({isKeyword("RECOVER")}) KEYWORD("RECOVER")
-  | <REMARK> ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
-  | "REM" ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | LOOKAHEAD({isKeyword("REMARK")}) KEYWORD("REMARK") ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | LOOKAHEAD({isKeyword("REM")}) KEYWORD("REM") ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
   | <SET>
-  | <SHOW> | "SHO"
+  | LOOKAHEAD({isKeyword("SHOW")}) KEYWORD("SHOW")
+  | LOOKAHEAD({isKeyword("SHO")}) KEYWORD("SHO")
   | <SHUTDOWN>
-  | <SPOOL>
+  | LOOKAHEAD({isKeyword("SPOOL")}) KEYWORD("SPOOL")
   | <START> ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
   | <STARTUP>
   | LOOKAHEAD({isKeyword("STORE")}) KEYWORD("STORE")
-  | "TIMING"
-  | "TTITLE"
-  | <UNDEFINE>
-  | <VARIABLE> | "VAR"
-  | <WHENEVER>
+  | LOOKAHEAD({isKeyword("TIMING")}) KEYWORD("TIMING")
+  | LOOKAHEAD({isKeyword("TTITLE")}) KEYWORD("TTITLE")
+  | LOOKAHEAD({isKeyword("UNDEFINE")}) KEYWORD("UNDEFINE")
+  | LOOKAHEAD({isKeyword("VARIABLE")}) KEYWORD("VARIABLE")
+  | LOOKAHEAD({isKeyword("VAR")}) KEYWORD("VAR")
+  | LOOKAHEAD({isKeyword("WHENEVER")}) KEYWORD("WHENEVER")
   // XQUERY is not yet supported, because it is not a single-line command
   // It should be handled as unknown, skipping to the next stand-alone "/".
   // DDL that might be encountered
@@ -394,7 +406,8 @@ ASTSqlPlusCommand SqlPlusCommand() :
   // Attach Library
   | "." <ATTACH>
   )
-  { sb.append(token.getImage()) ; sb.append(" ") ; sb.append(Read2NextTokenOccurrence(EOL)) ;
+  {
+    sb.append(token.getImage()) ; sb.append(" ") ; sb.append(Read2NextTokenOccurrence(EOL)) ;
   }
   )
   { jjtThis.setImage(sb.toString()) ; return jjtThis ; }
@@ -3446,7 +3459,6 @@ ASTPrimaryPrefix PrimaryPrefix() :
 | LOOKAHEAD(Literal()) ( simpleNode = Literal() ) { sb.append(simpleNode.getImage()) ; }
 | LOOKAHEAD(SimpleExpression()) ( simpleNode = SimpleExpression() ) { sb.append(simpleNode.getImage()); }
 | ( simpleNode =Name() ) { sb.append(simpleNode.getImage()) ; }
-// | SelectStatement()
 | LOOKAHEAD("(" <SELECT>) "(" SelectStatement() ")"
 | LOOKAHEAD(<WITH>) (<WITH>) {sb.append("WITH ..."); }  Skip2NextTerminator(null,";")
 | LOOKAHEAD(("(")+ <WITH>) ("(") {sb.append("(WITH ..."); }  Skip2NextTerminator("(",")") ")"
@@ -4967,7 +4979,6 @@ TOKEN [IGNORE_CASE]:
 <PRAGMA: "PRAGMA"> |
 <PRESERVE: "PRESERVE"> |
 <PRIOR: "PRIOR"> |
-<PROMPT: "PROMPT"> |
 <PRIMARY: "PRIMARY"> |
 <PRIVATE: "PRIVATE"> |
 //<QQUOTE_START: "Q'">  |  // Mark the start of a Q-quoted string, e.g. Q'[ This string contains a single-quote(') ]'
@@ -5030,9 +5041,6 @@ TOKEN [IGNORE_CASE]:
 <USING: "USING"> |
 <WHILE: "WHILE"> |
 <YES: "YES"> | //SRT 2011-04-17
-
-<SHOW: "SHOW"> |
-<SPOOL: "SPOOL"> |
 
 // are they reserved or not ?
 // most are not reserved, but cannot use just define them - might be resolved as identifiers
@@ -5121,18 +5129,7 @@ TOKEN [IGNORE_CASE]:
 | <CHARSETID: "CHARSETID"> //XE testing non-PLSQL functions
 | <CHARSETFORM: "CHARSETFORM"> //XE testing non-PLSQL functions
 //SQLPlus Commands
-| <ACCEPT : "ACCEPT">
 | <ACCESSIBLE : "ACCESSIBLE">
-| <COPY : "COPY">
-| <DEFINE : "DEFINE">
-| <DISCONNECT : "DISCONNECT">
-| <HOST : "HOST">
-| <PRINT : "PRINT">
-| <QUIT : "QUIT">
-| <REMARK : "REMARK">
-| <UNDEFINE : "UNDEFINE">
-| <VARIABLE : "VARIABLE">
-| <WHENEVER : "WHENEVER">
 | <ATTACH : "ATTACH">
 | <CAST : "CAST">
 | <TREAT : "TREAT">
@@ -5401,7 +5398,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
  | <TRUE>
  | <A>
 //| <ABORT>
-| <ACCEPT>
 //| <ACCESS>
 //| <ACCESSED>test_unreserved_keyword.pks
 //| <ACCOUNT>
@@ -5546,7 +5542,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <CONTINUE>
 //| <CONTROLFILE>
 | <CONVERT>
-| <COPY>
 //| <CORRUPTION>
 //| <COST>
 //| <CPU_COSTING>
@@ -5587,7 +5582,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <DECRYPT>
 | <DEFERRABLE>
 | <DEFERRED>
-| <DEFINE>// SQL*Plus command
 //| <DEFINED>
 | <DEFINER>
 | <DEFINITION>
@@ -5605,7 +5599,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <DISABLE>
 //| <DISABLE_RPKE>
 | <DISASSOCIATE>
-| <DISCONNECT>
 //| <DISK>
 //| <DISKGROUP>
 //| <DISKS>
@@ -5721,7 +5714,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <HIGH>
 //| <HINTSET_BEGIN>
 //| <HINTSET_END>
-| <HOST>
 | <HOUR>
 //| <HWM_BROKERED>
 //| <ID>
@@ -6116,7 +6108,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <PRESERVE>
 //| <PRESERVE_OID>
 | <PRIMARY>
-| <PRINT>
 //| <PRIVATE>
 //| <PRIVATE_SGA>
 //| <PRIVILEGE>
@@ -6138,7 +6129,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <QUEUE>
 //| <QUEUE_CURR>
 //| <QUEUE_ROWP>
-| <QUIT>
 //| <QUIESCE>
 //| <QUOTA>
 //| <RANDOM>
@@ -6172,7 +6162,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <RELATIONAL>
 //| <RELY>
 | <RELIES_ON>
-| <REMARK>
 //| <REMOTE_MAPPED>
 //| <REPAIR>
 //| <REQUIRED>
@@ -6380,7 +6369,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <UNARCHIVED>
 //| <UNBOUND>
 //| <UNBOUNDED>
-| <UNDEFINE>
 | <UNDER>
 //| <UNDO>
 //| <UNDROP>
@@ -6423,7 +6411,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <VALIDATE>
 //| <VALIDATION>
 | <VARRAY>
-| <VARIABLE>
 | <VARYING>
 //| <VECTOR_READ>
 //| <VECTOR_READ_TRACE>
@@ -6432,7 +6419,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <WALLET>
 //| <WELLFORMED>
 //| <WHEN>
-| <WHENEVER>
 //| <WHITESPACE>
 //| <WITHIN>
 //| <WORK>
@@ -6457,7 +6443,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <YEAR>
 | <YES>
 | <ZONE>
-| <SHOW>  // APEX_0400000.WWW_CALCUATOR.SHOW
 | <WRAPPED>  // APEX_0400000.WWW_CALCUATOR.SHOW
 | <SYS_REFCURSOR> //Not a keyword - just a type defined in standard
 | <EDITIONABLE>
@@ -6591,8 +6576,6 @@ ASTID ID(): {}
 		// <PRAGMA> |<PARTITION> | <RANGE> | <NEW> | <OLD> |
 		| <PRIOR>  //RESERVED WORD
 		| <PRIVATE>
-		| <PROMPT> //SYNTAX
-
 		| <PUBLIC>  //RESERVED WORD
 		| <RAISE> //SYNTAX
 		| <RAW>  //RESERVED WORD
@@ -6610,7 +6593,6 @@ ASTID ID(): {}
 		| <SMALLINT>  //RESERVED WORD
 		| <SQL>
 		| <SQLCODE> | <SQLERRM>
-		//| <START>  //RESERVED WORD
 		//| <STDDEV> // <SUBTYPE> |
 		//20120501 | <SUCCESSFUL>
 		//| <SUM>
@@ -6839,7 +6821,6 @@ ASTQualifiedID QualifiedID(): {}
 		| <PRAGMA>
 		| <PRIOR>
 		| <PRIVATE>
-		| <PROMPT>
 		//<PUBLIC>
 		| <RAISE>
 		//| <RANGE>
@@ -6863,7 +6844,6 @@ ASTQualifiedID QualifiedID(): {}
 		//<SQL>
 		| <SQLCODE>
 		| <SQLERRM>
-		//<START>
 		//| <STDDEV>
 		//| <SUBTYPE>
 		//20120501 | <SUCCESSFUL>
