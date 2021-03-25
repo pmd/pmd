@@ -5,10 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 /**
- * Defines a single component of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 and JDK 15 preview feature).
+ * Defines a single component of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 16 feature).
  *
  * <pre class="grammar">
  *
@@ -19,7 +17,6 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * </pre>
  */
-@Experimental
 public final class ASTRecordComponent extends AbstractJavaAnnotatableNode {
     private boolean varargs;
 

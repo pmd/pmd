@@ -10,10 +10,10 @@ import java.util.Collections;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
@@ -51,7 +51,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         } else if (node instanceof ASTMethodDeclaration) {
             return TreeIconId.METHOD;
         } else if (node instanceof ASTConstructorDeclaration
-            || node instanceof ASTRecordConstructorDeclaration) {
+            || node instanceof ASTCompactConstructorDeclaration) {
             return TreeIconId.CONSTRUCTOR;
         } else if (node instanceof ASTVariableDeclaratorId) {
             return TreeIconId.VARIABLE;

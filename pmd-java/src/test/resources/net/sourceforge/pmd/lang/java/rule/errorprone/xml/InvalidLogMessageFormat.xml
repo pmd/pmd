@@ -887,4 +887,65 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat FP with StringFormattedMessage and ParameterizedMessage #3133</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>10,14</expected-linenumbers>
+        <expected-messages>
+            <message>Missing arguments, expected 2 arguments but have 1</message>
+            <message>Too many arguments, expected 1 argument but have 2</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+class TestInvalidLogMessageFormat {
+    Logger log = LoggerFactory.getLogger(TestInvalidLogMessageFormat.class);
+
+    public void testPMD() {
+        /* whistled, fp*/ log.debug("param %10s %% %n %%", "1"); // string formatted message
+
+        /*10:violation*/ log.debug("param %.2d%s", "expected 2 params, given 1");
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            /*14:violation*/ log.debug("param %s", "expected 1 params, given 2", "too many params", e);
+        }
+    }
+
+    protected void logProblem(String type, Object val) {
+        if (log.isDebugEnabled() && val instanceof Throwable) {
+            /*whistled, fp*/ log.debug("Trace for "+type+" reading "+getBriefDescription()+": "+val, (Throwable)val);
+        }
+
+        if (log.isDebugEnabled()) {
+            /*whistled, fp*/ log.debug("Recurring {} reading {} in {} (still in grace period): {}", new Object[] {type, this, getBriefDescription(), val});
+        }
+    }
+
+    private String getBriefDescription() { return ""; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat detection failing when String.format used #3146</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static java.lang.String.format;
+
+class TestInvalidLogMessageFormat {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestInvalidLogMessageFormat.class);
+    public void testPMD() {
+        LOGGER.info(String.format("Skipping file %s because no parser could be found", getName()));
+        LOGGER.info(format("Skipping file %s", getName()));
+    }
+
+    private String getName() { return "the-name"; }
+}
+        ]]></code>
+    </test-code>
 </test-data>

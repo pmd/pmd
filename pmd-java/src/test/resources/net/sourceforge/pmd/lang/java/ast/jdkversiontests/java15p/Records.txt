@@ -135,7 +135,7 @@
             |     |     |  +- PrimitiveType[@Array = false, @ArrayDepth = 0, @Boolean = false, @Image = "int"]
             |     |     +- VariableDeclaratorId[@Array = false, @ArrayDepth = 0, @ArrayType = false, @ExceptionBlockParameter = false, @ExplicitReceiverParameter = false, @Field = false, @Final = true, @FormalParameter = false, @Image = "hi", @LambdaParameter = false, @LocalVariable = false, @Name = "hi", @PatternBinding = false, @ResourceDeclaration = false, @TypeInferred = false, @VariableName = "hi"]
             |     +- RecordBody[]
-            |        +- RecordConstructorDeclaration[@Abstract = false, @Default = false, @Final = false, @Image = "Range", @Kind = DeclarationKind.RECORD_CONSTRUCTOR, @Modifiers = 1, @Native = false, @PackagePrivate = false, @Private = false, @Protected = false, @Public = true, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @Volatile = false]
+            |        +- CompactConstructorDeclaration[@Abstract = false, @Default = false, @Final = false, @Image = "Range", @Kind = DeclarationKind.RECORD_CONSTRUCTOR, @Modifiers = 1, @Native = false, @PackagePrivate = false, @Private = false, @Protected = false, @Public = true, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @Volatile = false]
             |        |  +- Annotation[@AnnotationName = "MyAnnotation"]
             |        |  |  +- MarkerAnnotation[@AnnotationName = "MyAnnotation"]
             |        |  |     +- Name[@Image = "MyAnnotation"]

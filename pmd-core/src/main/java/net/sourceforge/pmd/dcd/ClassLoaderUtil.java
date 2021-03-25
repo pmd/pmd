@@ -126,7 +126,7 @@ public final class ClassLoaderUtil {
 
     public static String getMethodSignature(String name, Class<?>... parameterTypes) {
         StringBuilder builder = new StringBuilder(name);
-        if (!(name.equals(CLINIT) || name.equals(INIT))) {
+        if (!(CLINIT.equals(name) || INIT.equals(name))) {
             builder.append('(');
             if (parameterTypes != null && parameterTypes.length > 0) {
                 builder.append(parameterTypes[0].getName());

@@ -233,7 +233,7 @@ public final class CollectionUtil {
      */
     @Deprecated
     public static boolean valuesAreTransitivelyEqual(Object[] thisArray, Object[] thatArray) {
-        if (thisArray == thatArray) {
+        if (thisArray == thatArray) { //NOPMD: we really want to compare references here
             return true;
         }
         if (thisArray == null || thatArray == null) {

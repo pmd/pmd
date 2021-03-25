@@ -1,4 +1,16 @@
 /**
+ * Fix #3117 - infinite loop when parsing invalid code nested in lambdas
+ * Andreas Dangel 03/2021
+ *====================================================================
+ * Fix #3145 - parse exception with local records
+ * Clément Fournier 03/2021
+ *====================================================================
+ * Remove support for Java 14 preview language features
+ * JEP 397: Sealed Classes (Second Preview) for Java16 Preview
+ * JEP 395: Records for Java16
+ * JEP 394: Pattern Matching for instanceof for Java16
+ * Andreas Dangel 02/2021
+ *====================================================================
  * Remove support for Java 13 preview language features.
  * Promote text blocks as a permanent language features with Java 15.
  * Support Pattern Matching for instanceof with Java 15 Preview.
@@ -231,6 +243,11 @@ options {
   TRACK_TOKENS = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
 
+  // disable the calculation of expected tokens when a parse error occurs
+  // depending on the possible allowed next tokens, this
+  // could be expensive (see https://github.com/pmd/pmd/issues/3117)
+  //ERROR_REPORTING = false;
+
   //DEBUG_PARSER = true;
   //DEBUG_LOOKAHEAD = true;
   //DEBUG_TOKEN_MANAGER = true;
@@ -378,8 +395,8 @@ public class JavaParser {
   }
 
   private void checkforBadInstanceOfPattern() {
-    if (jdkVersion != 14 && jdkVersion != 15 || !preview) {
-      throwParseException("Pattern Matching for instanceof is only supported with Java 14 Preview and Java 15 Preview");
+    if (!(jdkVersion == 15 && preview || jdkVersion >= 16)) {
+      throwParseException("Pattern Matching for instanceof is only supported with Java 15 Preview and Java >= 16");
     }
   }
 
@@ -421,19 +438,19 @@ public class JavaParser {
   }
   private void checkForBadTypeIdentifierUsage(String image) {
     if (jdkVersion >= 10 && "var".equals(image)) {
-      throwParseException("With JDK 10, 'var' is a restricted local variable type and cannot be used for type declarations!");
+      throwParseException("With JDK 10, 'var' is a contextual keyword and cannot be used for type declarations!");
     }
     if (jdkVersion >= 14 && "yield".equals(image)) {
-      throwParseException("With JDK 14, 'yield' is a restricted local variable type and cannot be used for type declarations!");
+      throwParseException("With JDK 14, 'yield' is a contextual keyword and cannot be used for type declarations!");
     }
-    if (jdkVersion >= 14 && preview && "record".equals(image)) {
-      throwParseException("With JDK 14 Preview and JDK 15 Preview, 'record' is a restricted identifier and cannot be used for type declarations!");
+    if ((jdkVersion == 15 && preview || jdkVersion >= 16) && "record".equals(image)) {
+      throwParseException("With JDK 15 Preview and Java >= 16, 'record' is a contextual keyword and cannot be used for type declarations!");
     }
-    if (jdkVersion >= 15 && preview && "sealed".equals(image)) {
-      throwParseException("With JDK 15 Preview, 'sealed' is a restricted identifier and cannot be used for type declarations!");
+    if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview) && "sealed".equals(image)) {
+      throwParseException("With JDK 15 Preview and JDK 16 Preview, 'sealed' is a contextual keyword and cannot be used for type declarations!");
     }
-    if (jdkVersion >= 15 && preview && "permits".equals(image)) {
-      throwParseException("With JDK 15 Preview, 'permits' is a restricted identifier and cannot be used for type declarations!");
+    if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview) && "permits".equals(image)) {
+      throwParseException("With JDK 15 Preview and JDK 16 Preview, 'permits' is a contextual keyword and cannot be used for type declarations!");
     }
   }
   private void checkForMultipleCaseLabels() {
@@ -469,35 +486,35 @@ public class JavaParser {
   }
 
   private void checkForTextBlockLiteral() {
-    if (jdkVersion < 15 && !preview) {
-      throwParseException("Text block literals are only supported with Java 14 Preview and Java >= 15");
+    if (!(jdkVersion >= 15)) {
+      throwParseException("Text block literals are only supported with Java >= 15");
     }
   }
 
   private void checkForNewStringSpaceEscape(String s) {
-    if ((jdkVersion < 15 && !preview) && s.contains("\\s") && !s.contains("\\\\s")) {
-      throwParseException("The escape sequence \"\\s\" is only supported with Java 14 Preview and Java >= 15");
+    if (jdkVersion < 15 && s.contains("\\s") && !s.contains("\\\\s")) {
+      throwParseException("The escape sequence \"\\s\" is only supported with Java >= 15");
     }
   }
 
   private void checkForRecordType() {
     if (!isRecordTypeSupported()) {
-      throwParseException("Records are only supported with Java 14 Preview and Java 15 Preview");
+      throwParseException("Records are only supported with Java 15 Preview and Java >= 16");
     }
   }
 
   private void checkForLocalInterfaceOrEnumType() {
       if (!isRecordTypeSupported()) {
-          throwParseException("Local interfaces and enums are only supported with Java 14 Preview and Java 15 Preview");
+          throwParseException("Local interfaces and enums are only supported with Java 15 Preview and Java >= 16");
       }
   }
 
   private boolean isRecordTypeSupported() {
-    return (jdkVersion == 14 || jdkVersion == 15) && preview;
+    return jdkVersion == 15 && preview || jdkVersion >= 16;
   }
 
   private boolean isSealedClassSupported() {
-      return jdkVersion == 15 && preview;
+      return jdkVersion == 15 && preview || jdkVersion == 16 && preview;
   }
 
   private void checkForSealedClassUsage() {
@@ -587,9 +604,8 @@ public class JavaParser {
       Token next = getToken(1);
       return next.kind == CLASS
         || isRecordTypeSupported() && next.kind == INTERFACE
-        || isRecordTypeSupported() && next.kind == AT && isToken(2, INTERFACE)
         || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("enum")
-        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("record");
+        || isRecordTypeSupported() && next.kind == IDENTIFIER && next.image.equals("record") && isToken(2, IDENTIFIER);
   }
 
   /**
@@ -1216,8 +1232,8 @@ void PermittedSubclasses() #PermitsList:
           throw new ParseException("ERROR: expecting permits");
         }
     }
-    (TypeAnnotation())* ClassOrInterfaceType()
-    ( "," (TypeAnnotation())* ClassOrInterfaceType() )*
+    TypeName()
+    ( "," TypeName() )*
 }
 
 void EnumDeclaration(int modifiers):
@@ -1276,24 +1292,36 @@ void RecordDeclaration(int modifiers):
   }
   t=<IDENTIFIER> {checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image);}
   [ TypeParameters() ]
-  RecordComponentList()
+  RecordHeader()
   [ ImplementsList() ]
   RecordBody()
+}
+
+void RecordHeader() #void:
+{}
+{
+  "(" RecordComponentList() ")"
 }
 
 void RecordComponentList() :
 {}
 {
-  "(" [ RecordComponent() ("," RecordComponent())* ] ")"
+  [ RecordComponent() ("," RecordComponent())* ]
 }
 
 void RecordComponent():
 {}
 {
-  (Annotation())*
+  (RecordComponentModifier())*
   Type()
   [ "..." {jjtThis.setVarargs();} ]
   VariableDeclaratorId()
+}
+
+void RecordComponentModifier() #void:
+{}
+{
+  Annotation()
 }
 
 void RecordBody():
@@ -1307,18 +1335,18 @@ void RecordBody():
 void RecordBodyDeclaration() #void :
 {}
 {
-  LOOKAHEAD(RecordCtorLookahead()) RecordConstructorDeclaration()
+  LOOKAHEAD(CompactConstructorDeclarationLookahead()) CompactConstructorDeclaration()
   |
   ClassOrInterfaceBodyDeclaration()
 }
 
-private void RecordCtorLookahead() #void:
+private void CompactConstructorDeclarationLookahead() #void:
 {}
 {
     Modifiers() <IDENTIFIER> "{"
 }
 
-void RecordConstructorDeclaration():
+void CompactConstructorDeclaration():
 {
   int modifiers;
 }
@@ -1521,6 +1549,17 @@ void ClassOrInterfaceType():
   {jjtThis.setImage(s.toString());}
 }
 
+void TypeName() #ClassOrInterfaceType:
+{
+  StringBuilder s = new StringBuilder();
+  Token t;
+}
+{
+    t=<IDENTIFIER> {s.append(t.image);}
+    ( "." t=<IDENTIFIER> {s.append('.').append(t.image);} )*
+    {jjtThis.setImage(s.toString());}
+}
+
 void TypeArguments():
 {}
 {
@@ -1682,10 +1721,26 @@ void EqualityExpression() #EqualityExpression(>1):
   InstanceOfExpression()  ( LOOKAHEAD(2) ( "==" {jjtThis.setImage("==");} | "!=" {jjtThis.setImage("!=");} ) InstanceOfExpression()  )*
 }
 
+void TypePattern():
+{}
+{
+  ( "final" {jjtThis.setFinal(true);} | Annotation() )*
+  Type()
+  VariableDeclaratorId()
+}
+
 void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
-  RelationalExpression() [ LOOKAHEAD(2) "instanceof" Type() [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypeTestPattern(2) ] ]
+  RelationalExpression()
+  [ "instanceof"
+      (
+        LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} TypePattern()
+      |
+        Type()
+        [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypePattern(2) ]
+      )
+  ]
 }
 
 void RelationalExpression() #RelationalExpression(>1):
@@ -2052,7 +2107,6 @@ void LocalTypeDecl(int mods) #void:
         | LOOKAHEAD(<INTERFACE>) ClassOrInterfaceDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
         | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
         | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
-        | AnnotationTypeDeclaration(mods) { checkForLocalInterfaceOrEnumType(); }
     )
 }
 
@@ -2088,9 +2142,9 @@ void StatementExpression() :
 |
   PreDecrementExpression()
 |
-  LOOKAHEAD( PrimaryExpression() AssignmentOperator() ) PrimaryExpression() AssignmentOperator() Expression()
-|
-  PostfixExpression()
+  // using PostfixExpression here allows us to skip the part of the production tree
+  // between Expression() and PostfixExpression()
+  PostfixExpression() [ AssignmentOperator() Expression() ]
 }
 
 void SwitchStatement():

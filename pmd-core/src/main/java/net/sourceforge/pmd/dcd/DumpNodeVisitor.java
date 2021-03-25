@@ -71,7 +71,7 @@ public class DumpNodeVisitor extends NodeVisitorAdapter {
 
     @Override
     public Object visitUses(MemberNode memberNode, Object data) {
-        if (Boolean.TRUE == data && !memberNode.getUses().isEmpty()) {
+        if (Boolean.TRUE.equals(data) && !memberNode.getUses().isEmpty()) {
             System.out.println("\t\t\tUses:");
         }
         return super.visitUses(memberNode, data);
@@ -79,7 +79,7 @@ public class DumpNodeVisitor extends NodeVisitorAdapter {
 
     @Override
     public Object visitUse(MemberNode use, Object data) {
-        if (Boolean.TRUE == data) {
+        if (Boolean.TRUE.equals(data)) {
             System.out.println("\t\t\t\t" + use.toStringLong());
         }
         return super.visitUse(use, data);
@@ -87,7 +87,7 @@ public class DumpNodeVisitor extends NodeVisitorAdapter {
 
     @Override
     public Object visitUsers(MemberNode memberNode, Object data) {
-        if (Boolean.TRUE == data && !memberNode.getUsers().isEmpty()) {
+        if (Boolean.TRUE.equals(data) && !memberNode.getUsers().isEmpty()) {
             System.out.println("\t\t\tUsers:");
         }
         return super.visitUsers(memberNode, data);
@@ -95,7 +95,7 @@ public class DumpNodeVisitor extends NodeVisitorAdapter {
 
     @Override
     public Object visitUser(MemberNode user, Object data) {
-        if (Boolean.TRUE == data) {
+        if (Boolean.TRUE.equals(data)) {
             System.out.println("\t\t\t\t" + user.toStringLong());
         }
         return super.visitUser(user, data);

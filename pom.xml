@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.32.0-SNAPSHOT</version>
+    <version>6.33.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2021-01-30T17:04:16Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2021-02-27T08:44:05Z</project.build.outputTimestamp>
 
         <java.version>7</java.version>
 
@@ -105,7 +105,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>8</pmd.build-tools.version>
+        <pmd.build-tools.version>10</pmd.build-tools.version>
 
         <pmd-designer.version>6.27.0</pmd-designer.version>
     </properties>
@@ -405,12 +405,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.29.0</version>
+                            <version>6.32.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.29.0</version>
+                            <version>6.32.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -672,7 +672,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.0-beta</version>
+                <version>9.1</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>

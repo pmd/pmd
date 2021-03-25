@@ -12,14 +12,14 @@ import net.sourceforge.pmd.annotation.Experimental;
 /**
  * Represents the {@code permits} clause of a (sealed) class declaration.
  *
- * <p>This is a Java 15 Preview feature.
+ * <p>This is a Java 15 Preview and Java 16 Preview feature.
  *
- * <p>See https://openjdk.java.net/jeps/360
+ * <p>See https://openjdk.java.net/jeps/397
  *
  * <pre class="grammar">
  *
- *  PermittedSubclasses ::= "permits" (TypeAnnotation)* ClassOrInterfaceType
- *                ( "," (TypeAnnotation)* ClassOrInterfaceType )*
+ *  PermitsList ::= "permits" ClassOrInterfaceType
+ *                ( "," ClassOrInterfaceType )*
  * </pre>
  */
 @Experimental

@@ -56,7 +56,7 @@ public class ASTStringLiteral extends AbstractVmNode {
     public void adjTokenLineNums(final AbstractVmNode node) {
         Token tok = node.getFirstToken();
         // Test against null is probably not necessary, but just being safe
-        while (tok != null && tok != node.getLastToken()) {
+        while (tok != null && !tok.equals(node.getLastToken())) {
             // If tok is on the first line, then the actual column is
             // offset by the template column.
 

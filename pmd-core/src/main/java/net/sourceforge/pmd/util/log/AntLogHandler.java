@@ -95,22 +95,19 @@ public class AntLogHandler extends Handler {
         // Map the log levels from java.util.logging to Ant
         int antLevel;
         Level level = logRecord.getLevel();
-        if (level == Level.FINEST) {
-            antLevel = Project.MSG_DEBUG; // Shown when -debug is supplied to
-            // Ant
-        } else if (level == Level.FINE || level == Level.FINER || level == Level.CONFIG) {
-            antLevel = Project.MSG_VERBOSE; // Shown when -verbose is supplied
-            // to Ant
-        } else if (level == Level.INFO) {
+        if (Level.FINEST.equals(level)) {
+            antLevel = Project.MSG_DEBUG; // Shown when -debug is supplied to Ant
+        } else if (Level.FINE.equals(level) || Level.FINER.equals(level) || Level.CONFIG.equals(level)) {
+            antLevel = Project.MSG_VERBOSE; // Shown when -verbose is supplied to Ant
+        } else if (Level.INFO.equals(level)) {
             antLevel = Project.MSG_INFO; // Always shown
-        } else if (level == Level.WARNING) {
+        } else if (Level.WARNING.equals(level)) {
             antLevel = Project.MSG_WARN; // Always shown
-        } else if (level == Level.SEVERE) {
+        } else if (Level.SEVERE.equals(level)) {
             antLevel = Project.MSG_ERR; // Always shown
         } else {
-            throw new IllegalStateException("Unknown logging level"); // shouldn't
-            // get ALL
-            // or NONE
+            // shouldn't get ALL or NONE
+            throw new IllegalStateException("Unknown logging level");
         }
 
         project.log(FORMATTER.format(logRecord), antLevel);
