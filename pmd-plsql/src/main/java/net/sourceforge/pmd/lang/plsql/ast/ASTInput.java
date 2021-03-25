@@ -39,9 +39,10 @@ public class ASTInput extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNo
     private int excludedLinesCount = 0;
 
     /**
-    Let the user know that a range of lines were excluded from parsing.
-    @param first First line of the exlucded line range (1-based).
-    @param last Last line  of the exlucded line range (1-based).
+     * Let the user know that a range of lines were excluded from parsing.
+     *
+     * @param first First line of the excluded line range (1-based).
+     * @param last Last line  of the excluded line range (1-based).
     */
     void addExcludedLineRange(int first, int last) {
         excludedLinesCount += last - first + 1;

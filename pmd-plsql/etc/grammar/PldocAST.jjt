@@ -164,6 +164,7 @@ import java.util.ArrayList;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.plsql.ast.internal.ParsingExclusion;
 
 public class PLSQLParser {
 
@@ -249,7 +250,7 @@ PARSER_END(PLSQLParser)
 
 TOKEN_MGR_DECLS : {
 
-  public List<ParsingExclusion> exclusions = new ArrayList<ParsingExclusion>();
+  List<ParsingExclusion> exclusions = new ArrayList<ParsingExclusion>();
 }
 
 
@@ -292,19 +293,19 @@ ASTInput Input(String sourcecode) :
 	 ("/")*
 	)*
 	<EOF>
-      { jjtThis.setSourcecode(sourcecode); 
+      {
+        jjtThis.setSourcecode(sourcecode); 
         List<ParsingExclusion> exclusions = token_source.exclusions;
         if (exclusions != null) {
           // System.err.println("ParsingExclusions:");
-          for (int i=0; i<exclusions.size(); i++) {
-            ParsingExclusion ex = exclusions.get(i);
-            // System.err.print("  Lines " + ex.beginLine + " - " + ex.endLine);
-            // if (ex.reason != null) {
-            //   System.err.println(": " + ex.reason);
+          for (ParsingExclusion ex : exclusions) {
+            // System.err.print("  Lines " + ex.getBeginLine() + " - " + ex.getEndLine());
+            // if (ex.getReason() != null) {
+            //   System.err.println(": " + ex.getReason());
             // } else {
             //   System.err.println("");
             // }
-            jjtThis.addExcludedLineRange(ex.beginLine, ex.endLine);
+            jjtThis.addExcludedLineRange(ex.getBeginLine(), ex.getEndLine());
           }
         }
         return jjtThis ;
