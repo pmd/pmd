@@ -26,4 +26,10 @@ public class PlsqlTreeDumpTest extends BaseTreeDumpTest {
     public void sqlPlusLexicalVariables() {
         doTest("SqlPlusLexicalVariablesIssue195");
     }
+
+    @Test
+    public void parseParsingExclusion() {
+        doTest("ParsingExclusion");
+    }
+
 }
