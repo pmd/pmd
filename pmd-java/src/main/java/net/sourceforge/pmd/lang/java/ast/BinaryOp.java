@@ -88,7 +88,7 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     /**
      * Use with {@link #isInfixExprWithOperator(JavaNode, Set)}.
      */
-    public static final Set<BinaryOp> COMPARISON_OPS = CollectionUtil.immutableEnumSet(LE, GT, GT, LT);
+    public static final Set<BinaryOp> COMPARISON_OPS = CollectionUtil.immutableEnumSet(LE, GE, GT, LT);
 
     private final String code;
 
