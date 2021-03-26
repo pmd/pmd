@@ -355,6 +355,9 @@ entries:
     - title: JSP Support
       url: /pmd_languages_jsp.html
       output: web, pdf
+    - title: PLSQL
+      url: /pmd_languages_plsql.html
+      output: web, pdf
   - title: Developer Documentation
     output: web, pdf
     folderitems:

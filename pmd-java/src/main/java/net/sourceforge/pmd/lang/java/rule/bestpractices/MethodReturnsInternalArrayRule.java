@@ -89,7 +89,7 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
                 // new int[0]
                 ASTArrayTypeDim lastChild = ((ASTArrayAllocation) expr).getTypeNode().getDimensions().getLastChild();
                 if (lastChild instanceof ASTArrayDimExpr) {
-                    return JavaRuleUtil.isIntLit(((ASTArrayDimExpr) lastChild).getLengthExpression(), 0);
+                    return JavaRuleUtil.isLiteralInt(((ASTArrayDimExpr) lastChild).getLengthExpression(), 0);
                 }
             }
         }

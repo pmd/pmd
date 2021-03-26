@@ -5,8 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Comparator;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Represents the operator of an {@linkplain ASTInfixExpression infix expression}.
@@ -81,6 +85,10 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     /** Modulo {@code "%"} operator. */
     MOD("%");
 
+    /**
+     * Use with {@link #isInfixExprWithOperator(JavaNode, Set)}.
+     */
+    public static final Set<BinaryOp> COMPARISON_OPS = CollectionUtil.immutableEnumSet(LE, GE, GT, LT);
 
     private final String code;
 
@@ -184,5 +192,17 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
 
         default: return null;
         }
+    }
+
+
+    /**
+     * Tests if the node is an {@link ASTInfixExpression} with one of the given operators.
+     */
+    public static boolean isInfixExprWithOperator(@Nullable JavaNode e, Set<BinaryOp> operators) {
+        if (e instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) e;
+            return operators.contains(infix.getOperator());
+        }
+        return false;
     }
 }

@@ -13,6 +13,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -118,21 +119,24 @@ public final class JavaRuleUtil {
                 return false;
             }
 
-            return isIntLit(comparand, expectedValue);
+            return isLiteralInt(comparand, expectedValue);
         }
         return false;
     }
 
+
     /**
-     * Return true if the number is an int or long literal with the given int value.
+     * Returns true if this is a numeric literal with the given int value.
+     * This also considers long literals.
      */
-    public static boolean isIntLit(JavaNode e, int value) {
+    public static boolean isLiteralInt(JavaNode e, int value) {
         if (e instanceof ASTNumericLiteral) {
             return ((ASTNumericLiteral) e).isIntegral() && ((ASTNumericLiteral) e).getValueAsInt() == value;
         }
         return false;
     }
 
+    /** This is type-aware, so will not pick up on numeric addition. */
     public static boolean isStringConcatExpr(@Nullable JavaNode e) {
         if (e instanceof ASTInfixExpression) {
             ASTInfixExpression infix = (ASTInfixExpression) e;
@@ -551,7 +555,7 @@ public final class JavaRuleUtil {
      * If the argument is a unary expression, returns its operand, otherwise
      * returns null.
      */
-    public static @Nullable ASTExpression unaryOperand(ASTExpression e) {
+    public static @Nullable ASTExpression unaryOperand(@Nullable ASTExpression e) {
         return e instanceof ASTUnaryExpression ? ((ASTUnaryExpression) e).getOperand()
                                                : null;
     }
@@ -572,6 +576,57 @@ public final class JavaRuleUtil {
         } else {
             return expr instanceof ASTNullLiteral;
         }
+    }
+
+    /**
+     * Returns true if the expression is a {@link ASTNamedReferenceExpr}
+     * that references the symbol.
+     */
+    public static boolean isReferenceToVar(@Nullable ASTExpression expression, @NonNull JVariableSymbol symbol) {
+        if (expression instanceof ASTNamedReferenceExpr) {
+            return symbol.equals(((ASTNamedReferenceExpr) expression).getReferencedSym());
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if both expressions refer to the same variable.
+     * A "variable" here can also means a field path, eg, {@code this.field.a}.
+     * This method unifies {@code this.field} and {@code field} if possible,
+     * and also considers {@code this}.
+     *
+     * <p>Note that while this is more useful than just checking whether
+     * both expressions access the same symbol, it still does not mean that
+     * they both access the same <i>value</i>. The actual value is data-flow
+     * dependent.
+     */
+    public static boolean isReferenceToSameVar(ASTExpression e1, ASTExpression e2) {
+        if (e1 instanceof ASTNamedReferenceExpr && e2 instanceof ASTNamedReferenceExpr) {
+            if (!Objects.equals(((ASTNamedReferenceExpr) e2).getReferencedSym(),
+                                ((ASTNamedReferenceExpr) e1).getReferencedSym())) {
+                return false;
+            }
+
+            if (e1.getClass() != e2.getClass()) {
+                // unify `this.f` and `f`
+                // note, we already know that the symbol is the same so there's no scoping problem
+                return isSyntacticThisFieldAccess(e1) || isSyntacticThisFieldAccess(e2);
+            } else if (e1 instanceof ASTFieldAccess && e2 instanceof ASTFieldAccess) {
+                return isReferenceToSameVar(((ASTFieldAccess) e1).getQualifier(),
+                                            ((ASTFieldAccess) e2).getQualifier());
+            }
+            return e1 instanceof ASTVariableAccess && e2 instanceof ASTVariableAccess;
+        } else if (e1 instanceof ASTThisExpression || e2 instanceof ASTThisExpression) {
+            return e1.getClass() == e2.getClass();
+        }
+        return false;
+    }
+
+    private static boolean isSyntacticThisFieldAccess(ASTExpression v1) {
+        if (v1 instanceof ASTFieldAccess) {
+            return ((ASTFieldAccess) v1).getQualifier() instanceof ASTThisExpression;
+        }
+        return false;
     }
 
     /**
