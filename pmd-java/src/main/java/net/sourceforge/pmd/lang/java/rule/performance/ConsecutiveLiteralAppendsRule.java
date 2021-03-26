@@ -80,6 +80,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         BLOCK_PARENTS.add(ASTCatchClause.class);
         BLOCK_PARENTS.add(ASTFinallyClause.class);
         BLOCK_PARENTS.add(ASTLambdaExpression.class);
+        // BLOCK_PARENTS.add(ASTSwitchLabeledBlock.class);
+        // BLOCK_PARENTS.add(ASTSwitchLabeledExpression.class);
     }
 
     private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
@@ -91,6 +93,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
     public ConsecutiveLiteralAppendsRule() {
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
+        addRuleChainVisit(ASTVariableDeclaratorId.class);
     }
 
     @Override
