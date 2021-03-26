@@ -677,4 +677,52 @@ class NodeStream<T> {
         }
     }
 
+    parserTest("Lambda bug with nested lambdas") {
+
+        fun makeTest(insideOut: Boolean) {
+
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+                        interface Function<U,V> {
+                            V apply(U u);
+                        }
+
+                        class Scratch {
+
+                            <T> void chainingWithLambda(Function<?, ? extends T> f) {
+                                this.<Function<Scratch, String>>chainingWithLambda(x -> y -> y.contains(0));
+                            }
+                        }
+                """.trimIndent()
+            )
+
+            val (t_Function, t_Scratch) = acu.declaredTypeSignatures()
+            val (lambdaX, lambdaY) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries()
+                .toList()
+
+
+            spy.shouldBeOk {
+                val t_lambdaY = t_Function[t_Scratch, ts.STRING]
+                val t_lambdaX = t_Function[ts.OBJECT, t_lambdaY]
+
+                if (insideOut) {
+                    lambdaY shouldHaveType t_lambdaY
+                    lambdaX shouldHaveType t_lambdaX
+                } else {
+                    lambdaX shouldHaveType t_lambdaX
+                    lambdaY shouldHaveType t_lambdaY
+                }
+            }
+        }
+
+
+        doTest("Outside in") {
+            makeTest(false)
+        }
+
+        doTest("Inside out") {
+            makeTest(true)
+        }
+    }
+
 })
