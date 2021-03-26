@@ -1048,6 +1048,18 @@
 
             
             
+            
+
+            
+
+                
+                <li><a href="pmd_languages_plsql.html">PLSQL</a></li>
+                
+
+            
+
+            
+            
         </ul>
      </li>
        
@@ -1411,6 +1423,12 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="plsql-parsing-exclusions">PLSQL parsing exclusions</h4>
+
+<p>The PMD PLSQL parser might not parse every valid PL/SQL code without problems.
+In order to still use PMD on such files, you can now mark certain lines for exclusion from
+the parser. More information can be found in the <a href="pmd_languages_plsql.html">language specific documentation for PLSQL</a>.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1438,6 +1456,11 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
       <li><a href="https://github.com/pmd/pmd/issues/3152">#3152</a>: [java] ConsecutiveLiteralAppends and InsufficientStringBufferDeclaration: FP with switch expressions</li>
     </ul>
   </li>
+  <li>plsql
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/195">#195</a>: [plsql] Ampersand ‘&amp;’ causes PMD processing error in sql file - Lexical error in file</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
@@ -1445,6 +1468,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/3161">#3161</a>: [plsql] Add support for lexical parameters in SQL*Plus scripts, allow excluding lines which the parser does not understand - <a href="https://github.com/hvbtup">Henning von Bargen</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3167">#3167</a>: [java] Minor typo in quickstart ruleset - <a href="https://github.com/AustinTice">Austin Tice</a></li>
 </ul>
 
@@ -1464,7 +1488,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 25, 2021 <br />
+ Site last generated: Mar 26, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
