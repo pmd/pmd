@@ -6,15 +6,15 @@
 
     <test-code>
         <description>failure case</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
         <code><![CDATA[
 package xxx;
 public class Foo {
     public void bar() {
         String x;
         x = "foo";
-        x += "bar"; // note, this won't be detected anymore due to #1736
+        x += "bar";
         x += "baz";
     }
 }
@@ -26,7 +26,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public boolean bar(Fiddle x) {
+    public boolean bar(String x) {
         return x.startsWith("abc");
     }
 }
@@ -62,14 +62,14 @@ public class Foo {
 
     <test-code>
         <description>failure case, constructor</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public Foo() {
         String x;
         x = "foo";
-        x += "bar"; // note, due to #1736 one concatenation is not enough
+        x += "bar";
         x += "baz";
     }
 }
@@ -78,14 +78,14 @@ public class Foo {
 
     <test-code>
         <description>static failure case</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     static {
         String x;
         x = "foo";
-        x += "bar"; // note, due to #1736 one concatenation is not enough
+        x += "bar";
         x += "baz";
     }
 }
@@ -156,6 +156,7 @@ public class UseStringBuffer {
         <description>#1340 UseStringBufferForStringAppends False Positive with ternary operator (used both in condition and options)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Properties;
 public class UseStringBuffer {
     public void foo() {
         String country = "";
@@ -163,9 +164,12 @@ public class UseStringBuffer {
                 ? ((String) getCountry())
                 : country;
     }
-    public void foo2() {
-        String country = request.getParameter("country");
+    public void foo2(Properties request) {
+        String country = request.getProperty("country");
         country = (country == null) ? "USA" : country;
+    }
+    public Object getCountry() {
+        return "";
     }
 }
         ]]></code>
@@ -175,9 +179,10 @@ public class UseStringBuffer {
         <description>#222 False positive when inverting ternary expression arguments</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Properties;
 public class Foo {
-    public void bar() {
-        String country = request.getParameter("country");
+    public void bar(Properties request) {
+        String country = request.getProperty("country");
         country = (country != null) ? country : "USA";
     }
 }
