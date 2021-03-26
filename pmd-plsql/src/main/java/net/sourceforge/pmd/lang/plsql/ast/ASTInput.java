@@ -35,4 +35,26 @@ public final class ASTInput extends AbstractPLSQLNode implements RootNode {
     public String getSourcecode() {
         return getAstInfo().getSourceText();
     }
+
+    private int excludedRangesCount = 0;
+    private int excludedLinesCount = 0;
+
+    /**
+     * Let the user know that a range of lines were excluded from parsing.
+     *
+     * @param first First line of the excluded line range (1-based).
+     * @param last Last line  of the excluded line range (1-based).
+    */
+    void addExcludedLineRange(int first, int last) {
+        excludedLinesCount += last - first + 1;
+        excludedRangesCount += 1;
+    }
+
+    public int getExcludedLinesCount() {
+        return excludedLinesCount;
+    }
+
+    public int getExcludedRangesCount() {
+        return excludedRangesCount;
+    }
 }
