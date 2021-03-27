@@ -1,0 +1,9 @@
++- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0, @Sourcecode = "
+-- see https://github.com/pmd/pmd/issues/195
+-- both define and spool are SQL*Plus commands, and they should not be ended with a semi-colon.
+
+define patch_name = acme_module
+spool &patch_name..log
+"]
+   +- SqlPlusCommand[@CanonicalImage = "DEFINE PATCH_NAME = ACME_MODULE", @Image = "define patch_name = acme_module "]
+   +- SqlPlusCommand[@CanonicalImage = "SPOOL &PATCH_NAME. . LOG", @Image = "spool &patch_name. . log "]

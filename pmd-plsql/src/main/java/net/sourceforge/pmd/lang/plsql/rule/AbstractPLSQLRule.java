@@ -481,7 +481,7 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
     public Object visit(ASTRead2NextOccurrence node, Object data) {
         return visit((PLSQLNode) node, data);
     }
-
+    
     @Override
     public Object visit(ASTReadPastNextOccurrence node, Object data) {
         return visit((PLSQLNode) node, data);

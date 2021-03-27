@@ -6,7 +6,9 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
+
 
 public class SelectIntoStatementTest extends AbstractPLSQLParserTst {
 
@@ -38,6 +40,11 @@ public class SelectIntoStatementTest extends AbstractPLSQLParserTst {
     @Test
     public void testParsingExample5() {
         plsql.parseResource("SelectIntoStatementExample5.pls");
+    }
+
+    @Test(expected = ParseException.class)
+    public void testParsingExample6Invalid() {
+        plsql.parseResource("SelectIntoStatementExample6Invalid.pls");
     }
 
     @Test

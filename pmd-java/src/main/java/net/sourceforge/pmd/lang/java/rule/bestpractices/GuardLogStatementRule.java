@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -115,14 +116,38 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
 
             if (guardStmtByLogLevel.containsKey(methodCall) && logLevel != null
                     && primary.getChild(1) instanceof ASTPrimarySuffix
-                    && primary.getChild(1).hasDescendantOfType(ASTAdditiveExpression.class)) {
+                    && !hasGuard(primary, methodCall, logLevel)) {
 
-                if (!hasGuard(primary, methodCall, logLevel)) {
-                    super.addViolation(data, node);
+                ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) primary.getChild(1);
+                if (primarySuffix.hasDescendantOfType(ASTAdditiveExpression.class)
+                        || hasArgumentWithMethodCall(primarySuffix)) {
+                    addViolation(data, node);
                 }
             }
         }
         return super.visit(node, data);
+    }
+
+    private boolean hasArgumentWithMethodCall(ASTPrimarySuffix node) {
+        if (!node.isArguments()) {
+            return false;
+        }
+
+        ASTArgumentList arguments = node.getFirstDescendantOfType(ASTArgumentList.class);
+        for (int i = 0; i < arguments.getNumChildren(); i++) {
+            JavaNode expression = arguments.getChild(i);
+            if (expression.getNumChildren() > 0) {
+                JavaNode primaryExpr = expression.getChild(0);
+                if (primaryExpr instanceof ASTPrimaryExpression && primaryExpr.getNumChildren() > 1) {
+                    JavaNode lastChild = primaryExpr.getChild(primaryExpr.getNumChildren() - 1);
+                    if (lastChild instanceof ASTPrimarySuffix) {
+                        return ((ASTPrimarySuffix) lastChild).isArguments();
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private boolean hasGuard(ASTPrimaryExpression node, String methodCall, String logLevel) {

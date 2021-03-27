@@ -31,6 +31,10 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     private static final Set<String> SERIALIZATION_METHODS = new HashSet<>(Arrays.asList(
             "readObject", "writeObject", "readResolve", "writeReplace"));
 
+    public UnusedPrivateMethodRule() {
+        addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
+    }
+
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
         return Collections.singletonList("java.lang.Deprecated");
