@@ -43,8 +43,6 @@ the parser. More information can be found in the [language specific documentatio
 *   plsql
     *   [#195](https://github.com/pmd/pmd/issues/195): \[plsql] Ampersand '&' causes PMD processing error in sql file - Lexical error in file
 
-### API Changes
-
 ### External Contributions
 
 *   [#3161](https://github.com/pmd/pmd/pull/3161): \[plsql] Add support for lexical parameters in SQL*Plus scripts, allow excluding lines which the parser does not understand - [Henning von Bargen](https://github.com/hvbtup)
