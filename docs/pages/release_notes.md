@@ -22,6 +22,8 @@ the parser. More information can be found in the [language specific documentatio
 
 ### Fixed Issues
 
+*   apex-design
+    *   [#3142](https://github.com/pmd/pmd/issues/3142): \[apex] ExcessiveClassLength multiple warning on the same class
 *   java
     *   [#3117](https://github.com/pmd/pmd/issues/3117): \[java] Infinite loop when parsing invalid code nested in lambdas
     *   [#3145](https://github.com/pmd/pmd/issues/3145): \[java] Parse exception when using "record" as variable name
