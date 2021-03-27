@@ -49,6 +49,11 @@ public class Foo {
     <test-code>
         <description>NOPA supports enums, interfaces or annotations</description>
         <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 1.</message>
+            <message>'Foo$Bar' has value 1.</message>
+            <message>'Foo$Tag' has value 1.</message>
+        </expected-messages>
         <code><![CDATA[
 public interface Foo {
 
