@@ -22,7 +22,8 @@ public final class ASTUserTrigger extends AbstractApexNode<UserTrigger> {
     void calculateLineNumbers(SourceCodePositioner positioner) {
         super.calculateLineNumbers(positioner);
 
-        if (getParent() == getRoot()) {
+        // when calculateLineNumbers is called, the root node (ASTApexFile) is not available yet
+        if (getParent() == null) {
             // For top level triggers, the end is the end of file.
             this.endLine = positioner.getLastLine();
             this.endColumn = positioner.getLastLineColumn();
