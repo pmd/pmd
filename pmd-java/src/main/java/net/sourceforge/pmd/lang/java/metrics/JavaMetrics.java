@@ -45,7 +45,6 @@ import net.sourceforge.pmd.lang.metrics.MetricsUtil;
  * Built-in Java metrics. See {@link Metric} and {@link MetricsUtil}
  * for usage doc.
  */
-@SuppressWarnings("PMD.UnusedFormalParameter") // #2838
 public final class JavaMetrics {
 
     /**
