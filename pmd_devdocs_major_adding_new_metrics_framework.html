@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.33.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.33.0</li>
     
     
     
@@ -1420,7 +1420,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <h2 id="internal-architecture-of-the-metrics-framework">Internal architecture of the metrics framework</h2>
 
 <p>The framework is pretty simple. On a high level, a <code class="language-plaintext highlighter-rouge">Metric&lt;N&gt;</code> describes some numeric computation on a node of type <code class="language-plaintext highlighter-rouge">N</code>.
-You should wrap it into a <code class="language-plaintext highlighter-rouge">MetricKey&lt;N&gt;</code>, so that it can be cached on nodes (implemented by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.33.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricsUtil.html#"><code>MetricsUtil</code></a>).</p>
+You should wrap it into a <code class="language-plaintext highlighter-rouge">MetricKey&lt;N&gt;</code>, so that it can be cached on nodes (implemented by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.33.0/net/sourceforge/pmd/lang/metrics/MetricsUtil.html#"><code>MetricsUtil</code></a>).</p>
 
 <p>At the very least, a metrics framework has those two components and is just a convenient way to compute and memoize
 metrics on a single file. The expressive power of metrics can be improved by implementing <em>signature matching</em> capabilities,
@@ -1433,8 +1433,8 @@ harder than it looks, and has been rescheduled to another project.</p>
 <ul>
   <li>Implement metrics (typically in an internal package)</li>
   <li>Create some public enums/ utility classes to expose metric keys</li>
-  <li>Implement a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.33.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/LanguageMetricsProvider.html#"><code>LanguageMetricsProvider</code></a>, to expose your metrics to the designer</li>
-  <li>Use your metric keys in rules with <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.33.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricsUtil.html#"><code>MetricsUtil</code></a></li>
+  <li>Implement a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.33.0/net/sourceforge/pmd/lang/metrics/LanguageMetricsProvider.html#"><code>LanguageMetricsProvider</code></a>, to expose your metrics to the designer</li>
+  <li>Use your metric keys in rules with <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.33.0/net/sourceforge/pmd/lang/metrics/MetricsUtil.html#"><code>MetricsUtil</code></a></li>
 </ul>
 
 <h3 id="optional-signature-matching">Optional: Signature matching</h3>
