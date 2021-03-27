@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.33.0</li>
+    <li class="sidebarTitle">PMD 6.34.0-SNAPSHOT</li>
     
     
     
@@ -1415,76 +1415,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="27-march-2021---6330">27-March-2021 - 6.33.0</h2>
+  <h2 id="--2021---6340-snapshot">??-?????-2021 - 6.34.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.33.0.</p>
+<p>The PMD team is pleased to announce PMD 6.34.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="plsql-parsing-exclusions">PLSQL parsing exclusions</h4>
-
-<p>The PMD PLSQL parser might not parse every valid PL/SQL code without problems.
-In order to still use PMD on such files, you can now mark certain lines for exclusion from
-the parser. More information can be found in the <a href="pmd_languages_plsql.html">language specific documentation for PLSQL</a>.</p>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
 
-<ul>
-  <li>apex-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3142">#3142</a>: [apex] ExcessiveClassLength multiple warning on the same class</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3117">#3117</a>: [java] Infinite loop when parsing invalid code nested in lambdas</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3145">#3145</a>: [java] Parse exception when using “record” as variable name</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3118">#3118</a>: [java] UnusedPrivateMethod false positive when passing in lombok.val as argument</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3144">#3144</a>: [java] GuardLogStatement can have more detailed example</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3155">#3155</a>: [java] GuardLogStatement: False negative with unguarded method call</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3160">#3160</a>: [java] MethodReturnsInternalArray does not consider static final fields and fields initialized with empty array</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2977">#2977</a>: [java] CloseResource: false positive with reassignment detection</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3146">#3146</a>: [java] InvalidLogMessageFormat detection failing when String.format used</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3148">#3148</a>: [java] CloseResource false positive with Objects.nonNull</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3165">#3165</a>: [java] InvalidLogMessageFormat detection failing when String.format used in a variable</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2427">#2427</a>: [java] ConsecutiveLiteralAppend false-positive with builder inside lambda</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3152">#3152</a>: [java] ConsecutiveLiteralAppends and InsufficientStringBufferDeclaration: FP with switch expressions</li>
-    </ul>
-  </li>
-  <li>plsql
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/195">#195</a>: [plsql] Ampersand ‘&amp;’ causes PMD processing error in sql file - Lexical error in file</li>
-    </ul>
-  </li>
-</ul>
+<h3 id="api-changes">API Changes</h3>
 
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/3161">#3161</a>: [plsql] Add support for lexical parameters in SQL*Plus scripts, allow excluding lines which the parser does not understand - <a href="https://github.com/hvbtup">Henning von Bargen</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3167">#3167</a>: [java] Minor typo in quickstart ruleset - <a href="https://github.com/AustinTice">Austin Tice</a></li>
-</ul>
-
-<h3 id="stats">Stats</h3>
-<ul>
-  <li>49 commits</li>
-  <li>27 closed tickets &amp; PRs</li>
-  <li>Days since last release: 28</li>
-</ul>
 
 
 
