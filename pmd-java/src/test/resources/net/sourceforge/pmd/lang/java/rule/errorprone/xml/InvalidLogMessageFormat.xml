@@ -948,4 +948,24 @@ class TestInvalidLogMessageFormat {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat detection failing when String.format used in a variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static java.lang.String.format;
+
+class TestInvalidLogMessageFormat {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestInvalidLogMessageFormat.class);
+    public void testPMD() {
+        String message = String.format("Skipping file %s because no parser could be found", getName());
+        LOGGER.info(message);
+    }
+
+    private String getName() { return "the-name"; }
+}
+        ]]></code>
+    </test-code>
 </test-data>
