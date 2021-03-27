@@ -33,7 +33,7 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * necessarily be computed on any node of the type they support).
  *
  * <p>Metrics support a concept of {@linkplain MetricOption options},
- * which can be passed to {@link Metric#compute(Metric, MetricOptions, Node) compute}
+ * which can be passed to {@link Metric#compute(Metric, Node, MetricOptions) compute}
  * or {@link MetricsUtil#computeMetric(Metric, Node, MetricOptions)}.
  *
  * <p>Metric instances are stateless by contract.
@@ -162,17 +162,17 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
      * in situations where {@code N} is unknown. The result is not cached
      * on the node.
      *
-     * @param metric  Metric
-     * @param options Options for the metric
-     * @param node    Node
      * @param <N>     Type of nodes the metric supports
      * @param <R>     Return type
+     * @param metric  Metric
+     * @param node    Node
+     * @param options Options for the metric
      *
      * @return Null if the node is unsupported, otherwise the result of the metric.
      *
      * @throws NullPointerException if any of the parameters is null
      */
-    static <N extends Node, R extends Number> @Nullable R compute(Metric<N, R> metric, MetricOptions options, Node node) {
+    static <N extends Node, R extends Number> @Nullable R compute(Metric<N, R> metric, Node node, MetricOptions options) {
         N n = metric.castIfSupported(node);
         if (n != null) {
             return metric.computeFor(n, options);

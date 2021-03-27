@@ -53,7 +53,7 @@ public interface LanguageMetricsProvider {
     default Map<Metric<?, ?>, Number> computeAllMetricsFor(Node node) {
         Map<Metric<?, ?>, Number> results = new HashMap<>();
         for (Metric<?, ?> metric : getMetrics()) {
-            @Nullable Number result = Metric.compute(metric, MetricOptions.emptyOptions(), node);
+            @Nullable Number result = Metric.compute(metric, node, MetricOptions.emptyOptions());
             if (result != null) {
                 results.put(metric, result);
             }

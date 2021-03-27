@@ -85,7 +85,7 @@ public final class MetricFunction extends BaseJavaXPathFunction {
             throw new XPathException(badMetricKeyMessage(metricKeyName));
         }
 
-        Number computed = Metric.compute(metric, MetricOptions.emptyOptions(), n);
+        Number computed = Metric.compute(metric, n, MetricOptions.emptyOptions());
         return computed == null ? Double.NaN : computed.doubleValue();
     }
 

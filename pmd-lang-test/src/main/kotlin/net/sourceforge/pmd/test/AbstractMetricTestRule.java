@@ -85,7 +85,7 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> e
         if (reportOn(target)) {
             MetricOptions options = MetricOptions.ofOptions(getProperty(optionsDescriptor));
             N reportLevel = parseReportLevel(getProperty(reportLevelDescriptor));
-            N result = Metric.compute(metric, options, target);
+            N result = Metric.compute(metric, target, options);
 
             if (result != null && reportLevel.compareTo(result) <= 0) {
                 addViolationWithMessage(ctx, target, violationMessage(target, result));
