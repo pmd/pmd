@@ -48,5 +48,10 @@ the parser. More information can be found in the [language specific documentatio
 *   [#3161](https://github.com/pmd/pmd/pull/3161): \[plsql] Add support for lexical parameters in SQL*Plus scripts, allow excluding lines which the parser does not understand - [Henning von Bargen](https://github.com/hvbtup)
 *   [#3167](https://github.com/pmd/pmd/pull/3167): \[java] Minor typo in quickstart ruleset - [Austin Tice](https://github.com/AustinTice)
 
+### Stats
+* 49 commits
+* 27 closed tickets & PRs
+* Days since last release: 28
+
 {% endtocmaker %}
 
