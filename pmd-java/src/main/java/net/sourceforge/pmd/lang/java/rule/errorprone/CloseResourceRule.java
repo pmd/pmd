@@ -49,7 +49,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -817,12 +816,8 @@ public class CloseResourceRule extends AbstractJavaRule {
             // The sibling before the operator is the left hand side
             JavaNode lhs = assignment.getParent().getChild(assignment.getIndexInParent() - 1);
 
-            ASTName name = lhs.getFirstDescendantOfType(ASTName.class);
-            if (name != null) {
-                NameDeclaration statementVariable = name.getNameDeclaration();
-                if (statementVariable != null && statementVariable.equals(variable.getVariableId().getNameDeclaration())) {
-                    return true;
-                }
+            if (isVariableAccess(lhs, variable.getName())) {
+                return true;
             }
         }
 
