@@ -8,7 +8,9 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 
 
@@ -38,8 +40,9 @@ public class AtfdBaseVisitor extends JavaVisitorBase<MutableInt, Void> {
     }
 
     private boolean isForeignMethod(ASTMethodCall node) {
-        return node.getMethodName().startsWith("set")
-            || node.getMethodName().startsWith("get");
+        return JavaRuleUtil.isGetterOrSetterCall(node) // getter or setter
+            && node.getQualifier() != null             // not called on this
+            && !(node.getQualifier() instanceof ASTThisExpression);
     }
 
 }

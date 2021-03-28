@@ -248,6 +248,30 @@ public final class JavaRuleUtil {
             || "_".equals(name); // before java 9 it's ok
     }
 
+    /**
+     * Returns true if the string has the given word as a strict prefix.
+     * There needs to be a camelcase word boundary after the prefix.
+     *
+     * <code>
+     * startsWithCamelCaseWord("getter", "get") == false
+     * startsWithCamelCaseWord("get", "get")    == false
+     * startsWithCamelCaseWord("getX", "get")   == true
+     * </code>
+     *
+     * @param camelCaseString A string
+     * @param prefixWord      A prefix
+     */
+    static boolean startsWithCamelCaseWord(String camelCaseString, String prefixWord) {
+        return camelCaseString.startsWith(prefixWord)
+            && camelCaseString.length() > prefixWord.length()
+            && Character.isUpperCase(camelCaseString.charAt(prefixWord.length()));
+    }
+
+    public static boolean isGetterOrSetterCall(ASTMethodCall call) {
+        return call.getArguments().size() == 0 && startsWithCamelCaseWord(call.getMethodName(), "get")
+            || call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
+    }
+
 
     public static boolean isGetterOrSetter(ASTMethodDeclaration node) {
         return isGetter(node) || isSetter(node);
@@ -261,9 +285,9 @@ public final class JavaRuleUtil {
         }
 
         ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
-        if (node.getName().startsWith("get")) {
+        if (startsWithCamelCaseWord(node.getName(), "get")) {
             return hasField(enclosing, node.getName().substring(3));
-        } else if (node.getName().startsWith("is")) {
+        } else if (startsWithCamelCaseWord(node.getName(), "is")) {
             return hasField(enclosing, node.getName().substring(2));
         }
 
@@ -279,7 +303,7 @@ public final class JavaRuleUtil {
 
         ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
 
-        if (node.getName().startsWith("set")) {
+        if (startsWithCamelCaseWord(node.getName(), "set")) {
             return hasField(enclosing, node.getName().substring(3));
         }
 
