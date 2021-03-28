@@ -2,6 +2,9 @@
 title: Java support
 permalink: pmd_languages_java.html
 author: Clément Fournier
+last_updated: March 2021 (7.0.0)
+tags: [languages]
+summary: "Java-specific features and guidance"
 ---
 
 {% include warning.html content="WIP, todo for pmd 7" %}

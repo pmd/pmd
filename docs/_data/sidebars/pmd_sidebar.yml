@@ -349,13 +349,16 @@ entries:
         - title: Performance
           output: web, pdf
           url: /pmd_rules_xsl_performance.html
-  - title: Language Specific Documentation
+  - title: Language-Specific Documentation
     output: web, pdf
     folderitems:
-    - title: Java Support
+    - title: Apex
+      url: /pmd_languages_apex.html
+      output: web, pdf
+    - title: Java
       url: /pmd_languages_java.html
       output: web, pdf
-    - title: JSP Support
+    - title: JSP
       url: /pmd_languages_jsp.html
       output: web, pdf
     - title: PLSQL
