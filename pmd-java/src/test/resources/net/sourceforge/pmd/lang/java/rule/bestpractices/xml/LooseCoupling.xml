@@ -138,4 +138,63 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>FP with method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.HashMap;
+
+public class Test {
+    private static final ThreadLocal TREE_CACHE =
+            ThreadLocal.withInitial(HashMap::new);
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with instanceof</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.HashMap;
+
+public class Test {
+    boolean m(Map m) {
+        if (m instanceof HashMap) {
+            return true;
+        }
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with static method call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.HashMap;
+
+public class MyMap implements Map {
+    static MyMap create() { return null; }
+}
+
+class Foo {
+    final Map map =
+            MyMap.create();
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with array creation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.HashMap;
+
+public class MyMap implements Map {
+    static MyMap create() { return null; }
+}
+
+class Foo {
+    final Map[] map = new MyMap[5]; // ok
+}
+        ]]></code>
+    </test-code>
 </test-data>
