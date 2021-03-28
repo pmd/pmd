@@ -659,12 +659,14 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Name='tearDown']
+//MethodDeclaration[@Name='tearDown' and @Arity=0]
     [not(ModifierList/Annotation[
            pmd-java:typeIs('org.junit.After')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
         or pmd-java:typeIs('org.testng.annotations.AfterMethod')])]
+    (: Make sure this is a junit 4 class :)
+    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
 ]]>
                 </value>
             </property>
@@ -701,12 +703,15 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Name='setUp']
+//MethodDeclaration[@Name='setUp' and @Arity=0]
     [not(ModifierList/Annotation[
            pmd-java:typeIs('org.junit.Before')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
         or pmd-java:typeIs('org.testng.annotations.BeforeMethod')])]
+    (: Make sure this is a junit 4 class :)
+    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
+
 ]]>
                 </value>
             </property>
