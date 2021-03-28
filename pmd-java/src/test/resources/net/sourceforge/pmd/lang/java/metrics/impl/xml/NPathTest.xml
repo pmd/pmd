@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="full-example"><![CDATA[
 import java.util.*;
@@ -447,7 +447,7 @@ public class SOFExample {
 
     }
 }
-        ]]></code>
+            ]]></code>
     </test-code>
 
     <test-code>
@@ -458,7 +458,7 @@ public class SOFExample {
             <message>'SOFExample#usefulMethod(List)' has value 16.</message>
         </expected-messages>
         <code><![CDATA[
-public class SOFExample {
+            public class SOFExample {
 
     private final Map<String, Date> magicMap = new HashMap<String, Date>();
     protected static final long UNKNOWN = 0L;
@@ -508,7 +508,7 @@ public class SOFExample {
         <rule-property name="reportLevel">6</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'SOFExample#usefulMethod(List)' has value 256.</message>
+            <message>'SOFExample#usefulMethod(List)' has value 17.</message>
         </expected-messages>
         <code><![CDATA[
 public class SOFExample {
@@ -524,6 +524,51 @@ public class SOFExample {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPath foreach times other construct</description>
+        <rule-property name="reportLevel">6</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'SOFExample#usefulMethod(List)' has value 272.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class SOFExample {
+
+                private final Map<String, Date> magicMap = new HashMap<String, Date>();
+                protected static final long UNKNOWN = 0L;
+
+                private static final class MyCal {
+
+                    long aTime;
+                    long bTime;
+                    long cTime;
+                    long dTime;
+                }
+
+                public void usefulMethod(final List<MyCal> myCals) {
+
+                    final Date a = magicMap.get("a");
+                    final Date b = magicMap.get("b");
+                    final Date c = magicMap.get("c");
+                    final Date d = magicMap.get("d");
+
+                    final long aTime = a == null ? UNKNOWN : a.getTime();
+                    final long bTime = b == null ? UNKNOWN : b.getTime();
+                    final long cTime = c == null ? UNKNOWN : c.getTime();
+                    final long dTime = d == null ? UNKNOWN : d.getTime();
+
+                    for (MyCal myCal : myCals) {
+                        if(myCal.aTime == UNKNOWN) myCal.aTime = aTime;
+                        if(myCal.bTime == UNKNOWN) myCal.bTime = bTime;
+                        if(myCal.cTime == UNKNOWN) myCal.cTime = cTime;
+                        if(myCal.dTime == UNKNOWN) myCal.dTime = dTime;
+                    }
+
+                }
+            }
+            ]]></code>
     </test-code>
 
     <test-code>

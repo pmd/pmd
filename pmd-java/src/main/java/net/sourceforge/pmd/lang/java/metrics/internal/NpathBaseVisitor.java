@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
@@ -117,6 +118,14 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
         int boolComp = CycloVisitor.booleanExpressionComplexity(node.getCondition());
         BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
         return nPathBody.add(BigInteger.valueOf(boolComp + 1));
+    }
+
+    @Override
+    public BigInteger visit(ASTForeachStatement node, Void data) {
+        // (npath of for + 1) * npath of next
+
+        BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
+        return nPathBody.add(BigInteger.ONE);
     }
 
 
