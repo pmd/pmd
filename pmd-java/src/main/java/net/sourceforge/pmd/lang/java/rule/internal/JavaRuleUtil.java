@@ -268,7 +268,9 @@ public final class JavaRuleUtil {
     }
 
     public static boolean isGetterOrSetterCall(ASTMethodCall call) {
-        return call.getArguments().size() == 0 && startsWithCamelCaseWord(call.getMethodName(), "get")
+        return call.getArguments().size() == 0
+            && (startsWithCamelCaseWord(call.getMethodName(), "get")
+            || startsWithCamelCaseWord(call.getMethodName(), "is"))
             || call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
     }
 
