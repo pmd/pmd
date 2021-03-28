@@ -83,6 +83,7 @@ The default version is always ES6.
     not necessary are allowed, if they separate expressions of different precedence.
     The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
     reading and understanding the expressions.
+*   The rule {% rule "java/bestpractices/LooseCoupling" %} has a new property to allow some types to be coupled to (`allowedTypes`).
 
 #### Removed Rules
 

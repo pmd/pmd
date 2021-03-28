@@ -197,4 +197,40 @@ class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>FP with j.util.Properties</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Properties;
+
+class Foo {
+    final Properties map = new Properties();
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Exception list, no exception</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package mine;
+import java.util.List;
+
+class O implements List {
+    final O map = new O();
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Exception list</description>
+        <rule-property name="allowedTypes">mine.O</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package mine;
+import java.util.List;
+
+class O implements List {
+    final O map = new O();
+}
+        ]]></code>
+    </test-code>
 </test-data>

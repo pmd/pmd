@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
@@ -19,11 +19,20 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class LooseCouplingRule extends AbstractJavaRulechainRule {
 
+    private static final PropertyDescriptor<List<String>> ALLOWED_TYPES =
+        PropertyFactory.stringListProperty("allowedTypes")
+                       .desc("Exceptions to the rule")
+                       .defaultValues("java.util.Properties")
+                       .build();
+
     public LooseCouplingRule() {
         super(ASTClassOrInterfaceType.class);
+        definePropertyDescriptor(ALLOWED_TYPES);
     }
 
     @Override
@@ -44,7 +53,12 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isAllowedType(ASTClassOrInterfaceType node) {
-        return TypeTestUtil.isA(Properties.class, node);
+        for (String allowed : getProperty(ALLOWED_TYPES)) {
+            if (TypeTestUtil.isA(allowed, node)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
