@@ -1141,7 +1141,9 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']</value>
+                <value><![CDATA[
+                //ClassOrInterfaceType[pmd-java:typeIs('java.util.Hashtable')]
+                ]]></value>
             </property>
         </properties>
         <example>
@@ -1167,7 +1169,9 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']</value>
+                <value><![CDATA[
+                //ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]
+                ]]></value>
             </property>
         </properties>
         <example>
