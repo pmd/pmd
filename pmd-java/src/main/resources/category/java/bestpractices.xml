@@ -620,9 +620,8 @@ through the @RunWith(Suite.class) annotation.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration
-[MethodDeclaration[@Name='suite']/ResultType/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
-[not(MethodDeclaration/Block/BlockStatement/Statement/ReturnStatement//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
+//MethodDeclaration[@Name='suite' and ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
+                   [not(.//ReturnStatement/*[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
 ]]>
                 </value>
             </property>
