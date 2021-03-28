@@ -1479,21 +1479,19 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#2977 6.30.0 introduces new false positive in CloseResource rule</description>
+        <description>[java] CloseResource: false positive with reassignment detection #2977</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.RandomAccessFile;
-import java.io.IOException;
 
 public class FalsePositive {
+    private boolean isHundredBytes = false;
 
     public void bar() throws Exception {
         RandomAccessFile file = null;
         try {
             file = new RandomAccessFile("name", "r");
-            boolean isHundredBytes = file.length() == 100;
-        } catch (IOException e) {
-            // no-op
+            this.isHundredBytes = file.length() == 100;  /* violation here... */
         } finally {
             file.close();
         }
@@ -1536,6 +1534,125 @@ public class Foo {
         } finally {
             if (in != null) {
                 in.close();
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource with close target nested in a if null-check and try within finally #3148</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+
+public class FalsePositive {
+
+    public void bar(Connection conn, String sqL) {
+        PreparedStatement lPreparedStmt = null;
+        try {
+            lPreparedStmt = conn.prepareStatement(sqL);
+            lPreparedStmt.execute();
+        } catch (SQLException ex) {
+            System.out.println("lPreparedStmt.execute();loooooooooooooose" + ex);
+        } finally {
+            if (lPreparedStmt != null) {
+                try {
+                    lPreparedStmt.close();
+                } catch (SQLException pEx) {
+                    System.err.println("unrecoverable:" + pEx);
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource with close target nested in a if Objects.nonNull and try within finally (1) #3148</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+import java.util.Objects;
+
+public class FalsePositive {
+
+    public void bar(Connection conn, String sqL) {
+        PreparedStatement lPreparedStmt = null;
+        try {
+            lPreparedStmt = conn.prepareStatement(sqL);
+            lPreparedStmt.execute();
+        } catch (SQLException ex) {
+            System.out.println("lPreparedStmt.execute();loooooooooooooose" + ex);
+        } finally {
+            if (Objects.nonNull(lPreparedStmt)) {
+                try {
+                    lPreparedStmt.close();
+                } catch (SQLException pEx) {
+                    System.err.println("unrecoverable:" + pEx);
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource with close target nested in a if Objects.nonNull and try within finally (2) #3148</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+import static java.util.Objects.nonNull;
+
+public class FalsePositive {
+
+    public void bar(Connection conn, String sqL) {
+        PreparedStatement lPreparedStmt = null;
+        try {
+            lPreparedStmt = conn.prepareStatement(sqL);
+            lPreparedStmt.execute();
+        } catch (SQLException ex) {
+            System.out.println("lPreparedStmt.execute();loooooooooooooose" + ex);
+        } finally {
+            if (nonNull(lPreparedStmt)) {
+                try {
+                    lPreparedStmt.close();
+                } catch (SQLException pEx) {
+                    System.err.println("unrecoverable:" + pEx);
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource with close target nested in a if Objects.nonNull and try within finally (3) #3148</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+import static java.util.Objects.*;
+
+public class FalsePositive {
+
+    public void bar(Connection conn, String sqL) {
+        PreparedStatement lPreparedStmt = null;
+        try {
+            lPreparedStmt = conn.prepareStatement(sqL);
+            lPreparedStmt.execute();
+        } catch (SQLException ex) {
+            System.out.println("lPreparedStmt.execute();loooooooooooooose" + ex);
+        } finally {
+            if (nonNull(lPreparedStmt)) {
+                try {
+                    lPreparedStmt.close();
+                } catch (SQLException pEx) {
+                    System.err.println("unrecoverable:" + pEx);
+                }
             }
         }
     }

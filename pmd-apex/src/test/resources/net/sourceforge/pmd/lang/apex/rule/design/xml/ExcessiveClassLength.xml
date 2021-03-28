@@ -91,4 +91,29 @@ public class SomeClass {
 }
        ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[apex] ExcessiveClassLength multiple warning on the same class #3142</description>
+        <rule-property name="minimum">10</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class FooSmaller {
+
+    public class bar1 {
+        public void m() {
+            System.out.println('foo');
+            System.out.println('foo');
+        }
+    }
+
+    public class bar2 {
+        public void m() {
+            System.out.println('foo');
+            System.out.println('foo');
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
