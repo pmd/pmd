@@ -701,9 +701,8 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration
-    [MethodDeclaration[@Name='setUp']]
-    [not(Annotation/*/Name[
+//MethodDeclaration[@Name='setUp']
+    [not(ModifierList/Annotation[
            pmd-java:typeIs('org.junit.Before')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')

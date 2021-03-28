@@ -64,6 +64,8 @@ public class Foo {
     public void tearDown(Method m) {
       //...
     }
+    @Test
+    public void someTest() {}
 }
         ]]></code>
     </test-code>
@@ -79,6 +81,9 @@ public class Foo {
     public void tearDown() {
       //...
     }
+    @Test
+    public void someTest() {}
+
 }
         ]]></code>
     </test-code>
@@ -94,6 +99,8 @@ public class Foo {
     public void tearDown() {
       //...
     }
+    @Test
+    public void someTest() {}
 }
         ]]></code>
     </test-code>
