@@ -49,7 +49,10 @@ public final class JavaMetrics {
 
     /**
      * Number of usages of foreign attributes, both directly and through accessors.
-     * High values of ATFD (&gt; 3 for an operation) may suggest that the
+     * "Foreign" hier means "not belonging to {@code this}", although field accesses
+     * to fields declared in the enclosing class are not considered foreign.
+     *
+     * <p>High values of ATFD (&gt; 3 for an operation) may suggest that the
      * class or operation breaks encapsulation by relying on the internal
      * representation of the classes it uses instead of the services they provide.
      */
