@@ -743,17 +743,19 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[
-       matches(@SimpleName, $testClassPattern)
-        or ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]]
-
-    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true() and starts-with(@Name, 'test')]]
-    [not(Annotation//Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-    ])]
+//ClassOrInterfaceDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
+    (: a junit 3 method :)
+    /ClassOrInterfaceBody/MethodDeclaration[
+        @Visibility="public"
+        and starts-with(@Name, 'test')
+        and not(ModifierList/Annotation[
+          pmd-java:typeIs('org.junit.Test')
+          or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+          or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+          or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+          ]
+        )
+    ]
 ]]>
                 </value>
             </property>
