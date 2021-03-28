@@ -5,6 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="full-example"><![CDATA[
+import java.util.*;
 public class Foo {
     public static void bar() {
         boolean a, b = true;
