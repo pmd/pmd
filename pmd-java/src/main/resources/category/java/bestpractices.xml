@@ -1109,7 +1109,7 @@ Consider replacing Enumeration usages with the newer java.util.Iterator
             <property name="xpath">
                 <value>
 <![CDATA[
-//ImplementsList/ClassOrInterfaceType[@Image='Enumeration']
+//ImplementsList/ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Enumeration')]
 ]]>
                 </value>
             </property>

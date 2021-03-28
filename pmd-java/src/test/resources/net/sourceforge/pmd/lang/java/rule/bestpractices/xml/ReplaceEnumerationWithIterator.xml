@@ -8,6 +8,7 @@
         <description>bad, implementing Enumeration</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.Enumeration;
 public class Foo implements Enumeration {
     public boolean hasMoreElements() {
         return true;
