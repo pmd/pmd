@@ -551,4 +551,24 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] PreserveStackTrace false-positive #1747</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+
+public class SomeOtherUserDefinedException extends Exception {
+    public static void foo(String a) throws Exception {
+        try {
+	          // xxx
+        } catch (IOException exception) {
+            if (exception.getMessage().contains("foobar")) {
+                throw new SomeOtherUserDefinedException("Error", exception);
+            }
+            throw exception;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
