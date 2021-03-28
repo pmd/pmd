@@ -6,8 +6,10 @@ package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
@@ -32,17 +34,28 @@ public class AtfdBaseVisitor extends JavaVisitorBase<MutableInt, Void> {
 
     @Override
     public Void visit(ASTFieldAccess node, MutableInt data) {
-        JFieldSymbol sym = node.getReferencedSym();
-        if (sym != null && !sym.getEnclosingClass().equals(node.getEnclosingType().getSymbol())) {
+        if (isForeignField(node)) {
             data.increment();
         }
         return visitChildren(node, data);
     }
 
+    private boolean isForeignField(ASTFieldAccess node) {
+        JFieldSymbol sym = node.getReferencedSym();
+        if (sym == null || sym.isStatic()) {
+            return false;
+        }
+        ASTExpression qualifier = node.getQualifier();
+        return !(qualifier instanceof ASTThisExpression
+            || qualifier instanceof ASTSuperExpression
+            || sym.getEnclosingClass().equals(node.getEnclosingType().getSymbol())
+            );
+    }
+
     private boolean isForeignMethod(ASTMethodCall node) {
-        return JavaRuleUtil.isGetterOrSetterCall(node) // getter or setter
-            && node.getQualifier() != null             // not called on this
-            && !(node.getQualifier() instanceof ASTThisExpression);
+        return JavaRuleUtil.isGetterOrSetterCall(node)
+                  && node.getQualifier() != null
+                  && !(node.getQualifier() instanceof ASTThisExpression);
     }
 
 }
