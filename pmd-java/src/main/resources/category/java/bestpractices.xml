@@ -659,9 +659,8 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration
-    [MethodDeclaration[@Name='tearDown']]
-    [not(Annotation/*/Name[
+//MethodDeclaration[@Name='tearDown']
+    [not(ModifierList/Annotation[
            pmd-java:typeIs('org.junit.After')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')

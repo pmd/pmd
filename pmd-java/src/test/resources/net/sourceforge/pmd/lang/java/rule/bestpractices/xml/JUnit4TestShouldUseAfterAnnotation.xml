@@ -8,6 +8,7 @@
         <description>Contains tearDown</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
 public class Foo {
     public void tearDown() {
     }
@@ -19,9 +20,11 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Contains @tearDown</description>
+        <description>Contains @After tearDown</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
+import org.junit.After;
 public class Foo {
     @After
     public void tearDown() {
@@ -37,6 +40,8 @@ public class Foo {
         <description>Renamed tearDown</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
+import org.junit.After;
 public class Foo {
     @After
     public void clean() {
