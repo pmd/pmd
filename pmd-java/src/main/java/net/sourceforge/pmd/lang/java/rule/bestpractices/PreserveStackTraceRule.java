@@ -4,173 +4,131 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil.InvocationMatcher;
 
 /**
- *
  * @author Unknown,
  * @author Romain PELISSE, belaran@gmail.com, fix for bug 1808110
- *
  */
-public class PreserveStackTraceRule extends AbstractJavaRule {
+public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
-    private static final String FILL_IN_STACKTRACE = ".fillInStackTrace";
+    private static final InvocationMatcher INIT_CAUSE = InvocationMatcher.parse("java.lang.Throwable#initCause(_)");
+    private static final InvocationMatcher FILL_IN_STACKTRACE = InvocationMatcher.parse("java.lang.Throwable#fillInStackTrace()");
+
+    public PreserveStackTraceRule() {
+        super(ASTCatchClause.class);
+    }
 
     @Override
     public Object visit(ASTCatchClause catchStmt, Object data) {
-        String target = catchStmt.getChild(0).findChildrenOfType(ASTVariableDeclaratorId.class).get(0).getImage();
+        ASTVariableDeclaratorId target = catchStmt.getParameter().getVarId();
+        JVariableSymbol exceptionSym = target.getSymbol();
+
         // Inspect all the throw stmt inside the catch stmt
-        List<ASTThrowStatement> lstThrowStatements = catchStmt.findDescendantsOfType(ASTThrowStatement.class);
-        for (ASTThrowStatement throwStatement : lstThrowStatements) {
-            Node n = throwStatement.getChild(0).getChild(0);
-            if (n instanceof ASTCastExpression) {
-                ASTPrimaryExpression expr = (ASTPrimaryExpression) n.getChild(1);
-                if (expr.getNumChildren() > 1 && expr.getChild(1) instanceof ASTPrimaryPrefix) {
+        for (ASTThrowStatement throwStatement : catchStmt.getBody().descendants(ASTThrowStatement.class)) {
+            ASTExpression thrownExpr = throwStatement.getExpr();
+            if (thrownExpr instanceof ASTConstructorCall) {
+                // new Exception(e)
+                if (!isCtorOk(exceptionSym, (ASTConstructorCall) thrownExpr)) {
                     addViolation(data, throwStatement);
                 }
-                continue;
-            }
-            // Retrieve all argument for the throw exception (to see if the
-            // original exception is preserved)
-            ASTArgumentList args = throwStatement.getFirstDescendantOfType(ASTArgumentList.class);
-            if (args != null) {
-                Node parent = args.getParent().getParent();
-                if (parent instanceof ASTAllocationExpression) {
-                    // maybe it is used inside a anonymous class
-                    ck(data, target, throwStatement, parent);
-                } else {
-                    // Check all arguments used in the throw statement
-                    ck(data, target, throwStatement, throwStatement);
+            } else if (thrownExpr instanceof ASTVariableAccess) {
+                // IllegalStateException ex = new IllegalStateException();
+                // ex.initCause(e);
+                // throw ex;
+
+                // id of the throw var
+                ASTVariableDeclaratorId decl = ((ASTVariableAccess) thrownExpr).getReferencedSym().tryGetNode();
+                if (decl == null) {
+                    continue;
                 }
-            } else {
-                Node child = throwStatement.getChild(0);
-                while (child != null && child.getNumChildren() > 0 && !(child instanceof ASTName)) {
-                    child = child.getChild(0);
+
+                // Exception e = new Exception(target);
+                // throw e;
+                if (isInitializerOk(exceptionSym, decl)) {
+                    continue;
                 }
-                if (child != null) {
-                    if (child instanceof ASTName && !target.equals(child.getImage())
-                            && !child.hasImageEqualTo(target + FILL_IN_STACKTRACE)) {
-                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((ASTName) child).getScope()
-                                .getDeclarations(VariableNameDeclaration.class);
-                        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
-                            VariableNameDeclaration decl = entry.getKey();
-                            List<NameOccurrence> occurrences = entry.getValue();
-                            if (decl.getImage().equals(child.getImage())) {
-                                if (!isInitCauseCalled(target, occurrences)) {
-                                    // Check how the variable is initialized
-                                    ASTVariableInitializer initializer = decl.getNode().getParent()
-                                            .getFirstDescendantOfType(ASTVariableInitializer.class);
-                                    if (initializer != null) {
-                                        args = initializer.getFirstDescendantOfType(ASTArgumentList.class);
-                                        if (args != null) {
-                                            // constructor with args?
-                                            ck(data, target, throwStatement, args);
-                                        } else if (!isFillInStackTraceCalled(target, initializer)) {
-                                            addViolation(data, throwStatement);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else if (child instanceof ASTClassOrInterfaceType) {
-                        addViolation(data, throwStatement);
-                    }
+
+                if (!initCauseWasCalledOnUsages(exceptionSym, decl)) {
+                    addViolation(data, throwStatement);
                 }
             }
+
         }
-        return super.visit(catchStmt, data);
+        return null;
     }
 
-    private boolean isFillInStackTraceCalled(final String target, final ASTVariableInitializer initializer) {
-        final ASTName astName = initializer.getFirstDescendantOfType(ASTName.class);
-        return astName != null && astName.hasImageEqualTo(target + FILL_IN_STACKTRACE);
+    private boolean isCtorOk(JVariableSymbol exceptionSym, ASTConstructorCall ctorCall) {
+        return ctorCall.isAnonymousClass() && callsInitCauseInAnonInitializer(exceptionSym, ctorCall)
+            || hasReferenceAsArgument(ctorCall, exceptionSym);
     }
 
-    private boolean isInitCauseCalled(String target, List<NameOccurrence> occurrences) {
-        boolean initCauseCalled = false;
-        for (NameOccurrence occurrence : occurrences) {
-            String image = null;
-            if (occurrence.getLocation() != null) {
-                image = occurrence.getLocation().getImage();
-            }
-            if (image != null && image.endsWith("initCause")) {
-                ASTPrimaryExpression primaryExpression = occurrence.getLocation()
-                        .getFirstParentOfType(ASTPrimaryExpression.class);
-                if (primaryExpression != null) {
-                    ASTArgumentList args2 = primaryExpression.getFirstDescendantOfType(ASTArgumentList.class);
-                    if (checkForTargetUsage(target, args2)) {
-                        initCauseCalled = true;
-                        break;
-                    }
-                }
-            }
+    private boolean callsInitCauseInAnonInitializer(JVariableSymbol exceptionSym, ASTConstructorCall ctorCall) {
+        return ctorCall.getAnonymousClassDeclaration().getDeclarations().map(NodeStream.asInstanceOf(ASTFieldDeclaration.class, ASTInitializer.class))
+                       .descendants().filterIs(ASTMethodCall.class)
+                       .any(it -> isInitCauseWithTargetInArg(exceptionSym, it));
+    }
+
+    private static boolean isInitializerOk(JVariableSymbol exceptionSym, ASTVariableDeclaratorId decl) {
+        ASTExpression initializer = peelCasts(decl.getInitializer());
+        if (initializer instanceof ASTConstructorCall) {
+            return hasReferenceAsArgument((InvocationNode) initializer, exceptionSym);
+        } else if (FILL_IN_STACKTRACE.matchesCall(initializer)) {
+            return JavaRuleUtil.isReferenceToVar(((ASTMethodCall) initializer).getQualifier(), exceptionSym);
         }
-        return initCauseCalled;
+        return false;
     }
 
-    /**
-     * Checks whether the given target is in the argument list. If this is the
-     * case, then the target (root exception) is used as the cause.
-     *
-     * @param target
-     * @param baseNode
-     */
-    private boolean checkForTargetUsage(String target, Node baseNode) {
-        boolean match = false;
-        if (target != null && baseNode != null) {
-            List<ASTName> nameNodes = baseNode.findDescendantsOfType(ASTName.class, true);
-            for (ASTName nameNode : nameNodes) {
-                if (target.equals(nameNode.getImage())) {
-                    boolean isPartOfStringConcatenation = isStringConcat(nameNode, baseNode);
-                    if (!isPartOfStringConcatenation) {
-                        match = true;
-                        break;
-                    }
-                }
-            }
-        }
-        return match;
-    }
-
-    /**
-     * Checks whether the given childNode is part of an additive expression (String concatenation) limiting search to base Node.
-     * @param childNode
-     * @param baseNode
-     * @return
-     */
-    private boolean isStringConcat(Node childNode, Node baseNode) {
-        Node currentNode = childNode;
-        while (!Objects.equals(currentNode, baseNode)) {
-            currentNode = currentNode.getParent();
-            if (currentNode instanceof ASTAdditiveExpression) {
+    private static boolean initCauseWasCalledOnUsages(JVariableSymbol exceptionSym, ASTVariableDeclaratorId decl) {
+        for (ASTNamedReferenceExpr usage : decl.getLocalUsages()) {
+            if (isInitCauseWithTargetInArg(exceptionSym, usage.getParent())) {
                 return true;
             }
         }
         return false;
     }
 
-    private void ck(Object data, String target, ASTThrowStatement throwStatement, Node baseNode) {
-        if (!checkForTargetUsage(target, baseNode)) {
-            addViolation(data, throwStatement);
+    private static boolean isInitCauseWithTargetInArg(JVariableSymbol exceptionSym, JavaNode expr) {
+        if (INIT_CAUSE.matchesCall(expr)) {
+            ASTMethodCall initCauseCall = (ASTMethodCall) expr;
+            return hasReferenceAsArgument(initCauseCall, exceptionSym);
         }
+        return false;
+    }
+
+    private static boolean hasReferenceAsArgument(InvocationNode thrownExpr, @NonNull JVariableSymbol toFind) {
+        for (ASTExpression arg : thrownExpr.getArguments()) {
+            if (JavaRuleUtil.isReferenceToVar(arg, toFind)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static ASTExpression peelCasts(@Nullable ASTExpression expr) {
+        while (expr instanceof ASTCastExpression) {
+            expr = ((ASTCastExpression) expr).getOperand();
+        }
+        return expr;
     }
 }
