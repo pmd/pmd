@@ -44,6 +44,10 @@ import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 /**
  * Built-in Java metrics. See {@link Metric} and {@link MetricsUtil}
  * for usage doc.
+ *
+ * @see "Michele Lanza and Radu Marinescu. <i>Object-Oriented Metrics in Practice:
+ * Using Software Metrics to Characterize, Evaluate, and Improve the Design
+ * of Object-Oriented Systems.</i> Springer, Berlin, 1 edition, October 2006."
  */
 public final class JavaMetrics {
 

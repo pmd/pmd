@@ -495,6 +495,18 @@ Refactoring a Data Class should focus on restoring a good data-behaviour proximi
 most cases, that means moving the operations defined on the data back into the class.
 In some other cases it may make sense to remove entirely the class and move the data
 into the former client classes.
+
+The rule uses metrics to implement its detection strategy. The violation message
+gives information about the values of these metrics:
+* WMC: a class complexity measure for a class, see {% jdoc java::lang.java.metrics.JavaMetrics#WEIGHED_METHOD_COUNT %}
+* WOC: a 'non-triviality' measure for a class, see {% jdoc java::lang.java.metrics.JavaMetrics#WEIGHT_OF_CLASS %}
+* NOPA: number of public attributes, see {% jdoc java::lang.java.metrics.JavaMetrics#NUMBER_OF_PUBLIC_FIELDS %}
+* NOAM: number of public accessor methods, see {% jdoc java::lang.java.metrics.JavaMetrics#NUMBER_OF_ACCESSORS %}
+
+The rule identifies a god class by looking for classes which have all of the following properties:
+* High NOPA + NOAM
+* Low WOC
+* Low WMC
         </description>
         <priority>3</priority>
         <example>
@@ -753,11 +765,22 @@ are very big and overly complex. They should be split apart to be more object-or
 The rule uses the detection strategy described in "Object-Oriented Metrics in Practice".
 The violations are reported against the entire class.
 
-See also the references:
+The rule uses metrics to implement its detection strategy. The violation message
+gives information about the values of these metrics:
+* WMC: a class complexity measure, see {% jdoc java::lang.java.metrics.JavaMetrics#WEIGHED_METHOD_COUNT %}
+* ATFD: a measure of how much data external data the class uses, see {% jdoc java::lang.java.metrics.JavaMetrics#ACCESS_TO_FOREIGN_DATA %}
+* TCC: a measure of how tightly related the methods are, see {% jdoc java::lang.java.metrics.JavaMetrics#TIGHT_CLASS_COHESION %}
 
-Michele Lanza and Radu Marinescu. Object-Oriented Metrics in Practice:
+The rule identifies a god class by looking for classes which have all of the following properties:
+* High WMC
+* High ATFD
+* Low TCC
+
+See also the reference:
+
+Michele Lanza and Radu Marinescu. *Object-Oriented Metrics in Practice:
 Using Software Metrics to Characterize, Evaluate, and Improve the Design
-of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
+of Object-Oriented Systems.* Springer, Berlin, 1 edition, October 2006. Page 80.
         </description>
         <priority>3</priority>
     </rule>
