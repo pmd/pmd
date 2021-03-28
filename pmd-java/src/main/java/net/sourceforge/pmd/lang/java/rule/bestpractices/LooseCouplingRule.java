@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -47,9 +48,11 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isInAllowedSyntacticCtx(ASTClassOrInterfaceType node) {
-        return node.getParent() instanceof ASTConstructorCall
-            || node.getParent() instanceof ASTTypeExpression
-            || node.getParent() instanceof ASTArrayType && node.getParent().getParent() instanceof ASTArrayAllocation;
+        JavaNode parent = node.getParent();
+        return parent instanceof ASTConstructorCall
+            || parent instanceof ASTTypeExpression
+            || parent instanceof ASTClassLiteral
+            || parent instanceof ASTArrayType && parent.getParent() instanceof ASTArrayAllocation;
     }
 
     private boolean isAllowedType(ASTClassOrInterfaceType node) {
