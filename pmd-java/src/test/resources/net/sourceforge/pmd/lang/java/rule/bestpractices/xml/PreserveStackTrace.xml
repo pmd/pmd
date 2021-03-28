@@ -148,6 +148,39 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>9.5, Throwing same exception, OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                        int i = Integer.parseInt(a);
+                    } catch(Exception e){
+                        ((Exception)e).fillInStackTrace();
+                        throw e;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>9.55, Throwing same exception, OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                        int i = Integer.parseInt(a);
+                    } catch(Exception e){
+                        throw e;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description>10, Throwing new Exception, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -180,7 +213,6 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-
     <test-code>
         <description>12, Catch and throw RuntimeException</description>
         <expected-problems>0</expected-problems>

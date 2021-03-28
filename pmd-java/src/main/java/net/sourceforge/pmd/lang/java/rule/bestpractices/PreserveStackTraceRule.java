@@ -59,7 +59,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
                 // id of the throw var
                 ASTVariableDeclaratorId decl = ((ASTVariableAccess) thrownExpr).getReferencedSym().tryGetNode();
-                if (decl == null) {
+                if (decl == null || target == decl) {
                     continue;
                 }
 
