@@ -25,4 +25,20 @@ TODO describe APIs
 
 ### Metrics framework
 
-TODO
+In order to use code metrics in Java, use the metrics constants in {% jdoc java::lang.java.metrics.JavaMetrics %},
+together with {% jdoc core::lang.metrics.MetricsUtil %}. For instance:
+
+```java
+@Override
+public Object visit(ASTMethodDeclaration node, Object data) {
+    if (JavaMetrics.NCSS.supports(node)) {
+        int methodSize = MetricsUtil.computeMetric(JavaMetrics.NCSS, node, ncssOptions);
+        if (methodSize >= level) {
+            addViolation(data, node);
+        }
+    }
+    return null;
+}
+```
+
+The Javadocs are the reference documentation.
