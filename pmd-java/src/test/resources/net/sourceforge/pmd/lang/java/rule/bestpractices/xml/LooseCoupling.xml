@@ -151,7 +151,7 @@ public class Test {
         ]]></code>
     </test-code>
     <test-code>
-        <description>FP with instanceof</description>
+        <description>FP with instanceof and cast</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.HashMap;
@@ -159,7 +159,7 @@ import java.util.HashMap;
 public class Test {
     boolean m(Map m) {
         if (m instanceof HashMap) {
-            return true;
+            return ((HashMap) m).isEmpty();
         }
         return false;
     }
