@@ -270,8 +270,12 @@ public class Something {
           since="4.1"
           message="Do not use the short type"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidusingshorttype">
         <description>
+Note: this rule is deprecated, as its rationale does not hold.
+
 Java uses the 'short' type to reduce memory usage, not to optimize calculation. In fact, the JVM does not have any
 arithmetic capabilities for the short type: the JVM must convert the short into an int, do the proper calculation
 and convert the int back to a short. Thus any storage gains found through use of the 'short' type may be offset by
@@ -672,8 +676,11 @@ public class C {
           since="3.1"
           message="This call to String.startsWith can be rewritten using String.charAt(0)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#simplifystartswith">
         <description>
+Note: this rule is deprecated for removal, as the optimization is insignificant.
+
 Calls to `string.startsWith("x")` with a string literal of length 1 can be rewritten using `string.charAt(0)`,
 at the expense of some readability. To prevent `IndexOutOfBoundsException` being thrown by the `charAt` method,
 ensure that the string is not empty by making an additional check first.

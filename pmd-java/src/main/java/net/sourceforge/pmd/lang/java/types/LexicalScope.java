@@ -40,7 +40,7 @@ public final class LexicalScope extends MapFunction<String, @Nullable JTypeVar> 
      * tvars that were in this scope.
      */
     public LexicalScope andThen(List<? extends JTypeVar> vars) {
-        if (this == EMPTY && vars.isEmpty()) {
+        if (this == EMPTY && vars.isEmpty()) { // NOPMD CompareObjectsWithEquals
             return EMPTY;
         }
         return new LexicalScope(associateByTo(new HashMap<>(getMap()), vars, JTypeVar::getName));

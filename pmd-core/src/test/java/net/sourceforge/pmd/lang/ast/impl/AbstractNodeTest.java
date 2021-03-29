@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.root;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 import java.util.List;
@@ -111,6 +112,22 @@ public class AbstractNodeTest {
         for (final Node grandChild : grandChildren) {
             assertEquals(child, grandChild.getParent());
         }
+    }
+
+    @Test
+    public void testPrevNextSiblings() {
+        DummyRoot root = tree(() -> root(node(), node()));
+
+        assertNull(root.getNextSibling());
+        assertNull(root.getPreviousSibling());
+
+        DummyNode c0 = root.getChild(0);
+        DummyNode c1 = root.getChild(1);
+
+        assertSame(c0, c1.getPreviousSibling());
+        assertSame(c1, c0.getNextSibling());
+        assertNull(c1.getNextSibling());
+        assertNull(c0.getPreviousSibling());
     }
 
     /**

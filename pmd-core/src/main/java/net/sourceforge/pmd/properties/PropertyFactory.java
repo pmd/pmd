@@ -4,14 +4,18 @@
 
 package net.sourceforge.pmd.properties;
 
+import static java.util.Arrays.asList;
+
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.constraints.NumericConstraints;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 //@formatter:off
 /**
@@ -317,6 +321,23 @@ public final class PropertyFactory {
      */
     public static <T> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Map<String, T> nameToValue) {
         return enumProperty(name, nameToValue).toList().delim(MultiValuePropertyDescriptor.DEFAULT_DELIMITER);
+    }
+
+
+    /**
+     * Returns a builder for a property having as value a list of {@code <T>}. The
+     * format of the individual items is the same as for {@linkplain #enumProperty(String, Map)}.
+     *
+     * @param name       Name of the property to build
+     * @param enumClass  Class of the values
+     * @param labelMaker Function that associates enum constants to their label
+     * @param <T>        Value type of the property
+     *
+     * @return A new builder
+     */
+    public static <T extends Enum<T>> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Class<T> enumClass, Function<? super T, String> labelMaker) {
+        Map<String, T> enumMap = CollectionUtil.associateBy(asList(enumClass.getEnumConstants()), labelMaker);
+        return enumListProperty(name, enumMap);
     }
 
 

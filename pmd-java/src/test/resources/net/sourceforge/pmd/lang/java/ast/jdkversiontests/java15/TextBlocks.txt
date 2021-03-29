@@ -23,18 +23,7 @@
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "html"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "html", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "<html>
-    <body>
-        <p>Hello, world</p>
-    </body>
-</html>
-", @Empty = "false", @Image = """"
-                      <html>   
-                          <body>
-                              <p>Hello, world</p>    
-                          </body> 
-                      </html>   
-                      """", @Length = "66", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "<html>\n    <body>\n        <p>Hello, world</p>\n    </body>\n</html>\n", @Empty = "false", @Image = "\"\"\"\n                      <html>   \n                          <body>\n                              <p>Hello, world</p>    \n                          </body> \n                      </html>   \n                      \"\"\"", @Length = "66", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                |  +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |     +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -47,14 +36,7 @@
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "query"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "query", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`
-WHERE `CITY` = 'INDIANAPOLIS'
-ORDER BY `EMP_ID`, `LAST_NAME`;
-", @Empty = "false", @Image = """"
-                       SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`
-                       WHERE `CITY` = 'INDIANAPOLIS'
-                       ORDER BY `EMP_ID`, `LAST_NAME`;
-                       """", @Length = "110", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`\nWHERE `CITY` = \'INDIANAPOLIS\'\nORDER BY `EMP_ID`, `LAST_NAME`;\n", @Empty = "false", @Image = "\"\"\"\n                       SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`\n                       WHERE `CITY` = \'INDIANAPOLIS\'\n                       ORDER BY `EMP_ID`, `LAST_NAME`;\n                       \"\"\"", @Length = "110", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                |  +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |     +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -72,7 +54,7 @@ ORDER BY `EMP_ID`, `LAST_NAME`;
                |        |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "ScriptEngineManager"]
                |        |  +- ArgumentList[@Size = "0"]
                |        +- ArgumentList[@Size = "1"]
-               |           +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "js", @Empty = "false", @Image = ""js"", @Length = "2", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+               |           +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "js", @Empty = "false", @Image = "\"js\"", @Length = "2", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
                +- LocalVariableDeclaration[@EffectiveVisibility = "local", @Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "Object"]
@@ -81,35 +63,13 @@ ORDER BY `EMP_ID`, `LAST_NAME`;
                |     +- MethodCall[@CompileTimeConstant = "false", @Image = "eval", @MethodName = "eval", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |        +- VariableAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "engine", @Name = "engine", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |        +- ArgumentList[@Size = "1"]
-               |           +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "function hello() {
-    print('"Hello, world"');
-}
-
-hello();
-", @Empty = "false", @Image = """"
-                                 function hello() {
-                                     print('"Hello, world"');
-                                 }
-                                 
-                                 hello();
-                                 """", @Length = "60", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |           +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "function hello() {\n    print(\'\"Hello, world\"\');\n}\n\nhello();\n", @Empty = "false", @Image = "\"\"\"\n                                 function hello() {\n                                     print(\'\"Hello, world\"\');\n                                 }\n                                 \n                                 hello();\n                                 \"\"\"", @Length = "60", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@EffectiveVisibility = "local", @Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "htmlWithEscapes"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "htmlWithEscapes", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "<html>
-    <body>
-        <p>Hello, world</p>
-    </body>
-</html>
-", @Empty = "false", @Image = """"
-                      <html>
-                          <body>
-                              <p>Hello, world</p>
-                          </body>
-                      </html>
-                      """", @Length = "71", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "<html>\r\n    <body>\r\n        <p>Hello, world</p>\r\n    </body>\r\n</html>\r\n", @Empty = "false", @Image = "\"\"\"\n                      <html>\\r\n                          <body>\\r\n                              <p>Hello, world</p>\\r\n                          </body>\\r\n                      </html>\\r\n                      \"\"\"", @Length = "71", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                |  +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |     +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -122,91 +82,61 @@ hello();
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "season"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "season", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "winter", @Empty = "false", @Image = """"
-                winter"""", @Length = "6", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "winter", @Empty = "false", @Image = "\"\"\"\n                winter\"\"\"", @Length = "6", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@EffectiveVisibility = "local", @Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "period"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "period", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "winter
-", @Empty = "false", @Image = """"
-                        winter
-                        """", @Length = "7", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "winter\n", @Empty = "false", @Image = "\"\"\"\n                        winter\n                        \"\"\"", @Length = "7", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@EffectiveVisibility = "local", @Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "greeting"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "greeting", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "Hi, "Bob"
-", @Empty = "false", @Image = """"
-            Hi, "Bob"
-            """", @Length = "10", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "Hi, \"Bob\"\n", @Empty = "false", @Image = "\"\"\"\n            Hi, \"Bob\"\n            \"\"\"", @Length = "10", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@EffectiveVisibility = "local", @Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "salutation"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "salutation", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "Hi,
- "Bob"
-", @Empty = "false", @Image = """"
-            Hi,
-             "Bob"
-            """", @Length = "11", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "Hi,\n \"Bob\"\n", @Empty = "false", @Image = "\"\"\"\n            Hi,\n             \"Bob\"\n            \"\"\"", @Length = "11", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@EffectiveVisibility = "local", @Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "empty"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "empty", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "", @Empty = "true", @Image = """"
-                       """", @Length = "0", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "", @Empty = "true", @Image = "\"\"\"\n                       \"\"\"", @Length = "0", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@EffectiveVisibility = "local", @Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "quote"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "quote", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = ""
-", @Empty = "false", @Image = """"
-                       "
-                       """", @Length = "2", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "\"\n", @Empty = "false", @Image = "\"\"\"\n                       \"\n                       \"\"\"", @Length = "2", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@EffectiveVisibility = "local", @Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "backslash"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "backslash", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "
-", @Empty = "false", @Image = """"
-                           \
-                           """", @Length = "2", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "\\\n", @Empty = "false", @Image = "\"\"\"\n                           \\\\\n                           \"\"\"", @Length = "2", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@EffectiveVisibility = "local", @Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "normalStringLiteral"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "normalStringLiteral", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "test", @Empty = "false", @Image = ""test"", @Length = "4", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "test", @Empty = "false", @Image = "\"test\"", @Length = "4", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
                +- LocalVariableDeclaration[@EffectiveVisibility = "local", @Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "code"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "code", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "String text = """
-    A text block inside a text block
-""";
-", @Empty = "false", @Image = """"
-            String text = """
-                A text block inside a text block
-            """;
-            """", @Length = "60", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "String text = \"\"\"\n    A text block inside a text block\n\"\"\";\n", @Empty = "false", @Image = "\"\"\"\n            String text = \\\"\"\"\n                A text block inside a text block\n            \\\"\"\";\n            \"\"\"", @Length = "60", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- LocalVariableDeclaration[@EffectiveVisibility = "local", @Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "text"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "text", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", @Empty = "false", @Image = """"
-                      Lorem ipsum dolor sit amet, consectetur adipiscing 
-                      elit, sed do eiusmod tempor incididunt ut labore 
-                      et dolore magna aliqua.
-                      """", @Length = "123", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", @Empty = "false", @Image = "\"\"\"\n                      Lorem ipsum dolor sit amet, consectetur adipiscing \\\n                      elit, sed do eiusmod tempor incididunt ut labore \\\n                      et dolore magna aliqua.\\\n                      \"\"\"", @Length = "123", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                |  +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |     +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -219,14 +149,7 @@ hello();
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "colors"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "colors", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "red   
-green 
-blue  
-", @Empty = "false", @Image = """"
-                        red  s
-                        greens
-                        blue s
-                        """", @Length = "21", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "red   \ngreen \nblue  \n", @Empty = "false", @Image = "\"\"\"\n                        red  \\s\n                        green\\s\n                        blue \\s\n                        \"\"\"", @Length = "21", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                |  +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |     +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -239,12 +162,7 @@ blue
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "emptyLine"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "emptyLine", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "
-test
-", @Empty = "false", @Image = """"
-
-test
-"""", @Length = "6", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "\ntest\n", @Empty = "false", @Image = "\"\"\"\n\ntest\n\"\"\"", @Length = "6", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                |  +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |     +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -254,19 +172,14 @@ test
                |        +- MethodCall[@CompileTimeConstant = "false", @Image = "replaceAll", @MethodName = "replaceAll", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |           +- VariableAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "emptyLine", @Name = "emptyLine", @ParenthesisDepth = "0", @Parenthesized = "false"]
                |           +- ArgumentList[@Size = "2"]
-               |              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "
-", @Empty = "false", @Image = ""
-"", @Length = "1", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
-               |              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "<LF>", @Empty = "false", @Image = ""<LF>"", @Length = "4", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+               |              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "\n", @Empty = "false", @Image = "\"\\n\"", @Length = "1", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+               |              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "<LF>", @Empty = "false", @Image = "\"<LF>\"", @Length = "4", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
                +- LocalVariableDeclaration[@EffectiveVisibility = "local", @Final = "false", @TypeInferred = "false", @Visibility = "local"]
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = "false", @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "bs"]
                |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "bs", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
-               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "	est
-", @Empty = "false", @Image = """"
-                \test
-                """", @Length = "6", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
+               |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "\\test\n", @Empty = "false", @Image = "\"\"\"\n                \\\\test\n                \"\"\"", @Length = "6", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "true"]
                +- ExpressionStatement[]
                   +- MethodCall[@CompileTimeConstant = "false", @Image = "println", @MethodName = "println", @ParenthesisDepth = "0", @Parenthesized = "false"]
                      +- FieldAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "out", @Name = "out", @ParenthesisDepth = "0", @Parenthesized = "false"]
@@ -276,7 +189,5 @@ test
                         +- MethodCall[@CompileTimeConstant = "false", @Image = "replaceAll", @MethodName = "replaceAll", @ParenthesisDepth = "0", @Parenthesized = "false"]
                            +- VariableAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "bs", @Name = "bs", @ParenthesisDepth = "0", @Parenthesized = "false"]
                            +- ArgumentList[@Size = "2"]
-                              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "
-", @Empty = "false", @Image = ""
-"", @Length = "1", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
-                              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "<LF>", @Empty = "false", @Image = ""<LF>"", @Length = "4", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+                              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "\n", @Empty = "false", @Image = "\"\\n\"", @Length = "1", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+                              +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = "<LF>", @Empty = "false", @Image = "\"<LF>\"", @Length = "4", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]

@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public final class AssertionUtil {
 
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("[\\w$]+(\\.[\\w$]+)*|");
+    private static final Pattern BINARY_NAME_PATTERN = Pattern.compile("[\\w$]+(?:\\.[\\w$]+)*(?:\\[])*");
 
     private AssertionUtil() {
         // utility class
@@ -51,7 +52,7 @@ public final class AssertionUtil {
     }
 
     public static boolean isJavaBinaryName(CharSequence name) {
-        return name.length() > 0 && PACKAGE_PATTERN.matcher(name).matches();
+        return name.length() > 0 && BINARY_NAME_PATTERN.matcher(name).matches();
     }
 
     private static boolean isValidRange(int startInclusive, int endExclusive, int minIndex, int maxIndex) {
@@ -136,5 +137,4 @@ public final class AssertionUtil {
                                                : prefix + ": " + message;
         return new AssertionError(message);
     }
-
 }

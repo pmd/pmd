@@ -4,17 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 /**
  * Detects redundant field initializers, i.e. the field initializer expressions
@@ -35,7 +32,7 @@ public class RedundantFieldInitializerRule extends AbstractJavaRulechainRule {
             for (ASTVariableDeclaratorId varId : fieldDeclaration.getVarIds()) {
                 ASTExpression init = varId.getInitializer();
                 if (init != null) {
-                    if (isDefaultValue(varId.getTypeMirror(), init)) {
+                    if (!isWhitelisted(init) && JavaRuleUtil.isDefaultValue(varId.getTypeMirror(), init)) {
                         addViolation(data, varId);
                     }
                 }
@@ -44,25 +41,8 @@ public class RedundantFieldInitializerRule extends AbstractJavaRulechainRule {
         return data;
     }
 
-    private boolean isDefaultValue(JTypeMirror type, ASTExpression expr) {
-        if (type.isPrimitive()) {
-            if (type.isPrimitive(PrimitiveTypeKind.BOOLEAN)) {
-                return expr instanceof ASTBooleanLiteral && !((ASTBooleanLiteral) expr).isTrue();
-            } else {
-                if (!isOkExpr(expr)) {
-                    // whitelist named constants or calculations involving them
-                    return false;
-                }
-                Object constValue = expr.getConstValue();
-                return constValue instanceof Number && ((Number) constValue).doubleValue() == 0d
-                    || constValue instanceof Character && constValue.equals('\u0000');
-            }
-        } else {
-            return expr instanceof ASTNullLiteral;
-        }
-    }
-
-    private static boolean isOkExpr(ASTExpression e) {
-        return e.descendantsOrSelf().none(it -> it instanceof ASTVariableAccess || it instanceof ASTFieldAccess);
+    // whitelist if there are named variables in there
+    private static boolean isWhitelisted(ASTExpression e) {
+        return e.descendantsOrSelf().any(it -> it instanceof ASTVariableAccess || it instanceof ASTFieldAccess);
     }
 }

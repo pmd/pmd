@@ -4,14 +4,13 @@
 
 package net.sourceforge.pmd.lang.xml.ast;
 
-import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertPosition;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.CoordinatesPrinter;
+import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 
 public class XmlCoordinatesTest extends BaseTreeDumpTest {
@@ -37,7 +36,7 @@ public class XmlCoordinatesTest extends BaseTreeDumpTest {
     @Test
     public void testAutoclosingElementLength() {
         final String xml = "<elementName att1='foo' att2='bar' att3='other' />";
-        assertPosition(XmlParsingHelper.XML.parse(xml), 1, 1, 1, xml.length());
+        TestUtilsKt.assertPosition(XmlParsingHelper.XML.parse(xml), 1, 1, 1, xml.length());
     }
 
 }

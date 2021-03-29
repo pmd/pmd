@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
@@ -27,6 +28,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -41,11 +45,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -105,6 +109,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     // keeps track of already reported violations to avoid duplicated violations for the same variable
     private final Set<String> reportedVarNames = new HashSet<>();
 
+    private boolean hasStaticImportObjectsNonNull;
 
     public CloseResourceRule() {
         definePropertyDescriptor(CLOSE_TARGETS_DESCRIPTOR);
@@ -116,6 +121,8 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     @Override
     public void start(RuleContext ctx) {
+        hasStaticImportObjectsNonNull = false;
+
         closeTargets.clear();
         simpleTypes.clear();
         types.clear();
@@ -167,7 +174,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             } else if (shouldVarOfTypeBeClosedInMethod(resVar, resVarType, methodOrConstructor)) {
                 reportedVarNames.add(resVar.getVarId().getName());
                 addCloseResourceViolation(resVar.getVarId(), resVarType, data);
-            } else {
+            } else if (isNotAllowedResourceType(resVarType)) {
                 ASTStatementExpression reassigningStatement = getFirstReassigningStatementBeforeBeingClosed(resVar, methodOrConstructor);
                 if (reassigningStatement != null) {
                     reportedVarNames.add(resVar.getVarId().getName());
@@ -525,12 +532,85 @@ public class CloseResourceRule extends AbstractJavaRule {
         ASTIfStatement ifStatement = findIfStatement(enclosingBlock, node);
         if (ifStatement != null) {
             // find expressions like: varName != null or null != varName
-            List<?> nodes = ifStatement.findChildNodesWithXPath("Expression/EqualityExpression[@Image='!=']"
-                    + "  [PrimaryExpression/PrimaryPrefix/Name[@Image='" + varName + "']]"
-                    + "  [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]");
-            return !nodes.isEmpty();
+            // Expression/EqualityExpression[@Image='!=']
+            //   [PrimaryExpression/PrimaryPrefix/Name[@Image='" + varName + "']]
+            //   [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+            ASTInfixExpression equalityExpr = ifStatement.getCondition().getFirstChildOfType(ASTInfixExpression.class);
+            if (equalityExpr != null && BinaryOp.NE == equalityExpr.getOperator()) {
+                JavaNode left = equalityExpr.getChild(0);
+                JavaNode right = equalityExpr.getChild(1);
+                
+                if (isVariableAccess(left, varName) && isNullLiteral(right)
+                        || isVariableAccess(right, varName) && isNullLiteral(left)) {
+                    return true;
+                }
+            }
+
+            // find method call Objects.nonNull(varName)
+            if (isMethodCall(ifStatement.getCondition())) {
+                ASTPrimaryExpression methodCall = ifStatement.getCondition().getFirstChildOfType(ASTPrimaryExpression.class);
+                ASTPrimaryPrefix prefix = methodCall.getFirstChildOfType(ASTPrimaryPrefix.class);
+                ASTName methodName = prefix.getFirstChildOfType(ASTName.class);
+                if (isObjectsNonNull(methodName)) {
+                    ASTArgumentList arguments = methodCall.getFirstChildOfType(ASTPrimarySuffix.class)
+                            .getFirstDescendantOfType(ASTArgumentList.class);
+                    if (arguments.size() == 1) {
+                        JavaNode firstArgument = arguments.getChild(0);
+                        if (firstArgument.getNumChildren() > 0) {
+                            return isVariableAccess(firstArgument.getChild(0), varName);
+                        }
+                    }
+                }
+            }
+    
+            return false;
         }
         return true;
+    }
+
+    @Override
+    public Object visit(ASTImportDeclaration node, Object data) {
+        if (node.isStatic()) {
+            if ("java.util.Objects".equals(node.getImportedName()) && node.isImportOnDemand()
+                    || "java.util.Objects.nonNull".equals(node.getImportedName()) && !node.isImportOnDemand()) {
+                hasStaticImportObjectsNonNull = true;
+            }
+        }
+        return super.visit(node, data);
+    }
+
+    private boolean isObjectsNonNull(ASTName methodName) {
+        if (methodName == null) {
+            return false;
+        }
+        if (methodName.hasImageEqualTo("Objects.nonNull")) {
+            return methodName.getType() == Objects.class;
+        }
+        if (methodName.hasImageEqualTo("nonNull")) {
+            return hasStaticImportObjectsNonNull;
+        }
+
+        return false;
+    }
+
+    private boolean isVariableAccess(JavaNode node, String varName) {
+        if (node == null || node.getNumChildren() < 1 || node.getChild(0).getNumChildren() < 1) {
+            return false;
+        }
+
+        return node instanceof ASTPrimaryExpression && node.getChild(0) instanceof ASTPrimaryPrefix
+                && node.getChild(0).getChild(0) instanceof ASTName
+                && node.getChild(0).getChild(0).hasImageEqualTo(varName);
+    }
+
+    private boolean isNullLiteral(JavaNode node) {
+        if (node == null || node.getNumChildren() < 1 || node.getChild(0).getNumChildren() < 1) {
+            return false;
+        }
+
+        return node instanceof ASTPrimaryExpression && node.getChild(0) instanceof ASTPrimaryPrefix
+                && node.getChild(0).getChild(0) instanceof ASTLiteral
+                && node.getChild(0).getChild(0).getFirstChildOfType(ASTNullLiteral.class) != null;
     }
 
     private ASTIfStatement findIfStatement(ASTBlock enclosingBlock, Node node) {
@@ -730,16 +810,17 @@ public class CloseResourceRule extends AbstractJavaRule {
         if (statement == null || variable == null) {
             return false;
         }
-        ASTName name = statement.getFirstDescendantOfType(ASTName.class);
-        if (name == null) {
-            return false;
-        }
-        NameDeclaration statementVariable = name.getNameDeclaration();
-        if (statementVariable == null) {
-            return false;
+
+        List<ASTAssignmentOperator> assignments = statement.findDescendantsOfType(ASTAssignmentOperator.class);
+        for (ASTAssignmentOperator assignment : assignments) {
+            // The sibling before the operator is the left hand side
+            JavaNode lhs = assignment.getParent().getChild(assignment.getIndexInParent() - 1);
+
+            if (isVariableAccess(lhs, variable.getName())) {
+                return true;
+            }
         }
 
-        return statement.hasDescendantOfType(ASTAssignmentOperator.class)
-                && statementVariable.equals(variable.getVarId().getNameDeclaration());
+        return false;
     }
 }

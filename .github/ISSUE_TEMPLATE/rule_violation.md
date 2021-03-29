@@ -2,7 +2,7 @@
 name: Rule violation
 about: Let us know about a false positive/false negative
 title: ''
-labels: 'a:bug'
+labels: 'a:false-positive, a:false-negative'
 assignees: ''
 
 ---

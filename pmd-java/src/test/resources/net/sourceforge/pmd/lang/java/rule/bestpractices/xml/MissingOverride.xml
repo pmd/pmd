@@ -571,7 +571,7 @@ public record Point(int x, int y) {
     public String toString() {return null;}
 }
         ]]></code>
-        <source-type>java 14-preview</source-type>
+        <source-type>java 16</source-type>
     </test-code>
     <test-code>
         <description>Package private method cannot be overridden outside of its package #1969 (1)</description>

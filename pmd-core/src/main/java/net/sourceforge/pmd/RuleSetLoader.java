@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.Language;
@@ -225,7 +226,8 @@ public final class RuleSetLoader {
             try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
                 props.load(inputStream);
                 String rulesetFilenames = props.getProperty("rulesets.filenames");
-                if (rulesetFilenames != null) {
+                // some languages might not have any rules and this property either doesn't exist or is empty
+                if (StringUtils.isNotBlank(rulesetFilenames)) {
                     ruleSetReferenceIds.addAll(Arrays.asList(rulesetFilenames.split(",")));
                 }
             } catch (IOException e) {

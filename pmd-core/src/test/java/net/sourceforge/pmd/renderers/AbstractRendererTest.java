@@ -13,6 +13,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleWithProperties;
 import net.sourceforge.pmd.lang.ast.DummyNode;
@@ -67,8 +68,12 @@ public abstract class AbstractRendererTest {
 
     private Report reportTwoViolations() {
         Report report = new Report();
-        report.addRuleViolation(newRuleViolation(1));
-        report.addRuleViolation(newRuleViolation(2));
+        RuleViolation informationalRuleViolation = newRuleViolation(1);
+        informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
+        report.addRuleViolation(informationalRuleViolation);
+        RuleViolation severeRuleViolation = newRuleViolation(2);
+        severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
+        report.addRuleViolation(severeRuleViolation);
         return report;
     }
 

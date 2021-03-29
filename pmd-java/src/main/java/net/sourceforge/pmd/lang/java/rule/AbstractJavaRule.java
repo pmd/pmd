@@ -61,5 +61,4 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
         return true;
     }
-
 }
