@@ -6,24 +6,12 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 public class SarifRendererTest extends AbstractRendererTest {
     @Override
@@ -100,21 +88,7 @@ public class SarifRendererTest extends AbstractRendererTest {
         return report;
     }
 
-    private RuleViolation newRuleViolation(int endColumn, String ruleName) {
-        DummyNode node = createNode(endColumn);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
-        AbstractRule fooRule = new FooRule();
-        fooRule.setName(ruleName);
-        return new ParametricRuleViolation<Node>(fooRule, ctx, node, "blah");
-    }
-
-    private String readFile(String name) {
-        try (InputStream in = SarifRendererTest.class.getResourceAsStream("sarif/" + name)) {
-            String asd = IOUtils.toString(in, StandardCharsets.UTF_8);
-            return asd;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    protected String readFile(String relativePath) {
+        return super.readFile("sarif/" + relativePath);
     }
 }

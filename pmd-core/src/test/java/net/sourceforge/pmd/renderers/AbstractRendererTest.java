@@ -6,6 +6,11 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
@@ -78,8 +83,25 @@ public abstract class AbstractRendererTest {
     }
 
     protected RuleViolation newRuleViolation(int endColumn) {
+        return newRuleViolation(endColumn, "Foo");
+    }
+
+    protected RuleViolation newRuleViolation(int endColumn, String ruleName) {
         DummyNode node = createNode(endColumn);
-        return new ParametricRuleViolation<Node>(new FooRule(), node, "blah");
+        FooRule rule = new FooRule();
+        rule.setName(ruleName);
+        return new ParametricRuleViolation<Node>(rule, node, "blah");
+    }
+
+    /**
+     * Read a resource file relative to this class's location.
+     */
+    protected String readFile(String relativePath) {
+        try (InputStream in = getClass().getResourceAsStream(relativePath)) {
+            return IOUtils.toString(in, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected DummyNode createNode(int endColumn) {
