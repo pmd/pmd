@@ -1751,29 +1751,12 @@ having to deal with the creation of an array.
         </description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
 <![CDATA[
-//FormalParameters/FormalParameter
-    [position()=last()]
-    [VariableDeclaratorId/@ArrayType=true()]
-    [@Varargs=false()]
-    [not (./Type[@ArrayType=true()]/ReferenceType[PrimitiveType[@Image='byte']])]
-    [not (./Type/ReferenceType[ClassOrInterfaceType[@Image='Byte']])]
-    [not (./Type/PrimitiveType[@Image='byte'])]
-    [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
-    [not(
-         ancestor::MethodDeclaration
-            [    @Public=true()
-             and @Static=true()
-             and child::ResultType[@Void=true()]
-             and @Name = 'main'
-             and @Arity = 1
-            ]
-         (: Type of the formal parameter here. :)
-         and pmd-java:typeIs('java.lang.String[]')
-    )]
+//FormalParameters[not(parent::MethodDeclaration[@Overridden=true() or @MainMethod=true()])]
+  /FormalParameter[position()=last()]
+   [ArrayType[not(PrimitiveType or ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')])] and @Varargs=false()]
 ]]>
                 </value>
             </property>

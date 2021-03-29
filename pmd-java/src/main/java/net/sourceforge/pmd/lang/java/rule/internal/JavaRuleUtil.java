@@ -184,14 +184,7 @@ public final class JavaRuleUtil {
      */
     public static boolean isMainMethod(JavaNode node) {
         if (node instanceof ASTMethodDeclaration) {
-            ASTMethodDeclaration decl = (ASTMethodDeclaration) node;
-
-
-            return decl.hasModifiers(JModifier.PUBLIC, JModifier.STATIC)
-                && "main".equals(decl.getName())
-                && decl.isVoid()
-                && decl.getArity() == 1
-                && TypeTestUtil.isExactlyA(String[].class, decl.getFormalParameters().get(0));
+            return ((ASTMethodDeclaration) node).isMainMethod();
         }
         return false;
     }
