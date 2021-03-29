@@ -49,9 +49,10 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
 
     private boolean isInAllowedSyntacticCtx(ASTClassOrInterfaceType node) {
         JavaNode parent = node.getParent();
-        return parent instanceof ASTConstructorCall
-            || parent instanceof ASTTypeExpression
-            || parent instanceof ASTClassLiteral
+        return parent instanceof ASTConstructorCall      // new ArrayList<>()
+            || parent instanceof ASTTypeExpression       // instanceof, method reference
+            || parent instanceof ASTClassLiteral         // ArrayList.class
+            || parent instanceof ASTClassOrInterfaceType // AbstractMap.SimpleEntry
             || parent instanceof ASTArrayType && parent.getParent() instanceof ASTArrayAllocation;
     }
 

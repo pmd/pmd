@@ -244,4 +244,16 @@ class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Inner class selection</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.AbstractMap;
+
+class Foo {
+    final Object o =
+            new AbstractMap.SimpleEntry<>("", "");
+}
+        ]]></code>
+    </test-code>
 </test-data>
