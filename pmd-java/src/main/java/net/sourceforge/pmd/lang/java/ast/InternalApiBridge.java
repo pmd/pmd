@@ -8,8 +8,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -118,6 +118,20 @@ public final class InternalApiBridge {
         AstDisambiguationPass.disambigWithCtx(nodes, ctx);
     }
 
+    public static void usageResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
+        root.descendants(ASTNamedReferenceExpr.class)
+            .crossFindBoundaries()
+            .forEach(node -> {
+                JVariableSymbol sym = node.getReferencedSym();
+                if (sym != null) {
+                    ASTVariableDeclaratorId reffed = sym.tryGetNode();
+                    if (reffed != null) { // declared in this file
+                        reffed.addUsage(node);
+                    }
+                }
+            });
+    }
+
     public static @Nullable JTypeMirror getTypeMirrorInternal(TypeNode node) {
         return ((AbstractJavaTypeNode) node).getTypeMirrorInternal();
     }
@@ -180,10 +194,6 @@ public final class InternalApiBridge {
 
     public static void assignComments(ASTCompilationUnit root) {
         CommentAssignmentPass.assignCommentsToDeclarations(root);
-    }
-
-    public static @Nullable JavaccToken getReportLocation(JavaNode node) {
-        return ((AbstractJavaNode) node).getPreferredReportLocation();
     }
 
     public static JavaccTokenDocument.TokenDocumentBehavior javaTokenDoc() {

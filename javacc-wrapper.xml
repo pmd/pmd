@@ -121,11 +121,15 @@
              Token-tracking behavior is implemented in the JJTree builder,
              so the grammar should have TRACK_TOKEN=false; (this is the default value)
         -->
-        <jjtree target="etc/grammar/${lang-name}.jjt"
-                outputdirectory="${target-package-dir}"
-                nodeusesparser="false"
-                nodepackage="${lang-ast-package}"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="jjtree"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-OUTPUT_DIRECTORY:${target-package-dir}" />
+            <arg value="-NODE_USES_PARSER:false" />
+            <arg value="-NODE_PACKAGE:${lang-ast-package}" />
+            <arg value="etc/grammar/${lang-name}.jjt" />
+        </java>
     </target>
 
     <target name="jjtree-ersatz" if="no-jjtree" unless="javaccBuildNotRequired">
@@ -135,12 +139,16 @@
     </target>
 
     <target name="javacc" depends="jjtree" unless="javaccBuildNotRequired">
-        <javacc static="false"
-                usercharstream="true"
-                unicodeinput="true"
-                target="${target-package-dir}/${lang-name}.jj"
-                outputdirectory="${target-package-dir}"
-                javacchome="${javacc-home.path}" />
+        <java fork="true"
+              classname="javacc"
+              classpath="${javacc-home.path}/javacc.jar">
+            <sysproperty key="file.encoding" value="UTF-8" />
+            <arg value="-STATIC:false" />
+            <arg value="-USER_CHAR_STREAM:true" />
+            <arg value="-UNICODE_INPUT:true" />
+            <arg value="-OUTPUT_DIRECTORY:${target-package-dir}" />
+            <arg value="${target-package-dir}/${lang-name}.jj" />
+        </java>
 
     </target>
 

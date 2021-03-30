@@ -4,13 +4,11 @@
 
 package net.sourceforge.pmd.ant.internal;
 
-import static java.util.Arrays.asList;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -24,8 +22,8 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
@@ -50,6 +48,7 @@ public class PMDTaskImpl {
     private final List<Formatter> formatters = new ArrayList<>();
     private final List<FileSet> filesets = new ArrayList<>();
     private final PMDConfiguration configuration = new PMDConfiguration();
+    private final String rulesetPaths;
     private boolean failOnRuleViolation;
     private int maxRuleViolations = 0;
     private String failuresPropertyName;
@@ -65,7 +64,7 @@ public class PMDTaskImpl {
         if (this.maxRuleViolations > 0) {
             this.failOnRuleViolation = true;
         }
-        configuration.setRuleSets(task.getRulesetFiles());
+        this.rulesetPaths = task.getRulesetFiles() == null ? "" : task.getRulesetFiles();
         configuration.setRuleSetFactoryCompatibilityEnabled(!task.isNoRuleSetCompatibility());
         if (task.getEncoding() != null) {
             configuration.setSourceEncoding(task.getEncoding());
@@ -102,20 +101,7 @@ public class PMDTaskImpl {
         RuleSetLoader rulesetLoader = RuleSetLoader.fromPmdConfig(configuration)
                                                    .loadResourcesWith(setupResourceLoader());
 
-        List<RuleSet> rules;
-        try {
-            // This is just used to validate and display rules. Each thread will create its own ruleset
-            String ruleSets = configuration.getRuleSets();
-            if (StringUtils.isNotBlank(ruleSets)) {
-                // Substitute env variables/properties
-                configuration.setRuleSets(project.replaceProperties(ruleSets));
-            }
-            List<String> paths = asList(configuration.getRuleSets().split(","));
-            rules = rulesetLoader.loadFromResources(paths);
-            logRulesUsed(rules);
-        } catch (RuleSetNotFoundException e) {
-            throw new BuildException(e.getMessage(), e);
-        }
+        List<RuleSet> rules = loadRulesets(rulesetLoader);
 
         if (configuration.getSuppressMarker() != null) {
             project.log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
@@ -143,6 +129,24 @@ public class PMDTaskImpl {
 
         if (failOnRuleViolation && problemCount > maxRuleViolations) {
             throw new BuildException("Stopping build since PMD found " + problemCount + " rule violations in the code");
+        }
+    }
+
+    private List<RuleSet> loadRulesets(RuleSetLoader rulesetLoader) {
+        try {
+            // This is just used to validate and display rules. Each thread will create its own ruleset
+            // Substitute env variables/properties
+            String ruleSetString = project.replaceProperties(rulesetPaths);
+
+            List<String> rulesets = Arrays.asList(ruleSetString.split(","));
+            List<RuleSet> rulesetList = rulesetLoader.loadFromResources(rulesets);
+            if (rulesetList.isEmpty()) {
+                throw new BuildException("No rulesets");
+            }
+            logRulesUsed(rulesetList);
+            return rulesetList;
+        } catch (RuleSetLoadException e) {
+            throw new BuildException(e.getMessage(), e);
         }
     }
 
@@ -248,10 +252,10 @@ public class PMDTaskImpl {
         }
     }
 
-    private void logRulesUsed(List<RuleSet> rules) {
-        project.log("Using these rulesets: " + configuration.getRuleSets(), Project.MSG_VERBOSE);
+    private void logRulesUsed(List<RuleSet> rulesets) {
+        project.log("Using these rulesets: " + rulesetPaths, Project.MSG_VERBOSE);
 
-        for (RuleSet ruleSet : rules) {
+        for (RuleSet ruleSet : rulesets) {
             for (Rule rule : ruleSet.getRules()) {
                 project.log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
             }

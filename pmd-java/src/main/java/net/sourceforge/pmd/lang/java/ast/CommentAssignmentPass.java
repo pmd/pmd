@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -14,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 final class CommentAssignmentPass {
 
@@ -45,7 +47,7 @@ final class CommentAssignmentPass {
                 if (maybeComment.kind == JavaTokenKinds.FORMAL_COMMENT) {
                     FormalComment comment = new FormalComment(maybeComment);
                     // deduplicate the comment
-                    int idx = Collections.binarySearch(comments, comment, Comment::compareLocation);
+                    int idx = Collections.binarySearch(comments, comment, Comparator.comparing(Comment::getReportLocation, FileLocation.COORDS_COMPARATOR));
                     assert idx >= 0 : "Formal comment not found? " + comment;
                     comment = (FormalComment) comments.get(idx);
 

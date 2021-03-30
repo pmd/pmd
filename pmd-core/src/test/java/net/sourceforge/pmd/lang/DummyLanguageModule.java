@@ -50,7 +50,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
 
         @Override
-        public Parser getParser(ParserOptions parserOptions) {
+        public Parser getParser() {
             return task -> {
                 DummyRoot node = new DummyRoot();
                 node.setCoords(1, 1, 2, 10);
@@ -65,7 +65,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
     public static class HandlerWithParserThatThrows extends Handler {
         @Override
-        public Parser getParser(ParserOptions parserOptions) {
+        public Parser getParser() {
             return task -> {
                 throw new AssertionError("test error while parsing");
             };

@@ -68,7 +68,7 @@ public class CommentAssignmentTest extends BaseNonParserTest {
                                                  + "        /** Comment 3 */\n"
                                                  + "        public void method2() {}" + "}");
 
-        List<ASTMethodDeclaration> methods = node.findDescendantsOfType(ASTMethodDeclaration.class);
+        List<ASTMethodDeclaration> methods = node.descendants(ASTMethodDeclaration.class).toList();
         assertCommentEquals(methods.get(0), "/** Comment 1 */");
         assertCommentEquals(methods.get(1), "/** Comment 2 */");
     }
@@ -93,7 +93,7 @@ public class CommentAssignmentTest extends BaseNonParserTest {
                                                  + " /** enum */enum NestedEnum {}"
                                                  + "}");
 
-        List<ASTAnyTypeDeclaration> types = node.descendants(ASTAnyTypeDeclaration.class).toList();
+        List<ASTAnyTypeDeclaration> types = node.descendants(ASTAnyTypeDeclaration.class).crossFindBoundaries().toList();
         assertCommentEquals(types.get(0), "/** outer */");
         assertCommentEquals(types.get(1), "/** inner */");
         assertCommentEquals(types.get(2), "/** local */");

@@ -4,11 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import static net.sourceforge.pmd.lang.java.types.TypeOps.typeArgContains;
-import static net.sourceforge.pmd.util.OptionalBool.NO;
-import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
-import static net.sourceforge.pmd.util.OptionalBool.YES;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,14 +17,9 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.ConsPStack;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
-import org.pcollections.PStack;
 
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Helper class for {@link TypeSystem#lub(Collection)} and {@link TypeSystem#glb(Collection)}.
@@ -70,10 +60,10 @@ final class Lub {
     /**
      * The "relevant" parameterizations of G, Relevant(G), is:
      *
-     * <pre>
+     * <pre>{@code
      * Relevant(G) = { V | 1 ≤ i ≤ k: V in ST(Ui) and V = G<...> }
      *             = { V ∈ stunion | V = G<...> }
-     * </pre>
+     * }</pre>
      *
      * <p>G must be erased (raw).
      *
@@ -221,12 +211,6 @@ final class Lub {
          */
         private JTypeMirror lcta(JTypeMirror t, JTypeMirror s) {
 
-            if (typeArgContains(t, s).somehow()) {
-                return t;
-            } else if (typeArgContains(s, t).somehow()) {
-                return s;
-            }
-
             TypePair pair = new TypePair(t, s);
 
             if (lubCache.add(pair)) {
@@ -336,73 +320,52 @@ final class Lub {
 
         List<JTypeMirror> bounds = new ArrayList<>(mostSpecific);
 
-        JTypeMirror ck = null; // Ck is the primary bound
-        int primaryIdx = 0;
+        JTypeMirror primaryBound = null;
 
-        OptionalBool retryWithCaptureBounds = NO;
-        PSet<JTypeMirror> cvarLowers = HashTreePSet.empty();
-        PStack<JTypeMirror> cvarsToRemove = ConsPStack.empty();
-        JTypeMirror lastBadClass = null;
         for (int i = 0; i < bounds.size(); i++) {
             JTypeMirror ci = bounds.get(i);
-            if (ci.isPrimitive() || ci instanceof JWildcardType || ci instanceof JIntersectionType) {
-                throw new IllegalArgumentException("Bad intersection type component: " + ci + " in " + types);
-            }
 
             if (isExclusiveIntersectionBound(ci)) {
                 // either Ci is an array, or Ci is a class, or Ci is a type var (possibly captured)
                 // Ci is not unresolved
-                if (ck == null) {
-                    ck = ci;
-                    primaryIdx = i;
+                if (primaryBound == null) {
+                    primaryBound = ci;
+                    // move primary bound first
+                    Collections.swap(bounds, 0, i);
                 } else {
-                    JTypeMirror lower = cvarLowerBound(ci);
-                    if (lower != ci && lower != ts.NULL_TYPE) { // NOPMD CompareObjectsWithEquals
-                        cvarLowers = cvarLowers.plus(lower);
-                        cvarsToRemove = cvarsToRemove.plus(ci);
-                        retryWithCaptureBounds = YES;
-                    } else {
-                        retryWithCaptureBounds = retryWithCaptureBounds == YES ? YES
-                                                                               : UNKNOWN;
-                    }
-                    lastBadClass = ci;
+                    throw new IllegalArgumentException(
+                        "Bad intersection, unrelated class types " + ci + " and " + primaryBound + " in " + types
+                    );
                 }
             }
         }
 
-        switch (retryWithCaptureBounds) { // when several capture variables were found
-        case YES:
-            bounds.removeAll(cvarsToRemove);
-            bounds.addAll(cvarLowers);
-            return glb(ts, bounds);
-        case NO:
-            break;
-        default:
-            throw new IllegalArgumentException(
-                "Bad intersection, unrelated class types " + lastBadClass + " and " + ck + " in " + types);
-        }
-
-        if (ck == null) {
+        if (primaryBound == null) {
             if (bounds.size() == 1) {
                 return bounds.get(0);
             }
-            ck = ts.OBJECT;
-        } else {
-            // move primary bound first
-            Collections.swap(bounds, 0, primaryIdx);
+            primaryBound = ts.OBJECT;
         }
 
-        return new JIntersectionType(ts, ck, bounds);
+        return new JIntersectionType(ts, primaryBound, bounds);
+    }
+
+    private static void checkGlbComponent(Collection<? extends JTypeMirror> types, JTypeMirror ci) {
+        if (ci.isPrimitive() || ci instanceof JWildcardType || ci instanceof JIntersectionType) {
+            throw new IllegalArgumentException("Bad intersection type component: " + ci + " in " + types);
+        }
     }
 
     private static @NonNull List<JTypeMirror> flattenRemoveTrivialBound(Collection<? extends JTypeMirror> types) {
-        ArrayList<JTypeMirror> bounds = new ArrayList<>(types.size());
+        List<JTypeMirror> bounds = new ArrayList<>(types.size());
 
         for (JTypeMirror type : types) {
             // flatten intersections: (A & (B & C)) => (A & B & C)
             if (type instanceof JIntersectionType) {
                 bounds.addAll(((JIntersectionType) type).getComponents());
             } else {
+                checkGlbComponent(types, type);
+
                 if (!type.isTop()) {
                     bounds.add(type);
                 }
@@ -416,13 +379,6 @@ final class Lub {
         return !ci.isInterface()
             && !(ci instanceof InferenceVar)
             && (ci.getSymbol() == null || !ci.getSymbol().isUnresolved());
-    }
-
-    private static JTypeMirror cvarLowerBound(JTypeMirror t) {
-        if (t instanceof JTypeVar && ((JTypeVar) t).isCaptured()) {
-            return ((JTypeVar) t).getLowerBound();
-        }
-        return t;
     }
 
 

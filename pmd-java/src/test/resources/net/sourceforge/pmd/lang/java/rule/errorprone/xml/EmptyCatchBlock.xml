@@ -76,26 +76,33 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>InterruptedException is OK</description>
-        <expected-problems>0</expected-problems>
+        <description>InterruptedException is not OK - changed behavior in PMD7</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
-public class Foo {
-    void foo() {
-        try {
-        } catch (InterruptedException e) {}
-    }
-}
-        ]]></code>
-    </test-code>
+            public class Foo {
+                void foo() {
+                    try {
+                    } catch (InterruptedException ignored) {}
 
+                    try {
+                    } catch (InterruptedException notok) {}
+                }
+            }
+            ]]></code>
+    </test-code>
     <test-code>
-        <description>CloneNotSupportedException is OK</description>
-        <expected-problems>0</expected-problems>
+        <description>CloneNotSupportedException is not OK - changed behavior in PMD7</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void foo() {
         try {
-        } catch (CloneNotSupportedException e) {}
+        } catch (CloneNotSupportedException ignored) {}
+
+        try {
+        } catch (CloneNotSupportedException notok) {}
     }
 }
         ]]></code>

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.jsp;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.jsp.ast.JspParser;
 
@@ -17,7 +16,7 @@ import net.sourceforge.pmd.lang.jsp.ast.JspParser;
 public class JspHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
-    public Parser getParser(ParserOptions parserOptions) {
+    public Parser getParser() {
         return new JspParser();
     }
 

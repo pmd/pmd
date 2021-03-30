@@ -4,33 +4,36 @@
 
 package net.sourceforge.pmd;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
+
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
- * Configurable ruleset parser. Note that this replaces the API of {@link RulesetsFactoryUtils}
- * and {@link RuleSetFactory}. This can be configured using a fluent
- * API, see eg {@link #warnDeprecated(boolean)}. To create a list of
- * rulesets, use {@link #loadFromResource(String)}.
+ * Configurable object to load rulesets from XML resources.
+ * This can be configured using a fluent API, see eg {@link #warnDeprecated(boolean)}.
+ * To create a new ruleset, use {@link #loadFromResource(String)}
+ * or some such overload.
  */
 public final class RuleSetLoader {
-
-    private static final Logger LOG = Logger.getLogger(RuleSetLoader.class.getName());
 
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = true;
-    private boolean enableCompatibility = true;
+    private @NonNull RuleSetFactoryCompatibility compatFilter = RuleSetFactoryCompatibility.DEFAULT;
     private boolean includeDeprecatedRuleReferences = false;
 
     /**
@@ -53,6 +56,7 @@ public final class RuleSetLoader {
      * Filter loaded rules to only those that match or are above
      * the given priority. The default is {@link RulePriority#LOW},
      * ie, no filtering occurs.
+     *
      * @return This instance, modified
      */
     public RuleSetLoader filterAbovePriority(RulePriority minimumPriority) {
@@ -63,6 +67,7 @@ public final class RuleSetLoader {
     /**
      * Log a warning when referencing a deprecated rule.
      * This is enabled by default.
+     *
      * @return This instance, modified
      */
     public RuleSetLoader warnDeprecated(boolean warn) {
@@ -75,10 +80,17 @@ public final class RuleSetLoader {
      * been moved or renamed. This is enabled by default, if disabled,
      * unresolved references will not be translated and will produce an
      * error.
+     *
      * @return This instance, modified
      */
     public RuleSetLoader enableCompatibility(boolean enable) {
-        this.enableCompatibility = enable;
+        return setCompatibility(enable ? RuleSetFactoryCompatibility.DEFAULT
+                                       : RuleSetFactoryCompatibility.EMPTY);
+    }
+
+    // test only
+    RuleSetLoader setCompatibility(@NonNull RuleSetFactoryCompatibility filter) {
+        this.compatFilter = filter;
         return this;
     }
 
@@ -98,8 +110,8 @@ public final class RuleSetLoader {
      * Create a new rule set factory, if you have to (that class is deprecated).
      * That factory will use the configuration that was set using the setters of this.
      *
-     * @deprecated {@link RuleSetFactory} is deprecated, replace its usages with usages of this class,
-     *     or of static factory methods of {@link RuleSet}
+     * @deprecated {@link RuleSetFactory} is deprecated, replace its usages
+     *     with usages of this class, or of static factory methods of {@link RuleSet}
      */
     @Deprecated
     public RuleSetFactory toFactory() {
@@ -107,7 +119,7 @@ public final class RuleSetLoader {
             this.resourceLoader,
             this.minimumPriority,
             this.warnDeprecated,
-            this.enableCompatibility,
+            this.compatFilter,
             this.includeDeprecatedRuleReferences
         );
     }
@@ -117,15 +129,29 @@ public final class RuleSetLoader {
      * Parses and returns a ruleset from its location. The location may
      * be a file system path, or a resource path (see {@link #loadResourcesWith(ClassLoader)}).
      *
-     * <p>This replaces {@link RuleSetFactory#createRuleSet(String)},
-     * but does not split commas.
-     *
      * @param rulesetPath A reference to a single ruleset
      *
-     * @throws RuleSetNotFoundException If the path does not correspond to a resource
+     * @throws RuleSetLoadException If any error occurs (eg, invalid syntax, or resource not found)
      */
-    public RuleSet loadFromResource(String rulesetPath) throws RuleSetNotFoundException {
+    public RuleSet loadFromResource(String rulesetPath) {
         return loadFromResource(new RuleSetReferenceId(rulesetPath));
+    }
+
+    /**
+     * Parses and returns a ruleset from string content.
+     *
+     * @param filename          The symbolic "file name", for error messages.
+     * @param rulesetXmlContent Xml file contents
+     *
+     * @throws RuleSetLoadException If any error occurs (eg, invalid syntax)
+     */
+    public RuleSet loadFromString(String filename, String rulesetXmlContent) {
+        return loadFromResource(new RuleSetReferenceId(filename) {
+            @Override
+            public InputStream getInputStream(ResourceLoader rl) {
+                return new ByteArrayInputStream(rulesetXmlContent.getBytes(StandardCharsets.UTF_8));
+            }
+        });
     }
 
     /**
@@ -133,10 +159,11 @@ public final class RuleSetLoader {
      *
      * @param paths Paths
      *
-     * @throws RuleSetNotFoundException If any resource throws
-     * @throws NullPointerException     If the parameter, or any component is null
+     * @throws RuleSetLoadException If any error occurs (eg, invalid syntax, or resource not found),
+     *                              for any of the parameters
+     * @throws NullPointerException If the parameter, or any component is null
      */
-    public List<RuleSet> loadFromResources(Collection<String> paths) throws RuleSetNotFoundException {
+    public List<RuleSet> loadFromResources(Collection<String> paths) {
         List<RuleSet> ruleSets = new ArrayList<>(paths.size());
         for (String path : paths) {
             ruleSets.add(loadFromResource(path));
@@ -147,18 +174,24 @@ public final class RuleSetLoader {
     /**
      * Parses several resources into a list of rulesets.
      *
-     * @param paths Paths
+     * @param first First path
+     * @param rest  Paths
      *
-     * @throws RuleSetNotFoundException If any resource throws
-     * @throws NullPointerException     If the parameter, or any component is null
+     * @throws RuleSetLoadException If any error occurs (eg, invalid syntax, or resource not found),
+     *                              for any of the parameters
+     * @throws NullPointerException If the parameter, or any component is null
      */
-    public List<RuleSet> loadFromResources(String... paths) throws RuleSetNotFoundException {
-        return loadFromResources(Arrays.asList(paths));
+    public List<RuleSet> loadFromResources(String first, String... rest) {
+        return loadFromResources(CollectionUtil.listOf(first, rest));
     }
 
     // package private
-    RuleSet loadFromResource(RuleSetReferenceId ruleSetReferenceId) throws RuleSetNotFoundException {
-        return toFactory().createRuleSet(ruleSetReferenceId);
+    RuleSet loadFromResource(RuleSetReferenceId ruleSetReferenceId) {
+        try {
+            return toFactory().createRuleSet(ruleSetReferenceId);
+        } catch (Exception e) {
+            throw new RuleSetLoadException("Cannot parse " + ruleSetReferenceId, e);
+        }
     }
 
 
@@ -174,34 +207,40 @@ public final class RuleSetLoader {
 
     /**
      * Returns an Iterator of RuleSet objects loaded from descriptions from the
-     * "categories.properties" resource for each Language with Rule support. This
+     * "categories.properties" resource for each language. This
      * uses the classpath of the resource loader ({@link #loadResourcesWith(ClassLoader)}).
      *
      * @return A list of all category rulesets
      *
-     * @throws RuleSetNotFoundException if some ruleset file could not be parsed
-     *                                  TODO shouldn't our API forbid this case?
+     * @throws RuleSetLoadException If a standard ruleset cannot be loaded.
+     *                              This is a corner case, that probably should not be caught by clients.
+     *                              The standard rulesets are well-formed, at least in stock PMD distributions.
+     *
      */
-    public List<RuleSet> getStandardRuleSets() throws RuleSetNotFoundException {
+    public List<RuleSet> getStandardRuleSets() {
         String rulesetsProperties;
-        List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<>();
+        List<String> ruleSetReferenceIds = new ArrayList<>();
         for (Language language : LanguageRegistry.getLanguages()) {
             Properties props = new Properties();
             rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
             try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
                 props.load(inputStream);
                 String rulesetFilenames = props.getProperty("rulesets.filenames");
-                if (rulesetFilenames != null) {
-                    ruleSetReferenceIds.addAll(RuleSetReferenceId.parse(rulesetFilenames));
+                // some languages might not have any rules and this property either doesn't exist or is empty
+                if (StringUtils.isNotBlank(rulesetFilenames)) {
+                    ruleSetReferenceIds.addAll(Arrays.asList(rulesetFilenames.split(",")));
                 }
-            } catch (RuleSetNotFoundException e) {
-                LOG.fine("The language " + language.getTerseName() + " provides no " + rulesetsProperties + ".");
-            } catch (IOException ioe) {
-                throw new RuleSetNotFoundException("Couldn't read " + rulesetsProperties
-                                                       + "; please ensure that the directory is on the classpath. The current classpath is: "
-                                                       + System.getProperty("java.class.path"), ioe);
+            } catch (IOException e) {
+                throw new RuntimeException("Couldn't find " + rulesetsProperties
+                        + "; please ensure that the directory is on the classpath. The current classpath is: "
+                        + System.getProperty("java.class.path"));
             }
         }
-        return toFactory().createRuleSets(ruleSetReferenceIds);
+
+        List<RuleSet> ruleSets = new ArrayList<>();
+        for (String id : ruleSetReferenceIds) {
+            ruleSets.add(loadFromResource(id)); // may throw
+        }
+        return ruleSets;
     }
 }

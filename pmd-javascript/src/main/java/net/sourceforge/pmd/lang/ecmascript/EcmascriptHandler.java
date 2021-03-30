@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.ecmascript;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser;
 
@@ -18,8 +17,8 @@ class EcmascriptHandler extends AbstractPmdLanguageVersionHandler {
     }
 
     @Override
-    public Parser getParser(ParserOptions parserOptions) {
-        return new EcmascriptParser(rhinoVersion, parserOptions.getSuppressMarker());
+    public Parser getParser() {
+        return new EcmascriptParser(rhinoVersion);
     }
 
 }

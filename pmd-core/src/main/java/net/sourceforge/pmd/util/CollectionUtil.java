@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.util;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -251,6 +252,17 @@ public final class CollectionUtil {
         return Collections.unmodifiableSet(union);
     }
 
+    /**
+     * Returns an unmodifiable set containing the given elements.
+     *
+     * @param first First element
+     * @param rest  Following elements
+     */
+    @SafeVarargs
+    public static <T extends Enum<T>> Set<T> immutableEnumSet(T first, T... rest) {
+        return Collections.unmodifiableSet(EnumSet.of(first, rest));
+    }
+
 
     @SafeVarargs
     public static <T> List<T> listOf(T first, T... rest) {
@@ -259,7 +271,7 @@ public final class CollectionUtil {
         }
         List<T> union = new ArrayList<>();
         union.add(first);
-        union.addAll(Arrays.asList(rest));
+        union.addAll(asList(rest));
         return Collections.unmodifiableList(union);
     }
 
@@ -294,6 +306,23 @@ public final class CollectionUtil {
         return newM;
     }
 
+    /**
+     * Returns an unmodifiable set containing the set union of the collection,
+     * and the new elements.
+     */
+    @SafeVarargs
+    @SuppressWarnings("unchecked")
+    public static <V> Set<V> setUnion(Collection<? extends V> set, V first, V... newElements) {
+        if (set instanceof PSet) {
+            return ((PSet<V>) set).plus(first).plusAll(asList(newElements));
+        }
+        Set<V> newSet = new LinkedHashSet<>(set.size() + 1 + newElements.length);
+        newSet.addAll(set);
+        newSet.add(first);
+        Collections.addAll(newSet, newElements);
+        return Collections.unmodifiableSet(newSet);
+    }
+
 
     /**
      * Returns a map associating each key in the first list to its
@@ -308,7 +337,7 @@ public final class CollectionUtil {
         AssertionUtil.requireParamNotNull("values", to);
         Validate.isTrue(from.size() == to.size(), "Mismatched list sizes %s to %s", from, to);
 
-        if (from.isEmpty()) {
+        if (from.isEmpty()) { //NOPMD: we really want to compare references here
             return emptyMap();
         }
 
@@ -397,7 +426,7 @@ public final class CollectionUtil {
         if (from == null) {
             return emptyList();
         }
-        return map(Arrays.asList(from), f);
+        return map(asList(from), f);
     }
 
     /**

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -271,8 +272,8 @@ public class RuleSetTest {
             createRuleSetBuilder("ruleset1")
                 .withFileExclusions(Pattern.compile(".*"))
                 .build();
-        assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
-        assertEquals("Invalid number of patterns", 1, ruleSet.getExcludePatterns().size());
+        assertNotNull("Exclude patterns", ruleSet.getFileExclusions());
+        assertEquals("Invalid number of patterns", 1, ruleSet.getFileExclusions().size());
     }
 
     @Test
@@ -282,24 +283,28 @@ public class RuleSetTest {
                 .withFileExclusions(Pattern.compile(".*"))
                 .withFileExclusions(Pattern.compile(".*ha"))
                 .build();
-        assertEquals("Exclude pattern", Arrays.asList(".*", ".*ha"), ruleSet2.getExcludePatterns());
+        assertEquals("Exclude pattern", Arrays.asList(".*", ".*ha"), toStrings(ruleSet2.getFileExclusions()));
     }
 
     @Test
     public void testIncludePatternsAreOrdered() {
 
         RuleSet ruleSet2 = createRuleSetBuilder("ruleset2")
-                .withFileInclusions(Pattern.compile(".*"))
-                .withFileInclusions(Arrays.asList(Pattern.compile(".*ha"), Pattern.compile(".*hb")))
-                .build();
-        assertEquals("Exclude pattern", Arrays.asList(".*", ".*ha", ".*hb"), ruleSet2.getIncludePatterns());
+            .withFileInclusions(Pattern.compile(".*"))
+            .withFileInclusions(Arrays.asList(Pattern.compile(".*ha"), Pattern.compile(".*hb")))
+            .build();
+        assertEquals("Exclude pattern", Arrays.asList(".*", ".*ha", ".*hb"), toStrings(ruleSet2.getFileInclusions()));
+    }
+
+    private List<String> toStrings(List<Pattern> strings) {
+        return strings.stream().map(Pattern::pattern).collect(Collectors.toList());
     }
 
     @Test
     public void testAddExcludePatterns() {
         RuleSet ruleSet = createRuleSetBuilder("ruleset1")
-                .withFileExclusions(Pattern.compile(".*"))
-                .build();
+            .withFileExclusions(Pattern.compile(".*"))
+            .build();
 
         assertNotNull("Exclude patterns", ruleSet.getFileExclusions());
         assertEquals("Invalid number of patterns", 1, ruleSet.getFileExclusions().size());
@@ -317,7 +322,6 @@ public class RuleSetTest {
         excludePatterns.add(Pattern.compile("ah*"));
         excludePatterns.add(Pattern.compile(".*"));
         RuleSet ruleSet = createRuleSetBuilder("ruleset").replaceFileExclusions(excludePatterns).build();
-        assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
         assertNotNull("Exclude patterns", ruleSet.getFileExclusions());
         assertEquals("Invalid number of exclude patterns", 2, ruleSet.getFileExclusions().size());
         assertEquals("Exclude pattern", "ah*", ruleSet.getFileExclusions().get(0).pattern());
@@ -370,7 +374,7 @@ public class RuleSetTest {
 
     @Test
     public void testIncludeExcludeApplies() {
-        TextFile file = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyLang.getDefaultVersion()).build();
+        TextFile file = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyLang.getDefaultVersion());
 
         RuleSet ruleSet = createRuleSetBuilder("ruleset").build();
         assertTrue("No patterns", ruleSet.applies(file));

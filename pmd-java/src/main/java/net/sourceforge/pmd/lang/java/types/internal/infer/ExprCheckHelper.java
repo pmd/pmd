@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMi
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
 
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
 final class ExprCheckHelper {
 
     private final InferenceContext infCtx;

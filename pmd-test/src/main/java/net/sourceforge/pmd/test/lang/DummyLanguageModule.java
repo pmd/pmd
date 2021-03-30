@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -46,7 +45,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         }
 
         @Override
-        public Parser getParser(ParserOptions parserOptions) {
+        public Parser getParser() {
             return task -> {
                 DummyRootNode node = new DummyRootNode();
                 node.setCoords(1, 1, 1, 2);

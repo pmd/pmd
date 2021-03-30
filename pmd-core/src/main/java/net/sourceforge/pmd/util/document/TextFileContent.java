@@ -115,7 +115,7 @@ public final class TextFileContent {
 
     /**
      * Read the reader fully and produce a {@link TextFileContent}. This
-     * closes the reader.
+     * closes the reader. This takes care of buffering.
      *
      * @param reader A reader
      *
@@ -145,6 +145,7 @@ public final class TextFileContent {
     static TextFileContent fromInputStream(InputStream inputStream, Charset sourceEncoding, String fallbackLineSep) throws IOException {
         Checksum checksum = newChecksum();
         try (CheckedInputStream checkedIs = new CheckedInputStream(new BufferedInputStream(inputStream), checksum);
+             // no need to buffer this reader as we already use our own char buffer
              Reader reader = new InputStreamReader(checkedIs, sourceEncoding)) {
             return normalizingRead(reader, DEFAULT_BUFSIZE, fallbackLineSep, checksum, false);
         }
@@ -162,7 +163,7 @@ public final class TextFileContent {
         String lineTerminator = null;
         while (matcher.find()) {
             lineTerminator = detectLineTerm(lineTerminator, matcher.group(), fallBackLineSep);
-            if (!lineTerminator.equals(NORMALIZED_LINE_TERM)) {
+            if (!NORMALIZED_LINE_TERM.equals(lineTerminator)) {
                 needsNormalization = true;
 
                 if (lineTerminator.equals(fallBackLineSep)) {

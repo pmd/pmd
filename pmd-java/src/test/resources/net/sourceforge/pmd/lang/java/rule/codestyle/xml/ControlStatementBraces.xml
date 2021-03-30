@@ -468,7 +468,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Case, dangling unbraced statement</description>
+        <description>Case, dangling unbraced statement 2</description>
         <rule-property name="checkCaseStmt">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>

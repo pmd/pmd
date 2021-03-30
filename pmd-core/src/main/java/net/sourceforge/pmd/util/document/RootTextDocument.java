@@ -83,7 +83,8 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
             SourceCodePositioner.unmaskLine(bpos),
             SourceCodePositioner.unmaskCol(bpos),
             SourceCodePositioner.unmaskLine(epos),
-            SourceCodePositioner.unmaskCol(epos)
+            SourceCodePositioner.unmaskCol(epos),
+            region
         );
     }
 

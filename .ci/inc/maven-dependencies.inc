@@ -20,11 +20,23 @@ function maven_dependencies_resolve() {
     dokka_version=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${dokka.version}' \
                       --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec)
 
-    ./mvnw dependency:resolve
-    ./mvnw dependency:get -DgroupId=org.jetbrains.dokka \
+    # build first the modules, that have dependencies between themselves
+    # first build pmd-lang-test, pmd-test and pmd-core - used by all modules
+    ./mvnw clean install -pl pmd-core,pmd-test,pmd-lang-test -DskipTests -Dpmd.skip=true \
+           -B -Dcheckstyle.skip=true -Dmaven.javadoc.skip=true -Dmaven.source.skip=true
+    # then build dependencies for pmd-visualforce needs: pmd-apex->pmd-apex-jorje+pmd-test+pmd-core
+    ./mvnw clean install -pl pmd-core,pmd-test,pmd-lang-test,pmd-apex-jorje,pmd-apex -DskipTests -Dpmd.skip=true \
+           -B -Dcheckstyle.skip=true -Dmaven.javadoc.skip=true -Dmaven.source.skip=true
+
+    # the resolve most other projects. The excluded projects depend on other projects in the reactor, which is not
+    # completely built yet, so these are excluded.
+    ./mvnw dependency:resolve -pl '!pmd-dist,!pmd-doc,!pmd-scala' -Dsilent -B
+
+    ./mvnw dependency:get -B -Dsilent \
+           -DgroupId=org.jetbrains.dokka \
            -DartifactId=dokka-maven-plugin \
            -Dversion=${dokka_version} \
            -Dpackaging=jar \
            -DremoteRepositories=jcenter::default::https://jcenter.bintray.com/
-    ./mvnw dependency:resolve-plugins -DexcludeGroupIds=org.jetbrains.dokka -Psign
+    ./mvnw dependency:resolve-plugins -B -Dsilent -DexcludeGroupIds=org.jetbrains.dokka -Psign
 }

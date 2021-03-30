@@ -1144,8 +1144,7 @@ Avoid unnecessary comparisons in boolean expressions, they serve no purpose and 
             <property name="xpath">
                 <value>
 <![CDATA[
-//EqualityExpression/PrimaryExpression
- /PrimaryPrefix/Literal/BooleanLiteral
+//InfixExpression[@Operator = ("==", "!=")]/BooleanLiteral
 ]]>
                 </value>
             </property>

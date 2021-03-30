@@ -13,11 +13,11 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.Reportable;
 
-public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
+public abstract class Comment implements Reportable {
 
     // single regex, that captures: the start of a multi-line comment (/**|/*), the start of a single line comment (//)
     // or the start of line within a multiline comment (*). It removes the end of the comment (*/) if existing.
@@ -29,10 +29,7 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
     private final JavaccToken token;
 
     protected Comment(JavaccToken t) {
-        super(0);
         this.token = t;
-        setFirstToken(t);
-        setLastToken(t);
     }
 
     @Override
@@ -43,14 +40,17 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
     /**
      * @deprecated Use {@link #getText()}
      */
-    @Override
     @Deprecated
     public String getImage() {
         return getToken().getImage();
     }
 
     public final JavaccToken getToken() {
-        return super.getFirstToken();
+        return token;
+    }
+
+    public final CharSequence getText() {
+        return getToken().getImageCs();
     }
 
     /**

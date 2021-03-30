@@ -217,7 +217,7 @@ public class RuleSet implements ChecksumAware {
             // check for duplicates - adding more than one rule with the same name will
             // be problematic - see #RuleSet.getRuleByName(String)
             for (Rule rule : rules) {
-                if (rule.getName().equals(newRule.getName()) && rule.getLanguage() == newRule.getLanguage()) {
+                if (rule.getName().equals(newRule.getName()) && rule.getLanguage().equals(newRule.getLanguage())) {
                     LOG.warning("The rule with name " + newRule.getName() + " is duplicated. "
                             + "Future versions of PMD will reject to load such rulesets.");
                     break;
@@ -235,7 +235,7 @@ public class RuleSet implements ChecksumAware {
          */
         Rule getExistingRule(final Rule rule) {
             for (Rule r : rules) {
-                if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
+                if (r.getName().equals(rule.getName()) && r.getLanguage().equals(rule.getLanguage())) {
                     return r;
                 }
             }
@@ -270,7 +270,7 @@ public class RuleSet implements ChecksumAware {
 
             for (final Iterator<Rule> it = rules.iterator(); it.hasNext();) {
                 final Rule r = it.next();
-                if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
+                if (r.getName().equals(rule.getName()) && r.getLanguage().equals(rule.getLanguage())) {
                     it.remove();
                 }
             }
@@ -555,18 +555,6 @@ public class RuleSet implements ChecksumAware {
     }
 
     /**
-     * @deprecated Use {@link #getFileExclusions()}
-     */
-    @Deprecated
-    public List<String> getExcludePatterns() {
-        List<String> excludes = new ArrayList<>();
-        for (Pattern p : excludePatterns) {
-            excludes.add(p.pattern());
-        }
-        return excludes;
-    }
-
-    /**
      * Returns the number of rules in this ruleset
      *
      * @return an int representing the number of rules
@@ -684,18 +672,6 @@ public class RuleSet implements ChecksumAware {
 
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * @deprecated Use {@link #getFileInclusions()}
-     */
-    @Deprecated
-    public List<String> getIncludePatterns() {
-        List<String> includes = new ArrayList<>();
-        for (Pattern p : includePatterns) {
-            includes.add(p.pattern());
-        }
-        return includes;
     }
 
     /**

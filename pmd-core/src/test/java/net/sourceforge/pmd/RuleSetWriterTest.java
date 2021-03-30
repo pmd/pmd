@@ -51,7 +51,7 @@ public class RuleSetWriterTest {
      */
     @Test
     public void testWrite() throws Exception {
-        RuleSet braces = RulesetsFactoryUtils.defaultFactory().createRuleSet("net/sourceforge/pmd/TestRuleset1.xml");
+        RuleSet braces = new RuleSetLoader().loadFromResource("net/sourceforge/pmd/TestRuleset1.xml");
         RuleSet ruleSet = new RuleSetBuilder(new Random().nextLong())
                 .withName("ruleset")
                 .withDescription("ruleset description")
@@ -72,13 +72,11 @@ public class RuleSetWriterTest {
      */
     @Test
     public void testRuleReferenceOverriddenName() throws Exception {
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
-        RuleSet rs = ruleSetFactory.createRuleSet("dummy-basic");
-        RuleSetReference ruleSetReference = new RuleSetReference("rulesets/dummy/basic.xml");
+        RuleSet rs = new RuleSetLoader().loadFromResource("rulesets/dummy/basic.xml");
 
         RuleReference ruleRef = new RuleReference();
         ruleRef.setRule(rs.getRuleByName("DummyBasicMockRule"));
-        ruleRef.setRuleSetReference(ruleSetReference);
+        ruleRef.setRuleSetReference(new RuleSetReference("rulesets/dummy/basic.xml"));
         ruleRef.setName("Foo"); // override the name
 
         RuleSet ruleSet = RuleSet.forSingleRule(ruleRef);

@@ -6,10 +6,7 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -67,20 +64,17 @@ public class JsonRendererTest extends AbstractRendererTest {
         return expected;
     }
 
-    private String readFile(String name) {
-        try (InputStream in = JsonRendererTest.class.getResourceAsStream("json/" + name)) {
-            return IOUtils.toString(in, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    protected String readFile(String relativePath) {
+        return super.readFile("json/" + relativePath);
     }
 
     @Override
     public String filter(String expected) {
-        String result = expected
+        return expected
                 .replaceAll("\"timestamp\":\\s*\"[^\"]+\"", "\"timestamp\": \"--replaced--\"")
+                .replaceAll("\"pmdVersion\":\\s*\"[^\"]+\"", "\"pmdVersion\": \"unknown\"")
                 .replaceAll("\r\n", "\n"); // make the test run on Windows, too
-        return result;
     }
 
     @Test

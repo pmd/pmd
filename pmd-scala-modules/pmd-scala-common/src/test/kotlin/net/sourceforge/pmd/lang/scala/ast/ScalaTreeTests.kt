@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.assertBounds
 import net.sourceforge.pmd.lang.ast.test.matchNode
+import net.sourceforge.pmd.lang.ast.test.assertPosition
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 
 class ScalaTreeTests : FunSpec({
@@ -24,54 +25,54 @@ class Foo {
       """.trim().parseScala() should matchNode<ASTSource> {
 
             child<ASTDefnClass> {
-                it.assertBounds(bline = 1, bcol = 1, eline = 3, ecol = 2)
+                it.assertPosition(bline = 1, bcol = 1, eline = 3, ecol = 2)
                 it::isImplicit shouldBe false
 
                 child<ASTTypeName> {
-                    it.assertBounds(bline = 1, bcol = 7, eline = 1, ecol = 10)
+                    it.assertPosition(bline = 1, bcol = 7, eline = 1, ecol = 10)
                     it::isImplicit shouldBe false
                 }
 
                 child<ASTCtorPrimary> {
-                    it.assertBounds(bline = 1, bcol = 11, eline = 1, ecol = 11) // node has zero length
+                    it.assertPosition(bline = 1, bcol = 11, eline = 1, ecol = 11) // node has zero length
                     it::isImplicit shouldBe true
 
                     child<ASTNameAnonymous> {
-                        it.assertBounds(bline = 1, bcol = 11, eline = 1, ecol = 11) // node has zero length
+                        it.assertPosition(bline = 1, bcol = 11, eline = 1, ecol = 11) // node has zero length
                         it::isImplicit shouldBe true
                     }
                 }
 
                 child<ASTTemplate> {
-                    it.assertBounds(bline = 1, bcol = 11, eline = 3, ecol = 2)
+                    it.assertPosition(bline = 1, bcol = 11, eline = 3, ecol = 2)
                     it::isImplicit shouldBe false
 
                     child<ASTSelf> {
-                        it.assertBounds(bline = 2, bcol = 2, eline = 2, ecol = 2) // node has zero length
+                        it.assertPosition(bline = 2, bcol = 2, eline = 2, ecol = 2) // node has zero length
                         it::isImplicit shouldBe true
 
                         child<ASTNameAnonymous> {
-                            it.assertBounds(bline = 2, bcol = 2, eline = 2, ecol = 2) // node has zero length
+                            it.assertPosition(bline = 2, bcol = 2, eline = 2, ecol = 2) // node has zero length
                             it::isImplicit shouldBe true
                         }
                     }
 
                     child<ASTDefnVal> {
-                        it.assertBounds(bline = 2, bcol = 2, eline = 2, ecol = 12)
+                        it.assertPosition(bline = 2, bcol = 2, eline = 2, ecol = 12)
                         it::isImplicit shouldBe false
 
                         child<ASTPatVar> {
-                            it.assertBounds(bline = 2, bcol = 6, eline = 2, ecol = 7)
+                            it.assertPosition(bline = 2, bcol = 6, eline = 2, ecol = 7)
                             it::isImplicit shouldBe false
 
                             child<ASTTermName> {
-                                it.assertBounds(bline = 2, bcol = 6, eline = 2, ecol = 7)
+                                it.assertPosition(bline = 2, bcol = 6, eline = 2, ecol = 7)
                                 it::isImplicit shouldBe false
                             }
                         }
 
                         child<ASTLitString> {
-                            it.assertBounds(bline = 2, bcol = 10, eline = 2, ecol = 12)
+                            it.assertPosition(bline = 2, bcol = 10, eline = 2, ecol = 12)
                         }
                     }
                 }

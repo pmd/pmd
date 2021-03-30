@@ -316,7 +316,7 @@ public final class FileUtil {
     public static TextFileBuilder buildNioTextFile(PMDConfiguration config, Path file) {
         LanguageVersion langVersion = config.getLanguageVersionOfFile(file.toString());
 
-        return TextFile.forPath(file, config.getSourceEncoding(), langVersion)
+        return TextFile.builderForPath(file, config.getSourceEncoding(), langVersion)
                        .withDisplayName(displayName(config, file));
     }
 

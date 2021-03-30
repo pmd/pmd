@@ -9,7 +9,6 @@ import java.util.List;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexParser;
@@ -33,12 +32,7 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
     }
 
     @Override
-    public ParserOptions getDefaultParserOptions() {
-        return new ApexParserOptions();
-    }
-
-    @Override
-    public Parser getParser(ParserOptions parserOptions) {
+    public Parser getParser() {
         return new ApexParser();
     }
 

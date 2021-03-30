@@ -30,16 +30,30 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#565 - inheritance use case - call to Thread().run()</description>
+        <description>[java]DontCallThreadRun can't detect the case that call run() in foo.bar.run() #2538</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.multithreading.DontCallThreadRunTest.TestThread;
 
 public class Foo {
-    public void bar() {
-        new TestThread().run();
+    private Thread bar;
+    public void bar(Foo foo) {
+        foo.bar.run();
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java]DontCallThreadRun can't detect the case that call run() in this.run() #2537</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class MatrixThread extends Thread {
+
+                public MatrixThread(int[][] m1, int[][] m2) {
+                    this.m1 = m1;
+                    this.m2 = m2;
+                    this.run();
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>
