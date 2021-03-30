@@ -21,11 +21,10 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     private final AstInfo<ASTApexFile> astInfo;
 
     ASTApexFile(ParserTask task,
-                AbstractApexNode<? extends Compilation> child,
+                AbstractApexNode<? extends Compilation> child, // this is not entirely initialized when we get here
                 Map<Integer, String> suppressMap) {
         super(child.getNode());
         this.astInfo = new AstInfo<>(task, this, suppressMap);
-        addChild(child, 0);
         this.setRegion(TextRegion.fromOffsetLength(0, task.getTextDocument().getLength()));
     }
 

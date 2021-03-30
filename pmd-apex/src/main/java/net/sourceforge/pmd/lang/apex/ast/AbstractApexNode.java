@@ -8,6 +8,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -65,15 +67,42 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNode<Abstract
             if (!hasRealLoc()) {
                 AbstractApexNode<?> parent = (AbstractApexNode<?>) getParent();
                 if (parent == null) {
-                    throw new RuntimeException("Unable to determine location of " + this);
+                    throw new FileAnalysisException("Unable to determine location of " + this);
                 }
                 region = parent.getRegion();
             } else {
                 Location loc = node.getLoc();
                 region = TextRegion.fromBothOffsets(loc.getStartIndex(), loc.getEndIndex());
+                if (shouldPatchLoc()) {
+                    region = patchLocationForClasses(region);
+                }
             }
         }
         return region;
+    }
+
+    protected boolean shouldPatchLoc() {
+        return this instanceof ASTUserClassOrInterface;
+    }
+
+    private TextRegion patchLocationForClasses(TextRegion jorjePosition) {
+        final int endOffset;
+        done:
+        if (getParent() instanceof RootNode) {
+            // For top level classes, the end is the end of file.
+            endOffset = getTextDocument().getLength();
+        } else {
+            // For nested classes, look for the position of the last child, which has a real location
+            for (int i = getNumChildren() - 1; i >= 0; i--) {
+                ApexNode<?> child = getChild(i);
+                if (child.hasRealLoc()) {
+                    endOffset = ((AbstractApexNode<?>) child).getRegion().getEndOffset();
+                    break done;
+                }
+            }
+            endOffset = jorjePosition.getEndOffset();
+        }
+        return TextRegion.fromBothOffsets(jorjePosition.getStartOffset(), endOffset);
     }
 
     @Override

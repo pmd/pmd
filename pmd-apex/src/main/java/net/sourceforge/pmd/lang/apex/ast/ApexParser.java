@@ -30,9 +30,8 @@ public final class ApexParser implements Parser {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task.getTextDocument(), task.getCommentMarker());
-            AbstractApexNode<Compilation> treeRoot = treeBuilder.build(astRoot);
-            return new ASTApexFile(task, treeRoot, treeBuilder.getSuppressMap());
+            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task);
+            return treeBuilder.buildTree(astRoot);
         } catch (apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);
         }
