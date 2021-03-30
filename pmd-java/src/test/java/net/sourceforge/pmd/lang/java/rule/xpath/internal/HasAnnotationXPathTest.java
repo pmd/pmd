@@ -10,7 +10,7 @@ import net.sourceforge.pmd.Rule;
 
 /**
  * @author Clément Fournier
- * @since 6.0.0
+ * @since 7.0.0
  */
 public class HasAnnotationXPathTest extends BaseXPathFunctionTest {
 

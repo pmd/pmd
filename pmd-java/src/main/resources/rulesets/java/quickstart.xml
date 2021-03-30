@@ -141,7 +141,7 @@
     <!-- <rule ref="category/java/design.xml/ImmutableField" /> -->
     <!-- <rule ref="category/java/design.xml/LawOfDemeter" /> -->
     <rule ref="category/java/design.xml/LogicInversion"/>
-    <!-- <rule ref="category/java/design.xml/LoosePackageCouling"> -->
+    <!-- <rule ref="category/java/design.xml/LoosePackageCoupling"> -->
     <!--     <properties> -->
     <!--         <property name="packages" value="org.sample,org.sample2" /> -->
     <!--         <property name="classes" value="org.sample.SampleInterface,org.sample2.SampleInterface" /> -->

@@ -17,10 +17,12 @@ import java.nio.file.Files;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
@@ -135,5 +137,25 @@ public final class IOUtil {
             }
         }
         return composed;
+    }
+
+    /**
+     * Ensure that the closeables are closed. In the end, throws the
+     * pending exception if not null, or the exception retuned by {@link #closeAll(Collection)}
+     * if not null. If both are non-null, adds one of them to the suppress
+     * list of the other, and throws that one.
+     */
+    public static void ensureClosed(List<? extends AutoCloseable> toClose,
+                                    @Nullable Exception pendingException) throws Exception {
+        Exception closeException = closeAll(toClose);
+        if (closeException != null) {
+            if (pendingException != null) {
+                closeException.addSuppressed(pendingException);
+                throw closeException;
+            }
+            // else no exception at all
+        } else if (pendingException != null) {
+            throw pendingException;
+        }
     }
 }

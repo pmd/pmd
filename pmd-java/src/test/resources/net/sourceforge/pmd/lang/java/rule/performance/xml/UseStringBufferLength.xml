@@ -28,8 +28,9 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <!-- Note: this changed in PMD 7. -->
         <description>StringBuffer.toString.equals(""), bad</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     void bar() {

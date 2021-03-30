@@ -122,6 +122,11 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     }
 
     @Override
+    public int getKind() {
+        return kind;
+    }
+
+    @Override
     public JavaccToken getNext() {
         return next;
     }
@@ -135,11 +140,6 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     public Chars getImageCs() {
         // wrap it: it's zero cost (images are either Chars or String) and Chars has a nice API
         return Chars.wrap(image);
-    }
-
-    /** Either {@link Chars} or {@link String}. */
-    CharSequence getImageInternal() {
-        return image;
     }
 
     @Override

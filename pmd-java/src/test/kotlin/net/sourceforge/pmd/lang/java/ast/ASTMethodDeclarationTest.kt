@@ -8,6 +8,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.textOfReportLocation
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PRIVATE
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PUBLIC
 import net.sourceforge.pmd.lang.java.ast.JModifier.*
@@ -30,7 +31,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it should haveVisibility(V_PUBLIC)
                     it shouldNot haveExplicitModifier(PUBLIC)
                     it should haveModifier(PUBLIC)
-                    it.preferredReportLocation!!.image shouldBe "foo"
+                    it.textOfReportLocation() shouldBe "foo"
 
                     modifiers {}
                     unspecifiedChildren(2)
@@ -42,7 +43,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it should haveVisibility(V_PUBLIC)
                     it should haveExplicitModifier(PUBLIC)
                     it should haveModifier(PUBLIC)
-                    it.preferredReportLocation!!.image shouldBe "kk"
+                    it.textOfReportLocation() shouldBe "kk"
 
                     modifiers {}
                     unspecifiedChildren(2)
@@ -83,7 +84,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it shouldNot haveModifier(PUBLIC)
                     it should haveExplicitModifier(PRIVATE)
                     it should haveModifier(PRIVATE)
-                    it.preferredReportLocation!!.image shouldBe "de"
+                    it.textOfReportLocation() shouldBe "de"
 
 
                     unspecifiedChildren(4)
@@ -362,7 +363,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it::getModifiers shouldBe modifiers { }
                     it::getResultTypeNode shouldBe classType("Override")
                     it::getFormalParameters shouldBe formalsList(0)
-                    it.preferredReportLocation!!.image shouldBe "bar"
+                    it.textOfReportLocation() shouldBe "bar"
 
                     it::getExtraDimensions shouldBe child {
                         arrayDim {}

@@ -9,7 +9,9 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar(int a) {}
+    public void bar(int a) {
+        System.out.println(a);
+    }
 }
         ]]></code>
     </test-code>
@@ -19,7 +21,10 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar(int a, Object o) {}
+    public void bar(int a, Object o) {
+        System.out.println(a);
+        System.out.println(o);
+    }
 }
         ]]></code>
     </test-code>

@@ -13,15 +13,10 @@ import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
  * Adapter for the XmlParser.
  */
 public class XmlParser implements Parser {
-    private final XmlParserOptions parserOptions;
-
-    public XmlParser(XmlParserOptions parserOptions) {
-        this.parserOptions = parserOptions;
-    }
 
     @Override
     public RootXmlNode parse(ParserTask task) throws ParseException {
-        return new XmlParserImpl(parserOptions).parse(task);
+        return new XmlParserImpl().parse(task);
     }
 
 }

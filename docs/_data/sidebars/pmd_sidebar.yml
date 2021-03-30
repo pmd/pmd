@@ -364,6 +364,9 @@ entries:
     - title: Apex code metrics
       url: /pmd_apex_metrics_index.html
       output: web, pdf
+    - title: PLSQL
+      url: /pmd_languages_plsql.html
+      output: web, pdf
   - title: Developer Documentation
     output: web, pdf
     folderitems:

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ast.impl.antlr4;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -72,6 +73,8 @@ public class AntlrToken implements GenericToken<AntlrToken> {
         return getRegion().compareTo(o.getRegion());
     }
 
+    @Override
+    @Experimental
     public int getKind() {
         return token.getType();
     }

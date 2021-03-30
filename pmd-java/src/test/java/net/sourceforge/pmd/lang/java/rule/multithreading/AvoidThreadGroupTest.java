@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.multithreading;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-@org.junit.Ignore("Rule has not been updated yet")
 public class AvoidThreadGroupTest extends PmdRuleTst {
     // Used by AvoidThreadGroup test cases
     public static class ThreadGroup {

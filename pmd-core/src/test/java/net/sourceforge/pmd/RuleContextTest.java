@@ -18,7 +18,7 @@ import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 public class RuleContextTest {
 
-    public static Report getReport(Consumer<FileAnalysisListener> sideEffects) throws Exception {
+    public static Report getReport(Consumer<FileAnalysisListener> sideEffects) {
         ReportBuilderListener listener = new ReportBuilderListener();
         try {
             sideEffects.accept(listener);
@@ -45,13 +45,6 @@ public class RuleContextTest {
         Report report = getReport(new FooRule(), (r, ctx) -> ctx.addViolationWithMessage(DummyTreeUtil.tree(DummyTreeUtil::root), "message with \"'{'\""));
 
         Assert.assertEquals("message with \"{\"", report.getViolations().get(0).getDescription());
-    }
-
-    @Test
-    public void testMessageArgs() throws Exception {
-        Report report = getReport(new FooRule(), (r, ctx) -> ctx.addViolationWithMessage(DummyTreeUtil.tree(DummyTreeUtil::root), "message with 1 argument: \"{0}\"", "testarg1"));
-
-        Assert.assertEquals("message with 1 argument: \"testarg1\"", report.getViolations().get(0).getDescription());
     }
 
     @Test

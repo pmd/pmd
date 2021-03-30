@@ -41,4 +41,32 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>block in switch case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        switch (1) {
+        case 2: { }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>block in switch case (arrow)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        switch (1) {
+        case 2 -> { }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

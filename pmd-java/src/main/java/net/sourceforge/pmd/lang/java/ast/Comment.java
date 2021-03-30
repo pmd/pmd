@@ -28,6 +28,19 @@ public class Comment implements Reportable {
         this.token = t;
     }
 
+    @Override
+    public FileLocation getReportLocation() {
+        return getToken().getReportLocation();
+    }
+
+    /**
+     * @deprecated Use {@link #getText()}
+     */
+    @Deprecated
+    public String getImage() {
+        return getToken().getImage();
+    }
+
     /** The token underlying this comment. */
     public final JavaccToken getToken() {
         return token;
@@ -44,15 +57,6 @@ public class Comment implements Reportable {
     /** Returns the full text of the comment. */
     public Chars getText() {
         return getToken().getImageCs();
-    }
-
-    @Override
-    public FileLocation getReportLocation() {
-        return getToken().getReportLocation();
-    }
-
-    public int compareLocation(Comment other) {
-        return getToken().compareTo(other.getToken());
     }
 
     /**
@@ -88,14 +92,6 @@ public class Comment implements Reportable {
                 }
             );
         }
-    }
-
-    /**
-     * @deprecated Use {@link #getText()} to avoid array copies
-     */
-    @Deprecated
-    public String getImage() {
-        return getToken().getImage();
     }
 
     /**

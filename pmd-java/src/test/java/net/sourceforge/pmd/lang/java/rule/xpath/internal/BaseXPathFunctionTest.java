@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.function.Consumer;
@@ -15,6 +16,7 @@ import org.junit.Assert;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
@@ -24,7 +26,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**
  * @author Clément Fournier
- * @since 6.0.0
+ * @since 7.0.0
  */
 public class BaseXPathFunctionTest extends BaseNonParserTest {
 
@@ -57,10 +59,13 @@ public class BaseXPathFunctionTest extends BaseNonParserTest {
 
         Rule rule = makeXpathRuleFromXPath(xpath);
 
-        PmdXPathException thrown = Assert.assertThrows(PmdXPathException.class, () -> executeRule(rule, code));
+        FileAnalysisException thrown = Assert.assertThrows(FileAnalysisException.class, () -> executeRule(rule, code));
 
-        exceptionSpec.accept(thrown);
-        assertThat(thrown.getRuleName(), equalTo(RULE_NAME_PLACEHOLDER));
+        assertThat(thrown.getCause(), instanceOf(PmdXPathException.class));
+
+        PmdXPathException cause = (PmdXPathException) thrown.getCause();
+        exceptionSpec.accept(cause);
+        assertThat(cause.getRuleName(), equalTo(RULE_NAME_PLACEHOLDER));
     }
 
 

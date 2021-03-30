@@ -25,7 +25,6 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -37,10 +36,6 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterList
 import net.sourceforge.pmd.util.document.TextFile;
 
 public class GlobalListenerTest {
-
-    static RuleSet mockRuleset(Rule rule) {
-        return RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
-    }
 
     private final LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
 
@@ -153,7 +148,7 @@ public class GlobalListenerTest {
         try {
             PMD.processTextFiles(
                 config,
-                listOf(mockRuleset(rule)),
+                listOf(RuleSet.forSingleRule(rule)),
                 mockDataSources(),
                 listener
             );

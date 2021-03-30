@@ -5,19 +5,20 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>TEST1</description>
+        <description>May be final</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void test1() {
         int a = 0;
+        System.out.println(a);
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>TEST2</description>
+        <description>Final local var</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -29,7 +30,19 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST3</description>
+        <description>Unused, no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        int a = 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assigned</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -42,7 +55,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST4</description>
+        <description>Compound assignment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -55,7 +68,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST5</description>
+        <!-- TODO blank local may also be final, all three should be violations -->
+        <description>Blank local var</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -70,7 +84,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST6</description>
+        <description>Prefix increment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -96,7 +110,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST8</description>
+        <description>Postfix increment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
