@@ -32,11 +32,6 @@ public final class ASTMethod extends AbstractApexNode<Method> implements ApexQua
         return ApexQualifiedName.ofMethod(this);
     }
 
-    @Override
-    protected boolean shouldPatchLoc() {
-        return true;
-    }
-
     /**
      * Returns true if this is a synthetic class initializer, inserted
      * by the parser.
