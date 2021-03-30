@@ -28,7 +28,7 @@ infix fun TextAvailableNode.shouldHaveText(str: String) {
 }
 
 fun TextAvailableNode.textOfReportLocation(): String? =
-        reportLocation.regionInFile?.let(textDocument::sliceText)?.toString()
+        reportLocation.regionInFile?.let(textDocument::sliceOriginalText)?.toString()
 
 
 fun Node.assertTextRangeIsOk() {

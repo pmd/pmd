@@ -110,6 +110,13 @@ public interface Parser {
             return getProperties().getProperty(COMMENT_MARKER);
         }
 
+        /**
+         * Replace the text document with another.
+         */
+        public ParserTask withTextDocument(TextDocument doc) {
+            return new ParserTask(doc, this.reporter);
+        }
+
 
         private static final class ParserTaskProperties extends AbstractPropertySource {
 

@@ -36,8 +36,9 @@ public final class CharStream {
     }
 
     /**
-     * Create a new char stream for the given document. Note: this
-     * mutates the token document by translating its escapes.
+     * Create a new char stream for the given document. This may create
+     * a new {@link TextDocument} view over the original, which reflects
+     * its character escapes.
      */
     public static CharStream create(TextDocument doc, TokenDocumentBehavior behavior) throws MalformedSourceException {
         TextDocument translated = behavior.translate(doc);
