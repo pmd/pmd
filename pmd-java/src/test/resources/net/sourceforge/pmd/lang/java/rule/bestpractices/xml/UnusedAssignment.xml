@@ -2801,10 +2801,10 @@ class Foo {
     <test-code>
         <description>Test ignored name 0</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
             class Foo {
-                int method(int param) {
+                int method(int param, int other) {
                     return 2;
                 }
             }
@@ -2818,7 +2818,7 @@ class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             class Foo {
-                int method(int ignored) {
+                int method(int ignored, int unused) {
                     return 2;
                 }
             }

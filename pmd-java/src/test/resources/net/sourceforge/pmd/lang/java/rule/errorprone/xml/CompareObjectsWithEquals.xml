@@ -378,4 +378,36 @@ public class ClassWithFields {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#2976 FP with array length</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class C0 {
+    public static byte[] myArrayFunc(byte[] a1, byte[] a2) {
+        if (a1.length != a2.length) {
+            throw new IllegalArgumentException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2976 FP with method call (unresolved class)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class C0 {
+    class Unresolved {
+        private final long val;
+        public long getVal() { return val; }
+    }
+
+    {
+        if (c1.getVal() != c2.getVal()) {  // <-- here
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

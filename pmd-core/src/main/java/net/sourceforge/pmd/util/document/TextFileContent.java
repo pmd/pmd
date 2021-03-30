@@ -163,7 +163,7 @@ public final class TextFileContent {
         String lineTerminator = null;
         while (matcher.find()) {
             lineTerminator = detectLineTerm(lineTerminator, matcher.group(), fallBackLineSep);
-            if (!lineTerminator.equals(NORMALIZED_LINE_TERM)) {
+            if (!NORMALIZED_LINE_TERM.equals(lineTerminator)) {
                 needsNormalization = true;
 
                 if (lineTerminator.equals(fallBackLineSep)) {

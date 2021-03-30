@@ -24,7 +24,7 @@ log_group_start "Downloading maven dependencies"
 log_group_end
 
 log_group_start "Building with maven"
-    ./mvnw -e -V clean verify ${PMD_EXTRA_OPT}
+    ./mvnw -e -V -B clean verify ${PMD_EXTRA_OPT}
 log_group_end
 
 

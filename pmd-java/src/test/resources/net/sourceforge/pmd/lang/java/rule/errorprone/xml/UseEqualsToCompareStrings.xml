@@ -129,4 +129,55 @@ public class ClassWithStringFields {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#3004 UseEqualsToCompareStrings false positive with PMD 6.30.0</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class O {
+    boolean f(String s) {
+        return s.charAt(0) == s.charAt(1);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2979 UseEqualsToCompareStrings: FP with "var" variables</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class O {
+    boolean f(String s) {
+        final Matcher matcher = null;
+        if (matcher.matches()) {
+
+            final var firstString = matcher.group("a");
+            final var secondString = matcher.group("b");
+
+            if (firstString.isEmpty() != secondString.isEmpty()) { // <- violation
+                // ...
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2979 UseEqualsToCompareStrings: FP with "var" variables (control, types are explicit)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class O {
+    boolean f(String s) {
+        final Matcher matcher = null;
+        if (matcher.matches()) {
+
+            final String firstString = matcher.group("a");
+            final String secondString = matcher.group("b");
+
+            if (firstString.isEmpty() != secondString.isEmpty()) { // <- violation
+                // ...
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

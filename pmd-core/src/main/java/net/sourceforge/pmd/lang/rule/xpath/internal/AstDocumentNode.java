@@ -75,7 +75,7 @@ class AstDocumentNode extends BaseNodeInfo implements AstNodeOwner {
 
     @Override
     public int compareOrder(NodeInfo other) {
-        return other == this ? 0 : -1;
+        return other == this ? 0 : -1; // NOPMD CompareObjectsWithEquals - only a single root per tree
     }
 
     @Override

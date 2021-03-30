@@ -301,7 +301,7 @@ public class Foo {
 
     <test-code>
         <description>1503099, append with two string lengths</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar(String str1, String str2) {
@@ -389,7 +389,8 @@ public class Foo {
 
     <test-code>
         <description>No violation: Avoid concat in append method invocations</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>26,39,45</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
 
@@ -415,13 +416,17 @@ public class Foo {
         return sb.toString();
     }
 
-    private String testFinalFieldGood() { // final assumed a constant expression
-        return new StringBuilder().append("fld:" + FINAL_F).toString(); //good
+    private String testFinalFieldGood() {
+        return new StringBuilder().append("fld:" + FINAL_F).toString(); //not ok, it's not a compile time constant
     }
 
     private String testStaticFinalFieldGood() {
         return new StringBuilder().append("fld:" + STATIC_FINAL_F).toString(); // good
     }
+
+    // the following are not compile-time constants, but
+    // the JVM will very probably constant fold them anyway...
+    // for now, report it
 
     private String testFinalLocalGood() {
         final String local = "local"; // final assumed a constant expression

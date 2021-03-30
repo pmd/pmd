@@ -214,6 +214,46 @@ public class MethodReturnsInternalArrayCase {
     </test-code>
 
     <test-code>
+        <description>#3160 nonempty static final fields</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class MyClass {
+                private static final String[] FOO_BAR = new String[] { "foo", "bar" };
+                public final String[] call() { return FOO_BAR; }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3160 empty non-final fields</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+            public class MyClass {
+                private String[] foobar1 = new String[0];
+                private String[] foobar2 = {};
+                private static String[] FOO_BAR_3 = new String[0];
+                private static String[] FOO_BAR_4 = {};
+                public final String[] call1() { return foobar1; }
+                public final String[] call2() { return foobar2; }
+                public final String[] call3() { return FOO_BAR_3; }
+                public final String[] call4() { return FOO_BAR_4; }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unresolved array: assume public</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class MethodReturnsInternalArrayCase {
+                protected final byte[] getData() {
+                    return SomeClass.UNRESOLVED;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description> #1738 MethodReturnsInternalArray in inner classes</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -366,6 +406,52 @@ public class OuterClass {
             return Arrays.copyOf(titles, titles.length);
         }
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested methods and local class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OuterClass {
+    public int[] arrayReturningMethod() {
+        class LocalClass {
+            private String s;
+            public String getString() {
+                return this.s;
+            }
+        }
+        LocalClass c = new LocalClass();
+        return new int[0];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Detect returned static arrays</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,16</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class MyClass {
+    private static final String[] FOO_BAR = new String[] { "foo", "bar" };
+    private final Callable<String[]> returnsFooBar = new Callable<String[]>() {
+        @Override
+        public String[] call() {
+            return FOO_BAR;
+        }
+    };
+
+    private static String[] fooBarNonFinal = new String[] { "foo", "bar" };
+    private final Callable<String[]> returnsFooBarNonFinal = new Callable<String[]>() {
+        @Override
+        public String[] call() {
+            return fooBarNonFinal; // violation
+        }
+    };
 }
         ]]></code>
     </test-code>

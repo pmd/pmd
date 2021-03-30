@@ -47,8 +47,8 @@ public class QuickstartRulesetTest {
             }
         });
 
-        RuleSetLoader ruleSetFactory = new RuleSetLoader().enableCompatibility(false);
-        RuleSet quickstart = ruleSetFactory.loadFromResource("rulesets/java/quickstart.xml");
+        RuleSetLoader ruleSetLoader = new RuleSetLoader().enableCompatibility(false);
+        RuleSet quickstart = ruleSetLoader.loadFromResource("rulesets/java/quickstart.xml");
         Assert.assertFalse(quickstart.getRules().isEmpty());
     }
 }

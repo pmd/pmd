@@ -183,6 +183,43 @@ public class ApexParserTest extends ApexParserTestBase {
         Assert.assertEquals(487, count);
     }
 
+    @Test
+    public void verifyLineColumnNumbersInnerClasses() throws Exception {
+        String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("InnerClassLocations.cls"),
+                StandardCharsets.UTF_8);
+        source = source.replaceAll("\r\n", "\n");
+        ApexNode<Compilation> rootNode = parse(source);
+        Assert.assertNotNull(rootNode);
+
+        visitPosition(rootNode, 0);
+
+        Assert.assertEquals("InnerClassLocations", rootNode.getImage());
+        // Note: Apex parser doesn't provide positions for "public class" keywords. The
+        // position of the UserClass node is just the identifier. So, the node starts
+        // with the identifier and not with the first keyword in the file...
+        assertPosition(rootNode, 1, 14, 16, 2);
+
+        List<ASTUserClass> classes = rootNode.findDescendantsOfType(ASTUserClass.class);
+        Assert.assertEquals(2, classes.size());
+        Assert.assertEquals("bar1", classes.get(0).getImage());
+        List<ASTMethod> methods = classes.get(0).findChildrenOfType(ASTMethod.class);
+        Assert.assertEquals(2, methods.size()); // m() and synthetic clone()
+        Assert.assertEquals("m", methods.get(0).getImage());
+        assertPosition(methods.get(0), 4, 21, 7, 9);
+        Assert.assertEquals("clone", methods.get(1).getImage());
+        assertPosition(methods.get(1), 7, 9, 7, 9);
+
+        // Position of the first inner class: starts with the identifier "bar1" and ends with
+        // the last real method m(). The last bracket it actually on the next line 8, but we
+        // don't see this in the AST.
+        assertPosition(classes.get(0), 3, 18, 7, 9);
+
+        Assert.assertEquals("bar2", classes.get(1).getImage());
+        assertPosition(classes.get(1), 10, 18, 14, 9);
+    }
+
+    // TEST HELPER
+
     private int visitPosition(Node node, int count) {
         int result = count + 1;
         FileLocation loc = node.getReportLocation();

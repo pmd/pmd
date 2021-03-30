@@ -22,8 +22,6 @@ import net.sourceforge.pmd.util.document.TextDocument;
  *
  * TODO
  *  - The reader + filename would be a TextDocument
- *
- * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public interface Parser {
 

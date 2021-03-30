@@ -159,7 +159,7 @@ public class AbstractLanguageVersionTest {
         String rulesetFilenames = props.getProperty("rulesets.filenames");
         assertNotNull(rulesetFilenames);
 
-        RuleSetLoader factory = new RuleSetLoader();
+        RuleSetLoader rulesetLoader = new RuleSetLoader();
 
         if (rulesetFilenames.trim().isEmpty()) {
             return;
@@ -167,7 +167,7 @@ public class AbstractLanguageVersionTest {
 
         String[] rulesets = rulesetFilenames.split(",");
         for (String r : rulesets) {
-            RuleSet ruleset = factory.loadFromResource(r);
+            RuleSet ruleset = rulesetLoader.loadFromResource(r);
             assertNotNull(ruleset);
         }
     }

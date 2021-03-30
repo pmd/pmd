@@ -490,47 +490,48 @@ public class RuleSetFactoryTest {
     public void testReferencePriority() {
         RuleSetLoader config = new RuleSetLoader().warnDeprecated(false).enableCompatibility(true);
 
-        RuleSetLoader rsf = config.filterAbovePriority(RulePriority.LOW);
-        RuleSet ruleSet = rsf.loadFromString("", REF_INTERNAL_TO_INTERNAL_CHAIN);
+        RuleSetLoader rulesetLoader = config.filterAbovePriority(RulePriority.LOW);
+        RuleSet ruleSet = rulesetLoader.loadFromString("", REF_INTERNAL_TO_INTERNAL_CHAIN);
         assertEquals("Number of Rules", 3, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("MockRuleName"));
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
-        rsf = config.filterAbovePriority(RulePriority.MEDIUM_HIGH);
-        ruleSet = rsf.loadFromString("", REF_INTERNAL_TO_INTERNAL_CHAIN);
+        rulesetLoader = config.filterAbovePriority(RulePriority.MEDIUM_HIGH);
+        ruleSet = rulesetLoader.loadFromString("", REF_INTERNAL_TO_INTERNAL_CHAIN);
         assertEquals("Number of Rules", 2, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
-        rsf = config.filterAbovePriority(RulePriority.HIGH);
-        ruleSet = rsf.loadFromString("", REF_INTERNAL_TO_INTERNAL_CHAIN);
+        rulesetLoader = config.filterAbovePriority(RulePriority.HIGH);
+        ruleSet = rulesetLoader.loadFromString("", REF_INTERNAL_TO_INTERNAL_CHAIN);
         assertEquals("Number of Rules", 1, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
-        rsf = config.filterAbovePriority(RulePriority.LOW);
-        ruleSet = rsf.loadFromString("", REF_INTERNAL_TO_EXTERNAL_CHAIN);
+        rulesetLoader = config.filterAbovePriority(RulePriority.LOW);
+        ruleSet = rulesetLoader.loadFromString("", REF_INTERNAL_TO_EXTERNAL_CHAIN);
         assertEquals("Number of Rules", 3, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleName"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
 
-        rsf = config.filterAbovePriority(RulePriority.MEDIUM_HIGH);
-        ruleSet = rsf.loadFromString("", REF_INTERNAL_TO_EXTERNAL_CHAIN);
+        rulesetLoader = config.filterAbovePriority(RulePriority.MEDIUM_HIGH);
+        ruleSet = rulesetLoader.loadFromString("", REF_INTERNAL_TO_EXTERNAL_CHAIN);
         assertEquals("Number of Rules", 2, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
 
-        rsf = config.filterAbovePriority(RulePriority.HIGH);
-        ruleSet = rsf.loadFromString("", REF_INTERNAL_TO_EXTERNAL_CHAIN);
+        rulesetLoader = config.filterAbovePriority(RulePriority.HIGH);
+        ruleSet = rulesetLoader.loadFromString("", REF_INTERNAL_TO_EXTERNAL_CHAIN);
         assertEquals("Number of Rules", 1, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
     }
 
     @Test
     public void testOverridePriorityLoadWithMinimum() {
-        RuleSetLoader rsf = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW).warnDeprecated(true).enableCompatibility(true);
-        RuleSet ruleset = rsf.loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
+        RuleSetLoader rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW)
+                .warnDeprecated(true).enableCompatibility(true);
+        RuleSet ruleset = rulesetLoader.loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
         // only one rule should remain, since we filter out the other rule by minimum priority
         assertEquals("Number of Rules", 1, ruleset.getRules().size());
 
@@ -541,8 +542,8 @@ public class RuleSetFactoryTest {
         assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
 
         // now, load with default minimum priority
-        rsf = new RuleSetLoader();
-        ruleset = rsf.loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
+        rulesetLoader = new RuleSetLoader();
+        ruleset = rulesetLoader.loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
         assertEquals("Number of Rules", 2, ruleset.getRules().size());
         Rule dummyBasicMockRule = ruleset.getRuleByName("DummyBasicMockRule");
         assertEquals("Wrong Priority", RulePriority.LOW, dummyBasicMockRule.getPriority());
@@ -550,14 +551,15 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testExcludeWithMinimumPriority() {
-        RuleSetLoader rsf = new RuleSetLoader().filterAbovePriority(RulePriority.HIGH);
-        RuleSet ruleset = rsf.loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
+        RuleSetLoader rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.HIGH);
+        RuleSet ruleset = rulesetLoader
+                .loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
         // no rules should be loaded
         assertEquals("Number of Rules", 0, ruleset.getRules().size());
 
         // now, load with default minimum priority
-        rsf = new RuleSetLoader().filterAbovePriority(RulePriority.LOW);
-        ruleset = rsf.loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
+        rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.LOW);
+        ruleset = rulesetLoader.loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
         // only one rule, we have excluded one...
         assertEquals("Number of Rules", 1, ruleset.getRules().size());
         // rule is excluded
@@ -585,10 +587,10 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testSetPriority() {
-        RuleSetLoader rsf = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_HIGH).warnDeprecated(false);
-        assertEquals(0, rsf.loadFromString("", SINGLE_RULE).size());
-        rsf = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW).warnDeprecated(false);
-        assertEquals(1, rsf.loadFromString("", SINGLE_RULE).size());
+        RuleSetLoader rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_HIGH).warnDeprecated(false);
+        assertEquals(0, rulesetLoader.loadFromString("", SINGLE_RULE).size());
+        rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW).warnDeprecated(false);
+        assertEquals(1, rulesetLoader.loadFromString("", SINGLE_RULE).size());
     }
 
     @Test
