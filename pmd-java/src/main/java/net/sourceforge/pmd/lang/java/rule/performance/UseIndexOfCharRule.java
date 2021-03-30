@@ -4,41 +4,33 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.rule.AbstractPoorMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
+ *
  */
-public class UseIndexOfCharRule extends AbstractPoorMethodCall {
+public class UseIndexOfCharRule extends AbstractJavaRulechainRule {
 
-    private static final String TARGET_TYPE_NAME = "String";
-    private static final String[] METHOD_NAMES = new String[] { "indexOf", "lastIndexOf" };
-
-    /**
-     * Method targetTypeName.
-     *
-     * @return String
-     */
-    @Override
-    protected String targetTypename() {
-        return TARGET_TYPE_NAME;
-    }
-
-    /**
-     * Method methodNames.
-     *
-     * @return String[]
-     */
-    @Override
-    protected String[] methodNames() {
-        return METHOD_NAMES;
+    public UseIndexOfCharRule() {
+        super(ASTMethodCall.class);
     }
 
     @Override
-    protected boolean isViolationArgument(Node arg) {
-        return true;
-        // FIXME - REVERT ME
-        // return ((ASTLiteral) arg).isSingleCharacterStringLiteral();
+    public Object visit(ASTMethodCall node, Object data) {
+        if ("indexOf".equals(node.getMethodName()) || "lastIndexOf".equals(node.getMethodName())) {
+            if (TypeTestUtil.isA(String.class, node.getQualifier())
+                && node.getArguments().size() >= 1) { // there are two overloads of each
+                ASTExpression arg = node.getArguments().get(0);
+                if (arg instanceof ASTStringLiteral && ((ASTStringLiteral) arg).getConstValue().length() == 1) {
+                    addViolation(data, node);
+                }
+            }
+        }
+        return data;
     }
 
 }

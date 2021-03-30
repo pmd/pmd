@@ -91,7 +91,7 @@
                                                    |              +- MethodCall[@CompileTimeConstant = "false", @Image = "concat", @MethodName = "concat", @ParenthesisDepth = "0", @Parenthesized = "false"]
                                                    |              |  +- VariableAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "result", @Name = "result", @ParenthesisDepth = "0", @Parenthesized = "false"]
                                                    |              |  +- ArgumentList[@Size = "1"]
-                                                   |              |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = ":", @Empty = "false", @Image = "":"", @Length = "1", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
+                                                   |              |     +- StringLiteral[@CompileTimeConstant = "true", @ConstValue = ":", @Empty = "false", @Image = "\":\"", @Length = "1", @ParenthesisDepth = "0", @Parenthesized = "false", @TextBlock = "false"]
                                                    |              +- ArgumentList[@Size = "1"]
                                                    |                 +- VariableAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "value", @Name = "value", @ParenthesisDepth = "0", @Parenthesized = "false"]
                                                    +- ReturnStatement[]

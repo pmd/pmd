@@ -6,6 +6,11 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
@@ -13,6 +18,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleWithProperties;
 import net.sourceforge.pmd.lang.ast.DummyNode;
@@ -66,14 +72,35 @@ public abstract class AbstractRendererTest {
 
     private Report reportTwoViolations() {
         Report report = new Report();
-        report.addRuleViolation(newRuleViolation(1));
-        report.addRuleViolation(newRuleViolation(2));
+        RuleViolation informationalRuleViolation = newRuleViolation(1);
+        informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
+        report.addRuleViolation(informationalRuleViolation);
+        RuleViolation severeRuleViolation = newRuleViolation(2);
+        severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
+        report.addRuleViolation(severeRuleViolation);
         return report;
     }
 
     protected RuleViolation newRuleViolation(int endColumn) {
+        return newRuleViolation(endColumn, "Foo");
+    }
+
+    protected RuleViolation newRuleViolation(int endColumn, String ruleName) {
         DummyNode node = createNode(endColumn);
-        return new ParametricRuleViolation(new FooRule(), node, "blah");
+        FooRule rule = new FooRule();
+        rule.setName(ruleName);
+        return new ParametricRuleViolation(rule, node, "blah");
+    }
+
+    /**
+     * Read a resource file relative to this class's location.
+     */
+    protected String readFile(String relativePath) {
+        try (InputStream in = getClass().getResourceAsStream(relativePath)) {
+            return IOUtils.toString(in, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected DummyNode createNode(int endColumn) {

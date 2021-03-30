@@ -136,9 +136,8 @@ public interface TextFile extends Closeable {
 
     /**
      * Returns an instance of this interface reading and writing to a file.
-     * The returned instance may be read-only. If the file is not a regular
-     * file (eg, a directory), or does not exist, then {@link TextFile#readContents()}
-     * will throw.
+     * See {@link #builderForPath(Path, Charset, LanguageVersion) builderForPath}
+     * for more info.
      *
      * @param path            Path to the file
      * @param charset         Encoding to use
@@ -146,7 +145,26 @@ public interface TextFile extends Closeable {
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFileBuilder forPath(Path path, Charset charset, LanguageVersion languageVersion) {
+    static TextFile forPath(Path path, Charset charset, LanguageVersion languageVersion) {
+        return builderForPath(path, charset, languageVersion).build();
+    }
+
+    /**
+     * Returns a builder for a textfile that reads and write to the file.
+     * The returned instance may be read-only. If the file is not a regular
+     * file (eg, a directory), or does not exist, then {@link TextFile#readContents()}
+     * will throw.
+     *
+     * <p>The display name is by default the given path (without normalization),
+     * while the path id is the absolute path.
+     *
+     * @param path            Path to the file
+     * @param charset         Encoding to use
+     * @param languageVersion Language version to use
+     *
+     * @throws NullPointerException If any parameter is null
+     */
+    static TextFileBuilder builderForPath(Path path, Charset charset, LanguageVersion languageVersion) {
         return new ForNio(languageVersion, path, charset);
     }
 

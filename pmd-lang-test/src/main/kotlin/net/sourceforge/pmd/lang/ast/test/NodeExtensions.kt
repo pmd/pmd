@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.TextAvailableNode
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
+import net.sourceforge.pmd.util.document.Chars
 import java.util.*
 
 
@@ -22,9 +23,12 @@ import java.util.*
 val TextAvailableNode.textStr: String
     get() = text.toString()
 
-infix fun TextAvailableNode.textEquals(str:String) {
+infix fun TextAvailableNode.shouldHaveText(str: String) {
     this::textStr shouldBe str
 }
+
+fun TextAvailableNode.textOfReportLocation(): String? =
+        reportLocation.regionInFile?.let(textDocument::sliceText)?.toString()
 
 
 fun Node.assertTextRangeIsOk() {

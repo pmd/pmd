@@ -1038,7 +1038,7 @@ ImplicitParameterName : '$' DecimalLiteral ; // TODO: don't allow '_' here
 // GRAMMAR OF A LITERAL
 
 booleanLiteral: BooleanLiteral ;
-literal : numericLiteral | MultiStringLiteral | SingleStringLiteral | BooleanLiteral | NilLiteral ;
+literal : numericLiteral | MultiStringLiteral | SingleStringLiteral | BooleanLiteral | NilLiteral | RawMultiStringLiteral | RawSingleStringLiteral ;
 
 // GRAMMAR OF AN INTEGER LITERAL
 
@@ -1093,10 +1093,15 @@ TRIPLEDQUOTES : '"""' ;
 
 MultiStringLiteral : TRIPLEDQUOTES '\n' .*? '\n' TRIPLEDQUOTES ;
 fragment MultiQuotedText : MultiQuotedTextItem+ ;
-fragment MultiQuotedTextItem : MultiInterpolatedString
- | ~[\\\u000A\u000D]
- ;
+fragment MultiQuotedTextItem : MultiInterpolatedString | ~[\\\u000A\u000D] ;
 fragment MultiInterpolatedString: '\\(' (MultiQuotedTextItem | SingleStringLiteral)* ')';
+
+// swift 5 extended delimiter, eg ##"abc"##
+RawSingleStringLiteral : '#"' RawSingleQuotedTextItem* '"#' | '#' RawSingleStringLiteral '#';
+fragment RawSingleQuotedTextItem : ~[\u000A\u000D] ;
+
+RawMultiStringLiteral : '#"""' RawMultiQuotedTextItem* '"""#' | '#' RawMultiStringLiteral '#';
+fragment RawMultiQuotedTextItem : . ;
 
 // StringLiteral : '"' QuotedText? '"' ;
 SingleStringLiteral : '"' QuotedText? '"' ;

@@ -21,11 +21,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.docs.MockedFileWriter.FileEntry;
 
 public class RuleDocGeneratorTest {
@@ -59,13 +56,13 @@ public class RuleDocGeneratorTest {
     }
 
     @Test
-    public void testSingleRuleset() throws RuleSetNotFoundException, IOException {
+    public void testSingleRuleset() throws IOException {
         RuleDocGenerator generator = new RuleDocGenerator(writer, root);
 
-        RuleSetFactory rsf = RulesetsFactoryUtils.createFactory(RulePriority.LOW, false, false, true);
-        RuleSet ruleset = rsf.createRuleSet("rulesets/ruledoctest/sample.xml");
+        RuleSetLoader rsf = new RuleSetLoader().includeDeprecatedRuleReferences(true);
+        RuleSet ruleset = rsf.loadFromResource("rulesets/ruledoctest/sample.xml");
 
-        generator.generate(Arrays.asList(ruleset).iterator(),
+        generator.generate(Arrays.asList(ruleset),
                 Arrays.asList(
                         "rulesets/ruledoctest/sample-deprecated.xml",
                         "rulesets/ruledoctest/other-ruleset.xml"));

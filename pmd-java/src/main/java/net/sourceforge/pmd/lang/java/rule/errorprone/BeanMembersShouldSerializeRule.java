@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -128,9 +129,7 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
         if (methodName.startsWith("is")) {
             ASTResultType ret = ((ASTMethodDeclaration) meth.getParent()).getResultType();
             List<ASTPrimitiveType> primitives = ret.findDescendantsOfType(ASTPrimitiveType.class);
-            if (!primitives.isEmpty() && primitives.get(0).getTypeMirror() == meth.getTypeSystem().BOOLEAN) {
-                return true;
-            }
+            return !primitives.isEmpty() && primitives.get(0).getTypeMirror().isPrimitive(PrimitiveTypeKind.BOOLEAN);
         }
         return false;
     }

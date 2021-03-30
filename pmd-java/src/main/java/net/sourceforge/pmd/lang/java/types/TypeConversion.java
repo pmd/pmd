@@ -17,6 +17,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 /**
  * Utility class for type conversions, as defined in <a href="https://docs.oracle.com/javase/specs/jls/se10/html/jls-5.html">JLS§5</a>.
  */
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class TypeConversion {
 
     private TypeConversion() {

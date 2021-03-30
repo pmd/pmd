@@ -70,21 +70,17 @@ public final class ASTFormalParameter extends AbstractJavaNode
     @Override
     @NonNull
     public ASTVariableDeclaratorId getVarId() {
-        return getFirstChildOfType(ASTVariableDeclaratorId.class);
+        return firstChild(ASTVariableDeclaratorId.class);
     }
 
 
     /**
      * Returns the type node of this formal parameter.
-     * The type of that node is not necessarily the type
-     * of the parameter itself, see {@link ASTVariableDeclaratorId#getType()}.
      *
-     * <p>In particular, the type of the returned node
-     * doesn't take into account whether this formal
-     * parameter is varargs or not.
+     * <p>If this formal parameter is varargs, the type node is an {@link ASTArrayType}.
      */
     public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+        return firstChild(ASTType.class);
     }
 
     // Honestly FormalParameter shouldn't be a TypeNode.

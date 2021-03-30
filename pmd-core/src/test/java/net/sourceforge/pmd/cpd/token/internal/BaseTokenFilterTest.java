@@ -65,6 +65,11 @@ public class BaseTokenFilterTest {
         public int compareTo(StringToken o) {
             return text.compareTo(o.text);
         }
+
+        @Override
+        public int getKind() {
+            return 0;
+        }
     }
 
     static class StringTokenManager implements TokenManager<StringToken> {

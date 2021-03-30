@@ -247,13 +247,20 @@ public class Foo {
           language="java"
           since="1.2"
           message="A catch statement should never catch throwable since it includes errors."
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCatchingThrowableRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcatchingthrowable">
         <description>
 Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as
 OutOfMemoryError that should be exposed and managed separately.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //CatchParameter[ClassOrInterfaceType[pmd-java:typeIsExactly('java.lang.Throwable')]]/VariableDeclaratorId
+                ]]></value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public void bar() {
@@ -289,15 +296,7 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression[pmd-java:typeIs('java.math.BigDecimal')]
-[Arguments/ArgumentList/Expression/PrimaryExpression
-    [
-        pmd-java:typeIs('float') or
-        pmd-java:typeIs('java.lang.Float') or
-        pmd-java:typeIs('double') or
-        pmd-java:typeIs('java.lang.Double')
-    ]
-]
+//ConstructorCall[pmd-java:matchesSig('java.math.BigDecimal#new(double)')]
 ]]>
                 </value>
             </property>
@@ -576,7 +575,7 @@ public void bar() {
     <rule name="AvoidMultipleUnaryOperators"
           language="java"
           since="4.2"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidMultipleUnaryOperatorsRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           message="Using multiple unary operators may be a bug, and/or is confusing."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidmultipleunaryoperators">
         <description>
@@ -584,6 +583,14 @@ The use of multiple unary operators may be problematic, and/or confusing.
 Ensure that the intended usage is not a bug, or consider simplifying the expression.
         </description>
         <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                    (: Only report on the toplevel one :)
+                    //UnaryExpression[UnaryExpression and not(parent::UnaryExpression)]
+                ]]></value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 // These are typo bugs, or at best needlessly complex and confusing:
@@ -1081,12 +1088,30 @@ public class Bar {
           language="java"
           since="3.2"
           message="Use equals() to compare object references."
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.CompareObjectsWithEqualsRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#compareobjectswithequals">
         <description>
 Use equals() to compare object references; avoid comparing them with ==.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//InfixExpression
+    [@Operator = ("==", "!=")]
+    [count(*
+        [not(self::NullLiteral)]
+        [pmd-java:typeIs('java.lang.Object')]
+        [not(pmd-java:typeIs('java.lang.Enum'))]
+        [not(pmd-java:typeIs('java.lang.Class'))]) = 2
+    ]
+    [not(ancestor::MethodDeclaration[1][@Name = "equals"])]
+]]>
+        </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 class Foo {
@@ -1452,13 +1477,13 @@ or reported.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement
- [not(Block/BlockStatement)]
- [$allowCommentedBlocks != true() or Block/@containsComment = false()]
- [FormalParameter/Type/ReferenceType
-   /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
- ]
- [FormalParameter/VariableDeclaratorId[not(matches(@Name, $allowExceptionNameRegex))]]
+//CatchClause[
+  Block[
+      count(*) = 0
+      and ($allowCommentedBlocks = false() or Block/@containsComment = false())
+  ]
+  and CatchParameter/VariableDeclaratorId[not(matches(@Name, $allowExceptionNameRegex))]
+]
 ]]>
                 </value>
             </property>
@@ -1521,7 +1546,7 @@ Empty finally blocks serve no purpose and should be removed.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FinallyStatement[not(Block/BlockStatement)]
+//FinallyClause[Block[not(*)]]
 ]]>
                 </value>
             </property>
@@ -1555,7 +1580,7 @@ Empty If Statement finds instances where a condition is checked but nothing is d
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement[EmptyStatement or Block[not(*)]]
+//IfStatement/*[self::EmptyStatement or self::Block[not(*)]]
 ]]>
                 </value>
             </property>
@@ -1613,7 +1638,7 @@ Empty block statements serve no purpose and should be removed.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//BlockStatement/Statement/Block[not(*)]</value>
+                <value>//Block[not(*)][parent::Block or parent::SwitchFallthroughBranch or parent::SwitchArrowBranch]</value>
             </property>
         </properties>
         <example>
@@ -1650,13 +1675,11 @@ and should be removed.
 <![CDATA[
 //EmptyStatement
  [not(
-       ../../../ForStatement
-       or ../../../WhileStatement
-       or ../../../BlockStatement/ClassOrInterfaceDeclaration
-       or ../../../../../../ForStatement/Statement[1]
-        /Block[1]/BlockStatement[1]/Statement/EmptyStatement
-       or ../../../../../../WhileStatement/Statement[1]
-        /Block[1]/BlockStatement[1]/Statement/EmptyStatement)
+          parent::WhileStatement
+       or parent::ForStatement
+       or parent::ForeachStatement
+       or preceding-sibling::*[1]/self::LocalClassStatement
+  )
  ]
 ]]>
                 </value>
@@ -1714,7 +1737,7 @@ Empty synchronized blocks serve no purpose and should be removed.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//SynchronizedStatement/Block[1][not(*)]</value>
+                <value>//SynchronizedStatement/Block[not(*)]</value>
             </property>
         </properties>
         <example>
@@ -1744,7 +1767,7 @@ Avoid empty try blocks - what's the point?
             <property name="xpath">
                 <value>
 <![CDATA[
-//TryStatement[not(ResourceSpecification)]/Block[1][not(*)]
+//TryStatement[not(ResourceList)]/Block[not(*)]
 ]]>
                 </value>
             </property>
@@ -1779,7 +1802,7 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
             <property name="xpath">
                 <value>
 <![CDATA[
-//WhileStatement/Statement[Block[not(*)] or EmptyStatement]
+//WhileStatement/*[self::Block[not(*)] or self::EmptyStatement]
 ]]>
                 </value>
             </property>
@@ -1809,19 +1832,7 @@ Tests for null should not use the equals() method. The '==' operator should be u
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
-  [
-    PrimaryPrefix[Name[ends-with(@Image, 'equals')]]
-      [following-sibling::node()/Arguments/ArgumentList[count(Expression)=1]
-          /Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-
-    or
-
-    PrimarySuffix[ends-with(@Image, 'equals')]
-      [following-sibling::node()/Arguments/ArgumentList[count(Expression)=1]
-          /Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-
-  ]
+//MethodCall[@MethodName = "equals" and ArgumentList[count(*) = 1 and NullLiteral]]
 ]]>
                 </value>
             </property>
@@ -2074,11 +2085,15 @@ Class c = String.class;
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#invalidlogmessageformat">
         <description>
 Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of arguments and placeholders.
+
+Since 6.32.0 in addition to parameterized message placeholders (`{}`) also format specifiers of string formatted
+messages are supported (`%s`).
         </description>
         <priority>5</priority>
         <example>
 <![CDATA[
 LOGGER.error("forget the arg {}");
+LOGGER.error("forget the arg %s");
 LOGGER.error("too many args {}", "arg1", "arg2");
 LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The exception is shown separately, so is correct.
 ]]>
@@ -2360,7 +2375,7 @@ See the property `annotations`.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="annotations" type="List[String]" delimiter="," value="org.springframework.beans.factory.annotation.Autowired, javax.inject.Inject" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
+            <property name="annotations" type="List[String]" delimiter="," value="org.springframework.beans.factory.annotation.Autowired,javax.inject.Inject" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -3315,11 +3330,8 @@ Use the equals() method instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//EqualityExpression/PrimaryExpression
-[not(PrimarySuffix)]
-[PrimaryPrefix/Literal
-   [starts-with(@Image, '"')]
-   [ends-with(@Image, '"')]]
+//EqualityExpression
+    [count(PrimaryExpression[pmd-java:typeIs('java.lang.String')]) = 2]
 ]]>
                 </value>
             </property>

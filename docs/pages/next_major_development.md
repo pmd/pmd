@@ -246,6 +246,93 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.33.0
+
+No changes.
+
+#### 6.32.0
+
+##### Experimental APIs
+
+*   The experimental class `ASTTypeTestPattern` has been renamed to {% jdoc java::lang.java.ast.ASTTypePattern %}
+    in order to align the naming to the JLS.
+*   The experimental class `ASTRecordConstructorDeclaration` has been renamed to {% jdoc java::lang.java.ast.ASTCompactConstructorDeclaration %}
+    in order to align the naming to the JLS.
+*   The AST types and APIs around Pattern Matching and Records are not experimental anymore:
+    *   {% jdoc !!java::lang.java.ast.ASTVariableDeclaratorId#isPatternBinding() %}
+    *   {% jdoc java::lang.java.ast.ASTPattern %}
+    *   {% jdoc java::lang.java.ast.ASTTypePattern %}
+    *   {% jdoc java::lang.java.ast.ASTRecordDeclaration %}
+    *   {% jdoc java::lang.java.ast.ASTRecordComponentList %}
+    *   {% jdoc java::lang.java.ast.ASTRecordComponent %}
+    *   {% jdoc java::lang.java.ast.ASTRecordBody %}
+    *   {% jdoc java::lang.java.ast.ASTCompactConstructorDeclaration %}
+
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   The protected or public member of the Java rule {% jdoc java::lang.java.rule.bestpractices.AvoidUsingHardCodedIPRule %}
+    are deprecated and considered to be internal API. They will be removed with PMD 7.
+
+#### 6.31.0
+
+##### Deprecated API
+
+*   {% jdoc xml::lang.xml.rule.AbstractDomXmlRule %}
+*   {% jdoc xml::lang.wsdl.rule.AbstractWsdlRule %}
+*   A few methods of {% jdoc xml::lang.xml.rule.AbstractXmlRule %}
+
+##### Experimental APIs
+
+*   The method {% jdoc !!core::lang.ast.GenericToken#getKind() %} has been added as experimental. This
+    unifies the token interface for both JavaCC and Antlr. The already existing method
+    {% jdoc !!core::cpd.token.AntlrToken#getKind() %} is therefore experimental as well. The
+    returned constant depends on the actual language and might change whenever the grammar
+    of the language is changed.
+
+#### 6.30.0
+
+##### Deprecated API
+
+###### Around RuleSet parsing
+
+* {% jdoc core::RuleSetFactory %} and {% jdoc core::RulesetsFactoryUtils %} have been deprecated in favor of {% jdoc core::RuleSetLoader %}. This is easier to configure, and more maintainable than the multiple overloads of `RulesetsFactoryUtils`.
+* Some static creation methods have been added to {% jdoc core::RuleSet %} for simple cases, eg {% jdoc core::RuleSet#forSingleRule(core::Rule) %}. These replace some counterparts in {% jdoc core::RuleSetFactory %}
+* Since {% jdoc core::RuleSets %} is also deprecated, many APIs that require a RuleSets instance now are deprecated, and have a counterpart that expects a `List<RuleSet>`.
+* {% jdoc core::RuleSetReferenceId %}, {% jdoc core::RuleSetReference %}, {% jdoc core::RuleSetFactoryCompatibility %} are deprecated. They are most likely not relevant outside of the implementation of pmd-core.
+
+###### Around the `PMD` class
+
+Many classes around PMD's entry point ({% jdoc core::PMD %}) have been deprecated as internal, including:
+* The contents of the packages {% jdoc_package core::cli %}, {% jdoc_package core::processor %}
+* {% jdoc core::SourceCodeProcessor %}
+* The constructors of {% jdoc core::PMD %} (the class will be made a utility class)
+
+###### Miscellaneous
+
+*   {% jdoc !!java::lang.java.ast.ASTPackageDeclaration#getPackageNameImage() %},
+    {% jdoc !!java::lang.java.ast.ASTTypeParameter#getParameterName() %}
+    and the corresponding XPath attributes. In both cases they're replaced with a new method `getName`,
+    the attribute is `@Name`.
+*   {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceBody#isAnonymousInnerClass() %},
+    and {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceBody#isEnumChild() %},
+    refs [#905](https://github.com/pmd/pmd/issues/905)
+
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   {% jdoc !!javascript::lang.ecmascript.Ecmascript3Handler %}
+*   {% jdoc !!javascript::lang.ecmascript.Ecmascript3Parser %}
+*   {% jdoc !!javascript::lang.ecmascript.ast.EcmascriptParser#parserOptions %}
+*   {% jdoc !!javascript::lang.ecmascript.ast.EcmascriptParser#getSuppressMap() %}
+*   {% jdoc !!core::lang.rule.ParametricRuleViolation %}
+*   {% jdoc !!core::lang.ParserOptions#suppressMarker %}
+*   {% jdoc !!modelica::lang.modelica.rule.ModelicaRuleViolationFactory %}
+
 #### 6.29.0
 
 No changes.
@@ -1192,8 +1279,8 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
     will be removed with PMD 7.0.0. The rule is replaced by the more general
     {% rule "java/multithreading/UnsynchronizedStaticFormatter" %}.
 
-*   The two Java rules {% rule "java/bestpractices/PositionLiteralsFirstInComparisons" %}
-    and {% rule "java/bestpractices/PositionLiteralsFirstInCaseInsensitiveComparisons" %} (ruleset `java-bestpractices`)
+*   The two Java rules [`PositionLiteralsFirstInComparisons`](https://pmd.github.io/pmd-6.29.0/pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons)
+    and [`PositionLiteralsFirstInCaseInsensitiveComparisons`](https://pmd.github.io/pmd-6.29.0/pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons) (ruleset `java-bestpractices`)
     have been deprecated in favor of the new rule {% rule "java/bestpractices/LiteralsFirstInComparisons" %}.
 
 *   The Java rule [`AvoidFinalLocalVariable`](https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#avoidfinallocalvariable) (`java-codestyle`) has been deprecated

@@ -71,7 +71,7 @@ class XmlNodeWrapper implements XmlNode {
         }
         NodeList childNodes = parent.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
-            if (node == childNodes.item(i)) {
+            if (node == childNodes.item(i)) { // NOPMD CompareObjectsWithEquals
                 return i;
             }
         }

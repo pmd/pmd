@@ -77,7 +77,7 @@ public class PMDTaskTest {
             String actual = IOUtils.toString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.replaceAll("\n|\r", "");
-            Assert.assertEquals("sample.dummy:1:\tTest Rule 2", actual);
+            Assert.assertEquals("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2", actual);
         }
     }
 }

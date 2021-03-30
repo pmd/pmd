@@ -209,15 +209,6 @@ public final class ASTModifierList extends AbstractJavaNode {
         }
 
         @Override
-        public Void visit(ASTVariableDeclaratorId node, Set<JModifier> effective) {
-            // resources are implicitly final
-            if (node.isPatternBinding()) {
-                effective.add(FINAL);
-            }
-            return null;
-        }
-
-        @Override
         public Void visit(ASTLocalVariableDeclaration node, Set<JModifier> effective) {
             // resources are implicitly final
             if (node.getParent() instanceof ASTResource) {

@@ -4,18 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTCharLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 /**
  * Detects redundant field initializers, i.e. the field initializer expressions
@@ -24,75 +20,29 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * @author lucian.ciufudean@gmail.com
  * @since Apr 10, 2009
  */
-public class RedundantFieldInitializerRule extends AbstractJavaRule {
+public class RedundantFieldInitializerRule extends AbstractJavaRulechainRule {
 
     public RedundantFieldInitializerRule() {
-        addRuleChainVisit(ASTFieldDeclaration.class);
+        super(ASTFieldDeclaration.class);
     }
 
     @Override
     public Object visit(ASTFieldDeclaration fieldDeclaration, Object data) {
-        if (declaresNotFinalField(fieldDeclaration)) {
-            for (ASTVariableDeclarator varDecl : fieldDeclaration.descendants(ASTVariableDeclarator.class)) {
-                if (hasRedundantInitializer(fieldDeclaration, varDecl)) {
-                    addViolation(data, varDecl);
+        if (!fieldDeclaration.hasModifiers(JModifier.FINAL)) {
+            for (ASTVariableDeclaratorId varId : fieldDeclaration.getVarIds()) {
+                ASTExpression init = varId.getInitializer();
+                if (init != null) {
+                    if (!isWhitelisted(init) && JavaRuleUtil.isDefaultValue(varId.getTypeMirror(), init)) {
+                        addViolation(data, varId);
+                    }
                 }
             }
         }
         return data;
     }
 
-    private boolean declaresNotFinalField(ASTFieldDeclaration fieldDeclaration) {
-        return !fieldDeclaration.hasModifiers(JModifier.FINAL);
+    // whitelist if there are named variables in there
+    private static boolean isWhitelisted(ASTExpression e) {
+        return e.descendantsOrSelf().any(it -> it instanceof ASTVariableAccess || it instanceof ASTFieldAccess);
     }
-
-    private boolean hasRedundantInitializer(ASTFieldDeclaration fieldDeclaration, ASTVariableDeclarator varDecl) {
-        return declaresFieldOfPrimitiveType(fieldDeclaration)
-            && hasRedundantInitializerOfPrimitive(varDecl)
-            || hasRedundantInitializerOfReference(varDecl);
-    }
-
-    private boolean declaresFieldOfPrimitiveType(ASTFieldDeclaration fieldDeclaration) {
-        return fieldDeclaration.getTypeNode() instanceof ASTPrimitiveType;
-    }
-
-    private boolean hasRedundantInitializerOfPrimitive(ASTVariableDeclarator varDecl) {
-        ASTLiteral literal = getLiteralValue(varDecl.getInitializer());
-        if (literal != null) {
-            if (literal instanceof ASTNumericLiteral) {
-                return hasDefaultNumericValue((ASTNumericLiteral) literal);
-            } else if (literal instanceof ASTCharLiteral) {
-                return hasDefaultCharLiteralValue((ASTCharLiteral) literal);
-            } else if (literal instanceof ASTBooleanLiteral) {
-                return isDefaultBooleanLiteral((ASTBooleanLiteral) literal);
-            }
-        }
-        return false;
-    }
-
-    private boolean hasDefaultNumericValue(ASTNumericLiteral literal) {
-        return literal.getConstValue().doubleValue() == 0;
-    }
-
-    private boolean hasDefaultCharLiteralValue(ASTCharLiteral literal) {
-        return literal.getConstValue() == '\0';
-    }
-
-    private boolean isDefaultBooleanLiteral(ASTBooleanLiteral literal) {
-        return !literal.isTrue();
-    }
-
-    private boolean hasRedundantInitializerOfReference(ASTVariableDeclarator varDecl) {
-        return getLiteralValue(varDecl.getInitializer()) instanceof ASTNullLiteral;
-    }
-
-    private ASTLiteral getLiteralValue(ASTExpression expr) {
-        if (expr instanceof ASTLiteral) {
-            return (ASTLiteral) expr;
-        } else if (expr instanceof ASTCastExpression) {
-            return getLiteralValue(((ASTCastExpression) expr).getOperand());
-        }
-        return null;
-    }
-
 }

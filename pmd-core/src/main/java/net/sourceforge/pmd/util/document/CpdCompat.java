@@ -24,7 +24,7 @@ public final class CpdCompat {
     @Deprecated
     private static final Language DUMMY_LANG = new BaseLanguageModule("dummy", "dummy", "dummy", "dummy") {
         {
-            addDefaultVersion("", parserOptions -> task -> {
+            addDefaultVersion("", () -> task -> {
                 throw new UnsupportedOperationException();
             });
         }

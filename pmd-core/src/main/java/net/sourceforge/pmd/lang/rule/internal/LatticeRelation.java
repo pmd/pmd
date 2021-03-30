@@ -144,7 +144,7 @@ class LatticeRelation<K, @NonNull V, C> {
             addSucc(preds, next, val);
         }
 
-        if (preds.removeLast() != n) {
+        if (preds.removeLast() != n) { // NOPMD CompareObjectsWithEquals
             throw new IllegalStateException("Unbalanced stack push/pop");
         }
     }

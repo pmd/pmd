@@ -40,7 +40,6 @@ public class Foo {
         ]]></code>
     </test-code>
 
-<!--
     <test-code>
         <description>Document Jaxen exception parsing Unicode chars in startsWith</description>
         <expected-problems>0</expected-problems>
@@ -52,7 +51,6 @@ public class Foo {
 }
         ]]></code>
     </test-code>
--->
 
     <test-code>
         <description>#1392 SimplifyStartsWith false-negative</description>
@@ -65,6 +63,26 @@ public class SimplifyStartsWith {
         return nextSibling.getType() == JavadocTokenTypes.NEWLINE
                 || nextSibling.getType() == JavadocTokenTypes.EOF
                 || nextSibling.getText().startsWith(" ");
+    }
+
+    static class DetailNode {
+        String getText() { return ""; }
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2712 SimplifyStartsWith false-positive on receiver != String</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class TClass {
+
+    void startsWith(String a) {}
+    TClass assertThat(String s) {}
+
+    private static boolean isImmediatelyFollowedByText(String someStringValue) {
+        assertThat(someStringValue).startsWith("a");
     }
 }
         ]]></code>

@@ -16,7 +16,6 @@ import org.mozilla.javascript.ast.Comment;
 import org.mozilla.javascript.ast.ErrorCollector;
 import org.mozilla.javascript.ast.ParseProblem;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -24,11 +23,9 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 
 public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Parser {
     private final int esVersion;
-    private final String suppressMarker;
 
-    public EcmascriptParser(int version, String suppressMarker) {
+    public EcmascriptParser(int version) {
         this.esVersion = version;
-        this.suppressMarker = AssertionUtil.requireParamNotNull("suppression marker", suppressMarker);
     }
 
     private AstRoot parseEcmascript(final String sourceCode, final List<ParseProblem> parseProblems) throws ParseException {
@@ -60,6 +57,7 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Pars
         final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(parseProblems);
         ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
 
+        String suppressMarker = task.getCommentMarker();
         Map<Integer, String> suppressMap = new HashMap<>();
         if (astRoot.getComments() != null) {
             for (Comment comment : astRoot.getComments()) {

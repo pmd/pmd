@@ -78,7 +78,7 @@ class LocalTypeScopesTest : ParserTestSpec({
             }
         """)
 
-        val (_, inner, localInner) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (_, inner, localInner) = acu.descendants(ASTAnyTypeDeclaration::class.java).crossFindBoundaries().toList { it.typeMirror }
 
         val (_/*the block*/, iVar, localClass, i2Var) =
                 acu.descendants(ASTStatement::class.java).toList()

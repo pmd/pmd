@@ -232,6 +232,7 @@ abstract class Foo {
         <description>#1159 false positive UnusedFormalParameter readObject(ObjectInputStream) if not used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.*;
 public class Foo {
     private void readObject(ObjectInputStream stream) throws InvalidObjectException{
        throw new InvalidObjectException("Proxy required");
@@ -287,6 +288,21 @@ class Imp2 extends Base {
   public int badMethod(int arg1, String arg2) {
     return arg2.length() + arg1;
   }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2957 Unused rules should ignore some names</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+class Imp1 {
+  private void m(int arg1,
+                String arg2,
+                int unusedArg1,
+                int ignoredArg2,
+                int unused,
+                String ignored) {}
 }
         ]]></code>
     </test-code>

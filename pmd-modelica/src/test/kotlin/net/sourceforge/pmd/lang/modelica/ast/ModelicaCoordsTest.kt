@@ -7,9 +7,10 @@ package net.sourceforge.pmd.lang.modelica.ast
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.*
+import net.sourceforge.pmd.lang.ast.test.matchNode
+import net.sourceforge.pmd.lang.ast.test.assertPosition
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldHaveText
 import net.sourceforge.pmd.lang.modelica.ModelicaParsingHelper
 
 class ModelicaCoordsTest : FunSpec({
@@ -24,113 +25,113 @@ package TestPackage
 end TestPackage;
       """.trim().parseModelica() should matchNode<ASTStoredDefinition> {
 
-            it textEquals """package TestPackage
+            it shouldHaveText """package TestPackage
   package EmptyPackage
   end EmptyPackage;
 end TestPackage;"""
 
-            it.assertBounds(1, 1, 4, 17)
+            it.assertPosition(1, 1, 4, 17)
 
             child<ASTClassDefinition> {
-                it textEquals """package TestPackage
+                it shouldHaveText """package TestPackage
   package EmptyPackage
   end EmptyPackage;
 end TestPackage"""
-                it.assertBounds(1, 1, 4, 16)
+                it.assertPosition(1, 1, 4, 16)
 
                 child<ASTClassPrefixes> {
-                    it textEquals "package"
-                    it.assertBounds(1, 1, 1, 8)
+                    it shouldHaveText "package"
+                    it.assertPosition(1, 1, 1, 8)
 
                     child<ASTPackageClause> {
-                        it textEquals "package"
-                        it.assertBounds(1, 1, 1, 8)
+                        it shouldHaveText "package"
+                        it.assertPosition(1, 1, 1, 8)
                     }
                 }
                 child<ASTClassSpecifier> {
-                    it textEquals """TestPackage
+                    it shouldHaveText """TestPackage
   package EmptyPackage
   end EmptyPackage;
 end TestPackage"""
-                    it.assertBounds(1, 9, 4, 16)
+                    it.assertPosition(1, 9, 4, 16)
 
                     child<ASTSimpleLongClassSpecifier> {
-                        it textEquals """TestPackage
+                        it shouldHaveText """TestPackage
   package EmptyPackage
   end EmptyPackage;
 end TestPackage"""
 
-                        it.assertBounds(1, 9, 4, 16)
+                        it.assertPosition(1, 9, 4, 16)
 
                         child<ASTSimpleName> {
-                            it textEquals "TestPackage"
-                            it.assertBounds(1, 9, 1, 20)
+                            it shouldHaveText "TestPackage"
+                            it.assertPosition(1, 9, 1, 20)
                         }
                         child<ASTComposition> {
-                            it textEquals """package EmptyPackage
+                            it shouldHaveText """package EmptyPackage
   end EmptyPackage;"""
-                            it.assertBounds(2, 3, 3, 20)
+                            it.assertPosition(2, 3, 3, 20)
 
                             child<ASTElementList> {
-                                it textEquals """package EmptyPackage
+                                it shouldHaveText """package EmptyPackage
   end EmptyPackage;"""
-                                it.assertBounds(2, 3, 3, 20)
+                                it.assertPosition(2, 3, 3, 20)
 
                                 child<ASTRegularElement> {
-                                    it textEquals """package EmptyPackage
+                                    it shouldHaveText """package EmptyPackage
   end EmptyPackage"""
-                                    it.assertBounds(2, 3, 3, 19)
+                                    it.assertPosition(2, 3, 3, 19)
 
                                     child<ASTClassDefinition> {
-                                        it textEquals """package EmptyPackage
+                                        it shouldHaveText """package EmptyPackage
   end EmptyPackage"""
-                                        it.assertBounds(2, 3, 3, 19)
+                                        it.assertPosition(2, 3, 3, 19)
                                         it.isPartial shouldBe false
 
                                         child<ASTClassPrefixes> {
-                                            it textEquals "package"
-                                            it.assertBounds(2, 3, 2, 10)
+                                            it shouldHaveText "package"
+                                            it.assertPosition(2, 3, 2, 10)
 
                                             child<ASTPackageClause> {
-                                                it textEquals "package"
-                                                it.assertBounds(2, 3, 2, 10)
+                                                it shouldHaveText "package"
+                                                it.assertPosition(2, 3, 2, 10)
                                             }
                                         }
                                         child<ASTClassSpecifier> {
-                                            it textEquals """EmptyPackage
+                                            it shouldHaveText """EmptyPackage
   end EmptyPackage"""
-                                            it.assertBounds(2, 11, 3, 19)
+                                            it.assertPosition(2, 11, 3, 19)
 
                                             child<ASTSimpleLongClassSpecifier> {
-                                                it textEquals """EmptyPackage
+                                                it shouldHaveText """EmptyPackage
   end EmptyPackage"""
-                                                it.assertBounds(2, 11, 3, 19)
+                                                it.assertPosition(2, 11, 3, 19)
                                                 it.simpleClassName shouldBe "EmptyPackage"
 
                                                 child<ASTSimpleName> {
-                                                    it textEquals "EmptyPackage"
-                                                    it.assertBounds(2, 11, 2, 23)
+                                                    it shouldHaveText "EmptyPackage"
+                                                    it.assertPosition(2, 11, 2, 23)
 
                                                 }
                                                 child<ASTComposition> {
-                                                    it textEquals ""
+                                                    it shouldHaveText ""
                                                     it.firstToken::isImplicit shouldBe true
                                                     it.lastToken shouldBe it.firstToken
 
-                                                    it.assertBounds(3, 3, 3, 3)
+                                                    it.assertPosition(3, 3, 3, 3)
 
                                                     child<ASTElementList> {
-                                                        it textEquals ""
+                                                        it shouldHaveText ""
                                                         it.firstToken::isImplicit shouldBe true
                                                         it.lastToken shouldBe it.firstToken
 
-                                                        it.assertBounds(3, 3, 3, 3)
+                                                        it.assertPosition(3, 3, 3, 3)
                                                     }
                                                 }
                                                 child<ASTSimpleName> {
-                                                    it textEquals "EmptyPackage"
+                                                    it shouldHaveText "EmptyPackage"
                                                     it::getImage shouldBe "EmptyPackage"
-                                                    it.assertBounds(3, 7, 3, 19)
+                                                    it.assertPosition(3, 7, 3, 19)
                                                 }
                                             }
                                         }
@@ -139,8 +140,8 @@ end TestPackage"""
                             }
                         }
                         child<ASTSimpleName> {
-                            it textEquals "TestPackage"
-                            it.assertBounds(4, 5, 4, 16)
+                            it shouldHaveText "TestPackage"
+                            it.assertPosition(4, 5, 4, 16)
                         }
                     }
                 }
