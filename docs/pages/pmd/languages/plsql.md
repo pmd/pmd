@@ -1,7 +1,9 @@
 ---
-title: PLSQL
+title: PLSQL Support
 permalink: pmd_languages_plsql.html
 last_updated: March 2021 (6.33.0)
+tags: [languages]
+summary: "PLSQL-specific features and guidance"
 ---
 
 ## Parsing Exclusions

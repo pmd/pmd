@@ -272,7 +272,7 @@ public interface Rule extends PropertySource {
      */
     @Experimental
     default boolean dependsOn(AstProcessingStage<?> stage) {
-        return false;
+        return true;
     }
 
 

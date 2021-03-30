@@ -4,20 +4,18 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import java.util.Arrays;
-import java.util.List;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
+import java.util.Set;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
-import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexParser;
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
+import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.rule.internal.ApexRuleViolationFactory;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
-import net.sourceforge.pmd.lang.metrics.internal.AbstractLanguageMetricsProvider;
+import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 @InternalApi
@@ -38,27 +36,21 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
 
 
     @Override
-    public LanguageMetricsProvider<ASTUserClassOrInterface<?>, ASTMethod> getLanguageMetricsProvider() {
+    public LanguageMetricsProvider getLanguageMetricsProvider() {
         return myMetricsProvider;
     }
 
-    private static class ApexMetricsProvider extends AbstractLanguageMetricsProvider<ASTUserClassOrInterface<?>, ASTMethod> {
+    private static class ApexMetricsProvider implements LanguageMetricsProvider {
 
-        @SuppressWarnings("unchecked")
-        ApexMetricsProvider() {
-            // a wild double cast
-            super((Class<ASTUserClassOrInterface<?>>) (Object) ASTUserClassOrInterface.class, ASTMethod.class);
-        }
-
-        @Override
-        public List<ApexClassMetricKey> getAvailableTypeMetrics() {
-            return Arrays.asList(ApexClassMetricKey.values());
-        }
-
+        private final Set<Metric<?, ?>> metrics = setOf(
+            ApexMetrics.COGNITIVE_COMPLEXITY,
+            ApexMetrics.CYCLO,
+            ApexMetrics.WEIGHED_METHOD_COUNT
+        );
 
         @Override
-        public List<ApexOperationMetricKey> getAvailableOperationMetrics() {
-            return Arrays.asList(ApexOperationMetricKey.values());
+        public Set<Metric<?, ?>> getMetrics() {
+            return metrics;
         }
     }
 }

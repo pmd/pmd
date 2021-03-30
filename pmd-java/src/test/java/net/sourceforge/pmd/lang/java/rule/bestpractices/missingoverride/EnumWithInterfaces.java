@@ -4,31 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.metrics.Metric;
-import net.sourceforge.pmd.lang.metrics.MetricKey;
-
 
 /**
  * @author Clément Fournier
  * @since 6.2.0
  */
-public enum EnumWithInterfaces implements MetricKey<ASTAnyTypeDeclaration> {
+public enum EnumWithInterfaces implements InterfaceWithBound<int[]> {
     Foo {
         @Override
-        public Metric<ASTAnyTypeDeclaration> getCalculator() {
-            return null;
+        public void handle(int[] ints) {
+            super.handle(ints);
         }
     };
 
     @Override
-    public Metric<ASTAnyTypeDeclaration> getCalculator() {
-        return null;
-    }
+    public void handle(int[] ints) {
 
-
-    @Override
-    public boolean supports(ASTAnyTypeDeclaration node) {
-        return false;
     }
 }

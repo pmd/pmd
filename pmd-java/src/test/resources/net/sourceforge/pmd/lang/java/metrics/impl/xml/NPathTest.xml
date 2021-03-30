@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="full-example"><![CDATA[
+import java.util.*;
 public class Foo {
     public static void bar() {
         boolean a, b = true;
@@ -423,7 +424,7 @@ public class Test {
         <rule-property name="reportLevel">6</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'SOFExample#usefulMethod(List)' has value 272.</message>
+            <message>'SOFExample#usefulMethod(List)' has value 16.</message>
         </expected-messages>
         <code><![CDATA[
 public class SOFExample {
@@ -444,15 +445,9 @@ public class SOFExample {
         final long cTime = c == null ? UNKNOWN : c.getTime();
         final long dTime = d == null ? UNKNOWN : d.getTime();
 
-        for (MyCal myCal : myCals) {
-            if(myCal.aTime == UNKNOWN) myCal.aTime = aTime;
-            if(myCal.bTime == UNKNOWN) myCal.bTime = bTime;
-            if(myCal.cTime == UNKNOWN) myCal.cTime = cTime;
-            if(myCal.dTime == UNKNOWN) myCal.dTime = dTime;
-        }
     }
 }
-        ]]></code>
+            ]]></code>
     </test-code>
 
     <test-code>
@@ -460,10 +455,10 @@ public class SOFExample {
         <rule-property name="reportLevel">6</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'SOFExample#usefulMethod(List)' has value 272.</message>
+            <message>'SOFExample#usefulMethod(List)' has value 16.</message>
         </expected-messages>
         <code><![CDATA[
-public class SOFExample {
+            public class SOFExample {
 
     private final Map<String, Date> magicMap = new HashMap<String, Date>();
     protected static final long UNKNOWN = 0L;
@@ -503,6 +498,22 @@ public class SOFExample {
         } else {
             dTime = UNKNOWN;
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Some foreach</description>
+        <rule-property name="reportLevel">6</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'SOFExample#usefulMethod(List)' has value 17.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class SOFExample {
+
+    public void usefulMethod(final List<MyCal> myCals) {
 
         for (MyCal myCal : myCals) {
             if(myCal.aTime == UNKNOWN) myCal.aTime = aTime;
@@ -516,11 +527,56 @@ public class SOFExample {
     </test-code>
 
     <test-code>
+        <description>NPath foreach times other construct</description>
+        <rule-property name="reportLevel">6</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'SOFExample#usefulMethod(List)' has value 272.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class SOFExample {
+
+                private final Map<String, Date> magicMap = new HashMap<String, Date>();
+                protected static final long UNKNOWN = 0L;
+
+                private static final class MyCal {
+
+                    long aTime;
+                    long bTime;
+                    long cTime;
+                    long dTime;
+                }
+
+                public void usefulMethod(final List<MyCal> myCals) {
+
+                    final Date a = magicMap.get("a");
+                    final Date b = magicMap.get("b");
+                    final Date c = magicMap.get("c");
+                    final Date d = magicMap.get("d");
+
+                    final long aTime = a == null ? UNKNOWN : a.getTime();
+                    final long bTime = b == null ? UNKNOWN : b.getTime();
+                    final long cTime = c == null ? UNKNOWN : c.getTime();
+                    final long dTime = d == null ? UNKNOWN : d.getTime();
+
+                    for (MyCal myCal : myCals) {
+                        if(myCal.aTime == UNKNOWN) myCal.aTime = aTime;
+                        if(myCal.bTime == UNKNOWN) myCal.bTime = bTime;
+                        if(myCal.cTime == UNKNOWN) myCal.cTime = cTime;
+                        if(myCal.dTime == UNKNOWN) myCal.dTime = dTime;
+                    }
+
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#1226 [java] NPath complexity false negative</description>
         <rule-property name="reportLevel">0</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'NPathComplexityOverflow#complexMethod()' has value 2147483647.</message>
+            <message>'NPathComplexityOverflow#complexMethod()' has value 2147483648.</message>
         </expected-messages>
         <code><![CDATA[
 public class NPathComplexityOverflow {
@@ -636,6 +692,26 @@ public class NPathComplexityOverflow {
                     var description = fr(title);
                     product.setDescription(description);
                     product.setMagicNumber(3);
+                    return product;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch expressions (simpler)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'NPathTest#buildProduct(String, Language)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class NPathTest {
+
+                Product buildProduct(String title, Language language) {
+                    var product = new Product();
+                    var description = switch (language) {
+                        case FR -> fr(title);
+                        default -> de(title);
+                    };
                     return product;
                 }
             }
