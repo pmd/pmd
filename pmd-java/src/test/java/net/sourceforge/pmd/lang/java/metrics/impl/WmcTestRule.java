@@ -4,26 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 
 /**
  * @author Clément Fournier
  */
-public class WmcTestRule extends AbstractMetricTestRule {
+public class WmcTestRule extends JavaIntMetricTestRule {
 
-    @Override
-    protected boolean isReportMethods() {
-        return false;
-    }
-
-    @Override
-    protected JavaClassMetricKey getClassKey() {
-        return JavaClassMetricKey.WMC;
-    }
-
-    @Override
-    protected JavaOperationMetricKey getOpKey() {
-        return null;
+    public WmcTestRule() {
+        super(JavaMetrics.WEIGHED_METHOD_COUNT);
     }
 }

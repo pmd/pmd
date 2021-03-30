@@ -4,28 +4,23 @@
 
 package net.sourceforge.pmd.lang.apex.metrics.impl;
 
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
+import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.test.AbstractMetricTestRule;
 
 /**
  * @author Clément Fournier
  */
-public class WmcTestRule extends AbstractApexMetricTestRule {
+public class WmcTestRule extends AbstractMetricTestRule.OfInt {
 
-    @Override
-    protected boolean isReportMethods() {
-        return false;
+    public WmcTestRule() {
+        super(ApexMetrics.WEIGHED_METHOD_COUNT);
     }
 
 
     @Override
-    protected ApexClassMetricKey getClassKey() {
-        return ApexClassMetricKey.WMC;
+    protected String violationMessage(Node node, Integer result) {
+        return AllMetricsTest.formatApexMessage(node, result, super.violationMessage(node, result));
     }
 
-
-    @Override
-    protected ApexOperationMetricKey getOpKey() {
-        return null;
-    }
 }

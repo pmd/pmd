@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 import net.sourceforge.pmd.util.document.FileLocation;
 
@@ -24,15 +22,13 @@ import net.sourceforge.pmd.util.document.FileLocation;
  * </pre>
  */
 public final class ASTFieldDeclaration extends AbstractJavaNode
-    implements SignedNode<ASTFieldDeclaration>,
-               Iterable<ASTVariableDeclaratorId>,
+    implements Iterable<ASTVariableDeclaratorId>,
                LeftRecursiveNode,
                AccessNode,
                ASTBodyDeclaration,
                InternalInterfaces.MultiVariableIdOwner,
                JavadocCommentOwner {
 
-    private JavaFieldSignature signature;
 
     ASTFieldDeclaration(int id) {
         super(id);
@@ -70,15 +66,6 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
         return null;
     }
 
-
-    @Override
-    public JavaFieldSignature getSignature() {
-        if (signature == null) {
-            signature = JavaFieldSignature.buildFor(this);
-        }
-
-        return signature;
-    }
 
     /**
      * Returns the type node at the beginning of this field declaration.
