@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.FINAL;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.ArrayList;
@@ -22,7 +23,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
-import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
@@ -46,23 +46,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class SingularFieldRule extends AbstractJavaRulechainRule {
 
-    // todo: these 2 properties are ignored now, deprecate until 7 maybe?
-
-    /**
-     * Restore old behavior by setting both properties to true, which will
-     * result in many false positives
-     */
-    private static final PropertyDescriptor<Boolean> CHECK_INNER_CLASSES =
-        booleanProperty("checkInnerClasses")
-            .defaultValue(false)
-            .desc("Check inner classes")
-            .build();
-    private static final PropertyDescriptor<Boolean> DISALLOW_NOT_ASSIGNMENT =
-        booleanProperty("disallowNotAssignment")
-            .defaultValue(false)
-            .desc("Disallow violations where the first usage is not an assignment")
-            .build();
-
     private static final PropertyDescriptor<List<String>> IGNORED_ANNOT_PROPERTY =
         JavaPropertyUtil.ignoredAnnotationsProperty(
             CollectionUtil.union(JavaRuleUtil.LOMBOK_ANNOTATIONS,
@@ -73,8 +56,6 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
 
     public SingularFieldRule() {
         super(ASTCompilationUnit.class, ASTFieldDeclaration.class);
-        definePropertyDescriptor(CHECK_INNER_CLASSES);
-        definePropertyDescriptor(DISALLOW_NOT_ASSIGNMENT);
         definePropertyDescriptor(IGNORED_ANNOT_PROPERTY);
     }
 
@@ -88,7 +69,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
     public Object visit(ASTFieldDeclaration node, Object data) {
         ASTAnyTypeDeclaration enclosingType = node.getEnclosingType();
         if (node.getVisibility() != Visibility.V_PRIVATE
-            || node.hasModifiers(JModifier.STATIC)
+            || node.hasModifiers(STATIC)
             || JavaRuleUtil.hasAnyAnnotation(enclosingType, getProperty(IGNORED_ANNOT_PROPERTY))
             || JavaRuleUtil.hasAnyAnnotation(node, getProperty(IGNORED_ANNOT_PROPERTY))) {
             return data;
@@ -105,8 +86,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
 
     public static boolean mayBeSingular(ASTVariableDeclaratorId varId) {
         return varId.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
-            && !varId.isStatic()
-            && !varId.isFinal();
+            && !varId.getModifiers().hasAny(STATIC, FINAL);
     }
 
     private boolean isSingularField(ASTAnyTypeDeclaration fieldOwner, ASTVariableDeclaratorId varId) {
@@ -118,8 +98,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         //They're valid if they don't escape the scope of their method, eg by being in a nested class or lambda
         Map<ASTBodyDeclaration, List<ASTNamedReferenceExpr>> usagesByScope = new HashMap<>();
         for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
-            if (usage.getEnclosingType() != fieldOwner
-                || !JavaRuleUtil.isThisFieldAccess(usage)) {
+            if (usage.getEnclosingType() != fieldOwner || !JavaRuleUtil.isThisFieldAccess(usage)) {
                 return false; // give up
             }
             ASTBodyDeclaration enclosing = getEnclosingBodyDecl(fieldOwner, usage);

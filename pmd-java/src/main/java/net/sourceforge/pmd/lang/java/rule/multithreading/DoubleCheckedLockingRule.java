@@ -152,7 +152,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         if (expr instanceof ASTInfixExpression) {
             ASTInfixExpression condition = (ASTInfixExpression) expr;
             if (condition.getOperator().hasSamePrecedenceAs(BinaryOp.EQ)) {
-                ASTNullLiteral nullLit = condition.firstChild(ASTNullLiteral.class);
+                ASTNullLiteral nullLit = condition.getFirstChildOfType(ASTNullLiteral.class);
                 if (nullLit != null) {
                     ASTExpression otherChild = (ASTExpression) condition.getChild(1 - nullLit.getIndexInParent());
                     return isReferenceTo(otherChild, var);
