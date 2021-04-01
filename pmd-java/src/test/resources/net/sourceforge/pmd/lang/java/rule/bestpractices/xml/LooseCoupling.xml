@@ -267,4 +267,26 @@ class Foo extends AbstractMap<String, String> {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>This/super qualifier</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+
+class Foo extends ArrayList {
+
+    {
+        Foo.super.clear();
+    }
+
+    class Inner {
+        {
+            Foo.this.clear();
+            Foo.super.clear();
+        }
+    }
+
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -18,6 +18,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -57,6 +59,8 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
             || parent instanceof ASTClassLiteral         // ArrayList.class
             || parent instanceof ASTClassOrInterfaceType // AbstractMap.SimpleEntry
             || parent instanceof ASTExtendsList          // extends AbstractMap<...>
+            || parent instanceof ASTThisExpression       // Enclosing.this
+            || parent instanceof ASTSuperExpression      // Enclosing.super
             || parent instanceof ASTArrayType && parent.getParent() instanceof ASTArrayAllocation;
     }
 
