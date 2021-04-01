@@ -180,8 +180,23 @@ The following previously deprecated rules have been finally removed:
 
 #### Metrics framework
 
-* {% jdoc_old !!core::lang.metrics.MetricKeyUtil#of(java.lang.String, core::lang.metrics.Metric) %} is replaced with {% jdoc_old !!core::lang.metrics.MetricKey#of(java.lang.String, core::lang.metrics.Metric) %}
-* {% jdoc_old !!core::lang.metrics.MetricsUtil#computeAggregate(core::lang.metrics.MetricKey, java.lang.Iterable, core::lang.metrics.ResultOption) %} and its overload are replaced with {% jdoc_old !!core::lang.metrics.MetricsUtil#computeStatistics(core::lang.metrics.MetricKey, java.lang.Iterable) %}, {% jdoc_old core::lang.metrics.ResultOption %} is removed
+The metrics framework has been made simpler and more general.
+
+* The metric interface takes an additional type parameter, representing the result type of the metric. This is usually `Integer` or `Double`. It avoids widening the result to a `double` just to narrow it down.
+
+  This makes it so, that `Double.NaN` is not an appropriate sentinel value to represent "not supported" anymore. Instead, `computeFor` may return `null` in that case (or a garbage value). The value `null` may have caused problems with the narrowing casts, which through unboxing, might have thrown an NPE. But when we deprecated the language-specific metrics façades to replace them with the generic `MetricsUtil`, we took care of making the new methods throw an exception if the metric cannot be computed on the parameter. This forces you to guard calls to `MetricsUtil::computeMetric` with something like `if (metric.supports(node))`. If you're following this pattern, then you won't observe the undefined behavior.
+
+* The `MetricKey` interface is not so useful and has been merged into the `Metric` interface and removed. So the `Metric` interface has the new method `String name()`.
+
+* The framework is not tied to at most 2 node types per language anymore. Previously those were nodes for classes and for methods/constructors. Instead, many metrics support more node types. For example, NCSS can be computed on any code block.
+
+  For that reason, keeping around a hard distinction between "class metrics" and "operation metrics" is not useful. So in the Java framework for example, we removed the interfaces `JavaClassMetric`, `JavaOperationMetric`,  abstract classes for those, `JavaClassMetricKey`, and `JavaOperationMetricKey`. Metric constants are now all inside the `JavaMetrics` utility class. The same was done in the Apex framework.
+
+  We don't really need abstract classes for metrics now. So `AbstractMetric` is also removed from pmd-core. There is a factory method on the `Metric` interface to create a metric easily.
+
+* This makes it so, that {% jdoc core::lang.metrics.LanguageMetricsProvider %} does not need type parameters. It can just return a `Set<Metric<?, ?>>` to list available metrics.
+
+* {% jdoc_old core::lang.metrics.Signature %}s, their implementations, and the interface `SignedNode` have been removed. Node streams allow replacing their usages very easily.
 
 ### External Contributions
 

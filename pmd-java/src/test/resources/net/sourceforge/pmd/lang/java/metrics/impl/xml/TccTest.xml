@@ -73,7 +73,10 @@ public class Property implements Comparable {
 
     <test-code>
         <description>Test empty class</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 0.0000.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
 }
@@ -97,9 +100,10 @@ public interface Foo {
 
     <test-code>
         <description>Do not crash on local class, refs #827</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'com.pack.Pack$1Inner' has value 0.</message>
+            <message>'com.pack.Pack' has value 0.0000.</message>
+            <message>'com.pack.Pack$1Inner' has value 1.0000.</message>
         </expected-messages>
         <code><![CDATA[
 package com.pack;
@@ -143,8 +147,8 @@ public class Pack implements IPack {
         <description>Attribute accesses in local class count as accesses of the method</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'com.pack.Pack' has value 1.</message>
-            <message>'com.pack.Pack$1Inner' has value 0.</message>
+            <message>'com.pack.Pack' has value 1.0000.</message>
+            <message>'com.pack.Pack$1Inner' has value 0.0000.</message>
         </expected-messages>
         <code><![CDATA[
 package com.pack;
@@ -167,20 +171,14 @@ public class Pack implements IPack {
 
     @Override
     public Map<String, String> get() {
-
-        class Inner implements IInner {
-
-
-            public Inner(Map<String, String> results) {
-                this.results = results;
-            }
+        class Inner {
 
             public void method() {
-                this.results = new HashMap<String, String>();
+                results = new HashMap<String, String>();
             }
 
             private void otherMethod() {
-                this.results.clear();
+                results.clear();
             }
         }
         return null;

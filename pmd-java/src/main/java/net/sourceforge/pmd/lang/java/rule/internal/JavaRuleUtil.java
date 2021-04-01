@@ -248,6 +248,82 @@ public final class JavaRuleUtil {
             || "_".equals(name); // before java 9 it's ok
     }
 
+    /**
+     * Returns true if the string has the given word as a strict prefix.
+     * There needs to be a camelcase word boundary after the prefix.
+     *
+     * <code>
+     * startsWithCamelCaseWord("getter", "get") == false
+     * startsWithCamelCaseWord("get", "get")    == false
+     * startsWithCamelCaseWord("getX", "get")   == true
+     * </code>
+     *
+     * @param camelCaseString A string
+     * @param prefixWord      A prefix
+     */
+    static boolean startsWithCamelCaseWord(String camelCaseString, String prefixWord) {
+        return camelCaseString.startsWith(prefixWord)
+            && camelCaseString.length() > prefixWord.length()
+            && Character.isUpperCase(camelCaseString.charAt(prefixWord.length()));
+    }
+
+    public static boolean isGetterOrSetterCall(ASTMethodCall call) {
+        return call.getArguments().size() == 0
+            && (startsWithCamelCaseWord(call.getMethodName(), "get")
+            || startsWithCamelCaseWord(call.getMethodName(), "is"))
+            || call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
+    }
+
+
+    public static boolean isGetterOrSetter(ASTMethodDeclaration node) {
+        return isGetter(node) || isSetter(node);
+    }
+
+    /** Attempts to determine if the method is a getter. */
+    private static boolean isGetter(ASTMethodDeclaration node) {
+
+        if (node.getArity() != 0 || node.isVoid()) {
+            return false;
+        }
+
+        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+        if (startsWithCamelCaseWord(node.getName(), "get")) {
+            return hasField(enclosing, node.getName().substring(3));
+        } else if (startsWithCamelCaseWord(node.getName(), "is")) {
+            return hasField(enclosing, node.getName().substring(2));
+        }
+
+        return hasField(enclosing, node.getName());
+    }
+
+    /** Attempts to determine if the method is a setter. */
+    private static boolean isSetter(ASTMethodDeclaration node) {
+
+        if (node.getArity() != 1 || !node.isVoid()) {
+            return false;
+        }
+
+        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+
+        if (startsWithCamelCaseWord(node.getName(), "set")) {
+            return hasField(enclosing, node.getName().substring(3));
+        }
+
+        return hasField(enclosing, node.getName());
+    }
+
+    private static boolean hasField(ASTAnyTypeDeclaration node, String name) {
+        for (JFieldSymbol f : node.getSymbol().getDeclaredFields()) {
+            String fname = f.getSimpleName();
+            if (fname.startsWith("m_") || fname.startsWith("_")) {
+                fname = fname.substring(fname.indexOf('_') + 1);
+            }
+            if (fname.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Returns true if the formal parameters of the method or constructor

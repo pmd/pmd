@@ -11,8 +11,7 @@ import java.util.Stack;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
+import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -60,11 +59,11 @@ public class CognitiveComplexityRule extends AbstractApexRule {
         super.visit(node, data);
         classNames.pop();
 
-        if (ApexClassMetricKey.COGNITIVE.supports(node)) {
-            int classCognitive = (int) MetricsUtil.computeMetric(ApexClassMetricKey.COGNITIVE, node);
+        if (ApexMetrics.COGNITIVE_COMPLEXITY.supports(node)) {
+            int classCognitive = MetricsUtil.computeMetric(ApexMetrics.COGNITIVE_COMPLEXITY, node);
 
             if (classCognitive >= getProperty(CLASS_LEVEL_DESCRIPTOR)) {
-                int classHighest = (int) MetricsUtil.computeStatistics(ApexOperationMetricKey.COGNITIVE, node.getMethods()).getMax();
+                int classHighest = (int) MetricsUtil.computeStatistics(ApexMetrics.COGNITIVE_COMPLEXITY, node.getMethods()).getMax();
 
                 String[] messageParams = {
                     "class",
@@ -83,8 +82,8 @@ public class CognitiveComplexityRule extends AbstractApexRule {
     @Override
     public final Object visit(ASTMethod node, Object data) {
 
-        if (ApexOperationMetricKey.COGNITIVE.supports(node)) {
-            int cognitive = (int) MetricsUtil.computeMetric(ApexOperationMetricKey.COGNITIVE, node);
+        if (ApexMetrics.COGNITIVE_COMPLEXITY.supports(node)) {
+            int cognitive = MetricsUtil.computeMetric(ApexMetrics.COGNITIVE_COMPLEXITY, node);
             if (cognitive >= getProperty(METHOD_LEVEL_DESCRIPTOR)) {
                 String opType = inTrigger ? "trigger"
                         : node.getImage().equals(classNames.peek()) ? "constructor"
