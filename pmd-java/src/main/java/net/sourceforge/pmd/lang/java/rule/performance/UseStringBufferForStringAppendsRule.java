@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -42,10 +43,10 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
             return data;
         }
 
-        // Remember how often the variable has been used (assigned a new value or used on the right hand side)
+        // Remember how often the variable has been used on the right hand side
         int usageCounter = 0;
-        // Remember how often the variable has been appended
-        int appendedCounter = 0;
+
+        List<ASTNamedReferenceExpr> possibleViolations = new ArrayList<>();
 
         for (ASTNamedReferenceExpr usage : node.getLocalUsages()) {
             if ((node.getNthParent(2) instanceof ASTFieldDeclaration
@@ -55,45 +56,40 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
                 continue;
             }
 
-            boolean isAppend = false;
             if (usage.getParent() instanceof ASTAssignmentExpression) {
                 ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
                 // it is either a compound (a += x)
-                isAppend = assignment.isCompound();
-
-                if (!isAppend) {
-                    List<JVariableSymbol> symbolsOnTheRight = assignment.descendants(ASTInfixExpression.class)
-                            .filter(e -> e.getOperator() == BinaryOp.ADD)
-                            .children(ASTNamedReferenceExpr.class)
-                            .toList(ASTNamedReferenceExpr::getReferencedSym);
-                    // or maybe a append in some way (a = a + x)
-                    isAppend = symbolsOnTheRight.contains(usage.getReferencedSym());
+                if (assignment.isCompound()) {
+                    usageCounter++;
                 }
+
+                List<JVariableSymbol> symbolsOnTheRight = assignment.descendants(ASTInfixExpression.class)
+                        .filter(e -> e.getOperator() == BinaryOp.ADD)
+                        .children(ASTNamedReferenceExpr.class)
+                        .toList(ASTNamedReferenceExpr::getReferencedSym);
+                // or maybe a append in some way (a = a + x)
+                // or a combination (a += a + x)
+                usageCounter += symbolsOnTheRight.stream().filter(e -> e.equals(usage.getReferencedSym())).count();
             }
 
             if (usage.getAccessType() == AccessType.WRITE) {
-                if (isAppend) {
-                    // variable is appended
-                    appendedCounter++;
-                    // and used
-                    usageCounter++;
-                } else {
-                    // reset counters, if it is a assignment with a new value
-                    usageCounter = 1;
-                    appendedCounter = 0;
-                }
-
-                if (appendedCounter > 0) {
+                if (usageCounter > 0) {
                     if (isWithinLoop(usage)) {
                         // always report appends within a loop
                         addViolation(data, usage);
-                    } else if (usageCounter > 1) {
-                        // only report, if it is not the first time
-                        addViolation(data, usage);
+                    } else {
+                        possibleViolations.add(usage);
                     }
                 }
             }
         }
+
+        // only report, if it is used more than once
+        // then all usage locations are reported
+        if (usageCounter > 1) {
+            possibleViolations.forEach(v -> addViolation(data, v));
+        }
+
         return data;
     }
 

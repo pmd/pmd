@@ -584,6 +584,16 @@ public class USeStringBufferForStringAppendsFP {
         }
     }
     private String extract(String s) { return s; }
+
+    private void logMessage(int lineNumber, String message) {
+        String msg;
+        msg = message;
+        if (lineNumber >= 10) {
+            msg = "TEST" + msg; // FP here
+        }
+        log(lineNumber, msg);
+    }
+    private void log(int lineNumber, String msg) { }
 }
         ]]></code>
     </test-code>
