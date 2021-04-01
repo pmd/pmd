@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
@@ -15,21 +14,10 @@ abstract class AbstractMethodOrConstructorDeclaration<T extends JExecutableSymbo
                LeftRecursiveNode {
 
     private T symbol;
-    private JavaOperationSignature signature;
     private JMethodSig sig;
 
     AbstractMethodOrConstructorDeclaration(int i) {
         super(i);
-    }
-
-
-    @Override
-    public JavaOperationSignature getSignature() {
-        if (signature == null) {
-            signature = JavaOperationSignature.buildFor(this);
-        }
-
-        return signature;
     }
 
 

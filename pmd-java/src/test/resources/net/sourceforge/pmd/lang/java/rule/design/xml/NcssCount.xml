@@ -51,7 +51,7 @@ public class Foo extends Bar {
             }
         }
 
-        super(z);
+        super.f(z);
     }
 
     public void foo() {

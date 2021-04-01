@@ -4,18 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
-import java.util.Arrays;
-import java.util.List;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.BaseContextNodeTestFun;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.GetCommentOnFunction;
@@ -24,8 +22,7 @@ import net.sourceforge.pmd.lang.java.rule.xpath.internal.MatchesSignatureFunctio
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.MetricFunction;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.NodeIsFunction;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
-import net.sourceforge.pmd.lang.metrics.MetricKey;
-import net.sourceforge.pmd.lang.metrics.internal.AbstractLanguageMetricsProvider;
+import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
@@ -46,7 +43,7 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
         );
 
     private final LanguageLevelChecker<?> levelChecker;
-    private final LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> myMetricsProvider = new JavaMetricsProvider();
+    private final LanguageMetricsProvider myMetricsProvider = new JavaMetricsProvider();
 
     public JavaLanguageHandler(int jdkVersion) {
         this(jdkVersion, false);
@@ -83,26 +80,30 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
 
     @Override
-    public LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> getLanguageMetricsProvider() {
+    public LanguageMetricsProvider getLanguageMetricsProvider() {
         return myMetricsProvider;
     }
 
 
-    private static class JavaMetricsProvider extends AbstractLanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> {
+    public static class JavaMetricsProvider implements LanguageMetricsProvider {
 
-        JavaMetricsProvider() {
-            super(ASTAnyTypeDeclaration.class, MethodLikeNode.class);
-        }
+        private final Set<Metric<?, ?>> metrics = setOf(
+            JavaMetrics.ACCESS_TO_FOREIGN_DATA,
+            JavaMetrics.CYCLO,
+            JavaMetrics.NPATH,
+            JavaMetrics.NCSS,
+            JavaMetrics.LINES_OF_CODE,
+            JavaMetrics.FAN_OUT,
+            JavaMetrics.WEIGHED_METHOD_COUNT,
+            JavaMetrics.WEIGHT_OF_CLASS,
+            JavaMetrics.NUMBER_OF_ACCESSORS,
+            JavaMetrics.NUMBER_OF_PUBLIC_FIELDS,
+            JavaMetrics.TIGHT_CLASS_COHESION
+        );
 
         @Override
-        public List<? extends MetricKey<ASTAnyTypeDeclaration>> getAvailableTypeMetrics() {
-            return Arrays.asList(JavaClassMetricKey.values());
-        }
-
-
-        @Override
-        public List<? extends MetricKey<MethodLikeNode>> getAvailableOperationMetrics() {
-            return Arrays.asList(JavaOperationMetricKey.values());
+        public Set<Metric<?, ?>> getMetrics() {
+            return metrics;
         }
     }
 }

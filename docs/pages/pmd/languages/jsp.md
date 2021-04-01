@@ -2,6 +2,8 @@
 title: JSP Support
 permalink: pmd_languages_jsp.html
 author: Pieter Vanraemdonck
+tags: [languages]
+summary: "JSP-specific features and guidance"
 ---
 
 ## What is currently supported and what is not
