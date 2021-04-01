@@ -1007,7 +1007,7 @@ and buffering.
                     <![CDATA[
 //MethodCall
     [@MethodName = 'get' or @MethodName = 'getString']
-    [VariableAccess[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]]
+    [*[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]]
                     ]]>
                 </value>
             </property>
