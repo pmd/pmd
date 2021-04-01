@@ -41,9 +41,9 @@
     <rule ref="category/java/bestpractices.xml/MissingOverride"/>
     <!-- <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/PreserveStackTrace"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/ReplaceEnumerationWithIterator"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap"/> -->
-    <!-- <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList"/> -->
+    <rule ref="category/java/bestpractices.xml/ReplaceEnumerationWithIterator"/>
+    <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap"/>
+    <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList"/>
     <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault"/>
     <rule ref="category/java/bestpractices.xml/SystemPrintln"/>
     <rule ref="category/java/bestpractices.xml/UnusedAssignment"/>
