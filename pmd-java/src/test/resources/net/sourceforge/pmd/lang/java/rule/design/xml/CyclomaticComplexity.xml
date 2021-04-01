@@ -436,17 +436,4 @@ public class Complicated {
         <code-ref id="many-small-methods"/>
     </test-code>
 
-    <test-code>
-        <description>Test property 'reportLevel' changes methodReportLevel</description>
-        <rule-property name="reportLevel">1</rule-property>
-        <expected-problems>1</expected-problems>
-        <code-ref id="constructor-violation"/>
-    </test-code>
-
-    <test-code>
-        <description>Test property 'reportLevel' changes classReportLevel</description>
-        <rule-property name="reportLevel">11</rule-property>
-        <expected-problems>0</expected-problems>
-        <code-ref id="many-small-methods"/>
-    </test-code>
 </test-data>

@@ -304,6 +304,11 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
     }
 
     private int countPlaceholders(final ASTExpression node) {
+        // ignore if String.format
+        if (isStringFormatCall(node)) {
+            return -1;
+        }
+
         List<ASTLiteral> literals = getStringLiterals(node);
         if (literals.isEmpty()) {
             // -1 we could not analyze the message parameter

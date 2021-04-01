@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -75,8 +76,20 @@ public final class TypeTestUtil {
                                     : isA(clazz, node.getTypeMirror());
     }
 
-
-    private static boolean isA(@NonNull Class<?> clazz, @Nullable JTypeMirror type) {
+    /**
+     * Checks whether the given type of the node is a subtype of the
+     * first argument. See {@link #isA(Class, TypeNode)} for examples
+     * and more info.
+     *
+     * @param clazz a class or array type (without whitespace)
+     * @param type  the type node to check
+     *
+     * @return true if the second argument is not null and the type test matches
+     *
+     * @throws NullPointerException     if the class parameter is null
+     * @see #isA(Class, TypeNode)
+     */
+    public static boolean isA(@NonNull Class<?> clazz, @Nullable JTypeMirror type) {
         AssertionUtil.requireParamNotNull("klass", clazz);
         if (type == null) {
             return false;
@@ -344,12 +357,25 @@ public final class TypeTestUtil {
         }
 
         /**
+         * See {@link #matchesCall(InvocationNode)}.
+         */
+        public boolean matchesCall(@Nullable JavaNode node) {
+            if (node instanceof InvocationNode) {
+                return matchesCall((InvocationNode) node);
+            }
+            return false;
+        }
+
+        /**
          * Returns true if the call matches this matcher. This means,
          * the called overload is the one identified by the argument
          * matchers, and the actual qualifier type is a subtype of the
          * one mentioned by the qualifier matcher.
          */
-        public boolean matchesCall(InvocationNode node) {
+        public boolean matchesCall(@Nullable InvocationNode node) {
+            if (node == null) {
+                return false;
+            }
             if (expectedName != null && !node.getMethodName().equals(expectedName)
                 || argMatchers != null && ASTList.sizeOrZero(node.getArguments()) != argMatchers.size()) {
                 return false;

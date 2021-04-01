@@ -13,6 +13,7 @@ import static java.util.Collections.singletonList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -251,6 +252,17 @@ public final class CollectionUtil {
         union.add(first);
         Collections.addAll(union, rest);
         return Collections.unmodifiableSet(union);
+    }
+
+    /**
+     * Returns an unmodifiable set containing the given elements.
+     *
+     * @param first First element
+     * @param rest  Following elements
+     */
+    @SafeVarargs
+    public static <T extends Enum<T>> Set<T> immutableEnumSet(T first, T... rest) {
+        return Collections.unmodifiableSet(EnumSet.of(first, rest));
     }
 
 

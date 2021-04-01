@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -132,21 +133,24 @@ public final class JavaRuleUtil {
                 return false;
             }
 
-            return isIntLit(comparand, expectedValue);
+            return isLiteralInt(comparand, expectedValue);
         }
         return false;
     }
 
+
     /**
-     * Return true if the number is an int or long literal with the given int value.
+     * Returns true if this is a numeric literal with the given int value.
+     * This also considers long literals.
      */
-    public static boolean isIntLit(JavaNode e, int value) {
+    public static boolean isLiteralInt(JavaNode e, int value) {
         if (e instanceof ASTNumericLiteral) {
             return ((ASTNumericLiteral) e).isIntegral() && ((ASTNumericLiteral) e).getValueAsInt() == value;
         }
         return false;
     }
 
+    /** This is type-aware, so will not pick up on numeric addition. */
     public static boolean isStringConcatExpr(@Nullable JavaNode e) {
         if (e instanceof ASTInfixExpression) {
             ASTInfixExpression infix = (ASTInfixExpression) e;
@@ -261,6 +265,82 @@ public final class JavaRuleUtil {
             || "_".equals(name); // before java 9 it's ok
     }
 
+    /**
+     * Returns true if the string has the given word as a strict prefix.
+     * There needs to be a camelcase word boundary after the prefix.
+     *
+     * <code>
+     * startsWithCamelCaseWord("getter", "get") == false
+     * startsWithCamelCaseWord("get", "get")    == false
+     * startsWithCamelCaseWord("getX", "get")   == true
+     * </code>
+     *
+     * @param camelCaseString A string
+     * @param prefixWord      A prefix
+     */
+    static boolean startsWithCamelCaseWord(String camelCaseString, String prefixWord) {
+        return camelCaseString.startsWith(prefixWord)
+            && camelCaseString.length() > prefixWord.length()
+            && Character.isUpperCase(camelCaseString.charAt(prefixWord.length()));
+    }
+
+    public static boolean isGetterOrSetterCall(ASTMethodCall call) {
+        return call.getArguments().size() == 0
+            && (startsWithCamelCaseWord(call.getMethodName(), "get")
+            || startsWithCamelCaseWord(call.getMethodName(), "is"))
+            || call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
+    }
+
+
+    public static boolean isGetterOrSetter(ASTMethodDeclaration node) {
+        return isGetter(node) || isSetter(node);
+    }
+
+    /** Attempts to determine if the method is a getter. */
+    private static boolean isGetter(ASTMethodDeclaration node) {
+
+        if (node.getArity() != 0 || node.isVoid()) {
+            return false;
+        }
+
+        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+        if (startsWithCamelCaseWord(node.getName(), "get")) {
+            return hasField(enclosing, node.getName().substring(3));
+        } else if (startsWithCamelCaseWord(node.getName(), "is")) {
+            return hasField(enclosing, node.getName().substring(2));
+        }
+
+        return hasField(enclosing, node.getName());
+    }
+
+    /** Attempts to determine if the method is a setter. */
+    private static boolean isSetter(ASTMethodDeclaration node) {
+
+        if (node.getArity() != 1 || !node.isVoid()) {
+            return false;
+        }
+
+        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+
+        if (startsWithCamelCaseWord(node.getName(), "set")) {
+            return hasField(enclosing, node.getName().substring(3));
+        }
+
+        return hasField(enclosing, node.getName());
+    }
+
+    private static boolean hasField(ASTAnyTypeDeclaration node, String name) {
+        for (JFieldSymbol f : node.getSymbol().getDeclaredFields()) {
+            String fname = f.getSimpleName();
+            if (fname.startsWith("m_") || fname.startsWith("_")) {
+                fname = fname.substring(fname.indexOf('_') + 1);
+            }
+            if (fname.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Returns true if the formal parameters of the method or constructor
@@ -518,7 +598,7 @@ public final class JavaRuleUtil {
      * If the argument is a unary expression, returns its operand, otherwise
      * returns null.
      */
-    public static @Nullable ASTExpression unaryOperand(ASTExpression e) {
+    public static @Nullable ASTExpression unaryOperand(@Nullable ASTExpression e) {
         return e instanceof ASTUnaryExpression ? ((ASTUnaryExpression) e).getOperand()
                                                : null;
     }
@@ -581,6 +661,57 @@ public final class JavaRuleUtil {
         } else {
             return expr instanceof ASTNullLiteral;
         }
+    }
+
+    /**
+     * Returns true if the expression is a {@link ASTNamedReferenceExpr}
+     * that references the symbol.
+     */
+    public static boolean isReferenceToVar(@Nullable ASTExpression expression, @NonNull JVariableSymbol symbol) {
+        if (expression instanceof ASTNamedReferenceExpr) {
+            return symbol.equals(((ASTNamedReferenceExpr) expression).getReferencedSym());
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if both expressions refer to the same variable.
+     * A "variable" here can also means a field path, eg, {@code this.field.a}.
+     * This method unifies {@code this.field} and {@code field} if possible,
+     * and also considers {@code this}.
+     *
+     * <p>Note that while this is more useful than just checking whether
+     * both expressions access the same symbol, it still does not mean that
+     * they both access the same <i>value</i>. The actual value is data-flow
+     * dependent.
+     */
+    public static boolean isReferenceToSameVar(ASTExpression e1, ASTExpression e2) {
+        if (e1 instanceof ASTNamedReferenceExpr && e2 instanceof ASTNamedReferenceExpr) {
+            if (!Objects.equals(((ASTNamedReferenceExpr) e2).getReferencedSym(),
+                                ((ASTNamedReferenceExpr) e1).getReferencedSym())) {
+                return false;
+            }
+
+            if (e1.getClass() != e2.getClass()) {
+                // unify `this.f` and `f`
+                // note, we already know that the symbol is the same so there's no scoping problem
+                return isSyntacticThisFieldAccess(e1) || isSyntacticThisFieldAccess(e2);
+            } else if (e1 instanceof ASTFieldAccess && e2 instanceof ASTFieldAccess) {
+                return isReferenceToSameVar(((ASTFieldAccess) e1).getQualifier(),
+                                            ((ASTFieldAccess) e2).getQualifier());
+            }
+            return e1 instanceof ASTVariableAccess && e2 instanceof ASTVariableAccess;
+        } else if (e1 instanceof ASTThisExpression || e2 instanceof ASTThisExpression) {
+            return e1.getClass() == e2.getClass();
+        }
+        return false;
+    }
+
+    private static boolean isSyntacticThisFieldAccess(ASTExpression v1) {
+        if (v1 instanceof ASTFieldAccess) {
+            return ((ASTFieldAccess) v1).getQualifier() instanceof ASTThisExpression;
+        }
+        return false;
     }
 
     /**
