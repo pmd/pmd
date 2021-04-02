@@ -260,6 +260,15 @@ public interface ASTAnyTypeDeclaration
     }
 
 
+    /**
+     * Returns true if this is a regular interface declaration (not an annotation).
+     * Note that {@link #isInterface()} counts annotations in.
+     */
+    default boolean isRegularInterface() {
+        return false;
+    }
+
+
     /** Returns true if this is an {@linkplain ASTAnnotationTypeDeclaration annotation type declaration}. */
     default boolean isAnnotation() {
         return this instanceof ASTAnnotationTypeDeclaration;
