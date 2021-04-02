@@ -68,6 +68,7 @@ public class ExecutorServiceUsage {
         <expected-problems>4</expected-problems>
         <code><![CDATA[
 import java.util.concurrent.Executors;
+import java.util.concurrent.Callable;
 
 public class ExecutorsUsage {
     public void static_usage_of_Executors() {

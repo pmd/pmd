@@ -63,6 +63,7 @@ public class TypeNameWithshort
         <description>#1449 false positive when casting a variable to short</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.nio.ByteBuffer;
 public class CastToShort {
     public void testcase() {
         ByteBuffer buffer = ByteBuffer.allocate(2);
@@ -87,6 +88,7 @@ public class AvoidUsingShortTypeTest {
         <description>short as method parameter with @Override</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class OtherClass {}
 public class AvoidUsingShortTypeTest extends OtherClass {
     @Override
     public void method(short doNotUseShort) {
@@ -100,10 +102,11 @@ public class AvoidUsingShortTypeTest extends OtherClass {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class ShortTest {
+    @interface Nullable{}
     public org.w3c.dom.traversal.NodeFilter create() {
         return new org.w3c.dom.traversal.NodeFilter() {
             @Override
-            public short acceptNode(@Nullable Node node) {
+            public short acceptNode(@Nullable org.w3c.dom.Node node) {
                 return 0;
             }
         };
@@ -117,7 +120,10 @@ public class ShortTest {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.Node;
 public class ShortTest implements NodeFilter {
+    @interface Nullable{}
+
     @Override
     public short acceptNode(@Nullable Node node) {
         return 0;
