@@ -130,7 +130,7 @@ public class Foo extends Bar {
             <message>'com.company.money.Foo#Foo()' has value 2.</message>
             <message>'com.company.money.Foo#Foo(int)' has value 13.</message>
             <message>'com.company.money.Foo#foo()' has value 14.</message>
-            <message>'com.company.money.Foo#main(String)' has value 21.</message>
+            <message>'com.company.money.Foo#main(String[])' has value 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -145,7 +145,7 @@ public class Foo extends Bar {
             <message>'com.company.money.Foo#Foo()' has value 2.</message>
             <message>'com.company.money.Foo#Foo(int)' has value 13.</message>
             <message>'com.company.money.Foo#foo()' has value 14.</message>
-            <message>'com.company.money.Foo#main(String)' has value 21.</message>
+            <message>'com.company.money.Foo#main(String[])' has value 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>

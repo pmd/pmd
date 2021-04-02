@@ -132,7 +132,7 @@ public class Foo extends Bar {
             <message>The class 'Foo' has a NCSS line count of 66 (Highest = 21).</message>
             <message>The constructor 'Foo(int)' has a NCSS line count of 13.</message>
             <message>The method 'foo()' has a NCSS line count of 14.</message>
-            <message>The method 'main(String)' has a NCSS line count of 21.</message>
+            <message>The method 'main(String[])' has a NCSS line count of 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -147,7 +147,7 @@ public class Foo extends Bar {
             <message>The class 'Foo' has a NCSS line count of 72 (Highest = 21).</message>
             <message>The constructor 'Foo(int)' has a NCSS line count of 13.</message>
             <message>The method 'foo()' has a NCSS line count of 14.</message>
-            <message>The method 'main(String)' has a NCSS line count of 21.</message>
+            <message>The method 'main(String[])' has a NCSS line count of 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>

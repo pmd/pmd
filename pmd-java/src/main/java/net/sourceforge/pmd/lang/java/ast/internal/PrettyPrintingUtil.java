@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
@@ -44,6 +45,10 @@ public final class PrettyPrintingUtil {
             first = false;
 
             prettyPrintTypeNode(param.getTypeNode(), sb);
+            int extraDimensions = ASTList.sizeOrZero(param.getVarId().getExtraDimensions());
+            while (extraDimensions-- > 0) {
+                sb.append("[]");
+            }
         }
 
         sb.append(')');
