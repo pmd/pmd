@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
@@ -55,7 +56,10 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     public static final int DEFAULT_BUFFER_SIZE = 16;
 
     public InsufficientStringBufferDeclarationRule() {
-        addRuleChainVisit(ASTVariableDeclaratorId.class);
+        // addRuleChainVisit(ASTVariableDeclaratorId.class);
+        // fixme this was added to disable the rule and prevent errors in CI
+        //  remove line below and uncomment line above
+        addRuleChainVisit(ASTCompilationUnit.class);
     }
 
     @Override
