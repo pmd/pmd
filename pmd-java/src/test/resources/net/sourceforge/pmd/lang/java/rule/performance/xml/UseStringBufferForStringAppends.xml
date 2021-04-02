@@ -574,7 +574,7 @@ public class UseStringBufferForStringAppendsFP {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.*;
-public class USeStringBufferForStringAppendsFP {
+public class UseStringBufferForStringAppendsFP {
     public void bar(BufferedReader br) throws IOException {
         for (String line = br.readLine(); line != null; line = br.readLine()) { // FP here
             String parse = extract(line);
@@ -594,6 +594,23 @@ public class USeStringBufferForStringAppendsFP {
         log(lineNumber, msg);
     }
     private void log(int lineNumber, String msg) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive for assignments</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <code><![CDATA[
+public class UseStringBufferForStringAppendsFP {
+    public void bar() {
+        String result;
+        result = "a";
+        result += "b"; // violation
+        result += "c"; // violation
+        result = "d"; // FP
+    }
 }
         ]]></code>
     </test-code>

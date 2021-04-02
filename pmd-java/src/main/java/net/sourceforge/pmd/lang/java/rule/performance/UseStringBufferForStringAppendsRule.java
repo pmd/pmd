@@ -56,6 +56,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
                 continue;
             }
 
+            boolean isSimpleAssignment = false;
             if (usage.getParent() instanceof ASTAssignmentExpression) {
                 ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
                 // it is either a compound (a += x)
@@ -69,17 +70,18 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
                         .toList(ASTNamedReferenceExpr::getReferencedSym);
                 // or maybe a append in some way (a = a + x)
                 // or a combination (a += a + x)
-                usageCounter += symbolsOnTheRight.stream().filter(e -> e.equals(usage.getReferencedSym())).count();
+                long usageOnRightHandSide = symbolsOnTheRight.stream().filter(e -> e.equals(usage.getReferencedSym())).count();
+                usageCounter += usageOnRightHandSide;
+
+                isSimpleAssignment = !assignment.isCompound() && usageOnRightHandSide == 0;
             }
 
-            if (usage.getAccessType() == AccessType.WRITE) {
-                if (usageCounter > 0) {
-                    if (isWithinLoop(usage)) {
-                        // always report appends within a loop
-                        addViolation(data, usage);
-                    } else {
-                        possibleViolations.add(usage);
-                    }
+            if (usage.getAccessType() == AccessType.WRITE && !isSimpleAssignment) {
+                if (isWithinLoop(usage)) {
+                    // always report appends within a loop
+                    addViolation(data, usage);
+                } else {
+                    possibleViolations.add(usage);
                 }
             }
         }
