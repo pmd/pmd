@@ -261,10 +261,37 @@ public final class JavaRuleUtil {
      * @param camelCaseString A string
      * @param prefixWord      A prefix
      */
-    static boolean startsWithCamelCaseWord(String camelCaseString, String prefixWord) {
+    public static boolean startsWithCamelCaseWord(String camelCaseString, String prefixWord) {
         return camelCaseString.startsWith(prefixWord)
             && camelCaseString.length() > prefixWord.length()
             && Character.isUpperCase(camelCaseString.charAt(prefixWord.length()));
+    }
+
+
+    /**
+     * Returns true if the string has the given word as a word, not at the start.
+     * There needs to be a camelcase word boundary after the prefix.
+     *
+     * <code>
+     * containsCamelCaseWord("isABoolean", "Bool") == false
+     * containsCamelCaseWord("isABoolean", "A")    == true
+     * containsCamelCaseWord("isABoolean", "is")   == error (not capitalized)
+     * </code>
+     *
+     * @param camelCaseString A string
+     * @param capitalizedWord A word, non-empty, capitalized
+     *
+     * @throws AssertionError If the word is empty or not capitalized
+     */
+    public static boolean containsCamelCaseWord(String camelCaseString, String capitalizedWord) {
+        assert capitalizedWord.length() > 0 && Character.isUpperCase(capitalizedWord.charAt(0))
+            : "Not a capitalized string \"" + capitalizedWord + "\"";
+
+        int index = camelCaseString.indexOf(capitalizedWord);
+        if (index >= 0 && camelCaseString.length() > index + capitalizedWord.length()) {
+            return Character.isUpperCase(camelCaseString.charAt(index + capitalizedWord.length()));
+        }
+        return false;
     }
 
     public static boolean isGetterOrSetterCall(ASTMethodCall call) {
