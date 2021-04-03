@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast.internal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
