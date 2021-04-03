@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRule {
@@ -64,13 +63,17 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
                     usageCounter++;
                 }
 
-                List<JVariableSymbol> symbolsOnTheRight = assignment.descendants(ASTInfixExpression.class)
-                        .filter(e -> e.getOperator() == BinaryOp.ADD)
-                        .children(ASTNamedReferenceExpr.class)
-                        .toList(ASTNamedReferenceExpr::getReferencedSym);
+                int usageOnRightHandSide =
+                    assignment.getRightOperand()
+                              .descendantsOrSelf()
+                              .filterIs(ASTInfixExpression.class)
+                              .filter(e -> e.getOperator() == BinaryOp.ADD)
+                              .children(ASTNamedReferenceExpr.class)
+                              .filterMatching(ASTNamedReferenceExpr::getReferencedSym, node.getSymbol())
+                              .count();
+
                 // or maybe a append in some way (a = a + x)
                 // or a combination (a += a + x)
-                long usageOnRightHandSide = symbolsOnTheRight.stream().filter(e -> e.equals(usage.getReferencedSym())).count();
                 usageCounter += usageOnRightHandSide;
 
                 isSimpleAssignment = !assignment.isCompound() && usageOnRightHandSide == 0;
