@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+
+    <test-code>
+        <description>fail, US-ASCII</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset() {
+         // looking up the charset dynamically
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, Charset.forName("US-ASCII"))) {
+            osw.write("test");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, ISO-8859-1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset() {
+         // looking up the charset dynamically
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, Charset.forName("ISO-8859-1"))) {
+            osw.write("test");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, UTF-8</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset() {
+         // looking up the charset dynamically
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, Charset.forName("UTF-8"))) {
+            osw.write("test");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, UTF-16BE</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset() {
+         // looking up the charset dynamically
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, Charset.forName("UTF-16BE"))) {
+            osw.write("test");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, UTF-16LE</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset() {
+         // looking up the charset dynamically
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, Charset.forName("UTF-16LE"))) {
+            osw.write("test");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, UTF-16</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset() {
+         // looking up the charset dynamically
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, Charset.forName("UTF-16"))) {
+            osw.write("test");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>pass, ISO-8859-2, no constant for it</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset() {
+         // looking up the charset dynamically
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, Charset.forName("ISO-8859-2"))) {
+            osw.write("test");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>pass, UTF-8 from StadardCharsets</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.OutputStreamWriter;
+import java.nio.charset.StadardCharsets;
+
+public class Foo {
+    public static void charset() {
+         // looking up the charset dynamically
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, StadardCharsets.UTF_8)) {
+            osw.write("test");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    
+</test-data>
