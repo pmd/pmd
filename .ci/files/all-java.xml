@@ -190,7 +190,7 @@
     <!-- <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/> -->
     <!-- <rule ref="category/java/errorprone.xml/BadComparison"/> -->
     <!-- <rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/BrokenNullCheck"/> -->
+    <rule ref="category/java/errorprone.xml/BrokenNullCheck"/>
     <!-- <rule ref="category/java/errorprone.xml/CallSuperFirst"/> -->
     <!-- <rule ref="category/java/errorprone.xml/CallSuperLast"/> -->
     <!-- <rule ref="category/java/errorprone.xml/CheckSkipResult"/> -->
