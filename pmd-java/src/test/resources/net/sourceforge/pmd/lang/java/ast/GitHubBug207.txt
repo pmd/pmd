@@ -11,7 +11,7 @@
             |  +- FormalParameter[@EffectiveVisibility = "local", @Final = "false", @Varargs = "false", @Visibility = "local"]
             |     +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
             |     +- ClassOrInterfaceType[@FullyQualified = "true", @SimpleName = "Context"]
-            |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "true", @LambdaParameter = "false", @LocalVariable = "false", @Name = "context", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
+            |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @ForLoopVariable = "false", @ForeachVariable = "false", @FormalParameter = "true", @LambdaParameter = "false", @LocalVariable = "false", @Name = "context", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
             +- Block[@Size = "1", @containsComment = "false"]
                +- ReturnStatement[]
                   +- MethodCall[@CompileTimeConstant = "false", @Image = "map", @MethodName = "map", @ParenthesisDepth = "0", @Parenthesized = "false"]

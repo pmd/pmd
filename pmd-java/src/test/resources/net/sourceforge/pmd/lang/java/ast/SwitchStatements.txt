@@ -11,7 +11,7 @@
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- PrimitiveType[@Kind = "int"]
                |  +- VariableDeclarator[@Initializer = "true", @Name = "a"]
-               |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "a", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
+               |     +- VariableDeclaratorId[@ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @ForLoopVariable = "false", @ForeachVariable = "false", @FormalParameter = "false", @LambdaParameter = "false", @LocalVariable = "true", @Name = "a", @PatternBinding = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @TypeInferred = "false", @Visibility = "local"]
                |     +- NumericLiteral[@Base = "10", @CompileTimeConstant = "true", @DoubleLiteral = "false", @FloatLiteral = "false", @Image = "1", @IntLiteral = "true", @Integral = "true", @LongLiteral = "false", @ParenthesisDepth = "0", @Parenthesized = "false", @ValueAsDouble = "1.0", @ValueAsFloat = "1.0", @ValueAsInt = "1", @ValueAsLong = "1"]
                +- SwitchStatement[@DefaultCase = "true", @ExhaustiveEnumSwitch = "false"]
                |  +- VariableAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "a", @Name = "a", @ParenthesisDepth = "0", @Parenthesized = "false"]
