@@ -9,7 +9,6 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer(15);
         sb.append("foo");
@@ -27,8 +26,8 @@ public class Foo {
         <description>2, Consecutive appends with reuse, should be ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.apache.log4j.Logger;
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer(15);
         sb.append("Hello").append("World");
@@ -47,7 +46,6 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer(15);
         sb.append("Hello");
@@ -76,7 +74,6 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer(15);
         sb.append("Hello");
@@ -99,7 +96,6 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer(15);
         sb.append("Hello");
@@ -120,7 +116,6 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer(15);
         String foo = "Hello";
@@ -145,7 +140,6 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer(15);
         sb.append("Hello");
@@ -224,13 +218,13 @@ public class Foo {
         <code><![CDATA[
 public class StringBufferTest {
     private static String TAG = "TAG";
-    public void test() {
+    public String test() {
          final StringBuffer stringBuffer2 = new StringBuffer();
         // the following 2 lines are reported as ConsecutiveAppendsShouldReuse
         stringBuffer2.append("agrego ");
         stringBuffer2.append("un ");
         stringBuffer2.append("string ");    // but not on this one
-        Log.i(TAG, stringBuffer2.toString());
+        return stringBuffer2.toString();
     }
 }
         ]]></code>

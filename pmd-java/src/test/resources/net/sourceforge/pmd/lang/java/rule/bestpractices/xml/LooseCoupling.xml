@@ -138,4 +138,155 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>FP with method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.HashMap;
+
+public class Test {
+    private static final ThreadLocal TREE_CACHE =
+            ThreadLocal.withInitial(HashMap::new);
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with instanceof and cast</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.HashMap;
+
+public class Test {
+    boolean m(Map m) {
+        if (m instanceof HashMap) {
+            return ((HashMap) m).isEmpty();
+        }
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with static method call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.HashMap;
+
+public class MyMap implements Map {
+    static MyMap create() { return null; }
+}
+
+class Foo {
+    final Map map =
+            MyMap.create();
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with array creation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.HashMap;
+
+public class MyMap implements Map {
+    static MyMap create() { return null; }
+}
+
+class Foo {
+    final Map[] map = new MyMap[5]; // ok
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with j.util.Properties</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Properties;
+
+class Foo {
+    final Properties map = new Properties();
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Exception list, no exception</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package mine;
+import java.util.List;
+
+class O implements List {
+    final O map = new O();
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Exception list</description>
+        <rule-property name="allowedTypes">mine.O</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package mine;
+import java.util.List;
+
+class O implements List {
+    final O map = new O();
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2464 class literals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+
+class Foo {
+    final Object o = ArrayList.class;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Inner class selection</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.AbstractMap;
+
+class Foo {
+    final Object o =
+            new AbstractMap.SimpleEntry<>("", "");
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Extends clause</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.AbstractMap;
+
+class Foo extends AbstractMap<String, String> {
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>This/super qualifier</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+
+class Foo extends ArrayList {
+
+    {
+        Foo.super.clear();
+    }
+
+    class Inner {
+        {
+            Foo.this.clear();
+            Foo.super.clear();
+        }
+    }
+
+}
+        ]]></code>
+    </test-code>
 </test-data>

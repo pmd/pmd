@@ -101,6 +101,7 @@ public class FooTest {
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+class YourTest {}
 public class MyTest extends YourTest {
 
     @Test

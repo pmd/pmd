@@ -8,6 +8,7 @@
         <description>Contains tearDown</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
 public class Foo {
     public void tearDown() {
     }
@@ -19,9 +20,11 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Contains @tearDown</description>
+        <description>Contains @After tearDown</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
+import org.junit.After;
 public class Foo {
     @After
     public void tearDown() {
@@ -37,6 +40,8 @@ public class Foo {
         <description>Renamed tearDown</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
+import org.junit.After;
 public class Foo {
     @After
     public void clean() {
@@ -59,6 +64,8 @@ public class Foo {
     public void tearDown(Method m) {
       //...
     }
+    @Test
+    public void someTest() {}
 }
         ]]></code>
     </test-code>
@@ -74,6 +81,9 @@ public class Foo {
     public void tearDown() {
       //...
     }
+    @Test
+    public void someTest() {}
+
 }
         ]]></code>
     </test-code>
@@ -89,7 +99,35 @@ public class Foo {
     public void tearDown() {
       //...
     }
+    @Test
+    public void someTest() {}
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Contains tearDown, not a junit 4 test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void tearDown() {
+                }
+                public void foo() {
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Contains tearDown with different signature</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.junit.Test;
+            public class Foo {
+                public void tearDown(int something) {
+                }
+                @Test
+                public void foo() {
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

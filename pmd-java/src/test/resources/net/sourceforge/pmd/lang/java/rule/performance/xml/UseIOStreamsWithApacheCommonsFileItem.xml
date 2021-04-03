@@ -141,4 +141,20 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negative with method call returning file item</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.fileupload.FileItem;
+public class Foo {
+
+    private String getString() {
+        return getItem().getString();
+    }
+
+    private FileItem getItem() { return null; }
+}
+        ]]></code>
+    </test-code>
 </test-data>
