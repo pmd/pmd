@@ -11,10 +11,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -36,9 +32,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
      */
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!TypeTestUtil.isA(String.class, node) || node.hasArrayType()
-                || node.getNthParent(3) instanceof ASTForStatement
-                || node.getNthParent(3) instanceof ASTForeachStatement) {
+        if (!TypeTestUtil.isA(String.class, node) || node.isForeachVariable()) {
             return data;
         }
 
@@ -48,9 +42,8 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
         List<ASTNamedReferenceExpr> possibleViolations = new ArrayList<>();
 
         for (ASTNamedReferenceExpr usage : node.getLocalUsages()) {
-            if ((node.getNthParent(2) instanceof ASTFieldDeclaration
-                    || node.getParent() instanceof ASTFormalParameter)
-                    && isNotWithinLoop(usage)) {
+            if ((node.isField() || node.isFormalParameter())
+                && isNotWithinLoop(usage)) {
                 // ignore if the field or formal parameter is *not* used within loops
                 continue;
             }
