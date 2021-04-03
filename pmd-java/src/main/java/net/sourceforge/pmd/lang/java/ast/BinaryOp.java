@@ -176,7 +176,7 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
      * for {@code <=}, returns {@code >}. Returns null if this is another kind
      * of operator.
      */
-    public BinaryOp getComplement() {
+    public @Nullable BinaryOp getComplement() {
         switch (this) {
         case CONDITIONAL_OR: return CONDITIONAL_AND;
         case CONDITIONAL_AND: return CONDITIONAL_OR;

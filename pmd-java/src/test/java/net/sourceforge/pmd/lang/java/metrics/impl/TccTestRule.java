@@ -4,23 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 
 /**
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class TccTestRule extends AbstractMetricTestRule {
+public class TccTestRule extends JavaDoubleMetricTestRule {
 
-    @Override
-    protected JavaClassMetricKey getClassKey() {
-        return JavaClassMetricKey.TCC;
-    }
-
-
-    @Override
-    protected JavaOperationMetricKey getOpKey() {
-        return null;
+    public TccTestRule() {
+        super(JavaMetrics.TIGHT_CLASS_COHESION);
     }
 }

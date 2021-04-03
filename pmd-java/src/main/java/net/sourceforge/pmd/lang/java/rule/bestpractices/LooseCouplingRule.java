@@ -5,38 +5,86 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
+import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
-public class LooseCouplingRule extends AbstractJavaRule {
+public class LooseCouplingRule extends AbstractJavaRulechainRule {
+
+    private static final PropertyDescriptor<List<String>> ALLOWED_TYPES =
+        PropertyFactory.stringListProperty("allowedTypes")
+                       .desc("Exceptions to the rule")
+                       .defaultValues("java.util.Properties")
+                       .build();
+
+    public LooseCouplingRule() {
+        super(ASTClassOrInterfaceType.class);
+        definePropertyDescriptor(ALLOWED_TYPES);
+    }
 
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
-        if (methodHasOverride(node)) {
-            return data;
+        if (isConcreteCollectionType(node)
+            && !isInOverriddenMethodSignature(node)
+            && !isInAllowedSyntacticCtx(node)
+            && !isAllowedType(node)) {
+            addViolation(data, node, node.getSimpleName());
         }
-        Node parent = node.getNthParent(3);
-        boolean isType = (TypeTestUtil.isA(Collection.class, node) || TypeTestUtil.isA(Map.class, node))
-            && !(node.getType() != null && node.getType().isInterface());
-
-        if (isType && (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter
-                || parent instanceof ASTResultType)) {
-            addViolation(data, node, node.getImage());
-        }
-        return data;
+        return null;
     }
 
-    private boolean methodHasOverride(JavaNode node) {
-        ASTMethodDeclaration method = node.ancestors(ASTMethodDeclaration.class).first();
-        return method != null && method.isAnnotationPresent(Override.class);
+    private boolean isInAllowedSyntacticCtx(ASTClassOrInterfaceType node) {
+        JavaNode parent = node.getParent();
+        return parent instanceof ASTConstructorCall      // new ArrayList<>()
+            || parent instanceof ASTTypeExpression       // instanceof, method reference
+            || parent instanceof ASTCastExpression       // if we allow instanceof, we should allow cast
+            || parent instanceof ASTClassLiteral         // ArrayList.class
+            || parent instanceof ASTClassOrInterfaceType // AbstractMap.SimpleEntry
+            || parent instanceof ASTExtendsList          // extends AbstractMap<...>
+            || parent instanceof ASTThisExpression       // Enclosing.this
+            || parent instanceof ASTSuperExpression      // Enclosing.super
+            || parent instanceof ASTArrayType && parent.getParent() instanceof ASTArrayAllocation;
+    }
+
+    private boolean isAllowedType(ASTClassOrInterfaceType node) {
+        for (String allowed : getProperty(ALLOWED_TYPES)) {
+            if (TypeTestUtil.isA(allowed, node)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean isConcreteCollectionType(ASTClassOrInterfaceType node) {
+        return (TypeTestUtil.isA(Collection.class, node) || TypeTestUtil.isA(Map.class, node))
+            && !node.getTypeMirror().isInterface();
+    }
+
+    private static boolean isInOverriddenMethodSignature(JavaNode node) {
+        JavaNode ancestor = node.ancestors().map(NodeStream.asInstanceOf(ASTMethodDeclaration.class, ASTBlock.class)).first();
+        if (ancestor instanceof ASTMethodDeclaration) {
+            // then it's in a signature and not the body
+            return ((ASTMethodDeclaration) ancestor).isOverridden();
+        }
+        return false;
     }
 }

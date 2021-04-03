@@ -65,12 +65,22 @@ langs:
       - name: metric
         returnType: "xs:decimal?"
         shortDescription: "Computes and returns the value of a metric"
-        description: "Returns the value of the metric as evaluated on the context node"
-        notes: "The context node must be a {% jdoc jast::ASTAnyTypeDeclaration %} or a {% jdoc jast::MethodLikeNode %}"
+        description:
+          Returns the value of the metric as evaluated on the context node.
+          If the metric cannot be computed on that node, returns an empty sequence
+          (which is falsy).
+
         parameters:
           - name: "metricKey"
             type: "xs:string"
-            description: "The name of an enum constant in {% jdoc jmx::api.JavaOperationMetricKey %} or {% jdoc jmx::api.JavaClassMetricKey %}"
+            description: "The name of a metric in {% jdoc jmx::JavaMetrics %} (or an alias thereof)."
+        examples:
+          - code: "//ClassOrInterfaceDeclaration[metric('NCSS') > 200]"
+            outcome: ""
+          - code: "//MethodDeclaration[metric('CYCLO') > 10 and metric('NCSS') > 20]"
+            outcome: ""
+          - code: "//TypeParameter[metric('idontexist') > 50]"
+            outcome: "Error: no such metric"
 
       - name: hasAnnotation
         returnType: "xs:boolean"

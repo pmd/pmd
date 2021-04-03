@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
-import java.util.List;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 
 /**
@@ -43,8 +44,8 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
      * Returns the expressions of this label, or an empty list if this
      * is the default label.
      */
-    public List<ASTExpression> getExprList() {
-        return findChildrenOfType(ASTExpression.class);
+    public NodeStream<ASTExpression> getExprList() {
+        return children(ASTExpression.class);
     }
 
     @Override
