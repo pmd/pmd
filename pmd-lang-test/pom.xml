@@ -27,6 +27,26 @@
             </testResource>
         </testResources>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-kotlin-sources</id>
+                        <!-- This is needed because otherwise that directory is      -->
+                        <!-- added as a test resource by the <testResources> above   -->
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/src/main/kotlin</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- The kotlin plugin has to run before the java plugin-->
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
