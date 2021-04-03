@@ -203,4 +203,74 @@ public class Library {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#3071 BrokenNullCheck FP</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test{
+                Object obj = new Object(), objectWithDifferentName = obj;
+
+                public void testPMD(){
+                    Object obj = new Object();
+                    String str = "str";
+                    Boolean boo = null;
+
+                    //Case 1. : An Alarm is generated
+                    if(obj == null && !(obj instanceof String));
+
+                    //Case 2. : Alarms are generated for each line.
+                    if(boo == null && boo != true);
+                    if(boo == null && boo != false);
+
+                    //Case 3.
+                    if(obj == null && this.obj == null); //An Alarm is generated
+                    if(obj == null && this.objectWithDifferentName); //An Alarm isn't generated
+                    if(obj == null && objectWithDifferentName); //An Alarm isn't generated
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3071 BrokenNullCheck FPs (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+
+            class Test {
+
+                Test foo = new Test(), another = new Test();
+                Map<String, String> map;
+                String field;
+                int idx;
+                String[] arr, anotherArr;
+
+                Object foo(Object o) {}
+
+                public void testPMD() {
+                    //Case 1.
+                    if ((foo == null) != (another == null) || foo != null && !foo.equals(another)) {
+                        ;
+                    }
+
+                    //Case 2.
+                    if (map.remove(null) != null || map.remove("") != null) {
+                        ;
+                    }
+                    if (foo(foo) != null || foo(foo.field) != null) {
+                        ;
+                    }
+
+                    //Case 3.
+                    if (foo != null || foo == null && another != null && another.hashCode() == 0) {
+                        ;
+                    }
+
+                    //Case 4.
+                    if (null != arr[idx] || null == arr[idx] && !anotherArr[idx].isEmpty()) {
+                        ;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
