@@ -221,8 +221,10 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      */
     @JvmOverloads
     fun executeRule(rule: Rule, code: String, filename: String = "testfile.${language.extensions[0]}"): Report {
-        val p = PMD()
-        p.configuration.suppressMarker = this.params.suppressMarker
+        val config = PMDConfiguration().apply {
+            suppressMarker = params.suppressMarker
+        }
+        val processor = SourceCodeProcessor(config)
         val ctx = RuleContext()
         val report = Report()
         ctx.report = report
@@ -231,7 +233,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
         val rules = RuleSet.forSingleRule(rule)
         try {
-            p.sourceCodeProcessor.processSourceCode(StringReader(code), RuleSets(rules), ctx)
+            processor.processSourceCode(StringReader(code), RuleSets(rules), ctx)
         } catch (e: PMDException) {
             throw e.cause!!
         }
