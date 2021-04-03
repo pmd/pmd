@@ -139,7 +139,7 @@ class SubtypingTest : FunSpec({
 
             test("Test capture variable subtyping") {
 
-                val (k, f, c) = ParserTestCtx().makeDummyTVars("K", "F", "C")
+                val (k, f) = ParserTestCtx().makeDummyTVars("K", "F")
 
                 val wild = `?` `super` k
                 val superList = capture(List::class[wild])
