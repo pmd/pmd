@@ -48,7 +48,7 @@ public class Foo {
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 4.</message>
+            <message>'Foo' has value 7.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -66,8 +66,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>NOPA doesn't support enums, interfaces or annotations</description>
-        <expected-problems>0</expected-problems>
+        <description>NOAM supports enums, interfaces or annotations</description>
+        <expected-problems>3</expected-problems>
         <code><![CDATA[
 public interface Foo {
 

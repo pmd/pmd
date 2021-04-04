@@ -146,3 +146,15 @@ This can be achieved with Rule Designer:
     *   Add a syntax highlighter implementation to `net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting` (you could use Java as an example).
     *   Register it in the `AvailableSyntaxHighlighters` enumeration.
     *   Now build your implementation and place the `target/pmd-ui-<version>-SNAPSHOT.jar` to the `lib` directory inside your `pmd-bin-...` distribution (you have to delete old `pmd-ui-*.jar` from there).
+
+# Optional features
+
+## Metrics
+
+If you want to add support for computing metrics:
+* Create a package `lang.<langname>.metrics`
+* Create a utility class `<langname>Metrics`
+* Implement new metrics and add them as static constants. Be sure to document them.
+* Implement {% jdoc core::lang.LanguageVersionHandler#getLanguageMetricsProvider() %}, to make the metrics available in the designer.
+
+See {% jdoc java::lang.java.metrics.JavaMetrics %} for an example.

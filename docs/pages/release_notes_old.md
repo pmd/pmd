@@ -1913,7 +1913,7 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 #### Java Metrics
 
 *   The new metric "Class Fan Out Complexity" has been added. See
-    [Java Metrics Documentation](pmd_java_metrics_index.html#class-fan-out-complexity-class_fan_out) for details.
+    [Java Metrics Documentation](https://pmd.github.io/pmd-6.19.0/pmd_java_metrics_index.html#class-fan-out-complexity-class_fan_out) for details.
 
 
 #### Modified Rules

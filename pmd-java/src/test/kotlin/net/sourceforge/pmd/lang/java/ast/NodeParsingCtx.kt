@@ -83,7 +83,8 @@ object ExpressionParsingCtx : NodeParsingCtx<ASTExpression>("expression") {
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTExpression =
             StatementParsingCtx.retrieveNode(acu)
-                    .getFirstDescendantOfType(ASTExpression::class.java)!!
+                    .descendants(ASTExpression::class.java)
+                    .firstOrThrow()
 }
 
 object StatementParsingCtx : NodeParsingCtx<ASTStatement>("statement") {
@@ -94,7 +95,8 @@ object StatementParsingCtx : NodeParsingCtx<ASTStatement>("statement") {
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTStatement =
             TypeBodyParsingCtx.retrieveNode(acu)
-                    .getFirstDescendantOfType(ASTBlock::class.java).getChild(0)
+                    .descendants(ASTBlock::class.java)
+                    .firstOrThrow().getChild(0)
 }
 
 object TypeBodyParsingCtx : NodeParsingCtx<ASTBodyDeclaration>("body declaration") {
@@ -113,7 +115,7 @@ $construct
     }
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTBodyDeclaration =
-            acu.typeDeclarations.firstOrThrow().getFirstDescendantOfType(ASTBodyDeclaration::class.java)
+            acu.typeDeclarations.firstOrThrow().getDeclarations().firstOrThrow()
 }
 
 object TopLevelTypeDeclarationParsingCtx : NodeParsingCtx<ASTAnyTypeDeclaration>("top-level declaration") {
@@ -123,7 +125,7 @@ object TopLevelTypeDeclarationParsingCtx : NodeParsingCtx<ASTAnyTypeDeclaration>
             $construct
             """.trimIndent()
 
-    override fun retrieveNode(acu: ASTCompilationUnit): ASTAnyTypeDeclaration = acu.getFirstDescendantOfType(ASTAnyTypeDeclaration::class.java)!!
+    override fun retrieveNode(acu: ASTCompilationUnit): ASTAnyTypeDeclaration = acu.typeDeclarations.firstOrThrow()
 }
 
 object TypeParsingCtx : NodeParsingCtx<ASTType>("type") {
@@ -144,7 +146,7 @@ object AnnotationParsingCtx : NodeParsingCtx<ASTAnnotation>("annotation") {
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTAnnotation =
             StatementParsingCtx.retrieveNode(acu)
-                    .getFirstDescendantOfType(ASTAnnotation::class.java)!!
+                    .descendants(ASTAnnotation::class.java).firstOrThrow()
 }
 
 object TypeParametersParsingCtx : NodeParsingCtx<ASTTypeParameters>("type parameters") {

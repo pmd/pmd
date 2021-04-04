@@ -74,6 +74,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class SimplifyBooleanReturns {
+    java.util.List<Object> myObjectList;
     public boolean exists(Object obj) {
         if (myObjectList.contains(obj)) {
             return true;
@@ -89,6 +90,7 @@ public class SimplifyBooleanReturns {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class SimplifyBooleanReturns {
+    java.util.List<Object> myObjectList;
     public boolean exists(Object obj) {
         if (myObjectList.contains(obj))
             return true;
@@ -102,6 +104,7 @@ public class SimplifyBooleanReturns {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class SimplifyBooleanReturns {
+    java.util.List<Object> myObjectList;
     public boolean exists(Object obj) {
         if (myObjectList.contains(obj))
             return obj != null;
@@ -115,6 +118,7 @@ public class SimplifyBooleanReturns {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class SimplifyBooleanReturns {
+    java.util.List<Object> myObjectList;
     public boolean exists(Object obj) {
         if (myObjectList.contains(obj))
             return obj.getClass().equals(String.class);

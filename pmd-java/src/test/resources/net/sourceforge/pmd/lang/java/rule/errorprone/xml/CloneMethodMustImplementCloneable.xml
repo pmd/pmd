@@ -92,6 +92,7 @@ public class FooX extends net.sourceforge.pmd.lang.java.rule.errorprone.MyInterf
         <description>ok, extends superclass AND implements cloneable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class Bar {}
 public class Foo extends Bar implements Cloneable{
     void clone() {}
 }
@@ -156,6 +157,8 @@ public enum Foo {
         <description>#1534 [java] CloneMethodMustImplementCloneable: ClassCastException with Annotation (java8)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+@interface Readonly {}
 public class UnmodifiableList<T> implements @Readonly List<@Readonly T> {}
         ]]></code>
     </test-code>
@@ -201,7 +204,7 @@ class CloneableClass implements TestInterface {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public interface Foo
-                    extends Serializable, Cloneable {
+                    extends java.io.Serializable, Cloneable {
                 Foo clone() throws CloneNotSupportedException;
             }
         ]]></code>

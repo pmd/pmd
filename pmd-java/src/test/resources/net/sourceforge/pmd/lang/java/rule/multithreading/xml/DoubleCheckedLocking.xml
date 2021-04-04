@@ -48,8 +48,8 @@ public interface Foo {
         <description>Generics</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    public <T> Bar<T> foo() { /* blah */}
+public class Foo<T> {
+    public static <T> Foo<T> foo() { /* blah */}
 }
         ]]></code>
     </test-code>
