@@ -11,11 +11,10 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRule {
@@ -57,13 +56,10 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
                 }
 
                 int usageOnRightHandSide =
-                    assignment.getRightOperand()
-                              .descendantsOrSelf()
-                              .filterIs(ASTInfixExpression.class)
-                              .filter(e -> e.getOperator() == BinaryOp.ADD)
-                              .children(ASTNamedReferenceExpr.class)
-                              .filterMatching(ASTNamedReferenceExpr::getReferencedSym, node.getSymbol())
-                              .count();
+                    JavaRuleUtil.flattenOperands(assignment.getRightOperand())
+                                .filterIs(ASTNamedReferenceExpr.class)
+                                .filterMatching(ASTNamedReferenceExpr::getReferencedSym, node.getSymbol())
+                                .count();
 
                 // or maybe a append in some way (a = a + x)
                 // or a combination (a += a + x)

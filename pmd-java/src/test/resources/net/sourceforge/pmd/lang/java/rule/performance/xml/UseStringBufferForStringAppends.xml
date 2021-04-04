@@ -545,6 +545,26 @@ public class UseStringBufferForStringAppendsFP {
     </test-code>
 
     <test-code>
+        <description>FP if variable is overwritten with dependent value</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class UseStringBufferForStringAppendsFP {
+
+                private String transformString(String s) {
+                    return s.toLowerCase();
+                }
+
+                public String doSomething() {
+                    String s2 = "a";
+                    s2 = transformString("a" + s2);
+                    s2 = transformString(s2 + "a");
+                    return s2;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description>False positive with simple assignment instead of compound</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
