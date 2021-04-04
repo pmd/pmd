@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>bad</description>
+        <description>End of a method</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
             public class Foo {
@@ -31,12 +31,30 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>not ok from within if</description>
+        <description>Return within if</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     void bar() {
-        if (false) return;
+        if (System.out != null) return;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return within if, has follower</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if (System.out != null) return;
+
+        if (System.in != null) {
+            return; // unnecessary
+        } else {
+            System.out.println("ok");
+        }
     }
 }
         ]]></code>
@@ -291,6 +309,29 @@ public class Foo {
                             return; // necessary
                         }
                     };
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in lambda x ctor</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                interface Lambda { void run();}
+
+                static void foo(Lambda lambda) {}
+
+                public Foo() {
+                    foo(() -> {return;}); // unnecessary
+                    foo(() -> {
+                        if (System.out == null)
+                            return;  // unnecessary
+                        else {
+                            System.out.println("djiedeid");
+                        }
+                    }); // unnecessary
                 }
             }
             ]]></code>

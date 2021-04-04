@@ -15,6 +15,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
@@ -60,16 +63,26 @@ public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
         // last child of the parent.
         JavaNode parent = it.getParent();
         if (JavaRuleUtil.isLastChild(it)) {
-            return !(parent instanceof ASTSwitchFallthroughBranch)
-                || JavaRuleUtil.isLastChild(parent);
+            if (parent instanceof ASTSwitchArrowBranch) {
+                return !isBranchOfSwitchExpr((ASTSwitchBranch) parent);
+            } else if (parent instanceof ASTSwitchFallthroughBranch) {
+                return JavaRuleUtil.isLastChild(parent) && !isBranchOfSwitchExpr((ASTSwitchBranch) parent);
+            }
+            return true;
         }
+
         return parent instanceof ASTIfStatement
             || parent instanceof ASTLoopStatement
             // these are for the ASTBlock of these constructs
             || parent instanceof ASTTryStatement
             || parent instanceof ASTFinallyClause
             || parent instanceof ASTCatchClause
-            || parent instanceof ASTSynchronizedStatement;
+            || parent instanceof ASTSynchronizedStatement
+            || parent instanceof ASTSwitchArrowBranch && !isBranchOfSwitchExpr((ASTSwitchBranch) parent);
+    }
+
+    private static boolean isBranchOfSwitchExpr(ASTSwitchBranch branch) {
+        return branch.getParent() instanceof ASTSwitchExpression;
     }
 
 }
