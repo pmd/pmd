@@ -11,11 +11,11 @@
 public class Bar {
     public int lengthSumOf(String[] strings) {
 
-        int sum = 0;    // wasted cycles if strings have problems
+        int sum = 0; // premature
 
         if (strings == null || strings.length == 0) return 0;
 
-        for (int i=0; i<strings.length; i++) {
+        for (int i = 0; i < strings.length; i++) {
             sum += strings[i].length();
         }
 
@@ -130,6 +130,7 @@ public class PrematureDeclarationLambda {
         <description>#1067 PrematureDeclaration lambda closure false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.ArrayList;
 public class PrematureDeclarationLambda {
     public boolean lengthSumOf() {
         String foo = "";
@@ -143,28 +144,97 @@ public class PrematureDeclarationLambda {
         <description>#1108 PrematureDeclaration lambda false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import java.util.function.Supplier;
+
 public class PrematureDeclarationLambda {
-    public boolean lengthSumOf() {
+    private static <T> Optional<T> ofRunnable(Supplier<T> sup) {return Optional.of(sup.get());}
+    private static String sign(String input) {return input.toLowerCase();}
+
+    public String lengthSumOf(String a, String b) {
+        String signingInput = Stream.of(a, b)
+                                    .filter(Objects::nonNull)
+                                    .map(String::valueOf)
+                                    .collect(Collectors.joining());
+
+        return ofRunnable(() -> sign(signingInput))
+                  .orElse(null);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>PrematureDeclaration with captured lambda var</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import java.util.function.Supplier;
+
+public class PrematureDeclarationLambda {
+    private static <T> Optional<T> ofRunnable(Supplier<T> sup) {return Optional.of(sup.get());}
+    private static <T> String sign(String input) {return input.toLowerCase();}
+
+    public String lengthSumOf(String a, String b) {
+        String signingInput = Stream.of(a, b)
+                                    .filter(Objects::nonNull)
+                                    .map(String::valueOf)
+                                    .collect(Collectors.joining());
+
+        return ofRunnable(() -> {
+            return sign(signingInput);
+        }).orElse(null);
+    }
+}
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>PrematureDeclaration with captured lambda var (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import java.util.function.Supplier;
+
+public class PrematureDeclarationLambda {
+    private static <T> Optional<T> ofRunnable(Supplier<T> sup) {return Optional.of(sup);}
+    private static String sign(String input) {return input.toLowerCase();}
+
+    public boolean lengthSumOf(boolean sign) {
         String signingInput = Stream.of(a, b)
                                     .filter(Objects::nonNull)
                                     .map(String::valueOf)
                                     .collect(Collectors.joining(EMPTY));
+        if (sign)
+            return ofRunnable(() -> {
+                return sign(signingInput); // this should be recognized as a usage
+            }).orElse(false);
 
-        return Try.of(() -> sign(signingInput))
-                  .getOrElse(() -> null);
+        return signingInput;
     }
 }
-        ]]></code>
+            ]]></code>
     </test-code>
 
     <test-code>
         <description>PrematureDeclaration should also check inside lambdas</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class PrematureDeclarationLambda {
-    public boolean lengthSumOf() {
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
-        return Try.of(() -> {
+public class PrematureDeclarationLambda {
+    private static <T> Optional<T> ofRunnable(Supplier<T> sup) {return Optional.of(sup);}
+    public boolean lengthSumOf(String[] strings) {
+
+        return ofRunnable(() -> {
             // Inside that lambda *is* a premature declaration of `sum`
             int sum = 0;
 
@@ -176,7 +246,7 @@ public class PrematureDeclarationLambda {
             }
 
             return sum;
-        });
+        }).isPresent();
     }
 }
         ]]></code>

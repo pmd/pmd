@@ -1208,7 +1208,13 @@ public class SomeClass {
           class="net.sourceforge.pmd.lang.java.rule.codestyle.PrematureDeclarationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#prematuredeclaration">
         <description>
-Checks for variables that are defined before they might be used. A reference is deemed to be premature if it is created right before a block of code that doesn't use it that also has the ability to return or throw an exception.
+Checks for variables that are defined before they might be used. A declaration is
+deemed to be premature if it is created right before a statement that doesn't
+use it that also has the ability to return or throw an exception.
+
+Note that this rule is meant to improve code readability but is not an optimization.
+A smart JIT will not care whether the variable is declared prematurely or not, as it
+can reorder code.
         </description>
         <priority>3</priority>
         <example>
