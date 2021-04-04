@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class Foo {
-    void bar() {
-        int y = 3;
-        return;
-    }
-}
-        ]]></code>
+            public class Foo {
+
+                void bar() {
+                    int y = 3;
+                    return;
+                }
+            }
+            ]]></code>
     </test-code>
 
     <test-code>
@@ -170,6 +171,128 @@ public class Foo {
         System.out.println(i);
     }
 }
-        ]]></code>
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in fallthrough switch</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                {
+                    int i, j;
+                    switch (i) {
+                    case 1:
+                        return;
+                    case 2:
+                        j = 2;
+                    case 4:
+                        j = 5;
+                        return; // this one is unnecessary
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in fallthrough switch (with blocks)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>15</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                // Note that those blocks are useless, they just limit the scope of locals,
+                // and don't act on control flow. So this is identical as the above.
+                {
+                    int i, j;
+                    switch (i) {
+                    case 1: {
+                        return;
+                    }
+                    case 2: {
+                        j = 2;
+                    }
+                    case 4: {
+                        j = 5;
+                        return; // this one is unnecessary
+                    }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in switch arrow: violation</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                static {
+                    int i, j;
+                    switch (i) {
+                    case 1 -> {
+                        j = 1;
+                        return; // unnecessary
+                    }
+                    case 2 -> {
+                        j = 2;
+                    }
+                    case 4 -> {
+                        j = 5;
+                        return; // unnecessary
+                    }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in switch arrow: no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                static {
+                    int i, j;
+                    switch (i) {
+                    case 1 -> {
+                        j = 1;
+                        return; // necessary
+                    }
+                    case 2 -> {
+                        j = 2;
+                    }
+                    case 4 -> {
+                        j = 5;
+                        return; // necessary
+                    }
+                    }
+                    System.out.println(j);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in switch expression: no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                static {
+                    int i, j;
+                    int k = switch (i) {
+                        case 1 -> {
+                            return; // necessary
+                        }
+                        case 2 -> {
+                            j = 2;
+                        }
+                        case 4 -> {
+                            j = 5;
+                            return; // necessary
+                        }
+                    };
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

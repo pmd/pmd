@@ -23,6 +23,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -709,5 +710,13 @@ public final class JavaRuleUtil {
 
     private static boolean isStringConcatExpression(ASTExpression e) {
         return BinaryOp.isInfixExprWithOperator(e, BinaryOp.ADD) && TypeTestUtil.isA(String.class, e);
+    }
+
+    /**
+     * Returns true if the node is the last child of its parent (or is the root node).
+     */
+    public static boolean isLastChild(Node it) {
+        Node parent = it.getParent();
+        return parent == null || it.getIndexInParent() == parent.getNumChildren() - 1;
     }
 }
