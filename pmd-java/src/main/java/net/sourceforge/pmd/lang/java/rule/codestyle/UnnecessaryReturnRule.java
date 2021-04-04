@@ -4,31 +4,55 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
-public class UnnecessaryReturnRule extends AbstractJavaRule {
+public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
 
-    @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
-
-        if (node.isVoid()) {
-            super.visit(node, data);
-        }
-        return data;
+    public UnnecessaryReturnRule() {
+        super(ASTReturnStatement.class);
     }
 
     @Override
     public Object visit(ASTReturnStatement node, Object data) {
-        if (node.getParent() instanceof ASTStatement && node.getNthParent(2) instanceof ASTBlockStatement
-                && node.getNthParent(3) instanceof ASTBlock && node.getNthParent(4) instanceof ASTMethodDeclaration) {
+        if (node.getNumChildren() > 0) {
+            return null;
+        } else if (node.ancestors()
+                       .takeWhile(it -> !(it instanceof ASTBodyDeclaration || it instanceof ASTLambdaExpression))
+                       .filterIs(ASTStatement.class)
+                       .all(this::isLastStatementOfParent)) {
             addViolation(data, node);
         }
-        return data;
+        return null;
+    }
+
+    /**
+     * Returns true if this is the last statement of the parent node,
+     * ie the next statement to be executed is some sibling of the parent.
+     */
+    private boolean isLastStatementOfParent(ASTStatement it) {
+        // last child of the parent.
+        if (it.getNextSibling() == null) {
+            return true;
+        }
+        JavaNode parent = it.getParent();
+        return parent instanceof ASTIfStatement
+            || parent instanceof ASTLoopStatement
+            // these are for the ASTBlock of these constructs
+            || parent instanceof ASTTryStatement
+            || parent instanceof ASTFinallyClause
+            || parent instanceof ASTCatchClause
+            || parent instanceof ASTSynchronizedStatement;
     }
 
 }
