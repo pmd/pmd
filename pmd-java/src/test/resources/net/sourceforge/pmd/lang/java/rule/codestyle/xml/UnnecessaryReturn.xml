@@ -336,4 +336,38 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Return in loop (like break)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.List;
+            public class Foo {
+
+                protected boolean process(String str) {return str.isEmpty();}
+
+                protected void process(List<String> list) {
+                    for (String resource : list) {
+                        boolean found = process(resource);
+                        if (resource.isEmpty() || found) {
+                            return; // necessary, it's like a break from the loop
+                        }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <description>Ignore local class statements</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                protected void process() {
+                    if (System.out == null) return;
+                    // This could be ignore because it doesn't contribute to control flow.
+                    // But this is rare enough that it hasn't been implemented
+                    class Foo {}
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
