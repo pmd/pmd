@@ -8,26 +8,23 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
-public class OnlyOneReturnRule extends AbstractJavaRule {
+public class OnlyOneReturnRule extends AbstractJavaRulechainRule {
 
-    @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
-            return data;
-        }
-        return super.visit(node, data);
+    public OnlyOneReturnRule() {
+        super(ASTMethodDeclaration.class);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (node.isAbstract()) {
+        if (node.getBody() == null) {
             return data;
         }
+
+        node.getBody().descendants(ASTReturnStatement.class)
 
         List<ASTReturnStatement> returnNodes = node.findDescendantsOfType(ASTReturnStatement.class);
 
