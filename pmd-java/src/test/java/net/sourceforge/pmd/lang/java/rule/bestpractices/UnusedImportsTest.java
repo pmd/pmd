@@ -14,6 +14,7 @@ public class UnusedImportsTest extends PmdRuleTst {
             System.out.println(message);
         }
     }
+
     public static void assertSomething(String message, boolean condition) {
         if (!condition) {
             System.out.println(message);

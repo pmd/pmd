@@ -119,11 +119,11 @@ public class UnusedImportsRule extends AbstractJavaRule {
         if (Objects.equals(node.getPackageName(), thisPackageName)) {
             // import for the same package
             addViolationWithMessage(data, node, IMPORT_FROM_SAME_PACKAGE_MESSAGE,
-                                    new String[] {PrettyPrintingUtil.prettyImport(node)});
+                                    new String[] { PrettyPrintingUtil.prettyImport(node) });
         } else if (!imports.add(new ImportWrapper(node))) {
             // duplicate
             addViolationWithMessage(data, node, DUPLICATE_IMPORT_MESSAGE,
-                                    new String[] {PrettyPrintingUtil.prettyImport(node)});
+                                    new String[] { PrettyPrintingUtil.prettyImport(node) });
         }
         return data;
     }
@@ -228,7 +228,8 @@ public class UnusedImportsRule extends AbstractJavaRule {
     private void removeReferenceSingleImport(String referenceName) {
         int firstDot = referenceName.indexOf('.');
         String expectedImport = firstDot < 0 ? referenceName : referenceName.substring(0, firstDot);
-        for (Iterator<ImportWrapper> iterator = imports.iterator(); iterator.hasNext(); ) {
+        Iterator<ImportWrapper> iterator = imports.iterator();
+        while (iterator.hasNext()) {
             ImportWrapper anImport = iterator.next();
             if (!anImport.isOnDemand() && anImport.getName().equals(expectedImport)) {
                 iterator.remove();
@@ -237,7 +238,8 @@ public class UnusedImportsRule extends AbstractJavaRule {
     }
 
     private void removeOnDemandForPackageName(String fullName) {
-        for (Iterator<ImportWrapper> iterator = imports.iterator(); iterator.hasNext(); ) {
+        Iterator<ImportWrapper> iterator = imports.iterator();
+        while (iterator.hasNext()) {
             ImportWrapper anImport = iterator.next();
             if (anImport.isOnDemand() && anImport.getFullName().equals(fullName)) {
                 iterator.remove();

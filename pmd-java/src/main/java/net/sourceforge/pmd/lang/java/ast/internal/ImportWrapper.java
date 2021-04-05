@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 /**
  * Helper class to analyze {@link ASTImportDeclaration}s.
  */
-public class ImportWrapper {
+public final class ImportWrapper {
     private static final Logger LOG = Logger.getLogger(ImportWrapper.class.getName());
 
     private final ASTImportDeclaration node;
