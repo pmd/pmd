@@ -29,9 +29,9 @@ public class Bar {
         <description>optimal var declaration position</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Bar {
+public class Bar {
 
-                public int lengthSumOf(String[] strings) {
+    public int lengthSumOf(String[] strings) {
 
         if (strings == null || strings.length == 0) return 0;
 
