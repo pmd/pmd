@@ -115,22 +115,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
-        if (node.isImportOnDemand()) {
-            ASTName importedType = (ASTName) node.getChild(0);
-            imports.add(new ImportWrapper(importedType.getImage(), null, node, node.isStatic()));
-        } else {
-            if (!node.isImportOnDemand()) {
-                ASTName importedType = (ASTName) node.getChild(0);
-                String className;
-                if (isQualifiedName(importedType)) {
-                    int lastDot = importedType.getImage().lastIndexOf('.') + 1;
-                    className = importedType.getImage().substring(lastDot);
-                } else {
-                    className = importedType.getImage();
-                }
-                imports.add(new ImportWrapper(importedType.getImage(), className, node));
-            }
-        }
+        imports.add(new ImportWrapper(node));
         return data;
     }
 

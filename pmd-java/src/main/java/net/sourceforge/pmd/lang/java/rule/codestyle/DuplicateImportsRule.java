@@ -33,13 +33,12 @@ public class DuplicateImportsRule extends AbstractJavaRule {
         // import java.io.File;
         for (ImportWrapper thisImportOnDemand : importOnDemandImports) {
             for (ImportWrapper thisSingleTypeImport : singleTypeImports) {
-                String singleTypeFullName = thisSingleTypeImport.getName(); // java.io.File
+                String singleTypeFullName = thisSingleTypeImport.getFullName(); // java.io.File
 
-                int lastDot = singleTypeFullName.lastIndexOf('.');
-                String singleTypePkg = singleTypeFullName.substring(0, lastDot); // java.io
-                String singleTypeName = singleTypeFullName.substring(lastDot + 1); // File
+                String singleTypePkg = thisSingleTypeImport.getPackageName(); // java.io
+                String singleTypeName = thisSingleTypeImport.getName(); // File
 
-                if (thisImportOnDemand.getName().equals(singleTypePkg)
+                if (thisImportOnDemand.getFullName().equals(singleTypePkg)
                         && !isDisambiguationImport(node, singleTypePkg, singleTypeName)) {
                     addViolation(data, thisSingleTypeImport.getNode(), singleTypeFullName);
                 }
@@ -61,15 +60,15 @@ public class DuplicateImportsRule extends AbstractJavaRule {
         // Loop over .* imports
         for (ImportWrapper thisImportOnDemand : importOnDemandImports) {
             // Skip same package
-            if (!thisImportOnDemand.getName().equals(singleTypePkg)) {
+            if (!thisImportOnDemand.getFullName().equals(singleTypePkg)) {
                 if (!thisImportOnDemand.isStaticOnDemand()) {
-                    String fullyQualifiedClassName = thisImportOnDemand.getName() + "." + singleTypeName;
+                    String fullyQualifiedClassName = thisImportOnDemand.getFullName() + "." + singleTypeName;
                     if (node.getClassTypeResolver().classNameExists(fullyQualifiedClassName)) {
                         // Class exists in another imported package
                         return true;
                     }
                 } else {
-                    Class<?> importClass = node.getClassTypeResolver().loadClassOrNull(thisImportOnDemand.getName());
+                    Class<?> importClass = node.getClassTypeResolver().loadClassOrNull(thisImportOnDemand.getFullName());
                     if (importClass != null) {
                         try {
                             for (Method m : importClass.getMethods()) {
@@ -94,8 +93,7 @@ public class DuplicateImportsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
-        ImportWrapper wrapper = new ImportWrapper(node.getImportedName(), node.getImportedName(),
-                node, node.isStatic() && node.isImportOnDemand());
+        ImportWrapper wrapper = new ImportWrapper(node);
 
         // blahhhh... this really wants to be ASTImportDeclaration to be
         // polymorphic...
