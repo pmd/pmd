@@ -29,21 +29,10 @@ public class ImportWrapper {
     private final String fullname;
     private final Set<String> allStaticDemands;
 
-    public ImportWrapper(String fullname, String name) {
-        this(fullname, name, null);
-    }
-
-    public ImportWrapper(String fullname, String name, ASTImportDeclaration node) {
-        this.fullname = fullname;
-        this.name = name;
-        this.node = node;
-        this.allStaticDemands = collectStaticFieldsAndMethods(node);
-    }
-
     public ImportWrapper(ASTImportDeclaration node) {
+        this.node = node;
         this.fullname = node.getImportedName();
         this.name = node.getImportedSimpleName();
-        this.node = node;
         this.allStaticDemands = collectStaticFieldsAndMethods(node);
     }
 
@@ -51,7 +40,7 @@ public class ImportWrapper {
      * @param node
      */
     private Set<String> collectStaticFieldsAndMethods(ASTImportDeclaration node) {
-        if (!this.isStaticDemand() || node == null || node.getType() == null) {
+        if (!isStaticOnDemand() || node == null || node.getType() == null) {
             return Collections.emptySet();
         }
 
@@ -83,46 +72,37 @@ public class ImportWrapper {
         }
     }
 
-    @Override
-    public boolean equals(Object other) {
-        if (other == null) {
-            return false;
-        }
-        if (other == this) {
-            return true;
-        }
-        if (other.getClass() != ImportWrapper.class) {
-            return false;
-        }
 
-        ImportWrapper i = (ImportWrapper) other;
-        if (isStaticDemand() != i.isStaticDemand()) {
-            return false;
-        }
-        if (name == null) {
-            return fullname.equals(i.getFullName());
-        }
-        return name.equals(i.getName());
-    }
 
-    public boolean matches(ImportWrapper i) {
-        if (isStaticDemand()) {
-            if (allStaticDemands.contains(i.fullname)) {
+    public boolean matches(String fullName, String name) {
+        if (isStaticOnDemand()) {
+            if (allStaticDemands.contains(fullName)) {
                 return true;
             }
         }
-        if (name == null && i.getName() == null) {
-            return i.getFullName().equals(fullname);
+        if (this.name == null && name == null) {
+            return fullName.equals(fullname);
         }
-        return i.getName().equals(name);
+        return name.equals(this.name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ImportWrapper that = (ImportWrapper) o;
+        return Objects.equals(node.isStatic(), that.node.isStatic())
+            && Objects.equals(isOnDemand(), that.isOnDemand())
+            && Objects.equals(node.getImportedName(), that.node.getImportedName());
     }
 
     @Override
     public int hashCode() {
-        if (name == null) {
-            return Objects.hash(fullname, isStaticDemand());
-        }
-        return Objects.hash(name, isStaticDemand());
+        return Objects.hash(node.isStatic(), node.isImportOnDemand(), node.getImportedName());
     }
 
     public String getName() {
@@ -142,15 +122,15 @@ public class ImportWrapper {
     }
 
     public boolean isStaticOnDemand() {
-        return isStaticDemand();
+        return node.isStatic() && node.isImportOnDemand();
     }
 
     @Override
     public String toString() {
-        return "Import[name=" + name + ",fullname=" + fullname + ",static*=" + isStaticDemand() + ']';
+        return "Import[name=" + name + ",fullname=" + fullname + ",static*=" + isStaticOnDemand() + ']';
     }
 
-    public boolean isStaticDemand() {
-        return node != null && node.isStatic() && node.isImportOnDemand();
+    public boolean isOnDemand() {
+        return node.isImportOnDemand();
     }
 }

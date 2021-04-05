@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -85,22 +87,14 @@ public class UnusedImportsRule extends AbstractJavaRule {
                     String fullname = m.group(1);
 
                     if (fullname != null) { // may be null for "@see #" and "@link #"
-                        imports.remove(new ImportWrapper(fullname, fullname));
+                        removeReferenceSingleImport(fullname);
                     }
 
                     if (m.groupCount() > 1) {
                         fullname = m.group(2);
                         if (fullname != null) {
-                            String[] params = fullname.split("\\s*,\\s*");
-                            for (String param : params) {
-                                final int firstDot = param.indexOf('.');
-                                final String expectedImportName;
-                                if (firstDot == -1) {
-                                    expectedImportName = param;
-                                } else {
-                                    expectedImportName = param.substring(0, firstDot);
-                                }
-                                imports.remove(new ImportWrapper(param, expectedImportName));
+                            for (String param : fullname.split("\\s*,\\s*")) {
+                                removeReferenceSingleImport(param);
                             }
                         }
                     }
@@ -135,13 +129,15 @@ public class UnusedImportsRule extends AbstractJavaRule {
         if (imports.isEmpty()) {
             return;
         }
-        ImportWrapper candidate = getImportWrapper(node);
+        Pair<String, String> candidate = getImportWrapper(node);
+        String candFullName = candidate.getLeft();
+        String candName = candidate.getRight();
 
         // check exact imports
         Iterator<ImportWrapper> it = imports.iterator();
         while (it.hasNext()) {
             ImportWrapper i = it.next();
-            if (!i.isStaticOnDemand() && i.matches(candidate)) {
+            if (!i.isStaticOnDemand() && i.matches(candFullName, candName)) {
                 it.remove();
                 return;
             }
@@ -151,26 +147,24 @@ public class UnusedImportsRule extends AbstractJavaRule {
         it = imports.iterator();
         while (it.hasNext()) {
             ImportWrapper i = it.next();
-            if (i.isStaticOnDemand() && i.matches(candidate)) {
+            if (i.isStaticOnDemand() && i.matches(candFullName, candName)) {
                 it.remove();
                 return;
             }
         }
 
-        if (TypeNode.class.isAssignableFrom(node.getClass()) && ((TypeNode) node).getType() != null) {
+        if (node instanceof TypeNode && ((TypeNode) node).getType() != null) {
             Class<?> c = ((TypeNode) node).getType();
             if (c.getPackage() != null) {
-                candidate = new ImportWrapper(c.getPackage().getName(), null);
-                if (imports.contains(candidate)) {
-                    imports.remove(candidate);
-                }
+                removeOnDemand(c.getPackage().getName());
             }
         }
     }
 
-    protected ImportWrapper getImportWrapper(Node node) {
-        String fullName = node.getImage();
 
+
+    protected Pair<String, String> getImportWrapper(Node node) {
+        String fullName = node.getImage();
         String name;
         if (!isQualifiedName(node)) {
             name = node.getImage();
@@ -187,7 +181,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
             }
         }
 
-        return new ImportWrapper(fullName, name);
+        return Pair.of(fullName, name);
     }
 
     private boolean isMethodCall(Node node) {
@@ -209,5 +203,27 @@ public class UnusedImportsRule extends AbstractJavaRule {
             }
         }
         return false;
+    }
+
+    /** We found a reference to the type given by the name. */
+    private void removeReferenceSingleImport(String referenceName) {
+        int firstDot = referenceName.indexOf('.');
+        String expectedImport = firstDot < 0 ? referenceName : referenceName.substring(0, firstDot);
+        for (Iterator<ImportWrapper> iterator = imports.iterator(); iterator.hasNext(); ) {
+            ImportWrapper anImport = iterator.next();
+            if (!anImport.isOnDemand() && anImport.getName().equals(expectedImport)) {
+                iterator.remove();
+            }
+        }
+    }
+
+    private void removeOnDemand(String fullName) {
+        for (Iterator<ImportWrapper> iterator = imports.iterator(); iterator.hasNext(); ) {
+            ImportWrapper anImport = iterator.next();
+            if (anImport.isOnDemand() && anImport.getFullName().equals(fullName)) {
+                iterator.remove();
+                break;
+            }
+        }
     }
 }
