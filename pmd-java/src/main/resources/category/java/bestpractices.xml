@@ -1838,23 +1838,24 @@ public class Foo {
         message="Please use StandardCharsets constants"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usestandardcharsets">
-    <description>
-      StandardCharsets has constants for various common character
-      sets, they should be used instead of calling &quot;Charset.forName(name)&quot;
-    </description>
-    <priority>3</priority>
-    <properties>
-      <property name="version" value="2.0"/>
-      <property name="xpath">
-        <value>
-          <![CDATA[
-//PrimaryExpression[PrimaryPrefix/Name/@Image = 'Charset.forName']/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = '"US-ASCII"' or @Image = '"ISO-8859-1"'  or @Image = '"UTF-8"'  or @Image = '"UTF-16BE"'  or @Image = '"UTF-16LE"'  or @Image = '"UTF-16"']
+      <description>
+Starting with Java 7, StandardCharsets provides constants for common Charset objects, such as UTF-8.
+Using the constants is less error prone, and can provide a small performance advantage compared to `Charset.forName(...)`
+since no scan across the internal `Charset` caches is needed.
+      </description>
+      <priority>3</priority>
+      <properties>
+          <property name="version" value="2.0"/>
+          <property name="xpath">
+            <value>
+<![CDATA[
+//PrimaryExpression[PrimaryPrefix/Name/@Image = 'Charset.forName']/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = ('"US-ASCII"', '"ISO-8859-1"', '"UTF-8"', '"UTF-16BE"', '"UTF-16LE"', '"UTF-16"')]
 ]]>
-        </value>
-      </property>
-    </properties>
-    <example>
-      <![CDATA[
+            </value>
+          </property>
+      </properties>
+      <example>
+<![CDATA[
 public class UseStandardCharsets {
     public void run() {
         
@@ -1870,7 +1871,7 @@ public class UseStandardCharsets {
     }
 }
 ]]>
-    </example>
+      </example>
   </rule>
 
   <rule name="UseTryWithResources"

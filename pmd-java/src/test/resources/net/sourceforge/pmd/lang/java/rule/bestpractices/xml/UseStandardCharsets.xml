@@ -138,16 +138,16 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>pass, UTF-8 from StadardCharsets</description>
+        <description>pass, UTF-8 from StandardCharsets</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.OutputStreamWriter;
-import java.nio.charset.StadardCharsets;
+import java.nio.charset.StandardCharsets;
 
 public class Foo {
     public static void charset() {
          // looking up the charset dynamically
-        try (OutputStreamWriter osw = new OutputStreamWriter(out, StadardCharsets.UTF_8)) {
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
             osw.write("test");
         }
     }
