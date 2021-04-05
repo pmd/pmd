@@ -604,7 +604,7 @@ class NPEImport {}
         <expected-problems>2</expected-problems>
         <expected-linenumbers>2,3</expected-linenumbers>
         <expected-messages>
-            <message>Avoid unused imports such as 'java.util.*'</message>
+            <message>Unused import 'java.util.*'</message>
             <message>Duplicate import 'java.io.File'</message>
         </expected-messages>
         <code><![CDATA[
@@ -638,7 +638,7 @@ class NPEImport {}
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
         <expected-messages>
-            <message>Avoid unused imports such as 'java.io.*'</message>
+            <message>Unused import 'java.io.*'</message>
         </expected-messages>
         <code><![CDATA[
             import java.io.*;
