@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.internal;
 
 import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.LONG;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -27,6 +28,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -70,12 +72,29 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil.InvocationMatcher;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Utilities shared between rules.
  */
 public final class JavaRuleUtil {
+
+    // this is a hacky way to do it, but let's see where this goes
+    private static final List<InvocationMatcher> KNOWN_PURE_METHODS = listOf(
+        InvocationMatcher.parse("_#toString()"),
+        InvocationMatcher.parse("_#hashCode()"),
+        InvocationMatcher.parse("_#equals(java.lang.Object)"),
+        InvocationMatcher.parse("java.lang.String#_(_*)"),
+        // actually not all of them, probs only stream of some type
+        // arg which doesn't implement Closeable...
+        InvocationMatcher.parse("java.util.stream.Stream#_(_*)"),
+        InvocationMatcher.parse("java.util.Collection#size()"),
+        InvocationMatcher.parse("java.util.List#get(int)"),
+        InvocationMatcher.parse("java.util.Map#get(_)"),
+        InvocationMatcher.parse("java.lang.Iterable#iterator()"),
+        InvocationMatcher.parse("java.lang.Comparable#compareTo(_)")
+    );
 
     private JavaRuleUtil() {
         // utility class
@@ -269,10 +288,14 @@ public final class JavaRuleUtil {
     }
 
     public static boolean isGetterOrSetterCall(ASTMethodCall call) {
+        return isGetterCall(call)
+            || call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
+    }
+
+    public static boolean isGetterCall(ASTMethodCall call) {
         return call.getArguments().size() == 0
             && (startsWithCamelCaseWord(call.getMethodName(), "get")
-            || startsWithCamelCaseWord(call.getMethodName(), "is"))
-            || call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
+            || startsWithCamelCaseWord(call.getMethodName(), "is"));
     }
 
 
@@ -657,6 +680,17 @@ public final class JavaRuleUtil {
     }
 
     /**
+     * Returns true if the expression is a reference to a local variable.
+     */
+    public static boolean isReferenceToLocal(ASTExpression expr) {
+        if (expr instanceof ASTVariableAccess) {
+            JVariableSymbol sym = ((ASTVariableAccess) expr).getReferencedSym();
+            return sym != null && !sym.isField();
+        }
+        return false;
+    }
+
+    /**
      * Returns true if the expression has the form `field`, or `this.field`,
      * where `field` is a field declared in the enclosing class.
      * Assumes we're not in a static context.
@@ -709,5 +743,47 @@ public final class JavaRuleUtil {
 
     private static boolean isStringConcatExpression(ASTExpression e) {
         return BinaryOp.isInfixExprWithOperator(e, BinaryOp.ADD) && TypeTestUtil.isA(String.class, e);
+    }
+
+    /**
+     * Whether the node or one of its descendants is an expression with
+     * side effects. Conservatively, any method call is a potential side-effect,
+     * as well as assignments to fields or array elements. We could relax
+     * this assumption with (much) more data-flow logic, including a memory model.
+     *
+     * @param node A node
+     */
+    public static boolean hasSideEffect(@Nullable JavaNode node) {
+        return node != null && node.descendantsOrSelf()
+                                   .filterIs(ASTExpression.class)
+                                   .any(JavaRuleUtil::hasSideEffectNonRecursive);
+    }
+
+    /**
+     * Returns true if the expression has side effects we don't track.
+     * Does not recurse into sub-expressions.
+     */
+    private static boolean hasSideEffectNonRecursive(ASTExpression e) {
+        if (e instanceof ASTAssignmentExpression) {
+            return isNonLocalLhs(((ASTAssignmentExpression) e).getLeftOperand());
+        } else if (e instanceof ASTUnaryExpression) {
+            ASTUnaryExpression unary = (ASTUnaryExpression) e;
+            return !unary.getOperator().isPure() && isNonLocalLhs(unary.getOperand());
+        }
+
+        return e instanceof ASTMethodCall && !isPure((ASTMethodCall) e)
+            || e instanceof ASTConstructorCall;
+    }
+
+    private static boolean isNonLocalLhs(ASTExpression lhs) {
+        return lhs instanceof ASTArrayAccess || !isReferenceToLocal(lhs);
+    }
+
+    /**
+     * Whether the invocation has no side-effects. Very conservative.
+     */
+    private static boolean isPure(ASTMethodCall call) {
+        return isGetterCall(call)
+            || CollectionUtil.any(KNOWN_PURE_METHODS, it -> it.matchesCall(call));
     }
 }

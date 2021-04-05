@@ -10,12 +10,14 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 /**
  * Checks for variables in methods that are defined before they are really
@@ -34,20 +36,24 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
 
-        // is it part of a for-loop declaration?
-        if (node.getParent() instanceof ASTForInit) {
-            // yes, those don't count
+        if (node.getParent() instanceof ASTForInit
+            || node.getParent() instanceof ASTResource) {
+            // those don't count
             return null;
         }
 
         for (ASTVariableDeclaratorId id : node) {
-            for (ASTStatement block : statementsAfter(node)) {
-                if (hasReferencesIn(block, id)) {
+            if (JavaRuleUtil.isNeverUsed(id) // avoid the duplicate with unused variables
+                || JavaRuleUtil.hasSideEffect(id.getInitializer())) {
+                continue;
+            }
+            for (ASTStatement stmt : statementsAfter(node)) {
+                if (hasReferencesIn(stmt, id) || JavaRuleUtil.hasSideEffect(stmt)) {
                     break;
                 }
 
-                if (hasExit(block)) {
-                    addViolation(data, node);
+                if (hasExit(stmt)) {
+                    addViolation(data, node, id.getName());
                     break;
                 }
             }
@@ -56,12 +62,11 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-
     /**
      * Returns whether the block contains a return call or throws an exception.
      * Exclude blocks that have these things as part of an inner class.
      */
-    private boolean hasExit(ASTStatement block) {
+    private static boolean hasExit(ASTStatement block) {
         return block.descendants()
                     .map(asInstanceOf(ASTThrowStatement.class, ASTReturnStatement.class))
                     .nonEmpty();

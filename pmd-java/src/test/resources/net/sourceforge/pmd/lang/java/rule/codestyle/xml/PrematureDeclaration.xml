@@ -22,15 +22,16 @@ public class Bar {
         return sum;
     }
 }
-        ]]></code>
+            ]]></code>
     </test-code>
 
     <test-code>
         <description>optimal var declaration position</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Bar {
-    public int lengthSumOf(String[] strings) {
+            public class Bar {
+
+                public int lengthSumOf(String[] strings) {
 
         if (strings == null || strings.length == 0) return 0;
 
@@ -250,5 +251,76 @@ public class PrematureDeclarationLambda {
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1429 PrematureDeclaration should try to recognize side-effects</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+            import java.util.concurrent.atomic.AtomicInteger;
+            import java.util.stream.Stream;
+            import java.util.stream.Collectors;
+            import java.util.function.Supplier;
+
+            public class PrematureDeclarationLambda {
+
+                final Map<String, String> cache = new HashMap<>();
+                final AtomicInteger ref = new AtomicInteger();
+
+                public String doSomeThing(String uri, String cachedPath, String ref) {
+                    var prior = cache.put(uri, cachedPath); // may side-effect
+
+                    if (ref == null) {
+                        return createRef(cachedPath, 1); // may side-effect
+                    }
+                    if (prior == null) {
+                        return ref.substring(1);
+                    }
+                    return ref;
+                }
+
+                static String createRef(String cachedPath, int refCount) {
+                    return "" + cachedPath + refCount;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1429 PrematureDeclaration side-effect in initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclaration {
+
+                public String doSomeThing(String uri, String cachedPath, int times) {
+                    var prior = System.nanoTime(); // side effect here
+
+                    // isn't a side-effect as those look like a getter
+                    if (System.getProperties().isEmpty()) {
+                        return "";
+                    }
+
+                    return uri + prior;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1429 PrematureDeclaration side-effect in initializer (control)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclaration {
+
+                public String doSomeThing(String uri, String cachedPath, int times) {
+                    var prior = "";
+
+                    // isn't a side-effect as those look like a getter
+                    if (System.getProperties().isEmpty()) {
+                        return "";
+                    }
+
+                    return uri + prior;
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>
