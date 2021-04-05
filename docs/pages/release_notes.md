@@ -14,6 +14,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Deprecated rules
+
+*   java-codestyle
+    *   {% rule java/codestyle/DuplicateImports %}: use the rule {% rule java/bestpractices/UnusedImports %} instead, since it now reports duplicate imports
+
+*   java-errorprone
+    *   {% rule java/errorprone/ImportFromSamePackage %}: use the rule {% rule java/bestpractices/UnusedImports %} instead, since it now reports imports from the same package
+
+
 ### Fixed Issues
 
 ### API Changes
