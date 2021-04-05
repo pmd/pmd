@@ -97,7 +97,7 @@
     <rule ref="category/java/codestyle.xml/NoPackage"/>
     <!-- <rule ref="category/java/codestyle.xml/OnlyOneReturn"/> -->
     <rule ref="category/java/codestyle.xml/PackageCase"/>
-    <!-- <rule ref="category/java/codestyle.xml/PrematureDeclaration"/> -->
+    <rule ref="category/java/codestyle.xml/PrematureDeclaration"/>
     <rule ref="category/java/codestyle.xml/RemoteInterfaceNamingConvention"/>
     <rule ref="category/java/codestyle.xml/RemoteSessionInterfaceNamingConvention"/>
     <rule ref="category/java/codestyle.xml/ShortClassName"/>
