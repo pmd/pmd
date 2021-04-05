@@ -618,10 +618,13 @@ public class Foo {}
           language="java"
           since="0.5"
           message="Avoid duplicate imports such as ''{0}''"
+          deprecated="true"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.DuplicateImportsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#duplicateimports">
         <description>
 Duplicate or overlapping import statements should be avoided.
+
+This rule is deprecated since PMD 6.34.0. Use the rule UnusedImports from category bestpractices instead.
         </description>
         <priority>4</priority>
         <example>

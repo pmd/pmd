@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
+@Deprecated
 public class DuplicateImportsRule extends AbstractJavaRule {
     private static final Logger LOG = Logger.getLogger(DuplicateImportsRule.class.getName());
 
