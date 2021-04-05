@@ -1660,7 +1660,7 @@ public class FalsePositive {
         ]]></code>
     </test-code>
     <test-code>
-        <description>#2757 PMD 6.27.0 break support for Lombok's Cleanup annotation</description>
+        <description>#2757 support @lombok.Cleanup annotation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             package net.sourceforge.pmd.lang.java.rule.errorprone.closeresource;
