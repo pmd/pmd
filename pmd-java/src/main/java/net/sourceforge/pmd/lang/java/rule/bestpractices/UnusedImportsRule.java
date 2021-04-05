@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class UnusedImportsRule extends AbstractJavaRule {
@@ -68,7 +69,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
             visit((ASTPackageDeclaration) node.getChild(0), data);
         }
         for (ImportWrapper wrapper : imports) {
-            addViolation(data, wrapper.getNode(), wrapper.getFullName());
+            addViolation(data, wrapper.getNode(), PrettyPrintingUtil.prettyImport(wrapper.getNode()));
         }
         return data;
     }
@@ -109,7 +110,10 @@ public class UnusedImportsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
-        imports.add(new ImportWrapper(node));
+        if (!imports.add(new ImportWrapper(node))) {
+            // duplicate
+            addViolationWithMessage(data, node, "Duplicate import ''{0}''", new String[] {PrettyPrintingUtil.prettyImport(node)});
+        }
         return data;
     }
 
@@ -160,7 +164,6 @@ public class UnusedImportsRule extends AbstractJavaRule {
             }
         }
     }
-
 
 
     protected Pair<String, String> getImportWrapper(Node node) {

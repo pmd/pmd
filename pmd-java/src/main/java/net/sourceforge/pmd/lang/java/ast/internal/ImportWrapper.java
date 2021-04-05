@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 
 /**
@@ -117,7 +116,7 @@ public class ImportWrapper {
         return fullname;
     }
 
-    public Node getNode() {
+    public ASTImportDeclaration getNode() {
         return node;
     }
 

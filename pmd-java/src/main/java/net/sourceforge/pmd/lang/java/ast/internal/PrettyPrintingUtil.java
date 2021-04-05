@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
@@ -75,6 +76,14 @@ public final class PrettyPrintingUtil {
             return "record";
         }
         return "class";
+    }
+
+    public static String prettyImport(ASTImportDeclaration importDecl) {
+        String name = importDecl.getImportedName();
+        if (importDecl.isImportOnDemand()) {
+            return name + ".*";
+        }
+        return name;
     }
 
 }
