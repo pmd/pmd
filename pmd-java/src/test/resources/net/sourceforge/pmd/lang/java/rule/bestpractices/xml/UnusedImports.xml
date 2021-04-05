@@ -122,8 +122,22 @@ public class Foo {}
 
     <test-code>
         <description>import from default package</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary import from the current package 'Bar'</message>
+        </expected-messages>
+        <code><![CDATA[
+import Bar;
+public class Foo {
+    public Bar foo() {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>import from default package from somewhere else</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+package somewhere;
 import Bar;
 public class Foo {
     public Bar foo() {}
@@ -135,6 +149,7 @@ public class Foo {
         <description>import from default package</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+package somewhere;
 import Bar;
 public class Foo {
     public void foo() {}
@@ -726,6 +741,44 @@ class NPEImport {}
                     emptyList();
                 }
             }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>ImportFromSamePackage: simple failure</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            package foo;
+            import foo.Bar;
+            public class Baz {
+                Bar bar;
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ImportFromSamePackage: class in default package importing from sub package</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package foo;
+            import foo.buz.Bar;
+            public class Baz{
+                Bar b;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ImportFromSamePackage: importing all from same package</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary import from the current package 'foo.bar.*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            package foo.bar;
+            import foo.bar.*;
+            public class Baz{}
             ]]></code>
     </test-code>
 </test-data>
