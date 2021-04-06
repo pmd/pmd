@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public final class LanguageRegistry {
 
-    private static final LanguageRegistry instance = new LanguageRegistry();
+    private static final LanguageRegistry INSTANCE = new LanguageRegistry();
 
     private final Map<String, Language> languages;
 
@@ -71,7 +71,7 @@ public final class LanguageRegistry {
      */
     @Deprecated
     public static LanguageRegistry getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**

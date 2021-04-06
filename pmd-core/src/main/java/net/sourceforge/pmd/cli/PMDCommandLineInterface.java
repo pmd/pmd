@@ -19,8 +19,8 @@ import com.beust.jcommander.ParameterException;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
- *
- * @deprecated Internal API. Use {@link PMD#run(String[])} or {@link PMD#main(String[])}
+ * @deprecated Internal API. Use {@link PMD#runPmd(String...)} or {@link PMD#main(String[])},
+ *     or {@link PmdParametersParseResult} if you just want to produce a configuration.
  */
 @Deprecated
 @InternalApi
@@ -158,6 +158,10 @@ public final class PMDCommandLineInterface {
         return buf.toString();
     }
 
+    /**
+     * @deprecated Use {@link PMD#main(String[])}
+     */
+    @Deprecated
     public static void run(String[] args) {
         setStatusCodeOrExit(PMD.run(args));
     }
@@ -182,4 +186,7 @@ public final class PMDCommandLineInterface {
         System.setProperty(STATUS_CODE_PROPERTY, Integer.toString(statusCode));
     }
 
+    public static void printJcommanderUsageOnConsole() {
+        new JCommander(new PMDParameters()).usage();
+    }
 }
