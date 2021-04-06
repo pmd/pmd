@@ -24,6 +24,9 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * <pre>
  * Language javaLanguage = LanguageRegistry.{@link LanguageRegistry#getLanguage(String) getLanguage}("Java");
  * LanguageVersion java11 = javaLanguage.{@link Language#getVersion(String) getVersion}("11");
+ * LanguageVersionHandler handler = java11.getLanguageVersionHandler();
+ * Parser parser = handler.getParser(handler.getDefaultParserOptions());
+ * // use parser
  * </pre>
  */
 public class LanguageVersion implements Comparable<LanguageVersion> {
@@ -44,21 +47,32 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
         this.languageVersionHandler = languageVersionHandler;
     }
 
+    /**
+     * Returns the language that owns this version.
+     */
     public Language getLanguage() {
         return language;
     }
 
+    /**
+     * Returns the version string. This is usually a version number, e.g.
+     * {@code "1.7"} or {@code "11"}. This is used by {@link Language#getVersion(String)}.
+     */
     public String getVersion() {
         return version;
     }
 
+    /**
+     * Returns the {@link LanguageVersionHandler}, which provides access
+     * to version-specific services, like the parser.
+     */
     public LanguageVersionHandler getLanguageVersionHandler() {
         return languageVersionHandler;
     }
 
     /**
-     * Get the name of this LanguageVersion. This is Language name appended with
-     * the LanguageVersion version if not an empty String.
+     * Returns the name of this language version. This is the version string
+     * prefixed with the {@linkplain Language#getName() language name}.
      *
      * @return The name of this LanguageVersion.
      */
