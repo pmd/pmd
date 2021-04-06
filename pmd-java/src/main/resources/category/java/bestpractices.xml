@@ -1027,8 +1027,8 @@ public class SecureSystem {
           message="Use one line for each declaration, it enhances code readability."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#onedeclarationperline">
         <description>
-Java allows the use of several variables declaration of the same type on one line. However, it
-can lead to quite messy code. This rule looks for several declarations on the same line.
+Java allows the use of several variables declaration of the same type on one line.
+However, it can lead to quite messy code. This rule looks for several declarations on the same line.
         </description>
         <priority>4</priority>
         <properties>

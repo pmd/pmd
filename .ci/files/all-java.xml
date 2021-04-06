@@ -39,7 +39,7 @@
     <rule ref="category/java/bestpractices.xml/LooseCoupling"/>
     <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray"/>
     <rule ref="category/java/bestpractices.xml/MissingOverride"/>
-    <!-- <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine"/> -->
+    <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine"/>
     <!-- <rule ref="category/java/bestpractices.xml/PreserveStackTrace"/> -->
     <rule ref="category/java/bestpractices.xml/ReplaceEnumerationWithIterator"/>
     <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap"/>
