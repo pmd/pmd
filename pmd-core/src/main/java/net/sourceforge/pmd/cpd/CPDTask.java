@@ -176,9 +176,9 @@ public class CPDTask extends Task {
     }
 
     private CPDRenderer createRenderer() {
-        if (format.equals(TEXT_FORMAT)) {
+        if (TEXT_FORMAT.equals(format)) {
             return new SimpleRenderer();
-        } else if (format.equals(CSV_FORMAT)) {
+        } else if (CSV_FORMAT.equals(format)) {
             return new CSVRenderer();
         }
         return new XMLRenderer();

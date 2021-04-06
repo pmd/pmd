@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -41,7 +40,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
@@ -108,23 +107,38 @@ public class LanguageLevelChecker<T> {
     }
 
 
-    /** Those are just for the preview features. */
+    /**
+     * Those are just for the preview features.
+     * They are implemented in at least one preview language version.
+     * They might be also be standardized.
+     */
     private enum PreviewFeature implements LanguageFeature {
-        BREAK__WITH__VALUE_STATEMENTS(12, 12, false),
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/359">JEP 359: Records (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/384">JEP 384: Records (Second Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a>
+         */
+        RECORD_DECLARATIONS(14, 15, true),
 
-        COMPOSITE_CASE_LABEL(12, 13, true),
-        SWITCH_EXPRESSIONS(12, 13, true),
-        SWITCH_RULES(12, 13, true),
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/305">JEP 305: Pattern Matching for instanceof (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/375">JEP 375: Pattern Matching for instanceof (Second Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
+         */
+        TYPE_PATTERNS_IN_INSTANCEOF(14, 15, true),
 
-        TEXT_BLOCK_LITERALS(13, 14, true),
-        YIELD_STATEMENTS(13, 13, true),
+        /**
+         * Part of the records JEP 394.
+         * @see #RECORD_DECLARATIONS
+         * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8253374">JLS changes for Static Members of Inner Classes</a>
+         */
+        STATIC_LOCAL_TYPE_DECLARATIONS(15, 15, true),
 
-        /** \s */
-        SPACE_STRING_ESCAPES(14, 14, true),
-        RECORD_DECLARATIONS(14, 15, false),
-        TYPE_TEST_PATTERNS_IN_INSTANCEOF(14, 15, false),
-        SEALED_CLASSES(15, 15, false),
-        STATIC_LOCAL_TYPE_DECLARATIONS(15, 15, false), // part of the sealed classes JEP
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/360">JEP 360: Sealed Classes (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/397">JEP 397: Sealed Classes (Second Preview)</a>
+         */
+        SEALED_CLASSES(15, 16, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -164,18 +178,55 @@ public class LanguageLevelChecker<T> {
         }
     }
 
-    /** Those use a max valid version. */
-    private enum ReservedIdentifiers implements LanguageFeature {
+    /**
+     * Those use a max valid version.
+     *
+     * @see <a href="http://cr.openjdk.java.net/~gbierman/jep397/jep397-20201204/specs/contextual-keywords-jls.html">Contextual Keywords</a>
+     */
+    private enum Keywords implements LanguageFeature {
+        /**
+         * ReservedKeyword since Java 1.4.
+         */
         ASSERT_AS_AN_IDENTIFIER(4, "assert"),
+        /**
+         * ReservedKeyword since Java 1.5.
+         */
         ENUM_AS_AN_IDENTIFIER(5, "enum"),
+        /**
+         * ReservedKeyword since Java 9.
+         */
         UNDERSCORE_AS_AN_IDENTIFIER(9, "_"),
+        /**
+         * ContextualKeyword since Java 10.
+         */
         VAR_AS_A_TYPE_NAME(10, "var"),
-        RECORD_AS_A_TYPE_NAME(14, "record");
+
+        /**
+         * ContextualKeyword since Java 13 Preview.
+         */
+        YIELD_AS_A_TYPE_NAME(13, "yield"),
+
+        /**
+         * ContextualKeyword since Java 14 Preview.
+         */
+        RECORD_AS_A_TYPE_NAME(14, "record"),
+
+        /**
+         * ContextualKeyword since Java 15 Preview.
+         */
+        SEALED_AS_A_TYPE_NAME(15, "sealed"),
+
+        /**
+         * ContextualKeyword since Java 15 Preview.
+         */
+        PERMITS_AS_A_TYPE_NAME(15, "permits"),
+
+        ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int maxJdkVersion;
         private final String reserved;
 
-        ReservedIdentifiers(int minJdkVersion, String reserved) {
+        Keywords(int minJdkVersion, String reserved) {
             this.maxJdkVersion = minJdkVersion;
             this.reserved = reserved;
         }
@@ -221,7 +272,39 @@ public class LanguageLevelChecker<T> {
         MODULE_DECLARATIONS(9),
         DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES(9),
         PRIVATE_METHODS_IN_INTERFACES(9),
-        CONCISE_RESOURCE_SYNTAX(9);
+        CONCISE_RESOURCE_SYNTAX(9),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
+        COMPOSITE_CASE_LABEL(14),
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
+        SWITCH_EXPRESSIONS(14),
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
+        SWITCH_RULES(14),
+        /**
+         * @see #SWITCH_EXPRESSIONS
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
+        YIELD_STATEMENTS(14),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a>
+         */
+        TEXT_BLOCK_LITERALS(15),
+        /**
+         * The new escape sequence {@code \s} simply translates to a single space {@code \u0020}.
+         *
+         * @see #TEXT_BLOCK_LITERALS
+         * @see <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a>
+         */
+        SPACE_STRING_ESCAPES(15),
+
+        ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int minJdkLevel;
 
@@ -263,10 +346,10 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTStringLiteral node, T data) {
             if (node.isStringLiteral() && SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
-                check(node, PreviewFeature.SPACE_STRING_ESCAPES, data);
+                check(node, RegularLanguageFeature.SPACE_STRING_ESCAPES, data);
             }
             if (node.isTextBlock()) {
-                check(node, PreviewFeature.TEXT_BLOCK_LITERALS, data);
+                check(node, RegularLanguageFeature.TEXT_BLOCK_LITERALS, data);
             }
             return null;
         }
@@ -281,21 +364,13 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTYieldStatement node, T data) {
-            check(node, PreviewFeature.YIELD_STATEMENTS, data);
-            return null;
-        }
-
-        @Override
-        public Void visit(ASTBreakStatement node, T data) {
-            if (node.getNumChildren() > 0) {
-                check(node, PreviewFeature.BREAK__WITH__VALUE_STATEMENTS, data);
-            }
+            check(node, RegularLanguageFeature.YIELD_STATEMENTS, data);
             return null;
         }
 
         @Override
         public Void visit(ASTSwitchExpression node, T data) {
-            check(node, PreviewFeature.SWITCH_EXPRESSIONS, data);
+            check(node, RegularLanguageFeature.SWITCH_EXPRESSIONS, data);
             return null;
         }
 
@@ -411,8 +486,8 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTTypeTestPattern node, T data) {
-            check(node, PreviewFeature.TYPE_TEST_PATTERNS_IN_INSTANCEOF, data);
+        public Void visit(ASTTypePattern node, T data) {
+            check(node, PreviewFeature.TYPE_PATTERNS_IN_INSTANCEOF, data);
             return null;
         }
 
@@ -452,7 +527,7 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTSwitchLabel node, T data) {
             if (IteratorUtil.count(node.iterator()) > 1) {
-                check(node, PreviewFeature.COMPOSITE_CASE_LABEL, data);
+                check(node, RegularLanguageFeature.COMPOSITE_CASE_LABEL, data);
             }
             return null;
         }
@@ -465,7 +540,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTSwitchArrowBranch node, T data) {
-            check(node, PreviewFeature.SWITCH_RULES, data);
+            check(node, RegularLanguageFeature.SWITCH_RULES, data);
             return null;
         }
 
@@ -484,9 +559,15 @@ public class LanguageLevelChecker<T> {
             }
             String simpleName = node.getSimpleName();
             if ("var".equals(simpleName)) {
-                check(node, ReservedIdentifiers.VAR_AS_A_TYPE_NAME, data);
+                check(node, Keywords.VAR_AS_A_TYPE_NAME, data);
+            } else if ("yield".equals(simpleName)) {
+                check(node, Keywords.YIELD_AS_A_TYPE_NAME, data);
             } else if ("record".equals(simpleName)) {
-                check(node, ReservedIdentifiers.RECORD_AS_A_TYPE_NAME, data);
+                check(node, Keywords.RECORD_AS_A_TYPE_NAME, data);
+            } else if ("sealed".equals(simpleName)) {
+                check(node, Keywords.SEALED_AS_A_TYPE_NAME, data);
+            } else if ("permits".equals(simpleName)) {
+                check(node, Keywords.PERMITS_AS_A_TYPE_NAME, data);
             }
             checkIdent(node, simpleName, data);
             return null;
@@ -494,11 +575,11 @@ public class LanguageLevelChecker<T> {
 
         private void checkIdent(JavaNode node, String simpleName, T acc) {
             if ("enum".equals(simpleName)) {
-                check(node, ReservedIdentifiers.ENUM_AS_AN_IDENTIFIER, acc);
+                check(node, Keywords.ENUM_AS_AN_IDENTIFIER, acc);
             } else if ("assert".equals(simpleName)) {
-                check(node, ReservedIdentifiers.ASSERT_AS_AN_IDENTIFIER, acc);
+                check(node, Keywords.ASSERT_AS_AN_IDENTIFIER, acc);
             } else if ("_".equals(simpleName)) {
-                check(node, ReservedIdentifiers.UNDERSCORE_AS_AN_IDENTIFIER, acc);
+                check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
             }
         }
 

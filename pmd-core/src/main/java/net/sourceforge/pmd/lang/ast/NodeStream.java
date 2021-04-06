@@ -58,7 +58,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *               {@linkplain #followingSiblings() .followingSiblings}()                    <i>// the stream here contains only the siblings, not the original node</i>
  *               {@linkplain #take(int) .take}(1)                                <i>// the stream here contains only the first sibling, if it exists</i>
  *               {@linkplain #filterIs(Class) .filterIs}(ASTNumericLiteral.class)
- *               {@linkplain #filter(Predicate) .filter}(it -> !it.isFloatingPoint() && it.getValueAsInt() == 0)
+ *               {@linkplain #filter(Predicate) .filter}(it -&gt; !it.isFloatingPoint() &amp;&amp; it.getValueAsInt() == 0)
  *               {@linkplain #nonEmpty() .nonEmpty}(); <i>// If the stream is non empty here, then all the pipeline matched</i>
  * </pre>
  *
@@ -129,7 +129,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *
  * @since 7.0.0
  */
-public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
+public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T> {
 
     /**
      * Returns a node stream consisting of the results of replacing each
@@ -1079,14 +1079,13 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      *
      * @param c1   First type to test
      * @param rest Other types to test
-     * @param <I>  Input type (this method does not care about it)
      * @param <O>  Output type
      *
      * @see #firstNonNull(Function)
      */
     @SafeVarargs // this method is static because of the generic varargs
     @SuppressWarnings("unchecked")
-    static <I, O> Function<@Nullable I, @Nullable O> asInstanceOf(Class<? extends O> c1, Class<? extends O>... rest) {
+    static <O> Function<@Nullable Object, @Nullable O> asInstanceOf(Class<? extends O> c1, Class<? extends O>... rest) {
         if (rest.length == 0) {
             return obj -> c1.isInstance(obj) ? (O) obj : null;
         }

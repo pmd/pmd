@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.documentation;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -23,8 +25,10 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class ApexDocRule extends AbstractApexRule {
+
     private static final Pattern DESCRIPTION_PATTERN = Pattern.compile("@description\\s");
     private static final Pattern RETURN_PATTERN = Pattern.compile("@return\\s");
     private static final Pattern PARAM_PATTERN = Pattern.compile("@param\\s+(\\w+)\\s");
@@ -35,11 +39,23 @@ public class ApexDocRule extends AbstractApexRule {
     private static final String UNEXPECTED_RETURN_MESSAGE = "Unexpected ApexDoc @return";
     private static final String MISMATCHED_PARAM_MESSAGE = "Missing or mismatched ApexDoc @param";
 
+    private static final PropertyDescriptor<Boolean> REPORT_PRIVATE_DESCRIPTOR =
+            booleanProperty("reportPrivate")
+                    .desc("Report private classes and methods").defaultValue(false).build();
+
+    private static final PropertyDescriptor<Boolean> REPORT_PROTECTED_DESCRIPTOR =
+            booleanProperty("reportProtected")
+                    .desc("Report protected methods").defaultValue(false).build();
+
+    public ApexDocRule() {
+        definePropertyDescriptor(REPORT_PRIVATE_DESCRIPTOR);
+        definePropertyDescriptor(REPORT_PROTECTED_DESCRIPTOR);
+    }
+
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
         return RuleTargetSelector.forTypes(ASTUserClass.class, ASTUserInterface.class, ASTMethod.class, ASTProperty.class);
     }
-
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -135,7 +151,9 @@ public class ApexDocRule extends AbstractApexRule {
 
         ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
         if (modifier != null) {
-            return (modifier.isPublic() || modifier.isGlobal()) && !modifier.isOverride();
+            boolean flagPrivate = getProperty(REPORT_PRIVATE_DESCRIPTOR) && modifier.isPrivate();
+            boolean flagProtected = getProperty(REPORT_PROTECTED_DESCRIPTOR) && modifier.isProtected();
+            return (modifier.isPublic() || modifier.isGlobal() || flagPrivate || flagProtected) && !modifier.isOverride();
         }
         return false;
     }

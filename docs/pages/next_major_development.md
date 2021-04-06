@@ -246,6 +246,36 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.33.0
+
+No changes.
+
+#### 6.32.0
+
+##### Experimental APIs
+
+*   The experimental class `ASTTypeTestPattern` has been renamed to {% jdoc java::lang.java.ast.ASTTypePattern %}
+    in order to align the naming to the JLS.
+*   The experimental class `ASTRecordConstructorDeclaration` has been renamed to {% jdoc java::lang.java.ast.ASTCompactConstructorDeclaration %}
+    in order to align the naming to the JLS.
+*   The AST types and APIs around Pattern Matching and Records are not experimental anymore:
+    *   {% jdoc !!java::lang.java.ast.ASTVariableDeclaratorId#isPatternBinding() %}
+    *   {% jdoc java::lang.java.ast.ASTPattern %}
+    *   {% jdoc java::lang.java.ast.ASTTypePattern %}
+    *   {% jdoc java::lang.java.ast.ASTRecordDeclaration %}
+    *   {% jdoc java::lang.java.ast.ASTRecordComponentList %}
+    *   {% jdoc java::lang.java.ast.ASTRecordComponent %}
+    *   {% jdoc java::lang.java.ast.ASTRecordBody %}
+    *   {% jdoc java::lang.java.ast.ASTCompactConstructorDeclaration %}
+
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   The protected or public member of the Java rule {% jdoc java::lang.java.rule.bestpractices.AvoidUsingHardCodedIPRule %}
+    are deprecated and considered to be internal API. They will be removed with PMD 7.
+
 #### 6.31.0
 
 ##### Deprecated API

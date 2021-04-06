@@ -8,14 +8,17 @@
         <description>Contains suite</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class Foo extends TestCase{
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+public class Foo extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite("Tests");
-        suite.addTestSuite(MyTest.class);
+        suite.addTestSuite(Foo.class);
         return suite;
     }
-    @Test
-    public void foo() {
+    public void testFoo() {
     }
 }
         ]]></code>
@@ -25,10 +28,15 @@ public class Foo extends TestCase{
         <description>Contains JUnit4TestAdapter suite</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
+import junit.framework.JUnit4TestAdapter;
+import junit.framework.Test;
+
 public class Foo extends TestCase{
     public static Test suite() {
         return new JUnit4TestAdapter(Foo.class);
     }
+
     @Test
     public void foo() {
     }
@@ -37,12 +45,19 @@ public class Foo extends TestCase{
     </test-code>
 
     <test-code>
-        <description>Uses propper suite</description>
+        <description>Uses proper suite</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+import junit.framework.TestCase;
+
 @RunWith(Suite.class)
 @SuiteClasses(Foo.class)
-public class Foo extends TestCase{
+public class Foo extends TestCase {
     @Test
     public void foo() {
     }

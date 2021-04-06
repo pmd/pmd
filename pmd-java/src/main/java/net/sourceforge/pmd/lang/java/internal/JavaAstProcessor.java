@@ -87,9 +87,9 @@ public final class JavaAstProcessor {
     }
 
     static TypeInferenceLogger defaultTypeInfLogger() {
-        if (INFERENCE_LOG_LEVEL == Level.FINEST) {
+        if (Level.FINEST.equals(INFERENCE_LOG_LEVEL)) {
             return new VerboseLogger(System.err);
-        } else if (INFERENCE_LOG_LEVEL == Level.FINE) {
+        } else if (Level.FINE.equals(INFERENCE_LOG_LEVEL)) {
             return new SimpleLogger(System.err);
         } else {
             return TypeInferenceLogger.noop();
@@ -145,6 +145,7 @@ public final class JavaAstProcessor {
         bench("2. Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
         bench("3. AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
         bench("4. Comment assignment", () -> InternalApiBridge.assignComments(acu));
+        bench("5. Usage resolution", () -> InternalApiBridge.usageResolution(this, acu));
     }
 
     public TypeSystem getTypeSystem() {

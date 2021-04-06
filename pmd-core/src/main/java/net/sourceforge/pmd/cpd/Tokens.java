@@ -34,7 +34,7 @@ public class Tokens {
 
     public int getLineCount(TokenEntry mark, Match match) {
         TokenEntry endTok = getEndToken(mark, match);
-        if (endTok == TokenEntry.EOF) {
+        if (TokenEntry.EOF.equals(endTok)) {
             endTok = get(mark.getIndex() + match.getTokenCount() - 2);
         }
         return endTok.getBeginLine() - mark.getBeginLine() + 1;

@@ -5,8 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Comparator;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Represents the operator of an {@linkplain ASTInfixExpression infix expression}.
@@ -81,6 +85,10 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     /** Modulo {@code "%"} operator. */
     MOD("%");
 
+    /**
+     * Use with {@link #isInfixExprWithOperator(JavaNode, Set)}.
+     */
+    public static final Set<BinaryOp> COMPARISON_OPS = CollectionUtil.immutableEnumSet(LE, GE, GT, LT);
 
     private final String code;
 
@@ -160,5 +168,52 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
         default:
             return -1;
         }
+    }
+
+
+    /**
+     * Complement, for boolean operators. Eg for {@code ==}, return {@code !=},
+     * for {@code <=}, returns {@code >}. Returns null if this is another kind
+     * of operator.
+     */
+    public @Nullable BinaryOp getComplement() {
+        switch (this) {
+        case CONDITIONAL_OR: return CONDITIONAL_AND;
+        case CONDITIONAL_AND: return CONDITIONAL_OR;
+        case OR: return AND;
+        case AND: return OR;
+
+        case EQ: return NE;
+        case NE: return EQ;
+        case LE: return GT;
+        case GE: return LT;
+        case GT: return LE;
+        case LT: return GE;
+
+        default: return null;
+        }
+    }
+
+
+    /**
+     * Tests if the node is an {@link ASTInfixExpression} with one of the given operators.
+     */
+    public static boolean isInfixExprWithOperator(@Nullable JavaNode e, Set<BinaryOp> operators) {
+        if (e instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) e;
+            return operators.contains(infix.getOperator());
+        }
+        return false;
+    }
+
+    /**
+     * Tests if the node is an {@link ASTInfixExpression} with the given operator.
+     */
+    public static boolean isInfixExprWithOperator(@Nullable JavaNode e, BinaryOp operator) {
+        if (e instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) e;
+            return operator == infix.getOperator();
+        }
+        return false;
     }
 }

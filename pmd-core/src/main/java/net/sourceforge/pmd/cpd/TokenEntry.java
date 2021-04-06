@@ -155,8 +155,17 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.hashCode = hashCode;
     }
 
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     @Override
     public boolean equals(Object o) {
+        // make sure to recognize EOF regardless of hashCode (hashCode is irrelevant for EOF)
+        if (this == EOF) {
+            return o == EOF;
+        }
+        if (o == EOF) {
+            return this == EOF;
+        }
+        // any token except EOF
         if (!(o instanceof TokenEntry)) {
             return false;
         }
@@ -171,7 +180,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     @Override
     public String toString() {
-        if (this == EOF) {
+        if (EOF.equals(this)) {
             return "EOF";
         }
         for (Map.Entry<String, Integer> e : TOKENS.get().entrySet()) {

@@ -94,9 +94,6 @@ entries:
         - title: Defining rule properties
           url: /pmd_userdocs_extending_defining_properties.html
           output: web, pdf
-        - title: Using and defining code metrics
-          url: /pmd_userdocs_extending_metrics_howto.html
-          output: web, pdf
         - title: Rule guidelines
           url: /pmd_userdocs_extending_rule_guidelines.html
           output: web, pdf
@@ -352,17 +349,20 @@ entries:
         - title: Performance
           output: web, pdf
           url: /pmd_rules_xsl_performance.html
-  - title: Language Specific Documentation
+  - title: Language-Specific Documentation
     output: web, pdf
     folderitems:
-    - title: JSP Support
+    - title: Apex
+      url: /pmd_languages_apex.html
+      output: web, pdf
+    - title: Java
+      url: /pmd_languages_java.html
+      output: web, pdf
+    - title: JSP
       url: /pmd_languages_jsp.html
       output: web, pdf
-    - title: Java code metrics
-      url: /pmd_java_metrics_index.html
-      output: web, pdf
-    - title: Apex code metrics
-      url: /pmd_apex_metrics_index.html
+    - title: PLSQL
+      url: /pmd_languages_plsql.html
       output: web, pdf
   - title: Developer Documentation
     output: web, pdf
@@ -402,9 +402,6 @@ entries:
           output: web, pdf
         - title: Adding a new CPD language
           url: /pmd_devdocs_major_adding_new_cpd_language.html
-          output: web, pdf
-        - title: Adding metrics support to a language
-          url: /pmd_devdocs_major_adding_new_metrics_framework.html
           output: web, pdf
       - title: Experimental features
         output: web, pdf

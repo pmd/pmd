@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
 
-import java.io.ObjectStreamField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,13 +20,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavadocCommentOwner;
-import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -162,7 +158,7 @@ public class CommentRequiredRule extends AbstractJavaRule {
     public Object visit(ASTMethodDeclaration decl, Object data) {
         if (isAnnotatedOverride(decl)) {
             checkCommentMeetsRequirement(data, decl, OVERRIDE_CMT_DESCRIPTOR);
-        } else if (decl.getSignature().role == JavaOperationSignature.Role.GETTER_OR_SETTER) {
+        } else if (JavaRuleUtil.isGetterOrSetter(decl)) {
             checkCommentMeetsRequirement(data, decl, ACCESSOR_CMT_DESCRIPTOR);
         } else {
             checkMethodOrConstructorComment(decl, data);
@@ -187,9 +183,9 @@ public class CommentRequiredRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTFieldDeclaration decl, Object data) {
-        if (isSerialVersionUID(decl)) {
+        if (JavaRuleUtil.isSerialVersionUID(decl)) {
             checkCommentMeetsRequirement(data, decl, SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR);
-        } else if (isSerialPersistentFields(decl)) {
+        } else if (JavaRuleUtil.isSerialPersistentFields(decl)) {
             checkCommentMeetsRequirement(data, decl, SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR);
         } else {
             checkCommentMeetsRequirement(data, decl, FIELD_CMT_REQUIREMENT_DESCRIPTOR);
@@ -198,30 +194,6 @@ public class CommentRequiredRule extends AbstractJavaRule {
         return super.visit(decl, data);
     }
 
-
-    @SuppressWarnings("PMD.UnusedFormalParameter")
-    private boolean isSerialVersionUID(ASTFieldDeclaration field) {
-        return field.getVarIds().any(it -> "serialVersionUID".equals(it.getName()))
-            && field.hasModifiers(JModifier.FINAL, JModifier.STATIC)
-            && field.getTypeNode().getTypeMirror().isPrimitive(PrimitiveTypeKind.LONG);
-    }
-
-    /**
-     * Whether the given field is a serialPersistentFields variable.
-     * <p/>
-     * This field must be initialized with an array of ObjectStreamField objects.
-     * The modifiers for the field are required to be private, static, and final.
-     *
-     * @param field the field, must not be null
-     * @return true if the field is a serialPersistentFields variable, otherwise false
-     * @see <a href="https://docs.oracle.com/javase/7/docs/platform/serialization/spec/serial-arch.html#6250">Oracle docs</a>
-     */
-    @SuppressWarnings("PMD.UnusedFormalParameter")
-    private boolean isSerialPersistentFields(final ASTFieldDeclaration field) {
-        return field.getVarIds().any(it -> "serialPersistentFields".equals(it.getName()))
-            && field.hasModifiers(JModifier.FINAL, JModifier.STATIC, JModifier.PRIVATE)
-            && TypeTestUtil.isA(ObjectStreamField[].class, field.getTypeNode());
-    }
 
     @Override
     public Object visit(ASTEnumDeclaration decl, Object data) {

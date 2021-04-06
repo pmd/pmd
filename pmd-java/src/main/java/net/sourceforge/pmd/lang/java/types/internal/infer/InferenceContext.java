@@ -298,7 +298,7 @@ final class InferenceContext {
     void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
         // guard against α <: Object
         // all variables have it, it's useless to propagate it
-        if (kind != BoundKind.UPPER || bound != ts.OBJECT) {
+        if (kind != BoundKind.UPPER || bound != ts.OBJECT) { // NOPMD CompareObjectsWithEquals
             if (parent != null) {
                 parent.onBoundAdded(ivar, kind, bound, isSubstitution);
                 return;

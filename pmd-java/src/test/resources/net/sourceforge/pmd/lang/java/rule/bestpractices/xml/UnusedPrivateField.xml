@@ -466,7 +466,7 @@ public class Foo {
         <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 3</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import lombok.*;
+import lombok.Data;
 @Data
 public class Foo {
     private String bar;
@@ -512,7 +512,7 @@ public class Foo {
         <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 7</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-@Data
+@lombok.Data
 public class Foo {
     private String bar;
 }
@@ -620,7 +620,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatefield.Value;
+import somewhere.Value; // 3rd party Value annotation, ie not lombok
 
 public class Foo {
 

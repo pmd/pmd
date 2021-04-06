@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol
 import java.lang.reflect.Modifier
 
+@Suppress("UNUSED_VARIABLE")
 class VarScopingTest : ProcessorTestSpec({
 
     parserTest("Shadowing of variables") {
