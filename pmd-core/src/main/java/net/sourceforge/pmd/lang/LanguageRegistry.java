@@ -95,6 +95,14 @@ public final class LanguageRegistry {
         return languages;
     }
 
+    /**
+     * Returns a language from its {@linkplain Language#getName() full name}
+     * (eg {@code "Java"}). This is case sensitive.
+     *
+     * @param languageName Language name
+     *
+     * @return A language, or null if the name is unknown
+     */
     public static Language getLanguage(String languageName) {
         return getInstance().languages.get(languageName);
     }

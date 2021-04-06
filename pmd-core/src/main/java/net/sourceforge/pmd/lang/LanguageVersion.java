@@ -4,8 +4,27 @@
 
 package net.sourceforge.pmd.lang;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
- * Created by christoferdutz on 21.09.14.
+ * Represents a version of a {@link Language}. Language instances provide
+ * a list of supported versions ({@link Language#getVersions()}). Individual
+ * versions can be retrieved from their version number ({@link Language#getVersion(String)}).
+ *
+ * <p>Versions are used to limit some rules to operate on only a version range.
+ * For instance, a rule that suggests eliding local variable types in Java
+ * (replacing them with {@code var}) makes no sense if the codebase is not
+ * using Java 10 or later. This is determined by {@link Rule#getMinimumLanguageVersion()}
+ * and {@link Rule#getMaximumLanguageVersion()}. These should be set in the
+ * ruleset XML (they're attributes of the {@code <rule>} element), and not
+ * overridden.
+ *
+ * <p>Example usage:
+ * <pre>
+ * Language javaLanguage = LanguageRegistry.{@link LanguageRegistry#getLanguage(String) getLanguage}("Java");
+ * LanguageVersion java11 = javaLanguage.{@link Language#getVersion(String) getVersion}("11");
+ * </pre>
  */
 public class LanguageVersion implements Comparable<LanguageVersion> {
 
@@ -13,6 +32,12 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
     private final String version;
     private final LanguageVersionHandler languageVersionHandler;
 
+    /**
+     * @deprecated Use {@link Language#getVersion(String)}. This is only
+     *     supposed to be used when initializing a {@link Language} instance.
+     */
+    @Deprecated
+    @InternalApi
     public LanguageVersion(Language language, String version, LanguageVersionHandler languageVersionHandler) {
         this.language = language;
         this.version = version;
