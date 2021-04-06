@@ -12,7 +12,11 @@ import net.sourceforge.pmd.stat.Metric;
  *
  * Thread-safety is required only for concurrently notifying about different files.
  * Same file violations are guaranteed to be reported serially.
+ *
+ * @deprecated All entry points of PMD that allowed usage of this are now deprecated.
+ *     This will be replaced by another TBD mechanism in PMD 7.
  */
+@Deprecated
 public interface ThreadSafeReportListener {
     /**
      * A new violation has been found.
