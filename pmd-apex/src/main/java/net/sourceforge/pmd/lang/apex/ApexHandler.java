@@ -38,6 +38,7 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
     @Override
     public void declareParserTaskProperties(PropertySource source) {
         source.definePropertyDescriptor(ApexParser.MULTIFILE_DIRECTORY);
+        overridePropertiesFromEnv(ApexLanguageModule.TERSE_NAME, source);
     }
 
     @Override
