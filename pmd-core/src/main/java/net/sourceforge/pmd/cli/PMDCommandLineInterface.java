@@ -37,6 +37,12 @@ public final class PMDCommandLineInterface {
 
     private PMDCommandLineInterface() { }
 
+    /**
+     * Note: this may terminate the VM.
+     *
+     * @deprecated Use {@link PmdParametersParseResult#extractParameters(String...)}
+     */
+    @Deprecated
     public static PMDParameters extractParameters(PMDParameters arguments, String[] args, String progName) {
         JCommander jcommander = new JCommander(arguments);
         jcommander.setProgramName(progName);
