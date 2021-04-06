@@ -37,6 +37,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidUnusedMethod"
+          language="apex"
           since="7.0.0"
           message="Unused methods make understanding code harder"
           class="net.sourceforge.pmd.lang.apex.rule.design.AvoidUnusedMethodRule"
