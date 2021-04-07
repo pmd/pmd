@@ -56,6 +56,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -769,6 +770,12 @@ public final class JavaRuleUtil {
         } else if (e instanceof ASTUnaryExpression) {
             ASTUnaryExpression unary = (ASTUnaryExpression) e;
             return !unary.getOperator().isPure() && isNonLocalLhs(unary.getOperand());
+        }
+
+        if (e.ancestors(ASTThrowStatement.class).nonEmpty()) {
+            // then this side effect can never be observed in containing code,
+            // because control flow jumps out of the method
+            return false;
         }
 
         return e instanceof ASTMethodCall && !isPure((ASTMethodCall) e)

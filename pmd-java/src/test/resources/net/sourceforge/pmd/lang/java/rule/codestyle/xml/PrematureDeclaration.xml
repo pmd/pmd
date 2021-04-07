@@ -2,7 +2,7 @@
 <test-data
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>premature declaration before unrelated test</description>
@@ -351,6 +351,38 @@ public class PrematureDeclarationLambda {
                         scriptClassToExecute = this.scriptClass; // here
                         return doScript(scriptClassToExecute);
                     }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FN with exception ctor flagged as side-effect</description>
+        <!-- https://github.com/spring-projects/spring-framework/blob/v5.0.6.RELEASE/spring-core/src/main/java/org/springframework/util/AntPathMatcher.java#L572 -->
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Declaration of 'file2' can be moved closer to its usages</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class PrematureDeclaration {
+
+                Class<?> scriptClass;
+                Object cachedResult;
+
+                private void doScript(Class<?> klass) {}
+
+
+                public String combine(String pattern1, String pattern2) {
+                    String ext1 = pattern1.substring(starDotPos1 + 1);
+                    int dotPos2 = pattern2.indexOf('.');
+                    String file2 = dotPos2 == -1 ? pattern2 : pattern2.substring(0, dotPos2);
+                    String ext2 = dotPos2 == -1 ? "" : pattern2.substring(dotPos2);
+                    boolean ext1All = ext1.equals(".*") || ext1.equals("");
+                    boolean ext2All = ext2.equals(".*") || ext2.equals("");
+                    if (!ext1All && !ext2All) {
+                        throw new IllegalArgumentException("Cannot combine patterns: " + pattern1 + " vs " + pattern2);
+                    }
+                    String ext = ext1All ? ext2 : ext1;
+                    return file2 + ext;
                 }
             }
             ]]></code>
