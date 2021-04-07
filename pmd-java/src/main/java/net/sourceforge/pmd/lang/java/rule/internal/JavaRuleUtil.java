@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -641,6 +642,17 @@ public final class JavaRuleUtil {
     }
 
     /**
+     * Returns true if the expression is a {@link ASTNamedReferenceExpr}
+     * that references any of the symbol in the set.
+     */
+    public static boolean isReferenceToVar(@Nullable ASTExpression expression, @NonNull Set<? extends JVariableSymbol> symbols) {
+        if (expression instanceof ASTNamedReferenceExpr) {
+            return symbols.contains(((ASTNamedReferenceExpr) expression).getReferencedSym());
+        }
+        return false;
+    }
+
+    /**
      * Returns true if both expressions refer to the same variable.
      * A "variable" here can also means a field path, eg, {@code this.field.a}.
      * This method unifies {@code this.field} and {@code field} if possible,
@@ -752,24 +764,31 @@ public final class JavaRuleUtil {
      * as well as assignments to fields or array elements. We could relax
      * this assumption with (much) more data-flow logic, including a memory model.
      *
-     * @param node A node
+     * <p>By default assignments to locals are not counted as side-effects,
+     * unless the lhs is in the given set of symbols.
+     *
+     * @param node             A node
+     * @param localVarsToTrack Local variables to track
      */
-    public static boolean hasSideEffect(@Nullable JavaNode node) {
+    public static boolean hasSideEffect(@Nullable JavaNode node, Set<? extends JVariableSymbol> localVarsToTrack) {
         return node != null && node.descendantsOrSelf()
                                    .filterIs(ASTExpression.class)
-                                   .any(JavaRuleUtil::hasSideEffectNonRecursive);
+                                   .any(e -> hasSideEffectNonRecursive(e, localVarsToTrack));
     }
 
     /**
      * Returns true if the expression has side effects we don't track.
      * Does not recurse into sub-expressions.
      */
-    private static boolean hasSideEffectNonRecursive(ASTExpression e) {
+    private static boolean hasSideEffectNonRecursive(ASTExpression e, Set<? extends JVariableSymbol> localVarsToTrack) {
         if (e instanceof ASTAssignmentExpression) {
-            return isNonLocalLhs(((ASTAssignmentExpression) e).getLeftOperand());
+            ASTAssignableExpr lhs = ((ASTAssignmentExpression) e).getLeftOperand();
+            return isNonLocalLhs(lhs) || isReferenceToVar(lhs, localVarsToTrack);
         } else if (e instanceof ASTUnaryExpression) {
             ASTUnaryExpression unary = (ASTUnaryExpression) e;
-            return !unary.getOperator().isPure() && isNonLocalLhs(unary.getOperand());
+            ASTExpression lhs = unary.getOperand();
+            return !unary.getOperator().isPure()
+                && (isNonLocalLhs(lhs) || isReferenceToVar(lhs, localVarsToTrack));
         }
 
         if (e.ancestors(ASTThrowStatement.class).nonEmpty()) {

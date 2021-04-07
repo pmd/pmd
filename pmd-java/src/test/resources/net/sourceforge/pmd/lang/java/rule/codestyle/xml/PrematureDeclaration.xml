@@ -286,7 +286,7 @@ public class PrematureDeclarationLambda {
             ]]></code>
     </test-code>
     <test-code>
-        <description>#1429 PrematureDeclaration side-effect in initializer</description>
+        <description>#1429 PrematureDeclaration side-effect of time methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class PrematureDeclaration {
@@ -383,6 +383,82 @@ public class PrematureDeclarationLambda {
                     }
                     String ext = ext1All ? ext2 : ext1;
                     return file2 + ext;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FN with trivial initializers</description>
+        <!-- https://github.com/spring-projects/spring-framework/blob/v5.0.6.RELEASE/spring-core/src/main/java/org/springframework/util/AntPathMatcher.java#L572 -->
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Declaration of 'isReal' can be moved closer to its usages</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class PrematureDeclaration {
+                int pos;
+
+                void sideEffect(int pos) {
+
+                }
+
+                private void lexNumericLiteral(int start, char[] chars) {
+                    // initializer of isReal does not depend on any side-effects so it can be moved.
+                    boolean isReal = false;
+                    char ch = chars[start + 1];
+                    boolean isHex = ch == 'x' || ch == 'X';
+
+                    // do side effects
+                    if (isHex) {
+                        this.pos++;
+                        do {
+                            this.pos++;
+                        } while (advance());
+                        return;
+                    }
+
+                    // a '.' indicates this number is a real
+                    ch = chars[this.pos];
+                    if (ch == '.') {
+                        isReal = true;
+                        sideEffect(this.pos);
+                    }
+
+                    if (isReal) {
+                        this.pos++;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with local reassignment</description>
+        <!-- https://github.com/spring-projects/spring-framework/blob/v5.0.6.RELEASE/spring-core/src/test/java/org/springframework/tests/TestGroup.java#L76 -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+            public class PrematureDeclaration {
+                enum TestGroup {
+                    A
+                }
+
+                public static Set<TestGroup> parse(String value) throws IllegalArgumentException {
+                    if (!value.isEmpty()) {
+                        return Collections.emptySet();
+                    }
+                    // obviously this cannot be reordered
+                    // We should also track side effects on locals
+                    String originalValue = value;
+                    value = value.trim();
+                    if ("ALL".equalsIgnoreCase(value)) {
+                        return EnumSet.allOf(TestGroup.class);
+                    }
+                    if (value.toUpperCase().startsWith("ALL-")) {
+                        Set<TestGroup> groups = EnumSet.allOf(TestGroup.class);
+                        groups.remove(TestGroup.A);
+                        return groups;
+                    }
+                    return parseGroups(originalValue, value);
                 }
             }
             ]]></code>
