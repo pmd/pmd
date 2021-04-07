@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
@@ -319,6 +319,38 @@ public class PrematureDeclarationLambda {
                     }
 
                     return uri + prior;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FN with blank local declaration</description>
+        <!-- https://github.com/spring-projects/spring-framework/blob/v5.0.6.RELEASE/spring-context/src/main/java/org/springframework/scripting/groovy/GroovyScriptFactory.java#L224 -->
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Declaration of 'scriptClassToExecute' can be moved closer to its usages</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class PrematureDeclaration {
+
+                Class<?> scriptClass;
+                Object cachedResult;
+
+                private void doScript(Class<?> klass) {}
+
+                public Object getScriptedObject() {
+                    synchronized (this) {
+                        Class<?> scriptClassToExecute; // here
+
+                        if (this.cachedResult != null) {
+                            Object result = this.cachedResult;
+                            this.cachedResult = null;
+                            return result;
+                        }
+
+                        scriptClassToExecute = this.scriptClass; // here
+                        return doScript(scriptClassToExecute);
+                    }
                 }
             }
             ]]></code>

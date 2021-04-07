@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
@@ -43,12 +44,17 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
         }
 
         for (ASTVariableDeclaratorId id : node) {
+            ASTExpression initializer = id.getInitializer();
             if (JavaRuleUtil.isNeverUsed(id) // avoid the duplicate with unused variables
-                || JavaRuleUtil.hasSideEffect(id.getInitializer())) {
+                || JavaRuleUtil.hasSideEffect(initializer)) {
                 continue;
             }
+
+            // if there's no initializer then we don't care about side-effects
+            boolean hasInitializer = initializer != null;
             for (ASTStatement stmt : statementsAfter(node)) {
-                if (hasReferencesIn(stmt, id) || JavaRuleUtil.hasSideEffect(stmt)) {
+                if (hasReferencesIn(stmt, id)
+                    || hasInitializer && JavaRuleUtil.hasSideEffect(stmt)) {
                     break;
                 }
 
