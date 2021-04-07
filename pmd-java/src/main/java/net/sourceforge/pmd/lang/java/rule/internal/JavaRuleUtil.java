@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.internal;
 
 import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.LONG;
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -71,10 +70,11 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil.InvocationMatcher;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -83,19 +83,19 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public final class JavaRuleUtil {
 
     // this is a hacky way to do it, but let's see where this goes
-    private static final List<InvocationMatcher> KNOWN_PURE_METHODS = listOf(
-        InvocationMatcher.parse("_#toString()"),
-        InvocationMatcher.parse("_#hashCode()"),
-        InvocationMatcher.parse("_#equals(java.lang.Object)"),
-        InvocationMatcher.parse("java.lang.String#_(_*)"),
+    private static final CompoundInvocationMatcher KNOWN_PURE_METHODS = InvocationMatcher.parseAll(
+        "_#toString()",
+        "_#hashCode()",
+        "_#equals(java.lang.Object)",
+        "java.lang.String#_(_*)",
         // actually not all of them, probs only stream of some type
         // arg which doesn't implement Closeable...
-        InvocationMatcher.parse("java.util.stream.Stream#_(_*)"),
-        InvocationMatcher.parse("java.util.Collection#size()"),
-        InvocationMatcher.parse("java.util.List#get(int)"),
-        InvocationMatcher.parse("java.util.Map#get(_)"),
-        InvocationMatcher.parse("java.lang.Iterable#iterator()"),
-        InvocationMatcher.parse("java.lang.Comparable#compareTo(_)")
+        "java.util.stream.Stream#_(_*)",
+        "java.util.Collection#size()",
+        "java.util.List#get(int)",
+        "java.util.Map#get(_)",
+        "java.lang.Iterable#iterator()",
+        "java.lang.Comparable#compareTo(_)"
     );
 
     private JavaRuleUtil() {
@@ -809,7 +809,6 @@ public final class JavaRuleUtil {
      * Whether the invocation has no side-effects. Very conservative.
      */
     private static boolean isPure(ASTMethodCall call) {
-        return isGetterCall(call)
-            || CollectionUtil.any(KNOWN_PURE_METHODS, it -> it.matchesCall(call));
+        return isGetterCall(call) || KNOWN_PURE_METHODS.anyMatch(call);
     }
 }

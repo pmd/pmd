@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static java.util.Collections.emptySet;
 import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,8 +24,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil.InvocationMatcher;
-import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
 
 /**
  * Checks for variables in methods that are defined before they are really
@@ -39,10 +37,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
 
-    private static final List<InvocationMatcher> TIME_METHODS =
-        listOf(
-            InvocationMatcher.parse("java.lang.System#nanoTime()"),
-            InvocationMatcher.parse("java.lang.System#currentTimeMillis()")
+    private static final CompoundInvocationMatcher TIME_METHODS =
+        InvocationMatcher.parseAll(
+            "java.lang.System#nanoTime()",
+            "java.lang.System#currentTimeMillis()"
         );
 
     public PrematureDeclarationRule() {
@@ -103,7 +101,7 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
      * the only methods like that?
      */
     private boolean cannotBeMoved(ASTExpression initializer) {
-        return CollectionUtil.any(TIME_METHODS, m -> m.matchesCall(initializer));
+        return TIME_METHODS.anyMatch(initializer);
     }
 
     /**
