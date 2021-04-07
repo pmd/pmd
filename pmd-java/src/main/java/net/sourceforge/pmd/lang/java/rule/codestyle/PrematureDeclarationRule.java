@@ -66,8 +66,9 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
                 continue;
             }
 
-            // if there's no initializer then we don't care about side-effects
             Set<JLocalVariableSymbol> refsInInitializer = getReferencedLocals(initializer);
+            // If there's no initializer, or the initializer doesn't depend on anything (eg, a literal),
+            // then we don't care about side-effects
             boolean hasStatefulInitializer = !refsInInitializer.isEmpty() || JavaRuleUtil.hasSideEffect(initializer, emptySet());
             for (ASTStatement stmt : statementsAfter(node)) {
                 if (hasReferencesIn(stmt, id)
