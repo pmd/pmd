@@ -199,4 +199,32 @@ public class MapCasts {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Context is invocation, no overloads</description>
+        <!-- TODO for now this is explicitly disabled -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args, Integer i, Double d) {
+                    doSt((int) i); // unnecessary
+                }
+
+                static void doSt(int i) {}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Context is invocation, some overloads</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args, Integer i, Double d) {
+                    doSt((int) i); // necessary
+                }
+
+                static void doSt(int i) {}
+                static void doSt(Integer i) {}
+            }
+            ]]></code>
+    </test-code>
 </test-data>

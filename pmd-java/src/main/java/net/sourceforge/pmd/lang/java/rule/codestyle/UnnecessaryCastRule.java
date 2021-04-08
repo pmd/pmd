@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
@@ -22,23 +25,29 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTCastExpression node, Object data) {
-        JTypeMirror contextType = node.getConversionContextType();
+        @Nullable ExprContext context = node.getConversionContextType();
         JTypeMirror operandType = node.getOperand().getTypeMirror();
         JTypeMirror coercionType = node.getCastType().getTypeMirror();
 
         if (TypeOps.isUnresolvedOrNull(operandType)
             || TypeOps.isUnresolvedOrNull(coercionType)
-            || TypeOps.isUnresolvedOrNull(contextType)) {
+            || context == null
+            || context.getTargetType() == null) {
             return null;
         }
 
-        if (castIsUnnecessary(contextType, operandType, coercionType)) {
+        if (castIsUnnecessary(context, operandType, coercionType)) {
             addViolation(data, node);
         }
         return null;
     }
 
-    private static boolean castIsUnnecessary(JTypeMirror contextType, JTypeMirror operandType, JTypeMirror coercionType) {
+    private static boolean castIsUnnecessary(ExprContext context, JTypeMirror operandType, JTypeMirror coercionType) {
+        if (context.isInvocationContext()) {
+            // todo unsupported for now, the cast may be disambiguating overloads
+            return false;
+        }
+        JTypeMirror contextType = context.getTargetType();
         // note: those depend on java5+ autoboxing rules
         boolean isNotNarrowing = TypeConversion.isConvertibleThroughBoxing(operandType, coercionType);
         // tests that actually deleting the cast would not give uncompilable code

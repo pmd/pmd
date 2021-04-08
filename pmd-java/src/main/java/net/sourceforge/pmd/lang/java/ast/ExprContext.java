@@ -6,14 +6,38 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
-/** Context of an expression. This determines the target type. */
-abstract class ExprContext {
+/**
+ * Context of an expression. This determines its target type, which is necessary for overload resolution.
+ */
+@Experimental
+public abstract class ExprContext {
+    // note: most members of this class are quite low-level and should
+    // stay package-private for exclusive use by PolyResolution.
 
     private ExprContext() {
         // sealed class
+    }
+
+    /**
+     * Returns the target type, or null if there is none or it couldn't
+     * be determined reliably.
+     */
+    // note: only meant for public use by rules
+    // note: this may triggers type resolution of the context
+    public @Nullable JTypeMirror getTargetType() {
+        return getTargetTypeAfterResolution();
+    }
+
+    /**
+     * If true this is an invocation context. This means, the target
+     * type may depend on overload resolution.
+     */
+    public boolean isInvocationContext() {
+        return false;
     }
 
     static ExprContext newAssignmentCtx(JTypeMirror targetType) {
@@ -42,11 +66,17 @@ abstract class ExprContext {
 
         @Override
         @Nullable JTypeMirror getTargetTypeAfterResolution() {
+            // this triggers type resolution of the enclosing expr.
             OverloadSelectionResult overload = node.getOverloadSelectionInfo();
             if (overload.isFailed()) {
                 return null;
             }
             return overload.ithFormalParam(arg);
+        }
+
+        @Override
+        public boolean isInvocationContext() {
+            return true;
         }
     }
 

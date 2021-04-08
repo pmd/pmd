@@ -6,7 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.java.ast.ExprContext.RegularCtx;
 
 /**
  * Represents an expression, in the most general sense.
@@ -109,8 +110,10 @@ public interface ASTExpression
      * <p>This returns null when that type is undefined, for example,
      * when this expression is used as a statement.
      */
-    default @Nullable JTypeMirror getConversionContextType() {
-        return PolyResolution.getConversionContextTypeForExternalUse(this);
+    @Experimental
+    default @Nullable ExprContext getConversionContextType() {
+        ExprContext ctx = PolyResolution.getConversionContextTypeForExternalUse(this);
+        return ctx == RegularCtx.NO_CTX ? null : ctx;
     }
 
 }
