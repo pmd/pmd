@@ -23,7 +23,7 @@ public class Foo {
     public void foo() {}
 
     public static void main(String args[]) {
-        String k, l, m;
+        String k, l, m; int x = 0;
 
         bar();
 
