@@ -364,4 +364,27 @@ public class MapCasts {
 
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Cast as target type for method reference/lambda, with enclosing invoc context</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.reflect.Constructor;
+            import java.security.AccessController;
+            import java.security.PrivilegedAction;
+
+            class Test {
+                static {
+                    Object beanInstance;
+
+                    if (System.getSecurityManager() != null) {
+                        // these method calls are ambiguous if the cast is omitted
+                        // (there's a PrivilegedExceptionAction overload)
+                        beanInstance = AccessController.doPrivileged((PrivilegedAction<Object>) () -> new Object());
+                        beanInstance = AccessController.doPrivileged((PrivilegedAction<Object>) Object::new);
+                    }
+                }
+            }
+
+            ]]></code>
+    </test-code>
 </test-data>

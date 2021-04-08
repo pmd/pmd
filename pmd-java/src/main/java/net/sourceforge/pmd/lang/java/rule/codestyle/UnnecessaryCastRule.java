@@ -27,15 +27,15 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTCastExpression node, Object data) {
-        ASTExpression operand = node.getOperand();
+    public Object visit(ASTCastExpression castExpr, Object data) {
+        ASTExpression operand = castExpr.getOperand();
 
         // eg in
         // Object o = (Integer) 1;
 
-        @Nullable ExprContext context = node.getConversionContextType();    // Object
+        @Nullable ExprContext context = castExpr.getConversionContextType();    // Object
         JTypeMirror operandType = operand.getTypeMirror();                  // int
-        JTypeMirror coercionType = node.getCastType().getTypeMirror();      // Integer
+        JTypeMirror coercionType = castExpr.getCastType().getTypeMirror();      // Integer
 
         if (TypeOps.isUnresolvedOrNull(operandType)
             || TypeOps.isUnresolvedOrNull(coercionType)
@@ -49,11 +49,19 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
         if (operand instanceof ASTLambdaExpression || operand instanceof ASTMethodReference) {
             // Then the cast provides a target type for the expression (always).
+            // We need to check the enclosing context, as if it's invocation we give up for now
+            if (isInvocationContext(castExpr.getConversionContextType())) {
+                // Then the cast may be used to determine the overload.
+                // We need to treat the casted lambda as a whole unit.
+                // todo see below
+                return null;
+            }
+
             // Since the code is assumed to compile we'll just assume that coercionType
             // is a functional interface.
             if (context.getTargetType().equals(coercionType)) {
                 // then we also know that the context is functional
-                addViolation(data, node);
+                addViolation(data, castExpr);
             }
             // otherwise the cast is narrowing, and removing it would
             // change the runtime class of the produced lambda.
@@ -64,7 +72,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         }
 
         if (castIsUnnecessary(context, operandType, coercionType)) {
-            addViolation(data, node);
+            addViolation(data, castExpr);
         }
         return null;
     }
@@ -72,7 +80,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     private static boolean castIsUnnecessary(ExprContext context,
                                              JTypeMirror operandType,
                                              JTypeMirror coercionType) {
-        if (context.isInvocationContext()) {
+        if (isInvocationContext(context)) {
             // todo unsupported for now, the cast may be disambiguating overloads
             return false;
         }
@@ -82,5 +90,9 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         // tests that actually deleting the cast would not give uncompilable code
         boolean canOperandSuitContext = TypeConversion.isConvertibleThroughBoxing(operandType, contextType);
         return isNotNarrowing && canOperandSuitContext;
+    }
+
+    private static boolean isInvocationContext(ExprContext context) {
+        return context != null && context.isInvocationContext();
     }
 }
