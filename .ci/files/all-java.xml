@@ -309,7 +309,7 @@
     <rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement"/>
     <!-- <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation"/> -->
     <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector"/>
-    <!-- <rule ref="category/java/performance.xml/UseArraysAsList"/> -->
+    <rule ref="category/java/performance.xml/UseArraysAsList"/>
     <rule ref="category/java/performance.xml/UseIOStreamsWithApacheCommonsFileItem"/>
     <rule ref="category/java/performance.xml/UseIndexOfChar"/>
     <rule ref="category/java/performance.xml/UseStringBufferForStringAppends"/>
