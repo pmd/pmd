@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
 
@@ -64,7 +64,7 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
                 continue;
             }
 
-            Set<JLocalVariableSymbol> refsInInitializer = getReferencedLocals(initializer);
+            Set<JVariableSymbol> refsInInitializer = getReferencedVars(initializer);
             // If there's no initializer, or the initializer doesn't depend on anything (eg, a literal),
             // then we don't care about side-effects
             boolean hasStatefulInitializer = !refsInInitializer.isEmpty() || JavaRuleUtil.hasSideEffect(initializer, emptySet());
@@ -87,12 +87,12 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
     /**
      * Returns the set of local variables referenced inside the expression.
      */
-    private static Set<JLocalVariableSymbol> getReferencedLocals(ASTExpression term) {
+    private static Set<JVariableSymbol> getReferencedVars(ASTExpression term) {
         return term == null ? emptySet()
                             : term.descendantsOrSelf()
-                                  .filterIs(ASTVariableAccess.class)
-                                  .filter(it -> it.getReferencedSym() instanceof JLocalVariableSymbol)
-                                  .collect(Collectors.mapping(it -> (JLocalVariableSymbol) it.getReferencedSym(), Collectors.toSet()));
+                                  .filterIs(ASTNamedReferenceExpr.class)
+                                  .filter(it -> it.getReferencedSym() != null)
+                                  .collect(Collectors.mapping(ASTNamedReferenceExpr::getReferencedSym, Collectors.toSet()));
     }
 
     /**

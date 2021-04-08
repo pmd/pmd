@@ -432,6 +432,38 @@ public class PrematureDeclarationLambda {
             ]]></code>
     </test-code>
     <test-code>
+        <!-- References to fields may be mutated through aliases, so the initializer must be considered state-dependent -->
+        <description>FP with references to fields in initializers</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclaration {
+                int pos;
+
+                void sideEffect(int pos) {
+                    this.pos = pos + pos % 3;
+                }
+
+                private void lexNumericLiteral(int start, char[] chars) {
+                    // initializer of isReal does not depend on any side-effects so it can be moved.
+                    boolean isReal = this.pos;
+                    char ch = chars[start + 1];
+                    boolean isHex = ch == 'x' || ch == 'X';
+
+                    sideEffect(pos);
+
+                    // do side effects
+                    if (isHex) {
+                        return;
+                    }
+
+                    if (isReal) {
+                        this.pos++;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
         <description>FP with local reassignment</description>
         <!-- https://github.com/spring-projects/spring-framework/blob/v5.0.6.RELEASE/spring-core/src/test/java/org/springframework/tests/TestGroup.java#L76 -->
         <expected-problems>0</expected-problems>
