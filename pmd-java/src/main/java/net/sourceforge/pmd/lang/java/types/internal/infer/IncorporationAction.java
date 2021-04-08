@@ -89,7 +89,7 @@ abstract class IncorporationAction {
         public void apply(InferenceContext ctx) {
             for (BoundKind k : boundsToCheck()) {
                 for (JTypeMirror b : ivar.getBounds(k)) {
-                    if (!checkBound(b, k)) {
+                    if (!checkBound(b, k, ctx)) {
                         throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, myKind, myBound, k, b);
                     }
                 }
@@ -99,7 +99,7 @@ abstract class IncorporationAction {
         /**
          * Check compatibility between this bound and another.
          */
-        private boolean checkBound(JTypeMirror otherBound, BoundKind otherKind) {
+        private boolean checkBound(JTypeMirror otherBound, BoundKind otherKind, InferenceContext ctx) {
             // myKind != EQ => otherKind != myKind
 
             int compare = myKind.compareTo(otherKind);
@@ -109,30 +109,30 @@ abstract class IncorporationAction {
 
             if (compare > 0) {
                 // myBound <: alpha, alpha <: otherBound
-                return checkBound(false, myBound, otherBound);
+                return checkBound(false, myBound, otherBound, ctx);
             } else if (compare < 0) {
                 // otherBound <: alpha, alpha <: myBound
-                return checkBound(false, otherBound, myBound);
+                return checkBound(false, otherBound, myBound, ctx);
             } else {
-                return checkBound(true, myBound, otherBound);
+                return checkBound(true, myBound, otherBound, ctx);
             }
         }
 
         /**
          * If 'eq', checks that {@code T = S}, else checks that {@code T <: S}.
          */
-        boolean checkBound(boolean eq, JTypeMirror t, JTypeMirror s) {
+        boolean checkBound(boolean eq, JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
             // eq bounds are so rare we shouldn't care if they're cached
             return eq ? isSameType(t, s, true)
-                      : checkSubtype(t, s);
+                      : checkSubtype(t, s, ctx);
         }
 
-        private boolean checkSubtype(JTypeMirror t, JTypeMirror s) {
+        private boolean checkSubtype(JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
             JTypeMirror key = cacheKey(t);
             if (key == null) { // don't cache result
                 Convertibility isConvertible = isConvertible(t, s);
                 if (isConvertible.withUncheckedWarning()) {
-                    ivar.getInfContext().setNeedsUncheckedConversion();
+                    ctx.setNeedsUncheckedConversion();
                 }
                 return isConvertible.somehow();
             }
@@ -143,7 +143,7 @@ abstract class IncorporationAction {
             }
             Convertibility isConvertible = isConvertible(t, s);
             if (isConvertible.withUncheckedWarning()) {
-                ivar.getInfContext().setNeedsUncheckedConversion();
+                ctx.setNeedsUncheckedConversion();
                 // and don't cache result
                 return true;
             } else if (isConvertible.somehow()) {
