@@ -1492,20 +1492,34 @@ public class Foo {
         </example>
     </rule>
 
+    <!-- This is only restricted to java 5+ because the rule doesn't support
+         the type system pre-java5, where there were no autoboxing conversions. -->
     <rule name="UnnecessaryCast"
           language="java"
           minimumLanguageVersion="1.5"
           since="6.24.0"
-          message="Avoid unnecessary casts"
+          message="Unnecessary cast"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryCastRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarycast">
-        <description>
-This rule detects when a cast is unnecessary while accessing collection elements. This rule is mostly useful
-for old java code before generics where introduced with java 1.5.
-        </description>
+        <description><![CDATA[
+Detects casts which could be removed as the operand of the cast is already suitable
+for the context type. For instance, in the following:
+```
+Object context = (Comparable) "o";
+```
+The cast is unnecessary. This is because `String` already is a subtype of both
+`Comparable` and `Object`.
+
+This will also flag casts that can be avoided because of the autoboxing feature of Java 5.
+```
+Integer integer = (Integer) 1;
+```
+The literal would be autoboxed to `Integer` anyway.
+            ]]></description>
         <priority>3</priority>
         <example>
 <![CDATA[
+import java.util.*;
 public class UnnecessaryCastSample {
     public void method() {
         List<String> stringList = Arrays.asList("a", "b");

@@ -79,11 +79,9 @@ public class UnnecessaryCastSample {
     <test-code>
         <description>Unnecessary casts with iterator</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>10,17</expected-linenumbers>
+        <expected-linenumbers>8,15</expected-linenumbers>
         <code><![CDATA[
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class UnnecessaryCastSample {
     public void localVars() {
@@ -109,6 +107,7 @@ public class UnnecessaryCastSample {
         <description>Avoid cast false-positives</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class UnnecessaryCastSample {
     public void localVars() {
         List<Number> numbers = Arrays.asList(1, 2, 3);
@@ -128,6 +127,7 @@ public class UnnecessaryCastSample {
         <description>Avoid clone false-positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class UnnecessaryCastSample {
     public void localVars() {
         List<String> strings = new ArrayList<>();
@@ -153,5 +153,35 @@ public class MapCasts {
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary (primitive -> primitive) casts</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>5,6,7,8</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args) {
+                    Integer integer = 2; // ok
+
+                    long a = (int) Integer.valueOf(2);  // explicit boxing where the value would be autoboxed
+                    int b = (int) 2;                    // unnecessary, it's the same type
+                    long c = (int) 4;                   // widening can be implicit
+                    double c = (int) 4;                 // widening can be implicit
+                    double c = (int) 4.0;               // cast is narrowing so necessary
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Tests from the doc</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args) {
+                    Object context = (Comparable) "o";
+                    Integer integer = (Integer) 1;
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

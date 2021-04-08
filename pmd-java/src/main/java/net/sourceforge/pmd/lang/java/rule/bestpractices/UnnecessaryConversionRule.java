@@ -9,7 +9,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
@@ -39,7 +38,7 @@ public class UnnecessaryConversionRule extends AbstractJavaRulechainRule {
     );
 
     public UnnecessaryConversionRule() {
-        super(ASTCastExpression.class, ASTMethodCall.class, ASTConstructorCall.class);
+        super(ASTMethodCall.class, ASTConstructorCall.class);
     }
 
     @Override
