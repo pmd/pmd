@@ -59,6 +59,8 @@ public final class Infer {
     /** This is a sentinel for when the CTDecl was resolved, but invocation failed. */
     final MethodCtDecl FAILED_INVOCATION; // SUPPRESS CHECKSTYLE same
 
+    private final SupertypeCheckCache supertypeCheckCache = new SupertypeCheckCache();
+
     /**
      * Creates a new instance.
      *
@@ -105,7 +107,7 @@ public final class Infer {
     }
 
     InferenceContext emptyContext() {
-        return new InferenceContext(ts, Collections.emptyList(), LOG);
+        return newContextFor(Collections.emptyList());
     }
 
     @NonNull
@@ -114,7 +116,7 @@ public final class Infer {
     }
 
     InferenceContext newContextFor(List<JTypeVar> tvars) {
-        return new InferenceContext(ts, tvars, LOG);
+        return new InferenceContext(ts, supertypeCheckCache, tvars, LOG);
     }
 
     /**

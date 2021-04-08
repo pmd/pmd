@@ -56,6 +56,7 @@ final class InferenceContext {
     private final Set<InferenceVar> inferenceVars = new LinkedHashSet<>();
     private final Deque<IncorporationAction> incorporationActions = new ArrayDeque<>();
     final TypeSystem ts;
+    private final SupertypeCheckCache supertypeCheckCache;
     final TypeInferenceLogger logger;
 
     private Substitution mapping = Substitution.EMPTY;
@@ -70,9 +71,18 @@ final class InferenceContext {
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-18.html#jls-18.1.3
      *
      * under the purple rectangle.
+     *
+     * @param ts                  The global type system
+     * @param supertypeCheckCache Super type check cache, shared by all
+     *                            inference runs in the same compilation unit
+     *                            (stored in {@link Infer}).
+     * @param tvars               Initial tvars which will be turned
+     *                            into ivars
+     * @param logger              Logger for events related to ivar bounds
      */
-    InferenceContext(TypeSystem ts, List<JTypeVar> tvars, TypeInferenceLogger logger) {
+    InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger) {
         this.ts = ts;
+        this.supertypeCheckCache = supertypeCheckCache;
         this.logger = logger;
         this.id = ctxId++;
 
@@ -200,6 +210,9 @@ final class InferenceContext {
         return this.needsUncheckedConversion;
     }
 
+    SupertypeCheckCache getSupertypeCheckCache() {
+        return supertypeCheckCache;
+    }
 
     private static JTypeMirror groundSubst(SubstVar var) {
         if (var instanceof InferenceVar) {

@@ -8,10 +8,6 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.isConvertible;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.isSameType;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -48,23 +44,6 @@ abstract class IncorporationAction {
      * of an ivar.
      */
     static class CheckBound extends IncorporationAction {
-
-        // todo this probably needs to be stored in the Infer instance otherwise
-        // it's leaking holding a reference to the symbols, which have a reference
-        // to the TypeSystem, etc
-        private static final ThreadLocal<Map<JTypeMirror, Set<JTypeMirror>>> CHECK_CACHE = ThreadLocal.withInitial(() -> new LinkedHashMap<JTypeMirror, Set<JTypeMirror>>() {
-            // Even with a relatively small cache size, the hit ratio is
-            // very high (around 75% on the tests we have here, discounting
-            // the stress tests)
-            // TODO refresh numbers using a real codebase
-            private static final int MAX_SIZE = 200;
-
-            @Override
-            protected boolean removeEldestEntry(Entry<JTypeMirror, Set<JTypeMirror>> eldest) {
-                return size() > MAX_SIZE;
-            }
-        });
-
 
         private final BoundKind myKind;
         private final JTypeMirror myBound;
@@ -128,18 +107,12 @@ abstract class IncorporationAction {
         }
 
         private boolean checkSubtype(JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
-            JTypeMirror key = cacheKey(t);
-            boolean doCache = key != null; // some types are never cached
-
-            Set<JTypeMirror> supertypesOfT = null;
-            if (doCache) {
-                supertypesOfT = CHECK_CACHE.get().computeIfAbsent(key, k -> new HashSet<>());
-                if (supertypesOfT.contains(s)) {
-                    return true; // supertype was already cached
-                }
+            if (ctx.getSupertypeCheckCache().isCertainlyASubtype(t, s)) {
+                return true; // supertype was already cached
             }
 
             Convertibility isConvertible = isConvertible(t, s);
+            boolean doCache = true;
             if (isConvertible.withUncheckedWarning()) {
                 ctx.setNeedsUncheckedConversion();
                 // cannot cache those, or the side effect
@@ -149,7 +122,7 @@ abstract class IncorporationAction {
 
             boolean result = isConvertible.somehow();
             if (doCache && result) {
-                supertypesOfT.add(s); // if we arrive here it's not null
+                ctx.getSupertypeCheckCache().remember(t, s);
             }
             return result;
         }
