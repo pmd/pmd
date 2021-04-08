@@ -113,7 +113,7 @@ public interface ASTExpression
     @Experimental
     default @Nullable ExprContext getConversionContextType() {
         ExprContext ctx = PolyResolution.getConversionContextTypeForExternalUse(this);
-        return ctx == RegularCtx.NO_CTX ? null : ctx;
+        return ctx == RegularCtx.NO_CTX ? null : ctx; // NOPMD
     }
 
 }

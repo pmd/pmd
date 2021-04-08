@@ -84,7 +84,7 @@ final class PolyResolution {
             JTypeMirror standalone = branchingMirror.getStandaloneType();
             if (standalone != null) {
                 return standalone;
-            } else if (ctx == ExprContext.RegularCtx.NO_CTX) {
+            } else if (ctx == ExprContext.RegularCtx.NO_CTX) { // NOPMD
                 // null standalone, force resolution anyway, because there is no context
                 // this is more general than ExprMirror#getStandaloneType, it's not a bug
                 if (e instanceof ASTConditionalExpression) {
@@ -352,7 +352,7 @@ final class PolyResolution {
                 // Constructor or method call, maybe there's another context around
                 // We want to fetch the outermost invocation node, but not further
                 ExprContext outerCtx = contextOf(papi, /*onlyInvoc:*/true);
-                return outerCtx == RegularCtx.NO_CTX ? new InvocCtx(node.getIndexInParent(), papi)
+                return outerCtx == RegularCtx.NO_CTX ? new InvocCtx(node.getIndexInParent(), papi) // NOPMD
                                                      : outerCtx;
             }
         } else if (doesCascadesContext(papa, node)) {
