@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.metrics.impl;
 
+import net.sourceforge.pmd.lang.apex.ast.ApexQualifiableNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 /**
@@ -23,4 +25,10 @@ public class AllMetricsTest extends SimpleAggregatorTst {
         addRule(RULESET, "CognitiveComplexityTest");
     }
 
+    static String formatApexMessage(Node node, Integer result, String defaultMessage) {
+        if (node instanceof ApexQualifiableNode) {
+            return "''" + ((ApexQualifiableNode) node).getQualifiedName() + "'' has value " + result + ".";
+        }
+        return defaultMessage;
+    }
 }

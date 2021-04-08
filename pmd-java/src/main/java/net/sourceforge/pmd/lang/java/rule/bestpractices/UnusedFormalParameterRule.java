@@ -47,7 +47,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
             for (ASTFormalParameter formal : node.getFormalParameters()) {
                 ASTVariableDeclaratorId varId = formal.getVarId();
                 if (JavaRuleUtil.isNeverUsed(varId) && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
-                    addViolation(data, varId, new Object[] {node instanceof ASTMethodDeclaration ? "method" : "constructor", varId.getName(),});
+                    addViolation(data, varId, new Object[] {node instanceof ASTMethodDeclaration ? "method" : "constructor", varId.getName(), });
                 }
             }
         }

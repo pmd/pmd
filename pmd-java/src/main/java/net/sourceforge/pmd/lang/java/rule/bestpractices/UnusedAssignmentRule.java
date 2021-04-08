@@ -1089,7 +1089,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         // and produce an independent instance
         VarLocalInfo merge(VarLocalInfo other) {
-            if (other == this) {
+            if (this.equals(other)) {
                 return this;
             }
             Set<AssignmentEntry> merged = new HashSet<>(reachingDefs.size() + other.reachingDefs.size());
@@ -1315,7 +1315,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             // a spanInfo may be absorbed several times so this method should not
             // destroy the parameter
-            if (other == this || other == null || other.symtable.isEmpty()) {
+            if (this.equals(other) || other == null || other.symtable.isEmpty()) {
                 return this;
             }
 
@@ -1393,7 +1393,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         boolean isUnaryReassign() {
             return rhs instanceof ASTUnaryExpression
-                && ReachingDefsVisitor.getVarIfUnaryAssignment((ASTUnaryExpression) rhs) == var;
+                && var.equals(ReachingDefsVisitor.getVarIfUnaryAssignment((ASTUnaryExpression) rhs));
         }
 
         @Override

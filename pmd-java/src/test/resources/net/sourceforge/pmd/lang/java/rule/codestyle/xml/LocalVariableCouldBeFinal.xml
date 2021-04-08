@@ -172,10 +172,11 @@ public class Foo {
        <description>Verify another case for Bug #1047 False Positive in 'for' loops for LocalVariableCouldBeFinal in 5.0.1</description>
        <expected-problems>0</expected-problems>
        <code><![CDATA[
+import org.junit.Assert;
 public class Test {
-    public void bar() {
-        for (final List<Integer> list : result) {
-            Assert.assertEquals( array.size() - 1, list.size() );
+    public void bar(java.util.List<java.util.List<Integer>> result) {
+        for (final java.util.List<Integer> list : result) {
+            Assert.assertEquals( list.size() - 1, list.size() );
         }
     }
 }

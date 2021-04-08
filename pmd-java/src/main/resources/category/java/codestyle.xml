@@ -424,7 +424,7 @@ The rule allows methods and fields annotated with Guava's @VisibleForTesting and
 [@Visibility = "package"]
 [ not( pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
     or pmd-java:hasAnnotation('org.junit.jupiter.api.RepeatedTest')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.ParameterizedTest')
+    or pmd-java:hasAnnotation('org.junit.jupiter.params.ParameterizedTest')
     or pmd-java:hasAnnotation('org.junit.jupiter.api.TestFactory')
     or pmd-java:hasAnnotation('org.junit.jupiter.api.TestTemplate')
     or pmd-java:hasAnnotation('org.junit.jupiter.api.BeforeAll')

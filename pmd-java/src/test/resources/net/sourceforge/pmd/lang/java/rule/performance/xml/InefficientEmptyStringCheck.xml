@@ -176,8 +176,8 @@ public class Foo {
         <description>Verify no NPE is thrown</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    void bar() {
+public class Foo extends SomeUnresolvedClass {
+    void bar(String[] logLevels, String[] guardMethods) {
         if (super.guardStmtByLogLevel.isEmpty() && logLevels.length > 0 && guardMethods.length > 0) {
             configureGuards(logLevels, guardMethods);
         }
@@ -201,7 +201,7 @@ public class PatternMatchingInstanceof {
     }
 }
         ]]></code>
-        <source-type>java 14-preview</source-type>
+        <source-type>java 16</source-type>
     </test-code>
     <test-code>
         <description>[java] InefficientEmptyStringCheck false negative in anonymous class #1224</description>

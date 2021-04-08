@@ -56,7 +56,6 @@ public class BaseXPathFunctionTest extends BaseNonParserTest {
                                              Consumer<? super PmdXPathException> exceptionSpec) {
 
         Rule rule = makeXpathRuleFromXPath(xpath);
-
         PmdXPathException thrown = Assert.assertThrows(PmdXPathException.class, () -> executeRule(rule, code));
 
         exceptionSpec.accept(thrown);

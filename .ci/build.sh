@@ -123,7 +123,7 @@ function pmd_ci_build_run() {
         log_info "This is a snapshot build"
     fi
 
-    ./mvnw clean deploy -P${mvn_profiles} -e -V -Djava8.home=${HOME}/openjdk8
+    ./mvnw clean deploy -P${mvn_profiles} -e -B -V -Djava8.home=${HOME}/openjdk8
 }
 
 #

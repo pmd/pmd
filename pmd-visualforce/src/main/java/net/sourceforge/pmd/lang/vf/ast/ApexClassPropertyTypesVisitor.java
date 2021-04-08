@@ -13,8 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
+import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
 
 import apex.jorje.semantic.symbol.member.method.Generated;
 import apex.jorje.semantic.symbol.member.method.MethodInfo;
@@ -23,7 +22,7 @@ import apex.jorje.semantic.symbol.type.BasicType;
 /**
  * Visits an Apex class to determine a mapping of referenceable expressions to expression type.
  */
-final class ApexClassPropertyTypesVisitor extends ApexParserVisitorAdapter {
+final class ApexClassPropertyTypesVisitor extends ApexVisitorBase<Void, Void> {
 
     /**
      * Prefix for standard bean type getters, i.e. getFoo
@@ -54,7 +53,7 @@ final class ApexClassPropertyTypesVisitor extends ApexParserVisitorAdapter {
      * Visualforce page.
      */
     @Override
-    public Object visit(ASTMethod node, Object data) {
+    public Void visit(ASTMethod node, Void data) {
         MethodInfo mi = node.getNode().getMethodInfo();
         if (mi.getParameterTypes().isEmpty()
                 && isVisibleToVisualForce(node)
@@ -76,7 +75,7 @@ final class ApexClassPropertyTypesVisitor extends ApexParserVisitorAdapter {
 
             variables.add(Pair.of(sb.toString(), mi.getReturnType().getBasicType()));
         }
-        return super.visit((ApexNode<?>) node, data);
+        return visitApexNode(node, data);
     }
 
     /**

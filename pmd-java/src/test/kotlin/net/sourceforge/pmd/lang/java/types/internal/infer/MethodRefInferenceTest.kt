@@ -16,9 +16,7 @@ import java.util.function.*
 import java.util.stream.Collector
 import java.util.function.Function as JavaFunction
 
-/**
- *
- */
+@Suppress("UNUSED_VARIABLE")
 class MethodRefInferenceTest : ProcessorTestSpec({
 
 

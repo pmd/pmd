@@ -45,6 +45,7 @@ public class Test {
         <description>Guarded call - OK - java util</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Foo {
@@ -322,7 +323,7 @@ public class GuardLogTest {
     Logger LOG;
     public void foo() {
         if (LOG.isInfoEnabled()) {
-            LOG.info("update: After spool map size: " + map.size());
+            LOG.info("update: After spool map size: " + 1);
         }
     }
 }
@@ -339,7 +340,7 @@ public class GuardLogTest {
     Logger LOG;
     public void foo() {
         if (LOG.isInfoEnabled()) {
-            LOG.info("update: After spool map size: " + map.size());
+            LOG.info("update: After spool map size: " + 2);
         }
     }
 }
@@ -353,7 +354,7 @@ public class GuardLogTest {
 import org.apache.log4j.Logger;
 
 public class GuardLogTest {
-    Logger LOG;
+    Logger LOGGER;
     public void foo() {
         if (!(exception instanceof IllegalArgumentException) && LOGGER.isErrorEnabled()) {
             LOGGER.error("Some error " + someObject, exception);
@@ -386,6 +387,9 @@ public class Foo {
         <description>#370 rule not considering lambdas</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.function.Supplier;
 public class Logger {
     private static final Logger LOGGER = new Logger();
 
@@ -395,8 +399,8 @@ public class Logger {
 
     @Override
     public void info(Supplier<String> message) {
-        if (logger.isInfoEnabled()) {
-            logger.info(message.get());
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info(message.get());
         }
     }
 }
@@ -420,9 +424,46 @@ public class GuardLogStatement {
         <description>#869 [java] GuardLogStatement false positive with something.error on return</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import my.ThisIsNotALogger;
 public class GuardLogStatement {
     public String foo() {
         return ThisIsNotALogger.error("message " + "");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3155 False negatives with unguarded method calls</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,7,8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.logging.Logger;
+public class Logger {
+    private static final Logger LOGGER = new Logger();
+
+    public void bar() {
+        LOGGER.info("Message with param: {}", expensiveOperation()); // bad, expensiveOperation is executed regardless
+        LOGGER.info("Message with param: %s", this.expensiveOperation()); // bad, expensiveOperation is executed regardless
+        LOGGER.info(expensiveOperation()); // bad, expensiveOperation is executed regardless
+
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Message with param: {}", expensiveOperation());
+        }
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Message with param: %s", expensiveOperation());
+        }
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info(expensiveOperation());
+        }
+
+        LOGGER.info("Message with param: {}", () -> expensiveOperation());
+        LOGGER.info("Message with param: %s", () -> expensiveOperation());
+        LOGGER.info(()-> expensiveOperation());
+    }
+
+    private String expensiveOperation() {
+        return "...";
     }
 }
         ]]></code>

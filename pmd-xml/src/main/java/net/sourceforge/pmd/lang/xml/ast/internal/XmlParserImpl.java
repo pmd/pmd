@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.xml.ast.internal;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,14 +13,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
@@ -56,15 +56,10 @@ public final class XmlParserImpl {
     }
 
 
-    public RootXmlNode parse(Reader reader) {
-        String xmlData;
-        try {
-            xmlData = IOUtils.toString(reader);
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
+    public RootXmlNode parse(ParserTask task) {
+        String xmlData = task.getSourceText();
         Document document = parseDocument(xmlData);
-        RootXmlNode root = new RootXmlNode(this, document);
+        RootXmlNode root = new RootXmlNode(this, document, task);
         DOMLineNumbers lineNumbers = new DOMLineNumbers(root, xmlData);
         lineNumbers.determine();
         nodeCache.put(document, root);
@@ -93,8 +88,17 @@ public final class XmlParserImpl {
      * The root should implement {@link RootNode}.
      */
     public static class RootXmlNode extends XmlNodeWrapper implements RootNode {
-        RootXmlNode(XmlParserImpl parser, Node domNode) {
+
+        private final AstInfo<RootXmlNode> astInfo;
+
+        RootXmlNode(XmlParserImpl parser, Node domNode, ParserTask task) {
             super(parser, domNode);
+            this.astInfo = new AstInfo<>(task, this);
+        }
+
+        @Override
+        public AstInfo<RootXmlNode> getAstInfo() {
+            return astInfo;
         }
     }
 

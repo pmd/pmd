@@ -581,13 +581,26 @@ for (int i = 0, j = 0; i < 10; i++, j += 2) {
         <description>
 Whenever using a log level, one should check if the loglevel is actually enabled, or
 otherwise skip the associate String creation and manipulation.
+
+An alternative to checking the log level are substituting parameters, formatters or lazy logging
+with lambdas. The available alternatives depend on the actual logging framework.
         </description>
         <priority>2</priority>
         <example>
 <![CDATA[
     // Add this for performance
-    if (log.isDebugEnabled() { ...
+    if (log.isDebugEnabled()) {
         log.debug("log something" + " and " + "concat strings");
+    }
+
+    // Avoid the guarding if statement with substituting parameters
+    log.debug("log something {} and {}", param1, param2);
+
+    // Avoid the guarding if statement with formatters
+    log.debug("log something %s and %s", param1, param2);
+
+    // Avoid the guarding if statement with lazy logging and lambdas
+    log.debug("log something expensive: {}", () -> calculateExpensiveLoggingText());
 ]]>
         </example>
     </rule>
@@ -607,9 +620,8 @@ through the @RunWith(Suite.class) annotation.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration
-[MethodDeclaration[@Name='suite']/ResultType/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
-[not(MethodDeclaration/Block/BlockStatement/Statement/ReturnStatement//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
+//MethodDeclaration[@Name='suite' and ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
+                   [not(.//ReturnStatement/*[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
 ]]>
                 </value>
             </property>
@@ -647,13 +659,14 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration
-    [MethodDeclaration[@Name='tearDown']]
-    [not(Annotation/*/Name[
+//MethodDeclaration[@Name='tearDown' and @Arity=0]
+    [not(ModifierList/Annotation[
            pmd-java:typeIs('org.junit.After')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
         or pmd-java:typeIs('org.testng.annotations.AfterMethod')])]
+    (: Make sure this is a junit 4 class :)
+    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
 ]]>
                 </value>
             </property>
@@ -690,13 +703,15 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration
-    [MethodDeclaration[@Name='setUp']]
-    [not(Annotation/*/Name[
+//MethodDeclaration[@Name='setUp' and @Arity=0]
+    [not(ModifierList/Annotation[
            pmd-java:typeIs('org.junit.Before')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
         or pmd-java:typeIs('org.testng.annotations.BeforeMethod')])]
+    (: Make sure this is a junit 4 class :)
+    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
+
 ]]>
                 </value>
             </property>
@@ -733,17 +748,19 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[
-       matches(@SimpleName, $testClassPattern)
-        or ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]]
-
-    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true() and starts-with(@Name, 'test')]]
-    [not(Annotation//Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-    ])]
+//ClassOrInterfaceDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
+    (: a junit 3 method :)
+    /ClassOrInterfaceBody/MethodDeclaration[
+        @Visibility="public"
+        and starts-with(@Name, 'test')
+        and not(ModifierList/Annotation[
+          pmd-java:typeIs('org.junit.Test')
+          or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+          or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+          or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+          ]
+        )
+    ]
 ]]>
                 </value>
             </property>
@@ -922,9 +939,12 @@ class Foo {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.LooseCouplingRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#loosecoupling">
         <description>
-The use of implementation types (i.e., HashSet) as object references limits your ability to use alternate
-implementations in the future as requirements change. Whenever available, referencing objects
-by their interface types (i.e, Set) provides much more flexibility.
+Excessive coupling to implementation types (e.g., `HashSet`) limits your ability to use alternate
+implementations in the future as requirements change. Whenever available, declare variables
+and parameters using a more general type (e.g, `Set`).
+
+This rule reports uses of concrete collection types. User-defined types that should be treated
+the same as interfaces can be configured with the property `allowedTypes`.
         </description>
         <priority>3</priority>
         <example>
@@ -1007,8 +1027,8 @@ public class SecureSystem {
           message="Use one line for each declaration, it enhances code readability."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#onedeclarationperline">
         <description>
-Java allows the use of several variables declaration of the same type on one line. However, it
-can lead to quite messy code. This rule looks for several declarations on the same line.
+Java allows the use of several variables declaration of the same type on one line.
+However, it can lead to quite messy code. This rule looks for several declarations on the same line.
         </description>
         <priority>4</priority>
         <properties>
@@ -1096,7 +1116,7 @@ Consider replacing Enumeration usages with the newer java.util.Iterator
             <property name="xpath">
                 <value>
 <![CDATA[
-//ImplementsList/ClassOrInterfaceType[@Image='Enumeration']
+//ImplementsList/ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Enumeration')]
 ]]>
                 </value>
             </property>
@@ -1128,7 +1148,9 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']</value>
+                <value><![CDATA[
+                //ClassOrInterfaceType[pmd-java:typeIs('java.util.Hashtable')]
+                ]]></value>
             </property>
         </properties>
         <example>
@@ -1154,7 +1176,9 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']</value>
+                <value><![CDATA[
+                //ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]
+                ]]></value>
             </property>
         </properties>
         <example>
@@ -1202,7 +1226,7 @@ public void bar() {
     <rule name="SystemPrintln"
           language="java"
           since="2.1"
-          message="{0} is used"
+          message="Usage of System.out/err"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#systemprintln">
         <description>
@@ -1215,11 +1239,9 @@ will (and by priority) and avoid clogging the Standard out log.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Name[
-    starts-with(@Image, 'System.out.print')
-    or
-    starts-with(@Image, 'System.err.print')
-    ]
+//MethodCall[ starts-with(@MethodName, 'print') ]
+  /FieldAccess[ @Name = ('err', 'out') ]
+  /TypeExpression[ pmd-java:typeIsExactly('java.lang.System') ]
 ]]>
                 </value>
             </property>
@@ -1832,7 +1854,7 @@ a block `{}` is sufficient.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-  //DoStatement[BooleanLiteral]
+  //DoStatement/BooleanLiteral
 | //WhileStatement/BooleanLiteral[@True = false()]
                 ]]></value>
             </property>

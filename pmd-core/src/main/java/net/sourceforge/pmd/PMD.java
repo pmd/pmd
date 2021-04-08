@@ -22,7 +22,6 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -36,9 +35,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
@@ -158,31 +154,6 @@ public class PMD {
             throw new PMDException("Encountered unexpected problem with URI \"" + uriString + "\"", e);
         }
         return dataSources;
-    }
-
-    /**
-     * Helper method to get a configured parser for the requested language. The
-     * parser is configured based on the given {@link PMDConfiguration}.
-     *
-     * @param languageVersion
-     *            the requested language
-     * @param configuration
-     *            the given configuration
-     * @return the pre-configured parser
-     *
-     * @deprecated This is internal
-     */
-    @Deprecated
-    @InternalApi
-    public static Parser parserFor(LanguageVersion languageVersion, PMDConfiguration configuration) {
-
-        // TODO Handle Rules having different parser options.
-        LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-        ParserOptions options = languageVersionHandler.getDefaultParserOptions();
-        if (configuration != null) {
-            options.setSuppressMarker(configuration.getSuppressMarker());
-        }
-        return languageVersionHandler.getParser(options);
     }
 
     /**

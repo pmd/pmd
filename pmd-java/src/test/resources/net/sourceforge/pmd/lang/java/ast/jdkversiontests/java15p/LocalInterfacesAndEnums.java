@@ -14,6 +14,7 @@ public class LocalInterfacesAndEnums {
 
         enum MyLocalEnum { A }
 
-        @interface MyLocalAnnotation {}
+        // not supported anymore with Java16
+        //@interface MyLocalAnnotation {}
     }
 }

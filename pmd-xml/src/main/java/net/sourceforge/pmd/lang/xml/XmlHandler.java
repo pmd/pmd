@@ -5,8 +5,7 @@
 package net.sourceforge.pmd.lang.xml;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ast.Parser;
 
 /**
  * Implementation of LanguageVersionHandler for the XML.
@@ -14,8 +13,8 @@ import net.sourceforge.pmd.lang.ParserOptions;
 public class XmlHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
-    public Parser getParser(ParserOptions parserOptions) {
-        return new XmlParser(parserOptions);
+    public Parser getParser() {
+        return new XmlParser();
     }
 
 }

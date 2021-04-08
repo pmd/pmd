@@ -35,6 +35,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
 
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
 final class ExprOps {
 
     private final Infer infer;

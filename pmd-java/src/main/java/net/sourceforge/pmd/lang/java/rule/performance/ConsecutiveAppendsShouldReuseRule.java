@@ -77,7 +77,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
         while (expr instanceof ASTMethodCall && isStringBuilderAppend(expr)) {
             expr = ((ASTMethodCall) expr).getQualifier();
         }
-        return base == expr ? null : expr;
+        return base == expr ? null : expr; // NOPMD
     }
 
     private @Nullable JVariableSymbol getAssignmentLhsAsVar(@Nullable ASTExpression expr) {
@@ -97,7 +97,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
     private boolean isStringBuilderAppend(@Nullable ASTExpression e) {
         if (e instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) e;
-            return call.getMethodName().equals("append")
+            return "append".equals(call.getMethodName())
                 && isStringBuilderAppend(call.getOverloadSelectionInfo());
         }
         return false;

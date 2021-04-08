@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -46,8 +45,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
             if (n instanceof ASTCastExpression) {
                 ASTPrimaryExpression expr = (ASTPrimaryExpression) n.getChild(1);
                 if (expr.getNumChildren() > 1 && expr.getChild(1) instanceof ASTPrimaryPrefix) {
-                    RuleContext ctx = (RuleContext) data;
-                    addViolation(ctx, throwStatement);
+                    addViolation(data, throwStatement);
                 }
                 continue;
             }
@@ -172,8 +170,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 
     private void ck(Object data, String target, ASTThrowStatement throwStatement, Node baseNode) {
         if (!checkForTargetUsage(target, baseNode)) {
-            RuleContext ctx = (RuleContext) data;
-            addViolation(ctx, throwStatement);
+            addViolation(data, throwStatement);
         }
     }
 }

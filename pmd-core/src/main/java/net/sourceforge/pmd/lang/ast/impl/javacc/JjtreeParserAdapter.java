@@ -4,12 +4,9 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import java.io.Reader;
-
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
@@ -22,15 +19,8 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
  */
 public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser {
 
-    protected final ParserOptions parserOptions;
-
-    protected JjtreeParserAdapter(ParserOptions parserOptions) {
-        this.parserOptions = parserOptions;
-    }
-
-    @Override
-    public ParserOptions getParserOptions() {
-        return parserOptions;
+    protected JjtreeParserAdapter() {
+        // inheritance only
     }
 
     protected abstract JavaccTokenDocument newDocument(String fullText);
@@ -40,19 +30,18 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
     }
 
     @Override
-    public R parse(String fileName, Reader source) throws ParseException {
-        String text = CharStreamFactory.toString(source);
-        JavaccTokenDocument doc = newDocument(text);
+    public R parse(ParserTask task) throws ParseException {
+        JavaccTokenDocument doc = newDocument(task.getSourceText());
         CharStream charStream = newCharStream(doc);
 
         try {
-            return parseImpl(charStream, getParserOptions(), fileName);
+            return parseImpl(charStream, task);
         } catch (TokenMgrError tme) {
-            throw tme.withFileName(fileName);
+            throw tme.setFileName(task.getFileDisplayName());
         }
     }
 
-    protected abstract R parseImpl(CharStream cs, ParserOptions options, String fileName) throws ParseException;
+    protected abstract R parseImpl(CharStream cs, ParserTask task) throws ParseException;
 
 
     @Override

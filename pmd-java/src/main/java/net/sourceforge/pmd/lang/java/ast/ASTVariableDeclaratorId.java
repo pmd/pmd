@@ -11,7 +11,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -119,12 +118,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     @NonNull
     @Override
     public ASTModifierList getModifiers() {
-        if (isPatternBinding()) {
-            JavaNode firstChild = getFirstChild();
-            assert firstChild != null : "Binding variable has no modifiers!";
-            return (ASTModifierList) firstChild;
-        }
-
         // delegates modifiers
         return getModifierOwnerParent().getModifiers();
     }
@@ -140,8 +133,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         JavaNode parent = getParent();
         if (parent instanceof ASTVariableDeclarator) {
             return (AccessNode) parent.getParent();
-        } else if (parent instanceof ASTTypeTestPattern) {
-            return this; // this is pretty weird
         }
         return (AccessNode) parent;
     }
@@ -197,10 +188,31 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
 
 
     /**
-     * Returns true if this node declares a local variable.
+     * Returns true if this node declares a local variable from within
+     * a regular {@link ASTLocalVariableDeclaration}.
      */
     public boolean isLocalVariable() {
-        return getNthParent(2) instanceof ASTLocalVariableDeclaration;
+        return getNthParent(2) instanceof ASTLocalVariableDeclaration
+            && !isResourceDeclaration()
+            && !isForeachVariable();
+    }
+
+    /**
+     * Returns true if this node is a variable declared in a
+     * {@linkplain ASTForeachStatement foreach loop}.
+     */
+    public boolean isForeachVariable() {
+        // Foreach/LocalVarDecl/VarDeclarator/VarDeclId
+        return getNthParent(3) instanceof ASTForeachStatement;
+    }
+
+    /**
+     * Returns true if this node is a variable declared in the init clause
+     * of a {@linkplain ASTForStatement for loop}.
+     */
+    public boolean isForLoopVariable() {
+        // For/ForInit/LocalVarDecl/VarDeclarator/VarDeclId
+        return getNthParent(3) instanceof ASTForInit;
     }
 
 
@@ -215,8 +227,10 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
 
 
     /**
-     * Returns true if this node declares a field.
-     * TODO should this return true if this is an enum constant?
+     * Returns true if this node declares a field from a regular
+     * {@link ASTFieldDeclaration}. This returns false for enum
+     * constants (use {@link JVariableSymbol#isField() getSymbol().isField()}
+     * if you want that).
      */
     public boolean isField() {
         return getNthParent(2) instanceof ASTFieldDeclaration;
@@ -267,7 +281,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      * Returns true if this is a binding variable in a
      * {@linkplain ASTPattern pattern}.
      */
-    @Experimental
     public boolean isPatternBinding() {
         return getParent() instanceof ASTPattern;
     }

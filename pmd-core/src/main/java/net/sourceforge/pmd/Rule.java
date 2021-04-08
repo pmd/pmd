@@ -9,7 +9,6 @@ import java.util.List;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
@@ -251,21 +250,6 @@ public interface Rule extends PropertySource {
      */
     void setPriority(RulePriority priority);
 
-    /**
-     * Get the parser options for this Rule. Parser options are used to
-     * configure the {@link net.sourceforge.pmd.lang.Parser} to create an AST in
-     * the form the Rule is expecting. Because ParserOptions are mutable, a Rule
-     * should return a new instance on each call.
-     *
-     * @return the parser options
-     *
-     * @deprecated This was never implemented and will never be. PMD
-     *     cannot parse files once per rule. Let this method assume
-     *     its default by not overriding it.
-     */
-    @Deprecated
-    ParserOptions getParserOptions();
-
 
     /**
      * Returns true if this rule depends on the given processing stage
@@ -288,7 +272,7 @@ public interface Rule extends PropertySource {
      */
     @Experimental
     default boolean dependsOn(AstProcessingStage<?> stage) {
-        return false;
+        return true;
     }
 
 

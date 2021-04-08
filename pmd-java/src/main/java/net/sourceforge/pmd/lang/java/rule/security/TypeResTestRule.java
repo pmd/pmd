@@ -69,7 +69,7 @@ public class TypeResTestRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        FILENAME.set(((RuleContext) data).getSourceCodeFile().toString());
+        FILENAME.set(node.getAstInfo().getFileName());
         for (JavaNode descendant : node.descendants().crossFindBoundaries()) {
             visitJavaNode(descendant, data);
         }
@@ -85,7 +85,7 @@ public class TypeResTestRule extends AbstractJavaRule {
                 TypeSystem ts = t.getTypeSystem();
                 if (t == ts.ERROR || t == ts.UNKNOWN) {
                     if (PRINT_ALL_UNRESOLVED) {
-                        System.err.println("Unresolved at " + position(node, data) + "\t"
+                        System.err.println("Unresolved at " + position(node) + "\t"
                                                + StringUtil.escapeJava(StringUtils.truncate(node.toString(), 100)));
                     }
                     state.numUnresolved++;
@@ -93,7 +93,7 @@ public class TypeResTestRule extends AbstractJavaRule {
                     state.numResolved++;
                 }
             } catch (Throwable e) {
-                System.err.println(position(node, data));
+                System.err.println(position(node));
                 e.printStackTrace();
                 state.numerrors++;
                 if (e instanceof Error) {
@@ -107,8 +107,8 @@ public class TypeResTestRule extends AbstractJavaRule {
 
 
     @NonNull
-    public String position(JavaNode node, Object data) {
-        return "In: " + ((RuleContext) data).getSourceCodeFile() + ":" + node.getBeginLine() + ":" + node.getBeginColumn();
+    public String position(JavaNode node) {
+        return "In: " + node.getAstInfo().getFileName() + ":" + node.getBeginLine() + ":" + node.getBeginColumn();
     }
 
     @Override

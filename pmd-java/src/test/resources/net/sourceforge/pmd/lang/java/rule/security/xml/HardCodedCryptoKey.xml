@@ -25,9 +25,9 @@ public class Foo {
         <code><![CDATA[
 import javax.crypto.spec.SecretKeySpec;
 
-public class Foo {
-
-    void encrypt() {
+public class SecureProperty {
+    byte[] getKeyBytes() {return null;}
+    void encrypt(SecureProperty secureProperty) {
         SecretKeySpec keySpec =  new SecretKeySpec(secureProperty.getKeyBytes(), "AES");
     }
 }
@@ -75,10 +75,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.SecretKeySpec;
-
+import my.SecureUtils;
+import my.Struct;
 public class Foo {
 
-    void encrypt() {
+    void encrypt(Struct data) {
         byte[] computedSecretKey = SecureUtils.computeSecretKey(data.getSecretKeyAlgorithm(),
             data.getAccessKey(), data.getClientIp(), data.getTimeStamp(), data.getEnv());
         SecretKeySpec secretKeySpec = new SecretKeySpec(computedSecretKey, data.getSecretKeyAlgorithm().getName());

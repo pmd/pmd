@@ -5,6 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="full-example"><![CDATA[
+import java.io.*;
 public class Complicated {
 
     int x = 0, y = 1, z = 2, t = 2;
@@ -152,7 +153,6 @@ public class Complicated {
 
     <test-code>
         <description>Empty methods should count 1</description>
-        <rule-property name="reportClasses">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo()' has value 1.</message>
@@ -180,7 +180,6 @@ public class Test {
 
     <test-code>
         <description>#984 Cyclomatic complexity should treat constructors like methods</description>
-        <rule-property name="reportClasses">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Test#Test()' has value 4.</message>
@@ -204,7 +203,6 @@ class Foo {
 
     <test-code>
         <description>Standard Cyclo should count empty switch labels too</description>
-        <rule-property name="reportClasses">false</rule-property>
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
@@ -230,7 +228,6 @@ class Foo {
 
     <test-code>
         <description>Standard Cyclo should count boolean paths</description>
-        <rule-property name="reportClasses">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo()' has value 8.</message>
@@ -289,6 +286,7 @@ class Foo {
     </test-code>
 
     <code-fragment id="lambdas"><![CDATA[
+import java.util.function.*;
 public class LambdaTest {
     public void notSoComplex(int intInput) {                    // +1, total method = 4
         boolean binary;
@@ -344,11 +342,9 @@ public class LambdaTest {
 
     <test-code>
         <description>Complexity of lambdas doesn't affect the complexity of the method, refs #837</description>
-        <expected-problems>3</expected-problems>
+        <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'LambdaTest#notSoComplex(int)' has value 4.</message>
-            <message>'LambdaTest#lambda$notSoComplex$0' has value 2.</message>
-            <message>'LambdaTest#lambda$notSoComplex$1' has value 8.</message>
         </expected-messages>
         <code-ref id="lambdas"/>
     </test-code>
@@ -357,11 +353,12 @@ public class LambdaTest {
         <description>Foreach loops count one, and add no boolean complexity</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#foreach()' has value 2.</message>
+            <message>'Elt#foreach(List)' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
-class Foo {
-    void foreach() {
+import java.util.List;
+class Elt {
+    void foreach(List<List<Elt>> elts) {
         int i = 0;
         for (Elt e : elts.get(i != 0 && i > 0)) {
 
@@ -381,11 +378,11 @@ class Foo {
         <description>The guard of a ForStatement should be counted correctly (spotted #1437)</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#compareImports(String, String)' has value 3.</message>
+            <message>'Foo#compareImports(String[], String[])' has value 3.</message>
         </expected-messages>
         <code><![CDATA[
 class Foo {
-    private static int compareImports(String import1, String import2) {
+    private static int compareImports(String import1Tokens[], String import2Tokens[]) {
         for (int i = 0; i != import1Tokens.length && i != import2Tokens.length; i++) {
         }
     }

@@ -6,33 +6,36 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric.NcssOption;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.NcssOption;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * @author Clément Fournier
  */
-public class NcssTestRule extends AbstractMetricTestRule {
+public class NcssTestRule extends JavaIntMetricTestRule {
 
-    @Override
-    protected boolean isReportClasses() {
-        return false;
+    static final PropertyDescriptor<Boolean> REPORT_CLASSES =
+        PropertyFactory.booleanProperty("reportClasses")
+                       .desc("...")
+                       .defaultValue(false).build();
+
+    public NcssTestRule() {
+        super(JavaMetrics.NCSS);
+        definePropertyDescriptor(REPORT_CLASSES);
     }
 
-
     @Override
-    protected JavaClassMetricKey getClassKey() {
-        return JavaClassMetricKey.NCSS;
+    protected boolean reportOn(Node node) {
+        return super.reportOn(node)
+            && (node instanceof ASTMethodOrConstructorDeclaration
+            || getProperty(REPORT_CLASSES) && node instanceof ASTAnyTypeDeclaration);
     }
-
-
-    @Override
-    protected JavaOperationMetricKey getOpKey() {
-        return JavaOperationMetricKey.NCSS;
-    }
-
 
     @Override
     protected Map<String, MetricOption> optionMappings() {

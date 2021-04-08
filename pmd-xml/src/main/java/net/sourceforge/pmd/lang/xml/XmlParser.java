@@ -4,26 +4,19 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import java.io.Reader;
-
-import net.sourceforge.pmd.lang.AbstractParser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl;
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 
 /**
  * Adapter for the XmlParser.
  */
-public class XmlParser extends AbstractParser {
-
-    public XmlParser(ParserOptions parserOptions) {
-        super(parserOptions);
-    }
+public class XmlParser implements Parser {
 
     @Override
-    public RootXmlNode parse(String fileName, Reader source) throws ParseException {
-        return new XmlParserImpl().parse(source);
+    public RootXmlNode parse(ParserTask task) throws ParseException {
+        return new XmlParserImpl().parse(task);
     }
 
 }

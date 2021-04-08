@@ -15,7 +15,6 @@ import java.util.Stack;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
 
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import apex.jorje.data.Location;
@@ -247,11 +246,11 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private final List<ApexDocTokenLocation> apexDocTokenLocations;
     private final Map<Integer, String> suppressMap;
 
-    ApexTreeBuilder(String sourceCode, ParserOptions parserOptions, SourceCodePositioner positioner) {
+    ApexTreeBuilder(String sourceCode, String suppressMarker, SourceCodePositioner positioner) {
         this.sourceCode = sourceCode;
         sourceCodePositioner = positioner;
 
-        CommentInformation commentInformation = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
+        CommentInformation commentInformation = extractInformationFromComments(sourceCode, suppressMarker);
         apexDocTokenLocations = commentInformation.docTokenLocations;
         suppressMap = commentInformation.suppressMap;
     }
@@ -278,7 +277,6 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     <T extends AstNode> AbstractApexNode<T> build(T astNode) {
         // Create a Node
         AbstractApexNode<T> node = createNodeAdapter(astNode);
-        node.calculateLineNumbers(sourceCodePositioner);
         node.handleSourceCode(sourceCode);
 
         // Append to parent
@@ -299,6 +297,11 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             addFormalComments();
         }
 
+        // calculate line numbers after the tree is built
+        // so that we can look at parent/children to figure
+        // out the positions if necessary.
+        node.calculateLineNumbers(sourceCodePositioner);
+
         return node;
     }
 
@@ -316,7 +319,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     private void buildFormalComment(AstNode node) {
-        if (parents.peek() == node) {
+        if (node.equals(parents.peek())) {
             assignApexDocTokenToNode(node, nodes.peek());
         }
     }
@@ -414,7 +417,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     private boolean visit(AstNode node) {
-        if (parents.peek() == node) {
+        if (node.equals(parents.peek())) {
             return true;
         } else {
             build(node);
