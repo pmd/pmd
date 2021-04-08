@@ -35,7 +35,7 @@ public final class ApexMultifileAnalysis {
     private static final Integer MAX_ERRORS_PER_FILE = 100;
 
     // Create a new org for each analysis
-    private Org org = Org.newOrg(true);
+    private Org org = Org.newOrg();
     private FileIssueOptions options = new FileIssueOptions();
 
     private ApexMultifileAnalysis(String multiFileAnalysisDirectory) {
