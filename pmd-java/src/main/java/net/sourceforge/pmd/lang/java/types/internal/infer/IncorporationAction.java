@@ -129,28 +129,29 @@ abstract class IncorporationAction {
 
         private boolean checkSubtype(JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
             JTypeMirror key = cacheKey(t);
-            if (key == null) { // don't cache result
-                Convertibility isConvertible = isConvertible(t, s);
-                if (isConvertible.withUncheckedWarning()) {
-                    ctx.setNeedsUncheckedConversion();
+            boolean doCache = key != null; // some types are never cached
+
+            Set<JTypeMirror> supertypesOfT = null;
+            if (doCache) {
+                supertypesOfT = CHECK_CACHE.get().computeIfAbsent(key, k -> new HashSet<>());
+                if (supertypesOfT.contains(s)) {
+                    return true; // supertype was already cached
                 }
-                return isConvertible.somehow();
             }
 
-            Set<JTypeMirror> supertypesOfT = CHECK_CACHE.get().computeIfAbsent(key, k -> new HashSet<>());
-            if (supertypesOfT.contains(s)) {
-                return true;
-            }
             Convertibility isConvertible = isConvertible(t, s);
             if (isConvertible.withUncheckedWarning()) {
                 ctx.setNeedsUncheckedConversion();
-                // and don't cache result
-                return true;
-            } else if (isConvertible.somehow()) {
-                supertypesOfT.add(s);
-                return true;
+                // cannot cache those, or the side effect
+                // will not occur on every context
+                doCache = false;
             }
-            return false;
+
+            boolean result = isConvertible.somehow();
+            if (doCache && result) {
+                supertypesOfT.add(s); // if we arrive here it's not null
+            }
+            return result;
         }
 
         private static @Nullable JTypeMirror cacheKey(JTypeMirror t) {
