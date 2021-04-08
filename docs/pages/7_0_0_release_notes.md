@@ -83,6 +83,7 @@ The default version is always ES6.
     not necessary are allowed, if they separate expressions of different precedence.
     The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
     reading and understanding the expressions.
+*   The rule {% rule "java/bestpractices/LooseCoupling" %} has a new property to allow some types to be coupled to (`allowedTypes`).
 
 #### Removed Rules
 
@@ -133,10 +134,12 @@ The following previously deprecated rules have been finally removed:
     * [#1998](https://github.com/pmd/pmd/issues/1998): \[java] AccessorClassGeneration false-negative: subclass calls private constructor
     * [#2130](https://github.com/pmd/pmd/issues/2130): \[java] UnusedLocalVariable: false-negative with array
     * [#2147](https://github.com/pmd/pmd/issues/2147): \[java] JUnitTestsShouldIncludeAssert - false positives with lambdas and static methods
+    * [#2464](https://github.com/pmd/pmd/issues/2464): \[java] LooseCoupling must ignore class literals: ArrayList.class
     * [#2542](https://github.com/pmd/pmd/issues/2542): \[java] UseCollectionIsEmpty can not detect the case `foo.bar().size()`
     * [#2796](https://github.com/pmd/pmd/issue/2796): \[java] UnusedAssignment false positive with call chains
     * [#2797](https://github.com/pmd/pmd/issues/2797): \[java] MissingOverride long-standing issues
     * [#2806](https://github.com/pmd/pmd/issues/2806): \[java] SwitchStmtsShouldHaveDefault false-positive with Java 14 switch non-fallthrough branches
+    * [#2822](https://github.com/pmd/pmd/issues/2822): \[java] LooseCoupling rule: Extend to cover user defined implementations and interfaces
     * [#2883](https://github.com/pmd/pmd/issues/2883): \[java] JUnitAssertionsShouldIncludeMessage false positive with method call
     * [#2890](https://github.com/pmd/pmd/issues/2890): \[java] UnusedPrivateMethod false positive with generics
 * java-codestyle

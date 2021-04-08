@@ -991,23 +991,10 @@ and buffering.
             <property name="xpath">
                 <value>
                     <![CDATA[
-//PrimaryPrefix/Name
-[ends-with(@Image, '.get') or ends-with(@Image, '.getString')]
-[
-    starts-with(@Image, concat(
-        ancestor::MethodDeclaration//FormalParameter/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Name,
-        '.')
-    ) or
-    starts-with(@Image, concat(
-        ancestor::MethodDeclaration//LocalVariableDeclaration/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Name,
-        '.')
-    ) or
-    starts-with(@Image, concat(
-        ancestor::ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Name,
-        '.')
-    )
-]
-]]>
+//MethodCall
+    [@MethodName = 'get' or @MethodName = 'getString']
+    [*[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]]
+                    ]]>
                 </value>
             </property>
         </properties>

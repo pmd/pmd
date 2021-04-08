@@ -71,7 +71,7 @@ public class Foo {
         <expected-messages>
             <message>'Foo' has value 58.</message>
             <message>'Foo#foo()' has value 1.</message>
-            <message>'Foo#main(String)' has value 40.</message>
+            <message>'Foo#main(String[])' has value 40.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
