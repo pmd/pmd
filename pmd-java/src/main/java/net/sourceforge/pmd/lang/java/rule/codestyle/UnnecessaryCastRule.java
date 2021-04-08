@@ -44,8 +44,8 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             return null;
         }
 
-        // Note that we assume that `coercionType <: contextType` because
-        // the code must compile
+        // Note that we assume that coercionType is convertible to
+        // contextType because the code must compile
 
         if (operand instanceof ASTLambdaExpression || operand instanceof ASTMethodReference) {
             // Then the cast provides a target type for the expression (always).
