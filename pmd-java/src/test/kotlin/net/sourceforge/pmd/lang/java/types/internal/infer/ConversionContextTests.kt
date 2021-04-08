@@ -31,9 +31,9 @@ class ConversionContextTests : ProcessorTestSpec({
 
         spy.shouldBeOk {
             valueOf.conversionContextType shouldBe null
-            doubleCast.conversionContextType shouldBe ts.OBJECT
-            doubleLit.conversionContextType shouldBe double.box()
-            intLit.conversionContextType shouldBe double
+            doubleCast.conversionContextType?.targetType shouldBe ts.OBJECT
+            doubleLit.conversionContextType?.targetType shouldBe double.box()
+            intLit.conversionContextType?.targetType shouldBe double
         }
     }
 })
