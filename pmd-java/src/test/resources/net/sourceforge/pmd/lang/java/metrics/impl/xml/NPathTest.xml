@@ -370,6 +370,7 @@ class Foo {
             <message>'Test#method(Date)' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
+import java.util.Date;
 public class Test {
     public void method(Date a) {
         final long aTime = (a == null && a || b) ? 0L : a.getTime();
@@ -385,6 +386,7 @@ public class Test {
             <message>'Test#method(Date)' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
+import java.util.Date;
 public class Test {
     private static final long UNKNOWN = -1;
 
@@ -408,6 +410,7 @@ public class Test {
             <message>'Test#method(Date)' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
+import java.util.Date;
 public class Test {
 
     private static final long UNKNOWN = -1;
@@ -427,6 +430,7 @@ public class Test {
             <message>'SOFExample#usefulMethod(List)' has value 16.</message>
         </expected-messages>
         <code><![CDATA[
+import java.util.*;
 public class SOFExample {
 
     private final Map<String, Date> magicMap = new HashMap<String, Date>();
@@ -458,7 +462,8 @@ public class SOFExample {
             <message>'SOFExample#usefulMethod(List)' has value 16.</message>
         </expected-messages>
         <code><![CDATA[
-            public class SOFExample {
+import java.util.*;
+public class SOFExample {
 
     private final Map<String, Date> magicMap = new HashMap<String, Date>();
     protected static final long UNKNOWN = 0L;
@@ -511,7 +516,9 @@ public class SOFExample {
             <message>'SOFExample#usefulMethod(List)' has value 17.</message>
         </expected-messages>
         <code><![CDATA[
+import java.util.*;
 public class SOFExample {
+    private static final class MyCal { long aTime; long bTime; long cTime; long dTime;}
 
     public void usefulMethod(final List<MyCal> myCals) {
 
@@ -534,6 +541,7 @@ public class SOFExample {
             <message>'SOFExample#usefulMethod(List)' has value 272.</message>
         </expected-messages>
         <code><![CDATA[
+            import java.util.*;
             public class SOFExample {
 
                 private final Map<String, Date> magicMap = new HashMap<String, Date>();
@@ -621,12 +629,13 @@ public class NPathComplexityOverflow {
 
     <test-code>
         <description>Switch arrow branches (#2625)</description>
+        <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'NPathTest#buildProduct(String, Language)' has value 12.</message>
+            <message>'Product#buildProduct(String, Language)' has value 12.</message>
         </expected-messages>
         <code><![CDATA[
-            public class NPathTest {
+            public class Product {
 
                 Product buildProduct(String title, Language language) {
                     if (title.length() > 100 || title.length() == 0) {
@@ -635,27 +644,32 @@ public class NPathComplexityOverflow {
                     var product = new Product();
                     var description = new MultiLangString();
                     switch (language) {
-                    case FR -> description.setFr(title);
-                    case IT -> description.setIt(title);
-                    case EN -> description.setEn(title);
-                    default -> description.setDe(title);
+                    case FR -> description.set1(title);
+                    case IT -> description.set1(title);
+                    case EN -> description.set2(title);
+                    default -> description.set2(title);
                     }
                     product.setDescription(description);
                     product.setMagicNumber(3);
                     return product;
                 }
+                void setDescription(MultiLangString s) {}
+                void setMagicNumber(int s) {}
+                enum Language {FR,IT,EN}
+                class MultiLangString { void set1(String s) {} void set2(String s) {}}
             }
             ]]></code>
     </test-code>
 
     <test-code>
         <description>Switch expressions (#2625)</description>
+        <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'NPathTest#buildProduct(String, Language)' has value 12.</message>
+            <message>'Product#buildProduct(String, Language)' has value 12.</message>
         </expected-messages>
         <code><![CDATA[
-            public class NPathTest {
+            public class Product {
 
                 Product buildProduct(String title, Language language) {
                     if (title.length() > 100 || title.length() == 0) {
@@ -663,26 +677,31 @@ public class NPathComplexityOverflow {
                     }
                     var product = new Product();
                     var description = switch (language) {
-                        case FR -> fr(title);
-                        case IT -> it(title);
-                        case EN -> en(title);
-                        default -> de(title);
+                        case FR -> new Description.Fr(title);
+                        case IT -> new Description.Fr(title);
+                        case EN -> new Description.En(title);
+                        default -> new Description.En(title);
                     };
                     product.setDescription(description);
                     product.setMagicNumber(3);
                     return product;
                 }
+                void setDescription(Description s) {}
+                void setMagicNumber(int s) {}
+                enum Language {FR,IT,EN}
+                static class Description { static class Fr{ Fr(String s){} } static class En{ En(String s){} }}
             }
             ]]></code>
     </test-code>
     <test-code>
         <description>Switch expressions (#2625) (control test, no switch)</description>
+        <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'NPathTest#buildProduct(String, Language)' has value 3.</message>
+            <message>'Product#buildProduct(String, Language)' has value 3.</message>
         </expected-messages>
         <code><![CDATA[
-            public class NPathTest {
+            public class Product {
 
                 Product buildProduct(String title, Language language) {
                     if (title.length() > 100 || title.length() == 0) {
@@ -694,6 +713,10 @@ public class NPathComplexityOverflow {
                     product.setMagicNumber(3);
                     return product;
                 }
+                void setDescription(Description s) {}
+                void setMagicNumber(int s) {}
+                enum Language {FR,IT,EN}
+                static class Description { static class Fr{ Fr(String s){} } static class En{ En(String s){} }}
             }
             ]]></code>
     </test-code>
@@ -701,10 +724,10 @@ public class NPathComplexityOverflow {
         <description>Switch expressions (simpler)</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'NPathTest#buildProduct(String, Language)' has value 2.</message>
+            <message>'Product#buildProduct(String, Language)' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
-            public class NPathTest {
+            public class Product {
 
                 Product buildProduct(String title, Language language) {
                     var product = new Product();
@@ -714,6 +737,7 @@ public class NPathComplexityOverflow {
                     };
                     return product;
                 }
+                enum Language {FR,IT,EN}
             }
             ]]></code>
     </test-code>
