@@ -7,6 +7,9 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -25,14 +28,38 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTCastExpression node, Object data) {
-        @Nullable ExprContext context = node.getConversionContextType();
-        JTypeMirror operandType = node.getOperand().getTypeMirror();
-        JTypeMirror coercionType = node.getCastType().getTypeMirror();
+        ASTExpression operand = node.getOperand();
+
+        // eg in
+        // Object o = (Integer) 1;
+
+        @Nullable ExprContext context = node.getConversionContextType();    // Object
+        JTypeMirror operandType = operand.getTypeMirror();                  // int
+        JTypeMirror coercionType = node.getCastType().getTypeMirror();      // Integer
 
         if (TypeOps.isUnresolvedOrNull(operandType)
             || TypeOps.isUnresolvedOrNull(coercionType)
             || context == null
             || context.getTargetType() == null) {
+            return null;
+        }
+
+        // Note that we assume that `coercionType <: contextType` because
+        // the code must compile
+
+        if (operand instanceof ASTLambdaExpression || operand instanceof ASTMethodReference) {
+            // Then the cast provides a target type for the expression (always).
+            // Since the code is assumed to compile we'll just assume that coercionType
+            // is a functional interface.
+            if (context.getTargetType().equals(coercionType)) {
+                // then we also know that the context is functional
+                addViolation(data, node);
+            }
+            // otherwise the cast is narrowing, and removing it would
+            // change the runtime class of the produced lambda.
+            // Eg `SuperItf obj = (SubItf) ()-> {};`
+            // If we remove the cast, even if it might compile,
+            // the object will not implement SubItf anymore.
             return null;
         }
 
@@ -42,7 +69,9 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private static boolean castIsUnnecessary(ExprContext context, JTypeMirror operandType, JTypeMirror coercionType) {
+    private static boolean castIsUnnecessary(ExprContext context,
+                                             JTypeMirror operandType,
+                                             JTypeMirror coercionType) {
         if (context.isInvocationContext()) {
             // todo unsupported for now, the cast may be disambiguating overloads
             return false;

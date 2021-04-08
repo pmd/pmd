@@ -255,4 +255,113 @@ public class MapCasts {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Cast as target type for method reference/lambda FP</description>
+        <!-- https://github.com/spring-projects/spring-framework/blob/v5.0.6.RELEASE/spring-webmvc/src/main/java/org/springframework/web/servlet/config/annotation/InterceptorRegistry.java#L81 -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Comparator;
+
+            class Test {
+
+                static {
+                    Comparator<Object> comparator;
+                    comparator = OrderComparator.withSourceProvider(object -> {
+                        if (object instanceof InterceptorRegistration) {
+                            // Context type for the return is Object.
+                            // The method ref cannot target Object though
+                            // it needs Ordered as a functional interface
+                            return (Ordered) ((InterceptorRegistration) object)::getOrder;
+                        }
+                        return null;
+                    });
+                    // same here
+                    comparator = OrderComparator.withSourceProvider(object -> {
+                        return (Ordered) () -> 0;
+                    });
+                    // same here
+                    comparator = OrderComparator.withSourceProvider(object -> (Ordered) () -> 0);
+                }
+
+
+            }
+
+            interface InterceptorRegistration {
+                int getOrder();
+            }
+
+            class OrderComparator implements Comparator<Object> {
+                public static Comparator<Object> withSourceProvider(OrderSourceProvider sourceProvider) {
+                    return (o1, o2) -> null; // body is irrelevant
+                }
+
+                @FunctionalInterface
+                public interface OrderSourceProvider {
+                    Object getOrderSource(Object obj);
+                }
+            }
+
+            @FunctionalInterface
+            interface Ordered {
+                int getOrder();
+            }
+
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast as target type for method reference/lambda FP (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Comparator;
+
+            class Test {
+
+                static {
+                    InterceptorRegistration comparator;
+                    comparator = (Ordered) Test::getAnInt;
+                    comparator = (Ordered) () -> 0;
+                }
+
+                static int getAnInt() {return 0;}
+            }
+
+            interface InterceptorRegistration {
+                int getOrder();
+            }
+
+            @FunctionalInterface
+            interface Ordered extends InterceptorRegistration {
+                int getOrder();
+            }
+
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast as target type for method reference/lambda (ok)</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            import java.util.Comparator;
+
+            class Test {
+
+                static {
+                    Ordered comparator;
+                    comparator = (Ordered) Test::getAnInt;
+                    comparator = (Ordered) () -> 0;
+                }
+
+                static int getAnInt() {return 0;}
+            }
+
+            interface InterceptorRegistration {
+                int getOrder();
+            }
+
+            @FunctionalInterface
+            interface Ordered extends InterceptorRegistration {
+                int getOrder();
+            }
+
+            ]]></code>
+    </test-code>
 </test-data>
