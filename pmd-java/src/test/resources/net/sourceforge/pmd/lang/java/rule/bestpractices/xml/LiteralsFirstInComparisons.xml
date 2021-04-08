@@ -33,7 +33,7 @@ public class Foo {
         <expected-problems>4</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    void bar(String str) {
         if ((str == null) || (str.equals(""))) {
             str = "snafu";
         }
@@ -55,9 +55,10 @@ public class Foo {
         <description>Test case from bug [1472195] - PositionLiteralsFirstInComparisons gives many .equals false positives</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
 public class Foo
 {
-    public void bug()
+    public void bug(Number number)
     {
         if (number.equals(new BigDecimal("123"))) {}
     }
@@ -139,6 +140,7 @@ public class Foo {
         <description>Test case from bug [1472195] - PositionLiteralsFirstInComparisons gives many .equalsIgnoreCase false positives</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
 public class Foo
 {
     public void bug()
@@ -325,9 +327,10 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.util.Map;
+import my.Unknown;
 class Foo {
     public void testObjectArray(Unknown uk) {
-        HasMap hasMap = (HasMap) this.beanFactory.getBean("literalMap");
+        Unknown hasMap = (Unknown) this.beanFactory.getBean("literalMap");
         assertTrue(hasMap.getMap().size() == 3);
         assertTrue(hasMap.getMap().get("foo").equals("bar"));
         assertTrue(hasMap.getMap().get("fi").equals("fum"));

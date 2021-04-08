@@ -58,10 +58,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
 
 public class Foo {
     @AfterMethod
-    public void tearDown(Method m) {
+    public void tearDown(java.lang.reflect.Method m) {
       //...
     }
     @Test
@@ -74,7 +75,7 @@ public class Foo {
         <description>#940 False positive with JUnit4TestShouldUseAfterAnnotation when JUnit5's 'AfterEach' is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.*;
 
 public class Foo {
     @AfterEach
@@ -92,7 +93,7 @@ public class Foo {
         <description>#940 False positive with JUnit4TestShouldUseAfterAnnotation when JUnit5's 'AfterAll' is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.*;
 
 public class Foo {
     @AfterAll

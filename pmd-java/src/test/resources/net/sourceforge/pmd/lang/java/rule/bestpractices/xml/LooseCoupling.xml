@@ -154,7 +154,7 @@ public class Test {
         <description>FP with instanceof and cast</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.util.HashMap;
+import java.util.*;
 
 public class Test {
     boolean m(Map m) {
@@ -171,9 +171,10 @@ public class Test {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.HashMap;
+import java.util.Map;
 
 public class MyMap implements Map {
-    static MyMap create() { return null; }
+    static Map create() { return null; }
 }
 
 class Foo {
@@ -186,11 +187,9 @@ class Foo {
         <description>FP with array creation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.util.HashMap;
+import java.util.*;
 
-public class MyMap implements Map {
-    static MyMap create() { return null; }
-}
+public class MyMap implements Map { }
 
 class Foo {
     final Map[] map = new MyMap[5]; // ok
