@@ -51,6 +51,25 @@ This rule finds not only unused private methods, but public methods as well.
 additional configuration. The environment variable `PMD_APEX_ROOTDIRECTORY` needs to be set prior to executing
 PMD. With this variable the root directory of the Salesforce metadata, where `sfdx-project.json` resides, is
 specified. ApexLink can then load all the classes in the project and figure out, whether a method is used or not.
+
+For an accurate analysis it is important that the `PMD_APEX_ROOTDIRECTORY` contains a complete set of metadata that
+may be referenced from the Apex source code, such as Custom Objects, Visualforce Pages, Flows and Labels. The
+`PMD_APEX_ROOTDIRECTORY` directory must contain a 'sfdx-project.json', but metadata may be either in the
+[SFDX Source format](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_source_file_format.htm)
+or the older MDAPI format. The 'packageDirectories' entries in 'sfdx-project.json' are used to determine which
+directories to search for metadata, if a .forceignore file is present it will be honoured.
+
+To check for errors in your configuration turn on debug logging with the '-debug' flag.
+
+If the Apex code references external packages via namespace(s) you should declare these in your 'sfdx-project.json'
+file using the syntax below to avoid errors:
+<![CDATA[
+"plugins": {
+    "dependencies": [
+        {"namespace": "aa"}
+    ]
+}
+]]>
         </description>
         <priority>3</priority>
         <example>
