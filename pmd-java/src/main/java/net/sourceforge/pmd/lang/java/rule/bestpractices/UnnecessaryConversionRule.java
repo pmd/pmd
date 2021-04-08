@@ -16,10 +16,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 
 /**
  *
@@ -141,7 +141,7 @@ public class UnnecessaryConversionRule extends AbstractJavaRulechainRule {
                     if (sourceType == ctxType) {
                         reason = opKind;
                     } else {
-                        reason = "explicit conversion from " + ppType(sourceType) + " to " + ppType(ctxType);
+                        reason = "explicit conversion from " + TypePrettyPrint.prettyPrintWithSimpleNames(sourceType) + " to " + TypePrettyPrint.prettyPrintWithSimpleNames(ctxType);
                     }
                 }
 
@@ -167,11 +167,4 @@ public class UnnecessaryConversionRule extends AbstractJavaRulechainRule {
                                : s.isSubtypeOf(t);
     }
 
-    private static String ppType(JTypeMirror t) {
-        // todo i know i have a branch with s.t. like that in TypePrettyPrint
-        if (t instanceof JClassType) {
-            return ((JClassType) t).getSymbol().getSimpleName();
-        }
-        return t.toString();
-    }
 }
