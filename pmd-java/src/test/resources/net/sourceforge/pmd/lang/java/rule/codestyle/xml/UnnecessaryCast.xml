@@ -184,4 +184,19 @@ public class MapCasts {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Context is array index</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args, Integer i, Double d) {
+                    args[(int) i] = "";   // unnecessary
+                    args[(int) '0'] = ""; // unnecessary
+                    args[(int) 0.5] = ""; // narrowing so necessary
+                    args[(int) d] = "";   // unboxing + narrowing so necessary
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

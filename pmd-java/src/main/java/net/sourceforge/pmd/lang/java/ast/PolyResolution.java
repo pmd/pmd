@@ -400,6 +400,9 @@ final class PolyResolution {
             // when the super ctor is generic/ the superclass is generic
             return ExprContext.newSuperCtorCtx(node.getEnclosingType().getTypeMirror().getSuperClass());
 
+        } else if (papa instanceof ASTArrayAccess && node.getIndexInParent() == 1) {
+            // array index
+            return ExprContext.newAssignmentCtx(papa.getTypeSystem().INT);
         } else {
             // stop recursion
             return RegularCtx.NO_CTX;
