@@ -227,4 +227,32 @@ public class MapCasts {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Unchecked cast FP</description>
+        <!-- There's a corresponding type res unit test in UncheckedInference.kt -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            // Note: Enum is raw, not Enum<T>
+            class StringToEnum<T extends Enum> implements Converter<String, T> {
+
+                private final Class<T> enumType;
+
+                public StringToEnum(Class<T> enumType) {
+                    this.enumType = enumType;
+                }
+
+                @Override
+                public T convert(String source) {
+                    // Because `this.enumType` is raw, the expr `Enum.valueOf(...)` has its
+                    // return type erased to Enum
+                    // So the cast is necessary
+                    return (T) Enum.valueOf(this.enumType, source.trim());
+                }
+            }
+
+            interface Converter<From, To> {
+                To convert(From source);
+            }
+            ]]></code>
+    </test-code>
 </test-data>

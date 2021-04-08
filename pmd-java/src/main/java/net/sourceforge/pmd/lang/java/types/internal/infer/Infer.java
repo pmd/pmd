@@ -574,6 +574,9 @@ public final class Infer {
             }
 
             infCtx.solve(); // this may throw for incompatible bounds
+            if (infCtx.needsUncheckedConversion()) {
+                site.setNeedsUncheckedConversion();
+            }
 
             // instantiate vars and return
             return InferenceContext.finalGround(infCtx.mapToIVars(m));

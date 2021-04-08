@@ -18,6 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
 /**
@@ -48,6 +49,9 @@ abstract class IncorporationAction {
      */
     static class CheckBound extends IncorporationAction {
 
+        // todo this probably needs to be stored in the Infer instance otherwise
+        // it's leaking holding a reference to the symbols, which have a reference
+        // to the TypeSystem, etc
         private static final ThreadLocal<Map<JTypeMirror, Set<JTypeMirror>>> CHECK_CACHE = ThreadLocal.withInitial(() -> new LinkedHashMap<JTypeMirror, Set<JTypeMirror>>() {
             // Even with a relatively small cache size, the hit ratio is
             // very high (around 75% on the tests we have here, discounting
@@ -123,16 +127,26 @@ abstract class IncorporationAction {
                       : checkSubtype(t, s);
         }
 
-        private static boolean checkSubtype(JTypeMirror t, JTypeMirror s) {
+        private boolean checkSubtype(JTypeMirror t, JTypeMirror s) {
             JTypeMirror key = cacheKey(t);
             if (key == null) { // don't cache result
-                return isConvertible(t, s).somehow();
+                Convertibility isConvertible = isConvertible(t, s);
+                if (isConvertible.withUncheckedWarning()) {
+                    ivar.getInfContext().setNeedsUncheckedConversion();
+                }
+                return isConvertible.somehow();
             }
 
             Set<JTypeMirror> supertypesOfT = CHECK_CACHE.get().computeIfAbsent(key, k -> new HashSet<>());
             if (supertypesOfT.contains(s)) {
                 return true;
-            } else if (isConvertible(t, s).somehow()) {
+            }
+            Convertibility isConvertible = isConvertible(t, s);
+            if (isConvertible.withUncheckedWarning()) {
+                ivar.getInfContext().setNeedsUncheckedConversion();
+                // and don't cache result
+                return true;
+            } else if (isConvertible.somehow()) {
                 supertypesOfT.add(s);
                 return true;
             }
@@ -145,7 +159,6 @@ abstract class IncorporationAction {
             }
             return t;
         }
-
 
         @Override
         public String toString() {

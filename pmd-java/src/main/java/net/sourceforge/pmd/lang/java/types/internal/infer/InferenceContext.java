@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.types.SubstVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.CheckBound;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.PropagateAllBounds;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.PropagateBounds;
@@ -59,6 +60,7 @@ final class InferenceContext {
 
     private Substitution mapping = Substitution.EMPTY;
     private @Nullable InferenceContext parent;
+    private boolean needsUncheckedConversion;
     private final int id;
 
     /**
@@ -182,6 +184,20 @@ final class InferenceContext {
      */
     JMethodSig ground(JMethodSig t) {
         return t.subst(InferenceContext::groundSubst);
+    }
+
+    void setNeedsUncheckedConversion() {
+        this.needsUncheckedConversion = true;
+    }
+
+    /**
+     * Whether incorporation/solving required an unchecked conversion.
+     * This means the invocation type of the overload must be erased.
+     *
+     * @see MethodCtDecl#needsUncheckedConversion()
+     */
+    boolean needsUncheckedConversion() {
+        return this.needsUncheckedConversion;
     }
 
 

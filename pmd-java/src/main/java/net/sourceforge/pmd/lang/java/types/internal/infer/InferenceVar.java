@@ -226,6 +226,10 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         return sb;
     }
 
+    public InferenceContext getInfContext() {
+        return ctx;
+    }
+
 
     public enum BoundKind {
         UPPER(" <: ") {
