@@ -438,8 +438,27 @@ public class MapCasts {
                 }
 
                 <T> List<T> emptyList() {return null;}
+
                 <T> Set<T> emptySet() {return null;}
 
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast over ternary mixing boxing/null/primitive</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+
+                public static void main(String[] args) {
+                    double z = (Integer) // here
+                            ((0.2 == Math.random()) ? (Integer) null + apply(null) // this one is required so that + applies
+                                                    : (0.3 == Math.random()) ? (Integer) null // and here
+                                                                             : (int) Math.sin(300 * (12 + 30))); // this one is narrowing
+                }
+
+                public static int apply(Object o) { return 0; }
             }
             ]]></code>
     </test-code>
