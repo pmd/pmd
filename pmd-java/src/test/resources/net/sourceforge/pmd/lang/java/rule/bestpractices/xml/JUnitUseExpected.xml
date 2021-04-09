@@ -13,7 +13,7 @@ import org.junit.Test;
 public class Foo {
     @Test
     public void foo() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        Resolver r = n -> null;
         try {
             r.resolve("PMD");
             fail("Should have thrown an exception");
@@ -22,6 +22,7 @@ public class Foo {
         }
     }
 }
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
         ]]></code>
     </test-code>
 
@@ -33,7 +34,7 @@ import java.lang.Thread;
 import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void testFoo() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        Resolver r = n -> null;
         try {
             r.resolve("PMD");
             fail("Should have thrown an exception");
@@ -42,6 +43,7 @@ public class Foo extends TestCase {
         }
     }
 }
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
         ]]></code>
     </test-code>
 
@@ -53,7 +55,7 @@ import java.lang.Thread;
 import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void testFoo() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        Resolver r = n -> null;
         try {
             r.resolve("PMD");
             fail("Should have thrown an exception");
@@ -68,6 +70,7 @@ public class Foo extends TestCase {
         }
     }
 }
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
         ]]></code>
     </test-code>
 
@@ -79,7 +82,7 @@ import java.lang.Thread;
 import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void testFoo() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        Resolver r = n -> null;
         try {
             r.resolve("PMD");
             throw new RuntimeException("Should have thrown an exception");
@@ -88,6 +91,7 @@ public class Foo extends TestCase {
         }
     }
 }
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
         ]]></code>
     </test-code>
 
@@ -99,7 +103,7 @@ import java.lang.Thread;
 import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void testFoo() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        Resolver r = n -> null;
         try {
             r.resolve("PMD");
             throw new RuntimeException("Should have thrown an exception");
@@ -114,6 +118,7 @@ public class Foo extends TestCase {
         }
     }
 }
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
         ]]></code>
     </test-code>
 
@@ -124,7 +129,7 @@ public class Foo extends TestCase {
 import java.lang.Thread;
 public class Foo {
     public void foo() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        Resolver r = n -> null;
         try {
             r.resolve("PMD");
             fail("Should have thrown an exception");
@@ -133,6 +138,7 @@ public class Foo {
         }
     }
 }
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
         ]]></code>
     </test-code>
 </test-data>

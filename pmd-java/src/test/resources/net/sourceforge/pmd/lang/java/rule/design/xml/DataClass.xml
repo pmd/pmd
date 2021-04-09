@@ -69,6 +69,8 @@ public class Property implements Comparable { // Woc = 10%, Noam = 6, Nopa = 0, 
 
     <code-fragment id="testDescriptor"><![CDATA[
 import java.util.*;
+import my.Rule;
+import my.LanguageVersion;
 public class TestDescriptor {
     private Rule rule;
     private Properties properties;

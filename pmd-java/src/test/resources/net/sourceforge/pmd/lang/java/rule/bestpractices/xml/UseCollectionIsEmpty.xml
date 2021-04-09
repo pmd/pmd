@@ -235,6 +235,9 @@ public class TestIsEmpty {
     public static SomeOtherObjectWithSizeMethod GetBar() {
         return new SomeOtherObjectWithSizeMethod();
     }
+    class SomeOtherObjectWithSizeMethod {
+        int size() {}
+    }
 }
         ]]></code>
     </test-code>
@@ -365,6 +368,7 @@ public class Foo {
     public int size() {
         return 0;
     }
+    class Bar { int size() { return 0; } }
 }
         ]]></code>
     </test-code>

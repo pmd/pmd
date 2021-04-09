@@ -22,6 +22,7 @@ class Foo {
     private void test(@AnnotatedUsage Foo this) {
     }
 }
+@interface AnnotatedUsage {}
         ]]></code>
     </test-code>
 
@@ -95,8 +96,8 @@ class Foo {
         <code><![CDATA[
 class Foo {
     void bar() {
-        ActionListener a  = new ActionListener() {
-            public void event(Event e) {}
+        Runnable a  = new Runnable() {
+            public void run() {}
         };
     }
 }
@@ -245,7 +246,8 @@ public class Foo {
         <description>#1159 correct UnusedFormalParameter for readObject(foo) if not used</description>
         <rule-property name="checkAll">true</rule-property>
         <expected-problems>5</expected-problems>
-        <code><![CDATA[
+        <code><![CDATA[import java.io.*;
+
 public class Foo {
     // throws declaration is missing - so not the serialization readObject method
     private void readObject(ObjectInputStream stream) {
@@ -259,9 +261,11 @@ public class Foo {
     private void readObject(ObjectInputStream stream, Object o) throws InvalidObjectException{
        throw new InvalidObjectException("Proxy required");
     }
+}
+class Other {
     // it's public
-    public void readObject(ObjectInputStream stream) throws InvalidObjectException{
-       throw new InvalidObjectException("Proxy required");
+    public void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException("Proxy required");
     }
 }
         ]]></code>

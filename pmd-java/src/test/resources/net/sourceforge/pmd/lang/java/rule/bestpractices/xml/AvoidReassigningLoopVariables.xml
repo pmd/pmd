@@ -150,7 +150,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void foo(int bar) {
+    int i;
+    void foo(int bar, Foo otherObject) {
         for (int i=0; i < 10; i++) {
             doSomethingWith(i);
             otherObject.i++;
@@ -798,22 +799,24 @@ public class Foo {
         <description>AvoidReassigningLoopVariables detects some harmless reassigning of loop variables in foreach #2595</description>
         <rule-property name="foreachReassign">firstOnly</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
-    void foo(int bar) {
+    void foo(int bar, int httpMethods, int large, int len) {
         String[] strings = getStrings();
+        List<String> lines = new ArrayList<>();
         for (String g : strings) {
             g = g.substring(0,g.lastIndexOf(":"));
             g = g + ": 1;"; // here
-            FileUtil.writeLineToFile(w, g);
+            System.out.println(g);
         }
         for (String item : strings) {
             item = item.trim();
-            httpMethods = httpMethods | HttpMethods.getMethod(item);
+            httpMethods = httpMethods | getHttpMethod(item);
         }
         for (String message : strings) {
-            message = OutputFormatter.escape(message);
+            message = escape(message);
             lines.add(String.format(large ? "  %s  " : " %s ", message));
             len = Math.max(length(message) + (large ? 4 : 2), len);
         }
