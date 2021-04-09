@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
@@ -45,7 +43,7 @@ public final class ApexParser implements Parser {
             }
 
             String property = task.getProperties().getProperty(MULTIFILE_DIRECTORY);
-            @Nullable ApexMultifileAnalysis analysisHandler = ApexMultifileAnalysis.getAnalysisInstance(property);
+            ApexMultifileAnalysis analysisHandler = ApexMultifileAnalysis.getAnalysisInstance(property);
 
             SourceCodePositioner positioner = new SourceCodePositioner(sourceCode);
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, task.getCommentMarker(), positioner);

@@ -4,13 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.AstInfo;
@@ -25,13 +22,13 @@ import com.nawforce.common.diagnostics.Issue;
 public final class ASTApexFile extends AbstractApexNode<AstNode> implements RootNode {
 
     private final AstInfo<ASTApexFile> astInfo;
-    private final @Nullable ApexMultifileAnalysis multifileAnalysis;
+    private final @NonNull ApexMultifileAnalysis multifileAnalysis;
 
     ASTApexFile(SourceCodePositioner source,
                 ParserTask task,
                 AbstractApexNode<? extends Compilation> child,
                 Map<Integer, String> suppressMap,
-                @Nullable ApexMultifileAnalysis multifileAnalysis) {
+                @NonNull ApexMultifileAnalysis multifileAnalysis) {
         super(child.getNode());
         this.astInfo = new AstInfo<>(task, this, suppressMap);
         addChild(child, 0);
@@ -77,10 +74,6 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     }
 
     public List<Issue> getGlobalIssues() {
-        if (multifileAnalysis != null) {
-            return Collections.unmodifiableList(Arrays.asList(multifileAnalysis.getFileIssues(getAstInfo().getFileName())));
-        } else {
-            return Collections.emptyList();
-        }
+        return multifileAnalysis.getFileIssues(getAstInfo().getFileName());
     }
 }

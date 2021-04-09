@@ -4,11 +4,19 @@
 
 package net.sourceforge.pmd.lang.apex.multifile;
 
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.apex.ast.ApexParser;
 
 import com.nawforce.common.api.FileIssueOptions;
 import com.nawforce.common.api.Org;
@@ -27,54 +35,97 @@ import com.nawforce.common.diagnostics.Issue;
  */
 @Experimental
 public final class ApexMultifileAnalysis {
+
     private static final Logger LOG = Logger.getLogger(ApexMultifileAnalysis.class.getName());
 
-    private static Map<String, ApexMultifileAnalysis> instanceMap = new HashMap<>();
+    /**
+     * Instances of the apexlink index and data structures ({@link Org})
+     * are stored statically for now. TODO make that language-wide (#2518).
+     */
+    private static final Map<String, ApexMultifileAnalysis> INSTANCE_MAP = new ConcurrentHashMap<>();
 
     // An arbitrary large number of errors to report
     private static final Integer MAX_ERRORS_PER_FILE = 100;
 
     // Create a new org for each analysis
-    private Org org = Org.newOrg();
-    private FileIssueOptions options = new FileIssueOptions();
+    // Null if failed.
+    private final @Nullable Org org;
+    private final FileIssueOptions options = makeOptions();
+
+    private static final ApexMultifileAnalysis FAILED_INSTANCE = new ApexMultifileAnalysis();
+
+    /** Ctor for the failed instance. */
+    private ApexMultifileAnalysis() {
+        org = null;
+    }
 
     private ApexMultifileAnalysis(String multiFileAnalysisDirectory) {
         LOG.fine("MultiFile Analysis created for " + multiFileAnalysisDirectory);
+        org = Org.newOrg();
         if (multiFileAnalysisDirectory != null && !multiFileAnalysisDirectory.isEmpty()) {
-            // Default issue options, zombies gets us unused methods & fields as well as deploy problems
-            options.includeZombies_$eq(true);
-            options.maxErrorsPerFile_$eq(MAX_ERRORS_PER_FILE);
-
             // Load the package into the org, this can take some time!
-            org.newSFDXPackage(multiFileAnalysisDirectory);
+            org.newSFDXPackage(multiFileAnalysisDirectory); // this may fail if the config is wrong
             org.flush();
         }
     }
 
-    public Issue[] getFileIssues(String filename) {
-        // Extract issues for a specific metadata file from the org
-        return org.getFileIssues(filename, options);
+    private static FileIssueOptions makeOptions() {
+        FileIssueOptions options = new FileIssueOptions();
+        // Default issue options, zombies gets us unused methods & fields as well as deploy problems
+        options.includeZombies_$eq(true);
+        options.maxErrorsPerFile_$eq(MAX_ERRORS_PER_FILE);
+        return options;
     }
 
-    public static ApexMultifileAnalysis getAnalysisInstance(String multiFileAnalysisDirectory) {
-        if (instanceMap.isEmpty()) {
+    /**
+     * Returns true if this is analysis index is in a failed state.
+     * This object is then useless. The failed instance is returned
+     * from {@link #getAnalysisInstance(String)} if loading the org
+     * failed, maybe because of malformed configuration.
+     */
+    public boolean isFailed() {
+        return org == null;
+    }
+
+    public List<Issue> getFileIssues(String filename) {
+        // Extract issues for a specific metadata file from the org
+        return org == null ? Collections.emptyList()
+                           : Collections.unmodifiableList(Arrays.asList(org.getFileIssues(filename, options)));
+    }
+
+    /**
+     * Returns the analysis instance. Returns a {@linkplain #isFailed() failed instance}
+     * if this fails.
+     *
+     * @param multiFileAnalysisDirectory Root directory of the configuration (see {@link ApexParser#MULTIFILE_DIRECTORY}).
+     */
+    public static @NonNull ApexMultifileAnalysis getAnalysisInstance(String multiFileAnalysisDirectory) {
+        if (INSTANCE_MAP.isEmpty()) {
             // Default some library wide settings
             ServerOps.setAutoFlush(false);
             ServerOps.setLogger(new AnalysisLogger());
-            ServerOps.setDebugLogging(new String[] {"ALL"});
+            ServerOps.setDebugLogging(new String[] { "ALL" });
         }
 
-        return instanceMap.computeIfAbsent(multiFileAnalysisDirectory, ApexMultifileAnalysis::create);
-    }
-
-    private static ApexMultifileAnalysis create(String multiFileAnalysisDirectory) {
-        return new ApexMultifileAnalysis(multiFileAnalysisDirectory);
+        return INSTANCE_MAP.computeIfAbsent(
+            multiFileAnalysisDirectory,
+            dir -> {
+                try {
+                    return new ApexMultifileAnalysis(dir);
+                } catch (Exception e) {
+                    LOG.severe("Exception while initializing Apexlink (" + e.getMessage() + ")");
+                    LOG.severe(ExceptionUtils.getStackTrace(e));
+                    LOG.severe("PMD will not attempt to initialize Apexlink further, this can cause rules like AvoidUnusedMethod to be dysfunctional");
+                    return FAILED_INSTANCE;
+                }
+            });
     }
 
     /*
      * Very simple logger to aid debugging, relays ApexLink logging into PMD
      */
-    private static class AnalysisLogger implements com.nawforce.common.api.Logger {
+    private static final class AnalysisLogger implements com.nawforce.common.api.Logger {
+
         @Override
         public void error(String message) {
             LOG.fine(message);
