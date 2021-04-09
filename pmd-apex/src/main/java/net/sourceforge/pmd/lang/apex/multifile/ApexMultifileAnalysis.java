@@ -36,7 +36,8 @@ import com.nawforce.common.diagnostics.Issue;
 @Experimental
 public final class ApexMultifileAnalysis {
 
-    private static final Logger LOG = Logger.getLogger(ApexMultifileAnalysis.class.getName());
+    // test only
+    static final Logger LOG = Logger.getLogger(ApexMultifileAnalysis.class.getName());
 
     /**
      * Instances of the apexlink index and data structures ({@link Org})
