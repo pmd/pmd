@@ -265,6 +265,41 @@ class Scratch {
     }
 
 
+
+    parserTest("Cast context doesn't provide target type (only for lambdas)") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            import java.util.Collection;
+            import java.util.List;
+            import java.util.Set;
+
+            class Test {
+
+                Collection<String> fun(boolean messageSelector) {
+                    Collection<String> textFromMessage =
+                            // compile error: a cast doesn't contribute a target type,
+                            // the ternary is inferred to Collection<Object>
+                            (Collection<String>) (messageSelector ? emptyList() : emptySet());
+
+                    // ok
+                    return (messageSelector ? emptyList() : emptySet());
+                }
+
+                // target-type dependent methods
+                <T> List<T> emptyList() {return null;}
+                <T> Set<T> emptySet() {return null;}
+            }
+        """.trimIndent())
+
+        val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            ternary1.shouldHaveType(java.util.Collection::class[ts.OBJECT])
+            ternary2.shouldHaveType(java.util.Collection::class[ts.STRING])
+        }
+    }
+
+
     parserTest("Assignment context doesn't influence standalone ternary") {
 
 
@@ -373,6 +408,8 @@ class Scratch {
                 }
             }
 
+            // note: a cast context is not a target type, which makes the conditional
+            // use the LUB rule to determine its type.
             "String ter = (String) (Object) (true ? String.valueOf(1) : 2);" should parseAs {
                 localVarDecl {
                     modifiers { }
@@ -385,7 +422,7 @@ class Scratch {
                                 unspecifiedChild()
 
                                 ternaryExpr {
-                                    it.typeMirror shouldBe it.typeSystem.OBJECT
+                                    it.typeMirror shouldBe it.typeSystem.lub(it.typeSystem.STRING, it.typeSystem.INT)
 
                                     boolean(true)
                                     methodCall("valueOf") {

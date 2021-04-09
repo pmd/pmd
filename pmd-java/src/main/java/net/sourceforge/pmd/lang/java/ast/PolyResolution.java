@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
@@ -80,24 +81,39 @@ final class PolyResolution {
             // Because this process may fail if the conditional is not standalone,
             // of this the ctors for expr mirrors must have only trivial side-effects.
             // See comment in MethodRefMirrorImpl
-            BranchingMirror branchingMirror = (BranchingMirror) exprMirrors.getMirror((ASTExpression) e);
-            JTypeMirror standalone = branchingMirror.getStandaloneType();
-            if (standalone != null) {
-                return standalone;
-            } else if (ctx == ExprContext.RegularCtx.NO_CTX) { // NOPMD
-                // null standalone, force resolution anyway, because there is no context
-                // this is more general than ExprMirror#getStandaloneType, it's not a bug
-                if (e instanceof ASTConditionalExpression) {
-                    return computeStandaloneConditionalType((ASTConditionalExpression) e);
-                } else {
-                    List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
-                    return computeStandaloneConditionalType(ts, branches);
+            JTypeMirror target = ctx.getTargetType(false);
+            if (target != null) {
+                // then it is a poly expression
+                // only reference conditional expressions take the target type,
+                // but the spec special-cases some forms of conditionals ("numeric" and "boolean")
+                // The mirror recognizes these special cases
+                ExprMirror polyMirror = exprMirrors.getPolyMirror((ASTExpression) e);
+                JTypeMirror standaloneType = polyMirror.getStandaloneType();
+                if (standaloneType != null) { // then it is one of those special cases
+                    return standaloneType;
                 }
-            }
+                // otherwise it's the target type
+                return target;
+            } else {
+                // then it is standalone
 
-            // else use the target type (cast, or assignment)
-            JTypeMirror target = ctx.getTargetType(true);
-            return target == null ? ts.ERROR : target;
+                BranchingMirror branchingMirror = exprMirrors.getStandaloneBranchingMirror((ASTExpression) e);
+
+                JTypeMirror standalone = branchingMirror.getStandaloneType();
+                if (standalone != null) {
+                    return standalone;
+                } else if (ctx == RegularCtx.NO_CTX) { // NOPMD
+                    // null standalone, force resolution anyway, because there is no context
+                    // this is more general than ExprMirror#getStandaloneType, it's not a bug
+                    if (e instanceof ASTConditionalExpression) {
+                        return computeStandaloneConditionalType((ASTConditionalExpression) e);
+                    } else {
+                        List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
+                        return computeStandaloneConditionalType(ts, branches);
+                    }
+                }
+                return ts.ERROR;
+            }
         } else if (e instanceof ASTMethodReference || e instanceof ASTLambdaExpression) {
             // these may use a cast as a target type
             JTypeMirror targetType = ctx.getTargetType(true);

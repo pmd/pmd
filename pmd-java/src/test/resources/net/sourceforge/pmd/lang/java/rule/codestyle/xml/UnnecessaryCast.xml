@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>Basic Violations</description>
@@ -384,7 +384,63 @@ public class MapCasts {
                     }
                 }
             }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast over a ternary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
+        <code><![CDATA[
+            import java.lang.reflect.Constructor;
+            import java.security.AccessController;
+            import java.security.PrivilegedAction;
 
+            class Test {
+
+                void fun(boolean messageSelector) {
+                    String textFromMessage = (String) (messageSelector ? methodThatReturnsObject("selectorString")
+                                                                       : "string");
+                    textFromMessage = (String) (messageSelector ? methodThatReturnsObject("selectorString")
+                                                                : another());
+
+                    // only this one is unnecessary
+                    textFromMessage = (String) (messageSelector ? "methodThatReturnsObject(selectorString)"
+                                                                : "string");
+                }
+
+                Object methodThatReturnsObject(String s) {return null;}
+
+                Object another() {return null;}
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast over target-dependent ternary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Collection;
+            import java.util.List;
+            import java.util.Set;
+
+            class Test {
+
+                Collection<String> fun(boolean messageSelector) {
+                    Collection<String> textFromMessage =
+                            // compile error: a cast doesn't contribute a target type,
+                            // the ternary is inferred to Collection<Object>
+                            // TODO should this be a positive? If you remove the cast the code will still compile,
+                            // but its typing will change
+                            (Collection<String>) (messageSelector ? emptyList() : emptySet());
+
+                    // ok
+                    return (messageSelector ? emptyList() : emptySet());
+                }
+
+                <T> List<T> emptyList() {return null;}
+                <T> Set<T> emptySet() {return null;}
+
+            }
             ]]></code>
     </test-code>
 </test-data>

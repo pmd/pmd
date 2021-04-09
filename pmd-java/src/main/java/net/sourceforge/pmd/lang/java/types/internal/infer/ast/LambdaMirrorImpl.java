@@ -56,11 +56,11 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
     public List<ExprMirror> getResultExpressions() {
         ASTBlock block = myNode.getBlock();
         if (block == null) {
-            return Collections.singletonList(factory.getMirror(myNode.getExpression()));
+            return Collections.singletonList(factory.getPolyMirror(myNode.getExpression()));
         } else {
             return block.descendants(ASTReturnStatement.class)
                         .map(ASTReturnStatement::getExpr)
-                        .toList(factory::getMirror);
+                        .toList(factory::getPolyMirror);
         }
     }
 
