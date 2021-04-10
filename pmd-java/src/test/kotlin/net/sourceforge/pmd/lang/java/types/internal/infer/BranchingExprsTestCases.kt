@@ -294,8 +294,30 @@ class Scratch {
         val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
 
         spy.shouldBeOk {
-            ternary1.shouldHaveType(java.util.Collection::class[ts.OBJECT])
-            ternary2.shouldHaveType(java.util.Collection::class[ts.STRING])
+            ternary1 shouldHaveType java.util.Collection::class[ts.OBJECT]
+            ternary2 shouldHaveType java.util.Collection::class[ts.STRING]
+        }
+    }
+
+    parserTest("Null branches produce null type") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            import java.util.Collection;
+            class Test {
+                Collection<String> fun(boolean messageSelector) {
+                    // reference ternary in assignment ctx so it takes the target type (Collection<String>)
+                    return (messageSelector ? null : null);
+                    // cast context isn't a target type so it has NULL_TYPE
+                    return (Collection<String>) (messageSelector ? null : null);
+                }
+            }
+        """.trimIndent())
+
+        val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            ternary1 shouldHaveType java.util.Collection::class[ts.STRING]
+            ternary2 shouldHaveType ts.NULL_TYPE
         }
     }
 
