@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.containsCamelCaseWord;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.startsWithCamelCaseWord;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,6 +30,19 @@ public class JavaRuleUtilTest extends BaseNonParserTest {
 
         assertThrows(NullPointerException.class, () -> startsWithCamelCaseWord(null, "get"));
         assertThrows(NullPointerException.class, () -> startsWithCamelCaseWord("fnei", null));
+    }
+
+    @Test
+    public void testContainsCamelCaseWords() {
+
+        assertFalse(containsCamelCaseWord("isABoolean", "Bool"), "no word boundary");
+        assertTrue(containsCamelCaseWord("isABoolean", "A"), "ok word in the middle");
+        assertTrue(containsCamelCaseWord("isABoolean", "Boolean"), "ok word at the end");
+
+        assertThrows(NullPointerException.class, () -> containsCamelCaseWord(null, "A"));
+        assertThrows(NullPointerException.class, () -> containsCamelCaseWord("fnei", null));
+        assertThrows(AssertionError.class, () -> containsCamelCaseWord("fnei", ""), "empty string");
+        assertThrows(AssertionError.class, () -> containsCamelCaseWord("fnei", "a"), "not capitalized");
     }
 
     @Test

@@ -70,6 +70,12 @@ public final class PrettyPrintingUtil {
         }
     }
 
+    public static String prettyPrintType(ASTType t) {
+        StringBuilder sb = new StringBuilder();
+        prettyPrintTypeNode(t, sb);
+        return sb.toString();
+    }
+
     /**
      * Returns a normalized method name. This just looks at the image of the types of the parameters.
      */
