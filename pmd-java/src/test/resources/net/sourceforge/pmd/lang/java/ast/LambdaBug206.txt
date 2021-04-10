@@ -1,5 +1,5 @@
 +- CompilationUnit[@PackageName = ""]
-   +- AnnotationTypeDeclaration[@Abstract = "true", @Annotation = "true", @Anonymous = "false", @BinaryName = "Foo", @CanonicalName = "Foo", @EffectiveVisibility = "public", @Enum = "false", @Final = "false", @Interface = "true", @Local = "false", @Nested = "false", @PackageName = "", @Record = "false", @RegularClass = "false", @SimpleName = "Foo", @TopLevel = "true", @Visibility = "public"]
+   +- AnnotationTypeDeclaration[@Abstract = "true", @Annotation = "true", @Anonymous = "false", @BinaryName = "Foo", @CanonicalName = "Foo", @EffectiveVisibility = "public", @Enum = "false", @Final = "false", @Interface = "true", @Local = "false", @Nested = "false", @PackageName = "", @Record = "false", @RegularClass = "false", @RegularInterface = "false", @SimpleName = "Foo", @TopLevel = "true", @Visibility = "public"]
       +- ModifierList[@EffectiveModifiers = "{public, abstract}", @ExplicitModifiers = "{public}"]
       +- AnnotationTypeBody[@Size = "1"]
          +- FieldDeclaration[@EffectiveVisibility = "public", @Visibility = "public"]
