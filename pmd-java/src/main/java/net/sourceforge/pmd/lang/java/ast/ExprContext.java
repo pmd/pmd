@@ -12,7 +12,13 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
 /**
- * Context of an expression. This determines its target type, which is necessary for overload resolution.
+ * Context of an expression. This determines the target type of poly
+ * expressions, which is necessary for overload resolution. It also
+ * determines what kinds of conversions apply to the value to make it
+ * compatible with the context.
+ *
+ * <p>The api is minimal until more use cases show up, and this is better
+ * tested.
  */
 @Experimental
 public abstract class ExprContext {
@@ -29,9 +35,7 @@ public abstract class ExprContext {
      */
     // note: only meant for public use by rules
     // note: this may triggers type resolution of the context
-    public @Nullable JTypeMirror getTargetType() {
-        return getTargetTypeAfterResolution();
-    }
+    public abstract @Nullable JTypeMirror getTargetType();
 
     /**
      * If true this is an invocation context. This means, the target
@@ -41,11 +45,9 @@ public abstract class ExprContext {
         return false;
     }
 
-    public boolean canGiveContextToPoly(boolean lambda) {
+    boolean canGiveContextToPoly(boolean lambda) {
         return true;
     }
-
-    public abstract boolean flowsThroughConditionalBranches();
 
     static ExprContext newAssignmentCtx(JTypeMirror targetType) {
         return new RegularCtx(targetType, CtxKind.Assignment);
@@ -63,8 +65,6 @@ public abstract class ExprContext {
         return new RegularCtx(superclassType, CtxKind.Other);
     }
 
-    abstract @Nullable JTypeMirror getTargetTypeAfterResolution();
-
     static final class InvocCtx extends ExprContext {
 
         final int arg;
@@ -76,12 +76,7 @@ public abstract class ExprContext {
         }
 
         @Override
-        public boolean flowsThroughConditionalBranches() {
-            return true;
-        }
-
-        @Override
-        @Nullable JTypeMirror getTargetTypeAfterResolution() {
+        public @Nullable JTypeMirror getTargetType() {
             // this triggers type resolution of the enclosing expr.
             OverloadSelectionResult overload = node.getOverloadSelectionInfo();
             if (overload.isFailed()) {
@@ -156,11 +151,6 @@ public abstract class ExprContext {
         }
 
         @Override
-        public boolean flowsThroughConditionalBranches() {
-            return kind == CtxKind.Assignment;
-        }
-
-        @Override
         public boolean canGiveContextToPoly(boolean lambdaOrMethodRef) {
             return kind == CtxKind.Cast ? lambdaOrMethodRef
                                         : kind == CtxKind.Assignment;
@@ -180,7 +170,7 @@ public abstract class ExprContext {
         }
 
         @Override
-        @Nullable JTypeMirror getTargetTypeAfterResolution() {
+        public @Nullable JTypeMirror getTargetType() {
             return targetType;
         }
     }
