@@ -309,6 +309,10 @@ public final class InvocationMatcher {
             this.matchers = matchers;
         }
 
+        // todo make this smarter. Like collecting all possible names
+        //  into a set to do a quick pre-screening before we test
+        //  everything linearly
+
         /**
          * Returns true if any of the matchers match the node.
          *
