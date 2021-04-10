@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   java-bestpractices
     *   [#3190](https://github.com/pmd/pmd/issues/3190): \[java] Use StandardCharsets instead of Charset.forName
+*   java-errorprone
+    *   [#2757](https://github.com/pmd/pmd/issues/2757): \[java] CloseResource: support Lombok's @Cleanup annotation
 
 ### API Changes
 

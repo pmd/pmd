@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
+import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -43,6 +44,11 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public List<ASTAnnotation> getDeclaredAnnotations() {
+        return findChildrenOfType(ASTAnnotation.class);
     }
 
     @Override
