@@ -12,7 +12,7 @@
 import java.io.*;
 
 public class TryWithResources {
-    public void run() {
+    public void run() throws IOException {
         InputStream in = null;
         try {
             in = openInputStream();
@@ -31,6 +31,10 @@ public class TryWithResources {
         try (InputStream in2 = openInputStream()) {
             int i = in2.read();
         }
+    }
+
+    static InputStream openInputStream() {
+        throw new UnsupportedOperationException();
     }
 }
         ]]></code>
@@ -214,5 +218,62 @@ public class TryWithResources {
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] UseTryWithResources - false negative for explicit close #2882</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.io.*;
+
+            public class UseTryWithResources {
+                void method() throws Exception {
+                    final String fileName = "Test";
+                    final BufferedReader br = new BufferedReader(new InputStreamReader(
+                            new FileInputStream(fileName), StandardCharsets.UTF_8));
+                    try { // warning expected: Consider using a try-with-resources statement instead of explicitly closing the resource
+                    } finally {
+                        br.close();
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] UseTryWithResources false positive when AutoCloseable helper used #2650</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class PMDUseTryWithResources {
+
+                static class ResourceCloser implements AutoCloseable {
+                    public static void close(NotAutoCloseable notAutoCloseable) {
+                        notAutoCloseable.close();
+                    }
+
+                    @Override
+                    public void close() throws Exception {
+                        // nothing
+                    }
+                }
+
+                interface NotAutoCloseable {
+                    void close();
+                }
+
+                public void useTryWithResources() {
+                    NotAutoCloseable notAutoCloseable = null;
+                    try {
+                        notAutoCloseable = new NotAutoCloseable() {
+                            @Override
+                            public void close() {
+                            }
+                        };
+                    } finally {
+                        if (notAutoCloseable != null) {
+                            ResourceCloser.close(notAutoCloseable);
+                        }
+                    }
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

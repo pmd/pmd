@@ -1705,16 +1705,14 @@ preserved.
         <priority>3</priority>
         <properties>
             <property name="closeMethods" type="List[String]" delimiter="," description="Method names in finally block, which trigger this rule" value="close,closeQuietly"/>
-            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
 <![CDATA[
-//TryStatement[FinallyStatement//Name[
-    tokenize(@Image, '\.')[last()] = $closeMethods
-][
-    pmd-java:typeIs('java.lang.AutoCloseable')
+//TryStatement[FinallyClause//ExpressionStatement/MethodCall[@MethodName = $closeMethods][
+    (:   vvvvvvvvvvvvvvvvvvvvvvvvv This is to rule out static method call :)
+    *[1][not(self::TypeExpression) and pmd-java:typeIs('java.lang.AutoCloseable')]
     or
-    ../../PrimarySuffix/Arguments[@ArgumentCount = 1]//PrimaryPrefix[pmd-java:typeIs('java.lang.AutoCloseable')]
+    ArgumentList/*[pmd-java:typeIs('java.lang.AutoCloseable')]
 ]]
 ]]>
                 </value>
