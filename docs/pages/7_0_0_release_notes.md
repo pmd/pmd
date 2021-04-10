@@ -84,6 +84,7 @@ The default version is always ES6.
     The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
     reading and understanding the expressions.
 *   The rule {% rule "java/bestpractices/LooseCoupling" %} has a new property to allow some types to be coupled to (`allowedTypes`).
+*   {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
 
 #### Removed Rules
 
@@ -107,13 +108,6 @@ The following previously deprecated rules have been finally removed:
 *   VariableNamingConventions (apex-codestyle)
 *   VariableNamingConventions (java-codestyle)
 *   WhileLoopsMustUseBraces (java-codestyle)
-
-#### Changed rules
-
-##### Java
-
-* {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
-
 
 ### Fixed Issues
 
