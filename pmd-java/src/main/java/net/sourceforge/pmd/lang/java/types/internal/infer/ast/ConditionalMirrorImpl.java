@@ -44,7 +44,7 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
     public @Nullable JTypeMirror getStandaloneType() {
         // may have been set by an earlier call
         JTypeMirror current = InternalApiBridge.getTypeMirrorInternal(myNode);
-        if (current != null && current.unbox().isPrimitive()) {
+        if (current != null && (current.unbox().isPrimitive() || !mayBePoly)) {
             // standalone
             return current;
         }
@@ -52,6 +52,7 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
         if (condType != null) {
             InternalApiBridge.setTypeMirrorInternal(myNode, condType);
         }
+        assert mayBePoly || condType != null : "This conditional expression is standalone!";
         return condType;
     }
 
@@ -67,13 +68,13 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
     private JTypeMirror getConditionalStandaloneType(ConditionalMirrorImpl mirror, ASTConditionalExpression cond) {
         @Nullable JTypeMirror thenType = standaloneExprTypeInConditional(mirror.thenBranch, cond.getThenBranch());
         if (mayBePoly && (thenType == null || !thenType.unbox().isPrimitive())) {
-            return null;
+            return null; // then it's a poly
         }
 
         @Nullable JTypeMirror elseType = standaloneExprTypeInConditional(mirror.elseBranch, cond.getElseBranch());
 
         if (mayBePoly && (elseType == null || !elseType.unbox().isPrimitive())) {
-            return null;
+            return null; // then it's a poly
         }
 
         if (thenType == null || elseType == null) {
@@ -84,8 +85,8 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
             }
             return factory.ts.NULL_TYPE;
         }
-
         // both are non-null
+        // this is a standalone, the following returns non-null
 
         if (elseType.unbox().equals(thenType.unbox())) {
             // eg (Integer, Integer) -> Integer but (Integer, int) -> int

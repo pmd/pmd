@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
@@ -40,8 +41,18 @@ public abstract class ExprContext {
         return false;
     }
 
+    public boolean canGiveContextToPoly(boolean lambda) {
+        return true;
+    }
+
+    public abstract boolean flowsThroughConditionalBranches();
+
     static ExprContext newAssignmentCtx(JTypeMirror targetType) {
         return new RegularCtx(targetType, CtxKind.Assignment);
+    }
+
+    static ExprContext newNumericCtx(JPrimitiveType targetType) {
+        return new RegularCtx(targetType, CtxKind.Numeric);
     }
 
     static ExprContext newCastCtx(JTypeMirror targetType) {
@@ -65,6 +76,11 @@ public abstract class ExprContext {
         }
 
         @Override
+        public boolean flowsThroughConditionalBranches() {
+            return true;
+        }
+
+        @Override
         @Nullable JTypeMirror getTargetTypeAfterResolution() {
             // this triggers type resolution of the enclosing expr.
             OverloadSelectionResult overload = node.getOverloadSelectionInfo();
@@ -80,6 +96,11 @@ public abstract class ExprContext {
         }
     }
 
+    /**
+     * Kind of a {@link RegularCtx}. Note that this enum does not include
+     * invocation contexts because they're handled by {@link InvocCtx}.
+     * If we make this public, it should include it.
+     */
     enum CtxKind {
         /**
          * Assignment context, eg:
@@ -88,14 +109,35 @@ public abstract class ExprContext {
          * <li>Return statement
          * <li>Array initializer
          * </ul>
+         *
+         * <p>An assignment context flows through ternary/switch branches.
          */
         Assignment,
 
         /**
-         * Cast context. Lambdas can use them as target type, but not
-         * eg conditional expressions.
+         * Cast context. Lambdas and method refs can use them as a
+         * target type, but no other expressions. Cast contexts do not
+         * flow through ternary/switch branches.
          */
         Cast,
+
+        /**
+         * Numeric context. Does not provide a target type for poly expressions.
+         * For standalone expressions, they may determine that an (un)boxing or
+         * primitive widening conversion occurs. Numeric contexts do not flow
+         * through ternary/switch branches.
+         *
+         * <p>For instance:
+         * <pre>{@code
+         * Integer integer;
+         *
+         * array[integer] // Integer is unboxed to int
+         * integer + 1    // Integer is unboxed to int
+         * 0 + 1.0        // int (left) is widened to double
+         * integer + 1.0  // Integer is unboxed to int, then widened to double
+         * }</pre>
+         */
+        Numeric,
 
         /** Other kinds of situation that have a target type (eg {@link RegularCtx#NO_CTX}). */
         Other,
@@ -113,14 +155,25 @@ public abstract class ExprContext {
             this.kind = kind;
         }
 
+        @Override
+        public boolean flowsThroughConditionalBranches() {
+            return kind == CtxKind.Assignment;
+        }
+
+        @Override
+        public boolean canGiveContextToPoly(boolean lambdaOrMethodRef) {
+            return kind == CtxKind.Cast ? lambdaOrMethodRef
+                                        : kind == CtxKind.Assignment;
+        }
+
         /**
          * Returns the target type bestowed by this context ON A POLY EXPRESSION.
          *
          * @param allowCasts Whether cast contexts should be considered,
          *                   if false, and this is a cast ctx, returns null.
          */
-        @Nullable JTypeMirror getTargetType(boolean allowCasts) {
-            if (!allowCasts && kind == CtxKind.Cast) {
+        @Nullable JTypeMirror getPolyTargetType(boolean allowCasts) {
+            if (!allowCasts && kind == CtxKind.Cast || kind == CtxKind.Numeric) {
                 return null;
             }
             return targetType;
