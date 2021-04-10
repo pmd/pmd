@@ -1624,11 +1624,12 @@ public class Bar {
     <rule name="UnnecessaryReturn"
           language="java"
           since="1.3"
-          message="Avoid unnecessary return statements"
+          message="Unnecessary return statement"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryReturnRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryreturn">
         <description>
-Avoid the use of unnecessary return statements.
+Avoid the use of unnecessary return statements. A return is unnecessary when no
+instructions follow anyway.
         </description>
         <priority>3</priority>
         <example>
