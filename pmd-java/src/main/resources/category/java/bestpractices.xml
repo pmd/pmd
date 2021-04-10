@@ -1831,34 +1831,36 @@ public class Foo {
         </example>
     </rule>
 
-  <rule name="UseStandardCharsets"
-        language="java"
-        since="6.34"
-        minimumLanguageVersion="1.7"
-        message="Please use StandardCharsets constants"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usestandardcharsets">
-      <description>
+    <rule name="UseStandardCharsets"
+          language="java"
+          since="6.34.0"
+          minimumLanguageVersion="1.7"
+          message="Please use StandardCharsets constants"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usestandardcharsets">
+        <description>
 Starting with Java 7, StandardCharsets provides constants for common Charset objects, such as UTF-8.
 Using the constants is less error prone, and can provide a small performance advantage compared to `Charset.forName(...)`
 since no scan across the internal `Charset` caches is needed.
-      </description>
-      <priority>3</priority>
-      <properties>
-          <property name="version" value="2.0"/>
-          <property name="xpath">
-            <value>
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
 <![CDATA[
-//PrimaryExpression[PrimaryPrefix/Name/@Image = 'Charset.forName']/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = ('"US-ASCII"', '"ISO-8859-1"', '"UTF-8"', '"UTF-16BE"', '"UTF-16LE"', '"UTF-16"')]
+//PrimaryExpression[PrimaryPrefix/Name/@Image = 'Charset.forName']
+    /PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
+        /Literal[@Image = ('"US-ASCII"', '"ISO-8859-1"', '"UTF-8"', '"UTF-16BE"', '"UTF-16LE"', '"UTF-16"')]
 ]]>
-            </value>
-          </property>
-      </properties>
-      <example>
+                </value>
+            </property>
+        </properties>
+        <example>
 <![CDATA[
 public class UseStandardCharsets {
     public void run() {
-        
+
         // looking up the charset dynamically
         try (OutputStreamWriter osw = new OutputStreamWriter(out, Charset.forName("UTF-8"))) {
             osw.write("test");
@@ -1871,10 +1873,10 @@ public class UseStandardCharsets {
     }
 }
 ]]>
-      </example>
-  </rule>
+        </example>
+    </rule>
 
-  <rule name="UseTryWithResources"
+    <rule name="UseTryWithResources"
           language="java"
           minimumLanguageVersion="1.7"
           since="6.12.0"
