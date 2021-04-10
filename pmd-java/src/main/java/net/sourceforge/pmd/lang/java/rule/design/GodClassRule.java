@@ -10,7 +10,7 @@ import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.TIGHT_CLASS_COHE
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.WEIGHED_METHOD_COUNT;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -24,7 +24,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @since 5.0
  */
-public class GodClassRule extends AbstractJavaRule {
+public class GodClassRule extends AbstractJavaRulechainRule {
 
     /**
      * Very high threshold for WMC (Weighted Method Count). See: Lanza. Object-Oriented Metrics in Practice. Page 16.
@@ -40,6 +40,11 @@ public class GodClassRule extends AbstractJavaRule {
      * One third is a low value. See: Lanza. Object-Oriented Metrics in Practice. Page 17.
      */
     private static final double TCC_THRESHOLD = 1.0 / 3.0;
+
+
+    public GodClassRule() {
+        super(ASTClassOrInterfaceDeclaration.class);
+    }
 
 
     @Override

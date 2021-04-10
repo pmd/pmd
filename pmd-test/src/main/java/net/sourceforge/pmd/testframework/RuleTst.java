@@ -100,7 +100,7 @@ public abstract class RuleTst {
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
-            Rule rule = new RuleSetLoader().loadFromResource(ruleSet).getRuleByName(ruleName);
+            Rule rule = new RuleSetLoader().warnDeprecated(false).loadFromResource(ruleSet).getRuleByName(ruleName);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             } else {

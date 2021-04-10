@@ -17,6 +17,7 @@ import java.util.function.DoubleConsumer
 import java.util.function.Supplier
 import kotlin.test.assertEquals
 
+@Suppress("UNUSED_VARIABLE")
 class LambdaInferenceTest : ProcessorTestSpec({
 
 

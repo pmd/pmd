@@ -256,7 +256,8 @@ class DataFlowNode {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Iterator;
-class DataFlowNode {
+import my.SuperWithInheritedField;
+class DataFlowNode extends SuperWithInheritedField {
     void loop() {
         for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
             DataFlowNode inode = i.next();

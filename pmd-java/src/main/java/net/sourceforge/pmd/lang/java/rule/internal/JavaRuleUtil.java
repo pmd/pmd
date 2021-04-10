@@ -10,6 +10,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -707,5 +708,33 @@ public final class JavaRuleUtil {
                 || qualifier instanceof ASTSuperExpression;
         }
         return false;
+    }
+
+    /**
+     * Return a node stream containing all the operands of an addition expression.
+     * For instance, {@code a+b+c} will be parsed as a tree with two levels.
+     * This method will return a flat node stream containing {@code a, b, c}.
+     *
+     * @param e An expression, if it is not a string concatenation expression,
+     *          then returns an empty node stream.
+     */
+    public static NodeStream<ASTExpression> flattenOperands(ASTExpression e) {
+        List<ASTExpression> result = new ArrayList<>();
+        flattenOperandsRec(e, result);
+        return NodeStream.fromIterable(result);
+    }
+
+    private static void flattenOperandsRec(ASTExpression e, List<ASTExpression> result) {
+        if (isStringConcatExpression(e)) {
+            ASTInfixExpression infix = (ASTInfixExpression) e;
+            flattenOperandsRec(infix.getLeftOperand(), result);
+            flattenOperandsRec(infix.getRightOperand(), result);
+        } else {
+            result.add(e);
+        }
+    }
+
+    private static boolean isStringConcatExpression(ASTExpression e) {
+        return BinaryOp.isInfixExprWithOperator(e, BinaryOp.ADD) && TypeTestUtil.isA(String.class, e);
     }
 }
