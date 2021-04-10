@@ -36,10 +36,10 @@ public class JavaRuleUtilTest extends BaseNonParserTest {
     public void testContainsCamelCaseWords() {
 
         assertFalse(containsCamelCaseWord("isABoolean", "Bool"), "no word boundary");
-        assertTrue(containsCamelCaseWord("isABoolean", "A"), "ok word");
-        assertTrue(containsCamelCaseWord("isABoolean", "Boolean"), "ok word");
+        assertTrue(containsCamelCaseWord("isABoolean", "A"), "ok word in the middle");
+        assertTrue(containsCamelCaseWord("isABoolean", "Boolean"), "ok word at the end");
 
-        assertThrows(NullPointerException.class, () -> containsCamelCaseWord(null, "get"));
+        assertThrows(NullPointerException.class, () -> containsCamelCaseWord(null, "A"));
         assertThrows(NullPointerException.class, () -> containsCamelCaseWord("fnei", null));
         assertThrows(AssertionError.class, () -> containsCamelCaseWord("fnei", ""), "empty string");
         assertThrows(AssertionError.class, () -> containsCamelCaseWord("fnei", "a"), "not capitalized");

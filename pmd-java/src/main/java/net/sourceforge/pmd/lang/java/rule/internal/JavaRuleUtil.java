@@ -292,6 +292,9 @@ public final class JavaRuleUtil {
         if (index >= 0 && camelCaseString.length() > index + capitalizedWord.length()) {
             return Character.isUpperCase(camelCaseString.charAt(index + capitalizedWord.length()));
         }
+        if (index >= 0 && camelCaseString.length() == index + capitalizedWord.length()) {
+            return true;
+        }
         return false;
     }
 
