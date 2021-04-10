@@ -1423,11 +1423,34 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="new-rules">New rules</h4>
+
+<ul>
+  <li>
+    <p>The new Java rule <a href="pmd_rules_java_bestpractices.html#usestandardcharsets"><code class="language-plaintext highlighter-rouge">UseStandardCharsets</code></a> finds usages of <code class="language-plaintext highlighter-rouge">Charset.forName</code>,
+where <code class="language-plaintext highlighter-rouge">StandardCharsets</code> can be used instead.</p>
+
+    <p>This rule is also part of the Quickstart Ruleset (<code class="language-plaintext highlighter-rouge">rulesets/java/quickstart.xml</code>) for Java.</p>
+  </li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
+
+<ul>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3190">#3190</a>: [java] Use StandardCharsets instead of Charset.forName</li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
 <h3 id="external-contributions">External Contributions</h3>
+
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/3193">#3193</a>: [java] New rule: UseStandardCharsets - <a href="https://github.com/aaime">Andrea Aime</a></li>
+</ul>
 
 
 
@@ -1445,7 +1468,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 1, 2021 <br />
+ Site last generated: Apr 10, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

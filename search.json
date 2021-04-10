@@ -633,6 +633,15 @@
 ,
 
 {
+"title": "UseStandardCharsets (Java, Best Practices)",
+"tags": "",
+"keywords": "UseStandardCharsets",
+"url": "pmd_rules_java_bestpractices.html#usestandardcharsets",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
 "title": "UseTryWithResources (Java, Best Practices)",
 "tags": "",
 "keywords": "UseTryWithResources",
