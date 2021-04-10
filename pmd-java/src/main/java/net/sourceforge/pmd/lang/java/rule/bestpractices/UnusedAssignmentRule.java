@@ -906,6 +906,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return false;
         }
 
+        @SuppressWarnings("PMD.UnusedPrivateMethod")
         private static JVariableSymbol getVarIfUnaryAssignment(ASTUnaryExpression node) {
             ASTExpression operand = node.getOperand();
             if (!node.getOperator().isPure() && operand instanceof ASTNamedReferenceExpr) {
