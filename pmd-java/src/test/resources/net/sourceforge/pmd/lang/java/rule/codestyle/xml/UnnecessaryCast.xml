@@ -513,4 +513,23 @@ public class MapCasts {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>FP, removing both casts changes program</description>
+        <!-- TODO I'm not going to care too much-->
+        <!--  The rule doesn't consider more than one cast at a time -->
+        <!--  Also rules around ternaries are very complicated and the program would benefit from using if/else instead -->
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                public void putTag(boolean useLong, int n) {
+                   // ONE of them is necessary, because if we remove both they'd
+                   //  both be mapped to long, then boxed to Long and stored in Number
+
+                   Number result =
+                      useLong ? (Number) Long.valueOf(n)
+                              : (Number) Integer.valueOf(n);
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
