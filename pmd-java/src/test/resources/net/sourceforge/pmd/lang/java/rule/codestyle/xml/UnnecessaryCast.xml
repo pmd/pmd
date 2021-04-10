@@ -496,4 +496,21 @@ public class MapCasts {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Byte arithmetic</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                public void putTag(byte tagClass, boolean form, byte val) {
+                    // result of the OR is widened to int,
+                    // then needs to be narrowed
+                    byte tag = (byte) (tagClass | val);
+                    if (form) {
+                        tag |= (byte) 0x20; // narrowing from int
+                    }
+                    write(tag);
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
