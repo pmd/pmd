@@ -462,4 +462,38 @@ public class MapCasts {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Cast that determines boxing when context is Object</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>7,10,12,14,16</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+                public Object zero() {
+                    switch (this) {
+                    case BOOLEAN:
+                        return Boolean.FALSE;
+                    case INT:
+                        return (Integer)0; // here
+                    // in the following double casts, the first one is unnecessary
+                    case BYTE:
+                        return (Byte)(byte)0;
+                    case CHAR:
+                        return (Character)(char)0;
+                    case SHORT:
+                        return (Short)(short)0;
+                    case LONG:
+                        return (Long)(long)0;
+                    case FLOAT:
+                        return FLOAT_ZERO;
+                    case DOUBLE:
+                        return DOUBLE_ZERO;
+                    case VOID:
+                    case OBJECT:
+                    default:
+                        return null;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
