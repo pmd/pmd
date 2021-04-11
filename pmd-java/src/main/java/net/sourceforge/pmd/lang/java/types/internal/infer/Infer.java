@@ -548,13 +548,8 @@ public final class Infer {
 
         try {
 
-            if (phase.isInvocation()) {
-                LOG.startReturnChecks();
-                // Add return constraints before argument constraints -> this pushes the target type down
-                JTypeMirror actualResType = addReturnConstraints(infCtx, m, site); // b3
-                LOG.endReturnChecks();
-
-                m = m.internalApi().withReturnType(actualResType);
+            if (phase.isInvocation() && !isPreJava8) {
+                m = doReturnChecksAndChangeReturnType(m, site, infCtx);
             }
 
             addArgsConstraints(infCtx, m, site, phase); // c
@@ -576,6 +571,15 @@ public final class Infer {
             }
 
             infCtx.solve(); // this may throw for incompatible bounds
+
+            if (isPreJava8 && !infCtx.getFreeVars().isEmpty()) {
+                // Then add the return contraints late
+                // Java 7 only uses the context type if the arguments are not enough
+                // https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.8
+                m = doReturnChecksAndChangeReturnType(m, site, infCtx);
+                infCtx.solve();
+            }
+
             if (infCtx.needsUncheckedConversion()) {
                 site.setNeedsUncheckedConversion();
             }
@@ -591,10 +595,18 @@ public final class Infer {
         }
     }
 
+    private JMethodSig doReturnChecksAndChangeReturnType(JMethodSig m, MethodCallSite site, InferenceContext infCtx) {
+        LOG.startReturnChecks();
+        JTypeMirror actualResType = addReturnConstraints(infCtx, m, site); // b3
+        LOG.endReturnChecks();
+        m = m.internalApi().withReturnType(actualResType);
+        return m;
+    }
+
 
     private boolean shouldPropagateOutwards(JTypeMirror resultType, MethodCallSite target, InferenceContext inferenceContext) {
-
-        return !target.getOuterCtx().isEmpty()  //enclosing context is a generic method
+        return !isPreJava8
+            && !target.getOuterCtx().isEmpty()  //enclosing context is a generic method
             && !inferenceContext.isGround(resultType)   //return type contains inference vars
             && !(resultType instanceof InferenceVar    //no eager instantiation is required (as per 18.5.2)
             && needsEagerInstantiation((InferenceVar) resultType, target.getExpectedType(), inferenceContext));
