@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
@@ -22,7 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavadocCommentOwner;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -32,7 +33,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 /**
  * @author Brian Remedios
  */
-public class CommentRequiredRule extends AbstractJavaRule {
+public class CommentRequiredRule extends AbstractJavaRulechainRule {
     private static final Logger LOG = Logger.getLogger(CommentRequiredRule.class.getName());
 
     // Used to pretty print a message
@@ -67,6 +68,7 @@ public class CommentRequiredRule extends AbstractJavaRule {
     private final Map<PropertyDescriptor<CommentRequirement>, CommentRequirement> propertyValues = new HashMap<>();
 
     public CommentRequiredRule() {
+        super(ASTBodyDeclaration.class);
         definePropertyDescriptor(OVERRIDE_CMT_DESCRIPTOR);
         definePropertyDescriptor(ACCESSOR_CMT_DESCRIPTOR);
         definePropertyDescriptor(CLASS_CMT_REQUIREMENT_DESCRIPTOR);

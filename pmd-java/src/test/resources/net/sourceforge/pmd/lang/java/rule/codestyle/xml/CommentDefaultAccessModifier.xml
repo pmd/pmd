@@ -126,7 +126,7 @@ public @interface Foo {}
 @SomeAnnotation
 @interface Baz {}
 
-@VisibleForTesting
+@com.google.common.annotations.VisibleForTesting
 @interface Foobar {}
 
 /* default */ @interface FoobarWithComment {}
@@ -154,7 +154,7 @@ public enum Foo {}
 @SomeAnnotation
 enum Baz {}
 
-@VisibleForTesting
+@com.google.common.annotations.VisibleForTesting
 enum Foobar {}
 
 /* default */ enum FoobarWithComment {}
@@ -182,7 +182,7 @@ public class Foo {}
 @SomeAnnotation
 class Baz {}
 
-@VisibleForTesting
+@com.google.common.annotations.VisibleForTesting
 class Foobar {}
 
 /* default */ class FoobarWithComment {}
@@ -244,6 +244,7 @@ public enum TestEnum {
         <description>#1430 CommentDefaultAccessModifier triggers on field annotated with @VisibleForTesting</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import android.support.annotation.VisibleForTesting;
 public class CommentDefaultAccessModifier {
     @VisibleForTesting void method() {}
 }
@@ -328,7 +329,7 @@ public interface A {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>To avoid mistakes add a comment at the beginning of the method method if you want a default access modifier</message>
+            <message>To avoid mistakes add a comment at the beginning of the method method() if you want a default access modifier</message>
         </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.codestyle.commentdefaultaccessmodifier;
@@ -358,8 +359,8 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>2,4</expected-linenumbers>
         <expected-messages>
-            <message>To avoid mistakes add a comment at the beginning of the Foo constructor if you want a default access modifier</message>
-                <message>To avoid mistakes add a comment at the beginning of the Foo constructor if you want a default access modifier</message>
+            <message>To avoid mistakes add a comment at the beginning of the constructor Foo() if you want a default access modifier</message>
+                <message>To avoid mistakes add a comment at the beginning of the constructor Foo(String) if you want a default access modifier</message>
             </expected-messages>
         <code-ref id="constructor-with-default-access-modifier-rule"/>
     </test-code>

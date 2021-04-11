@@ -5,6 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="full-example"><![CDATA[
+import java.io.*;
 public class Complicated {
 
     int x = 0, y = 1, z = 2, t = 2;
@@ -285,6 +286,7 @@ class Foo {
     </test-code>
 
     <code-fragment id="lambdas"><![CDATA[
+import java.util.function.*;
 public class LambdaTest {
     public void notSoComplex(int intInput) {                    // +1, total method = 4
         boolean binary;
@@ -351,11 +353,12 @@ public class LambdaTest {
         <description>Foreach loops count one, and add no boolean complexity</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#foreach()' has value 2.</message>
+            <message>'Elt#foreach(List)' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
-class Foo {
-    void foreach() {
+import java.util.List;
+class Elt {
+    void foreach(List<List<Elt>> elts) {
         int i = 0;
         for (Elt e : elts.get(i != 0 && i > 0)) {
 
@@ -375,11 +378,11 @@ class Foo {
         <description>The guard of a ForStatement should be counted correctly (spotted #1437)</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#compareImports(String, String)' has value 3.</message>
+            <message>'Foo#compareImports(String[], String[])' has value 3.</message>
         </expected-messages>
         <code><![CDATA[
 class Foo {
-    private static int compareImports(String import1, String import2) {
+    private static int compareImports(String import1Tokens[], String import2Tokens[]) {
         for (int i = 0; i != import1Tokens.length && i != import2Tokens.length; i++) {
         }
     }

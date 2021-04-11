@@ -5,7 +5,25 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="full-example"><![CDATA[
-public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
+import my.Structure;
+import my.DataFlowHandler;
+import my.JavaNode;
+import my.Linker;
+import my.NodeType;
+import my.Node;
+import my.ASTStatementExpression;
+import my.ASTVariableDeclarator;
+import my.ASTExpression;
+import my.ASTWhileStatement;
+import my.ASTIfStatement;
+import my.ASTForStatement;
+import my.ASTSwitchStatement;
+import my.ASTDoStatement;
+import my.ASTAssertStatement;
+
+import java.util.logging.Logger;
+import java.util.logging.Level;
+public class StatementAndBraceFinder {
     // total: 16 for sum of methods        + 1 for        vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     //      = 17
     private static final Logger LOGGER = Logger.getLogger(StatementAndBraceFinder.class.getName());
@@ -46,7 +64,6 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         tryToLog("", type, node);
     }
 
-    @Override
     public Object visit(ASTStatementExpression node, Object data) { //2
         if (!(data instanceof Structure)) {
             return data;
@@ -185,6 +202,8 @@ public interface Foo {
             <message>'Foo#bar()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
+import my.JFileChooser;
+import my.FileFilter;
 public class Foo {
     public void bar() {
         JFileChooser openDialog = createOpenFileChooser();
@@ -203,6 +222,7 @@ public class Foo {
             <message>'Foo#bar()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
+import my.JFileChooser;
 public class Foo {
     public void bar() {
         JFileChooser openDialog = createOpenFileChooser();

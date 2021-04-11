@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.StringUtil;
@@ -25,7 +25,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Brian Remedios
  */
-public class CommentSizeRule extends AbstractJavaRule {
+public class CommentSizeRule extends AbstractJavaRulechainRule {
 
     public static final PropertyDescriptor<Integer> MAX_LINES
             = PropertyFactory.intProperty("maxLines")
@@ -42,6 +42,7 @@ public class CommentSizeRule extends AbstractJavaRule {
     static final Set<String> IGNORED_LINES = setOf("//", "/*", "/**", "*", "*/");
 
     public CommentSizeRule() {
+        super(ASTCompilationUnit.class);
         definePropertyDescriptor(MAX_LINES);
         definePropertyDescriptor(MAX_LINE_LENGTH);
     }
@@ -121,6 +122,6 @@ public class CommentSizeRule extends AbstractJavaRule {
             }
         }
 
-        return super.visit(cUnit, data);
+        return null;
     }
 }

@@ -40,7 +40,7 @@ public class Foo {}
         <description>Static Java imports are OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import static java.lang.*;
+import static java.lang.Process.*;
 public class Foo {}
         ]]></code>
     </test-code>
