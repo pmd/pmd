@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
@@ -46,37 +47,40 @@ public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
         }
 
         ASTExpression otherChild = JavaRuleUtil.getOtherOperandIfInInfixExpr(nullLit);
-        StablePathMatcher exprMatcher = StablePathMatcher.matching(otherChild);
-        if (exprMatcher == null) {
+        StablePathMatcher pathToNullVar = StablePathMatcher.matching(otherChild);
+        if (pathToNullVar == null) {
             // cannot be matched, because it's not stable
             return;
         }
 
-        enclosingConditional.getRightOperand()
-                            .descendantsOrSelf()
-                            .filterIs(ASTExpression.class)
-                            .filter(it -> willNpe(it, exprMatcher))
-                            .take(1)
-                            .forEach(it -> addViolation(ctx, it));
-    }
+        NodeStream<ASTExpression> exprsToCheck = enclosingConditional.getRightOperand()
+                                                                     .descendantsOrSelf()
+                                                                     .filterIs(ASTExpression.class);
 
-    private static boolean willNpe(ASTExpression e, StablePathMatcher pathToNullVar) {
-        if (e instanceof QualifiableExpression) {
-            ASTExpression qualifier = ((QualifiableExpression) e).getQualifier();
-            if (pathToNullVar.matches(qualifier)) {
-                return true;
+        for (ASTExpression subexpr : exprsToCheck) {
+            NpeReason npeReason = willNpeWithReason(subexpr, pathToNullVar);
+            if (npeReason != null) {
+                addViolationWithMessage(ctx, subexpr, npeReason.formatMessage);
             }
         }
 
-        if (e instanceof ASTInfixExpression) {
-            ASTInfixExpression infix = (ASTInfixExpression) e;
+    }
 
-            boolean matchesLeft = pathToNullVar.matches(infix.getLeftOperand());
-            boolean matchesRight = pathToNullVar.matches(infix.getRightOperand());
-            return (matchesLeft || matchesRight) && operatorUnboxesOperand(infix);
+    private static NpeReason willNpeWithReason(ASTExpression e, StablePathMatcher pathToNullVar) {
+        if (e instanceof QualifiableExpression) {
+            ASTExpression qualifier = ((QualifiableExpression) e).getQualifier();
+            if (pathToNullVar.matches(qualifier)) {
+                return NpeReason.DEREFERENCE;
+            }
         }
 
-        return false;
+        if (e.getParent() instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) e.getParent();
+            if (pathToNullVar.matches(e) && operatorUnboxesOperand(infix)) {
+                return NpeReason.UNBOXING;
+            }
+        }
+        return null;
     }
 
     private static boolean operatorUnboxesOperand(ASTInfixExpression infix) {
@@ -95,6 +99,17 @@ public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
             // So both are reference types
             // With these ops, in this case no unboxing takes place
             return operator != BinaryOp.NE && operator != BinaryOp.EQ;
+        }
+    }
+
+    enum NpeReason {
+        DEREFERENCE("Dereferencing the qualifier of this expression will throw a NullPointerException"),
+        UNBOXING("Unboxing this operand will throw a NullPointerException");
+
+        private final String formatMessage;
+
+        NpeReason(String formatMessage) {
+            this.formatMessage = formatMessage;
         }
     }
 

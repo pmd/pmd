@@ -697,7 +697,7 @@ private int getMoreFoo(){
     <rule name="BrokenNullCheck"
           language="java"
           since="3.8"
-          message="Expression will NPE at runtime, fix the preceding null check"
+          message="This expression will throw a NullPointerException"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.BrokenNullCheckRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#brokennullcheck">
         <description>

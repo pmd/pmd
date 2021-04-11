@@ -259,6 +259,32 @@ public class Library {
             ]]></code>
     </test-code>
     <test-code>
+        <description>BrokenNullCheck with other kinds of NPEs (see QualifiableExpression)</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>10,11,12,13,17</expected-linenumbers>
+        <code><![CDATA[
+            class Test {
+                interface FunctionalItf { String describe(); }
+                boolean handle(FunctionalItf obj) {}
+                Test field;
+                class Inner {boolean isEmpty();}
+                public void testPMD(){
+                    Test boo = null;
+
+                    boolean result;
+                    result = boo == null && handle(boo::toString);           // method reference
+                    result = boo == null && boo.toString();                  // method call
+                    result = boo == null && boo.field.field.hashCode() == 0; // field access
+                    result = boo == null && boo.new Inner().isEmpty();       // qualified ctor call
+
+                    int[] arr = null;
+
+                    result = arr == null && arr[i] == 0;                     // array access
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
         <description>#3071 BrokenNullCheck FPs (2)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -297,6 +323,41 @@ public class Library {
                     if (null != arr[idx] || null == arr[idx] && !anotherArr[idx].isEmpty()) {
                         ;
                     }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>BrokenNullCheck with unboxing</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,5,6,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unboxing this operand will throw a NullPointerException</message>
+            <message>Unboxing this operand will throw a NullPointerException</message>
+            <message>Unboxing this operand will throw a NullPointerException</message>
+            <message>Unboxing this operand will throw a NullPointerException</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                public void testPMD(Integer i){
+                    boolean result;
+                    result = i == null && i == 0;
+                    result = i == null && i << 1;
+                    result = i == null && i + 0;
+                    result = i == null && i == 0.d;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Comparing two boxed things does not unbox</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                public void testPMD(Integer i, Integer d){
+                    boolean result;
+                    result = i == null && i == d;
+                    result = i == null && i != d;
                 }
             }
             ]]></code>
