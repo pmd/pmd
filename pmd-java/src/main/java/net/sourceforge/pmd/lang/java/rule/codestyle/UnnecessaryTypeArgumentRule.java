@@ -93,7 +93,7 @@ public class UnnecessaryTypeArgumentRule extends AbstractJavaRulechainRule {
     }
 
     /** Proxy that pretends it has no explicit type arguments. */
-    static final class SpyInvocMirror implements ExprMirror.InvocationMirror {
+    private static final class SpyInvocMirror implements ExprMirror.InvocationMirror {
 
         private final InvocationMirror base;
         private MethodCtDecl result;

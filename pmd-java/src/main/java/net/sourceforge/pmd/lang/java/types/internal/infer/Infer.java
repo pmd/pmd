@@ -51,7 +51,7 @@ public final class Infer {
 
     public final TypeInferenceLogger LOG; // SUPPRESS CHECKSTYLE just easier to read I think
 
-    private final boolean isJava8; // NOPMD this is unused but may be used later
+    private final boolean isPreJava8;
     private final TypeSystem ts;
 
     final MethodCtDecl NO_CTDECL; // SUPPRESS CHECKSTYLE same
@@ -71,7 +71,7 @@ public final class Infer {
      */
     public Infer(TypeSystem ts, int jdkVersion, TypeInferenceLogger logger) {
         this.ts = ts;
-        this.isJava8 = jdkVersion >= 8;
+        this.isPreJava8 = jdkVersion < 8;
         this.LOG = logger;
 
         this.NO_CTDECL = MethodCtDecl.unresolved(ts);
