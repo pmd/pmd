@@ -84,7 +84,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
             if (classWmc >= getProperty(CLASS_LEVEL_DESCRIPTOR)) {
                 int classHighest = (int) MetricsUtil.computeStatistics(JavaMetrics.CYCLO, node.getOperations(), cycloOptions).getMax();
 
-                String[] messageParams = {PrettyPrintingUtil.kindName(node),
+                String[] messageParams = {PrettyPrintingUtil.getPrintableNodeKind(node),
                                           node.getSimpleName(),
                                           " total",
                                           classWmc + " (highest " + classHighest + ")", };
