@@ -11,20 +11,26 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
+import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
 
 
@@ -32,9 +38,6 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
  *
  */
 public class UnnecessaryTypeArgumentRule extends AbstractJavaRulechainRule {
-
-    // java >= 8
-    private boolean isContextAware;
 
     public UnnecessaryTypeArgumentRule() {
         super(ASTTypeArguments.class);
@@ -44,21 +47,38 @@ public class UnnecessaryTypeArgumentRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTTypeArguments node, Object data) {
         JavaNode parent = node.getParent();
-        if (parent instanceof ASTMethodCall || parent instanceof ASTConstructorCall) {
-            checkUnnecessary((InvocationNode) parent, node);
+        if (parent instanceof ASTMethodCall) {
+            checkUnnecessary((ASTMethodCall) parent, node, (RuleContext) data);
+        } else if (parent instanceof ASTConstructorCall) {
+            checkUnnecessary((ASTConstructorCall) parent, node, (RuleContext) data);
         }
         return null;
     }
 
-    private void checkUnnecessary(InvocationNode call, ASTTypeArguments args) {
+    private <T extends InvocationNode & ASTExpression> void checkUnnecessary(T call, ASTTypeArguments targs, RuleContext data) {
         // does not check for diamond
 
-        if (isSimpleEnough(call)) {
-            Infer infer = InternalApiBridge.getInferenceEntryPoint(call);
-            // this may not mutate the AST
-            InvocationMirror baseMirror = JavaExprMirrors.forObservation(infer).getInvocationMirror(call);
-            // todo get target type
+        JExecutableSymbol currentSymbol = call.getMethodType().getSymbol();
+
+        MethodCtDecl result = doOverloadResolutionWithoutTypeArgs(call);
+
+        if (result.isFailed() || !result.getMethodType().getSymbol().equals(currentSymbol)) {
+            return;
         }
+
+        addViolation(data, targs);
+    }
+
+    private <T extends InvocationNode & ASTExpression> MethodCtDecl doOverloadResolutionWithoutTypeArgs(T call) {
+        Infer infer = InternalApiBridge.getInferenceEntryPoint(call);
+        // this may not mutate the AST
+        InvocationMirror baseMirror = JavaExprMirrors.forObservation(infer).getInvocationMirror(call);
+        SpyInvocMirror spyMirror = installSpy(baseMirror);
+        ExprContext contextType = call.getConversionContextType();
+        JTypeMirror expectedType = contextType == null ? null : contextType.getTargetType();
+        MethodCallSite fakeCallSite = infer.newCallSite(spyMirror, expectedType);
+        infer.inferInvocationRecursively(fakeCallSite);
+        return spyMirror.result;
     }
 
     private boolean isSimpleEnough(InvocationNode call) {
