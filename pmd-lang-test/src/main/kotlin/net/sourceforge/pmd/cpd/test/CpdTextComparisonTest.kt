@@ -65,23 +65,23 @@ abstract class CpdTextComparisonTest(
 
 
     private fun StringBuilder.format(tokens: Tokens) {
-        appendHeader().appendln()
+        appendHeader().appendLine()
 
         var curLine = -1
 
         for (token in tokens.iterator()) {
 
             if (token === TokenEntry.EOF) {
-                append("EOF").appendln()
+                append("EOF").appendLine()
                 continue
             }
 
             if (curLine != token.beginLine) {
                 curLine = token.beginLine
-                append('L').append(curLine).appendln()
+                append('L').append(curLine).appendLine()
             }
 
-            formatLine(token).appendln()
+            formatLine(token).appendLine()
         }
     }
 
@@ -105,6 +105,7 @@ abstract class CpdTextComparisonTest(
     private fun StringBuilder.formatLine(escapedImage: String, bcol: Any, ecol: Any): StringBuilder {
         var colStart = length
         colStart = append(Indent).append(escapedImage).padCol(colStart, Col0Width)
+        @Suppress("UNUSED_VALUE")
         colStart = append(Indent).append(bcol).padCol(colStart, Col1Width)
         return append(ecol)
     }

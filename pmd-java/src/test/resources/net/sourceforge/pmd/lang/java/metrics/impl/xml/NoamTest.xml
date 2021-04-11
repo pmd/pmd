@@ -5,6 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="full-example"><![CDATA[
+import my.MutableInt;
 public class Foo {
     private int value;
     private double speed;
@@ -42,13 +43,15 @@ public class Foo {
         return words;
     }
 }
+@interface TestAnnotation{}
     ]]></code-fragment>
 
     <test-code>
         <description>Full example</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 4.</message>
+            <message>'Foo' has value 7.</message>
+            <message>'TestAnnotation' has value 0.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -66,8 +69,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>NOPA doesn't support enums, interfaces or annotations</description>
-        <expected-problems>0</expected-problems>
+        <description>NOAM supports enums, interfaces or annotations</description>
+        <expected-problems>3</expected-problems>
         <code><![CDATA[
 public interface Foo {
 

@@ -155,7 +155,7 @@ class TypeParamScopingTest : ParserTestSpec({
             """)
 
         // type parameters
-        val (x, t, t2, y2) = acu.descendants(ASTTypeParameter::class.java).toList()
+        val (x, _, t2, _) = acu.descendants(ASTTypeParameter::class.java).toList()
 
         // parameters
         val (pt, px) = acu.descendants(ASTFormalParameter::class.java).map { it.typeNode }.toList()

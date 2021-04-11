@@ -230,7 +230,7 @@ class StressTest : ProcessorTestSpec({
 
         acu.descendants(ASTLocalVariableDeclaration::class.java)
                 .map { it.varIds[0]!! }
-                .filter { it.variableName.startsWith("asList") }
+                .filter { it.name.startsWith("asList") }
                 .map { it.initializer!! }
                 .forEachIndexed { i, expr ->
                     val t = measureTimeMillis {

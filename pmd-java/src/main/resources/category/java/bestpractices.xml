@@ -620,9 +620,8 @@ through the @RunWith(Suite.class) annotation.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration
-[MethodDeclaration[@Name='suite']/ResultType/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
-[not(MethodDeclaration/Block/BlockStatement/Statement/ReturnStatement//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
+//MethodDeclaration[@Name='suite' and ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
+                   [not(.//ReturnStatement/*[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
 ]]>
                 </value>
             </property>
@@ -660,13 +659,14 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration
-    [MethodDeclaration[@Name='tearDown']]
-    [not(Annotation/*/Name[
+//MethodDeclaration[@Name='tearDown' and @Arity=0]
+    [not(ModifierList/Annotation[
            pmd-java:typeIs('org.junit.After')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
         or pmd-java:typeIs('org.testng.annotations.AfterMethod')])]
+    (: Make sure this is a junit 4 class :)
+    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
 ]]>
                 </value>
             </property>
@@ -703,13 +703,15 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration
-    [MethodDeclaration[@Name='setUp']]
-    [not(Annotation/*/Name[
+//MethodDeclaration[@Name='setUp' and @Arity=0]
+    [not(ModifierList/Annotation[
            pmd-java:typeIs('org.junit.Before')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
         or pmd-java:typeIs('org.testng.annotations.BeforeMethod')])]
+    (: Make sure this is a junit 4 class :)
+    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
+
 ]]>
                 </value>
             </property>
@@ -746,17 +748,19 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[
-       matches(@SimpleName, $testClassPattern)
-        or ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]]
-
-    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true() and starts-with(@Name, 'test')]]
-    [not(Annotation//Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-    ])]
+//ClassOrInterfaceDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
+    (: a junit 3 method :)
+    /ClassOrInterfaceBody/MethodDeclaration[
+        @Visibility="public"
+        and starts-with(@Name, 'test')
+        and not(ModifierList/Annotation[
+          pmd-java:typeIs('org.junit.Test')
+          or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+          or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+          or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+          ]
+        )
+    ]
 ]]>
                 </value>
             </property>
@@ -935,9 +939,12 @@ class Foo {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.LooseCouplingRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#loosecoupling">
         <description>
-The use of implementation types (i.e., HashSet) as object references limits your ability to use alternate
-implementations in the future as requirements change. Whenever available, referencing objects
-by their interface types (i.e, Set) provides much more flexibility.
+Excessive coupling to implementation types (e.g., `HashSet`) limits your ability to use alternate
+implementations in the future as requirements change. Whenever available, declare variables
+and parameters using a more general type (e.g, `Set`).
+
+This rule reports uses of concrete collection types. User-defined types that should be treated
+the same as interfaces can be configured with the property `allowedTypes`.
         </description>
         <priority>3</priority>
         <example>
@@ -1020,8 +1027,8 @@ public class SecureSystem {
           message="Use one line for each declaration, it enhances code readability."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#onedeclarationperline">
         <description>
-Java allows the use of several variables declaration of the same type on one line. However, it
-can lead to quite messy code. This rule looks for several declarations on the same line.
+Java allows the use of several variables declaration of the same type on one line.
+However, it can lead to quite messy code. This rule looks for several declarations on the same line.
         </description>
         <priority>4</priority>
         <properties>
@@ -1109,7 +1116,7 @@ Consider replacing Enumeration usages with the newer java.util.Iterator
             <property name="xpath">
                 <value>
 <![CDATA[
-//ImplementsList/ClassOrInterfaceType[@Image='Enumeration']
+//ImplementsList/ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Enumeration')]
 ]]>
                 </value>
             </property>
@@ -1141,7 +1148,9 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']</value>
+                <value><![CDATA[
+                //ClassOrInterfaceType[pmd-java:typeIs('java.util.Hashtable')]
+                ]]></value>
             </property>
         </properties>
         <example>
@@ -1167,7 +1176,9 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']</value>
+                <value><![CDATA[
+                //ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]
+                ]]></value>
             </property>
         </properties>
         <example>
@@ -1677,6 +1688,52 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UseStandardCharsets"
+          language="java"
+          since="6.34.0"
+          minimumLanguageVersion="1.7"
+          message="Please use StandardCharsets constants"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usestandardcharsets">
+        <description>
+Starting with Java 7, StandardCharsets provides constants for common Charset objects, such as UTF-8.
+Using the constants is less error prone, and can provide a small performance advantage compared to `Charset.forName(...)`
+since no scan across the internal `Charset` caches is needed.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[@MethodName = 'forName'][pmd-java:typeIs('java.nio.charset.Charset')]
+    [
+        ArgumentList/StringLiteral
+            [@Image = ('"US-ASCII"', '"ISO-8859-1"', '"UTF-8"', '"UTF-16BE"', '"UTF-16LE"', '"UTF-16"')]
+    ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class UseStandardCharsets {
+    public void run() {
+
+        // looking up the charset dynamically
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, Charset.forName("UTF-8"))) {
+            osw.write("test");
+        }
+
+        // best to use StandardCharsets
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
+            osw.write("test");
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UseTryWithResources"
           language="java"
           minimumLanguageVersion="1.7"
@@ -1694,16 +1751,14 @@ preserved.
         <priority>3</priority>
         <properties>
             <property name="closeMethods" type="List[String]" delimiter="," description="Method names in finally block, which trigger this rule" value="close,closeQuietly"/>
-            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
 <![CDATA[
-//TryStatement[FinallyStatement//Name[
-    tokenize(@Image, '\.')[last()] = $closeMethods
-][
-    pmd-java:typeIs('java.lang.AutoCloseable')
+//TryStatement[FinallyClause//ExpressionStatement/MethodCall[@MethodName = $closeMethods][
+    (:   vvvvvvvvvvvvvvvvvvvvvvvvv This is to rule out static method call :)
+    *[1][not(self::TypeExpression) and pmd-java:typeIs('java.lang.AutoCloseable')]
     or
-    ../../PrimarySuffix/Arguments[@ArgumentCount = 1]//PrimaryPrefix[pmd-java:typeIs('java.lang.AutoCloseable')]
+    ArgumentList/*[pmd-java:typeIs('java.lang.AutoCloseable')]
 ]]
 ]]>
                 </value>

@@ -188,10 +188,31 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
 
 
     /**
-     * Returns true if this node declares a local variable.
+     * Returns true if this node declares a local variable from within
+     * a regular {@link ASTLocalVariableDeclaration}.
      */
     public boolean isLocalVariable() {
-        return getNthParent(2) instanceof ASTLocalVariableDeclaration;
+        return getNthParent(2) instanceof ASTLocalVariableDeclaration
+            && !isResourceDeclaration()
+            && !isForeachVariable();
+    }
+
+    /**
+     * Returns true if this node is a variable declared in a
+     * {@linkplain ASTForeachStatement foreach loop}.
+     */
+    public boolean isForeachVariable() {
+        // Foreach/LocalVarDecl/VarDeclarator/VarDeclId
+        return getNthParent(3) instanceof ASTForeachStatement;
+    }
+
+    /**
+     * Returns true if this node is a variable declared in the init clause
+     * of a {@linkplain ASTForStatement for loop}.
+     */
+    public boolean isForLoopVariable() {
+        // For/ForInit/LocalVarDecl/VarDeclarator/VarDeclId
+        return getNthParent(3) instanceof ASTForInit;
     }
 
 
@@ -206,8 +227,10 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
 
 
     /**
-     * Returns true if this node declares a field.
-     * TODO should this return true if this is an enum constant?
+     * Returns true if this node declares a field from a regular
+     * {@link ASTFieldDeclaration}. This returns false for enum
+     * constants (use {@link JVariableSymbol#isField() getSymbol().isField()}
+     * if you want that).
      */
     public boolean isField() {
         return getNthParent(2) instanceof ASTFieldDeclaration;

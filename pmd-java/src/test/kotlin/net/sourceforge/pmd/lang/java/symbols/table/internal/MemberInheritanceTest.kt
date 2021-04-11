@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.JVariableSig
 import net.sourceforge.pmd.lang.java.types.typeDsl
 
+@Suppress("UNUSED_VARIABLE")
 class MemberInheritanceTest : ParserTestSpec({
 
     parserTest("Test problem with values scope in enum") {

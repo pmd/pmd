@@ -9,4 +9,4 @@ allowed-tags:
   - metrics         # About using metrics, and metrics indices
   - tools           # About tools and integrations, Maven, gradle, etc.
   - devdocs         # About PMD internals, contributing, building, projects
-  - languages
+  - languages       # Language-specific documentation pages

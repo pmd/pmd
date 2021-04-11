@@ -31,11 +31,11 @@ inline fun <reified T : JVariableSymbol> JSymbolTable.shouldResolveVarTo(simpleN
         }
 
 infix fun JavaNode.shouldResolveToField(fieldId: ASTVariableDeclaratorId): JFieldSymbol =
-        symbolTable.shouldResolveVarTo(fieldId.variableName, fieldId.symbol as JFieldSymbol)
+        symbolTable.shouldResolveVarTo(fieldId.name, fieldId.symbol as JFieldSymbol)
 
 
 infix fun JavaNode.shouldResolveToLocal(localId: ASTVariableDeclaratorId): JLocalVariableSymbol =
-        symbolTable.shouldResolveVarTo(localId.variableName, localId.symbol as JLocalVariableSymbol)
+        symbolTable.shouldResolveVarTo(localId.name, localId.symbol as JLocalVariableSymbol)
 
 
 inline fun <reified T : JVariableSymbol> JSymbolTable.shouldResolveVarTo(simpleName: String): T =
