@@ -27,10 +27,32 @@ public final class JavaExprMirrors {
 
     final Infer infer;
     final TypeSystem ts;
+    private final boolean mayMutateAst;
 
-    public JavaExprMirrors(Infer infer) {
+    private JavaExprMirrors(Infer infer, boolean mayMutateAst) {
         this.infer = infer;
         this.ts = infer.getTypeSystem();
+        this.mayMutateAst = mayMutateAst;
+    }
+
+    /**
+     * This will mutate the AST, only one must be used per compilation unit.
+     */
+    public static JavaExprMirrors forTypeResolution(Infer infer) {
+        return new JavaExprMirrors(infer, true);
+    }
+
+    /**
+     * The mirrors produced by this factory will not be able to mutate
+     * the AST. This lets the mirror be decorated to "pretend" the expression
+     * is something slightly different, without corrupting the data in the AST.
+     */
+    public static JavaExprMirrors forObservation(Infer infer) {
+        return new JavaExprMirrors(infer, true);
+    }
+
+    boolean mayMutateAst() {
+        return mayMutateAst;
     }
 
     public ExprMirror getPolyMirror(ASTExpression e) {

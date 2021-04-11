@@ -48,7 +48,11 @@ final class PolyResolution {
     PolyResolution(Infer infer) {
         this.infer = infer;
         this.ts = infer.getTypeSystem();
-        this.exprMirrors = new JavaExprMirrors(infer);
+        this.exprMirrors = JavaExprMirrors.forTypeResolution(infer);
+    }
+
+    public Infer getInfer() {
+        return infer;
     }
 
     JTypeMirror computePolyType(final TypeNode e) {

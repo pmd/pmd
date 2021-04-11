@@ -59,7 +59,9 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
 
     @Override
     public void setMethodType(MethodCtDecl methodType) {
-        InternalApiBridge.setOverload(myNode, methodType);
+        if (factory.mayMutateAst()) {
+            InternalApiBridge.setOverload(myNode, methodType);
+        }
         ctDecl = methodType;
     }
 
