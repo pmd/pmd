@@ -17,7 +17,7 @@ public class Foo {
        List<String> strings = new ArrayList<String>();
        List<String> strings2 = new ArrayList<>();
        List<List<String>> strings3 = new ArrayList<>();
-       List<List<String>> strings4 = new ArrayList<List<List<String>>>();
+       List<List<List<String>>> strings4 = new ArrayList<List<List<String>>>();
        this.field = new ArrayList<String>();
     }
 }
@@ -25,40 +25,91 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>False positive cases: anonymous classes, methods calls</description>
-        <expected-problems>0</expected-problems>
+        <description>False positive cases</description>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
-public class Foo {
-    public void foo() {
-        Collections.sort(files, new Comparator<DataSource>() {
-            @Override
-            public int compare(DataSource left, DataSource right) {
-                String leftString = left.getNiceFileName(useShortNames, inputPaths);
-                String rightString = right.getNiceFileName(useShortNames, inputPaths);
-                return leftString.compareTo(rightString);
-            }
-        });
-        final TreeSet<Map.Entry<String, TimedResult>> sortedKeySet = new TreeSet<>(
-            new Comparator<Map.Entry<String, TimedResult>>() {
-                @Override
-                public int compare(final Entry<String, TimedResult> o1, final Entry<String, TimedResult> o2) {
-                    return Long.compare(o1.getValue().selfTimeNanos.get(), o2.getValue().selfTimeNanos.get());
-                }
-            });
-        new ThreadLocal<Queue<TimerEntry>>() {
-            @Override
-            protected Queue<TimerEntry> initialValue() {
-                return Collections.asLifoQueue(new LinkedList<TimerEntry>());
-            }
-        };
-        Iterator<Node> EMPTY_ITERATOR = new ArrayList<Node>().iterator();
-        ((ListNode<E>) rev).reverseCache = new SoftReference<ImmutableList<E>>(this);
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+public class E {
+    public void foo(List<E> files) {
+        Iterator<E> EMPTY_ITERATOR = new ArrayList<E>().iterator(); // necessary
+        ((ListNode<E>) null).list = new ArrayList<E>();             // violation
     }
-    public Map<PropertyDescriptor<?>, Object> getOverriddenPropertiesByPropertyDescriptor() {
-        return propertyValues == null ? new HashMap<PropertyDescriptor<?>, Object>() : new HashMap<>(propertyValues);
+
+    public Map<ListNode<?>, Object> getOverriddenPropertiesByPropertyDescriptor() {
+        // assignment context
+        return Integer.compare(1,2) == 0 ? new HashMap<ListNode<?>, Object>() // violation
+                                         : new HashMap<>();
+    }
+
+    static class ListNode<E> {
+        List<E> list;
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Anonymous classes before java 9</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+public class E {
+    public void foo(List<E> files) {
+        Collections.sort(files, new Comparator<E>() {
+            @Override
+            public int compare(E left, E right) {
+                return left.toString().compareTo(right.toString());
+            }
+        });
+        new ThreadLocal<List<E>>() {
+            @Override
+            protected List<E> initialValue() {
+                return null;
+            }
+        };
+    }
+}
+        ]]></code>
+        <source-type>java 8</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Anonymous classes after java 9</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,17</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+public class E {
+    public void foo(List<E> files) {
+        Collections.sort(files, new Comparator<E>() {
+            @Override
+            public int compare(E left, E right) {
+                return left.toString().compareTo(right.toString());
+            }
+        });
+        new ThreadLocal<List<E>>() { // not this one, it has no context
+            @Override
+            protected List<E> initialValue() {
+                return new ArrayList<E>();
+            }
+        };
+    }
+}
+        ]]></code>
+        <source-type>java 9</source-type>
     </test-code>
 
     <test-code>
@@ -98,6 +149,7 @@ public class Buzz {
         <description>#1723 FP with var inside lambda (declaration)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.ArrayList;
 class Foo {
     {
         Runnable someAction = () -> {
@@ -113,6 +165,7 @@ class Foo {
         <description>#1723 FP with var inside lambda (assignment)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.ArrayList;
 class Foo {
     {
         Runnable someAction;
@@ -145,7 +198,6 @@ class Foo {
 
     <test-code>
         <description>(J7) Version sensitive tests - avoid possible false positives on Java7</description>
-        <rule-property name="java7Compatibility">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.lang.ref.WeakReference;
@@ -166,6 +218,7 @@ public class Foo {
     }
 }
         ]]></code>
+        <source-type>java 7</source-type>
     </test-code>
 
     <test-code>
@@ -184,11 +237,11 @@ public class Foo {
     }
 }
         ]]></code>
+        <source-type>java 8</source-type>
     </test-code>
 
     <test-code>
         <description>False negative for nested type parameters (#2545)</description>
-        <rule-property name="java7Compatibility">true</rule-property>
         <expected-problems>3</expected-problems>
         <expected-linenumbers>7,8,17</expected-linenumbers>
         <code><![CDATA[
@@ -212,6 +265,7 @@ public class UseDiamondOperatorFalseNegative {
     }
 }
         ]]></code>
+        <source-type>java 7</source-type>
     </test-code>
 
     <test-code>

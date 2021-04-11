@@ -1661,44 +1661,16 @@ public class Foo {
     <rule name="UseDiamondOperator"
           language="java"
           since="6.11.0"
-          message="Explicit type arguments can be replaced by Diamond Operator"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          message="Explicit type arguments can be replaced by a diamond: &lt;&gt;"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UseDiamondOperatorRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#usediamondoperator"
           minimumLanguageVersion="1.7">
-        <description>
-Use the diamond operator to let the type be inferred automatically. With the Diamond operator it is possible
-to avoid duplication of the type parameters.
-Instead, the compiler is now able to infer the parameter types for constructor calls,
-which makes the code also more readable.
-
-The diamond operator has been introduced with java 7. However, type inference has been improved further
-with java8, rendering more type parameters unnecessary. This is only possible with java8 and the resulting
-code won't compile with java7. If you use java7, make sure to enable `java7Compatibility` for this rule to avoid
-false positives.
-        </description>
+        <description><![CDATA[
+Use the diamond operator (`<>`) to let type arguments be inferred automatically
+from the context. This avoids duplication of the type arguments in the type of
+a variable and in its constructor, which makes the code more concise and readable.
+            ]]></description>
         <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0" />
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-(
-//VariableInitializer[preceding-sibling::VariableDeclaratorId[1]/@TypeInferred=false()]
-|
-//StatementExpression[AssignmentOperator and PrimaryExpression/PrimaryPrefix[not(Expression)]]
-)
-/(Expression | Expression[$java7Compatibility = false()]/ConditionalExpression | Expression[$java7Compatibility = false()]/ConditionalExpression/Expression)
-/PrimaryExpression[not(PrimarySuffix) and not(ancestor::ArgumentList)]
-/PrimaryPrefix
-/AllocationExpression
-    [@AnonymousClass=false()]
-    [ClassOrInterfaceType/TypeArguments[@Diamond=false() and not($java7Compatibility = true() and .//TypeArgument[@Wildcard=true()])]]
-    [not(ArrayDimsAndInits)]
-]]>
-                </value>
-            </property>
-            <property name="java7Compatibility" type="Boolean" description="If disabled, the rule shows also violations that are applicable for java8+" value="false" />
-        </properties>
         <example>
             <![CDATA[
 List<String> strings = new ArrayList<String>(); // unnecessary duplication of type parameters
