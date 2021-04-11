@@ -11,7 +11,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 
@@ -21,7 +21,11 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
  * @author Clément Fournier
  * @since 6.4.0
  */
-public class IdenticalCatchBranchesRule extends AbstractJavaRule {
+public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
+
+    public IdenticalCatchBranchesRule() {
+        super(ASTTryStatement.class);
+    }
 
 
     private boolean areEquivalent(ASTCatchClause st1, ASTCatchClause st2) {
