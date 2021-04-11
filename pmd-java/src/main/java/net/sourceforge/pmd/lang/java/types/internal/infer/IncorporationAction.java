@@ -127,13 +127,6 @@ abstract class IncorporationAction {
             return result;
         }
 
-        private static @Nullable JTypeMirror cacheKey(JTypeMirror t) {
-            if (t instanceof InferenceVar || t instanceof JPrimitiveType) {
-                return null; // don't cache those
-            }
-            return t;
-        }
-
         @Override
         public String toString() {
             return "Check " + myKind.format(ivar, myBound);
