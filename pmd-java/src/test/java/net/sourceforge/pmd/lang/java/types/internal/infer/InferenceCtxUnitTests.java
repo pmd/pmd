@@ -31,6 +31,31 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind
 public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
 
     @Test
+    public void testHasPrimaryBound() {
+        TypeInferenceLogger log = spy(TypeInferenceLogger.noop());
+        InferenceContext ctx = emptyCtx(log);
+
+        InferenceVar v1 = newIvar(ctx);
+        InferenceVar v2 = newIvar(ctx, ts.SERIALIZABLE);
+
+        assertThat(v1, hasBound(BoundKind.UPPER, ts.OBJECT));
+        assertThat(v2, hasBound(BoundKind.UPPER, ts.SERIALIZABLE));
+
+        assertTrue(v1.hasOnlyPrimaryBound());
+        assertTrue(v2.hasOnlyPrimaryBound());
+
+        JTypeMirror listOfV1 = listType(v1);
+        TypeOps.isConvertible(v2, listOfV1);
+
+        assertThat(v2, hasBoundsExactly(upper(ts.SERIALIZABLE), upper(listOfV1)));
+
+        assertFalse(v2.hasOnlyPrimaryBound());
+        assertTrue(v1.hasOnlyPrimaryBound());
+
+        verify(log).boundAdded(ctx, v2, BoundKind.UPPER, listOfV1, false);
+    }
+
+    @Test
     public void testBoundsOnConvertibilityCheck() {
         TypeInferenceLogger log = spy(TypeInferenceLogger.noop());
         InferenceContext ctx = emptyCtx(log);

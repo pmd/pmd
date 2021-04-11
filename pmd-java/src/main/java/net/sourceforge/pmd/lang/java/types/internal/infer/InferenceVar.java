@@ -116,7 +116,6 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
      * an assignment context).
      *
      * <p>Remove this if you remove support for java 7 at some point.
-     *
      */
     boolean hasOnlyPrimaryBound() {
         return !hasNonTrivialBound;
