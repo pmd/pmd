@@ -41,8 +41,13 @@ public class JavaAttributesPrinter extends RelevantAttributePrinter {
             // everytime. OTOH failing dump tests would warn us that we removed
             // something that wasn't deprecated
             || attribute.isDeprecated()
-            || "MainMethod".equals(attribute.getName()) && node instanceof ASTMethodDeclaration && attribute.getValue() != Boolean.TRUE
+            || "MainMethod".equals(attribute.getName()) && node instanceof ASTMethodDeclaration && !isBooleanTrue(attribute.getValue())
             || "Expression".equals(attribute.getName()) && node instanceof ASTExpression;
+    }
+
+    private boolean isBooleanTrue(Object o) {
+        // for some reason Boolean::new is called somewhere in the reflection layer
+        return o instanceof Boolean && (Boolean) o;
     }
 
     private AttributeInfo getModifierAttr(String name, Set<JModifier> mods) {
