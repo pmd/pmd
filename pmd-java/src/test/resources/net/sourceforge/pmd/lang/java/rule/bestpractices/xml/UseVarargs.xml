@@ -111,4 +111,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>C-style array decl</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void a(int args[]) { }
+    public void a(String args[]) { }
+    public void a(byte args[]) { }
+    public void a(Byte args[]) { }
+}
+        ]]></code>
+    </test-code>
 </test-data>

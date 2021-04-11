@@ -1811,7 +1811,9 @@ having to deal with the creation of an array.
 <![CDATA[
 //FormalParameters[not(parent::MethodDeclaration[@Overridden=true() or @MainMethod=true()])]
   /FormalParameter[position()=last()]
-   [ArrayType[not(PrimitiveType[@Kind = "byte"] or ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')])] and @Varargs=false()]
+   [@Varargs=false()]
+   [ArrayType[not(PrimitiveType[@Kind = "byte"] or ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')])]
+    or VariableDeclaratorId[ArrayDimensions] and (PrimitiveType[not(@Kind="byte")] or ClassOrInterfaceType[not(pmd-java:typeIs('java.lang.Byte'))])]
 ]]>
                 </value>
             </property>
