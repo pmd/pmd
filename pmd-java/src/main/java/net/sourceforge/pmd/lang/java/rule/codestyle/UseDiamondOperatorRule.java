@@ -99,7 +99,8 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         // this may not mutate the AST
         JavaExprMirrors factory = JavaExprMirrors.forObservation(infer);
         CtorInvocationMirror baseMirror = (CtorInvocationMirror) factory.getInvocationMirror(ctorCall);
-        return new SpyInvocMirror(baseMirror, (JClassType) ctorCall.getTypeMirror());
+        JTypeMirror newType = ctorCall.getTypeNode().getTypeMirror();
+        return new SpyInvocMirror(baseMirror, (JClassType) newType);
     }
 
     /** Proxy that pretends it has diamond type args. */
@@ -137,7 +138,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
 
         @Override
         public boolean isDiamond() {
-            return true; // preted it is
+            return true; // pretend it is
         }
 
         @Override
@@ -146,8 +147,8 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         }
 
         @Override
-        public Iterable<JMethodSig> getAccessibleCandidates() {
-            return base.getAccessibleCandidates();
+        public Iterable<JMethodSig> getAccessibleCandidates(JTypeMirror newType) {
+            return base.getAccessibleCandidates(newType);
         }
 
         @Override
@@ -188,6 +189,11 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         @Override
         public @Nullable MethodCtDecl getMethodType() {
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return base.toString();
         }
     }
 

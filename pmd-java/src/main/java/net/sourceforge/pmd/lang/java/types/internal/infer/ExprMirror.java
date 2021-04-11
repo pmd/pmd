@@ -494,9 +494,24 @@ public interface ExprMirror {
          * <p>Returns the constructor of the {@link #getNewType()}. If
          * this is an anonymous class declaration implementing an interface,
          * then returns the constructors of class {@link Object}.
+         *
+         * <p>This default implementation uses {@link #getAccessibleCandidates(JTypeMirror)},
+         * which should be implemented instead.
          */
         @Override
-        Iterable<JMethodSig> getAccessibleCandidates();
+        default Iterable<JMethodSig> getAccessibleCandidates() {
+            return getAccessibleCandidates(getNewType());
+        }
+
+        /**
+         * Returns the accessible candidates for this node, as if {@link #getNewType()}
+         * returned the type passed as parameter. Since candidates depend on the
+         * new type, this allows us to write simple "spy" wrappers to redo an invocation
+         * in different conditions (ie, pretending the newtype is the parameter)
+         *
+         * @param newType Assumed value of {@link #getNewType()}
+         */
+        Iterable<JMethodSig> getAccessibleCandidates(JTypeMirror newType);
 
 
         /** Must return {@link JConstructorSymbol#CTOR_NAME}. */

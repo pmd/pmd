@@ -80,6 +80,10 @@ public final class Infer {
         this.exprOps = new ExprOps(this);
     }
 
+    public boolean isPreJava8() {
+        return isPreJava8;
+    }
+
     public TypeSystem getTypeSystem() {
         return ts;
     }

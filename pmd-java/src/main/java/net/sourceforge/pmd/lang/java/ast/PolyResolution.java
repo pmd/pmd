@@ -55,6 +55,10 @@ final class PolyResolution {
         return infer;
     }
 
+    private boolean isPreJava8() {
+        return infer.isPreJava8();
+    }
+
     JTypeMirror computePolyType(final TypeNode e) {
         if (!canBePoly(e)) {
             throw shouldNotReachHere("Unknown poly " + e);
@@ -80,6 +84,15 @@ final class PolyResolution {
         } else if (e instanceof ASTSwitchExpression || e instanceof ASTConditionalExpression) {
             // Those are standalone if possible, otherwise they take
             // the target type
+
+            // in java 7 they are always standalone
+            if (isPreJava8()) {
+                // safe cast because ASTSwitchExpression doesn't exist pre java 13
+                ASTConditionalExpression conditional = (ASTConditionalExpression) e;
+                return computeStandaloneConditionalType(this.ts,
+                                                        conditional.getThenBranch().getTypeMirror(),
+                                                        conditional.getElseBranch().getTypeMirror());
+            }
 
             // Note that this creates expr mirrors for all subexpressions,
             // and may trigger inference on them (which does not go through PolyResolution).
@@ -293,7 +306,8 @@ final class PolyResolution {
      * Not meant to be used by the main typeres paths, only for rules.
      */
     static ExprContext getConversionContextTypeForExternalUse(ASTExpression e) {
-        return contextOf(e, false);
+        PolyResolution polyResolution = e.getRoot().getLazyTypeResolver().getPolyResolution();
+        return polyResolution.contextOf(e, false);
     }
 
     private static @Nullable JTypeMirror returnTargetType(ASTReturnStatement context) {
@@ -354,7 +368,7 @@ final class PolyResolution {
      *
      * </pre>
      */
-    private static @NonNull ExprContext contextOf(final JavaNode node, boolean onlyInvoc) {
+    private @NonNull ExprContext contextOf(final JavaNode node, boolean onlyInvoc) {
         final JavaNode papa = node.getParent();
         if (papa instanceof ASTArgumentList) {
             // invocation context, return *the first method*
@@ -440,9 +454,12 @@ final class PolyResolution {
      * Identifies a node that can forward an invocation/assignment context
      * inward. If their parent has no context, then they don't either.
      */
-    private static boolean doesCascadesContext(JavaNode node, JavaNode child) {
+    private boolean doesCascadesContext(JavaNode node, JavaNode child) {
         if (child.getParent() != node) {
             // means the "node" is a "stop recursion because no context" result in contextOf
+            return false;
+        }
+        if (isPreJava8()) {
             return false;
         }
         return node instanceof ASTSwitchExpression && child.getIndexInParent() != 0 // not the condition

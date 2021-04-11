@@ -243,7 +243,7 @@ public class Foo {
     <test-code>
         <description>False negative for nested type parameters (#2545)</description>
         <expected-problems>3</expected-problems>
-        <expected-linenumbers>7,8,17</expected-linenumbers>
+        <expected-linenumbers>8,9,19</expected-linenumbers>
         <code><![CDATA[
 import java.util.List;
 import java.util.ArrayList;

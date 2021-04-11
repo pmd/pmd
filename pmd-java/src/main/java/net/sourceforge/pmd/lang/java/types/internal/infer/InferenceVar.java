@@ -108,6 +108,16 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         }
     }
 
+    /**
+     * Returns true if the node has no bounds except the ones given
+     * by the upper bound of the type parameter. In the Java 7 inference
+     * process, this indicates that we should use additional constraints
+     * binding the return type of the method to the target type (determined by
+     * an assignment context).
+     *
+     * <p>Remove this if you remove support for java 7 at some point.
+     *
+     */
     boolean hasOnlyPrimaryBound() {
         return !hasNonTrivialBound;
     }

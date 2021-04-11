@@ -67,6 +67,10 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         return ts;
     }
 
+    public PolyResolution getPolyResolution() {
+        return polyResolution;
+    }
+
     @Override
     public JTypeMirror visitJavaNode(JavaNode node, Void data) {
         throw new IllegalArgumentException("Not a type node:" + node);

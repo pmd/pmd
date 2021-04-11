@@ -77,8 +77,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     }
 
 
-    private List<JMethodSig> getVisibleCandidates() {
-        JTypeMirror newType = getNewType();
+    private List<JMethodSig> getVisibleCandidates(@NonNull JTypeMirror newType) {
         if (myNode.isAnonymousClass()) {
             return newType.isInterface() ? myNode.getTypeSystem().OBJECT.getConstructors()
                                          : newType.getConstructors();
@@ -87,8 +86,9 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     }
 
     @Override
-    public Iterable<JMethodSig> getAccessibleCandidates() {
-        return lazyFilterAccessible(getVisibleCandidates(), getEnclosingType().getSymbol());
+    public Iterable<JMethodSig> getAccessibleCandidates(JTypeMirror newType) {
+        List<JMethodSig> visibleCandidates = getVisibleCandidates(newType);
+        return lazyFilterAccessible(visibleCandidates, getEnclosingType().getSymbol());
     }
 
     @Override
@@ -125,8 +125,8 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         }
 
         @Override
-        public List<JMethodSig> getAccessibleCandidates() {
-            return getNewType().getConstructors();
+        public Iterable<JMethodSig> getAccessibleCandidates(JTypeMirror newType) {
+            return newType.getConstructors();
         }
 
         @Override
@@ -158,12 +158,12 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         }
 
         @Override
-        public Iterable<JMethodSig> getAccessibleCandidates() {
+        public Iterable<JMethodSig> getAccessibleCandidates(JTypeMirror newType) {
             if (myNode.isThis()) {
                 return getEnclosingType().getConstructors();
             }
             return IteratorUtil.mapIterator(
-                getNewType().getConstructors(),
+                newType.getConstructors(),
                 iter -> IteratorUtil.filter(iter, ctor -> JavaResolvers.isAccessibleIn(getEnclosingType().getSymbol().getNestRoot(), ctor.getSymbol(), true))
             );
         }

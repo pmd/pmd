@@ -3,11 +3,13 @@
  */
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall
-import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
+import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.shouldBe
+import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
+import java.util.ArrayList
 
 /**
  * @author Clément Fournier
@@ -15,11 +17,9 @@ import net.sourceforge.pmd.lang.java.types.*
 class Java7InferenceTest : ProcessorTestSpec({
 
 
-    parserTest("Java 7 uses return constraints only if args are not enough") {
+    parserTest("Java 7 uses return constraints only if args are not enough", javaVersion = J1_7) {
 
-        val java7Parser = parser.withDefaultVersion("7")
-
-        val (acu, spy) = java7Parser.parseWithTypeInferenceSpy(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             class Gen<T> {
                 Gen(T t) {}
@@ -40,9 +40,9 @@ class Java7InferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Same test in java 8") {
+    parserTest("Same test in java 8", javaVersion = J1_8) {
 
-        val (acu, spy) = parser.withDefaultVersion("8").parseWithTypeInferenceSpy(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             class Gen<T> {
                 Gen(T t) {}
@@ -64,10 +64,9 @@ class Java7InferenceTest : ProcessorTestSpec({
     }
 
 
-    parserTest("Java 7 uses return constraints if needed") {
+    parserTest("Java 7 uses return constraints if needed", javaVersion = J1_7) {
 
-        val java7Parser = parser.withDefaultVersion("7")
-        val (acu, spy) = java7Parser.parseWithTypeInferenceSpy(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             class Gen<T> {
                 static {
@@ -84,6 +83,38 @@ class Java7InferenceTest : ProcessorTestSpec({
 
         spy.shouldBeOk {
             ctorInfersTo(genCall, inferredType = t_Gen[Class::class[`?`]])
+        }
+    }
+
+
+    parserTest("Java 7 doesn't let context flow through ternary", javaVersion = J1_7) {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.List;
+            import java.util.ArrayList;
+            class Gen<T> {
+                 public void test() {
+                    final List<String> l2;
+                    // the conditional expr is inferred to ArrayList<Object>
+                    l2 = true ? new ArrayList<>()
+                              : new ArrayList<>();
+                }
+            }
+            """
+        )
+
+        val (conditional) = acu.descendants(ASTConditionalExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            // no context
+
+            conditional.thenBranch.conversionContextType.shouldBeNull()
+            conditional.thenBranch shouldHaveType java.util.ArrayList::class[ts.OBJECT]
+            conditional.elseBranch shouldHaveType java.util.ArrayList::class[ts.OBJECT]
+
+            // and List<String> on java 8
+            conditional shouldHaveType java.util.ArrayList::class[ts.OBJECT]
         }
     }
 
