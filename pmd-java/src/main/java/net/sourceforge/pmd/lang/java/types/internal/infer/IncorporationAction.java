@@ -10,9 +10,6 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.isSameType;
 import java.util.ArrayList;
 import java.util.Set;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
