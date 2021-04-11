@@ -116,7 +116,7 @@ public final class Infer {
     }
 
     InferenceContext newContextFor(List<JTypeVar> tvars) {
-        return new InferenceContext(ts, supertypeCheckCache, tvars, LOG);
+        return new InferenceContext(ts, this.isPreJava8, supertypeCheckCache, tvars, LOG);
     }
 
     /**
@@ -570,7 +570,8 @@ public final class Infer {
                 }
             }
 
-            infCtx.solve(); // this may throw for incompatible bounds
+            // this may throw for incompatible bounds
+            infCtx.solve(/*onlyBoundedVars:*/isPreJava8);
 
             if (isPreJava8 && !infCtx.getFreeVars().isEmpty()) {
                 // Then add the return contraints late

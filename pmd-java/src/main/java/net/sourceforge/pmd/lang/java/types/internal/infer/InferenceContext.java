@@ -56,6 +56,7 @@ final class InferenceContext {
     private final Set<InferenceVar> inferenceVars = new LinkedHashSet<>();
     private final Deque<IncorporationAction> incorporationActions = new ArrayDeque<>();
     final TypeSystem ts;
+    private final boolean isPreJava8;
     private final SupertypeCheckCache supertypeCheckCache;
     final TypeInferenceLogger logger;
 
@@ -80,8 +81,9 @@ final class InferenceContext {
      *                            into ivars
      * @param logger              Logger for events related to ivar bounds
      */
-    InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger) {
+    InferenceContext(TypeSystem ts, boolean isPreJava8, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger) {
         this.ts = ts;
+        this.isPreJava8 = isPreJava8;
         this.supertypeCheckCache = supertypeCheckCache;
         this.logger = logger;
         this.id = ctxId++;
@@ -101,7 +103,7 @@ final class InferenceContext {
 
     private void addPrimaryBound(InferenceVar ivar) {
         for (JTypeMirror ui : asList(ivar.getBaseVar().getUpperBound())) {
-            ivar.addBound(BoundKind.UPPER, mapToIVars(ui));
+            ivar.addPrimaryBound(BoundKind.UPPER, mapToIVars(ui));
         }
     }
 
@@ -324,16 +326,16 @@ final class InferenceContext {
     }
 
 
-    void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
+    void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isPrimary) {
         // guard against α <: Object
         // all variables have it, it's useless to propagate it
         if (kind != BoundKind.UPPER || bound != ts.OBJECT) { // NOPMD CompareObjectsWithEquals
             if (parent != null) {
-                parent.onBoundAdded(ivar, kind, bound, isSubstitution);
+                parent.onBoundAdded(ivar, kind, bound, isPrimary);
                 return;
             }
 
-            logger.boundAdded(this, ivar, kind, bound, isSubstitution);
+            logger.boundAdded(this, ivar, kind, bound, isPrimary);
 
             incorporationActions.add(new CheckBound(ivar, kind, bound));
             incorporationActions.add(new PropagateBounds(ivar, kind, bound));
@@ -377,7 +379,11 @@ final class InferenceContext {
      * @throws ResolutionFailedException Because it calls {@link #incorporate()}
      */
     void solve() {
-        solve(new GraphWalk(this));
+        solve(false);
+    }
+
+    void solve(boolean onlyBoundedVars) {
+        solve(new GraphWalk(this, onlyBoundedVars));
     }
 
     /**
