@@ -213,19 +213,47 @@ public class Library {
                 public void testPMD(){
                     Object obj = new Object();
                     String str = "str";
-                    Boolean boo = null;
 
                     //Case 1. : An Alarm is generated
                     if(obj == null && !(obj instanceof String));
-
-                    //Case 2. : Alarms are generated for each line.
-                    if(boo == null && boo != true);
-                    if(boo == null && boo != false);
 
                     //Case 3.
                     if(obj == null && this.obj == null); //An Alarm is generated
                     if(obj == null && this.objectWithDifferentName); //An Alarm isn't generated
                     if(obj == null && objectWithDifferentName); //An Alarm isn't generated
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>BrokenNullCheck with Boolean variable</description>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>6,7,8,9,21,22,23,24</expected-linenumbers>
+        <code><![CDATA[
+            class Test{
+                public void testPMD(){
+                    Boolean boo = null;
+
+                    boolean result;
+                    result = boo == null && boo != true;  // boo != true would throw NPE because of unboxing
+                    result = boo == null && boo != false; // same
+                    result = boo == null && boo == true;  // same
+                    result = boo == null && boo == false; // same
+
+                    result = boo != null && boo != true;  // ok
+                    result = boo != null && boo != false; // ok
+                    result = boo != null && boo == true;  // ok
+                    result = boo != null && boo == false; // ok
+
+                    result = boo == null || boo != true;  // ok
+                    result = boo == null || boo != false; // ok
+                    result = boo == null || boo == true;  // ok
+                    result = boo == null || boo == false; // ok
+
+                    result = boo != null || boo != true;  // second expression will throw
+                    result = boo != null || boo != false; // second expression will throw
+                    result = boo != null || boo == true;  // second expression will throw
+                    result = boo != null || boo == false; // second expression will throw
                 }
             }
             ]]></code>

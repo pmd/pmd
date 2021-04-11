@@ -41,7 +41,7 @@ public final class StablePathMatcher {
     /**
      * Returns true if the expression matches the path.
      */
-    public boolean matches(ASTExpression e) {
+    public boolean matches(@Nullable ASTExpression e) {
         if (e == null) {
             return false;
         }
