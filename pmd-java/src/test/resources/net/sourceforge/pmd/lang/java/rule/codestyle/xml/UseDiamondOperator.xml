@@ -286,4 +286,36 @@ public class UseDiamondOperatorFalseNegative {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Java 7 invocation context</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+
+public class Generic<T> {
+    <E> Generic<E> method(Generic<E> e) { return e; }
+    public Generic<T> test() {
+        return method(new Generic<T>());
+    }
+}
+        ]]></code>
+        <source-type>java 7</source-type>
+    </test-code>
+    <test-code>
+        <description>Java 8+ invocation context</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+
+public class Generic<T> {
+    <E> Generic<E> method(Generic<E> e) { return e; }
+    public Generic<T> test() {
+        return method(new Generic<T>());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
