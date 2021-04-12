@@ -155,7 +155,7 @@ class Java7InferenceTest : ProcessorTestSpec({
         }
     }
     parserTest("Java 7 doesn't use invocation context (2)", javaVersion = J1_7) {
-logTypeInference(true)
+
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             class Gen<T> extends Sup<T> {
