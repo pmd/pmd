@@ -532,4 +532,17 @@ public class MapCasts {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] UnnecessaryCast false positive #2748 with unchecked cast</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[import java.util.List;
+
+class Scratch {
+    public static <T> T[] asArray(List<T> list) {
+        T[] result = (T[]) list.toArray();
+        return result;
+    }
+}
+            ]]></code>
+    </test-code>
 </test-data>
