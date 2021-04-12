@@ -1951,6 +1951,29 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UnnecessaryImport"
+          language="java"
+          since="6.34.0"
+          message="Unnecessary import ''{0}''"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedImportsRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedimports">
+        <description>
+            Reports import statements that can be removed. They are either unused,
+            duplicated, or the members they import are already implicitly in scope,
+            because they're in java.lang, or the current package.
+        </description>
+        <priority>4</priority>
+        <example>
+<![CDATA[
+            import java.io.File;  // not referenced or required
+            import java.util.*;   // not referenced or required
+
+            public class Foo {}
+            ]]>
+        </example>
+    </rule>
+
     <rule name="UnnecessaryLocalBeforeReturn"
           language="java"
           since="3.3"
