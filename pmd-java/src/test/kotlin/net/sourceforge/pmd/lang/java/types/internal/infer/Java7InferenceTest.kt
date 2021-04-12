@@ -91,18 +91,19 @@ class Java7InferenceTest : ProcessorTestSpec({
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
-            import java.util.List;
-            import java.util.ArrayList;
-            class Gen<T> {
+            class Gen<T> extends Sup<T> {
                  public void test() {
-                    final List<String> l2;
-                    // the conditional expr is inferred to ArrayList<Object>
-                    l2 = true ? new ArrayList<>()
-                              : new ArrayList<>();
+                    final Sup<String> l2;
+                    // the conditional expr is inferred to Gen<Object>
+                    l2 = true ? new Gen<>()
+                              : new Gen<>();
                 }
             }
+            clas Sup<T> {}
             """
         )
+        val (t_Gen) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+
 
         val (conditional) = acu.descendants(ASTConditionalExpression::class.java).toList()
 
@@ -110,11 +111,11 @@ class Java7InferenceTest : ProcessorTestSpec({
             // no context
 
             conditional.thenBranch.conversionContextType.shouldBeNull()
-            conditional.thenBranch shouldHaveType java.util.ArrayList::class[ts.OBJECT]
-            conditional.elseBranch shouldHaveType java.util.ArrayList::class[ts.OBJECT]
+            conditional.thenBranch shouldHaveType t_Gen[ts.OBJECT]
+            conditional.elseBranch shouldHaveType t_Gen[ts.OBJECT]
 
-            // and List<String> on java 8
-            conditional shouldHaveType java.util.ArrayList::class[ts.OBJECT]
+            // and Gen<String> on java 8
+            conditional shouldHaveType t_Gen[ts.OBJECT]
         }
     }
 
