@@ -53,7 +53,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         }
 
         ExprContext exprCtx = ctorCall.getConversionContextType();
-        if (exprCtx == null || exprCtx.getTargetType() == null) {
+        if (exprCtx.isMissing()) {
             return null; // cannot be converted
         }
 
@@ -74,7 +74,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
     private void checkUnnecessary(ASTConstructorCall call, JavaNode reportNode, RuleContext data) {
 
         ExprContext contextType = call.getConversionContextType();
-        if (contextType == null || contextType.getTargetType() == null) {
+        if (contextType.isMissing()) {
             return;
         }
         JTypeMirror expectedType = contextType.getTargetType();

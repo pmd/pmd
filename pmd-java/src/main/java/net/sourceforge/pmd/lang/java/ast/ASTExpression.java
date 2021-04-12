@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.java.ast.ExprContext.RegularCtx;
 
 /**
  * Represents an expression, in the most general sense.
@@ -111,9 +111,8 @@ public interface ASTExpression
      * when this expression is used as a statement.
      */
     @Experimental
-    default @Nullable ExprContext getConversionContextType() {
-        ExprContext ctx = PolyResolution.getConversionContextTypeForExternalUse(this);
-        return ctx == RegularCtx.NO_CTX ? null : ctx; // NOPMD
+    default @NonNull ExprContext getConversionContextType() {
+        return PolyResolution.getConversionContextTypeForExternalUse(this);
     }
 
 }
