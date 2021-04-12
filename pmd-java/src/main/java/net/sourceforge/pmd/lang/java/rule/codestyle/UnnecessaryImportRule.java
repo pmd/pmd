@@ -50,16 +50,20 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
      * @throws package.class label
      */
     private static final Pattern SEE_PATTERN = Pattern
-            .compile("@see\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?");
+        .compile("@see\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?");
 
     private static final Pattern LINK_PATTERNS = Pattern
-            .compile("\\{@link(?:plain)?\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?[\\s\\}]");
+        .compile("\\{@link(?:plain)?\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?[\\s\\}]");
 
     private static final Pattern VALUE_PATTERN = Pattern.compile("\\{@value\\s+(\\p{Alpha}\\w*)[\\s#\\}]");
 
     private static final Pattern THROWS_PATTERN = Pattern.compile("@throws\\s+(\\p{Alpha}\\w*)");
 
     private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN };
+
+    protected boolean isUnusedImports() {
+        return false;
+    }
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -77,7 +81,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             visit((ASTPackageDeclaration) node.getChild(0), data);
         }
         for (ImportWrapper wrapper : imports) {
-            addViolation(data, wrapper.getNode(), PrettyPrintingUtil.prettyImport(wrapper.getNode()));
+            reportWithMessage(wrapper.getNode(), data, UNUSED_IMPORT_MESSAGE);
         }
         return data;
     }
@@ -118,16 +122,20 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
-        if (Objects.equals(node.getPackageName(), thisPackageName)) {
+        if (Objects.equals(node.getPackageName(), thisPackageName) && !isUnusedImports()) {
             // import for the same package
-            addViolationWithMessage(data, node, IMPORT_FROM_SAME_PACKAGE_MESSAGE,
-                                    new String[] { PrettyPrintingUtil.prettyImport(node) });
+            reportWithMessage(node, data, IMPORT_FROM_SAME_PACKAGE_MESSAGE);
         } else if (!imports.add(new ImportWrapper(node))) {
-            // duplicate
-            addViolationWithMessage(data, node, DUPLICATE_IMPORT_MESSAGE,
-                                    new String[] { PrettyPrintingUtil.prettyImport(node) });
+            if (!isUnusedImports()) {
+                // duplicate
+                reportWithMessage(node, data, DUPLICATE_IMPORT_MESSAGE);
+            }
         }
         return data;
+    }
+
+    private void reportWithMessage(ASTImportDeclaration node, Object data, String message) {
+        addViolationWithMessage(data, node, message, new String[] { PrettyPrintingUtil.prettyImport(node) });
     }
 
     @Override

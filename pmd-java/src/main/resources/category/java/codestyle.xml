@@ -1955,7 +1955,7 @@ public class Foo {
           language="java"
           since="6.34.0"
           message="Unnecessary import ''{0}''"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedImportsRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryImportRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedimports">
         <description>
