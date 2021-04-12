@@ -624,7 +624,7 @@ public class Foo {}
         <description>
 Duplicate or overlapping import statements should be avoided.
 
-This rule is deprecated since PMD 6.34.0. Use the rule UnusedImports from category bestpractices instead.
+This rule is deprecated since PMD 6.34.0. Use the rule UnnecessaryImport from category codestyle instead.
         </description>
         <priority>4</priority>
         <example>
