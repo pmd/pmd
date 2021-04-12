@@ -781,4 +781,120 @@ class NPEImport {}
             public class Baz{}
             ]]></code>
     </test-code>
+
+    <!-- From DontImportJavaLang   -->
+
+    <test-code>
+        <description>import java.lang.String (used)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary import from the java.lang package 'java.lang.String'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.lang.String;
+            public class Foo {
+                String foo;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import java.lang.String (unused)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unused import 'java.lang.String'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.lang.String;
+            public class Foo { }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import java.lang.*</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.lang.*;
+            public class Foo {}
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import java.lang.ref/reflect/annotation/instrument/management</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.ref.*;
+            import java.lang.reflect.*;
+            import java.lang.annotation.*;
+            import java.lang.management.*;
+            public class Foo {
+                Annotation a; Method m; WeakReference r;
+                RuntimeMXBean x;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static Java imports are OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import static java.lang.String.*;
+            public class Foo {
+                static {
+                    valueOf(1);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Importing java.lang.Thread.UncaughtExceptionHandler, unused</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unused import 'java.lang.Thread.UncaughtExceptionHandler'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.lang.Thread.UncaughtExceptionHandler;
+            public class Foo {
+                Thread.UncaughtExceptionHandler unused;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Importing java.lang.Thread.UncaughtExceptionHandler</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.Thread.UncaughtExceptionHandler;
+            public class Foo {
+                UncaughtExceptionHandler used;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import java.lang.ProcessBuilder.Redirect: #1031 false DontImportJavaLang</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.ProcessBuilder.Redirect;
+
+            public class Foo {
+                Redirect r;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import java.lang.invoke.MethodHandles: #339 false DontImportJavaLang</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.invoke.MethodHandles;
+
+            public class Foo {
+                static {
+                    MethodHandles.argumentsWithCombiner();// use it
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

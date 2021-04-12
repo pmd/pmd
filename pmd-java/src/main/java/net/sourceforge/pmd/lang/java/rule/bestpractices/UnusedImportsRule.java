@@ -19,7 +19,7 @@ public class UnusedImportsRule extends UnnecessaryImportRule {
     protected Set<ImportWrapper> imports = new HashSet<>();
 
     @Override
-    protected boolean isUnusedImports() {
+    protected boolean justReportUnusedImports() {
         return true;
     }
 }

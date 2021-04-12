@@ -1960,7 +1960,7 @@ public class Foo {
           message="Unnecessary import ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryImportRule"
           typeResolution="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedimports">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryimport">
         <description>
             Reports import statements that can be removed. They are either unused,
             duplicated, or the members they import are already implicitly in scope,
@@ -1969,10 +1969,18 @@ public class Foo {
         <priority>4</priority>
         <example>
 <![CDATA[
-            import java.io.File;  // not referenced or required
-            import java.util.*;   // not referenced or required
+            import java.io.File;            // not used, can be removed
+            import java.util.Collections;   // used below
+            import java.util.*;             // so this one is not used
 
-            public class Foo {}
+            import java.lang.Object;        // imports from java.lang, unnecessary
+            import java.lang.Object;        // duplicate, unnecessary
+
+            public class Foo {
+                static Object emptyList() {
+                    return Collections.emptyList();
+                }
+            }
             ]]>
         </example>
     </rule>

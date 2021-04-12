@@ -6,13 +6,13 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -28,8 +28,11 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedImportsRule;
 
 public class UnnecessaryImportRule extends AbstractJavaRule {
+    // todo: java lang imports may be necessary if they're shadowed by a
+    //  member of the same package.
 
     private static final String UNUSED_IMPORT_MESSAGE = "Unused import ''{0}''";
     private static final String DUPLICATE_IMPORT_MESSAGE = "Duplicate import ''{0}''";
@@ -61,7 +64,11 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN };
 
-    protected boolean isUnusedImports() {
+    /**
+     * The deprecated rule {@link UnusedImportsRule} extends this class
+     * and overrides this.
+     */
+    protected boolean justReportUnusedImports() {
         return false;
     }
 
@@ -122,11 +129,11 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
-        if (Objects.equals(node.getPackageName(), thisPackageName) && !isUnusedImports()) {
+        if (thisPackageName.equals(node.getPackageName()) && !justReportUnusedImports()) {
             // import for the same package
             reportWithMessage(node, data, IMPORT_FROM_SAME_PACKAGE_MESSAGE);
         } else if (!imports.add(new ImportWrapper(node))) {
-            if (!isUnusedImports()) {
+            if (!justReportUnusedImports()) {
                 // duplicate
                 reportWithMessage(node, data, DUPLICATE_IMPORT_MESSAGE);
             }
@@ -140,13 +147,13 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
-        check(node);
+        check(node, (RuleContext) data);
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTName node, Object data) {
-        check(node);
+        check(node, (RuleContext) data);
         return data;
     }
 
@@ -154,7 +161,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
      * Remove the import wrapper that imports the name referenced by the
      * given node.
      */
-    protected void check(Node referenceNode) {
+    protected void check(Node referenceNode, RuleContext ruleCtx) {
         if (imports.isEmpty()) {
             return;
         }
@@ -168,6 +175,11 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             ImportWrapper i = it.next();
             if (!i.isStaticOnDemand() && i.matches(candFullName, candName)) {
                 it.remove();
+
+                if ("java.lang".equals(i.getPackageName()) && !justReportUnusedImports()) {
+                    // import for the same package
+                    reportWithMessage(i.getNode(), ruleCtx, IMPORT_FROM_JAVA_LANG_MESSAGE);
+                }
                 return;
             }
         }
