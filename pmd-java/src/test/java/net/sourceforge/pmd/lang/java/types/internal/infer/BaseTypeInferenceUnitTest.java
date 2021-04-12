@@ -50,7 +50,7 @@ public class BaseTypeInferenceUnitTest {
     }
 
     protected InferenceContext emptyCtx(TypeInferenceLogger log) {
-        return new InferenceContext(ts, false, new SupertypeCheckCache(), Collections.emptyList(), log);
+        return new InferenceContext(ts, new SupertypeCheckCache(), Collections.emptyList(), log);
     }
 
 

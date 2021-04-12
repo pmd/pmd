@@ -35,6 +35,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         super(ASTConstructorCall.class);
     }
 
+    @Override
     public Object visit(ASTConstructorCall ctorCall, Object data) {
         ASTClassOrInterfaceType newTypeNode = ctorCall.getTypeNode();
         JTypeMirror newType = newTypeNode.getTypeMirror();

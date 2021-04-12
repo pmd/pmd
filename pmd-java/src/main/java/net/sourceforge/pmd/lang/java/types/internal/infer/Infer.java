@@ -120,7 +120,7 @@ public final class Infer {
     }
 
     InferenceContext newContextFor(List<JTypeVar> tvars) {
-        return new InferenceContext(ts, this.isPreJava8, supertypeCheckCache, tvars, LOG);
+        return new InferenceContext(ts, supertypeCheckCache, tvars, LOG);
     }
 
     /**
@@ -575,13 +575,18 @@ public final class Infer {
             }
 
             // this may throw for incompatible bounds
-            infCtx.solve(/*onlyBoundedVars:*/isPreJava8);
+            boolean isDone = infCtx.solve(/*onlyBoundedVars:*/isPreJava8());
 
-            if (isPreJava8 && !infCtx.getFreeVars().isEmpty()) {
-                // Then add the return contraints late
-                // Java 7 only uses the context type if the arguments are not enough
-                // https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.8
-                m = doReturnChecksAndChangeReturnType(m, site, infCtx);
+            if (isPreJava8() && !isDone) {
+                // this means we're not in an invocation context,
+                // if we are, we must ignore it in java 7
+                if (site.getOuterCtx().isEmpty()) {
+                    // Then add the return contraints late
+                    // Java 7 only uses the context type if the arguments are not enough
+                    // https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.8
+                    m = doReturnChecksAndChangeReturnType(m, site, infCtx);
+                }
+                // otherwise force solving remaining vars
                 infCtx.solve();
             }
 

@@ -56,7 +56,6 @@ final class InferenceContext {
     private final Set<InferenceVar> inferenceVars = new LinkedHashSet<>();
     private final Deque<IncorporationAction> incorporationActions = new ArrayDeque<>();
     final TypeSystem ts;
-    private final boolean isPreJava8;
     private final SupertypeCheckCache supertypeCheckCache;
     final TypeInferenceLogger logger;
 
@@ -81,9 +80,8 @@ final class InferenceContext {
      *                            into ivars
      * @param logger              Logger for events related to ivar bounds
      */
-    InferenceContext(TypeSystem ts, boolean isPreJava8, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger) {
+    InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger) {
         this.ts = ts;
-        this.isPreJava8 = isPreJava8;
         this.supertypeCheckCache = supertypeCheckCache;
         this.logger = logger;
         this.id = ctxId++;
@@ -382,8 +380,8 @@ final class InferenceContext {
         solve(false);
     }
 
-    void solve(boolean onlyBoundedVars) {
-        solve(new GraphWalk(this, onlyBoundedVars));
+    boolean solve(boolean onlyBoundedVars) {
+        return solve(new GraphWalk(this, onlyBoundedVars));
     }
 
     /**
@@ -394,7 +392,7 @@ final class InferenceContext {
         solve(new GraphWalk(var));
     }
 
-    private void solve(VarWalkStrategy walker) {
+    private boolean solve(VarWalkStrategy walker) {
         incorporate();
 
         while (walker.hasNext()) {
@@ -416,6 +414,7 @@ final class InferenceContext {
                 }
             }
         }
+        return freeVars.isEmpty();
     }
 
     /**

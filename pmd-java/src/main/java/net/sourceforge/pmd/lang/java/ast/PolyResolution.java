@@ -386,6 +386,11 @@ final class PolyResolution {
             if (papi instanceof ASTExplicitConstructorInvocation || papi instanceof ASTEnumConstant) {
                 return new InvocCtx(node.getIndexInParent(), papi);
             } else {
+                if (isPreJava8()) {
+                    // in java < 8 invocation contexts don't provide a target type
+                    return RegularCtx.NO_CTX;
+                }
+
                 // Constructor or method call, maybe there's another context around
                 // We want to fetch the outermost invocation node, but not further
                 ExprContext outerCtx = contextOf(papi, /*onlyInvoc:*/true);
