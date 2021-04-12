@@ -593,10 +593,13 @@ or MethodDeclaration[@PackagePrivate= true()]
           language="java"
           since="0.5"
           message="Avoid importing anything from the package 'java.lang'"
+          deprecated="true"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.DontImportJavaLangRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#dontimportjavalang">
         <description>
 Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
+
+This rule is deprecated since PMD 6.34.0. Use the rule UnnecessaryImport from category codestyle instead.
         </description>
         <priority>4</priority>
         <example>

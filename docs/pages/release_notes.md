@@ -21,13 +21,23 @@ This is a {{ site.pmd.release_type }} release.
 
     This rule is also part of the Quickstart Ruleset (`rulesets/java/quickstart.xml`) for Java.
 
+*   The new Java rule {% rule "java/codestyle/UnnecessaryImport" %} merges the rules
+    {% rule "java/bestpractices/UnusedImports" %}, {% rule "java/codestyle/DuplicateImports" %},
+    {% rule "java/errorprone/ImportFromSamePackage" %}, and {% rule "java/codestyle/DontImportJavaLang" %}.
+
+    This rule is also part of the Quickstart Ruleset (`rulesets/java/quickstart.xml`) for Java.
+
 #### Deprecated rules
 
+*   java-bestpractices
+    *   {% rule java/bestpractices/UnusedImports %}: use the rule {% rule java/bestpractices/UnusedImports %} instead
+
 *   java-codestyle
-    *   {% rule java/codestyle/DuplicateImports %}: use the rule {% rule java/bestpractices/UnusedImports %} instead, since it now reports duplicate imports
+    *   {% rule java/codestyle/DuplicateImports %}: use the rule {% rule java/bestpractices/UnusedImports %} instead
+    *   {% rule java/codestyle/DontImportJavaLang %}: use the rule {% rule java/bestpractices/UnusedImports %} instead
 
 *   java-errorprone
-    *   {% rule java/errorprone/ImportFromSamePackage %}: use the rule {% rule java/bestpractices/UnusedImports %} instead, since it now reports imports from the same package
+    *   {% rule java/errorprone/ImportFromSamePackage %}: use the rule {% rule java/bestpractices/UnusedImports %} instead
 
 
 ### Fixed Issues
