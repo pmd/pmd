@@ -38,6 +38,12 @@ public abstract class ExprContext {
     public abstract @Nullable JTypeMirror getTargetType();
 
     /**
+     * Returns true if this context does not provide any target type.
+     * This is then a sentinel object.
+     */
+    public abstract boolean isMissing();
+
+    /**
      * If true this is an invocation context. This means, the target
      * type may depend on overload resolution.
      */
@@ -83,6 +89,11 @@ public abstract class ExprContext {
                 return null;
             }
             return overload.ithFormalParam(arg);
+        }
+
+        @Override
+        public boolean isMissing() {
+            return false;
         }
 
         @Override
@@ -134,13 +145,16 @@ public abstract class ExprContext {
          */
         Numeric,
 
+        /** Kinds for a missing context ({@link RegularCtx#NO_CTX}). */
+        Missing,
+
         /** Other kinds of situation that have a target type (eg {@link RegularCtx#NO_CTX}). */
         Other,
     }
 
     static final class RegularCtx extends ExprContext {
 
-        static final RegularCtx NO_CTX = new RegularCtx(null, CtxKind.Other);
+        static final RegularCtx NO_CTX = new RegularCtx(null, CtxKind.Missing);
 
         final @Nullable JTypeMirror targetType;
         final CtxKind kind;
@@ -148,6 +162,11 @@ public abstract class ExprContext {
         RegularCtx(@Nullable JTypeMirror targetType, CtxKind kind) {
             this.targetType = targetType;
             this.kind = kind;
+        }
+
+        @Override
+        public boolean isMissing() {
+            return kind == CtxKind.Missing;
         }
 
         @Override

@@ -39,8 +39,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
         if (TypeOps.isUnresolvedOrNull(operandType)
             || TypeOps.isUnresolvedOrNull(coercionType)
-            || context == null
-            || context.getTargetType() == null) {
+            || context.isMissing()) {
             return null;
         }
 
@@ -50,7 +49,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         if (operand instanceof ASTLambdaExpression || operand instanceof ASTMethodReference) {
             // Then the cast provides a target type for the expression (always).
             // We need to check the enclosing context, as if it's invocation we give up for now
-            if (isInvocationContext(castExpr.getConversionContextType())) {
+            if (castExpr.getConversionContextType().isInvocationContext()) {
                 // Then the cast may be used to determine the overload.
                 // We need to treat the casted lambda as a whole unit.
                 // todo see below
@@ -59,7 +58,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
             // Since the code is assumed to compile we'll just assume that coercionType
             // is a functional interface.
-            if (context.getTargetType().equals(coercionType)) {
+            if (coercionType.equals(context.getTargetType())) {
                 // then we also know that the context is functional
                 addViolation(data, castExpr);
             }
@@ -80,7 +79,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     private static boolean castIsUnnecessary(ExprContext context,
                                              JTypeMirror operandType,
                                              JTypeMirror coercionType) {
-        if (isInvocationContext(context)) {
+        if (context.isInvocationContext()) {
             // todo unsupported for now, the cast may be disambiguating overloads
             return false;
         }
@@ -92,7 +91,4 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         return isNotNarrowing && canOperandSuitContext;
     }
 
-    private static boolean isInvocationContext(ExprContext context) {
-        return context != null && context.isInvocationContext();
-    }
 }
