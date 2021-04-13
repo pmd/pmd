@@ -535,12 +535,25 @@ public class MapCasts {
     <test-code>
         <description>[java] UnnecessaryCast false positive #2748 with unchecked cast</description>
         <expected-problems>0</expected-problems>
-        <code><![CDATA[import java.util.List;
-
+        <code><![CDATA[
+import java.util.List;
 class Scratch {
     public static <T> T[] asArray(List<T> list) {
         T[] result = (T[]) list.toArray();
         return result;
+    }
+}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Boxing cast needs to box to the same type to be unnecessary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Scratch {
+    static {
+        Object o = (Long) 3; // compile time error (int cannot be converted to Long)
+        o = (Long) 3l;
     }
 }
             ]]></code>

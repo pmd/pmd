@@ -1522,7 +1522,7 @@ The literal would be autoboxed to `Integer` anyway.
 import java.util.function.Function;
 class SomeClass {
    static {
-      Object o; long l; int i;
+      Object o; long l; int i; Integer boxedInt;
 
       // reference conversions
 
@@ -1533,14 +1533,13 @@ class SomeClass {
       // primitive conversions
 
       l = (long) 2;   // unnecessary
-      l = (Long) 2;   // unnecessary
       l = (long) 2.0; // necessary (narrowing cast)
       l = (byte) i;   // necessary (narrowing cast)
 
       // boxing/unboxing casts (since java 5)
 
-      o = (Integer) 3; // unnecessary (autoboxing would apply)
-      o = (Long) 3;    // necessary (autoboxing would box to Integer)
+      o = (Integer) 3;    // unnecessary (autoboxing would apply)
+      i = (int) boxedInt; // unnecessary (auto-unboxing would apply)
 
       // casts that give a target type to a lambda/ method ref are necessary
 
