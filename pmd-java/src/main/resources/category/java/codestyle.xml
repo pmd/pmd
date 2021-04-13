@@ -1519,13 +1519,33 @@ The literal would be autoboxed to `Integer` anyway.
         <priority>3</priority>
         <example>
 <![CDATA[
-import java.util.*;
-public class UnnecessaryCastSample {
-    public void method() {
-        List<String> stringList = Arrays.asList("a", "b");
-        String element = (String) stringList.get(0); // this cast is unnecessary
-        String element2 = stringList.get(0);
-    }
+import java.util.function.Function;
+class SomeClass {
+   static {
+      Object o; long l; int i;
+
+      // reference conversions
+
+      o = (Object) new SomeClass();      // unnecessary
+      o = (SomeClass) o;                 // necessary (narrowing cast)
+      o = (Comparable<String>) "string"; // unnecessary
+
+      // primitive conversions
+
+      l = (long) 2;   // unnecessary
+      l = (Long) 2;   // unnecessary
+      l = (long) 2.0; // necessary (narrowing cast)
+      l = (byte) i;   // necessary (narrowing cast)
+
+      // boxing/unboxing casts (since java 5)
+
+      o = (Integer) 3; // unnecessary (autoboxing would apply)
+      o = (Long) 3;    // necessary (autoboxing would box to Integer)
+
+      // casts that give a target type to a lambda/ method ref are necessary
+
+      o = (Function<Integer, String>) Integer::toString; // necessary (no target type)
+   }
 }
 ]]>
         </example>
