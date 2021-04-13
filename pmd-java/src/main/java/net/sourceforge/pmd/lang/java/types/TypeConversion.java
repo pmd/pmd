@@ -111,6 +111,24 @@ public final class TypeConversion {
                                : t.unbox().isConvertibleTo(s).somehow();
     }
 
+    public static boolean isConvertibleInCastContext(JTypeMirror t, JTypeMirror s) {
+        TypeSystem ts = t.getTypeSystem();
+        if (t == ts.UNKNOWN || t == ts.ERROR) {
+            return true;
+        }
+
+        if (t instanceof InferenceVar || s instanceof InferenceVar) {
+            return t.box().isSubtypeOf(s.box());
+        }
+
+        if (t.isPrimitive() == s.isPrimitive()) {
+            return t.isConvertibleTo(s).bySubtyping();
+        }
+
+        return t.isPrimitive() ? t.box().isConvertibleTo(s).bySubtyping()
+                               : t.isConvertibleTo(s.box()).bySubtyping();
+    }
+
 
     /**
      * Perform capture conversion on the type t. This replaces wildcards

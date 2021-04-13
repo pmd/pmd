@@ -547,13 +547,39 @@ class Scratch {
     </test-code>
     <test-code>
         <description>Boxing cast needs to box to the same type to be unnecessary</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Scratch {
     static {
         Object o = (Long) 3; // compile time error (int cannot be converted to Long)
-        o = (Long) 3l;
+        o = (long) 3; // makes it box to Long
+    }
+}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Chained casts to convert int to Long</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Scratch {
+    static m(Integer boxedInt) {
+        Object o = (long)
+                (int) boxedInt; // both are necessary
+    }
+}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Assignment context is more flexible than cast</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+class Scratch {
+    static m(Integer boxedInt) {
+        long l = (int) boxedInt; // unnecessary
+        l = (long)               // unnecessary
+                (int) boxedInt;  // necessary
+        Object l = (long) (int) boxedInt; // both necessary
     }
 }
             ]]></code>

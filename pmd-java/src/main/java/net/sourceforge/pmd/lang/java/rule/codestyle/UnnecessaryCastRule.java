@@ -84,11 +84,24 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             return false;
         }
         JTypeMirror contextType = context.getTargetType();
-        // note: those depend on java5+ autoboxing rules
-        boolean isNotNarrowing = TypeConversion.isConvertibleThroughBoxing(operandType, coercionType);
+
+        boolean isNarrowing = !TypeConversion.isConvertibleThroughBoxing(operandType, coercionType);
+        if (isNarrowing) {
+            return false;
+        }
+
         // tests that actually deleting the cast would not give uncompilable code
-        boolean canOperandSuitContext = TypeConversion.isConvertibleThroughBoxing(operandType, contextType);
-        return isNotNarrowing && canOperandSuitContext;
+        boolean canOperandSuitContext;
+        if (context.isCastContext()) {
+            // then boxing/unboxing are restricted
+            canOperandSuitContext = TypeConversion.isConvertibleInCastContext(operandType, contextType);
+        } else {
+            canOperandSuitContext = TypeConversion.isConvertibleThroughBoxing(operandType, contextType);
+        }
+        boolean isBoxingFollowingCast = contextType.isPrimitive() != coercionType.isPrimitive();
+        boolean boxingBehaviorIsSame = !isBoxingFollowingCast || contextType.unbox().equals(operandType.unbox());
+
+        return canOperandSuitContext && boxingBehaviorIsSame;
     }
 
 }

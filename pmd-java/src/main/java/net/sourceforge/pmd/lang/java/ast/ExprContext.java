@@ -51,6 +51,10 @@ public abstract class ExprContext {
         return false;
     }
 
+    public boolean isCastContext() {
+        return false;
+    }
+
     boolean canGiveContextToPoly(boolean lambda) {
         return true;
     }
@@ -173,6 +177,11 @@ public abstract class ExprContext {
         public boolean canGiveContextToPoly(boolean lambdaOrMethodRef) {
             return kind == CtxKind.Cast ? lambdaOrMethodRef
                                         : kind == CtxKind.Assignment;
+        }
+
+        @Override
+        public boolean isCastContext() {
+            return kind == CtxKind.Cast;
         }
 
         /**
