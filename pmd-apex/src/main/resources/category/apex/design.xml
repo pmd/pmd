@@ -36,12 +36,12 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="AvoidUnusedMethod"
+    <rule name="UnusedMethod"
           language="apex"
           since="7.0.0"
           message="Unused methods make understanding code harder"
-          class="net.sourceforge.pmd.lang.apex.rule.design.AvoidUnusedMethodRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#avoidunusedmethod">
+          class="net.sourceforge.pmd.lang.apex.rule.design.UnusedMethodRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#unusedmethod">
         <description>
 Avoid having unused methods since they make understanding and maintaining code harder.
 
@@ -59,15 +59,24 @@ may be referenced from the Apex source code, such as Custom Objects, Visualforce
 or the older MDAPI format. The 'packageDirectories' entries in 'sfdx-project.json' are used to determine which
 directories to search for metadata, if a .forceignore file is present it will be honoured.
 
-To check for errors in your configuration turn on debug logging with the '-debug' flag.
-
 If the Apex code references external packages via namespace(s) you should declare these in your 'sfdx-project.json'
-file using the syntax below to avoid errors:
+file using the 'plugins' syntax below to avoid errors:
 <![CDATA[
-"plugins": {
-    "dependencies": [
-        {"namespace": "aa"}
-    ]
+{
+    "packageDirectories": [
+      {
+        "path": "src",
+        "default": true
+      }
+    ],
+    "namespace": "my_namespace",
+    "sfdcLoginUrl": "https://login.salesforce.com",
+    "sourceApiVersion": "52.0",
+    "plugins": {
+        "dependencies": [
+            {"namespace": "aa"}
+        ]
+    }
 }
 ]]>
         </description>

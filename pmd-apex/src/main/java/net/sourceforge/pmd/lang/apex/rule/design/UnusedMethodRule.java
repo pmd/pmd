@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 import com.nawforce.common.api.UNUSED_CATEGORY$;
 
-public class AvoidUnusedMethodRule extends AbstractApexRule {
+public class UnusedMethodRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {

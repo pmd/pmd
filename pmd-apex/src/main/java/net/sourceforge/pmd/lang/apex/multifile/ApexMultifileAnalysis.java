@@ -67,6 +67,9 @@ public final class ApexMultifileAnalysis {
             // Load the package into the org, this can take some time!
             org.newSFDXPackage(multiFileAnalysisDirectory); // this may fail if the config is wrong
             org.flush();
+
+            // FIXME: Syntax & Semantic errors found during Org loading are not currently being reported. These
+            // should be routed to the new SemanticErrorReporter but that is not available for use just yet.
         }
     }
 
@@ -116,7 +119,7 @@ public final class ApexMultifileAnalysis {
                 } catch (Exception e) {
                     LOG.severe("Exception while initializing Apexlink (" + e.getMessage() + ")");
                     LOG.severe(ExceptionUtils.getStackTrace(e));
-                    LOG.severe("PMD will not attempt to initialize Apexlink further, this can cause rules like AvoidUnusedMethod to be dysfunctional");
+                    LOG.severe("PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod to be dysfunctional");
                     return FAILED_INSTANCE;
                 }
             });
@@ -129,7 +132,7 @@ public final class ApexMultifileAnalysis {
 
         @Override
         public void error(String message) {
-            LOG.fine(message);
+            LOG.severe(message);
         }
 
         @Override

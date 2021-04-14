@@ -74,7 +74,7 @@ The default version is always ES6.
 
 #### New Rules
 
-*   The Apex rule {% rule "apex/design/AvoidUnusedMethod" %} finds unused methods in your code.
+*   The Apex rule {% rule "apex/design/UnusedMethod" %} finds unused methods in your code.
 
 #### Changed Rules
 
