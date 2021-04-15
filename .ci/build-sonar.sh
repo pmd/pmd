@@ -3,17 +3,12 @@
 source $(dirname $0)/inc/logger.inc
 source $(dirname $0)/inc/setup-secrets.inc
 source $(dirname $0)/inc/install-openjdk.inc
-source $(dirname $0)/inc/maven-dependencies.inc
 
 set -e
 
 log_group_start "Setup private env and OpenJDK"
     pmd_ci_setup_private_env
     install_openjdk_setdefault 11
-log_group_end
-
-log_group_start "Downloading maven dependencies"
-    maven_dependencies_resolve
 log_group_end
 
 log_group_start "Executing build with sonar"

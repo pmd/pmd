@@ -3,7 +3,6 @@
 source $(dirname $0)/inc/logger.inc
 source $(dirname $0)/inc/install-openjdk.inc
 source $(dirname $0)/inc/regression-tester.inc
-source $(dirname $0)/inc/maven-dependencies.inc
 
 set -e
 
@@ -17,10 +16,6 @@ log_group_start "Installing Java"
         install_oraclejdk7
         PMD_EXTRA_OPT="-Djava7.home=${HOME}/oraclejdk7"
     fi
-log_group_end
-
-log_group_start "Downloading maven dependencies"
-    maven_dependencies_resolve
 log_group_end
 
 log_group_start "Building with maven"

@@ -49,14 +49,6 @@ established.
 
 More information about configuring this can be found at [wagon-http](https://maven.apache.org/wagon/wagon-providers/wagon-http/).
 
-However, this doesn't work when [dokka-maven-plugin](https://github.com/Kotlin/dokka) is used: This plugin
-downloads additional dokka plugins at runtime and reconfigures somehow Maven. After this plugin is loaded,
-the above system properties have no effect anymore.
-See [dokka/dokka-maven-plugin#1625](https://github.com/Kotlin/dokka/issues/1625) and
-[dokka/dokka-maven-plugin#1626](https://github.com/Kotlin/dokka/issues/1626).
-
-The workaround now in place is, to download all the dependencies first, see `inc/maven-dependencies.inc`.
-
 ## Hints
 
 ### Remote debugging

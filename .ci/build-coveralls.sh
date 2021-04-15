@@ -3,7 +3,6 @@
 source $(dirname $0)/inc/logger.inc
 source $(dirname $0)/inc/setup-secrets.inc
 source $(dirname $0)/inc/install-openjdk.inc
-source $(dirname $0)/inc/maven-dependencies.inc
 
 set -e
 
@@ -13,10 +12,6 @@ log_group_start "Setup private env and OpenJDK"
     export CI_NAME="github actions"
     export CI_BUILD_URL="${PMD_CI_JOB_URL}"
     export CI_BRANCH="${PMD_CI_GIT_REF##refs/heads/}"
-log_group_end
-
-log_group_start "Downloading maven dependencies"
-    maven_dependencies_resolve
 log_group_end
 
 log_group_start "Executing build with coveralls"

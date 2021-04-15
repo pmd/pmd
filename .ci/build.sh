@@ -7,7 +7,6 @@ source $(dirname $0)/inc/pmd-doc.inc
 source $(dirname $0)/inc/pmd-code-api.inc
 source $(dirname $0)/inc/regression-tester.inc
 source $(dirname $0)/inc/github-releases-api.inc
-source $(dirname $0)/inc/maven-dependencies.inc
 source $(dirname $0)/inc/install-openjdk.inc
 
 set -e
@@ -25,10 +24,6 @@ function pmd_ci_build_main() {
         pmd_ci_build_setup_maven
         pmd_ci_build_setup_bundler
         pmd_ci_build_setup_env
-    log_group_end
-
-    log_group_start "Downloading maven dependencies"
-        maven_dependencies_resolve
     log_group_end
 
     log_group_start "Build and Deploy"
