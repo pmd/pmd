@@ -68,19 +68,25 @@ Using the same docker container as described in [build-env @ build-tools](https:
 
 ### Testing a push build (snapshot)
 
+Start docker without binding to local directory, so that we can do a fresh checkout
 
+    $ docker run \
+        --interactive \
+        --tty \
+        --name pmd-build-env_pmd \
+        pmd-build-env:latest
 
-Start docker without binding to local directory, so that we can do a fresh checkout: `docker run -it pmd-ci`.
-You'll be dropped into a bash. Use the following script, to setup and start the build:
 
 ```
-MAIN_BRANCH="master"
+export LANG=en_US.UTF-8
 export MAVEN_OPTS="-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3"
-export PMD_CI_JOB_URL="manual job execution in docker"
-export PMD_CI_PUSH_COMMIT_COMPARE=""
-export PMD_CI_GIT_REF="refs/heads/${MAIN_BRANCH}"
+export PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/master/scripts
 
 export PMD_CI_SECRET_PASSPHRASE="xyz"
+export PMD_CI_DEBUG=true
+
+MAIN_BRANCH="master"
+eval $(~/create-gh-actions-env.sh push pmd/pmd $MAIN_BRANCH)
 
 cd /workspaces/pmd
 rmdir pmd && mkdir pmd
@@ -90,69 +96,44 @@ git remote add origin https://github.com/pmd/pmd
 git fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +refs/heads/${MAIN_BRANCH}:refs/remotes/origin/${MAIN_BRANCH}
 git checkout --progress --force -B ${MAIN_BRANCH} refs/remotes/origin/${MAIN_BRANCH}
 
-.ci/check-environment.sh
+
+f=check-environment.sh; \
+        mkdir -p .ci && \
+        ( [ -e .ci/$f ] || curl -sSL "${PMD_CI_SCRIPTS_URL}/$f" > ".ci/$f" ) && \
+        chmod 755 .ci/$f && \
+        .ci/$f
 
 .ci/build.sh
 ```
 
-#### Performing a release (push) build
+### Testing a pull request
 
-Start docker without binding to local directory, so that we can do a fresh checkout: `docker run -it pmd-ci`.
-You'll be dropped into a bash. Use the following script, to setup and start the build:
-
-```
-TAG_NAME="pmd_releases/0.0.0_release_test"
-export MAVEN_OPTS="-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3"
-export PMD_CI_JOB_URL="manual job execution in docker"
-export PMD_CI_PUSH_COMMIT_COMPARE=""
-export PMD_CI_GIT_REF="refs/tags/${TAG_NAME}"
-
-export PMD_CI_SECRET_PASSPHRASE="xyz"
-
-cd /workspace/pmd
-rmdir pmd && mkdir pmd
-cd pmd
-git init
-git remote add origin https://github.com/pmd/pmd
-git fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +refs/tags/${TAG_NAME}:refs/tags/${TAG_NAME}
-git checkout --progress --force refs/tags/${TAG_NAME}
-
-.ci/check-environment.sh
-
-.ci/build.sh
-```
-
-**Warning:** This will build and upload to maven central!
-
-
-#### Testing a pull request
-
-Start docker without binding to local directory, so that we can do a fresh checkout: `docker run -it pmd-ci`.
-You'll be dropped into a bash. Use the following script, to setup and start the build:
+Same as the above, but this line changes:
 
 ```
-export MAVEN_OPTS="-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3"
-export PMD_CI_BRANCH="master" # base branch of the pull request
-export PMD_CI_PULL_REQUEST_NUMBER=2913
-
-unset PMD_CI_SECRET_PASSPHRASE
-
-# these are used by danger
-export GITHUB_EVENT_PATH=/workspaces/event.json
-export GITHUB_REPOSITORY=pmd/pmd
-export GITHUB_ACTION=run1
-export GITHUB_EVENT_NAME=pull_request
-/home/pmd-ci/create-gh-pull-request-event.sh
-
-cd /workspace/pmd
-rmdir pmd && mkdir pmd
-cd pmd
-git init
-git remote add origin https://github.com/pmd/pmd
-git fetch --no-tags --prune --progress --no-recurse-submodules --depth=2 origin +refs/pull/${PMD_CI_PULL_REQUEST_NUMBER}/merge:refs/remotes/pull/${PMD_CI_PULL_REQUEST_NUMBER}/merge
-git checkout --progress --force refs/remotes/pull/${PMD_CI_PULL_REQUEST_NUMBER}/merge
-
-.ci/check-environment.sh
-
-.ci/build-pr-win-macos.sh
+eval $(~/create-gh-actions-env.sh pull_request adangel/pmd $MAIN_BRANCH)
 ```
+
+And the checkout could be different...
+
+### Forked build
+
+A build executing on a forked repository.
+
+```
+$(~/create-gh-actions-env.sh push adangel/pmd $MAIN_BRANCH)
+```
+
+
+### Performing a release (push) build
+
+```
+eval $(~/create-gh-actions-env.sh push pmd/pmd refs/tags/v1.0.0_release_test)
+```
+
+Make sure, that `MAVEN_OPTS` contains `-DskipRemoteStaging=true`, so that no maven artifacts are not deployed
+to maven central.
+
+And the checkout could be different...
+
+
