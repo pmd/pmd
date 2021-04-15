@@ -1,31 +1,28 @@
-## PMD CI Scripts
+# PMD CI Scripts
 
-This folder contains scripts used for CI.
+This folder contains scripts used for CI, that are PMD specific.
+It uses the common scripts from [build-tools](https://github.com/pmd/build-tools).
 
-## Secrets
+## .ci/files/public-env.gpg
 
-One secret is required for decrypting the GPG Key with which the PMD Releases are signed and
-for a ssh key, which is used to copy files to sourceforge.
+This files contains the following environment variables:
 
-## Environment variables
+*   DANGER_GITHUB_API_TOKEN: Token for danger to add comments to PRs as <https://github.com/pmd-test>
+*   PMD_CI_CHUNK_TOKEN: Token for uploading reports to chunk.io
 
-* PMD_CI_SECRET_PASSPHRASE
-* CI_DEPLOY_USER
-* CI_DEPLOY_PASSWORD
-* CI_SIGN_KEY
-* CI_SIGN_PASSPHRASE
-* PMD_SF_USER
-* PMD_SF_APIKEY
-* GITHUB_OAUTH_TOKEN
-* GITHUB_BASE_URL
-* COVERALLS_REPO_TOKEN
-* SONAR_TOKEN
-* DANGER_GITHUB_API_TOKEN
-* PMD_CI_CHUNK_TOKEN
+The file is encrypted, so that the tokens are not automatically disabled when github detects them
+in clear text.
 
-## Encrypting
+**Decrypting**:
 
-    gpg --batch --symmetric --cipher-algo AES256 --passphrase="$PMD_CI_SECRET_PASSPHRASE" file.txt
+    gpg --batch --yes --decrypt --passphrase="GnxdjywUEPveyCD1RLiTd7t8CImnefYr" \
+        --output .ci/files/public-env .ci/files/public-env.gpg
+
+**Encrypting**:
+
+    gpg --batch --symmetric --cipher-algo AES256 \
+        --armor --passphrase="GnxdjywUEPveyCD1RLiTd7t8CImnefYr" \
+        --output .ci/files/public-env.gpg .ci/files/public-env
 
 ## Known Issues
 
@@ -40,7 +37,7 @@ and [WAGON-486](https://issues.apache.org/jira/browse/WAGON-486):
 
 The setting `-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3`
 makes sure, that Maven doesn't try to use pooled connections that have been unused for more than 180 seconds.
-These settings are placed as environment variable `MAVEN_OPTS` in all workflows, so that they are active for
+These settings are placed as environment variable `MAVEN_OPTS` in the workflow, so that they are active for
 all Maven executions (including builds done by regression tester).
 
 Alternatively, pooling could be disabled completely via `-Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false`.
@@ -49,9 +46,7 @@ established.
 
 More information about configuring this can be found at [wagon-http](https://maven.apache.org/wagon/wagon-providers/wagon-http/).
 
-## Hints
-
-### Remote debugging
+## Remote debugging
 
 Debugging remotely is possible with <https://github.com/mxschmitt/action-tmate>.
 
@@ -67,27 +62,13 @@ The workflow `troubleshooting` can be started manually, which already contains t
 **Note**: This is dangerous for push/pull builds on pmd/pmd, because these have access to the secrets and the SSH session
 is not protected. Builds triggered by pull requests from forked repositories don't have access to the secrets.
 
-### Local tests with docker
+## Local tests with docker
 
-Create a local docker container:
+Using the same docker container as described in [build-env @ build-tools](https://github.com/pmd/build-tools).
 
-```
-cd .ci/docker_ubuntu18.04
-docker build -t pmd-ci .
-```
+### Testing a push build (snapshot)
 
-This container is based on Ubuntu 18.04, which is used for `ubuntu-latest` github actions runner,
-see [Virtual Environment](https://github.com/actions/virtual-environments).
 
-You can run a local instance with docker:
-
-```
-docker run -it pmd-ci
-```
-
-You'll be dropped into a bash.
-
-#### Testing a push build (snapshot)
 
 Start docker without binding to local directory, so that we can do a fresh checkout: `docker run -it pmd-ci`.
 You'll be dropped into a bash. Use the following script, to setup and start the build:

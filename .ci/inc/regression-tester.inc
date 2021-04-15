@@ -7,7 +7,6 @@ source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
 #
 # The functions here require the following environment variables:
-# PMD_SF_USER
 # PMD_CI_BRANCH
 #
 # DANGER_GITHUB_API_TOKEN
