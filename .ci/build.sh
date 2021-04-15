@@ -12,11 +12,11 @@ function build() {
     pmd_ci_log_group_start "Prepare Java 7+11, Bundler"
         pmd_ci_openjdk_install_adoptopenjdk 11
         pmd_ci_openjdk_setdefault 11
-        PMD_MAVEN_EXTRA_OPTS=""
+        PMD_MAVEN_EXTRA_OPTS=()
         if [ "$(pmd_ci_utils_get_os)" = "linux" ]; then
-            log_info "Install openjdk7 for integration tests"
+            pmd_ci_log_info "Install openjdk7 for integration tests"
             pmd_ci_openjdk_install_zuluopenjdk 7
-            PMD_MAVEN_EXTRA_OPTS="-Djava7.home=${HOME}/oraclejdk7"
+            PMD_MAVEN_EXTRA_OPTS=(-Djava7.home="${HOME}/oraclejdk7")
         fi
         pmd_ci_build_setup_bundler
     pmd_ci_log_group_end
@@ -28,7 +28,7 @@ function build() {
 
     if pmd_ci_utils_is_fork_or_pull_request; then
         pmd_ci_log_group_start "Build with mvnw"
-            ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress ${PMD_MAVEN_EXTRA_OPTS}
+            ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
         pmd_ci_log_group_end
 
         # Danger is executed only on the linux runner
@@ -45,7 +45,7 @@ function build() {
 
     if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
         pmd_ci_log_group_start "Build with mvnw"
-            ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress ${PMD_MAVEN_EXTRA_OPTS}
+            ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
         pmd_ci_log_group_end
 
         pmd_ci_log_info "Stopping build here, because os is not linux"
@@ -91,7 +91,7 @@ function build() {
             -Dpmd.skip \
             --show-version --errors --batch-mode --no-transfer-progress \
             clean package \
-            sonar:sonar -Dsonar.login=${SONAR_TOKEN} -Psonar
+            sonar:sonar -Dsonar.login="${SONAR_TOKEN}" -Psonar
         pmd_ci_log_success "New sonar results: https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd"
     pmd_ci_log_group_end
 
@@ -104,7 +104,7 @@ function build() {
             -Dmaven.source.skip \
             -Dcheckstyle.skip \
             -Dpmd.skip \
-            -DrepoToken=${COVERALLS_REPO_TOKEN} \
+            -DrepoToken="${COVERALLS_REPO_TOKEN}" \
             --show-version --errors --batch-mode --no-transfer-progress \
             clean package jacoco:report \
             coveralls:report -Pcoveralls
@@ -118,7 +118,7 @@ function build() {
 # Installs bundler, which is needed for doc generation and regression tester
 #
 function pmd_ci_build_setup_bundler() {
-    log_info "Installing bundler..."
+    pmd_ci_log_info "Installing bundler..."
     gem install bundler
 }
 
@@ -137,7 +137,7 @@ function pmd_ci_build_run() {
         pmd_ci_log_info "This is a snapshot build"
     fi
 
-    ./mvnw clean deploy -P${mvn_profiles} --show-version --errors --batch-mode --no-transfer-progress ${PMD_MAVEN_EXTRA_OPTS}
+    ./mvnw clean deploy -P${mvn_profiles} --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
 }
 
 #
@@ -150,7 +150,7 @@ function pmd_ci_deploy_build_artifacts() {
 
     if pmd_ci_maven_isReleaseBuild; then
         # create a draft github release
-        pmd_ci_gh_releases_createDraftRelease "${PMD_CI_TAG}" "$(git rev-list -n 1 ${PMD_CI_TAG})"
+        pmd_ci_gh_releases_createDraftRelease "${PMD_CI_TAG}" "$(git rev-list -n 1 "${PMD_CI_TAG}")"
         GH_RELEASE="$RESULT"
 
         # Deploy to github releases
@@ -176,7 +176,7 @@ function pmd_ci_build_and_upload_doc() {
     # Deploy javadoc to https://docs.pmd-code.org/apidocs/*/${PMD_CI_MAVEN_PROJECT_VERSION}/
     pmd_code_uploadJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}" "$(pwd)"
 
-    if [ pmd_ci_maven_isSnapshotBuild && "${PMD_CI_BRANCH}" = "master" ]; then
+    if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "master" ]; then
         # only for snapshot builds from branch master
         pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "snapshot"
 
@@ -202,8 +202,10 @@ function pmd_ci_build_and_upload_doc() {
         bundle config set --local with release_notes_preprocessing
         bundle install
         # renders, and skips the first 6 lines - the Jekyll front-matter
-        local rendered_release_notes=$(bundle exec .ci/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
-        local release_name="PMD ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
+        local rendered_release_notes
+        rendered_release_notes=$(bundle exec .ci/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+        local release_name
+        release_name="PMD ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
         pmd_ci_gh_releases_updateRelease "$GH_RELEASE" "$release_name" "$rendered_release_notes"
         pmd_ci_sourceforge_uploadReleaseNotes "${PMD_CI_MAVEN_PROJECT_VERSION}" "${rendered_release_notes}"
 

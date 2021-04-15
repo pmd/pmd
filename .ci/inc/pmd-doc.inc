@@ -15,7 +15,7 @@ source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 # The documentation will be generated in the directory "docs/_site".
 #
 function pmd_doc_generate_jekyll_site() {
-    pushd docs
+    pushd docs || { echo "Directory 'docs' doesn't exist"; exit 1; }
 
     echo -e "\n\n"
     pmd_ci_log_info "Building documentation using jekyll..."
@@ -23,22 +23,22 @@ function pmd_doc_generate_jekyll_site() {
     bundle install
     bundle exec jekyll build
 
-    popd
+    popd || exit 1
 }
 
 #
 # Creates the pmd-doc.zip archive. It will be placed in "docs/".
 #
 function pmd_doc_create_archive() {
-    pushd docs
+    pushd docs || { echo "Directory 'docs' doesn't exist"; exit 1; }
 
     echo -e "\n\n"
     pmd_ci_log_info "Creating pmd-doc archive..."
-    mv _site pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}
-    zip -qr pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/
+    mv _site "pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}"
+    zip -qr "pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip" "pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/"
     pmd_ci_log_success "Successfully created pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
 
-    popd
+    popd || exit 1
 }
 
 #
@@ -52,7 +52,7 @@ function publish_release_documentation_github() {
     # In order to speed things up, we use a sparse checkout - no need to checkout all directories here
     mkdir pmd.github.io
     (
-        cd pmd.github.io
+        cd pmd.github.io || { echo "Directory 'pmd.github.io' doesn't exist"; exit 1; }
         git init
         git config user.name "PMD CI (pmd-bot)"
         git config user.email "andreas.dangel+pmd-bot@adangel.org"
@@ -62,16 +62,16 @@ function publish_release_documentation_github() {
         echo "/sitemap.xml" >> .git/info/sparse-checkout
         git pull --depth=1 origin master
         pmd_ci_log_info "Copying documentation from ../docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/ to pmd-${PMD_CI_MAVEN_PROJECT_VERSION}/ ..."
-        rsync -ah --stats ../docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/ pmd-${PMD_CI_MAVEN_PROJECT_VERSION}/
+        rsync -ah --stats "../docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/" "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}/"
         git status
         pmd_ci_log_debug "Executing: git add pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
-        git add pmd-${PMD_CI_MAVEN_PROJECT_VERSION}
+        git add "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
         pmd_ci_log_debug "Executing: git commit..."
         git commit -q -m "Added pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
 
         pmd_ci_log_info "Copying pmd-${PMD_CI_MAVEN_PROJECT_VERSION} to latest ..."
         git rm -qr latest
-        cp -a pmd-${PMD_CI_MAVEN_PROJECT_VERSION} latest
+        cp -a "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}" latest
         pmd_ci_log_debug "Executing: git add latest"
         git add latest
         pmd_ci_log_debug "Executing: git commit..."
@@ -100,9 +100,9 @@ function pmd_doc_publish_to_github_pages() {
     # clear the files first
     rm -rf pmd-gh-pages/*
     # copy the new site
-    cp -a docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/* pmd-gh-pages/
+    cp -a "docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}"/* pmd-gh-pages/
     (
-        cd pmd-gh-pages
+        cd pmd-gh-pages || { echo "Directory 'pmd-gh-pages' doesn't exist"; exit 1; }
         git config user.name "PMD CI (pmd-bot)"
         git config user.email "andreas.dangel+pmd-bot@adangel.org"
         git add -A

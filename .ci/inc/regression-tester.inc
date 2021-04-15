@@ -74,7 +74,7 @@ function regression_tester_executeDanger() {
     if ! git show-ref --verify --quiet refs/heads/${PMD_CI_BRANCH}; then
         git fetch --no-tags --depth=1 origin +refs/heads/${PMD_CI_BRANCH}:refs/remotes/origin/${PMD_CI_BRANCH}
         git branch ${PMD_CI_BRANCH} origin/${PMD_CI_BRANCH}
-        log_debug "Created local branch ${PMD_CI_BRANCH}"
+        pmd_ci_log_debug "Created local branch ${PMD_CI_BRANCH}"
     fi
     # Fetch more commits of the PR for danger and regression tester
     git fetch --no-tags --depth=50 origin +$(git rev-parse HEAD^2):
