@@ -1,65 +1,87 @@
 #!/usr/bin/env bash
 
-source $(dirname $0)/inc/logger.inc
-source $(dirname $0)/inc/setup-secrets.inc
-source $(dirname $0)/inc/sourceforge-api.inc
-source $(dirname $0)/inc/pmd-doc.inc
-source $(dirname $0)/inc/pmd-code-api.inc
-source $(dirname $0)/inc/regression-tester.inc
-source $(dirname $0)/inc/github-releases-api.inc
-source $(dirname $0)/inc/install-openjdk.inc
-
+# Exit this script immediately if a command/function exits with a non-zero status.
 set -e
 
-function pmd_ci_build_main() {
-    log_group_start "Setting up private secrets"
-        pmd_ci_setup_private_env
-        pmd_ci_setup_gpg_key
-        pmd_ci_setup_ssh
-    log_group_end
+SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash github-releases-api.bash
+                 sourceforge-api.bash pmd-doc.inc pmd-code-api.inc regression-tester.inc"
+# shellcheck source=inc/fetch_ci_scripts.bash
+source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
-    log_group_start "Prepare Java 7+11, Maven, Bundler"
-        install_openjdk_setdefault 11
-        install_oraclejdk7
-        pmd_ci_build_setup_maven
+function build() {
+    pmd_ci_log_group_start "Prepare Java 7+11, Bundler"
+        pmd_ci_openjdk_install_adoptopenjdk 11
+        pmd_ci_openjdk_setdefault 11
+        PMD_MAVEN_EXTRA_OPTS=""
+        if [ "$(pmd_ci_utils_get_os)" = "linux" ]; then
+            log_info "Install openjdk7 for integration tests"
+            pmd_ci_openjdk_install_zuluopenjdk 7
+            PMD_MAVEN_EXTRA_OPTS="-Djava7.home=${HOME}/oraclejdk7"
+        fi
         pmd_ci_build_setup_bundler
-        pmd_ci_build_setup_env
-    log_group_end
+    pmd_ci_log_group_end
 
-    log_group_start "Build and Deploy"
-        pmd_ci_build_run
-        pmd_ci_deploy_build_artifacts
-    log_group_end
+    echo
+    pmd_ci_maven_display_info_banner
+    pmd_ci_utils_determine_build_env pmd/pmd
+    echo
 
-    log_group_start "Build and Upload documentation"
-        pmd_ci_build_and_upload_doc
-    log_group_end
+    if pmd_ci_utils_is_fork_or_pull_request; then
+        pmd_ci_log_group_start "Build with mvnw"
+            ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress ${PMD_MAVEN_EXTRA_OPTS}
+        pmd_ci_log_group_end
 
-    if pmd_ci_build_isRelease; then
-    log_group_start "Publishing Release"
-        gh_release_publishRelease "$GH_RELEASE"
-        sourceforge_selectDefault "${VERSION}"
-    log_group_end
+        # Danger is executed only on the linux runner
+        if [ "$(pmd_ci_utils_get_os)" = "linux" ]; then
+            pmd_ci_log_group_start "Executing danger"
+                regression_tester_setup_ci
+                regression_tester_executeDanger
+            pmd_ci_log_group_end
+        fi
+
+        exit 0
     fi
 
-    log_group_start "Creating new baseline for regression tester"
+
+    if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
+        pmd_ci_log_group_start "Build with mvnw"
+            ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress ${PMD_MAVEN_EXTRA_OPTS}
+        pmd_ci_log_group_end
+
+        pmd_ci_log_info "Stopping build here, because os is not linux"
+        exit 0
+    fi
+
+    # only builds on pmd/pmd continue here
+    pmd_ci_log_group_start "Setup environment"
+        pmd_ci_setup_secrets_private_env
+        pmd_ci_setup_secrets_gpg_key
+        pmd_ci_setup_secrets_ssh
+        pmd_ci_maven_setup_settings
+    pmd_ci_log_group_end
+
+    pmd_ci_log_group_start "Build and Deploy"
+        pmd_ci_build_run
+        pmd_ci_deploy_build_artifacts
+    pmd_ci_log_group_end
+
+    pmd_ci_log_group_start "Build and Upload documentation"
+        pmd_ci_build_and_upload_doc
+    pmd_ci_log_group_end
+
+    if pmd_ci_maven_isReleaseBuild; then
+    pmd_ci_log_group_start "Publishing Release"
+        pmd_ci_gh_releases_publishRelease "$GH_RELEASE"
+        pmd_ci_sourceforge_selectDefault "${PMD_CI_MAVEN_PROJECT_VERSION}"
+    pmd_ci_log_group_end
+    fi
+
+    pmd_ci_log_group_start "Creating new baseline for regression tester"
         regression_tester_setup_ci
         regression_tester_uploadBaseline
-    log_group_end
-
-    exit 0
+    pmd_ci_log_group_end
 }
 
-
-#
-# Configures maven.
-# Needed for deploy to central (both snapshots and releases)
-# and for signing the artifacts.
-#
-function pmd_ci_build_setup_maven() {
-    mkdir -p ${HOME}/.m2
-    cp .ci/files/maven-settings.xml ${HOME}/.m2/settings.xml
-}
 
 #
 # Installs bundler, which is needed for doc generation and regression tester
@@ -70,53 +92,21 @@ function pmd_ci_build_setup_bundler() {
 }
 
 #
-# Setups common build parameters:
-# * Determines the VERSION of PMD, that is being built
-# * Determines the PMD_CI_BRANCH or PMD_CI_TAG, that is being built
-#
-function pmd_ci_build_setup_env() {
-    VERSION=$(pmd_ci_build_get_pom_version)
-
-    if [[ "${PMD_CI_GIT_REF}" == refs/heads/* ]]; then
-        PMD_CI_BRANCH=${PMD_CI_GIT_REF##refs/heads/}
-        unset PMD_CI_TAG
-        log_info "Building PMD ${VERSION} on branch ${PMD_CI_BRANCH}"
-    elif [[ "${PMD_CI_GIT_REF}" == refs/tags/* ]]; then
-        unset PMD_CI_BRANCH
-        PMD_CI_TAG=${PMD_CI_GIT_REF##refs/tags/}
-        log_info "Building PMD ${VERSION} on tag ${PMD_CI_TAG}"
-    else
-        log_error "Unknown branch/tag: PMD_CI_GIT_REF=${PMD_CI_GIT_REF}"
-        exit 1
-    fi
-
-    if [[ "${VERSION}" == *-SNAPSHOT && -z "$PMD_CI_BRANCH" ]]; then
-        log_error "Invalid combination: snapshot version ${VERSION} but no branch in PMD_CI_GIT_REF=${PMD_CI_GIT_REF}"
-        exit 1
-    fi
-
-    if [[ "${VERSION}" != *-SNAPSHOT && -z "$PMD_CI_TAG" ]]; then
-        log_error "Invalid combination: non-snapshot version ${VERSION} but no tag in PMD_CI_GIT_REF=${PMD_CI_GIT_REF}"
-        exit 1
-    fi
-}
-
-#
 # Performs the actual build.
 # Deploys the artifacts to maven central.
 # Also generates rule documentation.
 #
 function pmd_ci_build_run() {
-    local mvn_profiles="ossrh,sign,generate-rule-docs"
+    local mvn_profiles="sign,generate-rule-docs"
 
-    if pmd_ci_build_isRelease; then
-        log_info "This is a release build"
+    if pmd_ci_maven_isReleaseBuild; then
+        pmd_ci_log_info "This is a release build"
         mvn_profiles="${mvn_profiles},pmd-release"
     else
-        log_info "This is a snapshot build"
+        pmd_ci_log_info "This is a snapshot build"
     fi
 
-    ./mvnw clean deploy -P${mvn_profiles} -e -B -V -Djava7.home=${HOME}/oraclejdk7
+    ./mvnw clean deploy -P${mvn_profiles} --show-version --errors --batch-mode --no-transfer-progress ${PMD_MAVEN_EXTRA_OPTS}
 }
 
 #
@@ -124,17 +114,17 @@ function pmd_ci_build_run() {
 #
 function pmd_ci_deploy_build_artifacts() {
     # Deploy to sourceforge files
-    sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-bin-${VERSION}.zip"
-    sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-src-${VERSION}.zip"
+    pmd_ci_sourceforge_uploadFile "${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-bin-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+    pmd_ci_sourceforge_uploadFile "${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-src-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
 
-    if pmd_ci_build_isRelease; then
+    if pmd_ci_maven_isReleaseBuild; then
         # create a draft github release
-        gh_releases_createDraftRelease "${PMD_CI_TAG}" "$(git rev-list -n 1 ${PMD_CI_TAG})"
+        pmd_ci_gh_releases_createDraftRelease "${PMD_CI_TAG}" "$(git rev-list -n 1 ${PMD_CI_TAG})"
         GH_RELEASE="$RESULT"
 
         # Deploy to github releases
-        gh_release_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-bin-${VERSION}.zip"
-        gh_release_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-src-${VERSION}.zip"
+        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-bin-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-src-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
     fi
 }
 
@@ -145,35 +135,35 @@ function pmd_ci_build_and_upload_doc() {
     pmd_doc_generate_jekyll_site
     pmd_doc_create_archive
 
-    sourceforge_uploadFile "${VERSION}" "docs/pmd-doc-${VERSION}.zip"
-    if pmd_ci_build_isRelease; then
-        gh_release_uploadAsset "$GH_RELEASE" "docs/pmd-doc-${VERSION}.zip"
+    pmd_ci_sourceforge_uploadFile "${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+    if pmd_ci_maven_isReleaseBuild; then
+        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
     fi
 
-    # Deploy doc to https://docs.pmd-code.org/pmd-doc-${VERSION}/
-    pmd_code_uploadDocumentation "${VERSION}" "docs/pmd-doc-${VERSION}.zip"
-    # Deploy javadoc to https://docs.pmd-code.org/apidocs/*/${VERSION}/
-    pmd_code_uploadJavadoc "${VERSION}" "$(pwd)"
+    # Deploy doc to https://docs.pmd-code.org/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/
+    pmd_code_uploadDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+    # Deploy javadoc to https://docs.pmd-code.org/apidocs/*/${PMD_CI_MAVEN_PROJECT_VERSION}/
+    pmd_code_uploadJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}" "$(pwd)"
 
-    if [[ "${VERSION}" == *-SNAPSHOT && "${PMD_CI_BRANCH}" == "master" ]]; then
+    if [ pmd_ci_maven_isSnapshotBuild && "${PMD_CI_BRANCH}" = "master" ]; then
         # only for snapshot builds from branch master
-        pmd_code_createSymlink "${VERSION}" "snapshot"
+        pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "snapshot"
 
         # update github pages https://pmd.github.io/pmd/
         pmd_doc_publish_to_github_pages
         # rsync site to https://pmd.sourceforge.io/snapshot
-        sourceforge_rsyncSnapshotDocumentation "${VERSION}" "snapshot"
+        pmd_ci_sourceforge_rsyncSnapshotDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "snapshot"
     fi
 
-    if pmd_ci_build_isRelease; then
-        # documentation is already uploaded to https://docs.pmd-code.org/pmd-doc-${VERSION}
+    if pmd_ci_maven_isReleaseBuild; then
+        # documentation is already uploaded to https://docs.pmd-code.org/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}
         # we only need to setup symlinks for the released version
-        pmd_code_createSymlink "${VERSION}" "latest"
+        pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "latest"
         # remove old doc and point to the new version
-        pmd_code_removeDocumentation "${VERSION}-SNAPSHOT"
-        pmd_code_createSymlink "${VERSION}" "${VERSION}-SNAPSHOT"
+        pmd_code_removeDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
+        pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
         # remove old javadoc
-        pmd_code_removeJavadoc "${VERSION}-SNAPSHOT"
+        pmd_code_removeJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
 
         # updating github release text
         rm -f .bundle/config
@@ -182,28 +172,16 @@ function pmd_ci_build_and_upload_doc() {
         bundle install
         # renders, and skips the first 6 lines - the Jekyll front-matter
         local rendered_release_notes=$(bundle exec .ci/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
-        local release_name="PMD ${VERSION} ($(date -u +%d-%B-%Y))"
-        gh_release_updateRelease "$GH_RELEASE" "$release_name" "$rendered_release_notes"
-        sourceforge_uploadReleaseNotes "${VERSION}" "${rendered_release_notes}"
+        local release_name="PMD ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
+        pmd_ci_gh_releases_updateRelease "$GH_RELEASE" "$release_name" "$rendered_release_notes"
+        pmd_ci_sourceforge_uploadReleaseNotes "${PMD_CI_MAVEN_PROJECT_VERSION}" "${rendered_release_notes}"
 
-        # updates https://pmd.github.io/latest/ and https://pmd.github.io/pmd-${VERSION}
+        # updates https://pmd.github.io/latest/ and https://pmd.github.io/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}
         publish_release_documentation_github
-        sourceforge_rsyncSnapshotDocumentation "${VERSION}" "pmd-${VERSION}"
+        pmd_ci_sourceforge_rsyncSnapshotDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
     fi
 }
 
+build
 
-function pmd_ci_build_isRelease() {
-    if [[ "${VERSION}" != *-SNAPSHOT && -n "${PMD_CI_TAG}" && -z "${PMD_CI_BRANCH}" ]]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-function pmd_ci_build_get_pom_version() {
-    echo $(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec)
-}
-
-
-pmd_ci_build_main
+exit 0

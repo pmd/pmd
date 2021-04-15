@@ -1,7 +1,10 @@
-#
-# The functions here require the following scripts:
-# inc/logger.inc
-# inc/install-openjdk.inc
+#!/usr/bin/env bash
+
+MODULE="pmd-doc"
+SCRIPT_INCLUDES="log.bash openjdk.bash"
+# shellcheck source=inc/fetch_ci_scripts.bash
+source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
+
 #
 # The functions here require the following environment variables:
 # PMD_SF_USER
@@ -11,8 +14,8 @@
 # PMD_CI_CHUNK_TOKEN
 
 function regression_tester_setup_ci() {
-    log_info "Install openjdk8 for pmd-regression-tests"
-    install_openjdk 8
+    pmd_ci_log_info "Install openjdk8 for pmd-regression-tests"
+    pmd_ci_openjdk_install_adoptopenjdk 8
 
     gpg --batch --yes --decrypt --passphrase="GnxdjywUEPveyCD1RLiTd7t8CImnefYr" \
         --output .ci/files/public-env .ci/files/public-env.gpg
@@ -20,9 +23,9 @@ function regression_tester_setup_ci() {
     rm .ci/files/public-env
 
     if hash "bundler" 2>/dev/null; then
-        log_debug "Bundler is already installed"
+        pmd_ci_log_debug "Bundler is already installed"
     else
-        log_info "Installing bundler..."
+        pmd_ci_log_info "Installing bundler..."
         gem install bundler
     fi
 
@@ -38,9 +41,9 @@ function regression_tester_setup_ci() {
 function regression_tester_uploadBaseline() {
     local pmdcodeUrl="https://pmd-code.org/pmd-regression-tester/"
     local baseline_branch="${PMD_CI_BRANCH:-$PMD_CI_TAG}"
-    log_debug "$FUNCNAME branch=${baseline_branch}"
+    pmd_ci_log_debug "$FUNCNAME branch=${baseline_branch}"
 
-    log_info "Generating and uploading baseline for pmdtester (${baseline_branch})..."
+    pmd_ci_log_info "Generating and uploading baseline for pmdtester (${baseline_branch})..."
     pushd ..
     rm -f .bundle/config
     bundle config set --local gemfile pmd/Gemfile
@@ -54,9 +57,9 @@ function regression_tester_uploadBaseline() {
     pushd target/reports
     BRANCH_FILENAME="${baseline_branch/\//_}"
     zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
-    # ssh-key for pmd-code.org is setup already by pmd_ci_setup_ssh
+    # ssh-key for pmd-code.org is setup already by pmd_ci_setup_secrets_ssh
     scp ${BRANCH_FILENAME}-baseline.zip pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
-    log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${pmdcodeUrl}"
+    pmd_ci_log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to ${pmdcodeUrl}"
     popd
     popd
 }
@@ -65,7 +68,7 @@ function regression_tester_uploadBaseline() {
 # Execute danger, which executes pmd-regression-tester (via Dangerfile).
 #
 function regression_tester_executeDanger() {
-    log_debug "$FUNCNAME"
+    pmd_ci_log_debug "$FUNCNAME"
 
     # Create a corresponding remote branch locally
     if ! git show-ref --verify --quiet refs/heads/${PMD_CI_BRANCH}; then
@@ -81,7 +84,7 @@ function regression_tester_executeDanger() {
         git branch master origin/master
     fi
 
-    log_info "Running danger on branch ${PMD_CI_BRANCH}"
+    pmd_ci_log_info "Running danger on branch ${PMD_CI_BRANCH}"
     bundle exec danger --verbose
-    log_success "Executed danger successfully"
+    pmd_ci_log_success "Executed danger successfully"
 }
