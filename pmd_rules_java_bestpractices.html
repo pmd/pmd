@@ -3687,9 +3687,11 @@ preserved.</p>
 
 <p><strong>Minimum Language Version:</strong> Java 1.5</p>
 
-<p>Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic
+<p>Java 5 introduced the varargs parameter declaration for methods and constructors. This syntactic
 sugar provides flexibility for users of these methods and constructors, allowing them to avoid
 having to deal with the creation of an array.</p>
+
+<p>Byte arrays in any method and String arrays in <code class="language-plaintext highlighter-rouge">public static void main(String[])</code> methods are ignored.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FormalParameters</span><span class="o">/</span><span class="nt">FormalParameter</span><span class="w">
