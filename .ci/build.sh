@@ -80,6 +80,37 @@ function build() {
         regression_tester_setup_ci
         regression_tester_uploadBaseline
     pmd_ci_log_group_end
+
+    if pmd_ci_maven_isSnapshotBuild; then
+    pmd_ci_log_group_start "Executing build with sonar"
+        # Note: Sonar also needs GITHUB_TOKEN (!)
+        ./mvnw \
+            -Dmaven.javadoc.skip=true \
+            -Dmaven.source.skip \
+            -Dcheckstyle.skip \
+            -Dpmd.skip \
+            --show-version --errors --batch-mode --no-transfer-progress \
+            clean package \
+            sonar:sonar -Dsonar.login=${SONAR_TOKEN} -Psonar
+        pmd_ci_log_success "New sonar results: https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd"
+    pmd_ci_log_group_end
+
+    pmd_ci_log_group_start "Executing build with coveralls"
+        export CI_NAME="github actions"
+        export CI_BUILD_URL="${PMD_CI_JOB_URL}"
+        export CI_BRANCH="${PMD_CI_BRANCH}"
+        ./mvnw \
+            -Dmaven.javadoc.skip=true \
+            -Dmaven.source.skip \
+            -Dcheckstyle.skip \
+            -Dpmd.skip \
+            -DrepoToken=${COVERALLS_REPO_TOKEN} \
+            --show-version --errors --batch-mode --no-transfer-progress \
+            clean package jacoco:report \
+            coveralls:report -Pcoveralls
+        pmd_ci_log_success "New coveralls result: https://coveralls.io/github/pmd/pmd"
+    pmd_ci_log_group_end
+    fi
 }
 
 

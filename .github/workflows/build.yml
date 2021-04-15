@@ -27,6 +27,7 @@ jobs:
         path: |
           ~/.m2/repository
           ~/.cache
+          vendor/bundle
         key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-
@@ -38,7 +39,7 @@ jobs:
       shell: bash
       run: |
         echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
-        echo "MAVEN_OPTS=-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3" >> $GITHUB_ENV
+        echo "MAVEN_OPTS=-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
         echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/master/scripts" >> $GITHUB_ENV
     - name: Check Environment
       shell: bash
@@ -53,3 +54,4 @@ jobs:
       shell: bash
       env:
         PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
