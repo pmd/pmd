@@ -203,7 +203,7 @@ function pmd_ci_build_and_upload_doc() {
         bundle install
         # renders, and skips the first 6 lines - the Jekyll front-matter
         local rendered_release_notes
-        rendered_release_notes=$(bundle exec .ci/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+        rendered_release_notes=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
         local release_name
         release_name="PMD ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
         pmd_ci_gh_releases_updateRelease "$GH_RELEASE" "$release_name" "$rendered_release_notes"

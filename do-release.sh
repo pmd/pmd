@@ -127,7 +127,7 @@ bundle install
 
 export RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
 echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
-NEW_RELEASE_NOTES=$(bundle exec .ci/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+NEW_RELEASE_NOTES=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
 cat > ../pmd.github.io/${RELEASE_NOTES_POST} <<EOF
 ---
 layout: post

@@ -6,7 +6,7 @@ source 'https://rubygems.org/'
 gem 'pmdtester', '~> 1'
 gem 'danger', '~> 5.6', '>= 5.6'
 
-# This group is only needed for rendering release notes
+# This group is only needed for rendering release notes (docs/render_release_notes.rb)
 # this happens during release (.ci/build.sh and do-release.sh)
 # but also during regular builds (.ci/build.sh)
 group :release_notes_preprocessing do
