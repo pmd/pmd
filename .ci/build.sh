@@ -16,7 +16,7 @@ function build() {
         if [ "$(pmd_ci_utils_get_os)" = "linux" ]; then
             pmd_ci_log_info "Install openjdk7 for integration tests"
             pmd_ci_openjdk_install_zuluopenjdk 7
-            PMD_MAVEN_EXTRA_OPTS=(-Djava7.home="${HOME}/oraclejdk7")
+            PMD_MAVEN_EXTRA_OPTS=(-Djava7.home="${HOME}/openjdk7")
         fi
         pmd_ci_build_setup_bundler
     pmd_ci_log_group_end
