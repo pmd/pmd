@@ -91,6 +91,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
     @Override
     String kindDisplayName(ASTAnyTypeDeclaration node, PropertyDescriptor<Pattern> descriptor) {
-        return JavaRuleUtil.isUtilityClass(node) ? "utility class" : PrettyPrintingUtil.kindName(node);
+        return JavaRuleUtil.isUtilityClass(node) ? "utility class" : PrettyPrintingUtil.getPrintableNodeKind(node);
     }
 }

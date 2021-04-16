@@ -60,11 +60,7 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
     @Deprecated
     @DeprecatedAttribute(replaceWith = "VariableDeclaratorId/@Name")
     public String getVariableName() {
-        ASTVariableDeclaratorId decl = getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        if (decl != null) {
-            return decl.getImage();
-        }
-        return null;
+        return getVarIds().firstOrThrow().getName();
     }
 
 

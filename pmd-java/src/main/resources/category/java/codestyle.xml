@@ -1204,18 +1204,28 @@ public class SomeClass {
     <rule name="PrematureDeclaration"
           language="java"
           since="5.0"
-          message="Avoid declaring a variable if it is unreferenced before a possible exit point."
+          message="Declaration of ''{0}'' can be moved closer to its usages"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.PrematureDeclarationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#prematuredeclaration">
         <description>
-Checks for variables that are defined before they might be used. A reference is deemed to be premature if it is created right before a block of code that doesn't use it that also has the ability to return or throw an exception.
+Checks for variables that are defined before they might be used. A declaration is
+deemed to be premature if there are some statements that may return or throw an
+exception between the time the variable is declared and the time it is first read.
+
+Some variables cannot be declared close to their first usage because of side-effects
+occurring before they're first used. We try to avoid reporting those by considering
+most method and constructor invocations to be impure. See the second example.
+
+Note that this rule is meant to improve code readability but is not an optimization.
+A smart JIT will not care whether the variable is declared prematurely or not, as it
+can reorder code.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
 public int getLength(String[] strings) {
 
-    int length = 0; // declared prematurely
+    int length = 0; // could be moved closer to the loop
 
     if (strings == null || strings.length == 0) return 0;
 
@@ -1224,6 +1234,25 @@ public int getLength(String[] strings) {
     }
 
     return length;
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+public int getLength(String[] strings) {
+
+    int startTime = System.nanoTime(); // cannot be moved because initializer is impure
+
+    if (strings == null || strings.length == 0) {
+        // some error logic
+        throw new SomeException(...);
+    }
+
+    for (String str : strings) {
+        length += str.length();
+    }
+
+    return System.nanoTime() - startTime;
 }
 ]]>
         </example>
@@ -1624,11 +1653,12 @@ public class Bar {
     <rule name="UnnecessaryReturn"
           language="java"
           since="1.3"
-          message="Avoid unnecessary return statements"
+          message="Unnecessary return statement"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryReturnRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryreturn">
         <description>
-Avoid the use of unnecessary return statements.
+Avoid the use of unnecessary return statements. A return is unnecessary when no
+instructions follow anyway.
         </description>
         <priority>3</priority>
         <example>

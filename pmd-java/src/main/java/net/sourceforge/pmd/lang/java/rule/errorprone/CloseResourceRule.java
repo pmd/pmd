@@ -45,6 +45,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -188,6 +189,10 @@ public class CloseResourceRule extends AbstractJavaRule {
         List<ASTVariableDeclarator> vars = method.findDescendantsOfType(ASTVariableDeclarator.class);
         Map<ASTVariableDeclarator, TypeNode> resVars = new HashMap<>();
         for (ASTVariableDeclarator var : vars) {
+            if (var.getParent() instanceof Annotatable
+                && ((Annotatable) var.getParent()).isAnnotationPresent("lombok.Cleanup")) {
+                continue; // auto cleaned up
+            }
             TypeNode varType = getTypeOfVariable(var);
             if (varType != null && isResourceTypeOrSubtype(varType)) {
                 resVars.put(var, wrappedResourceTypeOrReturn(var, varType));

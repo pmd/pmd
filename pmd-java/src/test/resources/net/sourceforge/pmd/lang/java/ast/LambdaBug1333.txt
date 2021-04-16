@@ -1,5 +1,5 @@
 +- CompilationUnit[@PackageName = ""]
-   +- ClassOrInterfaceDeclaration[@Abstract = "false", @Annotation = "false", @Anonymous = "false", @BinaryName = "Bug1333", @CanonicalName = "Bug1333", @EffectiveVisibility = "package", @Enum = "false", @Final = "true", @Interface = "false", @Local = "false", @Nested = "false", @PackageName = "", @PackagePrivate = "true", @Record = "false", @RegularClass = "true", @SimpleName = "Bug1333", @TopLevel = "true", @Visibility = "package"]
+   +- ClassOrInterfaceDeclaration[@Abstract = "false", @Annotation = "false", @Anonymous = "false", @BinaryName = "Bug1333", @CanonicalName = "Bug1333", @EffectiveVisibility = "package", @Enum = "false", @Final = "true", @Interface = "false", @Local = "false", @Nested = "false", @PackageName = "", @PackagePrivate = "true", @Record = "false", @RegularClass = "true", @RegularInterface = "false", @SimpleName = "Bug1333", @TopLevel = "true", @Visibility = "package"]
       +- ModifierList[@EffectiveModifiers = "{final}", @ExplicitModifiers = "{final}"]
       +- ClassOrInterfaceBody[@Size = "4"]
          +- FieldDeclaration[@EffectiveVisibility = "private", @Visibility = "private"]

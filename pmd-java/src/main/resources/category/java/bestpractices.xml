@@ -1688,6 +1688,52 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UseStandardCharsets"
+          language="java"
+          since="6.34.0"
+          minimumLanguageVersion="1.7"
+          message="Please use StandardCharsets constants"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usestandardcharsets">
+        <description>
+Starting with Java 7, StandardCharsets provides constants for common Charset objects, such as UTF-8.
+Using the constants is less error prone, and can provide a small performance advantage compared to `Charset.forName(...)`
+since no scan across the internal `Charset` caches is needed.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[@MethodName = 'forName'][pmd-java:typeIs('java.nio.charset.Charset')]
+    [
+        ArgumentList/StringLiteral
+            [@Image = ('"US-ASCII"', '"ISO-8859-1"', '"UTF-8"', '"UTF-16BE"', '"UTF-16LE"', '"UTF-16"')]
+    ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class UseStandardCharsets {
+    public void run() {
+
+        // looking up the charset dynamically
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, Charset.forName("UTF-8"))) {
+            osw.write("test");
+        }
+
+        // best to use StandardCharsets
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
+            osw.write("test");
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UseTryWithResources"
           language="java"
           minimumLanguageVersion="1.7"
@@ -1705,16 +1751,14 @@ preserved.
         <priority>3</priority>
         <properties>
             <property name="closeMethods" type="List[String]" delimiter="," description="Method names in finally block, which trigger this rule" value="close,closeQuietly"/>
-            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
 <![CDATA[
-//TryStatement[FinallyStatement//Name[
-    tokenize(@Image, '\.')[last()] = $closeMethods
-][
-    pmd-java:typeIs('java.lang.AutoCloseable')
+//TryStatement[FinallyClause//ExpressionStatement/MethodCall[@MethodName = $closeMethods][
+    (:   vvvvvvvvvvvvvvvvvvvvvvvvv This is to rule out static method call :)
+    *[1][not(self::TypeExpression) and pmd-java:typeIs('java.lang.AutoCloseable')]
     or
-    ../../PrimarySuffix/Arguments[@ArgumentCount = 1]//PrimaryPrefix[pmd-java:typeIs('java.lang.AutoCloseable')]
+    ArgumentList/*[pmd-java:typeIs('java.lang.AutoCloseable')]
 ]]
 ]]>
                 </value>
@@ -1762,29 +1806,14 @@ having to deal with the creation of an array.
         </description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
 <![CDATA[
-//FormalParameters/FormalParameter
-    [position()=last()]
-    [VariableDeclaratorId/@ArrayType=true()]
-    [@Varargs=false()]
-    [not (./Type[@ArrayType=true()]/ReferenceType[PrimitiveType[@Image='byte']])]
-    [not (./Type/ReferenceType[ClassOrInterfaceType[@Image='Byte']])]
-    [not (./Type/PrimitiveType[@Image='byte'])]
-    [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
-    [not(
-         ancestor::MethodDeclaration
-            [    @Public=true()
-             and @Static=true()
-             and child::ResultType[@Void=true()]
-             and @Name = 'main'
-             and @Arity = 1
-            ]
-         (: Type of the formal parameter here. :)
-         and pmd-java:typeIs('java.lang.String[]')
-    )]
+//FormalParameters[not(parent::MethodDeclaration[@Overridden=true() or @MainMethod=true()])]
+  /FormalParameter[position()=last()]
+   [@Varargs=false()]
+   [ArrayType[not(PrimitiveType[@Kind = "byte"] or ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')])]
+    or VariableDeclaratorId[ArrayDimensions] and (PrimitiveType[not(@Kind="byte")] or ClassOrInterfaceType[not(pmd-java:typeIs('java.lang.Byte'))])]
 ]]>
                 </value>
             </property>

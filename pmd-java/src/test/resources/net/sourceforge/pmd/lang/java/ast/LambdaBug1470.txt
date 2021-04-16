@@ -3,7 +3,7 @@
    |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
    +- ImportDeclaration[@ImportOnDemand = "false", @ImportedName = "rx.Observable", @ImportedSimpleName = "Observable", @PackageName = "rx", @Static = "false"]
    +- ImportDeclaration[@ImportOnDemand = "false", @ImportedName = "rx.Subscriber", @ImportedSimpleName = "Subscriber", @PackageName = "rx", @Static = "false"]
-   +- ClassOrInterfaceDeclaration[@Abstract = "false", @Annotation = "false", @Anonymous = "false", @BinaryName = "com.sample.test.pmdTest", @CanonicalName = "com.sample.test.pmdTest", @EffectiveVisibility = "public", @Enum = "false", @Final = "false", @Interface = "false", @Local = "false", @Nested = "false", @PackageName = "com.sample.test", @PackagePrivate = "false", @Record = "false", @RegularClass = "true", @SimpleName = "pmdTest", @TopLevel = "true", @Visibility = "public"]
+   +- ClassOrInterfaceDeclaration[@Abstract = "false", @Annotation = "false", @Anonymous = "false", @BinaryName = "com.sample.test.pmdTest", @CanonicalName = "com.sample.test.pmdTest", @EffectiveVisibility = "public", @Enum = "false", @Final = "false", @Interface = "false", @Local = "false", @Nested = "false", @PackageName = "com.sample.test", @PackagePrivate = "false", @Record = "false", @RegularClass = "true", @RegularInterface = "false", @SimpleName = "pmdTest", @TopLevel = "true", @Visibility = "public"]
       +- ModifierList[@EffectiveModifiers = "{public}", @ExplicitModifiers = "{public}"]
       +- ClassOrInterfaceBody[@Size = "3"]
          +- FieldDeclaration[@EffectiveVisibility = "private", @Visibility = "private"]
