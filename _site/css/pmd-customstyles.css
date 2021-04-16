@@ -1,0 +1,86 @@
+
+.panel-body {
+    padding-top: 0cm;
+}
+
+.landing-page.cat-title {
+    margin-bottom: .5cm;
+    margin-top: .5cm;
+}
+
+.landing-page.cat-description {
+    margin-top: .4cm;
+}
+
+/* Offsets contents by the height of the nav bar */
+#topbar-content-offset {
+    overflow: scroll;
+    position: absolute;
+    top: 50px; /* height of the nav bar */
+    bottom: 0px;
+    width: 100%;
+}
+
+details {
+    border-radius: 3px;
+    background: #EEE;
+    margin-left: 10px;
+}
+
+details p {
+    padding: 5px 10px 5px;
+    background: white;
+}
+
+details summary {
+    font-size: 11pt;
+    vertical-align: top;
+    background: #d2d2d2;
+    color: black;
+    border-radius: 3px;
+    padding: 5px 10px;
+    outline: none;
+    cursor: pointer;
+    display: list-item;
+}
+
+details summary::after {
+    content: "...";
+}
+
+details[open] summary {
+    background-color: #347DBE;
+    color: white;
+}
+
+
+.hiddenRow {
+    padding: 0 !important;
+}
+
+.xpath-fun-doc .fun-name {
+    font-weight: bold;
+}
+
+.xpath-fun-doc .fun-details-header {
+    font-family: monospace;
+    font-size: larger;
+}
+
+.xpath-fun-doc .fun-ns {
+    color: darkgray;
+}
+
+.xpath-fun-doc span.param-name {
+    font-weight: normal;
+
+}
+
+.xpath-fun-doc span.param-type {
+    font-weight: lighter;
+    font-style: italic;
+    color: darkgray;
+}
+.xpath-fun-doc .code-examples dt {
+    font-weight: normal;
+}
