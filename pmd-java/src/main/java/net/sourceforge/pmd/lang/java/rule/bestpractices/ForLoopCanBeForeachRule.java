@@ -32,8 +32,8 @@ import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil.InvocationMatcher;
 
 /**
  * @author Clément Fournier
