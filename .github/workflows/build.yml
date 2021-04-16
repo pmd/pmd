@@ -48,7 +48,7 @@ jobs:
         mkdir -p .ci && \
         ( [ -e .ci/$f ] || curl -sSL "${PMD_CI_SCRIPTS_URL}/$f" > ".ci/$f" ) && \
         chmod 755 .ci/$f && \
-        .ci/$f
+        bash -ex .ci/$f
     - name: Build
       run: .ci/build.sh
       shell: bash
