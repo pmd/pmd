@@ -79,7 +79,6 @@ Start docker without binding to local directory, so that we can do a fresh check
 
 ```
 export LANG=en_US.UTF-8
-export MAVEN_OPTS="-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3"
 export PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/master/scripts
 
 export PMD_CI_SECRET_PASSPHRASE="xyz"
