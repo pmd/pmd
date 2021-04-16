@@ -111,10 +111,24 @@ f=check-environment.sh; \
 Same as the above, but this line changes:
 
 ```
-eval $(~/create-gh-actions-env.sh pull_request adangel/pmd $MAIN_BRANCH)
+eval $(~/create-gh-actions-env.sh pull_request pmd/pmd $MAIN_BRANCH)
 ```
 
-And the checkout could be different...
+Maybe update `/workspaces/event.json` to fill in a real pull request number, so that
+danger can comment the correct PR.
+
+And the checkout must be different. Example for PR 3220:
+
+```
+PMD_CI_PULL_REQUEST_NUMBER=3220
+cd /workspace/pmd
+rmdir pmd && mkdir pmd
+cd pmd
+git init
+git remote add origin https://github.com/pmd/pmd
+git fetch --no-tags --prune --progress --no-recurse-submodules --depth=2 origin +refs/pull/${PMD_CI_PULL_REQUEST_NUMBER}/merge:refs/remotes/pull/${PMD_CI_PULL_REQUEST_NUMBER}/merge
+git checkout --progress --force refs/remotes/pull/${PMD_CI_PULL_REQUEST_NUMBER}/merge
+```
 
 ### Forked build
 
@@ -131,8 +145,8 @@ $(~/create-gh-actions-env.sh push adangel/pmd $MAIN_BRANCH)
 eval $(~/create-gh-actions-env.sh push pmd/pmd refs/tags/v1.0.0_release_test)
 ```
 
-Make sure, that `MAVEN_OPTS` contains `-DskipRemoteStaging=true`, so that no maven artifacts are not deployed
-to maven central.
+Make sure, that `MAVEN_OPTS` contains `-DskipRemoteStaging=true`, so that no maven artifacts are deployed
+to maven central (this is set by `create-gh-actions-env.sh`).
 
 And the checkout could be different...
 
