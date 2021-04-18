@@ -25,8 +25,10 @@ public abstract class ExprContext {
     // note: most members of this class are quite low-level and should
     // stay package-private for exclusive use by PolyResolution.
 
-    private ExprContext() {
-        // sealed class
+    final CtxKind kind;
+
+    private ExprContext(CtxKind kind) {
+        this.kind = kind;
     }
 
     /**
@@ -41,18 +43,24 @@ public abstract class ExprContext {
      * Returns true if this context does not provide any target type.
      * This is then a sentinel object.
      */
-    public abstract boolean isMissing();
+    public boolean isMissing() {
+        return kind == CtxKind.Missing;
+    }
 
     /**
      * If true this is an invocation context. This means, the target
      * type may depend on overload resolution.
      */
     public boolean isInvocationContext() {
-        return false;
+        return kind == CtxKind.Invocation;
     }
 
     public boolean isCastContext() {
-        return false;
+        return kind == CtxKind.Cast;
+    }
+
+    public boolean isSpecialTernaryContext() {
+        return kind == CtxKind.Ternary;
     }
 
     boolean canGiveContextToPoly(boolean lambda) {
@@ -85,6 +93,7 @@ public abstract class ExprContext {
         final InvocationNode node;
 
         InvocCtx(int arg, InvocationNode node) {
+            super(CtxKind.Invocation);
             this.arg = arg;
             this.node = node;
         }
@@ -111,11 +120,14 @@ public abstract class ExprContext {
     }
 
     /**
-     * Kind of a {@link RegularCtx}. Note that this enum does not include
-     * invocation contexts because they're handled by {@link InvocCtx}.
-     * If we make this public, it should include it.
+     * Kind of context.
      */
     enum CtxKind {
+        /**
+         * Invocation context (method arguments).
+         */
+        Invocation,
+
         /**
          * Assignment context, eg:
          * <ul>
@@ -153,10 +165,13 @@ public abstract class ExprContext {
          */
         Numeric,
 
-        /** Kinds for a missing context ({@link RegularCtx#NO_CTX}). */
+        /** Kind for a standalone ternary (both branches are then in this context). */
+        Ternary,
+
+        /** Kind for a missing context ({@link RegularCtx#NO_CTX}). */
         Missing,
 
-        /** Other kinds of situation that have a target type (eg {@link RegularCtx#NO_CTX}). */
+        /** Other kinds of situation that have a target type. */
         Other,
     }
 
@@ -165,27 +180,18 @@ public abstract class ExprContext {
         static final RegularCtx NO_CTX = new RegularCtx(null, CtxKind.Missing);
 
         final @Nullable JTypeMirror targetType;
-        final CtxKind kind;
 
         RegularCtx(@Nullable JTypeMirror targetType, CtxKind kind) {
+            super(kind);
+            assert kind != CtxKind.Invocation;
             this.targetType = targetType;
-            this.kind = kind;
         }
 
-        @Override
-        public boolean isMissing() {
-            return kind == CtxKind.Missing;
-        }
 
         @Override
         public boolean canGiveContextToPoly(boolean lambdaOrMethodRef) {
             return kind == CtxKind.Cast ? lambdaOrMethodRef
                                         : kind == CtxKind.Assignment;
-        }
-
-        @Override
-        public boolean isCastContext() {
-            return kind == CtxKind.Cast;
         }
 
         /**

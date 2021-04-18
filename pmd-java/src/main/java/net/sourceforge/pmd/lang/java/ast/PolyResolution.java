@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static java.util.Arrays.asList;
 import static net.sourceforge.pmd.internal.util.AssertionUtil.shouldNotReachHere;
-import static net.sourceforge.pmd.lang.java.types.TypeConversion.isConvertibleThroughBoxing;
+import static net.sourceforge.pmd.lang.java.types.TypeConversion.isConvertibleUsingBoxing;
 import static net.sourceforge.pmd.util.CollectionUtil.all;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
 
@@ -496,7 +496,7 @@ final class PolyResolution {
 
         List<JTypeMirror> boxed = map(branchTypes, JTypeMirror::box);
         for (JTypeMirror a : boxed) {
-            if (all(unboxed, it -> isConvertibleThroughBoxing(it, a))) {
+            if (all(unboxed, it -> isConvertibleUsingBoxing(it, a))) {
                 // then all types are convertible to a through boxing
                 return a;
             }

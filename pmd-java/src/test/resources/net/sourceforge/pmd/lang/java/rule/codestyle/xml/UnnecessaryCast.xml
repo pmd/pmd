@@ -446,15 +446,15 @@ public class MapCasts {
     </test-code>
     <test-code>
         <description>Cast over ternary mixing boxing/null/primitive</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>4,6</expected-linenumbers>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
             class Scratch {
 
                 public static void main(String[] args) {
                     double z = (Integer) // here
                             ((0.2 == Math.random()) ? (Integer) null + apply(null) // this one is required so that + applies
-                                                    : (0.3 == Math.random()) ? (Integer) null // and here
+                                                    : (0.3 == Math.random()) ? (Integer) null // this one could be removed but whatever
                                                                              : (int) Math.sin(300 * (12 + 30))); // this one is narrowing
                 }
 
@@ -515,19 +515,32 @@ public class MapCasts {
     </test-code>
     <test-code>
         <description>FP, removing both casts changes program</description>
-        <!-- TODO I'm not going to care too much-->
-        <!--  The rule doesn't consider more than one cast at a time -->
-        <!--  Also rules around ternaries are very complicated and the program would benefit from using if/else instead -->
-        <expected-problems>2</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
             class Scratch {
-                public void putTag(boolean useLong, int n) {
-                   // ONE of them is necessary, because if we remove both they'd
-                   //  both be mapped to long, then boxed to Long and stored in Number
 
-                   Number result =
-                      useLong ? (Number) Long.valueOf(n)
-                              : (Number) Integer.valueOf(n);
+                public void putTag(boolean useLong, int n) {
+                    // ONE of them is necessary, because if we remove both they'd
+                    //  both be mapped to long, then boxed to Long and stored in Number
+
+                    Number result =
+                            useLong ? (Number) Long.valueOf(n)
+                                    : (Number) Integer.valueOf(n);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>TP in ternary</description>
+        <!-- Note: the other is technically removable as well but that would change the type of the ternary -->
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+
+                public void putTag(boolean useLong, int n) {
+                    double result = useLong ? (double) 1
+                                            : (int) 2;   // removable, (2 : int)
                 }
             }
             ]]></code>
@@ -536,13 +549,15 @@ public class MapCasts {
         <description>[java] UnnecessaryCast false positive #2748 with unchecked cast</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.util.List;
-class Scratch {
-    public static <T> T[] asArray(List<T> list) {
-        T[] result = (T[]) list.toArray();
-        return result;
-    }
-}
+            import java.util.List;
+
+            class Scratch {
+
+                public static <T> T[] asArray(List<T> list) {
+                    T[] result = (T[]) list.toArray();
+                    return result;
+                }
+            }
             ]]></code>
     </test-code>
     <test-code>
