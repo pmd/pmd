@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil.InvocationMatcher;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 
 import net.sf.saxon.trans.XPathException;
 

@@ -1800,35 +1800,22 @@ public class TryWithResources {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usevarargs">
         <description>
-Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic
+Java 5 introduced the varargs parameter declaration for methods and constructors. This syntactic
 sugar provides flexibility for users of these methods and constructors, allowing them to avoid
 having to deal with the creation of an array.
+
+Byte arrays in any method and String arrays in `public static void main(String[])` methods are ignored.
         </description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
 <![CDATA[
-//FormalParameters/FormalParameter
-    [position()=last()]
-    [VariableDeclaratorId/@ArrayType=true()]
-    [@Varargs=false()]
-    [not (./Type[@ArrayType=true()]/ReferenceType[PrimitiveType[@Image='byte']])]
-    [not (./Type/ReferenceType[ClassOrInterfaceType[@Image='Byte']])]
-    [not (./Type/PrimitiveType[@Image='byte'])]
-    [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
-    [not(
-         ancestor::MethodDeclaration
-            [    @Public=true()
-             and @Static=true()
-             and child::ResultType[@Void=true()]
-             and @Name = 'main'
-             and @Arity = 1
-            ]
-         (: Type of the formal parameter here. :)
-         and pmd-java:typeIs('java.lang.String[]')
-    )]
+//FormalParameters[not(parent::MethodDeclaration[@Overridden=true() or @MainMethod=true()])]
+  /FormalParameter[position()=last()]
+   [@Varargs=false()]
+   [ArrayType[not(PrimitiveType[@Kind = "byte"] or ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')])]
+    or VariableDeclaratorId[ArrayDimensions] and (PrimitiveType[not(@Kind="byte")] or ClassOrInterfaceType[not(pmd-java:typeIs('java.lang.Byte'))])]
 ]]>
                 </value>
             </property>

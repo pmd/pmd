@@ -4,187 +4,113 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.StablePathMatcher;
 
 public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
 
     public BrokenNullCheckRule() {
-        super(ASTIfStatement.class);
+        super(ASTInfixExpression.class);
     }
 
     @Override
-    public Object visit(ASTIfStatement node, Object data) {
-        ASTExpression expression = (ASTExpression) node.getChild(0);
-
-        ASTConditionalAndExpression conditionalAndExpression = expression
-                .getFirstDescendantOfType(ASTConditionalAndExpression.class);
-        if (conditionalAndExpression != null) {
-            checkForViolations(node, data, conditionalAndExpression);
-        }
-
-        ASTConditionalOrExpression conditionalOrExpression = expression
-                .getFirstDescendantOfType(ASTConditionalOrExpression.class);
-        if (conditionalOrExpression != null) {
-            checkForViolations(node, data, conditionalOrExpression);
-        }
-
-        return super.visit(node, data);
+    public Object visit(ASTInfixExpression node, Object data) {
+        checkBrokenNullCheck(node, (RuleContext) data);
+        return data;
     }
 
-    private void checkForViolations(ASTIfStatement node, Object data, Node conditionalExpression) {
-        ASTEqualityExpression equalityExpression = conditionalExpression
-                .getFirstChildOfType(ASTEqualityExpression.class);
-        if (equalityExpression == null) {
-            return;
-        }
-        if (conditionalExpression instanceof ASTConditionalAndExpression
-                && !"==".equals(equalityExpression.getImage())) {
-            return;
-        }
-        if (conditionalExpression instanceof ASTConditionalOrExpression
-                && !"!=".equals(equalityExpression.getImage())) {
-            return;
-        }
-        ASTNullLiteral nullLiteral = equalityExpression.getFirstDescendantOfType(ASTNullLiteral.class);
-        if (nullLiteral == null) {
-            return; // No null check
-        }
-        // If there is an assignment in the equalityExpression we give up,
-        // because things get too complex
-        if (conditionalExpression.hasDescendantOfType(ASTAssignmentOperator.class)) {
+    private void checkBrokenNullCheck(ASTInfixExpression enclosingConditional, RuleContext ctx) {
+        ASTExpression left = enclosingConditional.getLeftOperand();
+        if (!(left instanceof ASTInfixExpression)) {
             return;
         }
 
-        // Find the expression used in the null compare
-        ASTPrimaryExpression nullCompareExpression = findNullCompareExpression(equalityExpression);
-        if (nullCompareExpression == null) {
-            return; // No good null check
+        BinaryOp op = ((ASTInfixExpression) left).getOperator();
+        if (op != BinaryOp.EQ && op != BinaryOp.NE) {
+            return;
+        } else if (op == BinaryOp.NE && enclosingConditional.getOperator() == BinaryOp.CONDITIONAL_AND
+            || op == BinaryOp.EQ && enclosingConditional.getOperator() == BinaryOp.CONDITIONAL_OR) {
+            return; // not problematic
         }
 
-        // Now we find the expression to compare to and do the comparison
-        for (int i = 0; i < conditionalExpression.getNumChildren(); i++) {
-            Node conditionalSubnode = conditionalExpression.getChild(i);
+        ASTNullLiteral nullLit = left.children(ASTNullLiteral.class).first();
+        if (nullLit == null) {
+            return;
+        }
 
-            // We skip the null compare branch
-            ASTEqualityExpression nullEqualityExpression = nullLiteral
-                    .getFirstParentOfType(ASTEqualityExpression.class);
-            if (conditionalSubnode.equals(nullEqualityExpression)) {
-                continue;
-            }
-            ASTPrimaryExpression conditionalPrimaryExpression;
-            if (conditionalSubnode instanceof ASTPrimaryExpression) {
-                conditionalPrimaryExpression = (ASTPrimaryExpression) conditionalSubnode;
-            } else {
-                // The ASTPrimaryExpression is hidden (in a negation, braces or
-                // EqualityExpression)
-                conditionalPrimaryExpression = conditionalSubnode.getFirstDescendantOfType(ASTPrimaryExpression.class);
-            }
+        ASTExpression otherChild = JavaRuleUtil.getOtherOperandIfInInfixExpr(nullLit);
+        StablePathMatcher pathToNullVar = StablePathMatcher.matching(otherChild);
+        if (pathToNullVar == null) {
+            // cannot be matched, because it's not stable
+            return;
+        }
 
-            if (primaryExpressionsAreEqual(nullCompareExpression, conditionalPrimaryExpression)) {
-                addViolation(data, node); // We have a match
-            }
+        NodeStream<ASTExpression> exprsToCheck = enclosingConditional.getRightOperand()
+                                                                     .descendantsOrSelf()
+                                                                     .filterIs(ASTExpression.class);
 
+        for (ASTExpression subexpr : exprsToCheck) {
+            NpeReason npeReason = willNpeWithReason(subexpr, pathToNullVar);
+            if (npeReason != null) {
+                addViolationWithMessage(ctx, subexpr, npeReason.formatMessage);
+            }
+        }
+
+    }
+
+    private static NpeReason willNpeWithReason(ASTExpression e, StablePathMatcher pathToNullVar) {
+        if (e instanceof QualifiableExpression) {
+            ASTExpression qualifier = ((QualifiableExpression) e).getQualifier();
+            if (pathToNullVar.matches(qualifier)) {
+                return NpeReason.DEREFERENCE;
+            }
+        }
+
+        if (e.getParent() instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) e.getParent();
+            if (pathToNullVar.matches(e) && operatorUnboxesOperand(infix)) {
+                return NpeReason.UNBOXING;
+            }
+        }
+        return null;
+    }
+
+    private static boolean operatorUnboxesOperand(ASTInfixExpression infix) {
+        BinaryOp operator = infix.getOperator();
+
+        if (operator == BinaryOp.INSTANCEOF) {
+            return false;
+        }
+
+        boolean leftIsPrimitive = infix.getLeftOperand().getTypeMirror().isPrimitive();
+        boolean rightIsPrimitive = infix.getRightOperand().getTypeMirror().isPrimitive();
+        if (leftIsPrimitive != rightIsPrimitive) {
+            return true;
+        } else {
+            assert !leftIsPrimitive || !rightIsPrimitive : "We know at least one of the operands is null";
+            // So both are reference types
+            // With these ops, in this case no unboxing takes place
+            return operator != BinaryOp.NE && operator != BinaryOp.EQ;
         }
     }
 
-    private boolean primaryExpressionsAreEqual(ASTPrimaryExpression nullCompareVariable,
-            ASTPrimaryExpression expressionUsage) {
-        List<String> nullCompareNames = new ArrayList<>();
-        findExpressionNames(nullCompareVariable, nullCompareNames);
+    enum NpeReason {
+        DEREFERENCE("Dereferencing the qualifier of this expression will throw a NullPointerException"),
+        UNBOXING("Unboxing this operand will throw a NullPointerException");
 
-        List<String> expressionUsageNames = new ArrayList<>();
-        findExpressionNames(expressionUsage, expressionUsageNames);
+        private final String formatMessage;
 
-        for (int i = 0; i < nullCompareNames.size(); i++) {
-            if (expressionUsageNames.size() == i) {
-                // The used expression is shorter than the null
-                // compare expression (and we don't want to crash
-                // below)
-                return false;
-            }
-
-            String nullCompareExpressionName = nullCompareNames.get(i);
-            String expressionUsageName = expressionUsageNames.get(i);
-
-            // Variablenames should match or the expressionUsage should have the
-            // variable with a method call (ie. var.equals())
-            if (!nullCompareExpressionName.equals(expressionUsageName)
-                    && !expressionUsageName.startsWith(nullCompareExpressionName + ".")) {
-                // Some other expression is being used after the
-                // null compare
-                return false;
-            }
+        NpeReason(String formatMessage) {
+            this.formatMessage = formatMessage;
         }
-
-        return true;
-    }
-
-    /**
-     * Find the names of variables, methods and array arguments in a
-     * PrimaryExpression.
-     */
-    private void findExpressionNames(Node nullCompareVariable, List<String> results) {
-        for (int i = 0; i < nullCompareVariable.getNumChildren(); i++) {
-            Node child = nullCompareVariable.getChild(i);
-
-            if (child instanceof ASTName) {
-                // Variable names and some method calls
-                results.add(((ASTName) child).getImage());
-            } else if (child instanceof ASTLiteral) { // Array arguments
-                String literalImage = ((ASTLiteral) child).getImage();
-                // Skip other null checks
-                if (literalImage != null) {
-                    results.add(literalImage);
-                }
-            } else if (child instanceof ASTPrimarySuffix) { // More method calls
-                String name = ((ASTPrimarySuffix) child).getImage();
-                if (StringUtils.isNotBlank(name)) {
-                    results.add(name);
-                }
-            } else if (child instanceof ASTClassOrInterfaceType) {
-                // A class can be an argument too
-                String name = ((ASTClassOrInterfaceType) child).getImage();
-                results.add(name);
-            }
-
-            if (child.getNumChildren() > 0) {
-                findExpressionNames(child, results);
-            }
-        }
-    }
-
-    private ASTPrimaryExpression findNullCompareExpression(ASTEqualityExpression equalityExpression) {
-        List<ASTPrimaryExpression> primaryExpressions = equalityExpression
-                .findDescendantsOfType(ASTPrimaryExpression.class);
-        for (ASTPrimaryExpression primaryExpression : primaryExpressions) {
-            List<ASTPrimaryPrefix> primaryPrefixes = primaryExpression.findDescendantsOfType(ASTPrimaryPrefix.class);
-            for (ASTPrimaryPrefix primaryPrefix : primaryPrefixes) {
-                if (primaryPrefix.hasDescendantOfType(ASTName.class)) {
-                    // We found the variable that is compared to null
-                    return primaryExpression;
-                }
-            }
-        }
-        return null; // Nothing found
     }
 
 }
