@@ -5,7 +5,7 @@ set -e
 export LANG=C.UTF-8
 
 # verify the current directory
-if [ ! -f pom.xml -o ! -d ../pmd.github.io ]; then
+if [ ! -f pom.xml ] || [ ! -d ../pmd.github.io ]; then
     echo "You seem to be in the wrong working directory or you don't have pmd.github.io checked out..."
     echo
     echo "Expected:"
@@ -26,20 +26,20 @@ echo "-------------------------------------------"
 
 CURRENT_VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
 RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
-MAJOR=$(echo $RELEASE_VERSION | cut -d . -f 1)
-MINOR=$(echo $RELEASE_VERSION | cut -d . -f 2)
-PATCH=$(echo $RELEASE_VERSION | cut -d . -f 3)
+MAJOR=$(echo "$RELEASE_VERSION" | cut -d . -f 1)
+MINOR=$(echo "$RELEASE_VERSION" | cut -d . -f 2)
+PATCH=$(echo "$RELEASE_VERSION" | cut -d . -f 3)
 if [ "$PATCH" == "0" ]; then
-    NEXT_MINOR=$(expr ${MINOR} + 1)
+    NEXT_MINOR=$(("${MINOR}" + 1))
     NEXT_PATCH="0"
-    LAST_MINOR=$(expr ${MINOR} - 1)
+    LAST_MINOR=$(("${MINOR}" - 1))
     LAST_PATCH="0"
 else
     # this is a bugfixing release
     NEXT_MINOR="${MINOR}"
-    NEXT_PATCH=$(expr ${PATCH} + 1)
+    NEXT_PATCH=$(("${PATCH}" + 1))
     LAST_MINOR="${MINOR}"
-    LAST_PATCH=$(expr ${PATCH} - 1)
+    LAST_PATCH=$(("${PATCH}" - 1))
 fi
 LAST_VERSION="$MAJOR.$LAST_MINOR.$LAST_PATCH"
 DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH"
@@ -65,7 +65,7 @@ echo
 echo "Is this correct?"
 echo
 echo "Press enter to continue... (or CTRL+C to cancel)"
-read
+read -r
 
 export LAST_VERSION
 export RELEASE_VERSION
@@ -95,16 +95,16 @@ echo "*   Update property \`pmd-designer.version\` in **pom.xml** to reference t
 echo "    See <https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&core=gav> for the available releases."
 echo
 echo "Press enter to continue..."
-read
+read -r
 
 
 # calculating stats for release notes
 
 STATS=$(
 echo "### Stats"
-echo "* $(git log pmd_releases/${LAST_VERSION}..HEAD --oneline --no-merges |wc -l) commits"
+echo "* $(git log pmd_releases/"${LAST_VERSION}"..HEAD --oneline --no-merges |wc -l) commits"
 echo "* $(curl -s https://api.github.com/repos/pmd/pmd/milestones|jq ".[] | select(.title == \"$RELEASE_VERSION\") | .closed_issues") closed tickets & PRs"
-echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/${LAST_VERSION}) ) / 86400))"
+echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/"${LAST_VERSION}") ) / 86400))"
 )
 
 TEMP_RELEASE_NOTES=$(cat docs/pages/release_notes.md)
@@ -118,17 +118,18 @@ echo
 echo "Please verify docs/pages/release_notes.md"
 echo
 echo "Press enter to continue..."
-read
+read -r
 
 # install bundles needed for rendering release notes
 bundle config set --local path vendor/bundle
 bundle config set --local with release_notes_preprocessing
 bundle install
 
-export RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
+RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
+export RELEASE_NOTES_POST
 echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
 NEW_RELEASE_NOTES=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
-cat > ../pmd.github.io/${RELEASE_NOTES_POST} <<EOF
+cat > "../pmd.github.io/${RELEASE_NOTES_POST}" <<EOF
 ---
 layout: post
 title: PMD ${RELEASE_VERSION} released
@@ -138,26 +139,26 @@ EOF
 
 echo "Committing current changes (pmd)"
 
-if [[ -e ${RELEASE_RULESET} ]]
+if [[ -e "${RELEASE_RULESET}" ]]
 then
-    git add ${RELEASE_RULESET}
+    git add "${RELEASE_RULESET}"
 fi
 
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
     cd ../pmd.github.io
-    git add ${RELEASE_NOTES_POST}
-    changes=$(git status --porcelain 2>/dev/null| egrep "^[AMDRC]" | wc -l)
-    if [ $changes -gt 0 ]; then
+    git add "${RELEASE_NOTES_POST}"
+    changes=$(git status --porcelain 2>/dev/null| grep -c -E "^[AMDRC]")
+    if [ "$changes" -gt 0 ]; then
         echo "Committing current changes (pmd.github.io)"
         git commit -a -m "Prepare pmd release ${RELEASE_VERSION}" && git push
     fi
 )
 
 ./mvnw -B release:clean release:prepare \
-    -Dtag=pmd_releases/${RELEASE_VERSION} \
-    -DreleaseVersion=${RELEASE_VERSION} \
-    -DdevelopmentVersion=${DEVELOPMENT_VERSION} \
+    -Dtag="pmd_releases/${RELEASE_VERSION}" \
+    -DreleaseVersion="${RELEASE_VERSION}" \
+    -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
     -Pgenerate-rule-docs
 
 
@@ -166,7 +167,7 @@ echo "Tag has been pushed.... now check github actions: <https://github.com/pmd/
 echo
 echo
 echo "Press enter to continue..."
-read
+read -r
 
 echo
 echo "Check the milestone on github:"
@@ -182,14 +183,14 @@ echo "    also update the date, e.g. ??-month-year."
 echo
 echo
 echo "Press enter to continue..."
-read
+read -r
 
 # update release_notes_old
 OLD_RELEASE_NOTES=$(tail -n +8 docs/pages/release_notes_old.md)
-echo "$(head -n 7 docs/pages/release_notes_old.md)" > docs/pages/release_notes_old.md
-echo "$NEW_RELEASE_NOTES" >> docs/pages/release_notes_old.md
-echo >> docs/pages/release_notes_old.md
-echo "$OLD_RELEASE_NOTES" >> docs/pages/release_notes_old.md
+OLD_RELEASE_NOTES_HEADER=$(head -n 7 docs/pages/release_notes_old.md)
+echo "${OLD_RELEASE_NOTES_HEADER}
+${NEW_RELEASE_NOTES}
+${OLD_RELEASE_NOTES}" > docs/pages/release_notes_old.md
 
 # reset release notes template
 cat > docs/pages/release_notes.md <<EOF
@@ -220,7 +221,7 @@ This is a {{ site.pmd.release_type }} release.
 EOF
 
 git commit -a -m "Prepare next development version"
-git push origin ${CURRENT_BRANCH}
+git push origin "${CURRENT_BRANCH}"
 ./mvnw -B release:clean
 echo
 echo
