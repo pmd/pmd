@@ -5,6 +5,16 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
+        <description>NPE on nested record decl #3224</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                public record NestedRecord(int x, int y) { }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
