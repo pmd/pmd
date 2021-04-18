@@ -73,6 +73,7 @@ function build() {
     pmd_ci_log_group_start "Publishing Release"
         pmd_ci_gh_releases_publishRelease "$GH_RELEASE"
         pmd_ci_sourceforge_selectDefault "${PMD_CI_MAVEN_PROJECT_VERSION}"
+        pmd_ci_sourceforge_publishBlogPost "$SF_BLOG_URL"
     pmd_ci_log_group_end
     fi
 
@@ -206,8 +207,17 @@ function pmd_ci_build_and_upload_doc() {
         rendered_release_notes=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
         local release_name
         release_name="PMD ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
-        pmd_ci_gh_releases_updateRelease "$GH_RELEASE" "$release_name" "$rendered_release_notes"
+        pmd_ci_gh_releases_updateRelease "$GH_RELEASE" "$release_name" "${rendered_release_notes}"
         pmd_ci_sourceforge_uploadReleaseNotes "${PMD_CI_MAVEN_PROJECT_VERSION}" "${rendered_release_notes}"
+
+        local rendered_release_notes_with_links
+        rendered_release_notes_with_links="
+*   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${PMD_CI_MAVEN_PROJECT_VERSION}
+*   Documentation: https://pmd.github.io/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}/
+
+${rendered_release_notes}"
+        pmd_ci_sourceforge_createDraftBlogPost "${release_name} released" "${rendered_release_notes_with_links}" "pmd,release"
+        SF_BLOG_URL="${RESULT}"
 
         # updates https://pmd.github.io/latest/ and https://pmd.github.io/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}
         publish_release_documentation_github

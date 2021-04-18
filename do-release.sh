@@ -226,20 +226,16 @@ echo
 echo
 echo
 echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
+echo "and the news entry at <https://sourceforge.net/p/pmd/news/>"
 echo
 echo "*   Wait until the new version is synced to maven central and appears as latest version in"
 echo "    <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/maven-metadata.xml>."
-echo "*   Submit news to SF on <https://sourceforge.net/p/pmd/news/> page. Use same text as in the email below."
 echo "*   Send out an announcement mail to the mailing list:"
 echo
 echo "To: PMD Developers List <pmd-devel@lists.sourceforge.net>"
-echo "Subject: [ANNOUNCE] PMD ${RELEASE_VERSION} Released"
+echo "Subject: [ANNOUNCE] PMD ${RELEASE_VERSION} released"
 echo
-echo "*   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${RELEASE_VERSION}"
-echo "*   Documentation: https://pmd.github.io/pmd-${RELEASE_VERSION}/"
-echo
-echo "$NEW_RELEASE_NOTES"
-echo
+echo "    You can copy the same text from <https://sourceforge.net/p/pmd/news/>."
 echo
 echo
 tweet="PMD ${RELEASE_VERSION} released: https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION} #PMD"
