@@ -7,36 +7,15 @@ on:
       - master
     tags:
       - '**'
-  pull_request:
-  schedule:
-    # build it monthly: At 04:00 on day-of-month 1.
-    - cron:  '0 4 1 * *'
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     continue-on-error: false
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 2
-    - uses: actions/cache@v2
-      with:
-        path: |
-          ~/.m2/repository
-          ~/.cache
-          vendor/bundle
-        key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-
-    - name: Set up Ruby 2.7
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 2.7
     - name: Setup Environment
       shell: bash
       run: |
