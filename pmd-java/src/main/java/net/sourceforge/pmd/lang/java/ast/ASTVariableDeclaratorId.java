@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -72,7 +73,8 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     }
 
     public List<NameOccurrence> getUsages() {
-        return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
+        List<NameOccurrence> usages = getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
+        return usages == null ? Collections.<NameOccurrence>emptyList() : usages;
     }
 
     @Deprecated
