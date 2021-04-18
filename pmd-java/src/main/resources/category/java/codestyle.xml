@@ -1498,7 +1498,7 @@ public class Foo {
           language="java"
           minimumLanguageVersion="1.5"
           since="6.24.0"
-          message="Unnecessary cast"
+          message="Unnecessary cast ({0})"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryCastRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarycast">
         <description><![CDATA[

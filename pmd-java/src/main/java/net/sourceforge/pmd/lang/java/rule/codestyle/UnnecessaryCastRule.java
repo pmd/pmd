@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ExprContext;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
@@ -75,7 +76,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         boolean isInTernary = castExpr.getParent() instanceof ASTConditionalExpression;
 
         if (castIsUnnecessary(context, coercionType, operandType, isInTernary)) {
-            addViolation(data, castExpr);
+            addViolation(data, castExpr, PrettyPrintingUtil.prettyPrintTypeWithTargs(castExpr.getCastType()));
         }
         return null;
     }
