@@ -75,6 +75,10 @@ public abstract class ExprContext {
         return new RegularCtx(superclassType, CtxKind.Other);
     }
 
+    static ExprContext newStandaloneTernaryCtx(JTypeMirror ternaryType) {
+        return new RegularCtx(ternaryType, CtxKind.Other);
+    }
+
     static final class InvocCtx extends ExprContext {
 
         final int arg;
