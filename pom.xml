@@ -527,9 +527,6 @@
                 <configuration>
                     <serverId>ossrh</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <!-- if autoReleaseAfterClose is true, then the artifacts will be
-                         automatically promoted to maven central -->
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
         </plugins>
