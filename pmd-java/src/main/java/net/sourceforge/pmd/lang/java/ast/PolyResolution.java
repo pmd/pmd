@@ -80,7 +80,7 @@ final class PolyResolution {
             // Note that this creates expr mirrors for all subexpressions,
             // and may trigger inference on them (which does not go through PolyResolution).
             // Because this process may fail if the conditional is not standalone,
-            // of this the ctors for expr mirrors must have only trivial side-effects.
+            // the ctors for expr mirrors must have only trivial side-effects.
             // See comment in MethodRefMirrorImpl
             JTypeMirror target = ctx.getPolyTargetType(false);
             if (target != null) {
