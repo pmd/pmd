@@ -147,3 +147,7 @@ critical lines... (like publish github releases, uploading files to sourceforge 
 "dry-run" mode could be added.
 
 Make sure to cleanup after the test, e.g. discard the draft github release.
+
+## Workflow git-repo-sync
+
+Synchronizes the github git repository pmd/pmd on every push to sourceforge.

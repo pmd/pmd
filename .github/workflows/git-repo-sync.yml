@@ -1,0 +1,49 @@
+name: git-repo-sync
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - '**'
+  pull_request:
+  schedule:
+    # build it monthly: At 04:00 on day-of-month 1.
+    - cron:  '0 4 1 * *'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: false
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.m2/repository
+          ~/.cache
+          vendor/bundle
+        key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-
+    - name: Set up Ruby 2.7
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 2.7
+    - name: Setup Environment
+      shell: bash
+      run: |
+        echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
+        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/master/scripts" >> $GITHUB_ENV
+    - name: Sync
+      run: .ci/git-repo-sync.sh
+      shell: bash
+      env:
+        PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
