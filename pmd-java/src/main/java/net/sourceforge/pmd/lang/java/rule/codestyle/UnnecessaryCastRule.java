@@ -4,13 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ExprContext;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
@@ -34,8 +37,8 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         // Object o = (Integer) 1;
 
         @Nullable ExprContext context = castExpr.getConversionContextType();    // Object
-        JTypeMirror operandType = operand.getTypeMirror();                  // int
         JTypeMirror coercionType = castExpr.getCastType().getTypeMirror();      // Integer
+        JTypeMirror operandType = operand.getTypeMirror();                      // int
 
         if (TypeOps.isUnresolvedOrNull(operandType)
             || TypeOps.isUnresolvedOrNull(coercionType)
@@ -70,12 +73,25 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             return null;
         }
 
-        if (castIsUnnecessary(context, operandType, coercionType)) {
-            addViolation(data, castExpr);
+        boolean isInTernary = castExpr.getParent() instanceof ASTConditionalExpression;
+
+        if (castIsUnnecessary(context, coercionType, operandType, isInTernary)) {
+            addViolation(data, castExpr, PrettyPrintingUtil.prettyPrintTypeWithTargs(castExpr.getCastType()));
         }
         return null;
     }
 
+    private boolean castIsUnnecessary(@NonNull ExprContext context, JTypeMirror coercionType, JTypeMirror operandType, boolean isInTernary) {
+        if (isInTernary) {
+            return castIsUnnecessaryInTernary(operandType, coercionType);
+        } else {
+            return castIsUnnecessary(context, operandType, coercionType);
+        }
+    }
+
+    /**
+     *
+     */
     private static boolean castIsUnnecessary(ExprContext context,
                                              JTypeMirror operandType,
                                              JTypeMirror coercionType) {
@@ -84,11 +100,34 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             return false;
         }
         JTypeMirror contextType = context.getTargetType();
-        // note: those depend on java5+ autoboxing rules
-        boolean isNotNarrowing = TypeConversion.isConvertibleThroughBoxing(operandType, coercionType);
+
+        {
+            boolean isNarrowing = !TypeConversion.isConvertibleUsingBoxing(operandType, coercionType);
+            if (isNarrowing) {
+                return false;
+            }
+        }
+
         // tests that actually deleting the cast would not give uncompilable code
-        boolean canOperandSuitContext = TypeConversion.isConvertibleThroughBoxing(operandType, contextType);
-        return isNotNarrowing && canOperandSuitContext;
+        boolean canOperandSuitContext;
+        if (context.isCastContext()) {
+            // then boxing/unboxing are restricted
+            canOperandSuitContext = TypeConversion.isConvertibleInCastContext(operandType, contextType);
+        } else {
+            canOperandSuitContext = TypeConversion.isConvertibleUsingBoxing(operandType, contextType);
+        }
+        boolean isBoxingFollowingCast = contextType.isPrimitive() != coercionType.isPrimitive();
+        boolean boxingBehaviorIsSame = !isBoxingFollowingCast || operandType.unbox().isSubtypeOf(contextType.unbox());
+
+        return canOperandSuitContext && boxingBehaviorIsSame;
+    }
+
+    /**
+     * A cast in a ternary branch may be necessary in more cases
+     * as both branches influence the target type.
+     */
+    private static boolean castIsUnnecessaryInTernary(JTypeMirror operandType, JTypeMirror coercionType) {
+        return operandType.equals(coercionType);
     }
 
 }

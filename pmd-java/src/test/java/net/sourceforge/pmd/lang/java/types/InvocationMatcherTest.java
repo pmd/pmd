@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import static net.sourceforge.pmd.lang.java.types.TypeTestUtil.InvocationMatcher.parse;
+import static net.sourceforge.pmd.lang.java.types.InvocationMatcher.parse;
 import static org.hamcrest.Matchers.equalTo;
 
 import org.hamcrest.MatcherAssert;

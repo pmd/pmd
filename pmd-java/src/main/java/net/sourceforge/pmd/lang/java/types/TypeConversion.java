@@ -93,7 +93,15 @@ public final class TypeConversion {
      * Is t convertible to s by boxing/unboxing/widening conversion?
      * Only t can be undergo conversion.
      */
-    public static boolean isConvertibleThroughBoxing(JTypeMirror t, JTypeMirror s) {
+    public static boolean isConvertibleUsingBoxing(JTypeMirror t, JTypeMirror s) {
+        return isConvertibleCommon(t, s, false);
+    }
+
+    public static boolean isConvertibleInCastContext(JTypeMirror t, JTypeMirror s) {
+        return isConvertibleCommon(t, s, true);
+    }
+
+    private static boolean isConvertibleCommon(JTypeMirror t, JTypeMirror s, boolean isCastContext) {
         TypeSystem ts = t.getTypeSystem();
         if (t == ts.UNKNOWN || t == ts.ERROR) {
             return true;
@@ -107,8 +115,13 @@ public final class TypeConversion {
             return t.isConvertibleTo(s).bySubtyping();
         }
 
-        return t.isPrimitive() ? t.box().isConvertibleTo(s).somehow()
-                               : t.unbox().isConvertibleTo(s).somehow();
+        if (isCastContext) {
+            return t.isPrimitive() ? t.box().isConvertibleTo(s).bySubtyping()
+                                   : t.isConvertibleTo(s.box()).bySubtyping();
+        } else {
+            return t.isPrimitive() ? t.box().isConvertibleTo(s).somehow()
+                                   : t.unbox().isConvertibleTo(s).somehow();
+        }
     }
 
 

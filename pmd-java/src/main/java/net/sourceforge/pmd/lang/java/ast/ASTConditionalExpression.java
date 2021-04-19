@@ -16,6 +16,8 @@ package net.sourceforge.pmd.lang.java.ast;
 public final class ASTConditionalExpression extends AbstractJavaExpr {
 
 
+    private boolean isStandalone;
+
     ASTConditionalExpression(int id) {
         super(id);
     }
@@ -51,5 +53,13 @@ public final class ASTConditionalExpression extends AbstractJavaExpr {
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
+    }
+
+    boolean isStandalone() {
+        return this.isStandalone;
+    }
+
+    void setStandaloneTernary() {
+        this.isStandalone = true;
     }
 }
