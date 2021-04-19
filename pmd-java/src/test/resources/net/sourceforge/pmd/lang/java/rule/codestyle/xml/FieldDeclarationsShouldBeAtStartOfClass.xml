@@ -84,7 +84,7 @@ public class Foo {
 
     <test-code>
         <description>#1126 Do not ignore enums</description>
-        <!-- <rule-property name="ignoreEnumDeclarations">false</rule-property>-->
+        <rule-property name="ignoreEnumDeclarations">false</rule-property>
         <expected-problems>3</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -207,8 +207,8 @@ public class TestFieldDeclarations {
 
     <test-code>
         <description>#345 [java] FieldDeclarationsShouldBeAtStartOfClass: Add ability to ignore interfaces - ignore interfaces</description>
-        <!-- <rule-property name="ignoreInterfaceDeclarations">true</rule-property>-->
-        <expected-problems>1</expected-problems>
+        <rule-property name="ignoreInterfaceDeclarations">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class TestFieldDeclarations {
     public interface StartCaptureListener {

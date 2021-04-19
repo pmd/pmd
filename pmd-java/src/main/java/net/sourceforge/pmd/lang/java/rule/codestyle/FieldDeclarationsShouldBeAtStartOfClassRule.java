@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
@@ -29,9 +30,21 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             .defaultValue(true)
             .desc("Ignore field declarations, that are initialized with an anonymous class creation expression").build();
 
+    private static final PropertyDescriptor<Boolean> IGNORE_ENUM_DECLARATIONS =
+        booleanProperty("ignoreEnumDeclarations")
+            .defaultValue(true)
+            .desc("Ignore enum declarations that precede fields").build();
+
+    private static final PropertyDescriptor<Boolean> IGNORE_INTERFACE_DECLARATIONS =
+        booleanProperty("ignoreInterfaceDeclarations")
+            .defaultValue(false)
+            .desc("Ignore interface declarations that precede fields").build();
+
     public FieldDeclarationsShouldBeAtStartOfClassRule() {
         super(ASTAnyTypeDeclaration.class);
         definePropertyDescriptor(IGNORE_ANONYMOUS_CLASS_DECLARATIONS);
+        definePropertyDescriptor(IGNORE_INTERFACE_DECLARATIONS);
+        definePropertyDescriptor(IGNORE_ENUM_DECLARATIONS);
     }
 
     @Override
@@ -59,15 +72,17 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
     private boolean isAllowedAtStartOfClass(ASTBodyDeclaration declaration) {
         return declaration instanceof ASTFieldDeclaration
             || declaration instanceof ASTInitializer
-            || declaration instanceof ASTEnumConstant;
+            || declaration instanceof ASTEnumConstant
+            || declaration instanceof ASTEnumDeclaration && getProperty(IGNORE_ENUM_DECLARATIONS)
+            || declaration instanceof ASTAnyTypeDeclaration
+            && ((ASTAnyTypeDeclaration) declaration).isRegularInterface() && getProperty(IGNORE_INTERFACE_DECLARATIONS);
     }
 
     private boolean isInitializerOk(ASTFieldDeclaration fieldDeclaration) {
-        if (!getProperty(IGNORE_ANONYMOUS_CLASS_DECLARATIONS)
-            || fieldDeclaration.getVarIds().count() != 1) {
-            return false;
+        if (getProperty(IGNORE_ANONYMOUS_CLASS_DECLARATIONS) && fieldDeclaration.getVarIds().count() == 1) {
+            ASTExpression initializer = fieldDeclaration.getVarIds().firstOrThrow().getInitializer();
+            return JavaRuleUtil.isAnonymousClassCreation(initializer);
         }
-        ASTExpression initializer = fieldDeclaration.getVarIds().firstOrThrow().getInitializer();
-        return JavaRuleUtil.isAnonymousClassCreation(initializer);
+        return false;
     }
 }
