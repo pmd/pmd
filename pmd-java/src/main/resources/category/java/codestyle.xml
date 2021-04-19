@@ -599,7 +599,8 @@ or MethodDeclaration[@PackagePrivate= true()]
         <description>
 Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
 
-This rule is deprecated since PMD 6.34.0. Use the rule UnnecessaryImport from category codestyle instead.
+This rule is deprecated since PMD 6.34.0. Use the rule {% rule "java/codestyle/UnnecessaryImport" %}
+from category codestyle instead.
         </description>
         <priority>4</priority>
         <example>
@@ -627,7 +628,8 @@ public class Foo {}
         <description>
 Duplicate or overlapping import statements should be avoided.
 
-This rule is deprecated since PMD 6.34.0. Use the rule UnnecessaryImport from category codestyle instead.
+This rule is deprecated since PMD 6.34.0. Use the rule {% rule "java/codestyle/UnnecessaryImport" %}
+from category codestyle instead.
         </description>
         <priority>4</priority>
         <example>

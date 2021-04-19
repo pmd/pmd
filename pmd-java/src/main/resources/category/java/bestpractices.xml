@@ -1522,7 +1522,8 @@ Reports import statements that are not used within the file. This also reports
 duplicate imports, and imports from the same package. The simplest fix is just
 to delete those imports.
 
-This rule is deprecated since PMD 6.34.0. Use the rule UnnecessaryImport from category codestyle instead.
+This rule is deprecated since PMD 6.34.0. Use the rule {% rule "java/codestyle/UnnecessaryImport" %}
+from category codestyle instead.
         </description>
         <priority>4</priority>
         <example>

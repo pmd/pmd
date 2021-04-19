@@ -2106,7 +2106,8 @@ public class Foo {
         <description>
 There is no need to import a type that lives in the same package.
 
-This rule is deprecated since PMD 6.34.0. Use the rule UnnecessaryImport from category codestyle instead.
+This rule is deprecated since PMD 6.34.0. Use the rule {% rule "java/codestyle/UnnecessaryImport" %}
+from category codestyle instead.
         </description>
         <priority>3</priority>
         <example>
