@@ -30,14 +30,14 @@ This is a {{ site.pmd.release_type }} release.
 #### Deprecated rules
 
 *   java-bestpractices
-    *   {% rule java/bestpractices/UnusedImports %}: use the rule {% rule java/bestpractices/UnusedImports %} instead
+    *   {% rule java/bestpractices/UnusedImports %}: use the rule {% rule "java/codestyle/UnnecessaryImport" %} instead
 
 *   java-codestyle
-    *   {% rule java/codestyle/DuplicateImports %}: use the rule {% rule java/bestpractices/UnusedImports %} instead
-    *   {% rule java/codestyle/DontImportJavaLang %}: use the rule {% rule java/bestpractices/UnusedImports %} instead
+    *   {% rule java/codestyle/DuplicateImports %}: use the rule {% rule "java/codestyle/UnnecessaryImport" %} instead
+    *   {% rule java/codestyle/DontImportJavaLang %}: use the rule {% rule "java/codestyle/UnnecessaryImport" %} instead
 
 *   java-errorprone
-    *   {% rule java/errorprone/ImportFromSamePackage %}: use the rule {% rule java/bestpractices/UnusedImports %} instead
+    *   {% rule java/errorprone/ImportFromSamePackage %}: use the rule {% rule "java/codestyle/UnnecessaryImport" %} instead
 
 
 ### Fixed Issues
