@@ -9,5 +9,6 @@ This ruleset contains links to rules that are new in PMD v6.34.0
   </description>
 
     <rule ref="category/java/bestpractices.xml/UseStandardCharsets" />
+    <rule ref="category/java/codestyle.xml/UnnecessaryImport" />
 
 </ruleset>
