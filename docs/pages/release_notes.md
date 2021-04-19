@@ -21,7 +21,7 @@ This is a {{ site.pmd.release_type }} release.
 
     This rule is also part of the Quickstart Ruleset (`rulesets/java/quickstart.xml`) for Java.
 
-*   The new Java rule {% rule "java/codestyle/UnnecessaryImport" %} merges the rules
+*   The new Java rule {% rule "java/codestyle/UnnecessaryImport" %} replaces the rules
     {% rule "java/bestpractices/UnusedImports" %}, {% rule "java/codestyle/DuplicateImports" %},
     {% rule "java/errorprone/ImportFromSamePackage" %}, and {% rule "java/codestyle/DontImportJavaLang" %}.
 
@@ -46,6 +46,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3198](https://github.com/pmd/pmd/pull/3198): \[apex] OperationWithLimitsInLoopRule: Support more limit consuming static method invocations
 *   java-bestpractices
     *   [#3190](https://github.com/pmd/pmd/issues/3190): \[java] Use StandardCharsets instead of Charset.forName
+*   java-codestyle
+    *   [#3128](https://github.com/pmd/pmd/issues/3128): \[java] New rule UnnecessaryImport, deprecate DuplicateImports, ImportFromSamePackage, UnusedImports
 *   java-errorprone
     *   [#2757](https://github.com/pmd/pmd/issues/2757): \[java] CloseResource: support Lombok's @Cleanup annotation
 
