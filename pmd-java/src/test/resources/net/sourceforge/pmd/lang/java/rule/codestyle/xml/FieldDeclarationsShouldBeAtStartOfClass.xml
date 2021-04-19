@@ -53,7 +53,8 @@ public class HelloWorldBean {
         <description>Initial report where rule was introduced, [ 2487971 ] False positive with field-level annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class MyTest extends AbstractJUnit4SpringContextTests {
+import org.springframework.beans.factory.annotation.Autowired;
+public class MyTest {
     @Autowired
     protected String _first;
     @Autowired
@@ -66,8 +67,9 @@ public class MyTest extends AbstractJUnit4SpringContextTests {
         <description>#1126 False positive with FieldDeclarationsShouldBeAtStartOfClass for static enums</description>
         <expected-problems>3</expected-problems>
         <code><![CDATA[
+import java.util.logging.Logger;
 public class Foo {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+    private static final Logger LOGGER = Logger.getLogger(Foo.class);
 
     public static enum MyType {
         ABC, DEF, GHI, JHK
@@ -87,8 +89,9 @@ public class Foo {
         <rule-property name="ignoreEnumDeclarations">false</rule-property>
         <expected-problems>3</expected-problems>
         <code><![CDATA[
+import java.util.logging.Logger;
 public class Foo {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+    private static final Logger LOGGER = Logger.getLogger(Foo.class);
 
     public static enum MyType {
         ABC, DEF, GHI, JHK
@@ -113,15 +116,16 @@ public class MyClass {
         this.name = "whatever";
     }
     public void onCreate() {
-        someView.setListener(onSomeViewClick);
+        // someView.setListener(onSomeViewClick);
     }
     private final OnClickListener onSomeViewClick = new OnClickListener() {
         @Override
-        public void onClick(View v) {
+        public void onClick(Object view) {
             // something
         }
     };
 }
+interface OnClickListener { void onClick(Object view); }
         ]]></code>
     </test-code>
 
@@ -136,15 +140,16 @@ public class MyClass {
         this.name = "whatever";
     }
     public void onCreate() {
-        someView.setListener(onSomeViewClick);
+        // someView.setListener(onSomeViewClick);
     }
     private final OnClickListener onSomeViewClick = new OnClickListener() {
         @Override
-        public void onClick(View v) {
+        public void onClick(Object v) {
             // something
         }
     };
 }
+interface OnClickListener { void onClick(Object view); }
         ]]></code>
     </test-code>
 
@@ -152,6 +157,8 @@ public class MyClass {
         <description>#1354 Complex FieldDeclarationsShouldBeAtStartOfClass false positive with Spring annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Bean;
 public class MyClass {
     private static final String MY_STRING = "STRING";
 
@@ -162,6 +169,7 @@ public class MyClass {
     public void myPublicBean() {}
 
     private static void myPrivateStatic() {}
+    static class MyPrivate {}
 }
         ]]></code>
     </test-code>
@@ -170,6 +178,10 @@ public class MyClass {
         <description>#1364 FieldDeclarationsShouldBeAtStartOfClass false positive using multiple annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import javax.persistence.ManyToOne;
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
 public class MyEntity {
 
     private static final String MY_STRING = "STRING";
@@ -178,11 +190,9 @@ public class MyEntity {
     @Column
     private Long id;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn
-    @Valid
-    private RelationEntity relation;
+    @JoinColumn("")
+    private MyEntity relation;
 
     public MyEntity() {
     }
