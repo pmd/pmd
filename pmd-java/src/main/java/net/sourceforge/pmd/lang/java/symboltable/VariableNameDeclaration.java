@@ -92,7 +92,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
                 && getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0) instanceof ASTReferenceType;
     }
 
-    private boolean isRecordComponent() {
+    public boolean isRecordComponent() {
         return node.getParent() instanceof ASTRecordComponent;
     }
 
