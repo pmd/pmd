@@ -3196,12 +3196,18 @@ Hence, by default, this rule only considers private methods. To include non-priv
 
 <h2 id="unusedimports">UnusedImports</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 1.0</p>
 
 <p><strong>Priority:</strong> Medium Low (4)</p>
 
-<p>Avoid unused import statements to prevent unwanted dependencies.
-This rule will also find unused on demand imports, i.e. import com.foo.*.</p>
+<p>Reports import statements that are not used within the file. This also reports
+duplicate imports, and imports from the same package. The simplest fix is just
+to delete those imports.</p>
+
+<p>This rule is deprecated since PMD 6.34.0. Use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a>
+from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedImportsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedImportsRule</a></p>
 
@@ -3783,7 +3789,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 16, 2021 <br />
+ Site last generated: Apr 19, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

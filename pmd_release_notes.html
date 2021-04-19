@@ -1432,6 +1432,34 @@ where <code class="language-plaintext highlighter-rouge">StandardCharsets</code>
 
     <p>This rule is also part of the Quickstart Ruleset (<code class="language-plaintext highlighter-rouge">rulesets/java/quickstart.xml</code>) for Java.</p>
   </li>
+  <li>
+    <p>The new Java rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> replaces the rules
+<a href="pmd_rules_java_bestpractices.html#unusedimports"><code class="language-plaintext highlighter-rouge">UnusedImports</code></a>, <a href="pmd_rules_java_codestyle.html#duplicateimports"><code class="language-plaintext highlighter-rouge">DuplicateImports</code></a>,
+<a href="pmd_rules_java_errorprone.html#importfromsamepackage"><code class="language-plaintext highlighter-rouge">ImportFromSamePackage</code></a>, and <a href="pmd_rules_java_codestyle.html#dontimportjavalang"><code class="language-plaintext highlighter-rouge">DontImportJavaLang</code></a>.</p>
+
+    <p>This rule is also part of the Quickstart Ruleset (<code class="language-plaintext highlighter-rouge">rulesets/java/quickstart.xml</code>) for Java.</p>
+  </li>
+</ul>
+
+<h4 id="deprecated-rules">Deprecated rules</h4>
+
+<ul>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="pmd_rules_java_bestpractices.html#unusedimports"><code class="language-plaintext highlighter-rouge">UnusedImports</code></a>: use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> instead</li>
+    </ul>
+  </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="pmd_rules_java_codestyle.html#duplicateimports"><code class="language-plaintext highlighter-rouge">DuplicateImports</code></a>: use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> instead</li>
+      <li><a href="pmd_rules_java_codestyle.html#dontimportjavalang"><code class="language-plaintext highlighter-rouge">DontImportJavaLang</code></a>: use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> instead</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="pmd_rules_java_errorprone.html#importfromsamepackage"><code class="language-plaintext highlighter-rouge">ImportFromSamePackage</code></a>: use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> instead</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1445,11 +1473,18 @@ where <code class="language-plaintext highlighter-rouge">StandardCharsets</code>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3190">#3190</a>: [java] Use StandardCharsets instead of Charset.forName</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3224">#3224</a>: [java] UnusedAssignment crashes with nested records</li>
+    </ul>
+  </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3128">#3128</a>: [java] New rule UnnecessaryImport, deprecate DuplicateImports, ImportFromSamePackage, UnusedImports</li>
     </ul>
   </li>
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2757">#2757</a>: [java] CloseResource: support Lombok’s @Cleanup annotation</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3169">#3169</a>: [java] CheckSkipResult: NPE when using pattern bindings</li>
     </ul>
   </li>
 </ul>
@@ -1479,7 +1514,7 @@ where <code class="language-plaintext highlighter-rouge">StandardCharsets</code>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 16, 2021 <br />
+ Site last generated: Apr 19, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

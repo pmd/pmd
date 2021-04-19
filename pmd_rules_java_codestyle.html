@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, UseUnderscoresInNumericLiterals, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UseDiamondOperator, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, VariableNamingConventions, WhileLoopsMustUseBraces">
+<meta name="keywords" content=" Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, UseUnderscoresInNumericLiterals, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UseDiamondOperator, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, VariableNamingConventions, WhileLoopsMustUseBraces">
 <title>Code Style | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -2238,11 +2238,16 @@ The rule allows methods and fields annotated with Guava’s @VisibleForTesting a
 
 <h2 id="dontimportjavalang">DontImportJavaLang</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 0.5</p>
 
 <p><strong>Priority:</strong> Medium Low (4)</p>
 
 <p>Avoid importing anything from the package ‘java.lang’.  These classes are automatically imported (JLS 7.5.3).</p>
+
+<p>This rule is deprecated since PMD 6.34.0. Use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a>
+from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/DontImportJavaLangRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.DontImportJavaLangRule</a></p>
 
@@ -2265,11 +2270,16 @@ The rule allows methods and fields annotated with Guava’s @VisibleForTesting a
 
 <h2 id="duplicateimports">DuplicateImports</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 0.5</p>
 
 <p><strong>Priority:</strong> Medium Low (4)</p>
 
 <p>Duplicate or overlapping import statements should be avoided.</p>
+
+<p>This rule is deprecated since PMD 6.34.0. Use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a>
+from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/DuplicateImportsRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.DuplicateImportsRule</a></p>
 
@@ -4033,6 +4043,38 @@ which is covered by an import statement is redundant.  Consider using the non-fu
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/UnnecessaryFullyQualifiedName"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="unnecessaryimport">UnnecessaryImport</h2>
+
+<p><strong>Since:</strong> PMD 6.34.0</p>
+
+<p><strong>Priority:</strong> Medium Low (4)</p>
+
+<p>Reports import statements that can be removed. They are either unused,
+duplicated, or the members they import are already implicitly in scope,
+because they’re in java.lang, or the current package.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/UnnecessaryImportRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryImportRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>            <span class="c1">// not used, can be removed</span>
+            <span class="kn">import</span> <span class="nn">java.util.Collections</span><span class="o">;</span>   <span class="c1">// used below</span>
+            <span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>             <span class="c1">// so this one is not used</span>
+
+            <span class="kn">import</span> <span class="nn">java.lang.Object</span><span class="o">;</span>        <span class="c1">// imports from java.lang, unnecessary</span>
+            <span class="kn">import</span> <span class="nn">java.lang.Object</span><span class="o">;</span>        <span class="c1">// duplicate, unnecessary</span>
+
+            <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+                <span class="kd">static</span> <span class="nc">Object</span> <span class="nf">emptyList</span><span class="o">()</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="nc">Collections</span><span class="o">.</span><span class="na">emptyList</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/UnnecessaryImport"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="unnecessarylocalbeforereturn">UnnecessaryLocalBeforeReturn</h2>
 
 <p><strong>Since:</strong> PMD 3.3</p>
@@ -4648,7 +4690,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 16, 2021 <br />
+ Site last generated: Apr 19, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
