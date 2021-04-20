@@ -439,6 +439,9 @@ entries:
       - title: Project management
         output: web, pdf
         subfolderitems:
+        - title: Infrastructure
+          url: /pmd_projectdocs_committers_infrastructure.html
+          output: web, pdf
         - title: Release process
           url: /pmd_projectdocs_committers_releasing.html
           output: web, pdf
