@@ -113,7 +113,7 @@ public class RuleDocGenerator {
         }
 
         List<RuleSet> rulesets = new ArrayList<>();
-        RuleSetLoader ruleSetLoader = new RuleSetLoader();
+        RuleSetLoader ruleSetLoader = new RuleSetLoader().warnDeprecated(false);
         for (String filename : additionalRulesets) {
             try {
                 // do not take rulesets from pmd-test or pmd-core
