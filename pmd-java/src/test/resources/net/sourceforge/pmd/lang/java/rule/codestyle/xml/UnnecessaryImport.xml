@@ -409,61 +409,62 @@ public class Foo {
         <description>#925 [java] UnusedImports false positive for static import</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
 
-import static net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports.ClassWithConstants.*;
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ClassWithConstants.*;
 
-public class ClassWithImport {
+            public class ClassWithImport {
 
-    public static void main(String[] args) {
-        System.out.println("List 1: " + LIST1);
-        System.out.println("List 2: " + LIST2);
-    }
-}
-        ]]></code>
+                public static void main(String[] args) {
+                    System.out.println("List 1: " + LIST1);
+                    System.out.println("List 2: " + LIST2);
+                }
+            }
+            ]]></code>
     </test-code>
 
     <test-code>
         <description>#1404 [java] UnusedImports false positive for static import</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
 
-import static net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports.ClassWithStringConstants.*;
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ClassWithStringConstants.*;
 
-public class ClassWithImport {
+            public class ClassWithImport {
 
-    public static void main(String[] args) {
-        if (CONST1.equals("a")) {
-            System.out.println("CONST1 is a");
-        }
-    }
-}
-        ]]></code>
+                public static void main(String[] args) {
+                    if (CONST1.equals("a")) {
+                        System.out.println("CONST1 is a");
+                    }
+                }
+            }
+            ]]></code>
     </test-code>
 
     <test-code>
         <description>#1209 [java] UnusedImports false positive for static import with package-private method usage</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
 
-import static net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports.PackagePrivateUtils.*;
-import static net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports.PublicUtils.*;
+            import static net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports.PackagePrivateUtils.*;
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.PublicUtils.*;
 
-public class Imports {
-    int importtest() {
-        int i = 0;
-        i = f1(i);
-        i = g1(i);
-        i = f2(i);
-        i = g2(i);
-        i = f3(i);
-        i = g3(i);
-        return i;
-    }
-}
-        ]]></code>
+            public class Imports {
+
+                int importtest() {
+                    int i = 0;
+                    i = f1(i);
+                    i = g1(i);
+                    i = f2(i);
+                    i = g2(i);
+                    i = f3(i);
+                    i = g3(i);
+                    return i;
+                }
+            }
+            ]]></code>
     </test-code>
 
     <test-code>

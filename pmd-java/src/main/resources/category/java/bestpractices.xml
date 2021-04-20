@@ -1412,32 +1412,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UnusedImports"
-          language="java"
-          since="1.0"
-          message="Unused import ''{0}''"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedImportsRule"
-          deprecated="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedimports">
-        <description>
-Reports import statements that are not used within the file. This also reports
-duplicate imports, and imports from the same package. The simplest fix is just
-to delete those imports.
-
-This rule is deprecated since PMD 6.34.0. Use the rule {% rule "java/codestyle/UnnecessaryImport" %}
-from category codestyle instead.
-        </description>
-        <priority>4</priority>
-        <example>
-<![CDATA[
-import java.io.File;  // not referenced or required
-import java.util.*;   // not referenced or required
-
-public class Foo {}
-]]>
-        </example>
-    </rule>
-
     <rule name="UnusedLocalVariable"
           language="java"
           since="0.1"

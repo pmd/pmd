@@ -28,7 +28,6 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedImportsRule;
 
 public class UnnecessaryImportRule extends AbstractJavaRule {
     // todo: java lang imports may be necessary if they're shadowed by a
@@ -64,10 +63,6 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN };
 
-    /**
-     * The deprecated rule {@link UnusedImportsRule} extends this class
-     * and overrides this.
-     */
     protected boolean justReportUnusedImports() {
         return false;
     }
