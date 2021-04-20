@@ -2019,11 +2019,15 @@ public class Foo {
     <rule name="ImportFromSamePackage"
           language="java"
           since="1.02"
+          deprecated="true"
           message="No need to import a type that lives in the same package"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.ImportFromSamePackageRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#importfromsamepackage">
         <description>
 There is no need to import a type that lives in the same package.
+
+This rule is deprecated since PMD 6.34.0. Use the rule {% rule "java/codestyle/UnnecessaryImport" %}
+from category codestyle instead.
         </description>
         <priority>3</priority>
         <example>
