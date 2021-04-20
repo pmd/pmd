@@ -27,22 +27,22 @@ This is a {{ site.pmd.release_type }} release.
     This rule is also part of the Quickstart Ruleset (`rulesets/java/quickstart.xml`) for Java.
 
 *   The new Java rule {% rule "java/codestyle/UnnecessaryImport" %} replaces the rules
-    {% rule "java/bestpractices/UnusedImports" %}, {% rule "java/codestyle/DuplicateImports" %},
-    {% rule "java/errorprone/ImportFromSamePackage" %}, and {% rule "java/codestyle/DontImportJavaLang" %}.
+    {% deleted_rule "java/bestpractices/UnusedImports" %}, {% deleted_rule "java/codestyle/DuplicateImports" %},
+    {% deleted_rule "java/errorprone/ImportFromSamePackage" deleted %}, and {% deleted_rule "java/codestyle/DontImportJavaLang" %}.
 
     This rule is also part of the Quickstart Ruleset (`rulesets/java/quickstart.xml`) for Java.
 
 #### Deprecated rules
 
 *   java-bestpractices
-    *   {% rule java/bestpractices/UnusedImports %}: use the rule {% rule "java/codestyle/UnnecessaryImport" %} instead
+    *   {% deleted_rule java/bestpractices/UnusedImports %}: use the rule {% rule "java/codestyle/UnnecessaryImport" %} instead
 
 *   java-codestyle
-    *   {% rule java/codestyle/DuplicateImports %}: use the rule {% rule "java/codestyle/UnnecessaryImport" %} instead
-    *   {% rule java/codestyle/DontImportJavaLang %}: use the rule {% rule "java/codestyle/UnnecessaryImport" %} instead
+    *   {% deleted_rule java/codestyle/DuplicateImports %}: use the rule {% rule "java/codestyle/UnnecessaryImport" %} instead
+    *   {% deleted_rule java/codestyle/DontImportJavaLang %}: use the rule {% rule "java/codestyle/UnnecessaryImport" %} instead
 
 *   java-errorprone
-    *   {% rule java/errorprone/ImportFromSamePackage %}: use the rule {% rule "java/codestyle/UnnecessaryImport" %} instead
+    *   {% deleted_rule java/errorprone/ImportFromSamePackage %}: use the rule {% rule "java/codestyle/UnnecessaryImport" %} instead
 
 
 ### Fixed Issues
