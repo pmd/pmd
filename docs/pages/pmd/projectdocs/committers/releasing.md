@@ -219,6 +219,24 @@ Tweet on <https://twitter.com/pmd_analyzer>, eg.:
 
     PMD 6.34.0 released: https://github.com/pmd/pmd/releases/tag/pmd_releases/6.34.0 #PMD
 
+
+### Checklist
+
+| Task | Description | URL | ☐ / ✔ |
+|------|-------------|-----|-------|
+| maven central | The new version of all artifacts are available in maven central | <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/> | <input type="checkbox"> |
+| github releases | A new release with 3 assets (bin, src, doc) is created | <https://github.com/pmd/pmd/releases> | <input type="checkbox"> |
+| sourceforge files | The 3 assets (bin, src, doc) are uploaded, the new version is pre-selected as latest | <https://sourceforge.net/projects/pmd/files/pmd/> | <input type="checkbox"> |
+| homepage | Main landing page points to new version, doc for new version is available | <https://pmd.github.io> | <input type="checkbox"> |
+| homepage2 | New blogpost for the new release is posted | <https://pmd.github.io/#news> | <input type="checkbox"> |
+| docs | New docs are uploaded | <https://docs.pmd-code.org/latest/> | <input type="checkbox"> |
+| docs-archive | New docs are also on archive site | <https://pmd.sourceforge.io/archive.phtml> | <input type="checkbox"> |
+| javadoc | New javadocs are uploaded | <https://docs.pmd-code.org/apidocs/> | <input type="checkbox"> |
+| news | New blogpost on sourceforge is posted | <https://sourceforge.net/p/pmd/news/> | <input type="checkbox"> |
+| regression-tester | New release baseline is uploaded | <https://pmd-code.org/pmd-regression-tester> | <input type="checkbox"> |
+| mailing list | announcement on mailing list is sent | <https://sourceforge.net/p/pmd/mailman/pmd-devel/> | <input type="checkbox"> |
+| twitter | tweet about the new release | <https://twitter.com/pmd_analyzer> | <input type="checkbox"> |
+
 ## Prepare the next release
 
 There are a couple of manual steps needed to prepare the current main branch for further development.
