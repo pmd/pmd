@@ -52,6 +52,9 @@ function build() {
         exit 0
     fi
 
+    # stop early for invalid maven version and branch/tag combination
+    pmd_ci_maven_verify_version || exit 0
+
     # only builds on pmd/pmd continue here
     pmd_ci_log_group_start "Setup environment"
         pmd_ci_setup_secrets_private_env
