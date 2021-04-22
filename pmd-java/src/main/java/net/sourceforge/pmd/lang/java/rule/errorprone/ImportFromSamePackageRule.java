@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 
+@Deprecated
 public class ImportFromSamePackageRule extends AbstractJavaRule {
 
     @Override

@@ -1512,13 +1512,18 @@ public class Foo {
     <rule name="UnusedImports"
           language="java"
           since="1.0"
-          message="Avoid unused imports such as ''{0}''"
+          message="Unused import ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedImportsRule"
           typeResolution="true"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedimports">
         <description>
-Avoid unused import statements to prevent unwanted dependencies.
-This rule will also find unused on demand imports, i.e. import com.foo.*.
+Reports import statements that are not used within the file. This also reports
+duplicate imports, and imports from the same package. The simplest fix is just
+to delete those imports.
+
+This rule is deprecated since PMD 6.34.0. Use the rule {% rule "java/codestyle/UnnecessaryImport" %}
+from category codestyle instead.
         </description>
         <priority>4</priority>
         <example>

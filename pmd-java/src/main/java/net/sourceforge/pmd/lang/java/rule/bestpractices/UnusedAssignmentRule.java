@@ -1099,7 +1099,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         static void useAllSelfFields(/*nullable*/SpanInfo staticState, SpanInfo instanceState, ClassScope classScope) {
             for (VariableNameDeclaration field : classScope.getVariableDeclarations().keySet()) {
                 ASTVariableDeclaratorId var = field.getDeclaratorId();
-                if (field.getAccessNodeParent().isStatic()) {
+                if (!field.isRecordComponent() && field.getAccessNodeParent().isStatic()) {
                     if (staticState != null) {
                         staticState.use(var);
                     }
