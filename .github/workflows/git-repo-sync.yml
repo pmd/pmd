@@ -1,0 +1,29 @@
+name: git-repo-sync
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - pmd/7.0.x
+    tags:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
+    - name: Setup Environment
+      shell: bash
+      run: |
+        echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
+        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/11/scripts" >> $GITHUB_ENV
+    - name: Sync
+      run: .ci/git-repo-sync.sh
+      shell: bash
+      env:
+        PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}

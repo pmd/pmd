@@ -41,6 +41,11 @@ exclude:
   - build-docs.sh
   - assets/*.zip
   - assets/README.md
+  - pdf-*.sh
+  - pdfconfigs/
+  - pdf/
+  - sitemap_generator.sh
+  - render_release_notes.rb
 
 feedback_subject_line: PMD Source Code Analyzer
 
