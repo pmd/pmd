@@ -1441,6 +1441,15 @@ where <code class="language-plaintext highlighter-rouge">StandardCharsets</code>
   </li>
 </ul>
 
+<h4 id="modified-rules">Modified rules</h4>
+
+<ul>
+  <li>The Apex rule <a href="pmd_rules_apex_security.html#apexcrudviolation"><code class="language-plaintext highlighter-rouge">ApexCRUDViolation</code></a> does not ignore getters anymore and also flags
+SOQL/SOSL/DML operations without access permission checks in getters. This will produce false positives now for
+VF getter methods, but we can’t reliably detect, whether a getter is a VF getter or not. In such cases,
+the violation should be <a href="pmd_userdocs_suppressing_warnings.html">suppressed</a>.</li>
+</ul>
+
 <h4 id="deprecated-rules">Deprecated rules</h4>
 
 <ul>
@@ -1470,6 +1479,11 @@ where <code class="language-plaintext highlighter-rouge">StandardCharsets</code>
       <li><a href="https://github.com/pmd/pmd/pull/3198">#3198</a>: [apex] OperationWithLimitsInLoopRule: Support more limit consuming static method invocations</li>
     </ul>
   </li>
+  <li>apex-security
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3210">#3210</a>: [apex] ApexCRUDViolationRule false-negative on non-VF getter</li>
+    </ul>
+  </li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3190">#3190</a>: [java] Use StandardCharsets instead of Charset.forName</li>
@@ -1496,6 +1510,7 @@ where <code class="language-plaintext highlighter-rouge">StandardCharsets</code>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/3193">#3193</a>: [java] New rule: UseStandardCharsets - <a href="https://github.com/aaime">Andrea Aime</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3198">#3198</a>: [apex] OperationWithLimitsInLoopRule: Support more limit consuming static method invocations - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3211">#3211</a>: [apex] ApexCRUDViolationRule: Do not assume method is VF getter to avoid CRUD checks - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
 </ul>
 
 
@@ -1514,7 +1529,7 @@ where <code class="language-plaintext highlighter-rouge">StandardCharsets</code>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 19, 2021 <br />
+ Site last generated: Apr 23, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -174,6 +174,145 @@
 
 
 {
+"title": "Best Practices (Modelica, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_modelica_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ClassStartNameEqualsEndName (Modelica, Best Practices)",
+"tags": "",
+"keywords": "ClassStartNameEqualsEndName",
+"url": "pmd_rules_modelica_bestpractices.html#classstartnameequalsendname",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ConnectUsingNonConnector (Modelica, Best Practices)",
+"tags": "",
+"keywords": "ConnectUsingNonConnector",
+"url": "pmd_rules_modelica_bestpractices.html#connectusingnonconnector",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AmbiguousResolution (Modelica, Best Practices)",
+"tags": "",
+"keywords": "AmbiguousResolution",
+"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (Apex, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_apex_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ApexAssertionsShouldIncludeMessage (Apex, Best Practices)",
+"tags": "",
+"keywords": "ApexAssertionsShouldIncludeMessage",
+"url": "pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ApexUnitTestClassShouldHaveAsserts (Apex, Best Practices)",
+"tags": "",
+"keywords": "ApexUnitTestClassShouldHaveAsserts",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaveasserts",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ApexUnitTestMethodShouldHaveIsTestAnnotation (Apex, Best Practices)",
+"tags": "",
+"keywords": "ApexUnitTestMethodShouldHaveIsTestAnnotation",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ApexUnitTestShouldNotUseSeeAllDataTrue (Apex, Best Practices)",
+"tags": "",
+"keywords": "ApexUnitTestShouldNotUseSeeAllDataTrue",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AvoidGlobalModifier (Apex, Best Practices)",
+"tags": "",
+"keywords": "AvoidGlobalModifier",
+"url": "pmd_rules_apex_bestpractices.html#avoidglobalmodifier",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AvoidLogicInTrigger (Apex, Best Practices)",
+"tags": "",
+"keywords": "AvoidLogicInTrigger",
+"url": "pmd_rules_apex_bestpractices.html#avoidlogicintrigger",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "DebugsShouldUseLoggingLevel (Apex, Best Practices)",
+"tags": "",
+"keywords": "DebugsShouldUseLoggingLevel",
+"url": "pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UnusedLocalVariable (Apex, Best Practices)",
+"tags": "",
+"keywords": "UnusedLocalVariable",
+"url": "pmd_rules_apex_bestpractices.html#unusedlocalvariable",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Best Practices (Java, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
@@ -680,210 +819,6 @@
 
 
 {
-"title": "Best Practices (Ecmascript, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_ecmascript_bestpractices.html#best practices",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "AvoidWithStatement (Ecmascript, Best Practices)",
-"tags": "",
-"keywords": "AvoidWithStatement",
-"url": "pmd_rules_ecmascript_bestpractices.html#avoidwithstatement",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ConsistentReturn (Ecmascript, Best Practices)",
-"tags": "",
-"keywords": "ConsistentReturn",
-"url": "pmd_rules_ecmascript_bestpractices.html#consistentreturn",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "GlobalVariable (Ecmascript, Best Practices)",
-"tags": "",
-"keywords": "GlobalVariable",
-"url": "pmd_rules_ecmascript_bestpractices.html#globalvariable",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ScopeForInVariable (Ecmascript, Best Practices)",
-"tags": "",
-"keywords": "ScopeForInVariable",
-"url": "pmd_rules_ecmascript_bestpractices.html#scopeforinvariable",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UseBaseWithParseInt (Ecmascript, Best Practices)",
-"tags": "",
-"keywords": "UseBaseWithParseInt",
-"url": "pmd_rules_ecmascript_bestpractices.html#usebasewithparseint",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Apex, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_apex_bestpractices.html#best practices",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ApexAssertionsShouldIncludeMessage (Apex, Best Practices)",
-"tags": "",
-"keywords": "ApexAssertionsShouldIncludeMessage",
-"url": "pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ApexUnitTestClassShouldHaveAsserts (Apex, Best Practices)",
-"tags": "",
-"keywords": "ApexUnitTestClassShouldHaveAsserts",
-"url": "pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaveasserts",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ApexUnitTestMethodShouldHaveIsTestAnnotation (Apex, Best Practices)",
-"tags": "",
-"keywords": "ApexUnitTestMethodShouldHaveIsTestAnnotation",
-"url": "pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ApexUnitTestShouldNotUseSeeAllDataTrue (Apex, Best Practices)",
-"tags": "",
-"keywords": "ApexUnitTestShouldNotUseSeeAllDataTrue",
-"url": "pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "AvoidGlobalModifier (Apex, Best Practices)",
-"tags": "",
-"keywords": "AvoidGlobalModifier",
-"url": "pmd_rules_apex_bestpractices.html#avoidglobalmodifier",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "AvoidLogicInTrigger (Apex, Best Practices)",
-"tags": "",
-"keywords": "AvoidLogicInTrigger",
-"url": "pmd_rules_apex_bestpractices.html#avoidlogicintrigger",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "DebugsShouldUseLoggingLevel (Apex, Best Practices)",
-"tags": "",
-"keywords": "DebugsShouldUseLoggingLevel",
-"url": "pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UnusedLocalVariable (Apex, Best Practices)",
-"tags": "",
-"keywords": "UnusedLocalVariable",
-"url": "pmd_rules_apex_bestpractices.html#unusedlocalvariable",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Modelica, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_modelica_bestpractices.html#best practices",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ClassStartNameEqualsEndName (Modelica, Best Practices)",
-"tags": "",
-"keywords": "ClassStartNameEqualsEndName",
-"url": "pmd_rules_modelica_bestpractices.html#classstartnameequalsendname",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ConnectUsingNonConnector (Modelica, Best Practices)",
-"tags": "",
-"keywords": "ConnectUsingNonConnector",
-"url": "pmd_rules_modelica_bestpractices.html#connectusingnonconnector",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "AmbiguousResolution (Modelica, Best Practices)",
-"tags": "",
-"keywords": "AmbiguousResolution",
-"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Best Practices (PLSQL, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
@@ -966,6 +901,71 @@
 
 
 
+
+
+{
+"title": "Best Practices (Ecmascript, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_ecmascript_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AvoidWithStatement (Ecmascript, Best Practices)",
+"tags": "",
+"keywords": "AvoidWithStatement",
+"url": "pmd_rules_ecmascript_bestpractices.html#avoidwithstatement",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ConsistentReturn (Ecmascript, Best Practices)",
+"tags": "",
+"keywords": "ConsistentReturn",
+"url": "pmd_rules_ecmascript_bestpractices.html#consistentreturn",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "GlobalVariable (Ecmascript, Best Practices)",
+"tags": "",
+"keywords": "GlobalVariable",
+"url": "pmd_rules_ecmascript_bestpractices.html#globalvariable",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ScopeForInVariable (Ecmascript, Best Practices)",
+"tags": "",
+"keywords": "ScopeForInVariable",
+"url": "pmd_rules_ecmascript_bestpractices.html#scopeforinvariable",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UseBaseWithParseInt (Ecmascript, Best Practices)",
+"tags": "",
+"keywords": "UseBaseWithParseInt",
+"url": "pmd_rules_ecmascript_bestpractices.html#usebasewithparseint",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
 {
 "title": "Building PMD from source",
 "tags": "devdocs",
@@ -1005,6 +1005,143 @@
 "url": "pmd_userdocs_cli_reference.html",
 "summary": "Full reference for PMD's command-line interface, including options, output formats and supported languages"
 }
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Code Style (Apex, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_apex_codestyle.html#code style",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "ClassNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "ClassNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#classnamingconventions",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "IfElseStmtsMustUseBraces (Apex, Code Style)",
+"tags": "",
+"keywords": "IfElseStmtsMustUseBraces",
+"url": "pmd_rules_apex_codestyle.html#ifelsestmtsmustusebraces",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "IfStmtsMustUseBraces (Apex, Code Style)",
+"tags": "",
+"keywords": "IfStmtsMustUseBraces",
+"url": "pmd_rules_apex_codestyle.html#ifstmtsmustusebraces",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "FieldDeclarationsShouldBeAtStart (Apex, Code Style)",
+"tags": "",
+"keywords": "FieldDeclarationsShouldBeAtStart",
+"url": "pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "FieldNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "FieldNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#fieldnamingconventions",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "ForLoopsMustUseBraces (Apex, Code Style)",
+"tags": "",
+"keywords": "ForLoopsMustUseBraces",
+"url": "pmd_rules_apex_codestyle.html#forloopsmustusebraces",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "FormalParameterNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "FormalParameterNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#formalparameternamingconventions",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "LocalVariableNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "LocalVariableNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#localvariablenamingconventions",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "MethodNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "MethodNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#methodnamingconventions",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "OneDeclarationPerLine (Apex, Code Style)",
+"tags": "",
+"keywords": "OneDeclarationPerLine",
+"url": "pmd_rules_apex_codestyle.html#onedeclarationperline",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "PropertyNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "PropertyNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#propertynamingconventions",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "VariableNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "VariableNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#variablenamingconventions",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "WhileLoopsMustUseBraces (Apex, Code Style)",
+"tags": "",
+"keywords": "WhileLoopsMustUseBraces",
+"url": "pmd_rules_apex_codestyle.html#whileloopsmustusebraces",
+"summary": "Rules which enforce a specific coding style."
+}
+
+
 
 
 
@@ -1613,6 +1750,129 @@
 
 
 {
+"title": "Code Style (PLSQL, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_plsql_codestyle.html#code style",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "AvoidTabCharacter (PLSQL, Code Style)",
+"tags": "",
+"keywords": "AvoidTabCharacter",
+"url": "pmd_rules_plsql_codestyle.html#avoidtabcharacter",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "CodeFormat (PLSQL, Code Style)",
+"tags": "",
+"keywords": "CodeFormat",
+"url": "pmd_rules_plsql_codestyle.html#codeformat",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "MisplacedPragma (PLSQL, Code Style)",
+"tags": "",
+"keywords": "MisplacedPragma",
+"url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "ForLoopNaming (PLSQL, Code Style)",
+"tags": "",
+"keywords": "ForLoopNaming",
+"url": "pmd_rules_plsql_codestyle.html#forloopnaming",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "LineLength (PLSQL, Code Style)",
+"tags": "",
+"keywords": "LineLength",
+"url": "pmd_rules_plsql_codestyle.html#linelength",
+"summary": "Rules which enforce a specific coding style."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Code Style (XSL, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_xsl_codestyle.html#code style",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "UseConcatOnce (XSL, Code Style)",
+"tags": "",
+"keywords": "UseConcatOnce",
+"url": "pmd_rules_xsl_codestyle.html#useconcatonce",
+"summary": "Rules which enforce a specific coding style."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Code Style (Java Server Pages, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_jsp_codestyle.html#code style",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "DuplicateJspImports (Java Server Pages, Code Style)",
+"tags": "",
+"keywords": "DuplicateJspImports",
+"url": "pmd_rules_jsp_codestyle.html#duplicatejspimports",
+"summary": "Rules which enforce a specific coding style."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Code Style (Ecmascript, Code Style)",
 "tags": "",
 "keywords": "Code Style",
@@ -1698,266 +1958,6 @@
 "tags": "",
 "keywords": "WhileLoopsMustUseBraces",
 "url": "pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Code Style (Apex, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_apex_codestyle.html#code style",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "ClassNamingConventions (Apex, Code Style)",
-"tags": "",
-"keywords": "ClassNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#classnamingconventions",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "IfElseStmtsMustUseBraces (Apex, Code Style)",
-"tags": "",
-"keywords": "IfElseStmtsMustUseBraces",
-"url": "pmd_rules_apex_codestyle.html#ifelsestmtsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "IfStmtsMustUseBraces (Apex, Code Style)",
-"tags": "",
-"keywords": "IfStmtsMustUseBraces",
-"url": "pmd_rules_apex_codestyle.html#ifstmtsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "FieldDeclarationsShouldBeAtStart (Apex, Code Style)",
-"tags": "",
-"keywords": "FieldDeclarationsShouldBeAtStart",
-"url": "pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "FieldNamingConventions (Apex, Code Style)",
-"tags": "",
-"keywords": "FieldNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#fieldnamingconventions",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "ForLoopsMustUseBraces (Apex, Code Style)",
-"tags": "",
-"keywords": "ForLoopsMustUseBraces",
-"url": "pmd_rules_apex_codestyle.html#forloopsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "FormalParameterNamingConventions (Apex, Code Style)",
-"tags": "",
-"keywords": "FormalParameterNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#formalparameternamingconventions",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "LocalVariableNamingConventions (Apex, Code Style)",
-"tags": "",
-"keywords": "LocalVariableNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#localvariablenamingconventions",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "MethodNamingConventions (Apex, Code Style)",
-"tags": "",
-"keywords": "MethodNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#methodnamingconventions",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "OneDeclarationPerLine (Apex, Code Style)",
-"tags": "",
-"keywords": "OneDeclarationPerLine",
-"url": "pmd_rules_apex_codestyle.html#onedeclarationperline",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "PropertyNamingConventions (Apex, Code Style)",
-"tags": "",
-"keywords": "PropertyNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#propertynamingconventions",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "VariableNamingConventions (Apex, Code Style)",
-"tags": "",
-"keywords": "VariableNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#variablenamingconventions",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "WhileLoopsMustUseBraces (Apex, Code Style)",
-"tags": "",
-"keywords": "WhileLoopsMustUseBraces",
-"url": "pmd_rules_apex_codestyle.html#whileloopsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Code Style (PLSQL, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_plsql_codestyle.html#code style",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "AvoidTabCharacter (PLSQL, Code Style)",
-"tags": "",
-"keywords": "AvoidTabCharacter",
-"url": "pmd_rules_plsql_codestyle.html#avoidtabcharacter",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "CodeFormat (PLSQL, Code Style)",
-"tags": "",
-"keywords": "CodeFormat",
-"url": "pmd_rules_plsql_codestyle.html#codeformat",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "MisplacedPragma (PLSQL, Code Style)",
-"tags": "",
-"keywords": "MisplacedPragma",
-"url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "ForLoopNaming (PLSQL, Code Style)",
-"tags": "",
-"keywords": "ForLoopNaming",
-"url": "pmd_rules_plsql_codestyle.html#forloopnaming",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "LineLength (PLSQL, Code Style)",
-"tags": "",
-"keywords": "LineLength",
-"url": "pmd_rules_plsql_codestyle.html#linelength",
-"summary": "Rules which enforce a specific coding style."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Code Style (Java Server Pages, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_jsp_codestyle.html#code style",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "DuplicateJspImports (Java Server Pages, Code Style)",
-"tags": "",
-"keywords": "DuplicateJspImports",
-"url": "pmd_rules_jsp_codestyle.html#duplicatejspimports",
-"summary": "Rules which enforce a specific coding style."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Code Style (XSL, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_xsl_codestyle.html#code style",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "UseConcatOnce (XSL, Code Style)",
-"tags": "",
-"keywords": "UseConcatOnce",
-"url": "pmd_rules_xsl_codestyle.html#useconcatonce",
 "summary": "Rules which enforce a specific coding style."
 }
 
@@ -2103,6 +2103,125 @@
 "tags": "",
 "keywords": "NoInlineStyles",
 "url": "pmd_rules_vm_design.html#noinlinestyles",
+"summary": "Rules that help you discover design issues."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Design (Apex, Design)",
+"tags": "",
+"keywords": "Design",
+"url": "pmd_rules_apex_design.html#design",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "AvoidDeeplyNestedIfStmts (Apex, Design)",
+"tags": "",
+"keywords": "AvoidDeeplyNestedIfStmts",
+"url": "pmd_rules_apex_design.html#avoiddeeplynestedifstmts",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "CyclomaticComplexity (Apex, Design)",
+"tags": "",
+"keywords": "CyclomaticComplexity",
+"url": "pmd_rules_apex_design.html#cyclomaticcomplexity",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "CognitiveComplexity (Apex, Design)",
+"tags": "",
+"keywords": "CognitiveComplexity",
+"url": "pmd_rules_apex_design.html#cognitivecomplexity",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "ExcessiveClassLength (Apex, Design)",
+"tags": "",
+"keywords": "ExcessiveClassLength",
+"url": "pmd_rules_apex_design.html#excessiveclasslength",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "ExcessiveParameterList (Apex, Design)",
+"tags": "",
+"keywords": "ExcessiveParameterList",
+"url": "pmd_rules_apex_design.html#excessiveparameterlist",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "ExcessivePublicCount (Apex, Design)",
+"tags": "",
+"keywords": "ExcessivePublicCount",
+"url": "pmd_rules_apex_design.html#excessivepubliccount",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NcssConstructorCount (Apex, Design)",
+"tags": "",
+"keywords": "NcssConstructorCount",
+"url": "pmd_rules_apex_design.html#ncssconstructorcount",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NcssMethodCount (Apex, Design)",
+"tags": "",
+"keywords": "NcssMethodCount",
+"url": "pmd_rules_apex_design.html#ncssmethodcount",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NcssTypeCount (Apex, Design)",
+"tags": "",
+"keywords": "NcssTypeCount",
+"url": "pmd_rules_apex_design.html#ncsstypecount",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "StdCyclomaticComplexity (Apex, Design)",
+"tags": "",
+"keywords": "StdCyclomaticComplexity",
+"url": "pmd_rules_apex_design.html#stdcyclomaticcomplexity",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "TooManyFields (Apex, Design)",
+"tags": "",
+"keywords": "TooManyFields",
+"url": "pmd_rules_apex_design.html#toomanyfields",
 "summary": "Rules that help you discover design issues."
 }
 
@@ -2553,125 +2672,6 @@
 
 
 {
-"title": "Design (Apex, Design)",
-"tags": "",
-"keywords": "Design",
-"url": "pmd_rules_apex_design.html#design",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "AvoidDeeplyNestedIfStmts (Apex, Design)",
-"tags": "",
-"keywords": "AvoidDeeplyNestedIfStmts",
-"url": "pmd_rules_apex_design.html#avoiddeeplynestedifstmts",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "CyclomaticComplexity (Apex, Design)",
-"tags": "",
-"keywords": "CyclomaticComplexity",
-"url": "pmd_rules_apex_design.html#cyclomaticcomplexity",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "CognitiveComplexity (Apex, Design)",
-"tags": "",
-"keywords": "CognitiveComplexity",
-"url": "pmd_rules_apex_design.html#cognitivecomplexity",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "ExcessiveClassLength (Apex, Design)",
-"tags": "",
-"keywords": "ExcessiveClassLength",
-"url": "pmd_rules_apex_design.html#excessiveclasslength",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "ExcessiveParameterList (Apex, Design)",
-"tags": "",
-"keywords": "ExcessiveParameterList",
-"url": "pmd_rules_apex_design.html#excessiveparameterlist",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "ExcessivePublicCount (Apex, Design)",
-"tags": "",
-"keywords": "ExcessivePublicCount",
-"url": "pmd_rules_apex_design.html#excessivepubliccount",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NcssConstructorCount (Apex, Design)",
-"tags": "",
-"keywords": "NcssConstructorCount",
-"url": "pmd_rules_apex_design.html#ncssconstructorcount",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NcssMethodCount (Apex, Design)",
-"tags": "",
-"keywords": "NcssMethodCount",
-"url": "pmd_rules_apex_design.html#ncssmethodcount",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NcssTypeCount (Apex, Design)",
-"tags": "",
-"keywords": "NcssTypeCount",
-"url": "pmd_rules_apex_design.html#ncsstypecount",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "StdCyclomaticComplexity (Apex, Design)",
-"tags": "",
-"keywords": "StdCyclomaticComplexity",
-"url": "pmd_rules_apex_design.html#stdcyclomaticcomplexity",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "TooManyFields (Apex, Design)",
-"tags": "",
-"keywords": "TooManyFields",
-"url": "pmd_rules_apex_design.html#toomanyfields",
-"summary": "Rules that help you discover design issues."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Design (PLSQL, Design)",
 "tags": "",
 "keywords": "Design",
@@ -2888,6 +2888,35 @@
 
 
 {
+"title": "Documentation (Apex, Documentation)",
+"tags": "",
+"keywords": "Documentation",
+"url": "pmd_rules_apex_documentation.html#documentation",
+"summary": "Rules that are related to code documentation."
+}
+,
+
+{
+"title": "ApexDoc (Apex, Documentation)",
+"tags": "",
+"keywords": "ApexDoc",
+"url": "pmd_rules_apex_documentation.html#apexdoc",
+"summary": "Rules that are related to code documentation."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Documentation (Java, Documentation)",
 "tags": "",
 "keywords": "Documentation",
@@ -2950,35 +2979,6 @@
 
 
 
-
-
-{
-"title": "Documentation (Apex, Documentation)",
-"tags": "",
-"keywords": "Documentation",
-"url": "pmd_rules_apex_documentation.html#documentation",
-"summary": "Rules that are related to code documentation."
-}
-,
-
-{
-"title": "ApexDoc (Apex, Documentation)",
-"tags": "",
-"keywords": "ApexDoc",
-"url": "pmd_rules_apex_documentation.html#apexdoc",
-"summary": "Rules that are related to code documentation."
-}
-
-
-
-
-
-,
-
-
-
-
-
 {
 "title": "Ecmascript Rules",
 "tags": "rule_referencesecmascript",
@@ -3020,6 +3020,201 @@
 "tags": "",
 "keywords": "EmptyIfStmt",
 "url": "pmd_rules_vm_errorprone.html#emptyifstmt",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_pom_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "InvalidDependencyTypes (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "InvalidDependencyTypes",
+"url": "pmd_rules_pom_errorprone.html#invaliddependencytypes",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "ProjectVersionAsDependencyVersion (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "ProjectVersionAsDependencyVersion",
+"url": "pmd_rules_pom_errorprone.html#projectversionasdependencyversion",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (XML, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_xml_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "MistypedCDATASection (XML, Error Prone)",
+"tags": "",
+"keywords": "MistypedCDATASection",
+"url": "pmd_rules_xml_errorprone.html#mistypedcdatasection",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Apex, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_apex_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "ApexCSRF (Apex, Error Prone)",
+"tags": "",
+"keywords": "ApexCSRF",
+"url": "pmd_rules_apex_errorprone.html#apexcsrf",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "AvoidDirectAccessTriggerMap (Apex, Error Prone)",
+"tags": "",
+"keywords": "AvoidDirectAccessTriggerMap",
+"url": "pmd_rules_apex_errorprone.html#avoiddirectaccesstriggermap",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "AvoidHardcodingId (Apex, Error Prone)",
+"tags": "",
+"keywords": "AvoidHardcodingId",
+"url": "pmd_rules_apex_errorprone.html#avoidhardcodingid",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "AvoidNonExistentAnnotations (Apex, Error Prone)",
+"tags": "",
+"keywords": "AvoidNonExistentAnnotations",
+"url": "pmd_rules_apex_errorprone.html#avoidnonexistentannotations",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "EmptyCatchBlock (Apex, Error Prone)",
+"tags": "",
+"keywords": "EmptyCatchBlock",
+"url": "pmd_rules_apex_errorprone.html#emptycatchblock",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "EmptyIfStmt (Apex, Error Prone)",
+"tags": "",
+"keywords": "EmptyIfStmt",
+"url": "pmd_rules_apex_errorprone.html#emptyifstmt",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "EmptyStatementBlock (Apex, Error Prone)",
+"tags": "",
+"keywords": "EmptyStatementBlock",
+"url": "pmd_rules_apex_errorprone.html#emptystatementblock",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "EmptyTryOrFinallyBlock (Apex, Error Prone)",
+"tags": "",
+"keywords": "EmptyTryOrFinallyBlock",
+"url": "pmd_rules_apex_errorprone.html#emptytryorfinallyblock",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "EmptyWhileStmt (Apex, Error Prone)",
+"tags": "",
+"keywords": "EmptyWhileStmt",
+"url": "pmd_rules_apex_errorprone.html#emptywhilestmt",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "MethodWithSameNameAsEnclosingClass (Apex, Error Prone)",
+"tags": "",
+"keywords": "MethodWithSameNameAsEnclosingClass",
+"url": "pmd_rules_apex_errorprone.html#methodwithsamenameasenclosingclass",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "OverrideBothEqualsAndHashcode (Apex, Error Prone)",
+"tags": "",
+"keywords": "OverrideBothEqualsAndHashcode",
+"url": "pmd_rules_apex_errorprone.html#overridebothequalsandhashcode",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "TestMethodsMustBeInTestClasses (Apex, Error Prone)",
+"tags": "",
+"keywords": "TestMethodsMustBeInTestClasses",
+"url": "pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -3938,210 +4133,6 @@
 
 
 {
-"title": "Error Prone (XML, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_xml_errorprone.html#error prone",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "MistypedCDATASection (XML, Error Prone)",
-"tags": "",
-"keywords": "MistypedCDATASection",
-"url": "pmd_rules_xml_errorprone.html#mistypedcdatasection",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Ecmascript, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_ecmascript_errorprone.html#error prone",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "AvoidTrailingComma (Ecmascript, Error Prone)",
-"tags": "",
-"keywords": "AvoidTrailingComma",
-"url": "pmd_rules_ecmascript_errorprone.html#avoidtrailingcomma",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EqualComparison (Ecmascript, Error Prone)",
-"tags": "",
-"keywords": "EqualComparison",
-"url": "pmd_rules_ecmascript_errorprone.html#equalcomparison",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "InnaccurateNumericLiteral (Ecmascript, Error Prone)",
-"tags": "",
-"keywords": "InnaccurateNumericLiteral",
-"url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Apex, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_apex_errorprone.html#error prone",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "ApexCSRF (Apex, Error Prone)",
-"tags": "",
-"keywords": "ApexCSRF",
-"url": "pmd_rules_apex_errorprone.html#apexcsrf",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "AvoidDirectAccessTriggerMap (Apex, Error Prone)",
-"tags": "",
-"keywords": "AvoidDirectAccessTriggerMap",
-"url": "pmd_rules_apex_errorprone.html#avoiddirectaccesstriggermap",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "AvoidHardcodingId (Apex, Error Prone)",
-"tags": "",
-"keywords": "AvoidHardcodingId",
-"url": "pmd_rules_apex_errorprone.html#avoidhardcodingid",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "AvoidNonExistentAnnotations (Apex, Error Prone)",
-"tags": "",
-"keywords": "AvoidNonExistentAnnotations",
-"url": "pmd_rules_apex_errorprone.html#avoidnonexistentannotations",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyCatchBlock (Apex, Error Prone)",
-"tags": "",
-"keywords": "EmptyCatchBlock",
-"url": "pmd_rules_apex_errorprone.html#emptycatchblock",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyIfStmt (Apex, Error Prone)",
-"tags": "",
-"keywords": "EmptyIfStmt",
-"url": "pmd_rules_apex_errorprone.html#emptyifstmt",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyStatementBlock (Apex, Error Prone)",
-"tags": "",
-"keywords": "EmptyStatementBlock",
-"url": "pmd_rules_apex_errorprone.html#emptystatementblock",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyTryOrFinallyBlock (Apex, Error Prone)",
-"tags": "",
-"keywords": "EmptyTryOrFinallyBlock",
-"url": "pmd_rules_apex_errorprone.html#emptytryorfinallyblock",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyWhileStmt (Apex, Error Prone)",
-"tags": "",
-"keywords": "EmptyWhileStmt",
-"url": "pmd_rules_apex_errorprone.html#emptywhilestmt",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "MethodWithSameNameAsEnclosingClass (Apex, Error Prone)",
-"tags": "",
-"keywords": "MethodWithSameNameAsEnclosingClass",
-"url": "pmd_rules_apex_errorprone.html#methodwithsamenameasenclosingclass",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "OverrideBothEqualsAndHashcode (Apex, Error Prone)",
-"tags": "",
-"keywords": "OverrideBothEqualsAndHashcode",
-"url": "pmd_rules_apex_errorprone.html#overridebothequalsandhashcode",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "TestMethodsMustBeInTestClasses (Apex, Error Prone)",
-"tags": "",
-"keywords": "TestMethodsMustBeInTestClasses",
-"url": "pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Error Prone (PLSQL, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
@@ -4218,28 +4209,37 @@
 
 
 {
-"title": "Error Prone (Maven POM, Error Prone)",
+"title": "Error Prone (Ecmascript, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_pom_errorprone.html#error prone",
+"url": "pmd_rules_ecmascript_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "InvalidDependencyTypes (Maven POM, Error Prone)",
+"title": "AvoidTrailingComma (Ecmascript, Error Prone)",
 "tags": "",
-"keywords": "InvalidDependencyTypes",
-"url": "pmd_rules_pom_errorprone.html#invaliddependencytypes",
+"keywords": "AvoidTrailingComma",
+"url": "pmd_rules_ecmascript_errorprone.html#avoidtrailingcomma",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "ProjectVersionAsDependencyVersion (Maven POM, Error Prone)",
+"title": "EqualComparison (Ecmascript, Error Prone)",
 "tags": "",
-"keywords": "ProjectVersionAsDependencyVersion",
-"url": "pmd_rules_pom_errorprone.html#projectversionasdependencyversion",
+"keywords": "EqualComparison",
+"url": "pmd_rules_ecmascript_errorprone.html#equalcomparison",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "InnaccurateNumericLiteral (Ecmascript, Error Prone)",
+"tags": "",
+"keywords": "InnaccurateNumericLiteral",
+"url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -4777,6 +4777,62 @@
 
 
 {
+"title": "Performance (Apex, Performance)",
+"tags": "",
+"keywords": "Performance",
+"url": "pmd_rules_apex_performance.html#performance",
+"summary": "Rules that flag suboptimal code."
+}
+,
+
+{
+"title": "AvoidDmlStatementsInLoops (Apex, Performance)",
+"tags": "",
+"keywords": "AvoidDmlStatementsInLoops",
+"url": "pmd_rules_apex_performance.html#avoiddmlstatementsinloops",
+"summary": "Rules that flag suboptimal code."
+}
+,
+
+{
+"title": "AvoidSoqlInLoops (Apex, Performance)",
+"tags": "",
+"keywords": "AvoidSoqlInLoops",
+"url": "pmd_rules_apex_performance.html#avoidsoqlinloops",
+"summary": "Rules that flag suboptimal code."
+}
+,
+
+{
+"title": "AvoidSoslInLoops (Apex, Performance)",
+"tags": "",
+"keywords": "AvoidSoslInLoops",
+"url": "pmd_rules_apex_performance.html#avoidsoslinloops",
+"summary": "Rules that flag suboptimal code."
+}
+,
+
+{
+"title": "OperationWithLimitsInLoop (Apex, Performance)",
+"tags": "",
+"keywords": "OperationWithLimitsInLoop",
+"url": "pmd_rules_apex_performance.html#operationwithlimitsinloop",
+"summary": "Rules that flag suboptimal code."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Performance (Java, Performance)",
 "tags": "",
 "keywords": "Performance",
@@ -5085,62 +5141,6 @@
 
 
 {
-"title": "Performance (Apex, Performance)",
-"tags": "",
-"keywords": "Performance",
-"url": "pmd_rules_apex_performance.html#performance",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "AvoidDmlStatementsInLoops (Apex, Performance)",
-"tags": "",
-"keywords": "AvoidDmlStatementsInLoops",
-"url": "pmd_rules_apex_performance.html#avoiddmlstatementsinloops",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "AvoidSoqlInLoops (Apex, Performance)",
-"tags": "",
-"keywords": "AvoidSoqlInLoops",
-"url": "pmd_rules_apex_performance.html#avoidsoqlinloops",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "AvoidSoslInLoops (Apex, Performance)",
-"tags": "",
-"keywords": "AvoidSoslInLoops",
-"url": "pmd_rules_apex_performance.html#avoidsoslinloops",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "OperationWithLimitsInLoop (Apex, Performance)",
-"tags": "",
-"keywords": "OperationWithLimitsInLoop",
-"url": "pmd_rules_apex_performance.html#operationwithlimitsinloop",
-"summary": "Rules that flag suboptimal code."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Performance (XSL, Performance)",
 "tags": "",
 "keywords": "Performance",
@@ -5380,91 +5380,6 @@
 
 
 {
-"title": "Security (Java, Security)",
-"tags": "",
-"keywords": "Security",
-"url": "pmd_rules_java_security.html#security",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "HardCodedCryptoKey (Java, Security)",
-"tags": "",
-"keywords": "HardCodedCryptoKey",
-"url": "pmd_rules_java_security.html#hardcodedcryptokey",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "InsecureCryptoIv (Java, Security)",
-"tags": "",
-"keywords": "InsecureCryptoIv",
-"url": "pmd_rules_java_security.html#insecurecryptoiv",
-"summary": "Rules that flag potential security flaws."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Security (Salesforce VisualForce, Security)",
-"tags": "",
-"keywords": "Security",
-"url": "pmd_rules_vf_security.html#security",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "VfCsrf (Salesforce VisualForce, Security)",
-"tags": "",
-"keywords": "VfCsrf",
-"url": "pmd_rules_vf_security.html#vfcsrf",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "VfHtmlStyleTagXss (Salesforce VisualForce, Security)",
-"tags": "",
-"keywords": "VfHtmlStyleTagXss",
-"url": "pmd_rules_vf_security.html#vfhtmlstyletagxss",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "VfUnescapeEl (Salesforce VisualForce, Security)",
-"tags": "",
-"keywords": "VfUnescapeEl",
-"url": "pmd_rules_vf_security.html#vfunescapeel",
-"summary": "Rules that flag potential security flaws."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Security (Apex, Security)",
 "tags": "",
 "keywords": "Security",
@@ -5568,6 +5483,91 @@
 "tags": "",
 "keywords": "ApexXSSFromURLParam",
 "url": "pmd_rules_apex_security.html#apexxssfromurlparam",
+"summary": "Rules that flag potential security flaws."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Security (Java, Security)",
+"tags": "",
+"keywords": "Security",
+"url": "pmd_rules_java_security.html#security",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "HardCodedCryptoKey (Java, Security)",
+"tags": "",
+"keywords": "HardCodedCryptoKey",
+"url": "pmd_rules_java_security.html#hardcodedcryptokey",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "InsecureCryptoIv (Java, Security)",
+"tags": "",
+"keywords": "InsecureCryptoIv",
+"url": "pmd_rules_java_security.html#insecurecryptoiv",
+"summary": "Rules that flag potential security flaws."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Security (Salesforce VisualForce, Security)",
+"tags": "",
+"keywords": "Security",
+"url": "pmd_rules_vf_security.html#security",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "VfCsrf (Salesforce VisualForce, Security)",
+"tags": "",
+"keywords": "VfCsrf",
+"url": "pmd_rules_vf_security.html#vfcsrf",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "VfHtmlStyleTagXss (Salesforce VisualForce, Security)",
+"tags": "",
+"keywords": "VfHtmlStyleTagXss",
+"url": "pmd_rules_vf_security.html#vfhtmlstyletagxss",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "VfUnescapeEl (Salesforce VisualForce, Security)",
+"tags": "",
+"keywords": "VfUnescapeEl",
+"url": "pmd_rules_vf_security.html#vfunescapeel",
 "summary": "Rules that flag potential security flaws."
 }
 

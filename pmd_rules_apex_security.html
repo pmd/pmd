@@ -1486,6 +1486,11 @@ Hard-wiring these values greatly compromises the security of encrypted data.</p>
 Since Apex runs in system mode not having proper permissions checks results in escalation of
 privilege and may produce runtime errors. This check forces you to handle such scenarios.</p>
 
+<p>Note: This rule will produce false positives for VF getter methods. In VF getters the access permission
+check happens automatically and is not needed explicitly. However, the rule can’t reliably determine
+whether a getter is a VF getter or not and reports a violation in any case. In such cases, the violation
+should be <a href="pmd_userdocs_suppressing_warnings.html">suppressed</a>.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexCRUDViolationRule.java">net.sourceforge.pmd.lang.apex.rule.security.ApexCRUDViolationRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -2117,7 +2122,7 @@ to avoid XSS attacks.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 19, 2021 <br />
+ Site last generated: Apr 23, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
