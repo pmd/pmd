@@ -856,8 +856,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Count does not expose data and CRUD checks are unnecessary</description>
-        <expected-problems>0</expected-problems>
+        <description>Count does expose data and CRUD checks are necessary</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public Integer getBaz() {
@@ -868,9 +868,9 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Count does not leak data and CRUD checks are unnecessary
+        <description>Count does leak data and CRUD checks are necessary
         </description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void getBaz() {
