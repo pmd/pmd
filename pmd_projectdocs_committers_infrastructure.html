@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
 <meta name="keywords" content=" ">
-<title>Getting Help | PMD Source Code Analyzer</title>
+<title>Infrastructure | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
 
@@ -140,7 +140,7 @@
                                 searchInput: document.getElementById('search-input'),
                                 resultsContainer: document.getElementById('results-container'),
                                 dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Getting Help">{title}</a></li>',
+                                searchResultTemplate: '<li><a href="{url}" title="Infrastructure">{title}</a></li>',
                     noResultsText: 'No results found.',
                             limit: 10,
                             fuzzy: true,
@@ -226,7 +226,7 @@
             
 
                 
-                <li class="active"><a href="pmd_about_help.html">Getting help</a></li>
+                <li><a href="pmd_about_help.html">Getting help</a></li>
                 
 
             
@@ -1333,7 +1333,7 @@
                         
                         
                         
-                        <li><a href="pmd_projectdocs_committers_infrastructure.html">Infrastructure</a></li>
+                        <li class="active"><a href="pmd_projectdocs_committers_infrastructure.html">Infrastructure</a></li>
                         
                         
                         
@@ -1386,7 +1386,7 @@
         <!-- Content Column -->
         <div class="col-md-9" id="tg-sb-content">
             <div class="post-header">
-   <h1 class="post-title-main">Getting Help</h1>
+   <h1 class="post-title-main">Infrastructure</h1>
 </div>
 
 
@@ -1417,33 +1417,97 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
         
         
 
-    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/about/help.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/projectdocs/committers/infrastructure.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
 
     
 
-  <p>There are numerous ways of getting help:</p>
+  <p>This page describes, which infrastructure and services is used by the pmd project.</p>
+
+<h2 id="github">github</h2>
+
+<p>The main repository is hosted on <a href="https://github.com/pmd">https://github.com/pmd</a>. We own the organization “pmd”.</p>
 
 <ul>
-  <li>
-    <p>Search for already existing questions on <a href="https://stackoverflow.com/">StackOverflow</a>.</p>
-  </li>
-  <li>
-    <p>If you can’t find your problem, post a new question. Don’t forget to tag the question with <a href="https://stackoverflow.com/questions/tagged/pmd"><code class="language-plaintext highlighter-rouge">pmd</code></a>.</p>
-  </li>
-  <li>
-    <p>If you found a bug, please create a new <a href="https://github.com/pmd/pmd/issues">github issue</a>.</p>
-  </li>
-  <li>
-    <p>You can also ask questions on <a href="https://github.com/pmd/pmd/discussions">github discussions</a>.</p>
-  </li>
-  <li>
-    <p>Or you can join the <a href="https://lists.sourceforge.net/lists/listinfo/pmd-devel">Mailing List</a> or browse
-through the archives (<a href="http://java-pmd.30631.n5.nabble.com/">archive1</a>, <a href="http://web.archive.org/web/20160715035623/http://blog.gmane.org:80/gmane.comp.java.audit.pmd.devel">archive2</a>).</p>
-  </li>
-  <li>
-    <p>Of course, you can also directly jump to our <a href="https://github.com/pmd/pmd">source code on github</a>.</p>
-  </li>
+  <li>source code in git repositories</li>
+  <li>releases</li>
+  <li>issue tracker</li>
+  <li>discussions</li>
+  <li>pull requests</li>
+  <li>github actions for CI</li>
 </ul>
+
+<p>Also the <a href="pmd_projectdocs_committers_main_landing_page.html">main landing page</a> (<a href="https://pmd.github.io">https://pmd.github.io</a>)
+is hosted using github pages.</p>
+
+<h2 id="sourceforge">sourceforge</h2>
+
+<p>Before moving to github, sourceforge was the main place. It is still there: <a href="https://sourceforge.net/projects/pmd/">https://sourceforge.net/projects/pmd/</a>.</p>
+
+<p>Nowadays it is used for:</p>
+
+<ul>
+  <li>hosting archive of binaries: https://sourceforge.net/projects/pmd/files/</li>
+  <li>hosting an archive of documentation: https://pmd.sourceforge.io/archive.html</li>
+  <li>mailing lists:
+    <ul>
+      <li><a href="mailto:pmd-commits@lists.sourceforge.net">pmd-commits@lists.sourceforge.net</a></li>
+      <li><a href="mailto:pmd-devel@lists.sourceforge.net">pmd-devel@lists.sourceforge.net</a></li>
+    </ul>
+  </li>
+  <li>discussion forum</li>
+</ul>
+
+<p>It also contains the old issue tracker.</p>
+
+<h2 id="domain-email-and-homepage">domain, email and homepage</h2>
+
+<p>We are using a webhosting package by <a href="https://www.netcup.de/">Netcup</a>.</p>
+
+<p>The following domains are registered for us:</p>
+
+<ul>
+  <li>pmd-code.org</li>
+  <li>pmd-code.io</li>
+  <li>pmd-code.com</li>
+</ul>
+
+<p>The webhosting package provides these services:</p>
+
+<ul>
+  <li>email service (including mailbox via IMAP)</li>
+  <li>web pages</li>
+</ul>
+
+<p>The homepage <a href="https://pmd-code.org">https://pmd-code.org</a> redirects to <a href="https://pmd.github.io">https://pmd.github.io</a>.</p>
+
+<p>Some docs are hosted at <a href="https://docs.pmd-code.org/">https://docs.pmd-code.org/</a>.</p>
+
+<h2 id="other-services">other services</h2>
+
+<ul>
+  <li>Deployment to maven central via <a href="https://oss.sonatype.org/">https://oss.sonatype.org/</a> and <a href="https://issues.sonatype.org/browse/OSSRH-2295">https://issues.sonatype.org/browse/OSSRH-2295</a>
+Uploading requires credentials (CI_DEPLOY_USERNAME, CI_DEPLOY_PASSWORD) and permissions.</li>
+  <li>Hosting eclipse plugin update site via <a href="https://bintray.com/">https://bintray.com/</a>
+Uploading requires credentials (BINTRAY_USER, BINTRAY_APIKEY)
+Note: This service is retired and the update site is now hosted via Github Pages (<a href="https://github.com/pmd/pmd-eclipse-plugin-p2-site/">https://github.com/pmd/pmd-eclipse-plugin-p2-site/</a>).</li>
+  <li>Hosting result reports from pmd-regression-tester via <a href="https://chunk.io/">https://chunk.io/</a>
+Uploading requires credentials (PMD_CI_CHUNK_TOKEN)</li>
+  <li>Twitter: <a href="https://twitter.com/pmd_analyzer">https://twitter.com/pmd_analyzer</a></li>
+  <li>Rubygems for pmd-regression-tester: <a href="https://rubygems.org/gems/pmdtester">https://rubygems.org/gems/pmdtester</a>
+Uploading requires credentials (GEM_HOST_API_KEY)</li>
+  <li>sonarcloud: <a href="https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd">https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd</a>
+We use the “CI-based Analysis method” with GitHub Actions.
+Documentation: <a href="https://sonarcloud.io/documentation">https://sonarcloud.io/documentation</a>
+Uploading new analysis results requires credentials (SONAR_TOKEN).
+Login is via github.</li>
+  <li>coveralls: <a href="https://coveralls.io/github/pmd/pmd">https://coveralls.io/github/pmd/pmd</a>
+We don’t use the <a href="https://github.com/marketplace/actions/coveralls-github-action">Coveralls Github Actions</a> but the <a href="https://github.com/trautonen/coveralls-maven-plugin">coveralls-maven-plugin</a>.
+Documentation: <a href="https://docs.coveralls.io/">https://docs.coveralls.io/</a>
+Uploading new results requires credentials (COVERALLS_REPO_TOKEN).
+Login is via github.</li>
+  <li>travis ci was used before github actions: <a href="https://travis-ci.org/github/pmd">https://travis-ci.org/github/pmd</a></li>
+</ul>
+
 
 
     <div class="tags">
@@ -1460,7 +1524,7 @@ through the archives (<a href="http://java-pmd.30631.n5.nabble.com/">archive1</a
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> January 2021<br/> Site last generated: Apr 23, 2021 <br />
+<span>Page last updated:</span> April 2021<br/> Site last generated: Apr 23, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

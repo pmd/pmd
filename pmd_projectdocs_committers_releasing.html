@@ -1333,6 +1333,12 @@
                         
                         
                         
+                        <li><a href="pmd_projectdocs_committers_infrastructure.html">Infrastructure</a></li>
+                        
+                        
+                        
+                        
+                        
                         <li class="active"><a href="pmd_projectdocs_committers_releasing.html">Release process</a></li>
                         
                         
@@ -1418,12 +1424,29 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <p>This page describes the current status of the release process.</p>
 
 <p>Since versions 5.4.5 / 5.5.4 there is an automated release process using <a href="https://travis-ci.com">travis-ci</a>
-in place. However, there are still a few steps, that need manual examination.</p>
+in place. Since 6.30.0, the automated release process is using <a href="https://github.com/pmd/pmd/actions">Github Actions</a>.</p>
 
-<p>Note: You can find a small shell script in the root of the repo: <code class="language-plaintext highlighter-rouge">do-release.sh</code>. This script guides you
-through the release process.</p>
+<p>However, there are still a few steps, that need manual examination.</p>
+
+<h2 id="overview">Overview</h2>
+
+<p>This page gives an overview which tasks are automated to do a full release of PMD. This knowledge is
+required in order to verify that the release was successful or in case the automated process fails for
+some reason. Then individual steps need to be executed manually. Because the build is reproducible, these
+steps can be repeated again if the same tag is used.</p>
+
+<p>The three main steps are:</p>
+
+<ul>
+  <li>Preparations (which creates the tag) - use <code class="language-plaintext highlighter-rouge">do-release.sh</code> for that</li>
+  <li>The actual release (which is automated)</li>
+  <li>Prepare the next release (make sure the current main branch is ready for further development)</li>
+</ul>
 
 <h2 id="preparations">Preparations</h2>
+
+<p>This is the first step. It is always manual and is executed locally. It creates in the end the tag from which
+the release is created.</p>
 
 <p>Make sure code is up to date and everything is committed and pushed with git:</p>
 
@@ -1432,20 +1455,41 @@ $ git pull
 $ git status
 </code></pre></div></div>
 
+<p>As a help for the preparation task, the script <code class="language-plaintext highlighter-rouge">do-release.sh</code> guides you through the preparation tasks
+and the whole release process. The script requires a specific source code folder and additional checkouts locally,
+e.g. it requires that the repo <code class="language-plaintext highlighter-rouge">pmd.github.io</code> is checked out aside the main pmd repo:</p>
+
+<ul>
+  <li><a href="https://github.com/pmd/pmd">https://github.com/pmd/pmd</a> ➡️ <code class="language-plaintext highlighter-rouge">/home/joe/source/pmd</code></li>
+  <li><a href="https://github.com/pmd/pmd.github.io">https://github.com/pmd/pmd.github.io</a> ➡️ <code class="language-plaintext highlighter-rouge">/home/joe/source/pmd.github.io</code></li>
+</ul>
+
+<p>The script <code class="language-plaintext highlighter-rouge">do-release.sh</code> is called in the directory <code class="language-plaintext highlighter-rouge">/home/joe/source/pmd</code> and searches for <code class="language-plaintext highlighter-rouge">../pmd.github.io</code>.</p>
+
+<p>Also make sure, that the repo “pmd.github.io” is locally up to date and has no local changes.</p>
+
 <h3 id="the-release-notes-and-docs">The Release Notes and docs</h3>
+
+<p>Before the release, you need to verify the release notes: Does it contain all the relevant changes for the
+release? Is it formatted properly? Are there any typos? Does it render properly?</p>
+
+<p>As the release notes are part of the source code, it is not simple to change it afterwards. While the source
+code for a tag cannot be changed anymore, the published release notes on the github releases pages or the
+new posts can be changed afterwards (although that’s an entirely manual process).</p>
 
 <p>You can find the release notes here: <code class="language-plaintext highlighter-rouge">docs/pages/release_notes.md</code>.</p>
 
-<p>The date (<code class="language-plaintext highlighter-rouge">date +%d-%B-%Y</code>) and the version (remove the SNAPSHOT) must be updated in <code class="language-plaintext highlighter-rouge">docs/_config.yml</code>,  e.g.</p>
+<p>The date (<code class="language-plaintext highlighter-rouge">date +%d-%B-%Y</code>) and the version (remove the SNAPSHOT) must be updated in <code class="language-plaintext highlighter-rouge">docs/_config.yml</code>,  e.g.
+in order to release version “6.34.0”, the configuration should look like this:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
-    version: 6.22.0
-    previous_version: 6.21.0
-    date: 12-March-2020
-    release_type: minor
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">pmd</span><span class="pi">:</span>
+    <span class="na">version</span><span class="pi">:</span> <span class="s">6.34.0</span>
+    <span class="na">previous_version</span><span class="pi">:</span> <span class="s">6.33.0</span>
+    <span class="na">date</span><span class="pi">:</span> <span class="s">24-April-2021</span>
+    <span class="na">release_type</span><span class="pi">:</span> <span class="s">minor</span>
 </code></pre></div></div>
 
-<p>The release type could be one of “bugfix”, “minor”, or “major”.</p>
+<p>The release type could be one of “bugfix” (e.g. 6.34.x), “minor” (6.x.0), or “major” (x.0.0).</p>
 
 <p>The release notes usual mention any new rules that have been added since the last release.
 Please double check the file <code class="language-plaintext highlighter-rouge">pmd-core/src/main/resources/rulesets/releases/&lt;version&gt;.xml</code>, so
@@ -1470,8 +1514,8 @@ on github with the title of the new release is searched. Make sure, there is a m
 on <a href="https://github.com/pmd/pmd/milestones">https://github.com/pmd/pmd/milestones</a>. The following snippet will
 create the numbers, that can be attached to the release notes as a last section:</p>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">LAST_VERSION</span><span class="o">=</span>6.22.0
-<span class="nv">NEW_VERSION</span><span class="o">=</span>6.23.0
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">LAST_VERSION</span><span class="o">=</span>6.33.0
+<span class="nv">NEW_VERSION</span><span class="o">=</span>6.34.0
 <span class="nv">NEW_VERSION_COMMITISH</span><span class="o">=</span>HEAD
 
 <span class="nb">echo</span> <span class="s2">"### Stats"</span>
@@ -1490,18 +1534,20 @@ $ git push
 
 <h3 id="the-homepage">The Homepage</h3>
 
-<p>The github repo <code class="language-plaintext highlighter-rouge">pmd.github.io</code> hosts the homepage for <a href="https://pmd.github.io">https://pmd.github.io</a>.</p>
+<p>The github repo <code class="language-plaintext highlighter-rouge">pmd.github.io</code> hosts the homepage for <a href="https://pmd.github.io">https://pmd.github.io</a>.
+All the following tasks are to be done in this repo.</p>
 
 <p>The new version needs to be entered into <code class="language-plaintext highlighter-rouge">_config.yml</code>, e.g.:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
-  latestVersion: 6.22.0
-  latestVersionDate: 12-March-2020
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">pmd</span><span class="pi">:</span>
+  <span class="na">latestVersion</span><span class="pi">:</span> <span class="s">6.34.0</span>
+  <span class="na">latestVersionDate</span><span class="pi">:</span> <span class="s">24-April-2021</span>
 </code></pre></div></div>
 
-<p>Also move the previous version down into the “downloads” section.</p>
+<p>Also move the previous version down into the “downloads” section. We usually keep only the last 3 versions
+in this list, so remove the oldest version.</p>
 
-<p>Then create a new page for the new release, e.g. <code class="language-plaintext highlighter-rouge">_posts/2020-03-12-PMD-6.22.0.md</code> and copy
+<p>Then create a new page for the new release, e.g. <code class="language-plaintext highlighter-rouge">_posts/2021-04-24-PMD-6.34.0.md</code> and copy
 the release notes into this page. This will appear under the news section.</p>
 
 <p>Check in all (version) changes to branch master:</p>
@@ -1510,85 +1556,209 @@ the release notes into this page. This will appear under the news section.</p>
 $ git push
 </code></pre></div></div>
 
-<h2 id="creating-the-release">Creating the release</h2>
+<h2 id="the-actual-release">The actual release</h2>
 
-<p>The release is created using the <strong>maven-release-plugin</strong>. This plugin changes the version by basically
-removing the “-SNAPSHOT” suffix, builds the changed project locally, commits the version change, creates
+<p>The actual release starts with one last local command: calling <strong>maven-release-plugin</strong>.</p>
+
+<p>This plugin changes the version by basically removing the “-SNAPSHOT” suffix, builds the changed project
+locally, commits the version change, creates
 a new tag from this commit, changes the version of the project to the next snapshot, commits this change
 and pushes everything.</p>
 
 <p><code class="language-plaintext highlighter-rouge">RELEASE_VERSION</code> is the version of the release. It is reused for the tag. <code class="language-plaintext highlighter-rouge">DEVELOPMENT_VERSION</code> is the
 next snapshot version after the release.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn -B release:clean release:prepare \
-    -Dtag=pmd_releases/${RELEASE_VERSION} \
-    -DreleaseVersion=${RELEASE_VERSION} \
-    -DdevelopmentVersion=${DEVELOPMENT_VERSION}
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">RELEASE_VERSION</span><span class="o">=</span>6.34.0
+<span class="nv">DEVELOPMENT_VERSION</span><span class="o">=</span>6.35.0-SNAPSHOT
+./mvnw <span class="nt">-B</span> release:clean release:prepare <span class="se">\</span>
+    <span class="nt">-Dtag</span><span class="o">=</span>pmd_releases/<span class="k">${</span><span class="nv">RELEASE_VERSION</span><span class="k">}</span> <span class="se">\</span>
+    <span class="nt">-DreleaseVersion</span><span class="o">=</span><span class="k">${</span><span class="nv">RELEASE_VERSION</span><span class="k">}</span> <span class="se">\</span>
+    <span class="nt">-DdevelopmentVersion</span><span class="o">=</span><span class="k">${</span><span class="nv">DEVELOPMENT_VERSION</span><span class="k">}</span>
 </code></pre></div></div>
 
-<p>Once the maven plugin has pushed the tag, travis-ci will start and build a new version from this tag. Since
-it is a tag build and a released version build, travis-ci will do a couple of additional stuff:</p>
+<p>Once the maven plugin has pushed the tag, github actions will start and build a new version from this tag. Since
+it is a tag build and a released version build, the build script will do a couple of additional stuff.
+This is all automated in <code class="language-plaintext highlighter-rouge">.ci/build.sh</code>.</p>
+
+<p>Here is, what happens:</p>
 
 <ul>
   <li>Deploy and release the build to maven central, so that it can be downloaded from
 <a href="https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/">https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/</a>. This is done automatically, if
-all unit tests pass on travis-ci. The plugin <a href="https://github.com/sonatype/nexus-maven-plugins/tree/master/staging/maven-plugin">nexus-staging-maven-plugin</a> is used for that.</li>
+all unit tests pass and the build doesn’t fail for any other reason.
+The plugin <a href="https://github.com/sonatype/nexus-maven-plugins/tree/master/staging/maven-plugin">nexus-staging-maven-plugin</a> is used for that.</li>
   <li>Upload the new binaries to github releases under <a href="https://github.com/pmd/pmd/releases">https://github.com/pmd/pmd/releases</a>. It also uploads
-the release notes.</li>
+the release notes from <code class="language-plaintext highlighter-rouge">docs/pages/release_notes.md</code>.
+Note: The during the process, the release is a draft mode and not visible yet.
+At the end of the process, the release will be published.</li>
   <li>Upload the new binaries additionally to sourceforge, so that they can be downloaded from
-<a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a>, including the release notes. The new binaries are
-selected as the new default downloads for PMD.</li>
+<a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a>, including the release notes.</li>
+  <li>Render the documentation in <code class="language-plaintext highlighter-rouge">docs/</code> with <code class="language-plaintext highlighter-rouge">bundle exec jekyll build</code> and create a zip file from it.</li>
+  <li>Upload the doc zip file to the current github release under <a href="https://github.com/pmd/pmd/releases">https://github.com/pmd/pmd/releases</a> and
+to <a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a>.</li>
+  <li>Upload the documentation to <a href="https://docs.pmd-code.org">https://docs.pmd-code.org</a>, e.g. <a href="https://docs.pmd-code.org/pmd-doc-6.34.0/">https://docs.pmd-code.org/pmd-doc-6.34.0/</a> and
+create a symlink, so that <a href="https://docs.pmd-code.org/latest/">https://docs.pmd-code.org/latest/</a> points to the new version.</li>
+  <li>Remove the old snapshot documention, e.g. so that <a href="https://docs.pmd-code.org/pmd-doc-6.34.0-SNAPSHOT/">https://docs.pmd-code.org/pmd-doc-6.34.0-SNAPSHOT/</a> is gone.
+Also create a symlink from pmd-doc-6.34.0-SNAPSHOT to pmd-doc-6.34.0, so that old references still work, e.g.
+<a href="https://docs.pmd-code.org/pmd-doc-6.34.0-SNAPSHOT/">https://docs.pmd-code.org/pmd-doc-6.34.0-SNAPSHOT/</a> points to the released version.</li>
+  <li>Deploy javadoc to “https://docs.pmd-code.org/apidocs/*/RELEASE_VERSION/”, e.g.
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.34.0/">https://docs.pmd-code.org/apidocs/pmd-core/6.34.0/</a>. This is done for all modules.</li>
+  <li>Remove old javadoc for the SNAPSHOT version, e.g. delete <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.34.0-SNAPSHOT/">https://docs.pmd-code.org/apidocs/pmd-core/6.34.0-SNAPSHOT/</a>.</li>
+  <li>Create a draft news post on <a href="https://sourceforge.net/p/pmd/news/">https://sourceforge.net/p/pmd/news/</a> for the new release. This contains the
+rendered release notes.</li>
   <li>Add the documentation of the new release to a subfolder on <a href="https://pmd.github.io">https://pmd.github.io</a>, also make
-this folder available as <code class="language-plaintext highlighter-rouge">latest</code>.</li>
-  <li>Upload the documentation to <a href="https://docs.pmd-code.org">https://docs.pmd-code.org</a>.</li>
+this folder available as <code class="language-plaintext highlighter-rouge">latest</code>, so that <a href="https://pmd.github.io/latest/">https://pmd.github.io/latest/</a> shows the new
+version and <a href="https://pmd.github.io/pmd-6.34.0/">https://pmd.github.io/pmd-6.34.0/</a> is the URL for the specific release.</li>
+  <li>Also copy the documentation to sourceforge’s web space, so that it is available as
+<a href="https://pmd.sourceforge.io/pmd-6.34.0/">https://pmd.sourceforge.io/pmd-6.34.0/</a>. All previously copied version are listed
+under <a href="https://pmd.sourceforge.io/archive.phtml">https://pmd.sourceforge.io/archive.phtml</a>.</li>
+  <li>After all this is done, the release on github (<a href="https://github.com/pmd/pmd/releases">https://github.com/pmd/pmd/releases</a>) is published
+and the news post on sourceforge (https://sourceforge.net/p/pmd/news/&gt; is publishes as well.</li>
+  <li>The new binary at <a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a> is
+selected as the new default for PMD.</li>
+  <li>As a last step, a new baseline for the <a href="https://github.com/pmd/pmd-regression-tester">regression tester</a>
+is created and uploaded to <a href="https://pmd-code.org/pmd-regression-tester">https://pmd-code.org/pmd-regression-tester</a>.</li>
 </ul>
 
-<h2 id="after-the-release">After the release</h2>
-
-<p>The release on travis currently takes about 30 minutes. Once this is done, you can spread the news:</p>
-
-<h3 id="submit-a-news-on-sf">Submit a news on SF</h3>
-
-<p>Submit news to SF on the <a href="https://sourceforge.net/p/pmd/news/">PMD Project News</a> page. You can use
-the following template:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PMD &lt;version&gt; released
-
-*   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F&lt;version&gt;
-*   Documentation: https://pmd.github.io/pmd-&lt;version&gt;/
-
-And Copy-Paste the release notes
-</code></pre></div></div>
-
-<h3 id="write-an-email-to-the-mailing-list">Write an email to the mailing list</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>To: PMD Developers List &lt;pmd-devel@lists.sourceforge.net&gt;
-Subject: [ANNOUNCE] PMD &lt;version&gt; released
-
-
-*   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F&lt;version&gt;
-*   Documentation: https://pmd.github.io/pmd-&lt;version&gt;/
-
-And Copy-Paste the release notes
-</code></pre></div></div>
-
-<h2 id="prepare-the-next-release">Prepare the next release</h2>
-
-<h3 id="prepare-the-new-release-notes">Prepare the new release notes</h3>
+<p>The release on github actions currently takes about 30-45 minutes. Once this is done, you can spread additional
+news:</p>
 
 <ul>
   <li>
-    <p>Update version in <strong>docs/_config.yml</strong>. Note - the next version needs to have a SNAPSHOT in it.</p>
+    <p>Write an email to the mailing list</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
-    version: 6.23.0-SNAPSHOT
-    previous_version: 6.22.0
-    date: ??-??-2020
-    release_type: minor
+    <p>To: PMD Developers List <a href="mailto:pmd-devel@lists.sourceforge.net">pmd-devel@lists.sourceforge.net</a>
+  Subject: [ANNOUNCE] PMD <version> released</version></p>
+
+    <ul>
+      <li>Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F<version></version></li>
+      <li>Documentation: https://pmd.github.io/pmd-<version>/</version></li>
+    </ul>
+
+    <p>And Copy-Paste the release notes</p>
+  </li>
+  <li>
+    <p>Tweet about the new release</p>
+  </li>
+</ul>
+
+<p>Tweet on <a href="https://twitter.com/pmd_analyzer">https://twitter.com/pmd_analyzer</a>, eg.:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PMD 6.34.0 released: https://github.com/pmd/pmd/releases/tag/pmd_releases/6.34.0 #PMD
+</code></pre></div></div>
+
+<h3 id="checklist">Checklist</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Description</th>
+      <th>URL</th>
+      <th>☐ / ✔</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>maven central</td>
+      <td>The new version of all artifacts are available in maven central</td>
+      <td><a href="https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/">https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>github releases</td>
+      <td>A new release with 3 assets (bin, src, doc) is created</td>
+      <td><a href="https://github.com/pmd/pmd/releases">https://github.com/pmd/pmd/releases</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>sourceforge files</td>
+      <td>The 3 assets (bin, src, doc) are uploaded, the new version is pre-selected as latest</td>
+      <td><a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>homepage</td>
+      <td>Main landing page points to new version, doc for new version is available</td>
+      <td><a href="https://pmd.github.io">https://pmd.github.io</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>homepage2</td>
+      <td>New blogpost for the new release is posted</td>
+      <td><a href="https://pmd.github.io/#news">https://pmd.github.io/#news</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>docs</td>
+      <td>New docs are uploaded</td>
+      <td><a href="https://docs.pmd-code.org/latest/">https://docs.pmd-code.org/latest/</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>docs-archive</td>
+      <td>New docs are also on archive site</td>
+      <td><a href="https://pmd.sourceforge.io/archive.phtml">https://pmd.sourceforge.io/archive.phtml</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>javadoc</td>
+      <td>New javadocs are uploaded</td>
+      <td><a href="https://docs.pmd-code.org/apidocs/">https://docs.pmd-code.org/apidocs/</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>news</td>
+      <td>New blogpost on sourceforge is posted</td>
+      <td><a href="https://sourceforge.net/p/pmd/news/">https://sourceforge.net/p/pmd/news/</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>regression-tester</td>
+      <td>New release baseline is uploaded</td>
+      <td><a href="https://pmd-code.org/pmd-regression-tester">https://pmd-code.org/pmd-regression-tester</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>mailing list</td>
+      <td>announcement on mailing list is sent</td>
+      <td><a href="https://sourceforge.net/p/pmd/mailman/pmd-devel/">https://sourceforge.net/p/pmd/mailman/pmd-devel/</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>twitter</td>
+      <td>tweet about the new release</td>
+      <td><a href="https://twitter.com/pmd_analyzer">https://twitter.com/pmd_analyzer</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="prepare-the-next-release">Prepare the next release</h2>
+
+<p>There are a couple of manual steps needed to prepare the current main branch for further development.</p>
+
+<ul>
+  <li>Move any open issues to the next milestone, close the current milestone
+on <a href="https://github.com/pmd/pmd/milestones">https://github.com/pmd/pmd/milestones</a> and create a new one for the next
+version (if one doesn’t exist already).</li>
+  <li>
+    <p>Update version in <strong>docs/_config.yml</strong>. Note - the next version needs to have a SNAPSHOT
+in it otherwise the javadoc links won’t work during development.</p>
+
+    <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">pmd</span><span class="pi">:</span>
+    <span class="na">version</span><span class="pi">:</span> <span class="s">6.35.0-SNAPSHOT</span>
+    <span class="na">previous_version</span><span class="pi">:</span> <span class="s">6.34.0</span>
+    <span class="na">date</span><span class="pi">:</span> <span class="s">??-??-2021</span>
+    <span class="na">release_type</span><span class="pi">:</span> <span class="s">minor</span>
 </code></pre></div>    </div>
   </li>
-  <li>Move version/release info from <strong>docs/pages/release_notes.md</strong> to <strong>docs/pages/release_notes_old.md</strong>.</li>
-  <li>Update version/release info in <strong>docs/pages/release_notes.md</strong>. Use the following template:</li>
+  <li>Prepare a new empty release notes. Note, this is done by <code class="language-plaintext highlighter-rouge">do-release.sh</code> already.
+    <ul>
+      <li>Move version/release info from <strong>docs/pages/release_notes.md</strong> to <strong>docs/pages/release_notes_old.md</strong>.</li>
+      <li>Update version/release info in <strong>docs/pages/release_notes.md</strong>. Use the following template:</li>
+    </ul>
+  </li>
 </ul>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
@@ -1617,16 +1787,11 @@ This is a {{ site.pmd.release_type }} release.
 
 </code></pre></div></div>
 
-<p>Commit and push</p>
+<p>Finally commit and push the changes:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git commit -m "Prepare next development version"
 $ git push origin master
 </code></pre></div></div>
-
-<h3 id="close--create-new-milestones">Close / Create new milestones</h3>
-
-<p>Manage the milestones under <a href="https://github.com/pmd/pmd/milestones">https://github.com/pmd/pmd/milestones</a>.
-Maybe there are some milestones on sourceforge, too: <a href="https://sourceforge.net/p/pmd/bugs/milestones">https://sourceforge.net/p/pmd/bugs/milestones</a>.</p>
 
 <h2 id="branches">Branches</h2>
 
@@ -1657,6 +1822,9 @@ and <code class="language-plaintext highlighter-rouge">mvn versions:set -DnewVer
   <li>Update the release notes on both the new branch and master</li>
 </ul>
 
+<p>The maintenance or bugfix branch could also be created later when needed from the actual tag. Then only the version on
+the maintenance branch needs to be set.</p>
+
 
     <div class="tags">
         
@@ -1672,7 +1840,7 @@ and <code class="language-plaintext highlighter-rouge">mvn versions:set -DnewVer
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 23, 2021 <br />
+<span>Page last updated:</span> April 2021<br/> Site last generated: Apr 23, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
