@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - master
+      - pmd/7.0.x
     tags:
       - '**'
 
