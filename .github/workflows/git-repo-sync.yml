@@ -7,6 +7,7 @@ on:
       - master
     tags:
       - '**'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        fetch-depth: 2
+        fetch-depth: 100
     - name: Setup Environment
       shell: bash
       run: |
