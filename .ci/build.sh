@@ -42,6 +42,8 @@ function build() {
         exit 0
     fi
 
+    # stop early for invalid maven version and branch/tag combination
+    pmd_ci_maven_verify_version || exit 0
 
     if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
         pmd_ci_log_group_start "Build with mvnw"
@@ -51,9 +53,6 @@ function build() {
         pmd_ci_log_info "Stopping build here, because os is not linux"
         exit 0
     fi
-
-    # stop early for invalid maven version and branch/tag combination
-    pmd_ci_maven_verify_version || exit 0
 
     # only builds on pmd/pmd continue here
     pmd_ci_log_group_start "Setup environment"
@@ -149,8 +148,8 @@ function pmd_ci_build_run() {
 #
 function pmd_ci_deploy_build_artifacts() {
     # Deploy to sourceforge files
-    pmd_ci_sourceforge_uploadFile "${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-bin-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
-    pmd_ci_sourceforge_uploadFile "${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-src-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+    pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-bin-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+    pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-src-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
 
     if pmd_ci_maven_isReleaseBuild; then
         # create a draft github release
@@ -170,7 +169,7 @@ function pmd_ci_build_and_upload_doc() {
     pmd_doc_generate_jekyll_site
     pmd_doc_create_archive
 
-    pmd_ci_sourceforge_uploadFile "${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+    pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
     if pmd_ci_maven_isReleaseBuild; then
         pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
     fi
@@ -211,7 +210,7 @@ function pmd_ci_build_and_upload_doc() {
         local release_name
         release_name="PMD ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
         pmd_ci_gh_releases_updateRelease "$GH_RELEASE" "$release_name" "${rendered_release_notes}"
-        pmd_ci_sourceforge_uploadReleaseNotes "${PMD_CI_MAVEN_PROJECT_VERSION}" "${rendered_release_notes}"
+        pmd_ci_sourceforge_uploadReleaseNotes "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "${rendered_release_notes}"
 
         local rendered_release_notes_with_links
         rendered_release_notes_with_links="

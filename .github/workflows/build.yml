@@ -30,6 +30,7 @@ jobs:
         path: |
           ~/.m2/repository
           ~/.cache
+          ~/work/pmd/target/repositories
           vendor/bundle
         key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
