@@ -64,12 +64,19 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+No changes.
+
 ### External Contributions
 
 *   [#3193](https://github.com/pmd/pmd/pull/3193): \[java] New rule: UseStandardCharsets - [Andrea Aime](https://github.com/aaime)
 *   [#3198](https://github.com/pmd/pmd/pull/3198): \[apex] OperationWithLimitsInLoopRule: Support more limit consuming static method invocations - [Jonathan Wiesel](https://github.com/jonathanwiesel)
 *   [#3211](https://github.com/pmd/pmd/pull/3211): \[apex] ApexCRUDViolationRule: Do not assume method is VF getter to avoid CRUD checks - [Jonathan Wiesel](https://github.com/jonathanwiesel)
 *   [#3234](https://github.com/pmd/pmd/pull/3234): \[apex] ApexCRUDViolation: COUNT is indeed CRUD checkable since it exposes data (false-negative) - [Jonathan Wiesel](https://github.com/jonathanwiesel)
+
+### Stats
+* 74 commits
+* 18 closed tickets & PRs
+* Days since last release: 27
 
 {% endtocmaker %}
 
