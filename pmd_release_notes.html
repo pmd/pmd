@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.34.0</li>
+    <li class="sidebarTitle">PMD 6.35.0-SNAPSHOT</li>
     
     
     
@@ -1421,114 +1421,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="24-april-2021---6340">24-April-2021 - 6.34.0</h2>
+  <h2 id="-may-2021---6350-snapshot">??-May-2021 - 6.35.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.34.0.</p>
+<p>The PMD team is pleased to announce PMD 6.35.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="new-rules">New rules</h4>
-
-<ul>
-  <li>
-    <p>The new Java rule <a href="pmd_rules_java_bestpractices.html#usestandardcharsets"><code class="language-plaintext highlighter-rouge">UseStandardCharsets</code></a> finds usages of <code class="language-plaintext highlighter-rouge">Charset.forName</code>,
-where <code class="language-plaintext highlighter-rouge">StandardCharsets</code> can be used instead.</p>
-
-    <p>This rule is also part of the Quickstart Ruleset (<code class="language-plaintext highlighter-rouge">rulesets/java/quickstart.xml</code>) for Java.</p>
-  </li>
-  <li>
-    <p>The new Java rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> replaces the rules
-<a href="pmd_rules_java_bestpractices.html#unusedimports"><code class="language-plaintext highlighter-rouge">UnusedImports</code></a>, <a href="pmd_rules_java_codestyle.html#duplicateimports"><code class="language-plaintext highlighter-rouge">DuplicateImports</code></a>,
-<a href="pmd_rules_java_errorprone.html#importfromsamepackage"><code class="language-plaintext highlighter-rouge">ImportFromSamePackage</code></a>, and <a href="pmd_rules_java_codestyle.html#dontimportjavalang"><code class="language-plaintext highlighter-rouge">DontImportJavaLang</code></a>.</p>
-
-    <p>This rule is also part of the Quickstart Ruleset (<code class="language-plaintext highlighter-rouge">rulesets/java/quickstart.xml</code>) for Java.</p>
-  </li>
-</ul>
-
-<h4 id="modified-rules">Modified rules</h4>
-
-<ul>
-  <li>The Apex rule <a href="pmd_rules_apex_security.html#apexcrudviolation"><code class="language-plaintext highlighter-rouge">ApexCRUDViolation</code></a> does not ignore getters anymore and also flags
-SOQL/SOSL/DML operations without access permission checks in getters. This will produce false positives now for
-VF getter methods, but we can’t reliably detect, whether a getter is a VF getter or not. In such cases,
-the violation should be <a href="pmd_userdocs_suppressing_warnings.html">suppressed</a>.</li>
-</ul>
-
-<h4 id="deprecated-rules">Deprecated rules</h4>
-
-<ul>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="pmd_rules_java_bestpractices.html#unusedimports"><code class="language-plaintext highlighter-rouge">UnusedImports</code></a>: use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> instead</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="pmd_rules_java_codestyle.html#duplicateimports"><code class="language-plaintext highlighter-rouge">DuplicateImports</code></a>: use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> instead</li>
-      <li><a href="pmd_rules_java_codestyle.html#dontimportjavalang"><code class="language-plaintext highlighter-rouge">DontImportJavaLang</code></a>: use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> instead</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="pmd_rules_java_errorprone.html#importfromsamepackage"><code class="language-plaintext highlighter-rouge">ImportFromSamePackage</code></a>: use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> instead</li>
-    </ul>
-  </li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>apex-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/3198">#3198</a>: [apex] OperationWithLimitsInLoopRule: Support more limit consuming static method invocations</li>
-    </ul>
-  </li>
-  <li>apex-security
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3202">#3202</a>: [apex] ApexCRUDViolationRule fails to report CRUD violation on COUNT() queries</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3210">#3210</a>: [apex] ApexCRUDViolationRule false-negative on non-VF getter</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3190">#3190</a>: [java] Use StandardCharsets instead of Charset.forName</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3224">#3224</a>: [java] UnusedAssignment crashes with nested records</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3128">#3128</a>: [java] New rule UnnecessaryImport, deprecate DuplicateImports, ImportFromSamePackage, UnusedImports</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2757">#2757</a>: [java] CloseResource: support Lombok’s @Cleanup annotation</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3169">#3169</a>: [java] CheckSkipResult: NPE when using pattern bindings</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<p>No changes.</p>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/3193">#3193</a>: [java] New rule: UseStandardCharsets - <a href="https://github.com/aaime">Andrea Aime</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3198">#3198</a>: [apex] OperationWithLimitsInLoopRule: Support more limit consuming static method invocations - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3211">#3211</a>: [apex] ApexCRUDViolationRule: Do not assume method is VF getter to avoid CRUD checks - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3234">#3234</a>: [apex] ApexCRUDViolation: COUNT is indeed CRUD checkable since it exposes data (false-negative) - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
-</ul>
-
-<h3 id="stats">Stats</h3>
-<ul>
-  <li>74 commits</li>
-  <li>18 closed tickets &amp; PRs</li>
-  <li>Days since last release: 27</li>
-</ul>
 
 
 
