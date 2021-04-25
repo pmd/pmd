@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEmptyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -73,9 +74,14 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
         return declaration instanceof ASTFieldDeclaration
             || declaration instanceof ASTInitializer
             || declaration instanceof ASTEnumConstant
+            || declaration instanceof ASTEmptyDeclaration
             || declaration instanceof ASTEnumDeclaration && getProperty(IGNORE_ENUM_DECLARATIONS)
-            || declaration instanceof ASTAnyTypeDeclaration
-            && ((ASTAnyTypeDeclaration) declaration).isRegularInterface() && getProperty(IGNORE_INTERFACE_DECLARATIONS);
+            || isInterface(declaration) && getProperty(IGNORE_INTERFACE_DECLARATIONS);
+    }
+
+    private boolean isInterface(ASTBodyDeclaration declaration) {
+        return declaration instanceof ASTAnyTypeDeclaration
+            && ((ASTAnyTypeDeclaration) declaration).isRegularInterface();
     }
 
     private boolean isInitializerOk(ASTFieldDeclaration fieldDeclaration) {
