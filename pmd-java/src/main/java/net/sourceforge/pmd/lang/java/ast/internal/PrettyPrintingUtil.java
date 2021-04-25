@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -107,7 +108,6 @@ public final class PrettyPrintingUtil {
         return "class";
     }
 
-
     /**
      * Returns the "name" of a node. For methods and constructors, this
      * may return a signature with parameters.
@@ -154,4 +154,13 @@ public final class PrettyPrintingUtil {
         }
         throw new UnsupportedOperationException("Node " + node + " is unaccounted for");
     }
+
+    public static String prettyImport(ASTImportDeclaration importDecl) {
+        String name = importDecl.getImportedName();
+        if (importDecl.isImportOnDemand()) {
+            return name + ".*";
+        }
+        return name;
+    }
+
 }

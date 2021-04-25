@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.bestpractices;
+package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -10,6 +10,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -23,11 +26,20 @@ import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
-public class UnusedImportsRule extends AbstractJavaRule {
+public class UnnecessaryImportRule extends AbstractJavaRule {
+    // todo: java lang imports may be necessary if they're shadowed by a
+    //  member of the same package.
 
-    protected Set<ImportWrapper> imports = new HashSet<>();
+    private static final String UNUSED_IMPORT_MESSAGE = "Unused import ''{0}''";
+    private static final String DUPLICATE_IMPORT_MESSAGE = "Duplicate import ''{0}''";
+    private static final String IMPORT_FROM_SAME_PACKAGE_MESSAGE = "Unnecessary import from the current package ''{0}''";
+    private static final String IMPORT_FROM_JAVA_LANG_MESSAGE = "Unnecessary import from the java.lang package ''{0}''";
+
+    private final Set<ImportWrapper> imports = new HashSet<>();
+    private String thisPackageName;
 
     /*
      * Patterns to match the following constructs:
@@ -40,10 +52,10 @@ public class UnusedImportsRule extends AbstractJavaRule {
      * @throws package.class label
      */
     private static final Pattern SEE_PATTERN = Pattern
-            .compile("@see\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?");
+        .compile("@see\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?");
 
     private static final Pattern LINK_PATTERNS = Pattern
-            .compile("\\{@link(?:plain)?\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?[\\s\\}]");
+        .compile("\\{@link(?:plain)?\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?[\\s\\}]");
 
     private static final Pattern VALUE_PATTERN = Pattern.compile("\\{@value\\s+(\\p{Alpha}\\w*)[\\s#\\}]");
 
@@ -51,9 +63,14 @@ public class UnusedImportsRule extends AbstractJavaRule {
 
     private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN };
 
+    protected boolean justReportUnusedImports() {
+        return false;
+    }
+
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         imports.clear();
+        this.thisPackageName = node.getPackageName();
         super.visit(node, data);
         visitComments(node);
 
@@ -66,7 +83,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
             visit((ASTPackageDeclaration) node.getChild(0), data);
         }
         for (ImportWrapper wrapper : imports) {
-            addViolation(data, wrapper.getNode(), wrapper.getFullName());
+            reportWithMessage(wrapper.getNode(), data, UNUSED_IMPORT_MESSAGE);
         }
         return data;
     }
@@ -85,22 +102,14 @@ public class UnusedImportsRule extends AbstractJavaRule {
                     String fullname = m.group(1);
 
                     if (fullname != null) { // may be null for "@see #" and "@link #"
-                        imports.remove(new ImportWrapper(fullname, fullname));
+                        removeReferenceSingleImport(fullname);
                     }
 
                     if (m.groupCount() > 1) {
                         fullname = m.group(2);
                         if (fullname != null) {
-                            String[] params = fullname.split("\\s*,\\s*");
-                            for (String param : params) {
-                                final int firstDot = param.indexOf('.');
-                                final String expectedImportName;
-                                if (firstDot == -1) {
-                                    expectedImportName = param;
-                                } else {
-                                    expectedImportName = param.substring(0, firstDot);
-                                }
-                                imports.remove(new ImportWrapper(param, expectedImportName));
+                            for (String param : fullname.split("\\s*,\\s*")) {
+                                removeReferenceSingleImport(param);
                             }
                         }
                     }
@@ -115,50 +124,57 @@ public class UnusedImportsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
-        // This was edited during the grammar updating process, because
-        // ImportDeclaration is not a TypeNode anymore, and there is no Name anymore.
-        // If tests are failing, refer to the history of this file to get the
-        // previously working version.
-        if (node.isImportOnDemand()) {
-            imports.add(new ImportWrapper(node.getImportedName(), null, node, node.isStatic()));
-        } else {
-            String importedType = node.getImportedName();
-            String className;
-            if (isQualifiedName(importedType)) {
-                int lastDot = importedType.lastIndexOf('.') + 1;
-                className = importedType.substring(lastDot);
-            } else {
-                className = importedType;
+        if (thisPackageName.equals(node.getPackageName()) && !justReportUnusedImports()) {
+            // import for the same package
+            reportWithMessage(node, data, IMPORT_FROM_SAME_PACKAGE_MESSAGE);
+        } else if (!imports.add(new ImportWrapper(node))) {
+            if (!justReportUnusedImports()) {
+                // duplicate
+                reportWithMessage(node, data, DUPLICATE_IMPORT_MESSAGE);
             }
-            imports.add(new ImportWrapper(importedType, className, node));
         }
         return data;
     }
 
+    private void reportWithMessage(ASTImportDeclaration node, Object data, String message) {
+        addViolationWithMessage(data, node, message, new String[] { PrettyPrintingUtil.prettyImport(node) });
+    }
+
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
-        check(node, node.getTypeImage());
+        check(node, (RuleContext) data);
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTName node, Object data) {
-        check(node, node.getImage());
+        check(node, (RuleContext) data);
         return data;
     }
 
-    protected void check(Node node, String image) {
+    /**
+     * Remove the import wrapper that imports the name referenced by the
+     * given node.
+     */
+    protected void check(Node referenceNode, RuleContext ruleCtx) {
         if (imports.isEmpty()) {
             return;
         }
-        ImportWrapper candidate = getImportWrapper(node, image);
+        Pair<String, String> candidate = splitName(referenceNode);
+        String candFullName = candidate.getLeft();
+        String candName = candidate.getRight();
 
         // check exact imports
         Iterator<ImportWrapper> it = imports.iterator();
         while (it.hasNext()) {
             ImportWrapper i = it.next();
-            if (!i.isStaticOnDemand() && i.matches(candidate)) {
+            if (!i.isStaticOnDemand() && i.matches(candFullName, candName)) {
                 it.remove();
+
+                if ("java.lang".equals(i.getPackageName()) && !justReportUnusedImports()) {
+                    // import for the same package
+                    reportWithMessage(i.getNode(), ruleCtx, IMPORT_FROM_JAVA_LANG_MESSAGE);
+                }
                 return;
             }
         }
@@ -167,43 +183,41 @@ public class UnusedImportsRule extends AbstractJavaRule {
         it = imports.iterator();
         while (it.hasNext()) {
             ImportWrapper i = it.next();
-            if (i.isStaticOnDemand() && i.matches(candidate)) {
+            if (i.isStaticOnDemand() && i.matches(candFullName, candName)) {
                 it.remove();
                 return;
             }
         }
 
-        if (TypeNode.class.isAssignableFrom(node.getClass()) && ((TypeNode) node).getType() != null) {
-            Class<?> c = ((TypeNode) node).getType();
+        if (referenceNode instanceof TypeNode && ((TypeNode) referenceNode).getType() != null) {
+            Class<?> c = ((TypeNode) referenceNode).getType();
             if (c.getPackage() != null) {
-                candidate = new ImportWrapper(c.getPackage().getName(), null);
-                if (imports.contains(candidate)) {
-                    imports.remove(candidate);
-                }
+                removeOnDemandForPackageName(c.getPackage().getName());
             }
         }
     }
 
-    protected ImportWrapper getImportWrapper(Node node, String image) {
-        String fullName = image;
 
+    protected Pair<String, String> splitName(Node node) {
+        String fullName = node.getImage();
         String name;
-        if (!isQualifiedName(image)) {
-            name = image;
+        int firstDot = node.getImage().indexOf('.');
+        if (firstDot == -1) {
+            name = node.getImage();
         } else {
             // ASTName could be: MyClass.MyConstant
             // name -> MyClass
             // fullName -> MyClass.MyConstant
-            name = fullName.substring(0, node.getImage().indexOf('.'));
+            name = node.getImage().substring(0, firstDot);
             if (isMethodCall(node)) {
                 // ASTName could be: MyClass.MyConstant.method(a, b)
                 // name -> MyClass
                 // fullName -> MyClass.MyConstant
-                fullName = fullName.substring(0, fullName.lastIndexOf('.'));
+                fullName = node.getImage().substring(0, node.getImage().lastIndexOf('.'));
             }
         }
 
-        return new ImportWrapper(fullName, name);
+        return Pair.of(fullName, name);
     }
 
     private boolean isMethodCall(Node node) {
@@ -225,5 +239,29 @@ public class UnusedImportsRule extends AbstractJavaRule {
             }
         }
         return false;
+    }
+
+    /** We found a reference to the type given by the name. */
+    private void removeReferenceSingleImport(String referenceName) {
+        int firstDot = referenceName.indexOf('.');
+        String expectedImport = firstDot < 0 ? referenceName : referenceName.substring(0, firstDot);
+        Iterator<ImportWrapper> iterator = imports.iterator();
+        while (iterator.hasNext()) {
+            ImportWrapper anImport = iterator.next();
+            if (!anImport.isOnDemand() && anImport.getName().equals(expectedImport)) {
+                iterator.remove();
+            }
+        }
+    }
+
+    private void removeOnDemandForPackageName(String fullName) {
+        Iterator<ImportWrapper> iterator = imports.iterator();
+        while (iterator.hasNext()) {
+            ImportWrapper anImport = iterator.next();
+            if (anImport.isOnDemand() && anImport.getFullName().equals(fullName)) {
+                iterator.remove();
+                break;
+            }
+        }
     }
 }

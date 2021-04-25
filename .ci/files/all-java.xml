@@ -48,7 +48,6 @@
     <rule ref="category/java/bestpractices.xml/SystemPrintln"/>
     <rule ref="category/java/bestpractices.xml/UnusedAssignment"/>
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>
-    <!-- <rule ref="category/java/bestpractices.xml/UnusedImports"/> -->
     <rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod"/>
@@ -76,8 +75,6 @@
     <rule ref="category/java/codestyle.xml/ConfusingTernary"/>
     <rule ref="category/java/codestyle.xml/ControlStatementBraces"/>
     <rule ref="category/java/codestyle.xml/DefaultPackage"/>
-    <rule ref="category/java/codestyle.xml/DontImportJavaLang"/>
-    <!-- <rule ref="category/java/codestyle.xml/DuplicateImports"/> -->
     <rule ref="category/java/codestyle.xml/EmptyMethodInAbstractClassShouldBeAbstract"/>
     <rule ref="category/java/codestyle.xml/ExtendsObject"/>
     <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass"/>
@@ -109,6 +106,7 @@
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryCast"/> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryConstructor"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName"/>
+    <!-- <rule ref="category/java/codestyle.xml/UnnecessaryImport"/> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryModifier"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryReturn"/>
@@ -229,7 +227,6 @@
     <!-- <rule ref="category/java/errorprone.xml/FinalizeOverloaded"/> -->
     <!-- <rule ref="category/java/errorprone.xml/FinalizeShouldBeProtected"/> -->
     <!-- <rule ref="category/java/errorprone.xml/IdempotentOperations"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/ImportFromSamePackage"/> -->
     <!-- <rule ref="category/java/errorprone.xml/InstantiationToGetClass"/> -->
     <!-- <rule ref="category/java/errorprone.xml/InvalidLogMessageFormat"/> -->
     <rule ref="category/java/errorprone.xml/JUnitSpelling"/>
