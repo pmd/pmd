@@ -339,6 +339,11 @@ public class MapCasts {
     <test-code>
         <description>Cast as target type for method reference/lambda (ok)</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,8</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary cast (Ordered)</message>
+            <message>Unnecessary cast (Ordered)</message>
+        </expected-messages>
         <code><![CDATA[
             import java.util.Comparator;
 

@@ -2016,28 +2016,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="ImportFromSamePackage"
-          language="java"
-          since="1.02"
-          message="No need to import a type that lives in the same package"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.ImportFromSamePackageRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#importfromsamepackage">
-        <description>
-There is no need to import a type that lives in the same package.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-package foo;
-
-import foo.Buz;     // no need for this
-import foo.*;       // or this
-
-public class Bar{}
-]]>
-        </example>
-    </rule>
-
     <rule name="InstantiationToGetClass"
           language="java"
           since="2.0"

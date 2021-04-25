@@ -103,16 +103,29 @@ public interface ASTExpression
      * <p>There are many different cases.
      * For example, in {@code arr['c']}, {@link #getTypeMirror()} would
      * return {@code char} for the char literal, but the context type
-     * is {@code int} since it's used as an array index. Similarly,
-     * the context type of an expression in a return statement is the
-     * return type of the method, etc.
+     * is {@code int} since it's used as an array index. Hence, a widening
+     * conversion occurs. Similarly, the context type of an expression
+     * in a return statement is the return type of the method, etc.
      *
-     * <p>This returns null when that type is undefined, for example,
-     * when this expression is used as a statement.
+     * <p>If the context is undefined, then the returned object will answer
+     * true to {@link ExprContext#isMissing()}. This is completely normal
+     * and needs to be accounted for by rules. For instance, it occurs
+     * if this expression is used as a statement.
+     *
+     * <p>Note that conversions are a language-level construct only.
+     * Converting from a type to another may not actually require any
+     * concrete operation at runtime. For instance, converting a
+     * {@code char} to an {@code int} is a noop at runtime, because chars
+     * are anyway treated as ints by the JVM (within stack frames). A
+     * boxing conversion will however in general translate to a call to
+     * e.g. {@link Integer#valueOf(int)}.
+     *
+     * <p>Not all contexts allow all kinds of conversions. See
+     * {@link ExprContext}.
      */
     @Experimental
-    default @NonNull ExprContext getConversionContextType() {
-        return PolyResolution.getConversionContextTypeForExternalUse(this);
+    default @NonNull ExprContext getConversionContext() {
+        return PolyResolution.getConversionContextForExternalUse(this);
     }
 
 }

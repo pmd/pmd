@@ -82,7 +82,8 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      */
     @Deprecated
     public List<NameOccurrence> getUsages() {
-        return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
+        return getScope().getDeclarations(VariableNameDeclaration.class)
+                         .getOrDefault(nameDeclaration, Collections.emptyList());
     }
 
     /**

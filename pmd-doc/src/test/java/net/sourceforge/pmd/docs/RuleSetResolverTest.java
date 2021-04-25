@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -30,20 +29,15 @@ public class RuleSetResolverTest {
         filterRuleSets(additionalRulesets);
 
         for (String filename : additionalRulesets) {
-            new RuleSetLoader().loadFromResource(filename); // will throw if invalid
+            new RuleSetLoader().warnDeprecated(false).loadFromResource(filename); // will throw if invalid
         }
     }
 
     private void filterRuleSets(List<String> additionalRulesets) {
-        Iterator<String> it = additionalRulesets.iterator();
-        while (it.hasNext()) {
-            String filename = it.next();
-            for (String exclusion : EXCLUDED_RULESETS) {
-                if (filename.endsWith(exclusion)) {
-                    it.remove();
-                    break;
-                }
-            }
-        }
+        additionalRulesets.removeIf(this::isExcluded);
+    }
+
+    private boolean isExcluded(String fileName) {
+        return EXCLUDED_RULESETS.stream().anyMatch(fileName::endsWith);
     }
 }
