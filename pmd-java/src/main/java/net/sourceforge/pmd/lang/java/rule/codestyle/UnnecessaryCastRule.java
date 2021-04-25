@@ -63,7 +63,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // is a functional interface.
             if (coercionType.equals(context.getTargetType())) {
                 // then we also know that the context is functional
-                addViolation(data, castExpr);
+                reportCast(castExpr, data);
             }
             // otherwise the cast is narrowing, and removing it would
             // change the runtime class of the produced lambda.
@@ -76,9 +76,13 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         boolean isInTernary = castExpr.getParent() instanceof ASTConditionalExpression;
 
         if (castIsUnnecessary(context, coercionType, operandType, isInTernary)) {
-            addViolation(data, castExpr, PrettyPrintingUtil.prettyPrintTypeWithTargs(castExpr.getCastType()));
+            reportCast(castExpr, data);
         }
         return null;
+    }
+
+    private void reportCast(ASTCastExpression castExpr, Object data) {
+        addViolation(data, castExpr, PrettyPrintingUtil.prettyPrintTypeWithTargs(castExpr.getCastType()));
     }
 
     private boolean castIsUnnecessary(@NonNull ExprContext context, JTypeMirror coercionType, JTypeMirror operandType, boolean isInTernary) {
