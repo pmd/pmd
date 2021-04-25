@@ -2,7 +2,7 @@ repository: pmd/pmd
 
 pmd:
     version: 7.0.0-SNAPSHOT
-    previous_version: 6.33.0
+    previous_version: 6.34.0
     date: ??-?????-2021
     release_type: major
 
@@ -41,6 +41,11 @@ exclude:
   - build-docs.sh
   - assets/*.zip
   - assets/README.md
+  - pdf-*.sh
+  - pdfconfigs/
+  - pdf/
+  - sitemap_generator.sh
+  - render_release_notes.rb
 
 feedback_subject_line: PMD Source Code Analyzer
 
