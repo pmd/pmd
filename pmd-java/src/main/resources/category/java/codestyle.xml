@@ -1523,6 +1523,21 @@ class SomeClass {
 }
 ]]>
         </example>
+        <example>
+<![CDATA[
+import java.util.*;
+class SomeClass {
+   static {
+       /* Casts involving access to collections were common before Java 5, because collections
+        * were not generic. This rule may hence be useful when converting from using a raw
+        * type like `List` to a parameterized type like `List<String>`.
+        */
+       List<String> stringList = Arrays.asList("a", "b");
+       String element = (String) stringList.get(0); // this cast is unnecessary
+   }
+}
+]]>
+        </example>
     </rule>
 
     <rule name="UnnecessaryConstructor"
