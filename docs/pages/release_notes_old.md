@@ -87,6 +87,7 @@ No changes.
 * 74 commits
 * 18 closed tickets & PRs
 * Days since last release: 27
+
 ## 27-March-2021 - 6.33.0
 
 The PMD team is pleased to announce PMD 6.33.0.

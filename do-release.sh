@@ -190,6 +190,7 @@ OLD_RELEASE_NOTES=$(tail -n +8 docs/pages/release_notes_old.md)
 OLD_RELEASE_NOTES_HEADER=$(head -n 7 docs/pages/release_notes_old.md)
 echo "${OLD_RELEASE_NOTES_HEADER}
 ${NEW_RELEASE_NOTES}
+
 ${OLD_RELEASE_NOTES}" > docs/pages/release_notes_old.md
 
 # reset release notes template
