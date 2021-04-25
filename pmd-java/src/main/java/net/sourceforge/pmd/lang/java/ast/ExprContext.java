@@ -16,11 +16,8 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
  * expressions, which is necessary for overload resolution. It also
  * determines what kinds of conversions apply to the value to make it
  * compatible with the context.
- *
- * <p>The api is minimal until more use cases show up, and this is better
- * tested.
  */
-@Experimental
+@Experimental("The API is minimal until more use cases show up, and this is better tested.")
 public abstract class ExprContext {
     // note: most members of this class are quite low-level and should
     // stay package-private for exclusive use by PolyResolution.
