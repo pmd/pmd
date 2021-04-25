@@ -1706,16 +1706,34 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#usediamondoperator"
           minimumLanguageVersion="1.7">
         <description><![CDATA[
-Use the diamond operator (`<>`) to let type arguments be inferred automatically
-from the context. This avoids duplication of the type arguments in the type of
-a variable and in its constructor, which makes the code more concise and readable.
+In some cases, explicit type arguments in a constructor call for a generic type
+may be replaced by diamond type arguments (`<>`), and be inferred by the compiler.
+This rule recommends that you use diamond type arguments anywhere possible, since
+it avoids duplication of the type arguments, and makes the code more concise and readable.
+
+This rule is useful when upgrading a codebase to Java 1.7, Java 1.8, or Java 9.
+The diamond syntax was first introduced in Java 1.7. In Java 8, improvements in Java's
+type inference made more type arguments redundant. In Java 9, type arguments inference
+was made possible for anonymous class constructors.
             ]]></description>
         <priority>3</priority>
         <example>
             <![CDATA[
-List<String> strings = new ArrayList<String>(); // unnecessary duplication of type parameters
-List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operator is more concise
-]]>
+            import java.util.*;
+            class Foo {
+                static {
+                    List<String> strings;
+                    strings = new ArrayList<String>(); // unnecessary duplication of type parameters
+                    strings = new ArrayList<>();       // using diamond type arguments is more concise
+
+                    strings = new ArrayList(); // accidental use of a raw type, you can use ArrayList<> instead
+
+                    strings = new ArrayList<>() {
+                        // for anonymous classes, this is possible since Java 9 only
+                    };
+                }
+            }
+            ]]>
         </example>
     </rule>
 
