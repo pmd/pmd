@@ -42,7 +42,9 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
 
     @Override
     public void setStandalone() {
-        InternalApiBridge.setStandaloneTernary(myNode);
+        if (factory.mayMutateAst()) {
+            InternalApiBridge.setStandaloneTernary(myNode);
+        }
     }
 
     @Override

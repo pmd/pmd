@@ -450,6 +450,9 @@ final class PolyResolution {
             // array index
             return ExprContext.newNumericCtx(papa.getTypeSystem().INT);
         } else if (papa instanceof ASTConditionalExpression && node.getIndexInParent() != 0) {
+            if (isPreJava8()) {
+                return RegularCtx.NO_CTX;
+            }
             assert ((ASTConditionalExpression) papa).isStandalone() && !internalUse
                 : "Expected standalone ternary, otherwise doesCascadeContext(..) would have returned true";
             return ExprContext.newStandaloneTernaryCtx(((ASTConditionalExpression) papa).getTypeMirror());

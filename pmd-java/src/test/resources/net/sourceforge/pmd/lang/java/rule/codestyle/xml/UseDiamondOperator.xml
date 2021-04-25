@@ -27,6 +27,7 @@ public class Foo {
     <test-code>
         <description>False positive cases</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>10,15</expected-linenumbers>
         <code><![CDATA[
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -317,5 +318,51 @@ public class Generic<T> {
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test message with fqcn</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Explicit type arguments can be replaced by a diamond: new p.Generic&lt;&gt;()</message>
+        </expected-messages>
+        <code><![CDATA[
+package p;
+import java.util.List;
+import java.util.ArrayList;
+
+public class Generic<T> {
+    <E> Generic<E> method(Generic<E> e) { return e; }
+    public Generic<T> test() {
+
+        return method(new p.Generic<T>());
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test message with raw type</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,9</expected-linenumbers>
+        <expected-messages>
+            <message>Explicit type arguments can be replaced by a diamond: new ArrayList&lt;&gt;()</message>
+            <message>Raw type use may be avoided by using a diamond: new ArrayList&lt;&gt;()</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.List;
+            import java.util.ArrayList;
+            class Foo {
+                static {
+                    List<String> strings;
+                    strings = new ArrayList<String>(); // unnecessary duplication of type parameters
+                    strings = new ArrayList<>();       // using diamond type arguments is more concise
+
+                    strings = new ArrayList(); // accidental use of a raw type, you can use ArrayList<> instead
+
+                    strings = new ArrayList<>() {
+                        // for anonymous classes, this is possible since Java 9 only
+                    };
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

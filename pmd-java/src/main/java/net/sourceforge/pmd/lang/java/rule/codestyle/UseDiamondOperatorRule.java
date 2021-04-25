@@ -11,6 +11,7 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
@@ -46,6 +47,9 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
  */
 public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
 
+    private static final String REPLACE_TYPE_ARGS_MESSAGE = "Explicit type arguments can be replaced by a diamond: {0}";
+    private static final String RAW_TYPE_MESSAGE = "Raw type use may be avoided by using a diamond: {0}";
+
     public UseDiamondOperatorRule() {
         super(ASTConstructorCall.class);
     }
@@ -70,17 +74,27 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         if (hasUnnecessaryTypeArgs(ctorCall)) {
             // report it
             JavaNode reportNode = targs == null ? newTypeNode : targs;
-            String replaceWith = produceSameTypeWithDiamond(newTypeNode, new StringBuilder(), true).toString();
-            addViolation(data, reportNode, replaceWith);
+            String message = targs == null ? RAW_TYPE_MESSAGE : REPLACE_TYPE_ARGS_MESSAGE;
+            String replaceWith = produceSuggestedExprImage(ctorCall);
+            addViolationWithMessage(data, reportNode, message, new String[] { replaceWith });
         }
         return null;
+    }
+
+    private static String produceSuggestedExprImage(ASTConstructorCall ctor) {
+        StringBuilder sb = new StringBuilder(30);
+        sb.append("new ");
+        produceSameTypeWithDiamond(ctor.getTypeNode(), sb, true);
+        ASTArgumentList arguments = ctor.getArguments();
+        String argsString = arguments.size() == 0 ? "()" : "(...)";
+        return sb.append(argsString).toString();
     }
 
     private static StringBuilder produceSameTypeWithDiamond(ASTClassOrInterfaceType type, StringBuilder sb, boolean topLevel) {
         if (type.isFullyQualified()) {
             JTypeDeclSymbol sym = type.getTypeMirror().getSymbol();
             Objects.requireNonNull(sym);
-            return sb.append(sym.getPackageName()).append('.').append(sym.getSimpleName());
+            sb.append(sym.getPackageName()).append('.');
         }
         ASTClassOrInterfaceType qualifier = type.getQualifier();
         if (qualifier != null) {
@@ -99,6 +113,9 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
     private static boolean hasUnnecessaryTypeArgs(ASTConstructorCall call) {
 
         ExprContext context = call.getConversionContext();
+        if (context.isMissing()) {
+            return false;
+        }
 
         MethodCtDecl result = doOverloadResolutionWithoutTypeArgs(call, context.getTargetType());
 

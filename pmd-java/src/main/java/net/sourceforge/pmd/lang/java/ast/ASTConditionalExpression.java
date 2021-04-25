@@ -55,7 +55,15 @@ public final class ASTConditionalExpression extends AbstractJavaExpr {
         return visitor.visit(this, data);
     }
 
+    /**
+     * Note: this method is not used at all in pre-Java 8 analysis,
+     * because standalone/poly exprs weren't formalized before java 8.
+     * Calling this method then is undefined.
+     */
+    // very internal
     boolean isStandalone() {
+        assert getAstInfo().getLanguageVersion().compareToVersion("8") >= 0
+            : "This method's result is undefined in pre java 8 code";
         return this.isStandalone;
     }
 

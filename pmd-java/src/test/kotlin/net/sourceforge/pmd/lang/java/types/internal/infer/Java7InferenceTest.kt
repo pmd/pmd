@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import io.kotest.matchers.nulls.shouldBeNull
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
@@ -108,7 +108,7 @@ class Java7InferenceTest : ProcessorTestSpec({
         spy.shouldBeOk {
             // no context
 
-            conditional.thenBranch.conversionContextType.shouldBeNull()
+            conditional.thenBranch.conversionContext::isMissing shouldBe true
             conditional.thenBranch shouldHaveType t_Gen[ts.OBJECT]
             conditional.elseBranch shouldHaveType t_Gen[ts.OBJECT]
 
@@ -203,6 +203,7 @@ private fun TypeDslMixin.ctorInfersTo(
         returning = inferredType
     )
 }
+
 private fun TypeDslMixin.methodInfersTo(call: ASTMethodCall, returnType: JClassType) {
     call.methodType.shouldMatchMethod(
         named = call.methodName,
