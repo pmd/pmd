@@ -1701,7 +1701,7 @@ public class Foo {
     <rule name="UseDiamondOperator"
           language="java"
           since="6.11.0"
-          message="Explicit type arguments can be replaced by a diamond: &lt;&gt;"
+          message="Explicit type arguments can be replaced by a diamond: {0}"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UseDiamondOperatorRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#usediamondoperator"
           minimumLanguageVersion="1.7">

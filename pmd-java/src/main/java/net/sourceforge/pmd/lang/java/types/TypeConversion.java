@@ -91,12 +91,16 @@ public final class TypeConversion {
 
     /**
      * Is t convertible to s by boxing/unboxing/widening conversion?
-     * Only t can be undergo conversion.
+     * Only t can undergo conversion.
      */
     public static boolean isConvertibleUsingBoxing(JTypeMirror t, JTypeMirror s) {
         return isConvertibleCommon(t, s, false);
     }
 
+    /**
+     * Is t convertible to s by boxing/unboxing conversion?
+     * Only t can undergo conversion.
+     */
     public static boolean isConvertibleInCastContext(JTypeMirror t, JTypeMirror s) {
         return isConvertibleCommon(t, s, true);
     }
