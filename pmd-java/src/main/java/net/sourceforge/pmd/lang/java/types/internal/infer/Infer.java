@@ -16,7 +16,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -59,6 +58,8 @@ public final class Infer {
 
     /** This is a sentinel for when the CTDecl was resolved, but invocation failed. */
     final MethodCtDecl FAILED_INVOCATION; // SUPPRESS CHECKSTYLE same
+
+    private final SupertypeCheckCache supertypeCheckCache = new SupertypeCheckCache();
 
     /**
      * Creates a new instance.
@@ -106,7 +107,7 @@ public final class Infer {
     }
 
     InferenceContext emptyContext() {
-        return new InferenceContext(ts, Collections.emptyList(), LOG);
+        return newContextFor(Collections.emptyList());
     }
 
     @NonNull
@@ -115,7 +116,7 @@ public final class Infer {
     }
 
     InferenceContext newContextFor(List<JTypeVar> tvars) {
-        return new InferenceContext(ts, tvars, LOG);
+        return new InferenceContext(ts, supertypeCheckCache, tvars, LOG);
     }
 
     /**
@@ -123,11 +124,13 @@ public final class Infer {
      * and some assignment contexts (not inferred, not return from lambda).
      */
     public void inferFunctionalExprInUnambiguousContext(PolySite<FunctionalExprMirror> site) {
-        Objects.requireNonNull(site);
-        Objects.requireNonNull(site.getExpectedType(), "Cannot proceed without a target type");
         FunctionalExprMirror expr = site.getExpr();
         try {
-            addBoundOrDefer(null, emptyContext(), INVOC_LOOSE, expr, site.getExpectedType());
+            JTypeMirror expected = site.getExpectedType();
+            if (expected == null) {
+                throw ResolutionFailedException.missingTargetTypeForFunctionalExpr(LOG, expr);
+            }
+            addBoundOrDefer(null, emptyContext(), INVOC_LOOSE, expr, expected);
         } catch (ResolutionFailedException rfe) {
             rfe.getFailure().addContext(null, site, null);
             LOG.logResolutionFail(rfe.getFailure());
@@ -573,6 +576,9 @@ public final class Infer {
             }
 
             infCtx.solve(); // this may throw for incompatible bounds
+            if (infCtx.needsUncheckedConversion()) {
+                site.setNeedsUncheckedConversion();
+            }
 
             // instantiate vars and return
             return InferenceContext.finalGround(infCtx.mapToIVars(m));
@@ -847,7 +853,7 @@ public final class Infer {
      *
      * See {@link ExprCheckHelper#isCompatible(JTypeMirror, ExprMirror)}.
      */
-    private void addBoundOrDefer(@Nullable MethodCallSite site, InferenceContext infCtx, MethodResolutionPhase phase, ExprMirror arg, JTypeMirror formalType) {
+    private void addBoundOrDefer(@Nullable MethodCallSite site, InferenceContext infCtx, MethodResolutionPhase phase, @NonNull ExprMirror arg, @NonNull JTypeMirror formalType) {
         ExprChecker exprChecker =
             (ctx, exprType, formalType1) -> checkConvertibleOrDefer(ctx, exprType, formalType1, arg, phase, site);
 

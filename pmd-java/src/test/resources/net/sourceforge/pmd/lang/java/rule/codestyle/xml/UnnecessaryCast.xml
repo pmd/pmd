@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>Basic Violations</description>
@@ -79,11 +79,9 @@ public class UnnecessaryCastSample {
     <test-code>
         <description>Unnecessary casts with iterator</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>10,17</expected-linenumbers>
+        <expected-linenumbers>8,15</expected-linenumbers>
         <code><![CDATA[
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class UnnecessaryCastSample {
     public void localVars() {
@@ -109,6 +107,7 @@ public class UnnecessaryCastSample {
         <description>Avoid cast false-positives</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class UnnecessaryCastSample {
     public void localVars() {
         List<Number> numbers = Arrays.asList(1, 2, 3);
@@ -128,6 +127,7 @@ public class UnnecessaryCastSample {
         <description>Avoid clone false-positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class UnnecessaryCastSample {
     public void localVars() {
         List<String> strings = new ArrayList<>();
@@ -153,5 +153,455 @@ public class MapCasts {
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary (primitive -> primitive) casts</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>5,6,7,8</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args) {
+                    Integer integer = 2; // ok
+
+                    long a = (int) Integer.valueOf(2);  // explicit boxing where the value would be autoboxed
+                    int b = (int) 2;                    // unnecessary, it's the same type
+                    long c = (int) 4;                   // widening can be implicit
+                    double c = (int) 4;                 // widening can be implicit
+                    double c = (int) 4.0;               // cast is narrowing so necessary
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Tests from the doc</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args) {
+                    Object context = (Comparable) "o";
+                    Integer integer = (Integer) 1;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Context is array index</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args, Integer i, Double d) {
+                    args[(int) i] = "";   // unnecessary
+                    args[(int) '0'] = ""; // unnecessary
+                    args[(int) 0.5] = ""; // narrowing so necessary
+                    args[(int) d] = "";   // unboxing + narrowing so necessary
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Context is invocation, no overloads</description>
+        <!-- TODO for now this is explicitly disabled -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args, Integer i, Double d) {
+                    doSt((int) i); // unnecessary
+                }
+
+                static void doSt(int i) {}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Context is invocation, some overloads</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args, Integer i, Double d) {
+                    doSt((int) i); // necessary
+                }
+
+                static void doSt(int i) {}
+                static void doSt(Integer i) {}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unchecked cast FP</description>
+        <!-- There's a corresponding type res unit test in UncheckedInference.kt -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            // Note: Enum is raw, not Enum<T>
+            class StringToEnum<T extends Enum> implements Converter<String, T> {
+
+                private final Class<T> enumType;
+
+                public StringToEnum(Class<T> enumType) {
+                    this.enumType = enumType;
+                }
+
+                @Override
+                public T convert(String source) {
+                    // Because `this.enumType` is raw, the expr `Enum.valueOf(...)` has its
+                    // return type erased to Enum
+                    // So the cast is necessary
+                    return (T) Enum.valueOf(this.enumType, source.trim());
+                }
+            }
+
+            interface Converter<From, To> {
+                To convert(From source);
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast as target type for method reference/lambda FP</description>
+        <!-- https://github.com/spring-projects/spring-framework/blob/v5.0.6.RELEASE/spring-webmvc/src/main/java/org/springframework/web/servlet/config/annotation/InterceptorRegistry.java#L81 -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Comparator;
+
+            class Test {
+
+                static {
+                    Comparator<Object> comparator;
+                    comparator = OrderComparator.withSourceProvider(object -> {
+                        if (object instanceof InterceptorRegistration) {
+                            // Context type for the return is Object.
+                            // The method ref cannot target Object though
+                            // it needs Ordered as a functional interface
+                            return (Ordered) ((InterceptorRegistration) object)::getOrder;
+                        }
+                        return null;
+                    });
+                    // same here
+                    comparator = OrderComparator.withSourceProvider(object -> {
+                        return (Ordered) () -> 0;
+                    });
+                    // same here
+                    comparator = OrderComparator.withSourceProvider(object -> (Ordered) () -> 0);
+                }
+
+
+            }
+
+            interface InterceptorRegistration {
+                int getOrder();
+            }
+
+            class OrderComparator implements Comparator<Object> {
+                public static Comparator<Object> withSourceProvider(OrderSourceProvider sourceProvider) {
+                    return (o1, o2) -> null; // body is irrelevant
+                }
+
+                @FunctionalInterface
+                public interface OrderSourceProvider {
+                    Object getOrderSource(Object obj);
+                }
+            }
+
+            @FunctionalInterface
+            interface Ordered {
+                int getOrder();
+            }
+
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast as target type for method reference/lambda FP (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Comparator;
+
+            class Test {
+
+                static {
+                    InterceptorRegistration comparator;
+                    comparator = (Ordered) Test::getAnInt;
+                    comparator = (Ordered) () -> 0;
+                }
+
+                static int getAnInt() {return 0;}
+            }
+
+            interface InterceptorRegistration {
+                int getOrder();
+            }
+
+            @FunctionalInterface
+            interface Ordered extends InterceptorRegistration {
+                int getOrder();
+            }
+
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast as target type for method reference/lambda (ok)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,8</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary cast (Ordered)</message>
+            <message>Unnecessary cast (Ordered)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Comparator;
+
+            class Test {
+
+                static {
+                    Ordered comparator;
+                    comparator = (Ordered) Test::getAnInt;
+                    comparator = (Ordered) () -> 0;
+                }
+
+                static int getAnInt() {return 0;}
+            }
+
+            interface InterceptorRegistration {
+                int getOrder();
+            }
+
+            @FunctionalInterface
+            interface Ordered extends InterceptorRegistration {
+                int getOrder();
+            }
+
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast as target type for method reference/lambda, with enclosing invoc context</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.reflect.Constructor;
+            import java.security.AccessController;
+            import java.security.PrivilegedAction;
+
+            class Test {
+                static {
+                    Object beanInstance;
+
+                    if (System.getSecurityManager() != null) {
+                        // these method calls are ambiguous if the cast is omitted
+                        // (there's a PrivilegedExceptionAction overload)
+                        beanInstance = AccessController.doPrivileged((PrivilegedAction<Object>) () -> new Object());
+                        beanInstance = AccessController.doPrivileged((PrivilegedAction<Object>) Object::new);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast over a ternary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
+        <code><![CDATA[
+            import java.lang.reflect.Constructor;
+            import java.security.AccessController;
+            import java.security.PrivilegedAction;
+
+            class Test {
+
+                void fun(boolean messageSelector) {
+                    String textFromMessage = (String) (messageSelector ? methodThatReturnsObject("selectorString")
+                                                                       : "string");
+                    textFromMessage = (String) (messageSelector ? methodThatReturnsObject("selectorString")
+                                                                : another());
+
+                    // only this one is unnecessary
+                    textFromMessage = (String) (messageSelector ? "methodThatReturnsObject(selectorString)"
+                                                                : "string");
+                }
+
+                Object methodThatReturnsObject(String s) {return null;}
+
+                Object another() {return null;}
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast over target-dependent ternary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Collection;
+            import java.util.List;
+            import java.util.Set;
+
+            class Test {
+
+                Collection<String> fun(boolean messageSelector) {
+                    Collection<String> textFromMessage =
+                            // compile error: a cast doesn't contribute a target type,
+                            // the ternary is inferred to Collection<Object>
+                            // TODO should this be a positive? If you remove the cast the code will still compile,
+                            // but its typing will change
+                            (Collection<String>) (messageSelector ? emptyList() : emptySet());
+
+                    // ok
+                    return (messageSelector ? emptyList() : emptySet());
+                }
+
+                <T> List<T> emptyList() {return null;}
+
+                <T> Set<T> emptySet() {return null;}
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast over ternary mixing boxing/null/primitive</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+
+                public static void main(String[] args) {
+                    double z = (Integer) // here
+                            ((0.2 == Math.random()) ? (Integer) null + apply(null) // this one is required so that + applies
+                                                    : (0.3 == Math.random()) ? (Integer) null // this one could be removed but whatever
+                                                                             : (int) Math.sin(300 * (12 + 30))); // this one is narrowing
+                }
+
+                public static int apply(Object o) { return 0; }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast that determines boxing when context is Object</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>7,10,12,14,16</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+                public Object zero() {
+                    switch (this) {
+                    case BOOLEAN:
+                        return Boolean.FALSE;
+                    case INT:
+                        return (Integer)0; // here
+                    // in the following double casts, the first one is unnecessary
+                    case BYTE:
+                        return (Byte)(byte)0;
+                    case CHAR:
+                        return (Character)(char)0;
+                    case SHORT:
+                        return (Short)(short)0;
+                    case LONG:
+                        return (Long)(long)0;
+                    case FLOAT:
+                        return FLOAT_ZERO;
+                    case DOUBLE:
+                        return DOUBLE_ZERO;
+                    case VOID:
+                    case OBJECT:
+                    default:
+                        return null;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Byte arithmetic</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                public void putTag(byte tagClass, boolean form, byte val) {
+                    // result of the OR is widened to int,
+                    // then needs to be narrowed
+                    byte tag = (byte) (tagClass | val);
+                    if (form) {
+                        tag |= (byte) 0x20; // narrowing from int
+                    }
+                    write(tag);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP, removing both casts changes program</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+
+                public void putTag(boolean useLong, int n) {
+                    // ONE of them is necessary, because if we remove both they'd
+                    //  both be mapped to long, then boxed to Long and stored in Number
+
+                    Number result =
+                            useLong ? (Number) Long.valueOf(n)
+                                    : (Number) Integer.valueOf(n);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>TP in ternary</description>
+        <!-- Note: the other is technically removable as well but that would change the type of the ternary -->
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+
+                public void putTag(boolean useLong, int n) {
+                    double result = useLong ? (double) 1
+                                            : (int) 2;   // removable, (2 : int)
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] UnnecessaryCast false positive #2748 with unchecked cast</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.List;
+
+            class Scratch {
+
+                public static <T> T[] asArray(List<T> list) {
+                    T[] result = (T[]) list.toArray();
+                    return result;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Boxing cast needs to box to the same type to be unnecessary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Scratch {
+    static {
+        Object o = (Long) 3; // compile time error (int cannot be converted to Long)
+        o = (long) 3; // makes it box to Long
+    }
+}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Chained casts to convert int to Long</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Scratch {
+    static m(Integer boxedInt) {
+        Object o = (long)
+                (int) boxedInt; // both are necessary
+    }
+}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Assignment context is more flexible than cast</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+class Scratch {
+    static m(Integer boxedInt) {
+        long l = (int) boxedInt; // unnecessary
+        l = (long)               // unnecessary
+                (int) boxedInt;  // necessary
+        Object l = (long) (int) boxedInt; // both necessary
+    }
+}
+            ]]></code>
     </test-code>
 </test-data>

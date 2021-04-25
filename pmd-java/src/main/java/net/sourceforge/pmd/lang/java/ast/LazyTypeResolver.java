@@ -268,22 +268,29 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
             final JTypeMirror lhs = node.getLeftOperand().getTypeMirror();
             final JTypeMirror rhs = node.getRightOperand().getTypeMirror();
 
-            if ((lhs.isPrimitive() || isUnresolved(rhs)) && lhs.equals(rhs)
-                || isUnresolved(rhs)) {
-                // BOOL       & BOOL        -> BOOL
-                // UNRESOLVED & UNRESOLVED  -> UNRESOLVED
-                // BOOL       & UNRESOLVED  -> BOOL
-                // NUMERIC(N) & UNRESOLVED  -> N
-                // NUMERIC(N) & NUMERIC(N)  -> N
-                return lhs;
-            } else if (isUnresolved(lhs)) {
-                // UNRESOLVED & BOOL        -> BOOL
-                // UNRESOLVED & NUMERIC(N)  -> N
-                return rhs;
-            } else {
+            if (lhs.isNumeric() && rhs.isNumeric()) {
                 // NUMERIC(N) & NUMERIC(M)  -> promote(N, M)
-                // anything else, including error types & such: ERROR_TYPE
                 return binaryNumericPromotion(lhs, rhs);
+            } else if (lhs.equals(rhs)) {
+                // BOOL       & BOOL        -> BOOL
+                // UNRESOLVED & UNRESOLVED  -> UNKNOWN
+                return lhs;
+            } else if (isUnresolved(lhs) ^ isUnresolved(rhs)) {
+                // UNRESOLVED & NUMERIC(N)  -> promote(N)
+                // NUMERIC(N) & UNRESOLVED  -> promote(N)
+
+                // BOOL       & UNRESOLVED  -> BOOL
+                // UNRESOLVED & BOOL        -> BOOL
+
+                // UNRESOLVED & anything    -> ERROR
+
+                JTypeMirror resolved = isUnresolved(lhs) ? rhs : lhs;
+                return resolved.isNumeric() ? unaryNumericPromotion(resolved)
+                                            : resolved == ts.BOOLEAN ? resolved  // NOPMD #3205
+                                                                     : ts.ERROR;
+            } else {
+                // anything else, including error types & such: ERROR
+                return ts.ERROR;
             }
         }
         case LEFT_SHIFT:
@@ -427,13 +434,11 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
             JTypeDeclSymbol testedSym = testedType.getSymbol();
             if (testedSym instanceof JClassSymbol && ((JClassSymbol) testedSym).isEnum()) {
                 JFieldSymbol enumConstant = ((JClassSymbol) testedSym).getDeclaredField(node.getName());
-                if (enumConstant == null) {
-                    // no symbol, but type is there
-                    return ts.declaration((JClassSymbol) testedSym);
-                } else {
+                if (enumConstant != null) {
+                    // field exists and can be resolved
                     node.setTypedSym(ts.sigOf(testedType, enumConstant));
-                    return testedType;
                 }
+                return testedType;
             } // fallthrough
         }
 

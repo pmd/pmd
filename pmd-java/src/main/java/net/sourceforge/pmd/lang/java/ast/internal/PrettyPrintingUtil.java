@@ -20,9 +20,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
+import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
@@ -50,7 +54,7 @@ public final class PrettyPrintingUtil {
             }
             first = false;
 
-            prettyPrintTypeNode(param.getTypeNode(), sb);
+            prettyPrintTypeNode(param.getTypeNode(), sb, /*withTypeArgs*/false);
             int extraDimensions = ASTList.sizeOrZero(param.getVarId().getExtraDimensions());
             while (extraDimensions-- > 0) {
                 sb.append("[]");
@@ -62,23 +66,57 @@ public final class PrettyPrintingUtil {
         return sb.toString();
     }
 
-    private static void prettyPrintTypeNode(ASTType t, StringBuilder sb) {
+    private static void prettyPrintTypeNode(ASTType t, StringBuilder sb, boolean withTargs) {
         if (t instanceof ASTPrimitiveType) {
             sb.append(((ASTPrimitiveType) t).getKind().getSimpleName());
         } else if (t instanceof ASTClassOrInterfaceType) {
             sb.append(((ASTClassOrInterfaceType) t).getSimpleName());
+            if (withTargs) {
+                prettyPrintTypeArguments((ASTClassOrInterfaceType) t, sb);
+            }
         } else if (t instanceof ASTArrayType) {
-            prettyPrintTypeNode(((ASTArrayType) t).getElementType(), sb);
+            prettyPrintTypeNode(((ASTArrayType) t).getElementType(), sb, withTargs);
             int depth = ((ASTArrayType) t).getArrayDepth();
             for (int i = 0; i < depth; i++) {
                 sb.append("[]");
             }
+        } else if (t instanceof ASTVoidType) {
+            sb.append("void");
+        } else if (t instanceof ASTWildcardType) {
+            sb.append("?");
+            ASTReferenceType bound = ((ASTWildcardType) t).getTypeBoundNode();
+            if (bound != null) {
+                sb.append(((ASTWildcardType) t).hasLowerBound() ? " super " : " extends ");
+                prettyPrintTypeNode(bound, sb, withTargs);
+            }
+        }
+    }
+
+    private static void prettyPrintTypeArguments(ASTClassOrInterfaceType t, StringBuilder sb) {
+        ASTTypeArguments targs = t.getTypeArguments();
+        if (targs != null) {
+            boolean first = true;
+            sb.append('<');
+            for (ASTType targ : targs) {
+                prettyPrintTypeNode(targ, sb, true);
+                if (!first) {
+                    sb.append(", ");
+                }
+                first = false;
+            }
+            sb.append('>');
         }
     }
 
     public static String prettyPrintType(ASTType t) {
         StringBuilder sb = new StringBuilder();
-        prettyPrintTypeNode(t, sb);
+        prettyPrintTypeNode(t, sb, /*withTypeArgs*/false);
+        return sb.toString();
+    }
+
+    public static String prettyPrintTypeWithTargs(ASTType t) {
+        StringBuilder sb = new StringBuilder();
+        prettyPrintTypeNode(t, sb, /*withTypeArgs*/ true);
         return sb.toString();
     }
 

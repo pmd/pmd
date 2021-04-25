@@ -340,10 +340,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
             package scratch;
 
-            import static java.util.stream.Collectors.joining;
-
             import java.util.Comparator;
-            import java.util.Deque;
 
             class Archive {
 
