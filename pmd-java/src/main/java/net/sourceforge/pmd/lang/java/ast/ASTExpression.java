@@ -124,8 +124,8 @@ public interface ASTExpression
      * {@link ExprContext}.
      */
     @Experimental
-    default @NonNull ExprContext getConversionContextType() {
-        return PolyResolution.getConversionContextTypeForExternalUse(this);
+    default @NonNull ExprContext getConversionContext() {
+        return PolyResolution.getConversionContextForExternalUse(this);
     }
 
 }

@@ -27,10 +27,10 @@ class ConversionContextTests : ProcessorTestSpec({
         val (valueOf, _, doubleCast, doubleLit, intLit) = acu.descendants(ASTExpression::class.java).toList()
 
         spy.shouldBeOk {
-            valueOf.conversionContextType::isMissing shouldBe true
-            doubleCast.conversionContextType::getTargetType shouldBe ts.OBJECT
-            doubleLit.conversionContextType::getTargetType shouldBe double.box()
-            intLit.conversionContextType::getTargetType shouldBe double
+            valueOf.conversionContext::isMissing shouldBe true
+            doubleCast.conversionContext::getTargetType shouldBe ts.OBJECT
+            doubleLit.conversionContext::getTargetType shouldBe double.box()
+            intLit.conversionContext::getTargetType shouldBe double
         }
     }
 
@@ -49,8 +49,8 @@ class ConversionContextTests : ProcessorTestSpec({
 
         spy.shouldBeOk {
             // ternary is in double assignment context
-            ternary.conversionContextType::isMissing shouldBe false
-            ternary.conversionContextType::getTargetType shouldBe double
+            ternary.conversionContext::isMissing shouldBe false
+            ternary.conversionContext::getTargetType shouldBe double
 
             // but it has type int
             ternary shouldHaveType int
@@ -60,8 +60,8 @@ class ConversionContextTests : ProcessorTestSpec({
             num1 shouldHaveType int
             shortCast shouldHaveType short
 
-            num1.conversionContextType::getTargetType shouldBe int
-            shortCast.conversionContextType::getTargetType shouldBe int
+            num1.conversionContext::getTargetType shouldBe int
+            shortCast.conversionContext::getTargetType shouldBe int
         }
     }
 
@@ -80,8 +80,8 @@ class ConversionContextTests : ProcessorTestSpec({
 
         spy.shouldBeOk {
             // ternary is in double assignment context
-            ternary.conversionContextType::isMissing shouldBe true
-            ternary.conversionContextType::getTargetType shouldBe null
+            ternary.conversionContext::isMissing shouldBe true
+            ternary.conversionContext::getTargetType shouldBe null
 
             // but it has type int
             ternary shouldHaveType int
@@ -91,8 +91,8 @@ class ConversionContextTests : ProcessorTestSpec({
             integerCast shouldHaveType int.box()
             num4 shouldHaveType int
 
-            integerCast.conversionContextType::getTargetType shouldBe int
-            num4.conversionContextType::getTargetType shouldBe int
+            integerCast.conversionContext::getTargetType shouldBe int
+            num4.conversionContext::getTargetType shouldBe int
         }
     }
 })

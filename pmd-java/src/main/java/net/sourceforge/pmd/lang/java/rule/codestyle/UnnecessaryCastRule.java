@@ -36,7 +36,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         // eg in
         // Object o = (Integer) 1;
 
-        @Nullable ExprContext context = castExpr.getConversionContextType();    // Object
+        @Nullable ExprContext context = castExpr.getConversionContext();        // Object
         JTypeMirror coercionType = castExpr.getCastType().getTypeMirror();      // Integer
         JTypeMirror operandType = operand.getTypeMirror();                      // int
 
@@ -52,7 +52,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         if (operand instanceof ASTLambdaExpression || operand instanceof ASTMethodReference) {
             // Then the cast provides a target type for the expression (always).
             // We need to check the enclosing context, as if it's invocation we give up for now
-            if (castExpr.getConversionContextType().isInvocationContext()) {
+            if (castExpr.getConversionContext().isInvocationContext()) {
                 // Then the cast may be used to determine the overload.
                 // We need to treat the casted lambda as a whole unit.
                 // todo see below

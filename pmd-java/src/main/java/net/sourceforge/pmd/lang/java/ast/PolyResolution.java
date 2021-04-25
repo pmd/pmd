@@ -289,7 +289,7 @@ final class PolyResolution {
     /**
      * Not meant to be used by the main typeres paths, only for rules.
      */
-    static ExprContext getConversionContextTypeForExternalUse(ASTExpression e) {
+    static ExprContext getConversionContextForExternalUse(ASTExpression e) {
         return contextOf(e, false, false);
     }
 
