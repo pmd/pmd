@@ -51,6 +51,13 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     }
 
     @Override
+    public void finishStandaloneInference(@NonNull JTypeMirror standaloneType) {
+        if (mayMutateAst()) {
+            setMethodType(getStandaloneCtdecl());
+        }
+    }
+
+    @Override
     public TypeSpecies getStandaloneSpecies() {
         return TypeSpecies.REFERENCE;
     }

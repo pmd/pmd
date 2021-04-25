@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
-import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 
 class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements InvocationMirror {
 
@@ -31,7 +30,7 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
 
     @Override
     public @Nullable JTypeMirror getStandaloneType() {
-        JMethodSig ctdecl = getCtdecl();
+        JMethodSig ctdecl = getStandaloneCtdecl().getMethodType();
         return isContextDependent(ctdecl) ? null : ctdecl.getReturnType();
     }
 
@@ -40,15 +39,9 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
         return m.isGeneric() && TypeOps.mentionsAny(m.getReturnType(), m.getTypeParameters());
     }
 
-    private JMethodSig getCtdecl() {
-        MethodCallSite site = factory.infer.newCallSite(this, null);
-        // this is cached for later anyway
-        return factory.infer.getCompileTimeDecl(site).getMethodType();
-    }
-
     @Override
     public TypeSpecies getStandaloneSpecies() {
-        return TypeSpecies.getSpecies(getCtdecl().getReturnType());
+        return TypeSpecies.getSpecies(getStandaloneCtdecl().getMethodType().getReturnType());
     }
 
     @Override

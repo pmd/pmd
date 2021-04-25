@@ -26,4 +26,8 @@ abstract class BaseExprMirror<T extends JavaNode> implements ExprMirror {
     public String toString() {
         return "Mirror of: " + myNode;
     }
+
+    protected boolean mayMutateAst() {
+        return this.factory.mayMutateAst();
+    }
 }

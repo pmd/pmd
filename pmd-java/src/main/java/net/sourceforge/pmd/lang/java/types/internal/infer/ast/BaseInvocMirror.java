@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<T> implements InvocationMirror {
@@ -28,6 +29,13 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
 
     BaseInvocMirror(JavaExprMirrors mirrors, T call) {
         super(mirrors, call);
+    }
+
+
+    protected MethodCtDecl getStandaloneCtdecl() {
+        MethodCallSite site = factory.infer.newCallSite(this, null);
+        // this is cached for later anyway
+        return factory.infer.getCompileTimeDecl(site);
     }
 
     @Override
@@ -59,7 +67,7 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
 
     @Override
     public void setMethodType(MethodCtDecl methodType) {
-        if (factory.mayMutateAst()) {
+        if (mayMutateAst()) {
             InternalApiBridge.setOverload(myNode, methodType);
         }
         ctDecl = methodType;

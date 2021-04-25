@@ -95,6 +95,7 @@ final class ExprCheckHelper {
             if (standalone != null) {
                 if (mayMutateExpr()) {
                     expr.setInferredType(standalone);
+                    expr.finishStandaloneInference(standalone);
                 }
                 isStandalone = true;
 

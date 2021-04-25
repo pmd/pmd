@@ -45,6 +45,15 @@ public interface ExprMirror {
      */
     @Nullable JTypeMirror getStandaloneType();
 
+    /**
+     * For a standalone expr, finish type inference by computing properties
+     * that are guarded by the type res lock. For instance for a standalone
+     * ctor call, the standalone type is trivially known (it's the type node).
+     * But we still need to do overload resolution.
+     */
+    default void finishStandaloneInference(@NonNull JTypeMirror standaloneType) {
+        // do nothing
+    }
 
     /**
      * Returns the species that this expression produces. The species

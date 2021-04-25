@@ -95,10 +95,11 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             JTypeDeclSymbol sym = type.getTypeMirror().getSymbol();
             Objects.requireNonNull(sym);
             sb.append(sym.getPackageName()).append('.');
-        }
-        ASTClassOrInterfaceType qualifier = type.getQualifier();
-        if (qualifier != null) {
-            produceSameTypeWithDiamond(qualifier, sb, false).append('.');
+        } else {
+            ASTClassOrInterfaceType qualifier = type.getQualifier();
+            if (qualifier != null) {
+                produceSameTypeWithDiamond(qualifier, sb, false).append('.');
+            }
         }
         sb.append(type.getSimpleName());
         return topLevel ? sb.append("<>") : sb;
