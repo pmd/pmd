@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -60,8 +61,16 @@ final class ClassStub implements JClassSymbol, AsmStub {
 
     private final ParseLock parseLock;
 
+    /** Note that '.' is forbidden because in internal names they're replaced by slashes '/'. */
+    private static final Pattern INTERNAL_NAME_FORBIDDEN_CHARS = Pattern.compile("[;<>\\[.]");
+
+    private static boolean isValidInternalName(String internalName) {
+        return !internalName.isEmpty() && !INTERNAL_NAME_FORBIDDEN_CHARS.matcher(internalName).find();
+    }
 
     ClassStub(AsmSymbolResolver resolver, String internalName, @NonNull Loader loader, int observedArity) {
+        assert isValidInternalName(internalName) : internalName;
+
         this.resolver = resolver;
         this.internalName = internalName;
         this.loader = loader;

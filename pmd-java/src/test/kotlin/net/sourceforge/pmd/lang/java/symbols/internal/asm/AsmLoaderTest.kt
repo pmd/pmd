@@ -127,4 +127,14 @@ class AsmLoaderTest : FunSpec({
 
         assertSame(inner, second)
     }
+
+    test("Unresolved class should have object as superclass") {
+
+        val inner = symLoader.resolveFromInternalNameCannotFail("does/not/exist")!!
+        val second = symLoader.resolveFromInternalNameCannotFail("does/not/exist")!!
+
+        assertSame(inner, second)
+
+        inner.superclass shouldBe ts.OBJECT.symbol
+    }
 })
