@@ -93,7 +93,7 @@
     <rule ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal"/>
     <rule ref="category/java/codestyle.xml/MethodNamingConventions"/>
     <rule ref="category/java/codestyle.xml/NoPackage"/>
-    <!-- <rule ref="category/java/codestyle.xml/OnlyOneReturn"/> -->
+    <rule ref="category/java/codestyle.xml/OnlyOneReturn"/>
     <rule ref="category/java/codestyle.xml/PackageCase"/>
     <rule ref="category/java/codestyle.xml/PrematureDeclaration"/>
     <rule ref="category/java/codestyle.xml/RemoteInterfaceNamingConvention"/>
@@ -103,7 +103,7 @@
     <rule ref="category/java/codestyle.xml/ShortVariable"/>
     <rule ref="category/java/codestyle.xml/TooManyStaticImports"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement"/>
-    <!-- <rule ref="category/java/codestyle.xml/UnnecessaryCast"/> -->
+    <rule ref="category/java/codestyle.xml/UnnecessaryCast"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryConstructor"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName"/>
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryImport"/> -->

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -92,11 +93,28 @@ public class XPathRuleTest extends RuleTst {
     }
 
     @Test
-    public void testNoFnPrefixOnSaxon() throws Exception {
+    public void testNoFnPrefixOnSaxon() {
         XPathRule rule = makeXPath("//VariableDeclaratorId[matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
         RuleViolation rv = report.getViolations().get(0);
         assertEquals(3, rv.getBeginLine());
+    }
+
+    @Test
+    public void testSimpleQueryIsRuleChain() {
+        // ((/)/descendant::element(Q{}VariableDeclaratorId))[matches(convertUntyped(data(@Name)), "fiddle", "")]
+        assertIsRuleChain("//VariableDeclaratorId[matches(@Name, 'fiddle')]");
+    }
+
+    @Test
+    public void testSimpleQueryIsRuleChain2() {
+        // docOrder(((/)/descendant-or-self::node())/(child::element(ClassOrInterfaceType)[typeIs("java.util.Vector")]))
+        assertIsRuleChain("//ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]");
+    }
+
+    private void assertIsRuleChain(String xpath) {
+        XPathRule rule = makeXPath(xpath);
+        assertTrue("Not recognized as a rulechain query: " + xpath, rule.getTargetSelector().isRuleChain());
     }
 
 

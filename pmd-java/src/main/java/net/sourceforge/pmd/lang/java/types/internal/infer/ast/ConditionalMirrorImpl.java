@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -23,11 +25,13 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
 
     ExprMirror thenBranch;
     ExprMirror elseBranch;
+    private final boolean mayBePoly;
 
-    ConditionalMirrorImpl(JavaExprMirrors mirrors, ASTConditionalExpression expr) {
+    ConditionalMirrorImpl(JavaExprMirrors mirrors, ASTConditionalExpression expr, boolean isStandalone) {
         super(mirrors, expr);
-        thenBranch = mirrors.getMirror(myNode.getThenBranch());
-        elseBranch = mirrors.getMirror(myNode.getElseBranch());
+        thenBranch = mirrors.getPolyMirror(myNode.getThenBranch(), isStandalone);
+        elseBranch = mirrors.getPolyMirror(myNode.getElseBranch(), isStandalone);
+        this.mayBePoly = !isStandalone;
     }
 
 
@@ -37,10 +41,15 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
     }
 
     @Override
+    public void setStandalone() {
+        InternalApiBridge.setStandaloneTernary(myNode);
+    }
+
+    @Override
     public @Nullable JTypeMirror getStandaloneType() {
         // may have been set by an earlier call
         JTypeMirror current = InternalApiBridge.getTypeMirrorInternal(myNode);
-        if (current != null && current.unbox().isPrimitive()) {
+        if (current != null && (current.unbox().isPrimitive() || !mayBePoly)) {
             // standalone
             return current;
         }
@@ -48,40 +57,56 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
         if (condType != null) {
             InternalApiBridge.setTypeMirrorInternal(myNode, condType);
         }
+        assert mayBePoly || condType != null : "This conditional expression is standalone!";
         return condType;
     }
 
 
     /**
      * Conditional expressions are standalone iff both their branches
-     * are of a primitive type (or a primitive wrapper type). This may
-     * involve inferring the compile-time declaration of a method call.
+     * are of a primitive type (or a primitive wrapper type), or they
+     * appear in a cast context. This may involve inferring the compile-time
+     * declaration of a method call.
      *
      * https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.25
      */
     private JTypeMirror getConditionalStandaloneType(ConditionalMirrorImpl mirror, ASTConditionalExpression cond) {
-        JTypeMirror thenType = standaloneExprTypeInConditional(mirror.thenBranch, cond.getThenBranch());
-        if (thenType == null || !thenType.unbox().isPrimitive()) {
-            return null;
+        @Nullable JTypeMirror thenType = standaloneExprTypeInConditional(mirror.thenBranch, cond.getThenBranch());
+        if (mayBePoly && (thenType == null || !thenType.unbox().isPrimitive())) {
+            return null; // then it's a poly
         }
 
-        JTypeMirror elseType = standaloneExprTypeInConditional(mirror.elseBranch, cond.getElseBranch());
+        @Nullable JTypeMirror elseType = standaloneExprTypeInConditional(mirror.elseBranch, cond.getElseBranch());
 
-        if (elseType == null || !elseType.unbox().isPrimitive()) {
-            return null;
+        if (mayBePoly && (elseType == null || !elseType.unbox().isPrimitive())) {
+            return null; // then it's a poly
         }
 
-        // both are primitive or primitive wrappers
+        if (thenType == null || elseType == null) {
+            // this is a standalone conditional (mayBePoly == false),
+            // otherwise we would have returned null early.
+            if (thenType == null ^ elseType == null) {
+                return thenType == null ? elseType : thenType; // the one that is non-null
+            }
+            return factory.ts.NULL_TYPE;
+        }
+        // both are non-null
+        // this is a standalone, the following returns non-null
 
         if (elseType.unbox().equals(thenType.unbox())) {
             // eg (Integer, Integer) -> Integer but (Integer, int) -> int
             return thenType.equals(elseType) ? thenType : thenType.unbox();
         }
 
-        if (thenType.isNumeric() == elseType.isNumeric()) {
+        if (thenType.isNumeric() && elseType.isNumeric()) {
             return TypeConversion.binaryNumericPromotion(thenType.unbox(), elseType.unbox());
         }
-        return null;
+
+        // Otherwise, the second and third operands are of types S1 and S2 respectively. Let T1
+        // be the type that results from applying boxing conversion to S1, and let T2 be the type
+        // that results from applying boxing conversion to S2. The type of the conditional expression
+        // is the result of applying capture conversion (§5.1.10) to lub(T1, T2).
+        return TypeConversion.capture(factory.ts.lub(listOf(thenType.box(), elseType.box())));
     }
 
 
