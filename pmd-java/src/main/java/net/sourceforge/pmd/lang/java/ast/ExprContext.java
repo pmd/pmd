@@ -83,8 +83,16 @@ public abstract class ExprContext {
         return kind == CtxKind.Cast;
     }
 
+    public boolean isNumeric() {
+        return kind == CtxKind.Numeric;
+    }
+
     boolean canGiveContextToPoly(boolean lambda) {
         return true;
+    }
+
+    public boolean isTernary() {
+        return kind == CtxKind.Ternary;
     }
 
     static ExprContext newAssignmentCtx(JTypeMirror targetType) {
