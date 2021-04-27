@@ -4,11 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeConversion;
 
 /**
  * Context of an expression. This determines the target type of poly
@@ -34,6 +37,31 @@ public abstract class ExprContext {
     // note: only meant for public use by rules
     // note: this may triggers type resolution of the context
     public abstract @Nullable JTypeMirror getTargetType();
+
+
+    /**
+     * Returns true if the given type is compatible with this context
+     * implicitly (without cast). Conversions may occur to make this
+     * possible. What conversions may occur depends on the kind of
+     * this context.
+     *
+     * <p>By convention, any type is compatible with a missing context.
+     *
+     * @param type A type which is checked against the target type
+     */
+    public boolean acceptsType(@NonNull JTypeMirror type) {
+        AssertionUtil.requireParamNotNull("type", type);
+
+        JTypeMirror targetType = getTargetType();
+        if (targetType == null) {
+            return true;
+        }
+
+        // todo there's a gritty detail about compound assignment operators
+        //  with a primitive LHS, see https://github.com/pmd/pmd/issues/2023
+        return isCastContext() ? TypeConversion.isConvertibleInCastContext(type, targetType)
+                               : TypeConversion.isConvertibleUsingBoxing(type, targetType);
+    }
 
     /**
      * Returns true if this context does not provide any target type.
