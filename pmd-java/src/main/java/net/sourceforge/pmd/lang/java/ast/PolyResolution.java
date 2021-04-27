@@ -46,7 +46,6 @@ final class PolyResolution {
     private final Infer infer;
     private final TypeSystem ts;
     private final JavaExprMirrors exprMirrors;
-    private final JClassType stringType;
     private final ExprContext booleanCtx;
     private final ExprContext stringCtx;
     private final ExprContext intCtx;
@@ -55,10 +54,10 @@ final class PolyResolution {
         this.infer = infer;
         this.ts = infer.getTypeSystem();
         this.exprMirrors = new JavaExprMirrors(infer);
-        this.stringType = (JClassType) TypesFromReflection.fromReflect(String.class, ts);
+        JClassType stringType = (JClassType) TypesFromReflection.fromReflect(String.class, ts);
         booleanCtx = ExprContext.newNonPolyContext(ts.BOOLEAN);
         stringCtx = ExprContext.newNonPolyContext(stringType);
-        intCtx = ExprContext.newNonPolyContext(ts.INT);
+        intCtx = ExprContext.newNumericContext(ts.INT);
     }
 
     JTypeMirror computePolyType(final TypeNode e) {
@@ -482,7 +481,7 @@ final class PolyResolution {
             case OR:
             case XOR:
             case AND:
-                return ctxType == ts.BOOLEAN ? booleanCtx : ExprContext.newNumericContext(ctxType);
+                return ctxType == ts.BOOLEAN ? booleanCtx : ExprContext.newNumericContext(ctxType); // NOMPD CompareObjectsWithEquals
             case LEFT_SHIFT:
             case RIGHT_SHIFT:
             case UNSIGNED_RIGHT_SHIFT:
