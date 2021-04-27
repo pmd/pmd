@@ -51,6 +51,7 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
 @Deprecated
 @InternalApi
 public final class CollectionUtil {
+
     private static final int UNKNOWN_SIZE = -1;
 
     @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
@@ -141,7 +142,6 @@ public final class CollectionUtil {
         }
         return map;
     }
-
 
 
     /**
@@ -522,6 +522,7 @@ public final class CollectionUtil {
      */
     public static <T> Collector<T, ?, PSet<T>> toPersistentSet() {
         class Holder {
+
             MapPSet<T> set = HashTreePSet.empty();
         }
 
@@ -599,5 +600,41 @@ public final class CollectionUtil {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Returns an unmodifiable copy of the list. This is to be preferred
+     * to {@link Collections#unmodifiableList(List)} if you don't trust
+     * the source of the list, because no one holds a reference to the buffer
+     * except the returned unmodifiable list.
+     *
+     * @param list A list
+     * @param <T>  Type of items
+     */
+    public static <T> List<T> defensiveUnmodifiableCopy(List<? extends T> list) {
+        if (list.isEmpty()) {
+            return emptyList();
+        }
+        return Collections.unmodifiableList(new ArrayList<>(list));
+    }
+
+    /**
+     * Like {@link String#join(CharSequence, Iterable)}, except it appends
+     * on a preexisting {@link StringBuilder}. The result value is that StringBuilder.
+     */
+    public static <T> StringBuilder joinOn(StringBuilder sb,
+                                           Iterable<? extends T> iterable,
+                                           BiConsumer<? super StringBuilder, ? super T> appendItem,
+                                           String delimiter) {
+        boolean first = true;
+        for (T t : iterable) {
+            appendItem.accept(sb, t);
+            if (first) {
+                first = false;
+            } else {
+                sb.append(delimiter);
+            }
+        }
+        return sb;
     }
 }

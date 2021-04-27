@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.types;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
 
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -134,8 +133,12 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    public JClassType selectInner(JClassSymbol symbol, List<JTypeMirror> targs) {
-        return new ClassTypeImpl(ts, this, symbol, targs, this.isDecl);
+    public JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs) {
+        return new ClassTypeImpl(ts,
+                                 this,
+                                 symbol,
+                                 CollectionUtil.defensiveUnmodifiableCopy(targs),
+                                 this.isDecl);
     }
 
     @Override
@@ -192,7 +195,7 @@ class ClassTypeImpl implements JClassType {
     @Override
     public JClassType withTypeArguments(List<? extends JTypeMirror> typeArgs) {
         if (enclosingType != null) {
-            return enclosingType.selectInner(symbol, new ArrayList<>(typeArgs));
+            return enclosingType.selectInner(symbol, typeArgs);
         }
 
         int expected = symbol.getTypeParameterCount();
@@ -201,7 +204,7 @@ class ClassTypeImpl implements JClassType {
         } else if (expected == 0) {
             return this; // non-generic
         }
-        return new ClassTypeImpl(ts, symbol, new ArrayList<>(typeArgs), false);
+        return new ClassTypeImpl(ts, symbol, CollectionUtil.defensiveUnmodifiableCopy(typeArgs), false);
     }
 
     @Override
@@ -341,6 +344,19 @@ class ClassTypeImpl implements JClassType {
         checkUserEnclosingTypeIsOk(enclosing, symbol);
 
         if (!typeArgsAreOk(symbol, typeArgs)) {
+            // fixme relax this
+            //  This will throw if the symbol is unresolved and was
+            //  resolved through AsmSymbolResolver (ie, a missing dependency
+            //  in classpath, found in a signature of some ASM class symbol member).
+            //  Currently the AST symbol impl tries to patch unresolved symbols by
+            //  making the number of type params flexible. But this does not help
+            //  the ASM implementation, and these errors are frequent if your classpath
+            //  is missing something. We still want pmd to continue processing in this case.
+            //    The best fix IMO is to admit malformed types provided they're unresolved.
+            //  We'll have to abandon the assumption that every parameterized type for
+            //  the same symbol has the same number of type params. And also, that the
+            //  formal type parameter list always matches the type argument lists in length.
+            //    Many places rely on this... For instance: TypeConversion#capture, TypeOps#isSameType, etc
             throw invalidTypeArgs(symbol, typeArgs);
         }
 

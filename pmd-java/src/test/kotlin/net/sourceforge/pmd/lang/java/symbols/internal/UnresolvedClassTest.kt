@@ -17,7 +17,9 @@ class UnresolvedClassTest : FunSpec({
 
     test("Test simple unresolved class") {
 
-        val sym = testProcessor().makeUnresolvedReference("some.pack.Class", 0)
+        val processor = testProcessor()
+        val ts = processor.typeSystem
+        val sym = processor.makeUnresolvedReference("some.pack.Class", 0)
 
         sym::isUnresolved shouldBe true
         sym::getSimpleName shouldBe "Class"
@@ -33,6 +35,9 @@ class UnresolvedClassTest : FunSpec({
 
         sym::getTypeParameterCount shouldBe 0
         sym::getTypeParameters shouldBe emptyList()
+
+        sym::getSuperclass shouldBe ts.OBJECT.symbol
+        sym::getSuperInterfaces shouldBe emptyList()
     }
 
     test("Test arity change") {

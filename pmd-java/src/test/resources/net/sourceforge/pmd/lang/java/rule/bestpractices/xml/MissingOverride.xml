@@ -296,7 +296,7 @@ public class SubclassWithGenericMethod extends AbstractClass {
         <description>Consider varargs parameter</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'setProperty(MultiValuePropertyDescriptor, V[])' is missing an @Override annotation.</message>
+            <message>The method 'setProperty(MultiValuePropertyDescriptor&lt;V&gt;, V[])' is missing an @Override annotation.</message>
         </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.rule;

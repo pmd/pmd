@@ -180,7 +180,7 @@ public interface JClassType extends JTypeMirror {
      * @throws IllegalArgumentException If this type is raw and the inner type is not,
      *                                  or this type is parameterized and the inner type is not
      */
-    JClassType selectInner(JClassSymbol symbol, List<JTypeMirror> targs);
+    JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs);
 
 
     default List<JClassType> getDeclaredClasses() {
@@ -209,7 +209,7 @@ public interface JClassType extends JTypeMirror {
 
 
     @Override
-    default @Nullable JClassType getAsSuper(JClassSymbol symbol) {
+    default @Nullable JClassType getAsSuper(@NonNull JClassSymbol symbol) {
         return (JClassType) JTypeMirror.super.getAsSuper(symbol);
     }
 

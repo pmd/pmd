@@ -11,6 +11,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
@@ -73,7 +74,7 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
 
     // Gets the representation of the set of catch statements as a single multicatch
     private String getCaughtExceptionsAsString(ASTCatchClause stmt) {
-        return stmt.getParameter().getTypeNode().getTypeImage();
+        return PrettyPrintingUtil.prettyPrintType(stmt.getParameter().getTypeNode());
     }
 
 

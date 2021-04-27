@@ -5,9 +5,11 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
+import io.kotest.assertions.withClue
+import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTExpression
-import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
+import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.types.STRING
 import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
 
@@ -93,6 +95,110 @@ class ConversionContextTests : ProcessorTestSpec({
 
             integerCast.conversionContext::getTargetType shouldBe int
             num4.conversionContext::getTargetType shouldBe int
+        }
+    }
+    parserTest("Test context of assert stmt") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {
+                static void m(Boolean boxedBool, boolean bool, String str) {
+                    assert boxedBool;
+                    assert bool : str;
+                }
+            }
+        """)
+
+        val (boxedBool, bool, str) = acu.descendants(ASTVariableAccess::class.java).toList()
+
+        spy.shouldBeOk {
+            boxedBool.conversionContext::getTargetType shouldBe ts.BOOLEAN
+            bool.conversionContext::getTargetType shouldBe ts.BOOLEAN
+            str.conversionContext::getTargetType shouldBe ts.STRING
+        }
+    }
+
+    parserTest("Test context of statements with conditions") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {
+                static void m(Boolean boxedBool, boolean bool, String str, int[] ints) {
+                    if (boxedBool);
+                    while (boxedBool);
+                    for (int i = 0; boxedBool; i++) {}
+                    do; while (boxedBool);
+                    for (int i : ints);
+                }
+            }
+        """)
+
+        val (ifstmt, whilestmt, forstmt, _, dostmt, foreachstmt) = acu.descendants(ASTVariableAccess::class.java).toList()
+        val forUpdate = acu.descendants(ASTForUpdate::class.java).firstOrThrow().exprList[0]
+
+        spy.shouldBeOk {
+
+            ifstmt.conversionContext::getTargetType shouldBe ts.BOOLEAN
+            whilestmt.conversionContext::getTargetType shouldBe ts.BOOLEAN
+            forstmt.conversionContext::getTargetType shouldBe ts.BOOLEAN
+            dostmt.conversionContext::getTargetType shouldBe ts.BOOLEAN
+
+            forUpdate.conversionContext::getTargetType shouldBe null
+            foreachstmt.conversionContext::getTargetType shouldBe null
+        }
+    }
+
+    parserTest("Test missing context in qualifier") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Scratch {
+                static void m(Boolean boxedBool) {
+                    ((Boolean) boxedBool).booleanValue(); 
+                    ((Object) boxedBool).somefield;
+                }
+            }
+        """)
+
+        val (booleanCast, objectCast) = acu.descendants(ASTCastExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            booleanCast.conversionContext::getTargetType shouldBe null
+            objectCast.conversionContext::getTargetType shouldBe null
+        }
+    }
+
+    parserTest("Test numeric context") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Scratch {
+                static void m() {
+                    int i, j, k;
+                    double d, e;
+                    
+                    eat(i * j);
+                    eat(i << j);
+                    eat(i & j);
+
+                    eat(i + e);
+                    eat(i * e);
+                }
+                void eat(double d) {}
+            }
+        """)
+
+        val (mulint, lshift, and, plusdouble, muldouble) = acu.descendants(ASTInfixExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            listOf(mulint, lshift, and).forEach {
+                withClue(it) {
+                    it.leftOperand.conversionContext::getTargetType shouldBe ts.INT
+                    it.rightOperand.conversionContext::getTargetType shouldBe ts.INT
+                }
+            }
+            listOf(plusdouble, muldouble).forEach {
+                withClue(it) {
+                    it.leftOperand.conversionContext::getTargetType shouldBe ts.DOUBLE
+                    it.rightOperand.conversionContext::getTargetType shouldBe ts.DOUBLE
+                }
+            }
         }
     }
 })

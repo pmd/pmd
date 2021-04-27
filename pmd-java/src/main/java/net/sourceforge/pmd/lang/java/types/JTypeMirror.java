@@ -198,7 +198,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * <p>Returns null if that can't be found, meaning that the given type
      * is not a supertype of this type.
      */
-    default @Nullable JTypeMirror getAsSuper(JClassSymbol symbol) {
+    default @Nullable JTypeMirror getAsSuper(@NonNull JClassSymbol symbol) {
         return TypeOps.asSuper(this, symbol);
     }
 

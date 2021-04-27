@@ -46,17 +46,23 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     private final PolyResolution polyResolution;
     private final JClassType stringType;
     private final JavaAstProcessor processor;
+    private final Infer infer;
 
 
     LazyTypeResolver(JavaAstProcessor processor, TypeInferenceLogger logger) {
         this.ts = processor.getTypeSystem();
-        this.polyResolution = new PolyResolution(new Infer(ts, processor.getJdkVersion(), logger));
+        this.infer = new Infer(ts, processor.getJdkVersion(), logger);
+        this.polyResolution = new PolyResolution(infer);
         this.stringType = (JClassType) TypesFromReflection.fromReflect(String.class, ts);
         this.processor = processor;
     }
 
+    ExprContext getConversionContextForExternalUse(ASTExpression e) {
+        return polyResolution.getConversionContextForExternalUse(e);
+    }
+
     public Infer getInfer() {
-        return polyResolution.getInfer();
+        return infer;
     }
 
     public JavaAstProcessor getProcessor() {
