@@ -11,6 +11,7 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import javasymbols.testdata.Enums
 import javasymbols.testdata.NestedClasses
 import javasymbols.testdata.Statics
 import javasymbols.testdata.impls.GenericClass
@@ -136,5 +137,19 @@ class AsmLoaderTest : FunSpec({
         assertSame(inner, second)
 
         inner.superclass shouldBe ts.OBJECT.symbol
+    }
+
+    test("Enum constants") {
+
+        val outerName = Enums::class.java.name
+
+        val emptyEnum = symLoader.resolveClassFromBinaryName("$outerName\$Empty")!!
+        emptyEnum::getEnumConstantNames shouldBe emptySet()
+
+        val withConstants = symLoader.resolveClassFromBinaryName("$outerName\$SomeConstants")!!
+        withConstants::getEnumConstantNames shouldBe setOf("A", "B")
+
+        val notAnEnum = symLoader.resolveClassFromBinaryName(outerName)!!
+        notAnEnum::getEnumConstantNames shouldBe null
     }
 })
