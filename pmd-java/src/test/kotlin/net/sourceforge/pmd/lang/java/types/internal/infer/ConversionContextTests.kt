@@ -7,7 +7,9 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTExpression
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
+import net.sourceforge.pmd.lang.java.types.STRING
 import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
 
@@ -93,6 +95,27 @@ class ConversionContextTests : ProcessorTestSpec({
 
             integerCast.conversionContext::getTargetType shouldBe int
             num4.conversionContext::getTargetType shouldBe int
+        }
+    }
+    parserTest("Test context of assert stmt") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {
+                static void m(Boolean boxedBool, boolean bool, String str) {
+                    assert boxedBool;
+                    assert bool;
+                    assert bool : str;
+                }
+            }
+        """)
+
+        val (boxedBool, bool, bool2, str) = acu.descendants(ASTVariableAccess::class.java).toList()
+
+        spy.shouldBeOk {
+            boxedBool.conversionContext::getTargetType shouldBe ts.BOOLEAN
+            bool.conversionContext::getTargetType shouldBe ts.BOOLEAN
+            bool2.conversionContext::getTargetType shouldBe ts.BOOLEAN
+            str.conversionContext::getTargetType shouldBe ts.STRING
         }
     }
 })

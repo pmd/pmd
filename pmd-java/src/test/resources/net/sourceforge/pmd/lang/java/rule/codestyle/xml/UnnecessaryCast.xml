@@ -604,4 +604,17 @@ class Scratch {
 }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Assert statements</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Boolean boxedBool, boolean bool, String str) {
+                    assert (boolean) boxedBool;
+                    assert (boolean) bool;
+                    assert bool : (String) str;
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

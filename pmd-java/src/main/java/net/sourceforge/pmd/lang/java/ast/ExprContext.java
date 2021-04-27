@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
@@ -64,7 +63,7 @@ public abstract class ExprContext {
         return new RegularCtx(targetType, CtxKind.Assignment);
     }
 
-    static ExprContext newNumericCtx(JPrimitiveType targetType) {
+    static ExprContext newNonPolyContext(JTypeMirror targetType) {
         return new RegularCtx(targetType, CtxKind.OtherNonPoly);
     }
 
