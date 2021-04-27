@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
-import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfType;
@@ -31,13 +30,6 @@ public final class ASTUnionType extends AbstractJavaTypeNode
 
     ASTUnionType(int id) {
         super(id);
-    }
-
-
-    @Override
-    @Deprecated
-    public String getTypeImage() {
-        return children(ASTClassOrInterfaceType.class).toStream().map(ASTClassOrInterfaceType::getTypeImage).collect(Collectors.joining(" | "));
     }
 
     @Override

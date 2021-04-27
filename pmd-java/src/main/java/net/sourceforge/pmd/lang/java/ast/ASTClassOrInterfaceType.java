@@ -170,20 +170,6 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     }
 
     /**
-     * For now this returns the name of the type with all the segments,
-     * without annotations or type parameters.
-     *
-     * @deprecated This is useless and won't be implemented. We can use the
-     *     symbol, or better the upcoming type API to pretty print the type.
-     */
-    @Override
-    @Experimental
-    @Deprecated
-    public String getTypeImage() {
-        return children(ASTType.class).firstOpt().map(s -> s.getTypeImage() + ".").orElse("") + getSimpleName();
-    }
-
-    /**
      * Checks whether the type this node is referring to is declared within the
      * same compilation unit - either a class/interface or a enum type. You want
      * to check this, if {@link #getType()} is null.

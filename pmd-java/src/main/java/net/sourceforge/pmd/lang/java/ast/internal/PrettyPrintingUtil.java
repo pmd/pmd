@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast.internal;
 
 import static net.sourceforge.pmd.internal.util.AssertionUtil.shouldNotReachHere;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
@@ -105,6 +106,8 @@ public final class PrettyPrintingUtil {
         } else if (t instanceof ASTIntersectionType) {
             CollectionUtil.joinOn(sb, ((ASTIntersectionType) t).getComponents(),
                                   PrettyPrintingUtil::prettyPrintTypeNode, " & ");
+        } else if (t instanceof ASTAmbiguousName) {
+            sb.append(((ASTAmbiguousName) t).getName());
         } else {
             throw shouldNotReachHere("Unhandled type? " + t);
         }

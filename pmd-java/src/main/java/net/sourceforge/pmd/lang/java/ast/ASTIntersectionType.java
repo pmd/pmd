@@ -35,14 +35,6 @@ public final class ASTIntersectionType extends AbstractJavaTypeNode
         super(id);
     }
 
-
-    @Override
-    @Deprecated
-    public String getTypeImage() {
-        return iterator().next().getTypeImage(); //TODO
-
-    }
-
     /** Returns a stream of component types. */
     public NodeStream<ASTClassOrInterfaceType> getComponents() {
         return children(ASTClassOrInterfaceType.class);

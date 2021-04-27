@@ -73,7 +73,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         setImage(id);
     }
 
-
+    /** Returns the entire name, including periods if any. */
     public String getName() {
         return super.getImage();
     }
@@ -89,13 +89,6 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-
-    @Override
-    @Deprecated
-    public String getTypeImage() {
-        return getImage();
     }
 
     // Package-private construction methods:
