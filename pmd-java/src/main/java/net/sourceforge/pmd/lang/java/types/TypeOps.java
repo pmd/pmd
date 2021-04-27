@@ -1552,7 +1552,7 @@ public final class TypeOps {
     /**
      * @see JTypeMirror#getAsSuper(JClassSymbol)
      */
-    public static @Nullable JTypeMirror asSuper(JTypeMirror t, JClassSymbol s) {
+    public static @Nullable JTypeMirror asSuper(@NonNull JTypeMirror t, @NonNull JClassSymbol s) {
 
         if (!t.isPrimitive() && s.equals(t.getTypeSystem().OBJECT.getSymbol())) {
             // interface types need to have OBJECT somewhere up their hierarchy

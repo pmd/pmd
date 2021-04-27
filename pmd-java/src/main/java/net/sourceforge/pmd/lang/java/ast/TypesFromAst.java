@@ -162,7 +162,11 @@ final class TypesFromAst {
             // the actual enclosing type may be a supertype of the one that was explicitly written
             // (Sub <: Sup) => (Sub.Inner = Sup.Inner)
             // We normalize them to the actual declaring class
-            enclosing = enclosing.getAsSuper(reference.getEnclosingClass());
+            JClassSymbol enclosingClassAccordingToReference = reference.getEnclosingClass();
+            if (enclosingClassAccordingToReference == null) {
+                return null;
+            }
+            enclosing = enclosing.getAsSuper(enclosingClassAccordingToReference);
             assert enclosing != null : "We got this symbol by looking into enclosing";
             return (JClassType) enclosing;
         }

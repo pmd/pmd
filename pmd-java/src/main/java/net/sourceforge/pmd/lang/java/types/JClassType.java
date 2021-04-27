@@ -209,7 +209,7 @@ public interface JClassType extends JTypeMirror {
 
 
     @Override
-    default @Nullable JClassType getAsSuper(JClassSymbol symbol) {
+    default @Nullable JClassType getAsSuper(@NonNull JClassSymbol symbol) {
         return (JClassType) JTypeMirror.super.getAsSuper(symbol);
     }
 
