@@ -11,6 +11,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -255,7 +256,7 @@ final class ExprOps {
                 }
             }
 
-            return adaptGetClass(candidate, mref.getTypeToSearch().getErasure());
+            return adaptGetClass(candidate, mref.getTypeToSearch()::getErasure);
         } else {
             return null;
         }
@@ -488,11 +489,21 @@ final class ExprOps {
     }
 
 
-    static JMethodSig adaptGetClass(JMethodSig sig, JTypeMirror erasedReceiverType) {
+    /**
+     * Calls to {@link Object#getClass()} on a type {@code T} have type
+     * {@code Class<|T|>}. If the selected method is that method, then
+     * we need to replace its return type (the symbol has return type {@link Object}).
+     *
+     * @param sig                Selected signature
+     * @param erasedReceiverType Lazily created, because in many cases it's not necessary
+     *
+     * @return Signature, adapted if it is {@link Object#getClass()}
+     */
+    static JMethodSig adaptGetClass(JMethodSig sig, Supplier<JTypeMirror> erasedReceiverType) {
         TypeSystem ts = sig.getTypeSystem();
         if ("getClass".equals(sig.getName()) && sig.getDeclaringType().equals(ts.OBJECT)) {
             if (erasedReceiverType != null) {
-                return sig.internalApi().withReturnType(getClassReturn(erasedReceiverType, ts)).internalApi().markAsAdapted();
+                return sig.internalApi().withReturnType(getClassReturn(erasedReceiverType.get(), ts)).internalApi().markAsAdapted();
             }
         }
         return sig;
