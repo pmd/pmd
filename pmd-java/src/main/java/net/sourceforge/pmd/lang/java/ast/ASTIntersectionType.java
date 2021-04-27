@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -39,6 +40,13 @@ public final class ASTIntersectionType extends AbstractJavaTypeNode
     public String getTypeImage() {
         return iterator().next().getTypeImage(); //TODO
 
+    }
+
+    /**
+     * Returns the list of component types.
+     */
+    public List<ASTClassOrInterfaceType> getComponents() {
+        return children(ASTClassOrInterfaceType.class).toList();
     }
 
 

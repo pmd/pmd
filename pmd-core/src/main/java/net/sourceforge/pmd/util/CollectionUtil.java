@@ -617,4 +617,24 @@ public final class CollectionUtil {
         }
         return Collections.unmodifiableList(new ArrayList<>(list));
     }
+
+    /**
+     * Like {@link String#join(CharSequence, Iterable)}, except it appends
+     * on a preexisting {@link StringBuilder}. The result value is that StringBuilder.
+     */
+    public static <T> StringBuilder joinOn(StringBuilder sb,
+                                           Iterable<? extends T> iterable,
+                                           BiConsumer<? super StringBuilder, ? super T> appendItem,
+                                           String delimiter) {
+        boolean first = true;
+        for (T t : iterable) {
+            appendItem.accept(sb, t);
+            if (first) {
+                first = false;
+            } else {
+                sb.append(delimiter);
+            }
+        }
+        return sb;
+    }
 }

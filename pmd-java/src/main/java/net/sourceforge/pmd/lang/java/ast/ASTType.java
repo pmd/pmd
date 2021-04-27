@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  *
  * Type ::= {@link ASTReferenceType ReferenceType}
  *        | {@link ASTPrimitiveType PrimitiveType}
+ *        | {@link ASTVoidType VoidType}
  *
  * </pre>
  *

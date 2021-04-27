@@ -427,7 +427,7 @@ public class Test {
         <rule-property name="reportLevel">6</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'SOFExample#usefulMethod(List)' has value 16.</message>
+            <message>'SOFExample#usefulMethod(List&lt;MyCal&gt;)' has value 16.</message>
         </expected-messages>
         <code><![CDATA[
 import java.util.*;
@@ -459,7 +459,7 @@ public class SOFExample {
         <rule-property name="reportLevel">6</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'SOFExample#usefulMethod(List)' has value 16.</message>
+            <message>'SOFExample#usefulMethod(List&lt;MyCal&gt;)' has value 16.</message>
         </expected-messages>
         <code><![CDATA[
 import java.util.*;
@@ -513,7 +513,7 @@ public class SOFExample {
         <rule-property name="reportLevel">6</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'SOFExample#usefulMethod(List)' has value 17.</message>
+            <message>'SOFExample#usefulMethod(List&lt;MyCal&gt;)' has value 17.</message>
         </expected-messages>
         <code><![CDATA[
 import java.util.*;
@@ -538,7 +538,7 @@ public class SOFExample {
         <rule-property name="reportLevel">6</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'SOFExample#usefulMethod(List)' has value 272.</message>
+            <message>'SOFExample#usefulMethod(List&lt;MyCal&gt;)' has value 272.</message>
         </expected-messages>
         <code><![CDATA[
             import java.util.*;

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast.internal;
 
+import static net.sourceforge.pmd.internal.util.AssertionUtil.shouldNotReachHere;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
@@ -15,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -24,10 +27,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTUnionType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * @author Clément Fournier
@@ -54,7 +59,7 @@ public final class PrettyPrintingUtil {
             }
             first = false;
 
-            prettyPrintTypeNode(param.getTypeNode(), sb, /*withTypeArgs*/false);
+            prettyPrintTypeNode(sb, param.getTypeNode());
             int extraDimensions = ASTList.sizeOrZero(param.getVarId().getExtraDimensions());
             while (extraDimensions-- > 0) {
                 sb.append("[]");
@@ -66,16 +71,21 @@ public final class PrettyPrintingUtil {
         return sb.toString();
     }
 
-    private static void prettyPrintTypeNode(ASTType t, StringBuilder sb, boolean withTargs) {
+    private static void prettyPrintTypeNode(StringBuilder sb, ASTType t) {
         if (t instanceof ASTPrimitiveType) {
             sb.append(((ASTPrimitiveType) t).getKind().getSimpleName());
         } else if (t instanceof ASTClassOrInterfaceType) {
-            sb.append(((ASTClassOrInterfaceType) t).getSimpleName());
-            if (withTargs) {
-                prettyPrintTypeArguments((ASTClassOrInterfaceType) t, sb);
+            ASTClassOrInterfaceType classT = (ASTClassOrInterfaceType) t;
+            sb.append(classT.getSimpleName());
+
+            ASTTypeArguments targs = classT.getTypeArguments();
+            if (targs != null) {
+                sb.append("<");
+                CollectionUtil.joinOn(sb, targs.toStream(), PrettyPrintingUtil::prettyPrintTypeNode, ", ");
+                sb.append(">");
             }
         } else if (t instanceof ASTArrayType) {
-            prettyPrintTypeNode(((ASTArrayType) t).getElementType(), sb, withTargs);
+            prettyPrintTypeNode(sb, ((ASTArrayType) t).getElementType());
             int depth = ((ASTArrayType) t).getArrayDepth();
             for (int i = 0; i < depth; i++) {
                 sb.append("[]");
@@ -87,36 +97,22 @@ public final class PrettyPrintingUtil {
             ASTReferenceType bound = ((ASTWildcardType) t).getTypeBoundNode();
             if (bound != null) {
                 sb.append(((ASTWildcardType) t).hasLowerBound() ? " super " : " extends ");
-                prettyPrintTypeNode(bound, sb, withTargs);
+                prettyPrintTypeNode(sb, bound);
             }
-        }
-    }
-
-    private static void prettyPrintTypeArguments(ASTClassOrInterfaceType t, StringBuilder sb) {
-        ASTTypeArguments targs = t.getTypeArguments();
-        if (targs != null) {
-            boolean first = true;
-            sb.append('<');
-            for (ASTType targ : targs) {
-                prettyPrintTypeNode(targ, sb, true);
-                if (!first) {
-                    sb.append(", ");
-                }
-                first = false;
-            }
-            sb.append('>');
+        } else if (t instanceof ASTUnionType) {
+            CollectionUtil.joinOn(sb, ((ASTUnionType) t).getComponents(),
+                                  PrettyPrintingUtil::prettyPrintTypeNode, " | ");
+        } else if (t instanceof ASTIntersectionType) {
+            CollectionUtil.joinOn(sb, ((ASTIntersectionType) t).getComponents(),
+                                  PrettyPrintingUtil::prettyPrintTypeNode, " & ");
+        } else {
+            throw shouldNotReachHere("Unhandled type? " + t);
         }
     }
 
     public static String prettyPrintType(ASTType t) {
         StringBuilder sb = new StringBuilder();
-        prettyPrintTypeNode(t, sb, /*withTypeArgs*/false);
-        return sb.toString();
-    }
-
-    public static String prettyPrintTypeWithTargs(ASTType t) {
-        StringBuilder sb = new StringBuilder();
-        prettyPrintTypeNode(t, sb, /*withTypeArgs*/ true);
+        prettyPrintTypeNode(sb, t);
         return sb.toString();
     }
 
@@ -124,10 +120,7 @@ public final class PrettyPrintingUtil {
      * Returns a normalized method name. This just looks at the image of the types of the parameters.
      */
     public static String displaySignature(ASTMethodOrConstructorDeclaration node) {
-        ASTFormalParameters params = node.getFormalParameters();
-        String name = node instanceof ASTMethodDeclaration ? node.getName() : node.getImage();
-
-        return displaySignature(name, params);
+        return displaySignature(node.getName(), node.getFormalParameters());
     }
 
     /**
