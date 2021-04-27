@@ -1118,6 +1118,9 @@ Use equals() to compare object references; avoid comparing them with ==.
                           [not(PrimarySuffix)]
                           [ancestor::MethodDeclaration[@Name = 'equals']])
     ]
+    (: Is not a field access with an all-caps identifier :)
+    [not(PrimaryExpression[not(PrimarySuffix) and PrimaryPrefix/Name[upper-case(@Image)=@Image]
+     or PrimaryExpression/PrimarySuffix[last()][upper-case(@Image)=@Image]])]
 ]]>
                 </value>
             </property>
