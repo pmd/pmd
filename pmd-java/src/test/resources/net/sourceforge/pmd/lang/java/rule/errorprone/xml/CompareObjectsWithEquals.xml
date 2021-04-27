@@ -425,5 +425,17 @@ public class EnumTest {
             }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Property typesThatCompareByReference #3110</description>
+        <rule-property name="typesThatCompareByReference">java.lang.String</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class MyClass {
+                public static void isMissing(String obj, Object ts) {
+                    return obj == ts;
+                }
+            }
+        ]]></code>
+    </test-code>
 
 </test-data>
