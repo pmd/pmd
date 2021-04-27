@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.types.*
 /**
  * @author Clément Fournier
  */
+@Suppress("UNUSED_VARIABLE")
 class AnonCtorsTest : ProcessorTestSpec({
 
 

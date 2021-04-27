@@ -75,11 +75,13 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
         inContext(ExpressionParsingCtx) {
 
-            listOf(ADD, MUL, SUB, MOD, DIV)
+            listOf(ADD, MUL, SUB, MOD, DIV, OR, AND, XOR)
                     .forEach {
 
                         val op = it.token
 
+                        "(byte) 1 $op (byte) 2" should haveType { int }
+                        "1 $op (byte) 2" should haveType { int }
                         "1  $op 2" should haveType { int }
                         "1  $op 2d" should haveType { double }
                         "1d $op 2" should haveType { double }

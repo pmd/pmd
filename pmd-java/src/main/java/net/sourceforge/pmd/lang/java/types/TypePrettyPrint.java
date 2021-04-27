@@ -47,6 +47,13 @@ public final class TypePrettyPrint {
         return sb.getResult();
     }
 
+    public static @NonNull String prettyPrintWithSimpleNames(@NonNull JTypeMirror sig) {
+        TypePrettyPrinter sb = new TypePrettyPrinter();
+        sb.qualifyNames = false;
+        sig.acceptVisitor(PrettyPrintVisitor.INSTANCE, sb);
+        return sb.getResult();
+    }
+
     public static String prettyPrintWithTvarQualifier(@NonNull JTypeMirror t) {
         TypePrettyPrinter sb = new TypePrettyPrinter();
         sb.qualifyTvars = true;
@@ -61,6 +68,7 @@ public final class TypePrettyPrint {
         private boolean printMethodHeader = true;
         private OptionalBool printTypeVarBounds = UNKNOWN;
         private boolean qualifyTvars = false;
+        private boolean qualifyNames = true;
         private boolean isVarargs = false;
 
 
@@ -102,7 +110,7 @@ public final class TypePrettyPrint {
                 sb.append('*'); // a small marker to spot them
             }
 
-            if (enclosing != null && !isAnon) {
+            if (enclosing != null && !isAnon || !sb.qualifyNames) {
                 sb.append(t.getSymbol().getSimpleName());
             } else {
                 sb.append(t.getSymbol().getBinaryName());

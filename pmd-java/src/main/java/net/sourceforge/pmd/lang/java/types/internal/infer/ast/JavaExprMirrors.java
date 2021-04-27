@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
@@ -32,15 +33,19 @@ public final class JavaExprMirrors {
         this.ts = infer.getTypeSystem();
     }
 
-    public ExprMirror getMirror(ASTExpression e) {
+    public ExprMirror getPolyMirror(ASTExpression e) {
+        return getPolyMirror(e, false);
+    }
+
+    ExprMirror getPolyMirror(ASTExpression e, boolean isStandalone) {
         if (e instanceof InvocationNode) {
             return getInvocationMirror((InvocationNode) e);
         } else if (e instanceof ASTLambdaExpression || e instanceof ASTMethodReference) {
             return getFunctionalMirror(e);
         } else if (e instanceof ASTConditionalExpression) {
-            return new ConditionalMirrorImpl(this, (ASTConditionalExpression) e);
+            return new ConditionalMirrorImpl(this, (ASTConditionalExpression) e, isStandalone);
         } else if (e instanceof ASTSwitchExpression) {
-            return new SwitchMirror(this, (ASTSwitchExpression) e);
+            return new SwitchMirror(this, (ASTSwitchExpression) e, isStandalone);
         } else {
             // Standalone
             return new StandaloneExprMirror(this, e);
@@ -58,6 +63,21 @@ public final class JavaExprMirrors {
             return new EnumCtorInvocMirror(this, (ASTEnumConstant) e);
         }
         throw new IllegalStateException("" + e);
+    }
+
+
+    /**
+     * A mirror that implements the rules for standalone conditional
+     * expressions correctly. getStandaloneType will work differently
+     * than the one yielded by {@link #getPolyMirror(ASTExpression)}.
+     */
+    public BranchingMirror getStandaloneBranchingMirror(ASTExpression e) {
+        if (e instanceof ASTConditionalExpression) {
+            return new ConditionalMirrorImpl(this, (ASTConditionalExpression) e, true);
+        } else if (e instanceof ASTSwitchExpression) {
+            return new SwitchMirror(this, (ASTSwitchExpression) e, true);
+        }
+        throw new IllegalArgumentException("" + e);
     }
 
     public FunctionalExprMirror getFunctionalMirror(ASTExpression e) {

@@ -135,6 +135,18 @@ public interface ExprMirror {
          */
         boolean branchesMatch(Predicate<? super ExprMirror> condition);
 
+        /**
+         * Record on the AST node that is is a standalone expression.
+         * This accounts for special cases in the spec which are made
+         * for numeric and boolean conditional expressions. For those
+         * types of standalone exprs, the branches may have an additional
+         * implicit unboxing/widening conversion, that does not depend
+         * on the usual target type (the context of the ternary itself),
+         * but just on the other branch.
+         */
+        default void setStandalone() {
+            // do nothing by default
+        }
     }
 
     /**

@@ -424,7 +424,7 @@ The rule allows methods and fields annotated with Guava's @VisibleForTesting and
 [@Visibility = "package"]
 [ not( pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
     or pmd-java:hasAnnotation('org.junit.jupiter.api.RepeatedTest')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.ParameterizedTest')
+    or pmd-java:hasAnnotation('org.junit.jupiter.params.ParameterizedTest')
     or pmd-java:hasAnnotation('org.junit.jupiter.api.TestFactory')
     or pmd-java:hasAnnotation('org.junit.jupiter.api.TestTemplate')
     or pmd-java:hasAnnotation('org.junit.jupiter.api.BeforeAll')
@@ -438,61 +438,6 @@ The rule allows methods and fields annotated with Guava's @VisibleForTesting and
                 </value>
             </property>
         </properties>
-    </rule>
-
-    <rule name="DontImportJavaLang"
-          language="java"
-          since="0.5"
-          message="Avoid importing anything from the package 'java.lang'"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#dontimportjavalang">
-        <description>
-Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
-        </description>
-        <priority>4</priority>
-        <properties>
-            <property name="version" value="3.1" />
-            <property name="xpath">
-                <value><![CDATA[
-//ImportDeclaration[@Static = false()]
-                   [@ImportedName = "java.lang"
-                    or (let $rest := substring-after(@ImportedName, "java.lang.")
-                       return not($rest = '') and not(contains($rest, '.') or @ImportOnDemand = true()))]
-]]></value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-import java.lang.String;    // this is unnecessary
-
-public class Foo {}
-
-// --- in another source code file...
-
-import java.lang.*;         // this is bad
-
-public class Foo {}
-]]>
-        </example>
-    </rule>
-
-    <rule name="DuplicateImports"
-          language="java"
-          since="0.5"
-          message="Avoid duplicate imports such as ''{0}''"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.DuplicateImportsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#duplicateimports">
-        <description>
-Duplicate or overlapping import statements should be avoided.
-        </description>
-        <priority>4</priority>
-        <example>
-<![CDATA[
-import java.lang.String;
-import java.lang.*;
-public class Foo {}
-]]>
-        </example>
     </rule>
 
     <rule name="EmptyMethodInAbstractClassShouldBeAbstract"
@@ -1204,18 +1149,28 @@ public class SomeClass {
     <rule name="PrematureDeclaration"
           language="java"
           since="5.0"
-          message="Avoid declaring a variable if it is unreferenced before a possible exit point."
+          message="Declaration of ''{0}'' can be moved closer to its usages"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.PrematureDeclarationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#prematuredeclaration">
         <description>
-Checks for variables that are defined before they might be used. A reference is deemed to be premature if it is created right before a block of code that doesn't use it that also has the ability to return or throw an exception.
+Checks for variables that are defined before they might be used. A declaration is
+deemed to be premature if there are some statements that may return or throw an
+exception between the time the variable is declared and the time it is first read.
+
+Some variables cannot be declared close to their first usage because of side-effects
+occurring before they're first used. We try to avoid reporting those by considering
+most method and constructor invocations to be impure. See the second example.
+
+Note that this rule is meant to improve code readability but is not an optimization.
+A smart JIT will not care whether the variable is declared prematurely or not, as it
+can reorder code.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
 public int getLength(String[] strings) {
 
-    int length = 0; // declared prematurely
+    int length = 0; // could be moved closer to the loop
 
     if (strings == null || strings.length == 0) return 0;
 
@@ -1224,6 +1179,25 @@ public int getLength(String[] strings) {
     }
 
     return length;
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+public int getLength(String[] strings) {
+
+    int startTime = System.nanoTime(); // cannot be moved because initializer is impure
+
+    if (strings == null || strings.length == 0) {
+        // some error logic
+        throw new SomeException(...);
+    }
+
+    for (String str : strings) {
+        length += str.length();
+    }
+
+    return System.nanoTime() - startTime;
 }
 ]]>
         </example>
@@ -1492,26 +1466,75 @@ public class Foo {
         </example>
     </rule>
 
+    <!-- This is only restricted to java 5+ because the rule doesn't support
+         the type system pre-java5, where there were no autoboxing conversions. -->
     <rule name="UnnecessaryCast"
           language="java"
           minimumLanguageVersion="1.5"
           since="6.24.0"
-          message="Avoid unnecessary casts"
+          message="Unnecessary cast ({0})"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryCastRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarycast">
-        <description>
-This rule detects when a cast is unnecessary while accessing collection elements. This rule is mostly useful
-for old java code before generics where introduced with java 1.5.
-        </description>
+        <description><![CDATA[
+Detects casts which could be removed as the operand of the cast is already suitable
+for the context type. For instance, in the following:
+```
+Object context = (Comparable) "o";
+```
+The cast is unnecessary. This is because `String` already is a subtype of both
+`Comparable` and `Object`.
+
+This will also flag casts that can be avoided because of the autoboxing feature of Java 5.
+```
+Integer integer = (Integer) 1;
+```
+The literal would be autoboxed to `Integer` anyway.
+            ]]></description>
         <priority>3</priority>
         <example>
 <![CDATA[
-public class UnnecessaryCastSample {
-    public void method() {
-        List<String> stringList = Arrays.asList("a", "b");
-        String element = (String) stringList.get(0); // this cast is unnecessary
-        String element2 = stringList.get(0);
-    }
+import java.util.function.Function;
+class SomeClass {
+   static {
+      Object o; long l; int i; Integer boxedInt;
+
+      // reference conversions
+
+      o = (Object) new SomeClass();      // unnecessary
+      o = (SomeClass) o;                 // necessary (narrowing cast)
+      o = (Comparable<String>) "string"; // unnecessary
+
+      // primitive conversions
+
+      l = (long) 2;   // unnecessary
+      l = (long) 2.0; // necessary (narrowing cast)
+      l = (byte) i;   // necessary (narrowing cast)
+
+      // boxing/unboxing casts (since java 5)
+
+      o = (Integer) 3;    // unnecessary (autoboxing would apply)
+      o = (long) 3;       // necessary (would be boxed to Long)
+      l = (int) boxedInt; // necessary (cannot cast Integer to long)
+
+      // casts that give a target type to a lambda/ method ref are necessary
+
+      o = (Function<Integer, String>) Integer::toString; // necessary (no target type)
+   }
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+import java.util.*;
+class SomeClass {
+   static {
+       /* Casts involving access to collections were common before Java 5, because collections
+        * were not generic. This rule may hence be useful when converting from using a raw
+        * type like `List` to a parameterized type like `List<String>`.
+        */
+       List<String> stringList = Arrays.asList("a", "b");
+       String element = (String) stringList.get(0); // this cast is unnecessary
+   }
 }
 ]]>
         </example>
@@ -1558,6 +1581,37 @@ public class Foo {
     private List list2;             // More appropriate given import of 'java.util.List'
 }
 ]]>
+        </example>
+    </rule>
+
+    <rule name="UnnecessaryImport"
+          language="java"
+          since="6.34.0"
+          message="Unnecessary import ''{0}''"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryImportRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryimport">
+        <description>
+            Reports import statements that can be removed. They are either unused,
+            duplicated, or the members they import are already implicitly in scope,
+            because they're in java.lang, or the current package.
+        </description>
+        <priority>4</priority>
+        <example>
+<![CDATA[
+            import java.io.File;            // not used, can be removed
+            import java.util.Collections;   // used below
+            import java.util.*;             // so this one is not used
+
+            import java.lang.Object;        // imports from java.lang, unnecessary
+            import java.lang.Object;        // duplicate, unnecessary
+
+            public class Foo {
+                static Object emptyList() {
+                    return Collections.emptyList();
+                }
+            }
+            ]]>
         </example>
     </rule>
 
@@ -1624,11 +1678,12 @@ public class Bar {
     <rule name="UnnecessaryReturn"
           language="java"
           since="1.3"
-          message="Avoid unnecessary return statements"
+          message="Unnecessary return statement"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryReturnRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryreturn">
         <description>
-Avoid the use of unnecessary return statements.
+Avoid the use of unnecessary return statements. A return is unnecessary when no
+instructions follow anyway.
         </description>
         <priority>3</priority>
         <example>

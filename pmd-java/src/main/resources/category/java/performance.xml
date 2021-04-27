@@ -912,35 +912,21 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
             <property name="xpath">
                 <value>
 <![CDATA[
-//Statement[
-    (ForStatement) and (ForStatement//VariableInitializer//Literal[@IntLiteral= true() and @Image='0']) and (not(.//IfStatement))
-   ]
-   //StatementExpression[
-    PrimaryExpression/PrimaryPrefix/Name[
-     substring-before(@Image,'.add') = ancestor::MethodDeclaration//LocalVariableDeclaration[
-      ./Type//ClassOrInterfaceType[
-       @Image = 'Collection' or
-       @Image = 'List' or @Image='ArrayList'
-      ]
-     ]
-     /VariableDeclarator/VariableDeclaratorId[
-      count(..//AllocationExpression/ClassOrInterfaceType[
-       @Image="ArrayList"
-      ]
-      )=1
-     ]/@Name
+//ForStatement
+  [ForInit
+    [LocalVariableDeclaration
+      [PrimitiveType[@Kind = 'int']]
+      [VariableDeclarator[NumericLiteral[@IntLiteral][@Image = '0']]]
     ]
-   and
-   PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
-   [
-     @Image = ancestor::MethodDeclaration[1]//LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId[@ArrayType=true()]/@Name
-     or
-     @Image = ancestor::MethodDeclaration[1]//FormalParameter/VariableDeclaratorId/@Name
-   ]
-   /../..[count(.//PrimarySuffix)
-   =1]/PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix
-   /Name
-   ]
+  ]
+  [not(.//IfStatement)]
+  [*[last()]//
+    MethodCall
+      [pmd-java:matchesSig('java.util.Collection#add(java.lang.Object)')]
+      [ArgumentList/ArrayAccess
+        [VariableAccess[@Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name]]
+      ]
+  ]
 ]]>
                 </value>
             </property>
@@ -1005,23 +991,10 @@ and buffering.
             <property name="xpath">
                 <value>
                     <![CDATA[
-//PrimaryPrefix/Name
-[ends-with(@Image, '.get') or ends-with(@Image, '.getString')]
-[
-    starts-with(@Image, concat(
-        ancestor::MethodDeclaration//FormalParameter/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Name,
-        '.')
-    ) or
-    starts-with(@Image, concat(
-        ancestor::MethodDeclaration//LocalVariableDeclaration/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Name,
-        '.')
-    ) or
-    starts-with(@Image, concat(
-        ancestor::ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Name,
-        '.')
-    )
-]
-]]>
+//MethodCall
+    [@MethodName = 'get' or @MethodName = 'getString']
+    [*[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]]
+                    ]]>
                 </value>
             </property>
         </properties>

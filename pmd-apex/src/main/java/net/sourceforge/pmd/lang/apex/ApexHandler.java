@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.properties.PropertySource;
 
 @InternalApi
 public class ApexHandler extends AbstractPmdLanguageVersionHandler {
@@ -34,6 +35,11 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
         return new ApexParser();
     }
 
+    @Override
+    public void declareParserTaskProperties(PropertySource source) {
+        source.definePropertyDescriptor(ApexParser.MULTIFILE_DIRECTORY);
+        overridePropertiesFromEnv(ApexLanguageModule.TERSE_NAME, source);
+    }
 
     @Override
     public LanguageMetricsProvider getLanguageMetricsProvider() {

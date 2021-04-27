@@ -7,7 +7,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 
@@ -210,6 +210,47 @@ class Scratch {
                     declaredIn = t_Scratch,
                     withFormals = listOf(gen.t_String.toArray()),
                     returning = gen.`t_List{String}`
+            )
+        }
+    }
+
+    parserTest("Type with raw bound") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+// Note: Enum is raw, not Enum<T>
+class StringToEnum<T extends Enum> implements Converter<String, T> {
+
+    private final Class<T> enumType;
+
+    public StringToEnum(Class<T> enumType) {
+        this.enumType = enumType;
+    }
+
+    @Override
+    public T convert(String source) {
+        // Because `this.enumType` is raw, the expr `Enum.valueOf(...)` has its 
+        // return type erased to Enum
+        // So the cast is necessary
+        return (T) Enum.valueOf(this.enumType, source.trim());
+    }
+}
+
+interface Converter<From, To> {
+    To convert(From source);
+}
+        """)
+
+        val call = acu.firstMethodCall()
+        val tparam = acu.typeVar("T")
+
+        spy.shouldBeOk {
+            call.overloadSelectionInfo::isFailed shouldBe false
+            call.overloadSelectionInfo::needsUncheckedConversion shouldBe true
+            call.methodType.shouldMatchMethod(
+                    named = "valueOf",
+                    declaredIn = Enum::class.raw,
+                    withFormals = listOf(Class::class[tparam], gen.t_String),
+                    returning = Enum::class.raw
             )
         }
     }

@@ -63,7 +63,7 @@ public class TypeResTestRule extends AbstractJavaRule {
 
 
     static {
-        PRINT_ALL_UNRESOLVED = "true".equalsIgnoreCase(System.getProperties().getOrDefault("PRINT_ALL_UNRESOLVED", "").toString());
+        PRINT_ALL_UNRESOLVED = Boolean.parseBoolean(System.getProperties().getOrDefault("PRINT_ALL_UNRESOLVED", "true").toString());
     }
 
 
@@ -105,11 +105,6 @@ public class TypeResTestRule extends AbstractJavaRule {
         return data;
     }
 
-
-    private static boolean isUnresolved(@NonNull JTypeMirror s) {
-        TypeSystem ts = s.getTypeSystem();
-        return s == ts.UNKNOWN || s == ts.ERROR || s.getSymbol() != null && s.getSymbol().isUnresolved();
-    }
 
     @NonNull
     public String position(JavaNode node) {

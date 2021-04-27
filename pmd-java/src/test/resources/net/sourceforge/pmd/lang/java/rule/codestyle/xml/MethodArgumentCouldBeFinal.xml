@@ -86,7 +86,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar(final List batch) {
+    public void bar(final Foo batch) {
         try {} catch (Exception e) {}
         try {} catch (Exception ee) {}
     }

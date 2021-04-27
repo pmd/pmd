@@ -10,6 +10,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -22,10 +23,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -53,6 +57,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -66,6 +71,8 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -75,6 +82,22 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * Utilities shared between rules.
  */
 public final class JavaRuleUtil {
+
+    // this is a hacky way to do it, but let's see where this goes
+    private static final CompoundInvocationMatcher KNOWN_PURE_METHODS = InvocationMatcher.parseAll(
+        "_#toString()",
+        "_#hashCode()",
+        "_#equals(java.lang.Object)",
+        "java.lang.String#_(_*)",
+        // actually not all of them, probs only stream of some type
+        // arg which doesn't implement Closeable...
+        "java.util.stream.Stream#_(_*)",
+        "java.util.Collection#size()",
+        "java.util.List#get(int)",
+        "java.util.Map#get(_)",
+        "java.lang.Iterable#iterator()",
+        "java.lang.Comparable#compareTo(_)"
+    );
 
     private JavaRuleUtil() {
         // utility class
@@ -184,14 +207,7 @@ public final class JavaRuleUtil {
      */
     public static boolean isMainMethod(JavaNode node) {
         if (node instanceof ASTMethodDeclaration) {
-            ASTMethodDeclaration decl = (ASTMethodDeclaration) node;
-
-
-            return decl.hasModifiers(JModifier.PUBLIC, JModifier.STATIC)
-                && "main".equals(decl.getName())
-                && decl.isVoid()
-                && decl.getArity() == 1
-                && TypeTestUtil.isExactlyA(String[].class, decl.getFormalParameters().get(0));
+            return ((ASTMethodDeclaration) node).isMainMethod();
         }
         return false;
     }
@@ -261,17 +277,51 @@ public final class JavaRuleUtil {
      * @param camelCaseString A string
      * @param prefixWord      A prefix
      */
-    static boolean startsWithCamelCaseWord(String camelCaseString, String prefixWord) {
+    public static boolean startsWithCamelCaseWord(String camelCaseString, String prefixWord) {
         return camelCaseString.startsWith(prefixWord)
             && camelCaseString.length() > prefixWord.length()
             && Character.isUpperCase(camelCaseString.charAt(prefixWord.length()));
     }
 
+
+    /**
+     * Returns true if the string has the given word as a word, not at the start.
+     * There needs to be a camelcase word boundary after the prefix.
+     *
+     * <code>
+     * containsCamelCaseWord("isABoolean", "Bool") == false
+     * containsCamelCaseWord("isABoolean", "A")    == true
+     * containsCamelCaseWord("isABoolean", "is")   == error (not capitalized)
+     * </code>
+     *
+     * @param camelCaseString A string
+     * @param capitalizedWord A word, non-empty, capitalized
+     *
+     * @throws AssertionError If the word is empty or not capitalized
+     */
+    public static boolean containsCamelCaseWord(String camelCaseString, String capitalizedWord) {
+        assert capitalizedWord.length() > 0 && Character.isUpperCase(capitalizedWord.charAt(0))
+            : "Not a capitalized string \"" + capitalizedWord + "\"";
+
+        int index = camelCaseString.indexOf(capitalizedWord);
+        if (index >= 0 && camelCaseString.length() > index + capitalizedWord.length()) {
+            return Character.isUpperCase(camelCaseString.charAt(index + capitalizedWord.length()));
+        }
+        return index >= 0 && camelCaseString.length() == index + capitalizedWord.length();
+    }
+
     public static boolean isGetterOrSetterCall(ASTMethodCall call) {
+        return isGetterCall(call) || isSetterCall(call);
+    }
+
+    private static boolean isSetterCall(ASTMethodCall call) {
+        return call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
+    }
+
+    public static boolean isGetterCall(ASTMethodCall call) {
         return call.getArguments().size() == 0
             && (startsWithCamelCaseWord(call.getMethodName(), "get")
-            || startsWithCamelCaseWord(call.getMethodName(), "is"))
-            || call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
+            || startsWithCamelCaseWord(call.getMethodName(), "is"));
     }
 
 
@@ -615,6 +665,21 @@ public final class JavaRuleUtil {
         return false;
     }
 
+    public static boolean isUnqualifiedThis(ASTExpression e) {
+        return e instanceof ASTThisExpression && ((ASTThisExpression) e).getQualifier() == null;
+    }
+
+    /**
+     * Returns true if the expression is a {@link ASTNamedReferenceExpr}
+     * that references any of the symbol in the set.
+     */
+    public static boolean isReferenceToVar(@Nullable ASTExpression expression, @NonNull Set<? extends JVariableSymbol> symbols) {
+        if (expression instanceof ASTNamedReferenceExpr) {
+            return symbols.contains(((ASTNamedReferenceExpr) expression).getReferencedSym());
+        }
+        return false;
+    }
+
     /**
      * Returns true if both expressions refer to the same variable.
      * A "variable" here can also means a field path, eg, {@code this.field.a}.
@@ -656,6 +721,17 @@ public final class JavaRuleUtil {
     }
 
     /**
+     * Returns true if the expression is a reference to a local variable.
+     */
+    public static boolean isReferenceToLocal(ASTExpression expr) {
+        if (expr instanceof ASTVariableAccess) {
+            JVariableSymbol sym = ((ASTVariableAccess) expr).getReferencedSym();
+            return sym != null && !sym.isField();
+        }
+        return false;
+    }
+
+    /**
      * Returns true if the expression has the form `field`, or `this.field`,
      * where `field` is a field declared in the enclosing class.
      * Assumes we're not in a static context.
@@ -680,5 +756,96 @@ public final class JavaRuleUtil {
                 || qualifier instanceof ASTSuperExpression;
         }
         return false;
+    }
+
+    /**
+     * Return a node stream containing all the operands of an addition expression.
+     * For instance, {@code a+b+c} will be parsed as a tree with two levels.
+     * This method will return a flat node stream containing {@code a, b, c}.
+     *
+     * @param e An expression, if it is not a string concatenation expression,
+     *          then returns an empty node stream.
+     */
+    public static NodeStream<ASTExpression> flattenOperands(ASTExpression e) {
+        List<ASTExpression> result = new ArrayList<>();
+        flattenOperandsRec(e, result);
+        return NodeStream.fromIterable(result);
+    }
+
+    private static void flattenOperandsRec(ASTExpression e, List<ASTExpression> result) {
+        if (isStringConcatExpression(e)) {
+            ASTInfixExpression infix = (ASTInfixExpression) e;
+            flattenOperandsRec(infix.getLeftOperand(), result);
+            flattenOperandsRec(infix.getRightOperand(), result);
+        } else {
+            result.add(e);
+        }
+    }
+
+    private static boolean isStringConcatExpression(ASTExpression e) {
+        return BinaryOp.isInfixExprWithOperator(e, BinaryOp.ADD) && TypeTestUtil.isA(String.class, e);
+    }
+
+    /**
+     * Returns true if the node is the last child of its parent (or is the root node).
+     */
+    public static boolean isLastChild(Node it) {
+        Node parent = it.getParent();
+        return parent == null || it.getIndexInParent() == parent.getNumChildren() - 1;
+    }
+
+
+    /**
+     * Whether the node or one of its descendants is an expression with
+     * side effects. Conservatively, any method call is a potential side-effect,
+     * as well as assignments to fields or array elements. We could relax
+     * this assumption with (much) more data-flow logic, including a memory model.
+     *
+     * <p>By default assignments to locals are not counted as side-effects,
+     * unless the lhs is in the given set of symbols.
+     *
+     * @param node             A node
+     * @param localVarsToTrack Local variables to track
+     */
+    public static boolean hasSideEffect(@Nullable JavaNode node, Set<? extends JVariableSymbol> localVarsToTrack) {
+        return node != null && node.descendantsOrSelf()
+                                   .filterIs(ASTExpression.class)
+                                   .any(e -> hasSideEffectNonRecursive(e, localVarsToTrack));
+    }
+
+    /**
+     * Returns true if the expression has side effects we don't track.
+     * Does not recurse into sub-expressions.
+     */
+    private static boolean hasSideEffectNonRecursive(ASTExpression e, Set<? extends JVariableSymbol> localVarsToTrack) {
+        if (e instanceof ASTAssignmentExpression) {
+            ASTAssignableExpr lhs = ((ASTAssignmentExpression) e).getLeftOperand();
+            return isNonLocalLhs(lhs) || isReferenceToVar(lhs, localVarsToTrack);
+        } else if (e instanceof ASTUnaryExpression) {
+            ASTUnaryExpression unary = (ASTUnaryExpression) e;
+            ASTExpression lhs = unary.getOperand();
+            return !unary.getOperator().isPure()
+                && (isNonLocalLhs(lhs) || isReferenceToVar(lhs, localVarsToTrack));
+        }
+
+        if (e.ancestors(ASTThrowStatement.class).nonEmpty()) {
+            // then this side effect can never be observed in containing code,
+            // because control flow jumps out of the method
+            return false;
+        }
+
+        return e instanceof ASTMethodCall && !isPure((ASTMethodCall) e)
+            || e instanceof ASTConstructorCall;
+    }
+
+    private static boolean isNonLocalLhs(ASTExpression lhs) {
+        return lhs instanceof ASTArrayAccess || !isReferenceToLocal(lhs);
+    }
+
+    /**
+     * Whether the invocation has no side-effects. Very conservative.
+     */
+    private static boolean isPure(ASTMethodCall call) {
+        return isGetterCall(call) || KNOWN_PURE_METHODS.anyMatch(call);
     }
 }
