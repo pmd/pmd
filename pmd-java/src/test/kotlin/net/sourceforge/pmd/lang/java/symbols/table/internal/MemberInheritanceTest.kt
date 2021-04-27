@@ -717,4 +717,40 @@ class Impl extends Sup {
 
     }
 
+
+    parserTest("Import of member defined in the file should not fail") {
+
+        val acu = parser.withProcessing().parse("""
+package p;
+
+import static p.Top.ClassValueMap.importedMethod;
+import static p.Top.ClassValueMap.importedField;
+
+class Top {
+  static class Identity { }
+  static class Entry<E> { }
+  static class WeakHashMap<K, V> { }
+
+  static class ClassValueMap extends WeakHashMap<Top.Identity, Entry<?>> {
+     static int importedField;
+     static <T> T importedMethod(Identity t) {}
+  }
+  
+  static {
+    importedMethod(new Identity());
+    int i = importedField;
+  }
+}
+        """)
+
+        val importedFieldAccess = acu.descendants(ASTVariableAccess::class.java).firstOrThrow()
+        val importedFieldSym = acu.descendants(ASTVariableDeclaratorId::class.java).firstOrThrow().symbol
+
+        val importedMethodCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val importedMethodSym = acu.descendants(ASTMethodDeclaration::class.java).firstOrThrow().symbol
+
+        importedFieldAccess.referencedSym shouldBe importedFieldSym
+        importedMethodCall.methodType.symbol shouldBe importedMethodSym
+    }
+
 })
