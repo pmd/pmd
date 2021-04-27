@@ -21,6 +21,7 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ExprContext.InvocCtx;
 import net.sourceforge.pmd.lang.java.ast.ExprContext.RegularCtx;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
@@ -439,28 +440,77 @@ final class PolyResolution {
             // Only ASTExpression#getConversionContext needs this level of detail
             // These anyway do not give a context to poly expression so can be ignored
             // for poly resolution.
-
-            if (papa instanceof ASTArrayAccess && node.getIndexInParent() == 1) {
-                // array index
-                return intCtx;
-            } else if (papa instanceof ASTAssertStatement) {
-
-                return node.getIndexInParent() == 0 ? booleanCtx // condition
-                                                    : stringCtx; // message
-
-            } else if (papa instanceof ASTIfStatement || papa instanceof ASTLoopStatement && !(papa instanceof ASTForeachStatement)) {
-
-                return booleanCtx; // condition
-
-            } else if (papa instanceof ASTConditionalExpression && node.getIndexInParent() != 0) {
-                assert ((ASTConditionalExpression) papa).isStandalone()
-                    : "Expected standalone ternary, otherwise doesCascadeContext(..) would have returned true";
-                return ExprContext.newStandaloneTernaryCtx(((ASTConditionalExpression) papa).getTypeMirror());
-            }
+            return conversionContextOf(node, papa);
         }
 
         // stop recursion
         return RegularCtx.NO_CTX;
+    }
+
+    // more detailed
+    private ExprContext conversionContextOf(JavaNode node, JavaNode papa) {
+        if (papa instanceof ASTArrayAccess && node.getIndexInParent() == 1) {
+
+            // array index
+            return intCtx;
+
+        } else if (papa instanceof ASTAssertStatement) {
+
+            return node.getIndexInParent() == 0 ? booleanCtx // condition
+                                                : stringCtx; // message
+
+        } else if (papa instanceof ASTIfStatement
+            || papa instanceof ASTLoopStatement && !(papa instanceof ASTForeachStatement)) {
+
+            return booleanCtx; // condition
+
+        } else if (papa instanceof ASTConditionalExpression && node.getIndexInParent() != 0) {
+            assert ((ASTConditionalExpression) papa).isStandalone()
+                : "Expected standalone ternary, otherwise doesCascadeContext(..) would have returned true";
+
+            return ExprContext.newStandaloneTernaryCtx(((ASTConditionalExpression) papa).getTypeMirror());
+
+        } else if (papa instanceof ASTInfixExpression) {
+            // numeric contexts, maybe
+            BinaryOp op = ((ASTInfixExpression) papa).getOperator();
+            JTypeMirror nodeType = ((ASTExpression) node).getTypeMirror();
+            JTypeMirror ctxType = ((ASTInfixExpression) papa).getTypeMirror();
+            switch (op) {
+            case CONDITIONAL_OR:
+            case CONDITIONAL_AND:
+                return booleanCtx;
+            case OR:
+            case XOR:
+            case AND:
+                return ctxType == ts.BOOLEAN ? booleanCtx : ExprContext.newNumericContext(ctxType);
+            case LEFT_SHIFT:
+            case RIGHT_SHIFT:
+            case UNSIGNED_RIGHT_SHIFT:
+                return node.getIndexInParent() == 1 ? intCtx
+                                                    : ExprContext.newNumericContext(nodeType.unbox());
+            case EQ:
+            case NE:
+                ASTExpression otherOperand = JavaRuleUtil.getOtherOperandIfInInfixExpr(node);
+                if (otherOperand.getTypeMirror().isPrimitive() != nodeType.isPrimitive()) {
+                    return ExprContext.newNonPolyContext(otherOperand.getTypeMirror().unbox());
+                }
+                return RegularCtx.NO_CTX;
+            case LE:
+            case GE:
+            case GT:
+            case LT:
+            case ADD:
+            case SUB:
+            case MUL:
+            case DIV:
+            case MOD:
+                return ExprContext.newNumericContext(ctxType); // binary promoted by LazyTypeResolver
+            default:
+                return RegularCtx.NO_CTX;
+            }
+        } else {
+            return RegularCtx.NO_CTX;
+        }
     }
 
 

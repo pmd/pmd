@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
+import io.kotest.assertions.withClue
 import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
@@ -144,13 +145,14 @@ class ConversionContextTests : ProcessorTestSpec({
             foreachstmt.conversionContext::getTargetType shouldBe null
         }
     }
-    parserTest("Test missing context in lhs of method") {
+
+    parserTest("Test missing context in qualifier") {
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
             class Scratch {
                 static void m(Boolean boxedBool) {
                     ((Boolean) boxedBool).booleanValue(); 
-                    ((Object) boxedBool).toString();
+                    ((Object) boxedBool).somefield;
                 }
             }
         """)
@@ -160,6 +162,43 @@ class ConversionContextTests : ProcessorTestSpec({
         spy.shouldBeOk {
             booleanCast.conversionContext::getTargetType shouldBe null
             objectCast.conversionContext::getTargetType shouldBe null
+        }
+    }
+
+    parserTest("Test numeric context") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Scratch {
+                static void m() {
+                    int i, j, k;
+                    double d, e;
+                    
+                    eat(i * j);
+                    eat(i << j);
+                    eat(i & j);
+
+                    eat(i + e);
+                    eat(i * e);
+                }
+                void eat(double d) {}
+            }
+        """)
+
+        val (mulint, lshift, and, plusdouble, muldouble) = acu.descendants(ASTInfixExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            listOf(mulint, lshift, and).forEach {
+                withClue(it) {
+                    it.leftOperand.conversionContext::getTargetType shouldBe ts.INT
+                    it.rightOperand.conversionContext::getTargetType shouldBe ts.INT
+                }
+            }
+            listOf(plusdouble, muldouble).forEach {
+                withClue(it) {
+                    it.leftOperand.conversionContext::getTargetType shouldBe ts.DOUBLE
+                    it.rightOperand.conversionContext::getTargetType shouldBe ts.DOUBLE
+                }
+            }
         }
     }
 })

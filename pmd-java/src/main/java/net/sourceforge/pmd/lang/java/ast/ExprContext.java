@@ -67,6 +67,13 @@ public abstract class ExprContext {
         return new RegularCtx(targetType, CtxKind.OtherNonPoly);
     }
 
+    static ExprContext newNumericContext(JTypeMirror targetType) {
+        if (targetType.isPrimitive()) {
+            return new RegularCtx(targetType, CtxKind.Numeric);
+        }
+        return RegularCtx.NO_CTX; // error
+    }
+
     static ExprContext newCastCtx(JTypeMirror targetType) {
         return new RegularCtx(targetType, CtxKind.Cast);
     }
@@ -141,6 +148,22 @@ public abstract class ExprContext {
          */
         Cast,
 
+        /**
+         * Numeric context. May determine that an (un)boxing or
+         * primitive widening conversion occurs. These is the context for
+         * operands of arithmetic expressions, array indices.
+         * <p>For instance:
+         * <pre>{@code
+         * Integer integer;
+         *
+         * array[integer] // Integer is unboxed to int
+         * integer + 1    // Integer is unboxed to int
+         * 0 + 1.0        // int (left) is widened to double
+         * integer + 1.0  // Integer is unboxed to int, then widened to double
+         * }</pre>
+         */
+        Numeric,
+
         /** Kind for a standalone ternary (both branches are then in this context). */
         Ternary,
 
@@ -156,22 +179,10 @@ public abstract class ExprContext {
          * or the equivalent for a primitive type. They accept operands of any type.
          * This is the context for the operands of a string concatenation expression,
          * and for the message of an assert statement.
-         * <li>TODO Boolean contexts, which unbox their operand to a boolean.
+         * <li>Boolean contexts, which unbox their operand to a boolean.
          * They accept operands of type boolean or Boolean. This is the
          * context for e.g. the condition of an {@code if} statement, an
          * assert statement, etc.
-         * <li>Numeric contexts, which may determine that an (un)boxing or
-         * primitive widening conversion occurs. These is the context for
-         * operands of arithmetic expressions, array indices.
-         * <p>For instance:
-         * <pre>{@code
-         * Integer integer;
-         *
-         * array[integer] // Integer is unboxed to int
-         * integer + 1    // Integer is unboxed to int
-         * 0 + 1.0        // int (left) is widened to double
-         * integer + 1.0  // Integer is unboxed to int, then widened to double
-         * }</pre>
          * </ul>
          */
         OtherNonPoly,

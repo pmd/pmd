@@ -74,7 +74,9 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
         if (context.isMissing()) {
             // we have a more limited set of violation conditions here
-            if (!operandType.isBottom() && operandType.isSubtypeOf(coercionType)) {
+
+            if (!operandType.isBottom() // casts on a null literal are necessary
+                && operandType.isSubtypeOf(coercionType)) {
                 reportCast(castExpr, data);
             }
             return null;

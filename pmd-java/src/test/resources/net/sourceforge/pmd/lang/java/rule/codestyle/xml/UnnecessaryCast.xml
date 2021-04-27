@@ -637,9 +637,24 @@ class Scratch {
         <expected-problems>2</expected-problems>
         <code><![CDATA[
             class Scratch {
+
                 static void m(Boolean boxedBool) {
                     ((Boolean) boxedBool).booleanValue(); // same type
                     ((Object) boxedBool).toString(); // supertype
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Casts in arithmetic</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+                static void m(int i, double d) {
+                    Object o;
+                    o = ((double) i) * d; // unnecessary
+                    o = ((double) i) * i; // necessary
                 }
             }
             ]]></code>
