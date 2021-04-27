@@ -41,8 +41,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         JTypeMirror operandType = operand.getTypeMirror();                      // int
 
         if (TypeOps.isUnresolvedOrNull(operandType)
-            || TypeOps.isUnresolvedOrNull(coercionType)
-            || context.isMissing()) {
+            || TypeOps.isUnresolvedOrNull(coercionType)) {
             return null;
         }
 
@@ -52,7 +51,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         if (operand instanceof ASTLambdaExpression || operand instanceof ASTMethodReference) {
             // Then the cast provides a target type for the expression (always).
             // We need to check the enclosing context, as if it's invocation we give up for now
-            if (castExpr.getConversionContext().isInvocationContext()) {
+            if (context.isMissing() || context.isInvocationContext()) {
                 // Then the cast may be used to determine the overload.
                 // We need to treat the casted lambda as a whole unit.
                 // todo see below
@@ -72,6 +71,15 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // the object will not implement SubItf anymore.
             return null;
         }
+
+        if (context.isMissing()) {
+            // we have a more limited set of violation conditions here
+            if (!operandType.isBottom() && operandType.isSubtypeOf(coercionType)) {
+                reportCast(castExpr, data);
+            }
+            return null;
+        }
+        // context is not missing from here on
 
         boolean isInTernary = castExpr.getParent() instanceof ASTConditionalExpression;
 

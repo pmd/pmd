@@ -617,4 +617,31 @@ class Scratch {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Loops</description>
+        <expected-problems>5</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Boolean boxedBool, boolean bool, String str, int[] ints) {
+                    if ((boolean) boxedBool);
+                    while ((boolean) boxedBool);
+                    for (int i = 0; (boolean) boxedBool; i++) {}
+                    do; while ((boolean) boxedBool);
+                    for (int i : (int[]) ints);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Missing context identity cast</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Boolean boxedBool) {
+                    ((Boolean) boxedBool).booleanValue(); // same type
+                    ((Object) boxedBool).toString(); // supertype
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

@@ -448,6 +448,10 @@ final class PolyResolution {
                 return node.getIndexInParent() == 0 ? booleanCtx // condition
                                                     : stringCtx; // message
 
+            } else if (papa instanceof ASTIfStatement || papa instanceof ASTLoopStatement && !(papa instanceof ASTForeachStatement)) {
+
+                return booleanCtx; // condition
+
             } else if (papa instanceof ASTConditionalExpression && node.getIndexInParent() != 0) {
                 assert ((ASTConditionalExpression) papa).isStandalone()
                     : "Expected standalone ternary, otherwise doesCascadeContext(..) would have returned true";

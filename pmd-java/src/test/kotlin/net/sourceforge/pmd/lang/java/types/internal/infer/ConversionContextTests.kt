@@ -5,10 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
+import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTExpression
-import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess
-import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
+import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.STRING
 import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
@@ -103,19 +102,64 @@ class ConversionContextTests : ProcessorTestSpec({
             class Foo {
                 static void m(Boolean boxedBool, boolean bool, String str) {
                     assert boxedBool;
-                    assert bool;
                     assert bool : str;
                 }
             }
         """)
 
-        val (boxedBool, bool, bool2, str) = acu.descendants(ASTVariableAccess::class.java).toList()
+        val (boxedBool, bool, str) = acu.descendants(ASTVariableAccess::class.java).toList()
 
         spy.shouldBeOk {
             boxedBool.conversionContext::getTargetType shouldBe ts.BOOLEAN
             bool.conversionContext::getTargetType shouldBe ts.BOOLEAN
-            bool2.conversionContext::getTargetType shouldBe ts.BOOLEAN
             str.conversionContext::getTargetType shouldBe ts.STRING
+        }
+    }
+
+    parserTest("Test context of statements with conditions") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {
+                static void m(Boolean boxedBool, boolean bool, String str, int[] ints) {
+                    if (boxedBool);
+                    while (boxedBool);
+                    for (int i = 0; boxedBool; i++) {}
+                    do; while (boxedBool);
+                    for (int i : ints);
+                }
+            }
+        """)
+
+        val (ifstmt, whilestmt, forstmt, _, dostmt, foreachstmt) = acu.descendants(ASTVariableAccess::class.java).toList()
+        val forUpdate = acu.descendants(ASTForUpdate::class.java).firstOrThrow().exprList[0]
+
+        spy.shouldBeOk {
+
+            ifstmt.conversionContext::getTargetType shouldBe ts.BOOLEAN
+            whilestmt.conversionContext::getTargetType shouldBe ts.BOOLEAN
+            forstmt.conversionContext::getTargetType shouldBe ts.BOOLEAN
+            dostmt.conversionContext::getTargetType shouldBe ts.BOOLEAN
+
+            forUpdate.conversionContext::getTargetType shouldBe null
+            foreachstmt.conversionContext::getTargetType shouldBe null
+        }
+    }
+    parserTest("Test missing context in lhs of method") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Scratch {
+                static void m(Boolean boxedBool) {
+                    ((Boolean) boxedBool).booleanValue(); 
+                    ((Object) boxedBool).toString();
+                }
+            }
+        """)
+
+        val (booleanCast, objectCast) = acu.descendants(ASTCastExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            booleanCast.conversionContext::getTargetType shouldBe null
+            objectCast.conversionContext::getTargetType shouldBe null
         }
     }
 })
