@@ -82,7 +82,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     }
 
     private void reportCast(ASTCastExpression castExpr, Object data) {
-        addViolation(data, castExpr, PrettyPrintingUtil.prettyPrintTypeWithTargs(castExpr.getCastType()));
+        addViolation(data, castExpr, PrettyPrintingUtil.prettyPrintType(castExpr.getCastType()));
     }
 
     private boolean castIsUnnecessary(@NonNull ExprContext context, JTypeMirror coercionType, JTypeMirror operandType, boolean isInTernary) {

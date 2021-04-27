@@ -23,11 +23,6 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  * A {@link SymbolResolver} that reads class files to produce symbols.
  */
 public class AsmSymbolResolver implements SymbolResolver {
-    /*
-        TODO
-         - expose enum constant names
-             - eg used in ASTSwitchLike::isExhaustiveEnumSwitch
-     */
 
     static final int ASM_API_V = Opcodes.ASM9;
 
