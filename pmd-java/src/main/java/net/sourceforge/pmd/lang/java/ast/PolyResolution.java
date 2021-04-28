@@ -463,11 +463,17 @@ final class PolyResolution {
 
             return booleanCtx; // condition
 
-        } else if (papa instanceof ASTConditionalExpression && node.getIndexInParent() != 0) {
-            assert ((ASTConditionalExpression) papa).isStandalone()
-                : "Expected standalone ternary, otherwise doesCascadeContext(..) would have returned true";
+        } else if (papa instanceof ASTConditionalExpression) {
 
-            return ExprContext.newStandaloneTernaryCtx(((ASTConditionalExpression) papa).getTypeMirror());
+            if (node.getIndexInParent() == 0) {
+                return booleanCtx; // the condition
+            } else {
+                // a branch
+                assert ((ASTConditionalExpression) papa).isStandalone()
+                    : "Expected standalone ternary, otherwise doesCascadeContext(..) would have returned true";
+
+                return ExprContext.newStandaloneTernaryCtx(((ASTConditionalExpression) papa).getTypeMirror());
+            }
 
         } else if (papa instanceof ASTInfixExpression) {
             // numeric contexts, maybe
@@ -521,7 +527,10 @@ final class PolyResolution {
         if (child.getParent() != node) {
             // means the "node" is a "stop recursion because no context" result in contextOf
             return false;
-        } else if (!internalUse && node instanceof ASTConditionalExpression) {
+        } else if (!internalUse
+            && node instanceof ASTConditionalExpression
+            && child.getIndexInParent() != 0) {
+            // conditional branch
             ((ASTConditionalExpression) node).getTypeMirror(); // force resolution
             return !((ASTConditionalExpression) node).isStandalone();
         }

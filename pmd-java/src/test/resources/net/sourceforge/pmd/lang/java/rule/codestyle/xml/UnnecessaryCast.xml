@@ -618,7 +618,7 @@ class Scratch {
             ]]></code>
     </test-code>
     <test-code>
-        <description>Loops</description>
+        <description>Conditionals and loop statements</description>
         <expected-problems>5</expected-problems>
         <code><![CDATA[
             class Scratch {
@@ -628,6 +628,30 @@ class Scratch {
                     for (int i = 0; (boolean) boxedBool; i++) {}
                     do; while ((boolean) boxedBool);
                     for (int i : (int[]) ints);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Conditional expr condition</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Boolean boxedBool, boolean bool, String str, int[] ints) {
+                    str = (boolean) boxedBool ? "a" : "b";
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Necessary cast for condition</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Object obj) {
+                    // both are necessary
+                    if ((Boolean) obj
+                        || (boolean) obj);
                 }
             }
             ]]></code>

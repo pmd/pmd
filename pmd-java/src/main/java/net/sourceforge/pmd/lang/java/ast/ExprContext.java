@@ -105,6 +105,7 @@ public abstract class ExprContext {
 
     static ExprContext newNumericContext(JTypeMirror targetType) {
         if (targetType.isPrimitive()) {
+            assert targetType.isNumeric() : targetType;
             return new RegularCtx(targetType, CtxKind.Numeric);
         }
         return RegularCtx.NO_CTX; // error

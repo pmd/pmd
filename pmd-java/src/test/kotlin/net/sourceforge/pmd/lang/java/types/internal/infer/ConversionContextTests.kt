@@ -165,6 +165,23 @@ class ConversionContextTests : ProcessorTestSpec({
         }
     }
 
+    parserTest("Test context of ternary condition") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Scratch {
+                static void m(Boolean boxedBool, boolean bool, String str, int[] ints) {
+                    str = (boolean) boxedBool ? "a" : "b";
+                }
+            }
+        """)
+
+        val (booleanCast) = acu.descendants(ASTCastExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            booleanCast.conversionContext::getTargetType shouldBe boolean
+        }
+    }
+
     parserTest("Test numeric context") {
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
