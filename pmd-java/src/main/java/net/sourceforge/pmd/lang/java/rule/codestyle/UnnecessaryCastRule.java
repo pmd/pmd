@@ -165,14 +165,19 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
                 return true;
             } else if (isInfixExprWithOperator(parent, BINARY_PROMOTED_OPS)) {
                 ASTExpression otherOperand = JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr);
+                if (otherOperand instanceof ASTCastExpression) {
+                    return true; // remove FPs
+                }
+                JTypeMirror otherType = otherOperand.getTypeMirror();
 
-                return otherOperand instanceof ASTCastExpression // remove FPs
-                    // Ie, the type that is taken by the binary promotion
-                    // is the type of the cast, not the type of the operand.
-                    // Eg in
-                    //     int i; ((double) i) * i
-                    // the only reason the mult expr has type double is because of the cast
-                    || TypeOps.isStrictSubtype(otherOperand.getTypeMirror(), coercionType);
+                // Ie, the type that is taken by the binary promotion
+                // is the type of the cast, not the type of the operand.
+                // Eg in
+                //     int i; ((double) i) * i
+                // the only reason the mult expr has type double is because of the cast
+                return TypeOps.isStrictSubtype(otherType, coercionType)
+                    // but not for integers strictly smaller than int
+                    && !otherType.unbox().isSubtypeOf(otherType.getTypeSystem().SHORT);
             }
 
         }

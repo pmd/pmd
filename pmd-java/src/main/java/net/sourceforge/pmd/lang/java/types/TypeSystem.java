@@ -212,7 +212,6 @@ public final class TypeSystem {
         FLOAT = createPrimitive(PrimitiveTypeKind.FLOAT, Float.class);
         DOUBLE = createPrimitive(PrimitiveTypeKind.DOUBLE, Double.class);
 
-        // this relies on the fact that setOf always returns immutable sets
         BOOLEAN.superTypes = immutableSetOf(BOOLEAN);
         CHAR.superTypes = immutableSetOf(CHAR, INT, LONG, FLOAT, DOUBLE);
         BYTE.superTypes = immutableSetOf(BYTE, SHORT, INT, LONG, FLOAT, DOUBLE);

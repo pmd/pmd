@@ -683,4 +683,35 @@ class Scratch {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Casts in arithmetic smaller than int </description>
+        <expected-problems>9</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                // they're all unecessary
+                static void m(int i, byte b, char c, short s) {
+                    i = b * (int) b; // 4
+                    i = (int) b * b;
+                    i = b * (int) s; // 6
+                    i = b * (int) c;
+                    i = b * (short) b; // 8
+                    i = i * (short) b;
+                    i = i * (short) s; // 10
+                    i = i * (int) c;
+                    i = i * (char) c; // 11
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>"Narrowing" cast from char to short is necessary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                static void m(int i, byte b, char c, short s) {
+                    i = i * (short) c;
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
