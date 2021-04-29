@@ -35,6 +35,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
     private final Set<String> potentiallyStaticBlob = new HashSet<>();
 
     public ApexBadCryptoRule() {
+        addRuleChainVisit(ASTUserClass.class);
         setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
