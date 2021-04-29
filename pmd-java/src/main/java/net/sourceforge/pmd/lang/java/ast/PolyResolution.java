@@ -22,14 +22,13 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ExprContext.InvocCtx;
 import net.sourceforge.pmd.lang.java.ast.ExprContext.RegularCtx;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
@@ -54,10 +53,10 @@ final class PolyResolution {
         this.infer = infer;
         this.ts = infer.getTypeSystem();
         this.exprMirrors = new JavaExprMirrors(infer);
-        JClassType stringType = (JClassType) TypesFromReflection.fromReflect(String.class, ts);
-        booleanCtx = ExprContext.newNonPolyContext(ts.BOOLEAN);
-        stringCtx = ExprContext.newNonPolyContext(stringType);
-        intCtx = ExprContext.newNumericContext(ts.INT);
+
+        this.stringCtx = ExprContext.newStringCtx(ts);
+        this.booleanCtx = ExprContext.newNonPolyContext(ts.BOOLEAN);
+        this.intCtx = ExprContext.newNumericContext(ts.INT);
     }
 
     JTypeMirror computePolyType(final TypeNode e) {
@@ -500,11 +499,16 @@ final class PolyResolution {
                     return ExprContext.newNonPolyContext(otherOperand.getTypeMirror().unbox());
                 }
                 return RegularCtx.NO_CTX;
+            case ADD:
+                if (TypeTestUtil.isA(String.class, ctxType)) {
+                    // string concat expr
+                    return stringCtx;
+                }
+                // fallthrough
             case LE:
             case GE:
             case GT:
             case LT:
-            case ADD:
             case SUB:
             case MUL:
             case DIV:

@@ -35,6 +35,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * Detects casts where the operand is already a subtype of the context
@@ -107,7 +108,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
                 && operandType.isSubtypeOf(coercionType);
         }
 
-        return !isCastDeterminingContext(castExpr, context, coercionType)
+        return !isCastDeterminingContext(castExpr, context, coercionType, operandType)
             && castIsUnnecessaryToMatchContext(context, coercionType, operandType);
     }
 
@@ -126,14 +127,10 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         JTypeMirror contextType = context.getTargetType();
         if (contextType == null) {
             return false; // should not occur in valid code
-        }
-
-        if (!TypeConversion.isConvertibleUsingBoxing(operandType, coercionType)) {
+        } else if (!TypeConversion.isConvertibleUsingBoxing(operandType, coercionType)) {
             // narrowing cast
             return false;
-        }
-
-        if (!context.acceptsType(operandType)) {
+        } else if (!context.acceptsType(operandType)) {
             // then removing the cast would produce uncompilable code
             return false;
         }
@@ -149,30 +146,32 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
      * that the cast is necessary, because there's some primitive conversions
      * happening, or some other corner case.
      */
-    private static boolean isCastDeterminingContext(ASTCastExpression castExpr, ExprContext context, @NonNull JTypeMirror coercionType) {
+    private static boolean isCastDeterminingContext(ASTCastExpression castExpr, ExprContext context, @NonNull JTypeMirror coercionType, JTypeMirror operandType) {
 
         if (castExpr.getParent() instanceof ASTConditionalExpression && castExpr.getIndexInParent() != 0) {
             // a branch of a ternary
             return true;
-        }
 
-        if (context.isNumeric() && castExpr.getParent() instanceof ASTInfixExpression) {
+        } else if (context.isString() && isInfixExprWithOperator(castExpr.getParent(), ADD)) {
+
+            // inside string concatenation
+            return !TypeTestUtil.isA(String.class, JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr))
+                && !TypeTestUtil.isA(String.class, operandType);
+
+        } else if (context.isNumeric() && castExpr.getParent() instanceof ASTInfixExpression) {
+            // numeric expr
             ASTInfixExpression parent = (ASTInfixExpression) castExpr.getParent();
 
             if (isInfixExprWithOperator(parent, SHIFT_OPS)) {
                 // if so, then the cast is determining the width of expr
                 // the right operand is always int
                 if (castExpr == parent.getLeftOperand()) {
-                    JTypeMirror operandType = castExpr.getOperand().getTypeMirror();
                     return !TypeOps.isStrictSubtype(operandType.unbox(), operandType.getTypeSystem().INT);
                 } else {
                     return false;
                 }
             } else if (isInfixExprWithOperator(parent, BINARY_PROMOTED_OPS)) {
                 ASTExpression otherOperand = JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr);
-                if (otherOperand instanceof ASTCastExpression) {
-                    return true; // remove FPs
-                }
                 JTypeMirror otherType = otherOperand.getTypeMirror();
 
                 // Ie, the type that is taken by the binary promotion

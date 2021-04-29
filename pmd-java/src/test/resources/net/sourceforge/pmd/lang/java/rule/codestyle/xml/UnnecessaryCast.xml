@@ -746,8 +746,53 @@ class Scratch {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             class Scratch {
+
                 static void m(int i, byte b, char c, short s) {
                     i = i * (short) c;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>char cast to int in string context is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+
+                static void m(String s, char c) {
+                    // the toString is different -> necessary (string contexts aren't implemented yet)
+                    s = "(" + (int) c + ")" + c;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>String cast determining context</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Object a, Object b) {
+                    String s = a + (String) b   // necessary, determines context
+                            + a + (String) b    // technically unnecessary, but narrowing
+                            + a + (String) null // unnecessary
+                            ;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast on both sides of arithmetic</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary cast (int)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Scratch {
+                static void m(short s, Object b) {
+                    b = (int) s
+                            + (long) s;
                 }
             }
             ]]></code>

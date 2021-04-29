@@ -9,9 +9,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
 
 /**
  * Context of an expression. This determines the target type of poly
@@ -87,6 +90,10 @@ public abstract class ExprContext {
         return kind == CtxKind.Numeric;
     }
 
+    public boolean isString() {
+        return kind == CtxKind.String;
+    }
+
     boolean canGiveContextToPoly(boolean lambda) {
         return true;
     }
@@ -101,6 +108,11 @@ public abstract class ExprContext {
 
     static ExprContext newNonPolyContext(JTypeMirror targetType) {
         return new RegularCtx(targetType, CtxKind.OtherNonPoly);
+    }
+
+    static ExprContext newStringCtx(TypeSystem ts) {
+        JClassType stringType = (JClassType) TypesFromReflection.fromReflect(String.class, ts);
+        return new RegularCtx(stringType, CtxKind.String);
     }
 
     static ExprContext newNumericContext(JTypeMirror targetType) {
@@ -153,6 +165,11 @@ public abstract class ExprContext {
         public boolean isInvocationContext() {
             return true;
         }
+
+        @Override
+        public String toString() {
+            return "InvocCtx{arg=" + arg + ", node=" + node + '}';
+        }
     }
 
     /**
@@ -201,6 +218,14 @@ public abstract class ExprContext {
          */
         Numeric,
 
+        /**
+         * String contexts, which convert the operand to a string using {@link String#valueOf(Object)},
+         * or the equivalent for a primitive type. They accept operands of any type.
+         * This is the context for the operands of a string concatenation expression,
+         * and for the message of an assert statement.
+         */
+        String,
+
         /** Kind for a standalone ternary (both branches are then in this context). */
         Ternary,
 
@@ -212,10 +237,7 @@ public abstract class ExprContext {
          * but not for poly expressions. These do not flow through ternary branches.
          * These include:
          * <ul>
-         * <li>TODO String contexts, which convert the operand to a string using {@link String#valueOf(Object)},
-         * or the equivalent for a primitive type. They accept operands of any type.
-         * This is the context for the operands of a string concatenation expression,
-         * and for the message of an assert statement.
+         * <li>
          * <li>Boolean contexts, which unbox their operand to a boolean.
          * They accept operands of type boolean or Boolean. This is the
          * context for e.g. the condition of an {@code if} statement, an
@@ -260,6 +282,11 @@ public abstract class ExprContext {
         @Override
         public @Nullable JTypeMirror getTargetType() {
             return targetType;
+        }
+
+        @Override
+        public String toString() {
+            return "RegularCtx{kind=" + kind + ", targetType=" + targetType + '}';
         }
     }
 }
