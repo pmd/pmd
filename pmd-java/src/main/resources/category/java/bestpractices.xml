@@ -802,6 +802,76 @@ public class MyTest {
         </example>
     </rule>
 
+    <!-- TODO add externalInfoUrl to the rationale -->
+    <rule name="JUnit5TestShouldBePackagePrivate"
+          language="java"
+          since="4.0"
+          message="JUnit 5 tests that use @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest should be package private."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true">
+        <description>
+            JUnit 5 tests should be package private at the class level and for each method that uses @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassOrInterfaceDeclaration[
+       matches(@SimpleName, $testClassPattern) and
+       @Abstract=false() and
+       @PackagePrivate=false()]
+       [ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+        [MethodDeclaration]
+        [Annotation//Name[
+            pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+            or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+        ]]]
+|
+//ClassOrInterfaceDeclaration[
+       matches(@SimpleName, $testClassPattern)]
+    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+        [MethodDeclaration[@PackagePrivate=false()]]
+        [Annotation//Name[
+            pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+            or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+        ]]
+]]>
+                </value>
+            </property>
+            <property name="testClassPattern" type="Regex" description="The regex pattern used to identify test classes" value="Test" />
+            <property name="version" value="2.0"/>
+        </properties>
+        <example>
+            <![CDATA[
+public class MyTest {
+    @Test
+    public void testBad() {
+        doSomething();
+    }
+
+    @Test
+    private void testNotRun() {
+        doSomething();
+    }
+
+    @Test
+    void testGood() {
+        doSomething();
+    }
+
+    @Test
+    protected void testAcceptable() {
+        doSomething();
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="JUnitAssertionsShouldIncludeMessage"
           language="java"
           since="1.04"
