@@ -684,6 +684,30 @@ class Scratch {
             ]]></code>
     </test-code>
     <test-code>
+        <description>Casts in shift exprs</description>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>5,8,9,10,12,13,14</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+                static void m(int i, short s, long l, Integer boxedInt) {
+                    l  = (long) i << 2; // "necessary"
+                    l  = (long) i << 34; // definitely necessary
+                    l  = (long) (i << 34); // unnecessary, l5
+
+                    i = i << (int) l;          // necessary
+                    i = i << (int) boxedInt;   // unnecessary
+                    i = (int) i << boxedInt;   // unnecessary
+                    i = (int) (i << boxedInt); // unnecessary
+
+                    i = (int) s << boxedInt;   // unnecessary, widened anyway
+                    i = ((int) s) << boxedInt; // unnecessary, same expression with unnecessary parens
+                    i = (int) (s << boxedInt); // unnecessary
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
         <description>Casts in arithmetic smaller than int </description>
         <expected-problems>9</expected-problems>
         <code><![CDATA[
@@ -699,6 +723,20 @@ class Scratch {
                     i = i * (short) s; // 10
                     i = i * (int) c;
                     i = i * (char) c; // 11
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Casts in arithmetic with unboxing + widening</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Integer i, Double d, Object lhs) {
+                    lhs = (int) i * 1.0;
+                    lhs = (double) d * 1.01;
+                    lhs = 1.01 * (int) i;
+                    lhs = 1.01 * (double) d;
                 }
             }
             ]]></code>

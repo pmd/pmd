@@ -160,9 +160,14 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             ASTInfixExpression parent = (ASTInfixExpression) castExpr.getParent();
 
             if (isInfixExprWithOperator(parent, SHIFT_OPS)) {
-                // then the cast is determining the width of expr
-                assert castExpr == parent.getLeftOperand(); // second operand doesn't have a numeric context
-                return true;
+                // if so, then the cast is determining the width of expr
+                // the right operand is always int
+                if (castExpr == parent.getLeftOperand()) {
+                    JTypeMirror operandType = castExpr.getOperand().getTypeMirror();
+                    return !TypeOps.isStrictSubtype(operandType.unbox(), operandType.getTypeSystem().INT);
+                } else {
+                    return false;
+                }
             } else if (isInfixExprWithOperator(parent, BINARY_PROMOTED_OPS)) {
                 ASTExpression otherOperand = JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr);
                 if (otherOperand instanceof ASTCastExpression) {
@@ -177,7 +182,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
                 // the only reason the mult expr has type double is because of the cast
                 return TypeOps.isStrictSubtype(otherType, coercionType)
                     // but not for integers strictly smaller than int
-                    && !otherType.unbox().isSubtypeOf(otherType.getTypeSystem().SHORT);
+                    && !TypeOps.isStrictSubtype(otherType.unbox(), otherType.getTypeSystem().INT);
             }
 
         }
