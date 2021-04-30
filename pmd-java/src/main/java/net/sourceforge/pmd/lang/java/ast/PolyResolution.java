@@ -314,8 +314,7 @@ final class PolyResolution {
      * Not meant to be used by the main typeres paths, only for rules.
      */
     ExprContext getConversionContextForExternalUse(ASTExpression e) {
-        PolyResolution polyResolution = e.getRoot().getLazyTypeResolver().getPolyResolution();
-        return polyResolution.contextOf(e, false, false);
+        return contextOf(e, false, false);
     }
 
     private static @Nullable JTypeMirror returnTargetType(ASTReturnStatement context) {
