@@ -323,7 +323,7 @@ public class Generic<T> {
         <description>Test message with fqcn</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Explicit type arguments can be replaced by a diamond: new p.Generic&lt;&gt;()</message>
+            <message>Explicit type arguments can be replaced by a diamond: `new p.Generic&lt;&gt;()`</message>
         </expected-messages>
         <code><![CDATA[
 package p;
@@ -343,7 +343,7 @@ public class Generic<T> {
         <description>Test message with inner class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Explicit type arguments can be replaced by a diamond: new Generic.Inner&lt;&gt;()</message>
+            <message>Explicit type arguments can be replaced by a diamond: `new Generic.Inner&lt;&gt;()`</message>
         </expected-messages>
         <code><![CDATA[
 package p;
@@ -365,8 +365,8 @@ public class Generic<T> {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>6,9</expected-linenumbers>
         <expected-messages>
-            <message>Explicit type arguments can be replaced by a diamond: new ArrayList&lt;&gt;(...)</message>
-            <message>Raw type use may be avoided by using a diamond: new ArrayList&lt;&gt;()</message>
+            <message>Explicit type arguments can be replaced by a diamond: `new ArrayList&lt;&gt;(5)`</message>
+            <message>Raw type use may be avoided by using a diamond: `new ArrayList&lt;&gt;()`</message>
         </expected-messages>
         <code><![CDATA[
             import java.util.List;

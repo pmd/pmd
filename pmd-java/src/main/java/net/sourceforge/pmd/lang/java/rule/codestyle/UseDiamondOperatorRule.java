@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -42,13 +43,19 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
  * and removing them will not break the program.
  *
  * <p>Note that type inference in Java 8+ works differently from Java 7.
- * In Java 5-7, type arguments may be necessary in more places. The specifics
- * are however implemented within the type resolution code, and
+ * In Java 7, type arguments may be necessary in more places. The specifics
+ * are however implemented within the type resolution code, and this rule does
+ * not need to know about it.
  */
 public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
 
-    private static final String REPLACE_TYPE_ARGS_MESSAGE = "Explicit type arguments can be replaced by a diamond: {0}";
-    private static final String RAW_TYPE_MESSAGE = "Raw type use may be avoided by using a diamond: {0}";
+    private static final String REPLACE_TYPE_ARGS_MESSAGE = "Explicit type arguments can be replaced by a diamond: `{0}`";
+    private static final String RAW_TYPE_MESSAGE = "Raw type use may be avoided by using a diamond: `{0}`";
+    /**
+     * Maximum length of the argument list (including parentheses) for
+     * it to be included in the violation message instead of an ellipsis {@code (...)}.
+     */
+    private static final int MAX_ARGS_LENGTH = 10;
 
     public UseDiamondOperatorRule() {
         super(ASTConstructorCall.class);
@@ -86,7 +93,17 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         sb.append("new ");
         produceSameTypeWithDiamond(ctor.getTypeNode(), sb, true);
         ASTArgumentList arguments = ctor.getArguments();
-        String argsString = arguments.size() == 0 ? "()" : "(...)";
+        String argsString;
+        if (arguments.size() == 0) {
+            argsString = "()";
+        } else {
+            CharSequence text = arguments.getText();
+            if (text.length() <= MAX_ARGS_LENGTH && !StringUtils.contains(text, '\n')) {
+                argsString = text.toString();
+            } else {
+                argsString = "(...)";
+            }
+        }
         return sb.append(argsString).toString();
     }
 
