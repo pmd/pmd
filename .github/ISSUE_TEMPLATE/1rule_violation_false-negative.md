@@ -1,6 +1,6 @@
 ---
-name: Rule violation (false negative)
-about: Let us know about a false negative
+name: Rule violation (false-negative)
+about: Let us know about a false-negative (no violation is reported on problematic code)
 title: ''
 labels: 'a:false-negative'
 assignees: ''
