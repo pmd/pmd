@@ -6,9 +6,11 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.assertions.withClue
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil
 import net.sourceforge.pmd.lang.java.types.STRING
 import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
@@ -165,6 +167,23 @@ class ConversionContextTests : ProcessorTestSpec({
         }
     }
 
+    parserTest("Test context of ternary condition") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Scratch {
+                static void m(Boolean boxedBool, boolean bool, String str, int[] ints) {
+                    str = (boolean) boxedBool ? "a" : "b";
+                }
+            }
+        """)
+
+        val (booleanCast) = acu.descendants(ASTCastExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            booleanCast.conversionContext::getTargetType shouldBe boolean
+        }
+    }
+
     parserTest("Test numeric context") {
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
@@ -197,6 +216,32 @@ class ConversionContextTests : ProcessorTestSpec({
                 withClue(it) {
                     it.leftOperand.conversionContext::getTargetType shouldBe ts.DOUBLE
                     it.rightOperand.conversionContext::getTargetType shouldBe ts.DOUBLE
+                }
+            }
+        }
+    }
+    parserTest("String contexts") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Scratch {
+                static void m(int i) {
+                    eat(" " + i);
+                    eat(i + " ");
+                    eat(" " + " ");
+                    eat(" " + i + i);
+                }
+                void eat(Object d) {}
+            }
+        """)
+
+        val concats = acu.descendants(ASTInfixExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            concats.forEach {
+                withClue(it) {
+                    JavaRuleUtil.isStringConcatExpr(it) shouldBe true
+                    it.leftOperand.conversionContext::getTargetType shouldBe ts.STRING
+                    it.rightOperand.conversionContext::getTargetType shouldBe ts.STRING
                 }
             }
         }

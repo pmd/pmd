@@ -22,14 +22,13 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ExprContext.InvocCtx;
 import net.sourceforge.pmd.lang.java.ast.ExprContext.RegularCtx;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
@@ -54,10 +53,10 @@ final class PolyResolution {
         this.infer = infer;
         this.ts = infer.getTypeSystem();
         this.exprMirrors = JavaExprMirrors.forTypeResolution(infer);
-        JClassType stringType = (JClassType) TypesFromReflection.fromReflect(String.class, ts);
-        booleanCtx = ExprContext.newNonPolyContext(ts.BOOLEAN);
-        stringCtx = ExprContext.newNonPolyContext(stringType);
-        intCtx = ExprContext.newNumericContext(ts.INT);
+
+        this.stringCtx = ExprContext.newStringCtx(ts);
+        this.booleanCtx = ExprContext.newNonPolyContext(ts.BOOLEAN);
+        this.intCtx = ExprContext.newNumericContext(ts.INT);
     }
 
     private boolean isPreJava8() {
@@ -94,9 +93,11 @@ final class PolyResolution {
             if (isPreJava8()) {
                 // safe cast because ASTSwitchExpression doesn't exist pre java 13
                 ASTConditionalExpression conditional = (ASTConditionalExpression) e;
-                return computeStandaloneConditionalType(this.ts,
-                                                        conditional.getThenBranch().getTypeMirror(),
-                                                        conditional.getElseBranch().getTypeMirror());
+                return computeStandaloneConditionalType(
+                    this.ts,
+                    conditional.getThenBranch().getTypeMirror(),
+                    conditional.getElseBranch().getTypeMirror()
+                );
             }
 
             // Note that this creates expr mirrors for all subexpressions,
@@ -482,14 +483,20 @@ final class PolyResolution {
 
             return booleanCtx; // condition
 
-        } else if (papa instanceof ASTConditionalExpression && node.getIndexInParent() != 0) {
-            if (isPreJava8()) {
-                return RegularCtx.NO_CTX;
-            }
-            assert ((ASTConditionalExpression) papa).isStandalone()
-                : "Expected standalone ternary, otherwise doesCascadeContext(..) would have returned true";
+        } else if (papa instanceof ASTConditionalExpression) {
 
-            return ExprContext.newStandaloneTernaryCtx(((ASTConditionalExpression) papa).getTypeMirror());
+            if (node.getIndexInParent() == 0) {
+                return booleanCtx; // the condition
+            } else {
+                // a branch
+                if (isPreJava8()) {
+                    return RegularCtx.NO_CTX;
+                }
+                assert ((ASTConditionalExpression) papa).isStandalone()
+                    : "Expected standalone ternary, otherwise doesCascadeContext(..) would have returned true";
+
+                return ExprContext.newStandaloneTernaryCtx(((ASTConditionalExpression) papa).getTypeMirror());
+            }
 
         } else if (papa instanceof ASTInfixExpression) {
             // numeric contexts, maybe
@@ -503,7 +510,7 @@ final class PolyResolution {
             case OR:
             case XOR:
             case AND:
-                return ctxType == ts.BOOLEAN ? booleanCtx : ExprContext.newNumericContext(ctxType);
+                return ctxType == ts.BOOLEAN ? booleanCtx : ExprContext.newNumericContext(ctxType); // NOPMD CompareObjectsWithEquals
             case LEFT_SHIFT:
             case RIGHT_SHIFT:
             case UNSIGNED_RIGHT_SHIFT:
@@ -516,11 +523,16 @@ final class PolyResolution {
                     return ExprContext.newNonPolyContext(otherOperand.getTypeMirror().unbox());
                 }
                 return RegularCtx.NO_CTX;
+            case ADD:
+                if (TypeTestUtil.isA(String.class, ctxType)) {
+                    // string concat expr
+                    return stringCtx;
+                }
+                // fallthrough
             case LE:
             case GE:
             case GT:
             case LT:
-            case ADD:
             case SUB:
             case MUL:
             case DIV:
@@ -546,7 +558,10 @@ final class PolyResolution {
         } else if (isPreJava8()) {
             // in java < 8, context doesn't go flow through ternaries
             return false;
-        } else if (!internalUse && node instanceof ASTConditionalExpression) {
+        } else if (!internalUse
+            && node instanceof ASTConditionalExpression
+            && child.getIndexInParent() != 0) {
+            // conditional branch
             ((ASTConditionalExpression) node).getTypeMirror(); // force resolution
             return !((ASTConditionalExpression) node).isStandalone();
         }

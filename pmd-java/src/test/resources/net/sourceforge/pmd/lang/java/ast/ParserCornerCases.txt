@@ -344,7 +344,7 @@
    |           |  |  +- VariableAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Image = "i", @Name = "i", @ParenthesisDepth = "0", @Parenthesized = "false"]
    |           |  |  +- NumericLiteral[@Base = "10", @CompileTimeConstant = "true", @DoubleLiteral = "false", @FloatLiteral = "false", @Image = "10", @IntLiteral = "true", @Integral = "true", @LongLiteral = "false", @ParenthesisDepth = "0", @Parenthesized = "false", @ValueAsDouble = "10.0", @ValueAsFloat = "10.0", @ValueAsInt = "10", @ValueAsLong = "10"]
    |           |  +- ForUpdate[]
-   |           |  |  +- StatementExpressionList[]
+   |           |  |  +- StatementExpressionList[@Size = "1"]
    |           |  |     +- UnaryExpression[@CompileTimeConstant = "false", @Operator = "++", @ParenthesisDepth = "0", @Parenthesized = "false"]
    |           |  |        +- VariableAccess[@AccessType = "WRITE", @CompileTimeConstant = "false", @Image = "i", @Name = "i", @ParenthesisDepth = "0", @Parenthesized = "false"]
    |           |  +- Block[@Size = "0", @containsComment = "false"]
