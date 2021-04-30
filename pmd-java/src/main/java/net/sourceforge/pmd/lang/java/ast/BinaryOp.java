@@ -85,10 +85,9 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     /** Modulo {@code "%"} operator. */
     MOD("%");
 
-    /**
-     * Use with {@link #isInfixExprWithOperator(JavaNode, Set)}.
-     */
+    /** Use with {@link #isInfixExprWithOperator(JavaNode, Set)}. */
     public static final Set<BinaryOp> COMPARISON_OPS = CollectionUtil.immutableEnumSet(LE, GE, GT, LT);
+    public static final Set<BinaryOp> SHIFT_OPS = CollectionUtil.immutableEnumSet(LEFT_SHIFT, RIGHT_SHIFT, UNSIGNED_RIGHT_SHIFT);
 
     private final String code;
 

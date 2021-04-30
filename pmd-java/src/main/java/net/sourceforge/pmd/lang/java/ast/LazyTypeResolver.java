@@ -55,6 +55,10 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         this.processor = processor;
     }
 
+    ExprContext getConversionContextForExternalUse(ASTExpression e) {
+        return polyResolution.getConversionContextForExternalUse(e);
+    }
+
     public JavaAstProcessor getProcessor() {
         return processor;
     }

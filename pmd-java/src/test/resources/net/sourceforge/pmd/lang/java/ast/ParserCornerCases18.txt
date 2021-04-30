@@ -1075,7 +1075,7 @@
          |        |  +- MethodCall[@CompileTimeConstant = "false", @Image = "hasNext", @MethodName = "hasNext", @ParenthesisDepth = "0", @Parenthesized = "false"]
          |        |     +- ArgumentList[@Size = "0"]
          |        +- ForUpdate[]
-         |        |  +- StatementExpressionList[]
+         |        |  +- StatementExpressionList[@Size = "1"]
          |        |     +- UnaryExpression[@CompileTimeConstant = "false", @Operator = "--", @ParenthesisDepth = "0", @Parenthesized = "false"]
          |        |        +- VariableAccess[@AccessType = "WRITE", @CompileTimeConstant = "false", @Image = "i", @Name = "i", @ParenthesisDepth = "0", @Parenthesized = "false"]
          |        +- ExpressionStatement[]

@@ -157,6 +157,7 @@ The following previously deprecated rules have been finally removed:
     * [#3195](https://github.com/pmd/pmd/pull/3195): \[java] Improve rule UnnecessaryReturn to detect more cases
     * [#3218](https://github.com/pmd/pmd/pull/3218): \[java] Generalize UnnecessaryCast to flag all unnecessary casts
     * [#3221](https://github.com/pmd/pmd/issues/3221): \[java] PrematureDeclaration false positive for unused variables
+    * [#3238](https://github.com/pmd/pmd/issues/3238): \[java] Improve ExprContext, fix FNs of UnnecessaryCast
 * java-errorprone
     * [#1005](https://github.com/pmd/pmd/issues/1005): \[java] CloneMethodMustImplementCloneable triggers for interfaces
     * [#2532](https://github.com/pmd/pmd/issues/2532): \[java] AvoidDecimalLiteralsInBigDecimalConstructor can not detect the case new BigDecimal(Expression)

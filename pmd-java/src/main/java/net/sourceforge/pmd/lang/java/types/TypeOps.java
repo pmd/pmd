@@ -827,6 +827,10 @@ public final class TypeOps {
         }
     }
 
+    public static boolean isStrictSubtype(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
+        return !t.equals(s) && t.isSubtypeOf(s);
+    }
+
     // </editor-fold>
 
     // <editor-fold  defaultstate="collapsed" desc="Substitution">

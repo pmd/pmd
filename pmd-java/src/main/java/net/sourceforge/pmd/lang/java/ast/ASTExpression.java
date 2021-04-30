@@ -125,7 +125,7 @@ public interface ASTExpression
      */
     @Experimental
     default @NonNull ExprContext getConversionContext() {
-        return PolyResolution.getConversionContextForExternalUse(this);
+        return getRoot().getLazyTypeResolver().getConversionContextForExternalUse(this);
     }
 
 }

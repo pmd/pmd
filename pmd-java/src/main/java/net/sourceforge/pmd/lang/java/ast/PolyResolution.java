@@ -21,12 +21,14 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ExprContext.InvocCtx;
 import net.sourceforge.pmd.lang.java.ast.ExprContext.RegularCtx;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
@@ -43,11 +45,18 @@ final class PolyResolution {
     private final Infer infer;
     private final TypeSystem ts;
     private final JavaExprMirrors exprMirrors;
+    private final ExprContext booleanCtx;
+    private final ExprContext stringCtx;
+    private final ExprContext intCtx;
 
     PolyResolution(Infer infer) {
         this.infer = infer;
         this.ts = infer.getTypeSystem();
         this.exprMirrors = new JavaExprMirrors(infer);
+
+        this.stringCtx = ExprContext.newStringCtx(ts);
+        this.booleanCtx = ExprContext.newNonPolyContext(ts.BOOLEAN);
+        this.intCtx = ExprContext.newNumericContext(ts.INT);
     }
 
     JTypeMirror computePolyType(final TypeNode e) {
@@ -289,7 +298,7 @@ final class PolyResolution {
     /**
      * Not meant to be used by the main typeres paths, only for rules.
      */
-    static ExprContext getConversionContextForExternalUse(ASTExpression e) {
+    ExprContext getConversionContextForExternalUse(ASTExpression e) {
         return contextOf(e, false, false);
     }
 
@@ -351,7 +360,7 @@ final class PolyResolution {
      *
      * </pre>
      */
-    private static @NonNull ExprContext contextOf(final JavaNode node, boolean onlyInvoc, boolean internalUse) {
+    private @NonNull ExprContext contextOf(final JavaNode node, boolean onlyInvoc, boolean internalUse) {
         final JavaNode papa = node.getParent();
         if (papa instanceof ASTArgumentList) {
             // invocation context, return *the first method*
@@ -423,15 +432,92 @@ final class PolyResolution {
             // when the super ctor is generic/ the superclass is generic
             return ExprContext.newSuperCtorCtx(node.getEnclosingType().getTypeMirror().getSuperClass());
 
-        } else if (papa instanceof ASTArrayAccess && node.getIndexInParent() == 1) {
+        }
+
+        if (!internalUse) {
+            // Only ASTExpression#getConversionContext needs this level of detail
+            // These anyway do not give a context to poly expression so can be ignored
+            // for poly resolution.
+            return conversionContextOf(node, papa);
+        }
+
+        // stop recursion
+        return RegularCtx.NO_CTX;
+    }
+
+    // more detailed
+    private ExprContext conversionContextOf(JavaNode node, JavaNode papa) {
+        if (papa instanceof ASTArrayAccess && node.getIndexInParent() == 1) {
+
             // array index
-            return ExprContext.newNumericCtx(papa.getTypeSystem().INT);
-        } else if (papa instanceof ASTConditionalExpression && node.getIndexInParent() != 0) {
-            assert ((ASTConditionalExpression) papa).isStandalone() && !internalUse
-                : "Expected standalone ternary, otherwise doesCascadeContext(..) would have returned true";
-            return ExprContext.newStandaloneTernaryCtx(((ASTConditionalExpression) papa).getTypeMirror());
+            return intCtx;
+
+        } else if (papa instanceof ASTAssertStatement) {
+
+            return node.getIndexInParent() == 0 ? booleanCtx // condition
+                                                : stringCtx; // message
+
+        } else if (papa instanceof ASTIfStatement
+            || papa instanceof ASTLoopStatement && !(papa instanceof ASTForeachStatement)) {
+
+            return booleanCtx; // condition
+
+        } else if (papa instanceof ASTConditionalExpression) {
+
+            if (node.getIndexInParent() == 0) {
+                return booleanCtx; // the condition
+            } else {
+                // a branch
+                assert ((ASTConditionalExpression) papa).isStandalone()
+                    : "Expected standalone ternary, otherwise doesCascadeContext(..) would have returned true";
+
+                return ExprContext.newStandaloneTernaryCtx(((ASTConditionalExpression) papa).getTypeMirror());
+            }
+
+        } else if (papa instanceof ASTInfixExpression) {
+            // numeric contexts, maybe
+            BinaryOp op = ((ASTInfixExpression) papa).getOperator();
+            JTypeMirror nodeType = ((ASTExpression) node).getTypeMirror();
+            JTypeMirror ctxType = ((ASTInfixExpression) papa).getTypeMirror();
+            switch (op) {
+            case CONDITIONAL_OR:
+            case CONDITIONAL_AND:
+                return booleanCtx;
+            case OR:
+            case XOR:
+            case AND:
+                return ctxType == ts.BOOLEAN ? booleanCtx : ExprContext.newNumericContext(ctxType); // NOPMD CompareObjectsWithEquals
+            case LEFT_SHIFT:
+            case RIGHT_SHIFT:
+            case UNSIGNED_RIGHT_SHIFT:
+                return node.getIndexInParent() == 1 ? intCtx
+                                                    : ExprContext.newNumericContext(nodeType.unbox());
+            case EQ:
+            case NE:
+                ASTExpression otherOperand = JavaRuleUtil.getOtherOperandIfInInfixExpr(node);
+                if (otherOperand.getTypeMirror().isPrimitive() != nodeType.isPrimitive()) {
+                    return ExprContext.newNonPolyContext(otherOperand.getTypeMirror().unbox());
+                }
+                return RegularCtx.NO_CTX;
+            case ADD:
+                if (TypeTestUtil.isA(String.class, ctxType)) {
+                    // string concat expr
+                    return stringCtx;
+                }
+                // fallthrough
+            case LE:
+            case GE:
+            case GT:
+            case LT:
+            case SUB:
+            case MUL:
+            case DIV:
+            case MOD:
+                return ExprContext.newNumericContext(ctxType); // binary promoted by LazyTypeResolver
+            default:
+                return RegularCtx.NO_CTX;
+            }
         } else {
-            // stop recursion
             return RegularCtx.NO_CTX;
         }
     }
@@ -445,7 +531,10 @@ final class PolyResolution {
         if (child.getParent() != node) {
             // means the "node" is a "stop recursion because no context" result in contextOf
             return false;
-        } else if (!internalUse && node instanceof ASTConditionalExpression) {
+        } else if (!internalUse
+            && node instanceof ASTConditionalExpression
+            && child.getIndexInParent() != 0) {
+            // conditional branch
             ((ASTConditionalExpression) node).getTypeMirror(); // force resolution
             return !((ASTConditionalExpression) node).isStandalone();
         }
