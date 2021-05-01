@@ -1118,7 +1118,7 @@ class Scratch {
             mref.functionalMethod shouldBe plus
             val rvar = plus.typeParameters[0]!!
             mref.referencedMethod shouldBe abstractColl[rvar].getDeclaredMethod(inAbstractColl.symbol)
-            mref.typeMirror shouldBe t_Additioner
+            mref shouldHaveType t_Additioner
         }
     }
 

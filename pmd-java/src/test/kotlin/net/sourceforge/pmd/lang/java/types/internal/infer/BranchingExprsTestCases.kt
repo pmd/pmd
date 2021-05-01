@@ -33,12 +33,12 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                         ternaryExpr {
                             boolean(true)
                             child<ASTLambdaExpression> {
-                                it.typeMirror shouldBe it.typeSystem.stringSupplier()
+                                it shouldHaveType it.typeSystem.stringSupplier()
                                 child<ASTLambdaParameterList> { }
                                 stringLit("\"foo\"")
                             }
                             child<ASTLambdaExpression> {
-                                it.typeMirror shouldBe it.typeSystem.stringSupplier()
+                                it shouldHaveType it.typeSystem.stringSupplier()
                                 child<ASTLambdaParameterList> { }
                                 stringLit("\"bar\"")
                             }
@@ -61,7 +61,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                 methodCall("makeThree") {
                     argList {
                         ternaryExpr {
-                            it.typeMirror shouldBe it.typeSystem.stringSupplier()
+                            it shouldHaveType it.typeSystem.stringSupplier()
 
                             boolean(true)
                             child<ASTLambdaExpression> {
@@ -98,14 +98,14 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                         }
 
                         ternaryExpr {
-                            it.typeMirror shouldBe lubOfBothLists
+                            it shouldHaveType lubOfBothLists
                             boolean(true)
                             with(it.typeDsl) {
                                 child<ASTConstructorCall>(ignoreChildren = true) {
-                                    it.typeMirror shouldBe gen.`t_ArrayList{String}`
+                                    it shouldHaveType gen.`t_ArrayList{String}`
                                 }
                                 child<ASTConstructorCall>(ignoreChildren = true) {
-                                    it.typeMirror shouldBe gen.`t_LinkedList{String}`
+                                    it shouldHaveType gen.`t_LinkedList{String}`
                                 }
                             }
                         }
@@ -355,7 +355,7 @@ class Scratch {
 
                             boolean(true)
                             constructorCall {
-                                it.typeMirror shouldBe it.typeSystem.INT.box()
+                                it shouldHaveType it.typeSystem.INT.box()
 
                                 unspecifiedChildren(2)
                             }
@@ -412,16 +412,16 @@ class Scratch {
                     variableDeclarator("ter") {
 
                         ternaryExpr {
-                            it.typeMirror shouldBe it.typeSystem.OBJECT // not String
+                            it shouldHaveType it.typeSystem.OBJECT // not String
 
                             boolean(true)
                             methodCall("valueOf") {
-                                it.typeMirror shouldBe it.typeSystem.STRING
+                                it shouldHaveType it.typeSystem.STRING
 
                                 unspecifiedChildren(2)
                             }
                             methodCall("valueOf") {
-                                it.typeMirror shouldBe it.typeSystem.STRING
+                                it shouldHaveType it.typeSystem.STRING
 
                                 unspecifiedChildren(2)
                             }
@@ -444,11 +444,11 @@ class Scratch {
                                 unspecifiedChild()
 
                                 ternaryExpr {
-                                    it.typeMirror shouldBe it.typeSystem.lub(it.typeSystem.STRING, it.typeSystem.INT)
+                                    it shouldHaveType it.typeSystem.lub(it.typeSystem.STRING, it.typeSystem.INT)
 
                                     boolean(true)
                                     methodCall("valueOf") {
-                                        it.typeMirror shouldBe it.typeSystem.STRING
+                                        it shouldHaveType it.typeSystem.STRING
 
                                         unspecifiedChildren(2)
                                     }

@@ -339,19 +339,19 @@ class Scratch {
             methodCall("foo") {
                 argList {
                     methodCall("collect") {
-                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_String }
+                        it shouldHaveType with(it.typeDsl) { gen.t_String }
 
                         methodCall("map") {
 
-                            it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] }
+                            it shouldHaveType with(it.typeDsl) { gen.t_Stream[gen.t_String] }
 
                             it::getQualifier shouldBe methodCall("stream") {
                                 it.overloadSelectionInfo.isVarargsCall shouldBe false
-                                it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[Class::class[`?`]] }
+                                it shouldHaveType with(it.typeDsl) { gen.t_Stream[Class::class[`?`]] }
                                 unspecifiedChild()
                                 argList {
                                     variableAccess("genArray") {
-                                        it.typeMirror shouldBe with(it.typeDsl) { Class::class[`?`].toArray() }
+                                        it shouldHaveType with(it.typeDsl) { Class::class[`?`].toArray() }
                                     }
                                 }
                             }
@@ -360,7 +360,7 @@ class Scratch {
                             argList {
                                 methodRef("getTypeName") {
                                     with(it.typeDsl) {
-                                        it.typeMirror shouldBe gen.t_Function[Class::class[`?`], gen.t_String]
+                                        it shouldHaveType gen.t_Function[Class::class[`?`], gen.t_String]
                                     }
 
                                     skipQualifier()
