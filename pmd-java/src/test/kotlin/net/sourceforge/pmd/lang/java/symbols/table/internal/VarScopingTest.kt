@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol
+import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import java.lang.reflect.Modifier
 
 @Suppress("UNUSED_VARIABLE")
@@ -353,17 +354,17 @@ class VarScopingTest : ProcessorTestSpec({
 
         qualifiedA.referencedSym shouldBe enumA.symbol
         qualifiedA.referencedSym!!.tryGetNode() shouldBe enumA
-        qualifiedA.typeMirror shouldBe t_SomeEnum
+        qualifiedA shouldHaveType t_SomeEnum
 
         caseA.referencedSym shouldBe enumA.symbol
         caseA.referencedSym!!.tryGetNode() shouldBe enumA
-        caseA.typeMirror shouldBe t_SomeEnum
+        caseA shouldHaveType t_SomeEnum
 
         caseB.referencedSym shouldBe enumB.symbol
         caseB.referencedSym!!.tryGetNode() shouldBe enumB
-        caseB.typeMirror shouldBe t_SomeEnum
+        caseB shouldHaveType t_SomeEnum
 
-        e.typeMirror shouldBe t_SomeEnum
+        e shouldHaveType t_SomeEnum
 
         // symbol tables don't carry that info, this is documented on JSymbolTable#variables()
         caseB.symbolTable.variables().resolve("A").shouldBeEmpty()

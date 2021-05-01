@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.JVariableSig
+import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.java.types.typeDsl
 
 @Suppress("UNUSED_VARIABLE")
@@ -273,7 +274,7 @@ class MemberInheritanceTest : ParserTestSpec({
 
         typeNode.shouldMatchN {
             classType("Inner") {
-                it.typeMirror shouldBe `t_Scratch{String}Inner`
+                it shouldHaveType `t_Scratch{String}Inner`
             }
         }
 

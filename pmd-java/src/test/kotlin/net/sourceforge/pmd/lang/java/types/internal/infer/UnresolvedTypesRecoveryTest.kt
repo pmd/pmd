@@ -51,11 +51,11 @@ class C {
                 }
 
                 it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
-                it.typeMirror shouldBe it.typeNode.typeMirror
+                it shouldHaveType it.typeNode.typeMirror
 
                 argList {
                     methodCall("getMessage") {
-                        it.typeMirror shouldBe it.typeSystem.STRING
+                        it shouldHaveType it.typeSystem.STRING
                         variableAccess("ioe")
                         argList {}
                     }
@@ -96,7 +96,7 @@ class C {
                 }
 
                 it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
-                it.typeMirror shouldBe it.typeNode.typeMirror
+                it shouldHaveType it.typeNode.typeMirror
 
                 argList {}
             }
@@ -141,7 +141,7 @@ class C {
                         classType("Unresolved")
 
                         it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
-                        it.typeMirror shouldBe it.typeNode.typeMirror
+                        it shouldHaveType it.typeNode.typeMirror
 
                         argList {}
                     }
@@ -187,7 +187,7 @@ class C {
 
                 it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
                 it.overloadSelectionInfo.isFailed shouldBe true
-                it.typeMirror shouldBe t_UnresolvedOfString
+                it shouldHaveType t_UnresolvedOfString
 
                 argList {}
             }
@@ -229,7 +229,7 @@ class C {
 
                 argList {
                     fieldAccess("SOME_INT") {
-                        it.typeMirror shouldBe it.typeSystem.UNKNOWN
+                        it shouldHaveType it.typeSystem.UNKNOWN
                         typeExpr {
                             classType("Unresolved")
                         }
@@ -401,7 +401,7 @@ class C {
 
                     argList {
                         fieldAccess("SOMETHING") {
-                            it.typeMirror shouldBe it.typeSystem.UNKNOWN
+                            it shouldHaveType it.typeSystem.UNKNOWN
                             typeExpr {
                                 classType("Unresolved")
                             }
@@ -449,7 +449,7 @@ class C {
                     argList {
                         fieldAccess("SOMETHING") {
                             with(it.typeDsl) {
-                                it.typeMirror shouldBe ts.UNKNOWN
+                                it shouldHaveType ts.UNKNOWN
                                 it.referencedSym shouldBe null
                             }
                             typeExpr {
@@ -486,7 +486,7 @@ class C {
         field.shouldMatchN {
             fieldAccess("SOMETHING") {
                 with(it.typeDsl) {
-                    it.typeMirror shouldBe int
+                    it shouldHaveType int
                     it.referencedSym shouldBe null
                 }
                 typeExpr {
@@ -497,7 +497,7 @@ class C {
         unqual.shouldMatchN {
             variableAccess("SOMETHING") {
                 with(it.typeDsl) {
-                    it.typeMirror shouldBe ts.STRING
+                    it shouldHaveType ts.STRING
                     it.referencedSym shouldBe null
                 }
             }
@@ -527,7 +527,7 @@ class C {
         a.shouldMatchN {
             variableAccess("A") {
                 with(it.typeDsl) {
-                    it.typeMirror shouldBe int
+                    it shouldHaveType int
                     it.referencedSym shouldBe null
                 }
             }
@@ -535,7 +535,7 @@ class C {
         b.shouldMatchN {
             variableAccess("B") {
                 with(it.typeDsl) {
-                    it.typeMirror shouldBe int
+                    it shouldHaveType int
                     it.referencedSym shouldBe null
                 }
             }
@@ -563,14 +563,14 @@ class C {
         val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
 
         spy.shouldTriggerNoApplicableMethods {
-            lambda.typeMirror shouldBe ts.UNKNOWN
+            lambda shouldHaveType ts.UNKNOWN
             lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
         }
 
         spy.resetInteractions()
 
         spy.shouldTriggerNoApplicableMethods {
-            mref.typeMirror shouldBe ts.UNKNOWN
+            mref shouldHaveType ts.UNKNOWN
             mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
             mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
         }
@@ -597,14 +597,14 @@ class C {
         val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
 
         spy.shouldTriggerNoLambdaCtx {
-            lambda.typeMirror shouldBe ts.UNKNOWN
+            lambda shouldHaveType ts.UNKNOWN
             lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
         }
 
         spy.resetInteractions()
 
         spy.shouldTriggerNoLambdaCtx {
-            mref.typeMirror shouldBe ts.UNKNOWN
+            mref shouldHaveType ts.UNKNOWN
             mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
             mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
         }

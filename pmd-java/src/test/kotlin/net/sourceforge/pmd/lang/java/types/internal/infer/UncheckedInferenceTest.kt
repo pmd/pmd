@@ -42,8 +42,8 @@ class C {
                     withFormals = listOf(Class::class[gen.t_Comparable[`?`]]),
                     returning = gen.t_Comparable
             )
-            call.typeMirror shouldBe gen.t_Comparable
-            id.typeMirror shouldBe gen.t_Comparable
+            call shouldHaveType gen.t_Comparable
+            id shouldHaveType gen.t_Comparable
             call.shouldUseUncheckedConversion()
         }
     }
@@ -77,8 +77,8 @@ class C {
                     withFormals = listOf(Class::class[gen.t_Comparable[`?`]]),
                     returning = Class::class.raw
             )
-            call.typeMirror shouldBe Class::class.raw
-            id.typeMirror shouldBe Class::class[`?`]
+            call shouldHaveType Class::class.raw
+            id shouldHaveType Class::class[`?`]
             call.shouldUseUncheckedConversion()
         }
     }
@@ -116,7 +116,7 @@ class C {
                     withFormals = listOf(gen.t_Collection[`?` extends gen.t_Comparable]), // Comparable is raw
                     returning = gen.t_Comparable // not Object
             )
-            call.typeMirror shouldBe gen.t_Comparable
+            call shouldHaveType gen.t_Comparable
             call.shouldUseUncheckedConversion()
         }
     }
@@ -151,8 +151,8 @@ class C {
                     withFormals = listOf(Class::class[gen.t_Enum]),
                     returning = gen.t_Enum
             )
-            call.typeMirror shouldBe gen.t_Enum
-            id.typeMirror shouldBe gen.t_Enum
+            call shouldHaveType gen.t_Enum
+            id shouldHaveType gen.t_Enum
             call.shouldUseUncheckedConversion()
         }
     }
