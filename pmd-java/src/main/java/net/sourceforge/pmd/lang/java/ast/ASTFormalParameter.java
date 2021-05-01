@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.VariableIdOwner;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
 
 
 /**
@@ -68,8 +69,7 @@ public final class ASTFormalParameter extends AbstractJavaNode
      * Returns the declarator ID of this formal parameter.
      */
     @Override
-    @NonNull
-    public ASTVariableDeclaratorId getVarId() {
+    public @NonNull ASTVariableDeclaratorId getVarId() {
         return firstChild(ASTVariableDeclaratorId.class);
     }
 
@@ -87,7 +87,7 @@ public final class ASTFormalParameter extends AbstractJavaNode
     // The node that represents the variable is the variable ID.
 
     @Override
-    public @NonNull JTypeMirror getTypeMirror() {
-        return getVarId().getTypeMirror();
+    public @NonNull JTypeMirror getTypeMirror(TypingContext ctx) {
+        return getVarId().getTypeMirror(ctx);
     }
 }

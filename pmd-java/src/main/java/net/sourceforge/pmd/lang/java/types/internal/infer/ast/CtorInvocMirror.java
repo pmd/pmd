@@ -58,7 +58,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     }
 
     @Override
-    public TypeSpecies getStandaloneSpecies() {
+    public @NonNull TypeSpecies getStandaloneSpecies() {
         return TypeSpecies.REFERENCE;
     }
 

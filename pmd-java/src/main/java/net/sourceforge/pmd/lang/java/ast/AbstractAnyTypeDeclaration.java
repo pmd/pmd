@@ -48,16 +48,14 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
         return super.getImage();
     }
 
-    @NonNull
     @Override
-    public String getBinaryName() {
+    public @NonNull String getBinaryName() {
         assert binaryName != null : "Null binary name";
         return binaryName;
     }
 
-    @Nullable
     @Override
-    public String getCanonicalName() {
+    public @Nullable String getCanonicalName() {
         assert binaryName != null : "Canonical name wasn't set";
         return canonicalName;
     }
@@ -73,9 +71,8 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
         this.canonicalName = canon;
     }
 
-    @NonNull
     @Override
-    public JClassType getTypeMirror() {
+    public @NonNull JClassType getTypeMirror() {
         return (JClassType) super.getTypeMirror();
     }
 }

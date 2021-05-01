@@ -71,7 +71,7 @@ public interface ExprMirror {
      * types (REFERENCE for Supplier, VOID for Runnable), and determines that
      * the supplier is more appropriate.
      */
-    default TypeSpecies getStandaloneSpecies() {
+    default @NonNull TypeSpecies getStandaloneSpecies() {
         JTypeMirror std = getStandaloneType();
         return std == null ? UNKNOWN : getSpecies(std);
     }

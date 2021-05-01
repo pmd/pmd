@@ -48,8 +48,10 @@ fun JTypeMirror.shouldBeUnresolvedClass(canonicalName: String) =
             it.symbol::getCanonicalName shouldBe canonicalName
         }
 
-infix fun TypeNode.shouldHaveType(jTypeMirror: JTypeMirror) {
-    this::getTypeMirror shouldBe jTypeMirror
+infix fun TypeNode.shouldHaveType(expected: JTypeMirror) {
+    withClue(this) {
+        this.typeMirror shouldBe expected
+    }
 }
 
 // pairs of type param name to value

@@ -135,7 +135,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
 
                     variableDeclarator("ter") {
                         child<ASTSwitchExpression> {
-                            it::getTypeMirror shouldBe it.typeDsl.gen.`t_List{String}`
+                            it shouldHaveType it.typeDsl.gen.`t_List{String}`
                             unspecifiedChildren(4)
                         }
                     }
@@ -154,7 +154,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
 
                     variableDeclarator("ter") {
                         child<ASTSwitchExpression> {
-                            it::getTypeMirror shouldBe it.typeSystem.DOUBLE
+                            it shouldHaveType it.typeSystem.DOUBLE
                             unspecifiedChildren(4)
                         }
                     }
@@ -175,7 +175,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                     child<ASTVariableDeclarator> {
                         variableId("ter") {
                             it::isTypeInferred shouldBe true
-                            it::getTypeMirror shouldBe it.typeSystem.DOUBLE
+                            it shouldHaveType it.typeSystem.DOUBLE
                         }
                         unspecifiedChild()
                     }
@@ -195,7 +195,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                     variableDeclarator("ter") {
 
                         ternaryExpr {
-                            it::getTypeMirror shouldBe it.typeSystem.INT
+                            it shouldHaveType it.typeSystem.INT
                             boolean(true)
                             int(1)
                             int(3)
@@ -211,7 +211,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                     variableDeclarator("ter") {
 
                         ternaryExpr {
-                            it::getTypeMirror shouldBe it.typeSystem.DOUBLE
+                            it shouldHaveType it.typeSystem.DOUBLE
                             boolean(true)
                             int(1)
                             number(DOUBLE)
@@ -227,7 +227,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                     variableDeclarator("ter") {
 
                         ternaryExpr {
-                            it::getTypeMirror shouldBe it.typeSystem.INT
+                            it shouldHaveType it.typeSystem.INT
                             boolean(true)
                             int(1)
                             char('c')

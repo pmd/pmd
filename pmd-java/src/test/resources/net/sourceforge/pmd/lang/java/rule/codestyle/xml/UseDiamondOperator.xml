@@ -386,4 +386,20 @@ public class Generic<T> {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>[Java] UseDiamondOperator FP when expected type and constructed type have a different parameterization #2391</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.List;
+            interface LambdaKey<T> { String key(T value);}
+            class LambdaKeyConverter<T> {
+                public LambdaKeyConverter(final LambdaKey<T> lambdaKey) {}
+            }
+
+            public class SomeClass {
+                private final LambdaKeyConverter converter =
+                        new LambdaKeyConverter<List>(list -> String.valueOf(list.size()));
+            }
+            ]]></code>
+    </test-code>
 </test-data>

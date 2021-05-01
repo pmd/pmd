@@ -8,6 +8,7 @@ import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
 
 /**
  * An extension of the SimpleJavaNode which implements the TypeNode interface.
@@ -34,17 +35,29 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
 
     @Override
     public @NonNull JTypeMirror getTypeMirror() {
-        if (typeMirror == null) {
-            try {
-                LazyTypeResolver resolver = getRoot().getLazyTypeResolver();
-                typeMirror = this.acceptVisitor(resolver, null);
-                assert typeMirror != null : "LazyTypeResolver returned null";
-            } catch (Exception | AssertionError e) {
-                // this will add every type in the chain
-                throw addContextValue(e, "Resolving type of", this);
-            }
+        return getTypeMirror(TypingContext.EMPTY);
+    }
+
+    @Override
+    public @NonNull JTypeMirror getTypeMirror(TypingContext context) {
+        if (context.isEmpty() && typeMirror != null) {
+            return typeMirror;
         }
-        return typeMirror;
+
+        LazyTypeResolver resolver = getRoot().getLazyTypeResolver();
+        JTypeMirror result;
+        try {
+            result = this.acceptVisitor(resolver, context);
+            assert result != null : "LazyTypeResolver returned null";
+        } catch (Exception | AssertionError e) {
+            // this will add every type in the chain
+            throw addContextValue(e, "Resolving type of", this);
+        }
+
+        if (context.isEmpty() && typeMirror == null) {
+            typeMirror = result; // cache it
+        }
+        return result;
     }
 
     private static ContextedRuntimeException addContextValue(Throwable e, String label, Object value) {

@@ -88,40 +88,6 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private static String produceSuggestedExprImage(ASTConstructorCall ctor) {
-        StringBuilder sb = new StringBuilder(30);
-        sb.append("new ");
-        produceSameTypeWithDiamond(ctor.getTypeNode(), sb, true);
-        ASTArgumentList arguments = ctor.getArguments();
-        String argsString;
-        if (arguments.size() == 0) {
-            argsString = "()";
-        } else {
-            CharSequence text = arguments.getText();
-            if (text.length() <= MAX_ARGS_LENGTH && !StringUtils.contains(text, '\n')) {
-                argsString = text.toString();
-            } else {
-                argsString = "(...)";
-            }
-        }
-        return sb.append(argsString).toString();
-    }
-
-    private static StringBuilder produceSameTypeWithDiamond(ASTClassOrInterfaceType type, StringBuilder sb, boolean topLevel) {
-        if (type.isFullyQualified()) {
-            JTypeDeclSymbol sym = type.getTypeMirror().getSymbol();
-            Objects.requireNonNull(sym);
-            sb.append(sym.getPackageName()).append('.');
-        } else {
-            ASTClassOrInterfaceType qualifier = type.getQualifier();
-            if (qualifier != null) {
-                produceSameTypeWithDiamond(qualifier, sb, false).append('.');
-            }
-        }
-        sb.append(type.getSimpleName());
-        return topLevel ? sb.append("<>") : sb;
-    }
-
     private static boolean supportsDiamondOnAnonymousClass(ASTConstructorCall ctorCall) {
         return ctorCall.getAstInfo().getLanguageVersion().compareToVersion("9") >= 0;
     }
@@ -160,6 +126,42 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         JTypeMirror newType = ctorCall.getTypeNode().getTypeMirror();
         return new SpyInvocMirror(baseMirror, (JClassType) newType);
     }
+
+
+    private static String produceSuggestedExprImage(ASTConstructorCall ctor) {
+        StringBuilder sb = new StringBuilder(30);
+        sb.append("new ");
+        produceSameTypeWithDiamond(ctor.getTypeNode(), sb, true);
+        ASTArgumentList arguments = ctor.getArguments();
+        String argsString;
+        if (arguments.size() == 0) {
+            argsString = "()";
+        } else {
+            CharSequence text = arguments.getText();
+            if (text.length() <= MAX_ARGS_LENGTH && !StringUtils.contains(text, '\n')) {
+                argsString = text.toString();
+            } else {
+                argsString = "(...)";
+            }
+        }
+        return sb.append(argsString).toString();
+    }
+
+    private static StringBuilder produceSameTypeWithDiamond(ASTClassOrInterfaceType type, StringBuilder sb, boolean topLevel) {
+        if (type.isFullyQualified()) {
+            JTypeDeclSymbol sym = type.getTypeMirror().getSymbol();
+            Objects.requireNonNull(sym);
+            sb.append(sym.getPackageName()).append('.');
+        } else {
+            ASTClassOrInterfaceType qualifier = type.getQualifier();
+            if (qualifier != null) {
+                produceSameTypeWithDiamond(qualifier, sb, false).append('.');
+            }
+        }
+        sb.append(type.getSimpleName());
+        return topLevel ? sb.append("<>") : sb;
+    }
+
 
     /** Proxy that pretends it has diamond type args. */
     private static final class SpyInvocMirror implements CtorInvocationMirror {

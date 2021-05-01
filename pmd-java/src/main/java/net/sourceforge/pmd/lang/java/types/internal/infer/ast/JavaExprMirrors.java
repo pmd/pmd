@@ -48,7 +48,7 @@ public final class JavaExprMirrors {
      * is something slightly different, without corrupting the data in the AST.
      */
     public static JavaExprMirrors forObservation(Infer infer) {
-        return new JavaExprMirrors(infer, true);
+        return new JavaExprMirrors(infer, false);
     }
 
     boolean mayMutateAst() {
