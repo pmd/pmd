@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
@@ -21,7 +20,6 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
 
     parserTest("Test getClass special type") {
-
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
@@ -44,19 +42,19 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
         """.trimIndent())
 
-        val t_Scratch = acu.descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
-
-        val (k, k2, raw, call) = acu.descendants(ASTMethodCall::class.java).toList()
+        val t_Scratch = acu.declaredTypeSignatures()[0]
+        val kvar = acu.typeVar("K")
+        val (k, k2, raw, call) = acu.methodCalls().toList()
 
         doTest("Test this::getClass") {
             spy.shouldBeOk {
                 k.shouldMatchN {
                     methodCall("sup") {
-                        thisExpr { it shouldHaveType t_Scratch; null }
+                        thisExpr { it shouldHaveType t_Scratch[kvar]; null }
                         argList {
                             methodRef("getClass") {
                                 thisExpr()
-                                it shouldHaveType Supplier::class[Class::class[captureMatcher(`?` extends t_Scratch.erasure)]]
+                                it shouldHaveType Supplier::class[Class::class[captureMatcher(`?` extends t_Scratch[kvar])]]
                             }
                         }
                     }
@@ -74,7 +72,11 @@ class SpecialMethodsTest : ProcessorTestSpec({
                         }
 
                         it shouldHaveType let {
-                            val capture = captureMatcher(`?` extends t_Scratch.erasure)
+                            // note the return type is
+                            // `? extends Scratch<K>`
+                            // not the erasure
+                            // `? extends Scratch`
+                            val capture = captureMatcher(`?` extends t_Scratch[kvar])
                             // same capture in both params
                             java.util.function.Function::class[capture, Class::class[capture]]
                         }
