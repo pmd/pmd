@@ -292,9 +292,6 @@ public class UseDiamondOperatorFalseNegative {
         <description>Java 7 invocation context</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.util.List;
-import java.util.ArrayList;
-
 public class Generic<T> {
     <E> Generic<E> method(Generic<E> e) { return e; }
     public Generic<T> test() {
@@ -308,13 +305,25 @@ public class Generic<T> {
         <description>Java 8+ invocation context</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-import java.util.List;
-import java.util.ArrayList;
-
 public class Generic<T> {
     <E> Generic<E> method(Generic<E> e) { return e; }
     public Generic<T> test() {
         return method(new Generic<T>());
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Java 8+ invocation context, no target</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Generic<T> {
+    <E> Generic<E> method(Generic<E> e) { return e; }
+    public Generic<T> test() {
+        // todo need to create spy,
+        //  ask someone (PolyResolution?) to create enclosing mirrors,
+        //  then hand that to Infer, then unwrap
+        var m = method(new Generic<T>());
     }
 }
         ]]></code>
@@ -327,8 +336,6 @@ public class Generic<T> {
         </expected-messages>
         <code><![CDATA[
 package p;
-import java.util.List;
-import java.util.ArrayList;
 
 public class Generic<T> {
     <E> Generic<E> method(Generic<E> e) { return e; }
@@ -347,8 +354,6 @@ public class Generic<T> {
         </expected-messages>
         <code><![CDATA[
 package p;
-import java.util.List;
-import java.util.ArrayList;
 
 public class Generic<T> {
     static class Inner<K> {}

@@ -278,9 +278,6 @@ final class PolyResolution {
             || e instanceof InvocationNode;
     }
 
-    // Some symbol is not resolved
-    // go backwards from the context to get it.
-
     /**
      * Fallback for some standalone expressions, that may use some context
      * to set their type. This must not trigger any type inference process
@@ -288,6 +285,9 @@ final class PolyResolution {
      * context, that context must not be called.
      */
     JTypeMirror getContextTypeForStandaloneFallback(ASTExpression e) {
+        // Some symbol is not resolved
+        // go backwards from the context to get it.
+
         // The case mentioned by the doc is removed. We could be smarter
         // with how we retry failed invocation resolution, see history
         // of this comment
@@ -556,7 +556,7 @@ final class PolyResolution {
             // means the "node" is a "stop recursion because no context" result in contextOf
             return false;
         } else if (isPreJava8()) {
-            // in java < 8, context doesn't go flow through ternaries
+            // in java < 8, context doesn't flow through ternaries
             return false;
         } else if (!internalUse
             && node instanceof ASTConditionalExpression

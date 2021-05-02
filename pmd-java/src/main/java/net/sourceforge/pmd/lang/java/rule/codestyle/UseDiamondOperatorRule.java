@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -125,8 +124,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         // this may not mutate the AST
         JavaExprMirrors factory = JavaExprMirrors.forObservation(infer);
         CtorInvocationMirror baseMirror = (CtorInvocationMirror) factory.getTopLevelInvocationMirror(ctorCall);
-        JTypeMirror newType = ctorCall.getTypeNode().getTypeMirror();
-        return new SpyInvocMirror(baseMirror, (JClassType) newType);
+        return new SpyInvocMirror(baseMirror);
     }
 
 
@@ -169,24 +167,17 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
     private static final class SpyInvocMirror implements CtorInvocationMirror {
 
         private final CtorInvocationMirror base;
-        private final JClassType modifiedNewType;
 
-        SpyInvocMirror(CtorInvocationMirror base, JClassType baseNewType) {
+        SpyInvocMirror(CtorInvocationMirror base) {
             this.base = base;
-            // see doc of CtorInvocationMirror#getNewType
-            this.modifiedNewType = baseNewType.getGenericTypeDeclaration();
         }
 
         // overridden methods
 
         @Override
-        public void setInferredType(JTypeMirror mirror) {
-            // do nothing, we shouldn't affect the AST from here
-        }
-
-        @Override
         public @NonNull JTypeMirror getNewType() {
-            return modifiedNewType;
+            // see doc of CtorInvocationMirror#getNewType
+            return ((JClassType) base.getNewType()).getGenericTypeDeclaration();
         }
 
         @Override
@@ -194,17 +185,22 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             return true; // pretend it is
         }
 
+        // delegated methods
+
         @Override
         public List<JTypeMirror> getExplicitTypeArguments() {
-            return Collections.emptyList(); // pretend they're not there
+            return base.getExplicitTypeArguments();
         }
 
         @Override
         public JavaNode getExplicitTargLoc(int i) {
-            throw new IndexOutOfBoundsException();
+            return base.getExplicitTargLoc(i);
         }
 
-        // delegated methods
+        @Override
+        public void setInferredType(JTypeMirror mirror) {
+            base.setInferredType(mirror);
+        }
 
         @Override
         public void setCtDecl(MethodCtDecl methodType) {
