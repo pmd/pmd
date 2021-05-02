@@ -36,11 +36,17 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
     LambdaMirrorImpl(JavaExprMirrors mirrors, ASTLambdaExpression lambda, @Nullable ExprMirror parent) {
         super(mirrors, lambda, parent);
 
-        TypingContext parentCtx = getTypingContext(); // default impl returns parent || EMPTY
+        if (isExplicitlyTyped()) {
+            formalSymbols = Collections.emptyList();
+        } else {
+            // we'll have one tentative binding per formal param
+            formalSymbols = myNode.getParameters().toStream().toList(p -> p.getVarId().getSymbol());
 
-        formalSymbols = myNode.getParameters().toStream().toList(p -> p.getVarId().getSymbol());
-        List<JTypeMirror> unknownFormals = Collections.nCopies(formalSymbols.size(), null);
-        setTypingContext(parentCtx.andThenZip(formalSymbols, unknownFormals));
+            // initialize the typing context
+            TypingContext parentCtx = parent == null ? TypingContext.DEFAULT : parent.getTypingContext();
+            List<JTypeMirror> unknownFormals = Collections.nCopies(formalSymbols.size(), null);
+            setTypingContext(parentCtx.andThenZip(formalSymbols, unknownFormals));
+        }
     }
 
     @Override
@@ -82,8 +88,10 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
 
     @Override
     public void updateTypingContext(JMethodSig groundFun) {
-        // update bindings
-        setTypingContext(getTypingContext().andThenZip(formalSymbols, groundFun.getFormalParameters()));
+        if (!isExplicitlyTyped()) {
+            // update bindings
+            setTypingContext(getTypingContext().andThenZip(formalSymbols, groundFun.getFormalParameters()));
+        }
     }
 
     @Override

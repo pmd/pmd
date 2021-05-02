@@ -15,7 +15,7 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
 /**
- * A mapping of variables to types. Typing contexts are in general mutable.
+ * A mapping of variables to types.
  */
 public final class TypingContext extends MapFunction<JVariableSymbol, @Nullable JTypeMirror> {
 
@@ -46,9 +46,6 @@ public final class TypingContext extends MapFunction<JVariableSymbol, @Nullable 
      * Return a new typing context which uses this one as a parent.
      */
     public TypingContext andThen(Map<JVariableSymbol, @Nullable JTypeMirror> map) {
-        // if (map.isEmpty()) {
-        //     return EMPTY;
-        // }
         return new TypingContext(this, map);
     }
 
@@ -58,7 +55,7 @@ public final class TypingContext extends MapFunction<JVariableSymbol, @Nullable 
         if (symbols.size() != types.size()) {
             throw new IllegalArgumentException("Wrong size");
         } else if (symbols.isEmpty()) {
-            return DEFAULT;
+            return this;
         }
 
         Map<JVariableSymbol, JTypeMirror> newMap = new HashMap<>(symbols.size() + this.getMap().size());
@@ -66,7 +63,7 @@ public final class TypingContext extends MapFunction<JVariableSymbol, @Nullable 
         for (int i = 0; i < symbols.size(); i++) {
             newMap.put(symbols.get(i), types.get(i));
         }
-        return new TypingContext(this, newMap);
+        return this.andThen(newMap);
     }
 
     public static TypingContext zip(List<JVariableSymbol> symbols, List<JTypeMirror> types) {

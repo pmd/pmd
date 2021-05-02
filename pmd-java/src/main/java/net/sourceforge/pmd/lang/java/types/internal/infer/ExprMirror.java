@@ -32,6 +32,10 @@ import net.sourceforge.pmd.lang.java.types.TypingContext;
  */
 public interface ExprMirror {
 
+    /**
+     * Returns a node which is used as a location to report messages.
+     * Do not use this any other way.
+     */
     JavaNode getLocation();
 
 
@@ -55,6 +59,26 @@ public interface ExprMirror {
     default void finishStandaloneInference(@NonNull JTypeMirror standaloneType) {
         // do nothing
     }
+
+
+    /**
+     * Set the type of the underlying ast node. Used when we need
+     * to find out the type of a poly to infer the type of another,
+     * that way, we don't repeat computation.
+     */
+    void setInferredType(JTypeMirror mirror);
+
+
+    /**
+     * Returns typing information for the lambdas parameters in scope
+     * in this expression and its subexpressions. When overload resolution
+     * involves lambdas, we might have to try several target types for each
+     * lambda. Each of those may give a different type to the lambda parameters,
+     * and hence, to every expression in the lambda body. These "tentative"
+     * typing are kept in the {@link TypingContext} object and only
+     * committed to the AST for the overload that is selected in the end.
+     */
+    TypingContext getTypingContext();
 
     /**
      * Returns the species that this expression produces. The species
@@ -97,17 +121,6 @@ public interface ExprMirror {
             return REFERENCE;
         }
     }
-
-
-    /**
-     * Set the type of the underlying ast node. Used when we need
-     * to find out the type of a poly to infer the type of another,
-     * that way, we don't repeat computation.
-     */
-    void setInferredType(JTypeMirror mirror);
-
-
-    TypingContext getTypingContext();
 
 
     interface PolyExprMirror extends ExprMirror {

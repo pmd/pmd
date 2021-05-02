@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -141,10 +140,11 @@ final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTy
             ASTExpression initializer = node.getInitializer();
             return initializer == null ? ts.ERROR : TypeOps.projectUpwards(initializer.getTypeMirror(ctx));
 
-        } else if (isTypeInferred && node.ancestors().get(2) instanceof ASTForeachStatement) {
+        } else if (isTypeInferred && node.isForeachVariable()) {
             // for (var k : map.keySet())
 
-            JTypeMirror iterableType = ((ASTForeachStatement) node.ancestors().get(2)).getIterableExpr().getTypeMirror(ctx);
+            ASTForeachStatement foreachStmt = node.ancestors(ASTForeachStatement.class).firstOrThrow();
+            JTypeMirror iterableType = foreachStmt.getIterableExpr().getTypeMirror(ctx);
             iterableType = capture(iterableType);
 
             if (iterableType instanceof JArrayType) {
@@ -443,7 +443,7 @@ final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTy
     @Override
     public JTypeMirror visit(ASTVariableAccess node, TypingContext ctx) {
         if (node.getParent() instanceof ASTSwitchLabel) {
-            // may be an enum constant, in which case symbol table doesn't help (this is a documented thing)
+            // may be an enum constant, in which case symbol table doesn't help (this is documented on JSymbolTable#variables())
             ASTSwitchLike switchParent = node.ancestors(ASTSwitchLike.class).firstOrThrow();
             JTypeMirror testedType = switchParent.getTestedExpression().getTypeMirror(ctx);
             JTypeDeclSymbol testedSym = testedType.getSymbol();
@@ -466,11 +466,9 @@ final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTy
 
         JTypeMirror resultMirror = null;
 
-        JVariableSymbol symbol = result.getSymbol();
-        if (symbol instanceof JLocalVariableSymbol) {
-            ASTVariableDeclaratorId id = symbol.tryGetNode();
+        if (result.getSymbol() instanceof JLocalVariableSymbol) {
+            ASTVariableDeclaratorId id = result.getSymbol().tryGetNode();
             // id may be null if this is a fake formal param sym, for record components
-            // assert id != null : "Expected a local declaration";
             if (id != null && id.isLambdaParameter()) {
                 // then the type of the parameter depends on the type
                 // of the lambda, which most likely depends on the overload
@@ -482,6 +480,7 @@ final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTy
         if (resultMirror == null) {
             resultMirror = result.getTypeMirror();
         }
+
         // https://docs.oracle.com/javase/specs/jls/se14/html/jls-6.html#jls-6.5.6
         // Only capture if the name is on the RHS
         return node.getAccessType() == AccessType.READ ? TypeConversion.capture(resultMirror)
