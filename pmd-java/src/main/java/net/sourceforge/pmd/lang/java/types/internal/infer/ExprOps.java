@@ -256,7 +256,9 @@ final class ExprOps {
                 }
             }
 
-            return adaptGetClass(candidate, mref.getTypeToSearch()::getErasure);
+            // For exact method references, the return type is Class<? extends T> (no erasure).
+            // So it's mref::getTypeToSearch and not mref.getTypeToSearch()::getErasure
+            return adaptGetClass(candidate, mref::getTypeToSearch);
         } else {
             return null;
         }
@@ -491,20 +493,20 @@ final class ExprOps {
 
     /**
      * Calls to {@link Object#getClass()} on a type {@code T} have type
-     * {@code Class<|T|>}. If the selected method is that method, then
+     * {@code Class<? extends |T|>}. If the selected method is that method, then
      * we need to replace its return type (the symbol has return type {@link Object}).
      *
-     * @param sig                Selected signature
-     * @param erasedReceiverType Lazily created, because in many cases it's not necessary
+     * <p>For exact method reference expressions, the type is {@code <? extends T>} (no erasure).
+     *
+     * @param sig                   Selected signature
+     * @param replacementReturnType Lazily created, because in many cases it's not necessary
      *
      * @return Signature, adapted if it is {@link Object#getClass()}
      */
-    static JMethodSig adaptGetClass(JMethodSig sig, Supplier<JTypeMirror> erasedReceiverType) {
+    static JMethodSig adaptGetClass(JMethodSig sig, Supplier<JTypeMirror> replacementReturnType) {
         TypeSystem ts = sig.getTypeSystem();
         if ("getClass".equals(sig.getName()) && sig.getDeclaringType().equals(ts.OBJECT)) {
-            if (erasedReceiverType != null) {
-                return sig.internalApi().withReturnType(getClassReturn(erasedReceiverType.get(), ts)).internalApi().markAsAdapted();
-            }
+            return sig.internalApi().withReturnType(getClassReturn(replacementReturnType.get(), ts)).internalApi().markAsAdapted();
         }
         return sig;
     }
