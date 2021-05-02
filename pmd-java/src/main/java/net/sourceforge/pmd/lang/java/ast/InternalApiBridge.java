@@ -27,6 +27,9 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -215,5 +218,21 @@ public final class InternalApiBridge {
 
     public static void setStandaloneTernary(ASTConditionalExpression node) {
         node.setStandaloneTernary();
+    }
+
+    public static boolean isStandaloneInternal(ASTConditionalExpression node) {
+        return node.isStandalone();
+    }
+
+    public static JTypeMirror buildTypeFromAstInternal(TypeSystem ts, Substitution lexicalSubst, ASTType node) {
+        return TypesFromAst.fromAst(ts, lexicalSubst, node);
+    }
+
+    public static void setTypedSym(ASTFieldAccess expr, JVariableSig.FieldSig sym) {
+        expr.setTypedSym(sym);
+    }
+
+    public static void setTypedSym(ASTVariableAccess expr, JVariableSig sym) {
+        expr.setTypedSym(sym);
     }
 }

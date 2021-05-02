@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
+import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 
 /**
  * An extension of the SimpleJavaNode which implements the TypeNode interface.

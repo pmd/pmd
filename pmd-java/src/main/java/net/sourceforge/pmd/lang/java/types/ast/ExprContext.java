@@ -2,19 +2,17 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.ast;
+package net.sourceforge.pmd.lang.java.types.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
 
 /**
  * Context of an expression. This determines the target type of poly
@@ -61,8 +59,8 @@ public abstract class ExprContext {
 
         // todo there's a gritty detail about compound assignment operators
         //  with a primitive LHS, see https://github.com/pmd/pmd/issues/2023
-        return isCastContext() ? TypeConversion.isConvertibleInCastContext(type, targetType)
-                               : TypeConversion.isConvertibleUsingBoxing(type, targetType);
+        return kind == CtxKind.Cast ? TypeConversion.isConvertibleInCastContext(type, targetType)
+                                    : TypeConversion.isConvertibleUsingBoxing(type, targetType);
     }
 
     /**
@@ -73,68 +71,54 @@ public abstract class ExprContext {
         return kind == CtxKind.Missing;
     }
 
+    /** Returns the kind of context this is. */
+    public CtxKind getKind() {
+        return kind;
+    }
+
+    final boolean canGiveContextToPoly(boolean lambdaOrMethodRef) {
+        return kind == CtxKind.Assignment
+            || kind == CtxKind.Invocation
+            || kind == CtxKind.Cast && lambdaOrMethodRef;
+    }
+
+    @Nullable InvocationNode getInvocNodeIfInvocContext() {
+        return this instanceof InvocCtx ? ((InvocCtx) this).node : null;
+    }
+
     /**
-     * If true this is an invocation context. This means, the target
-     * type may depend on overload resolution.
+     * Returns the target type bestowed by this context ON A POLY EXPRESSION.
+     *
+     * @param lambdaOrMethodRef Whether the poly to be considered is a
+     *                          lambda or method ref. In this case, cast
+     *                          contexts can give a target type.
      */
-    public boolean isInvocationContext() {
-        return kind == CtxKind.Invocation;
-    }
-
-    public boolean isCastContext() {
-        return kind == CtxKind.Cast;
-    }
-
-    public boolean isNumeric() {
-        return kind == CtxKind.Numeric;
-    }
-
-    public boolean isString() {
-        return kind == CtxKind.String;
-    }
-
-    boolean canGiveContextToPoly(boolean lambda) {
-        return true;
-    }
-
-    public boolean isTernary() {
-        return kind == CtxKind.Ternary;
-    }
-
-    static ExprContext newAssignmentCtx(JTypeMirror targetType) {
-        return new RegularCtx(targetType, CtxKind.Assignment);
-    }
-
-    static ExprContext newNonPolyContext(JTypeMirror targetType) {
-        return new RegularCtx(targetType, CtxKind.OtherNonPoly);
-    }
-
-    static ExprContext newStringCtx(TypeSystem ts) {
-        JClassType stringType = (JClassType) TypesFromReflection.fromReflect(String.class, ts);
-        return new RegularCtx(stringType, CtxKind.String);
-    }
-
-    static ExprContext newNumericContext(JTypeMirror targetType) {
-        if (targetType.isPrimitive()) {
-            assert targetType.isNumeric() : targetType;
-            return new RegularCtx(targetType, CtxKind.Numeric);
+    @Nullable JTypeMirror getPolyTargetType(boolean lambdaOrMethodRef) {
+        if (!canGiveContextToPoly(lambdaOrMethodRef)) {
+            return null;
         }
-        return RegularCtx.NO_CTX; // error
+        return getTargetType();
     }
 
-    static ExprContext newCastCtx(JTypeMirror targetType) {
-        return new RegularCtx(targetType, CtxKind.Cast);
+    static ExprContext newOtherContext(@NonNull JTypeMirror targetType, CtxKind kind) {
+        AssertionUtil.requireParamNotNull("target type", targetType);
+        return new RegularCtx(targetType, kind);
     }
 
-    static ExprContext newSuperCtorCtx(JTypeMirror superclassType) {
-        return new RegularCtx(superclassType, CtxKind.Assignment);
+    static ExprContext newInvocContext(InvocationNode invocNode, int argumentIndex) {
+        return new InvocCtx(argumentIndex, invocNode);
     }
 
-    static ExprContext newStandaloneTernaryCtx(JTypeMirror ternaryType) {
-        return new RegularCtx(ternaryType, CtxKind.Ternary);
+    /**
+     * Returns an {@link ExprContext} instance which represents a
+     * missing context. Use {@link #isMissing()} instead of testing
+     * for equality.
+     */
+    public static RegularCtx getMissingInstance() {
+        return RegularCtx.NO_CTX;
     }
 
-    static final class InvocCtx extends ExprContext {
+    private static final class InvocCtx extends ExprContext {
 
         final int arg;
         final InvocationNode node;
@@ -161,11 +145,6 @@ public abstract class ExprContext {
         }
 
         @Override
-        public boolean isInvocationContext() {
-            return true;
-        }
-
-        @Override
         public String toString() {
             return "InvocCtx{arg=" + arg + ", node=" + node + '}';
         }
@@ -174,7 +153,7 @@ public abstract class ExprContext {
     /**
      * Kind of context.
      */
-    enum CtxKind {
+    public enum CtxKind {
         /** Invocation context (method arguments). */
         Invocation,
 
@@ -246,7 +225,7 @@ public abstract class ExprContext {
 
     static final class RegularCtx extends ExprContext {
 
-        static final RegularCtx NO_CTX = new RegularCtx(null, CtxKind.Missing);
+        private static final RegularCtx NO_CTX = new RegularCtx(null, CtxKind.Missing);
 
         final @Nullable JTypeMirror targetType;
 
@@ -254,26 +233,6 @@ public abstract class ExprContext {
             super(kind);
             assert kind != CtxKind.Invocation;
             this.targetType = targetType;
-        }
-
-
-        @Override
-        public boolean canGiveContextToPoly(boolean lambdaOrMethodRef) {
-            return kind == CtxKind.Assignment || kind == CtxKind.Cast && lambdaOrMethodRef;
-        }
-
-        /**
-         * Returns the target type bestowed by this context ON A POLY EXPRESSION.
-         *
-         * @param lambdaOrMethodRef Whether the poly to be considered is a
-         *                          lambda or method ref. In this case, cast
-         *                          contexts can give a target type.
-         */
-        @Nullable JTypeMirror getPolyTargetType(boolean lambdaOrMethodRef) {
-            if (!canGiveContextToPoly(lambdaOrMethodRef)) {
-                return null;
-            }
-            return targetType;
         }
 
         @Override

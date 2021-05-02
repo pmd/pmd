@@ -49,7 +49,7 @@ final class TypesFromAst {
         return fromAstImpl(ts, lexicalSubst, node);
     }
 
-    public static JTypeMirror fromAstImpl(TypeSystem ts, Substitution lexicalSubst, ASTType node) {
+    private static JTypeMirror fromAstImpl(TypeSystem ts, Substitution lexicalSubst, ASTType node) {
 
         if (node instanceof ASTClassOrInterfaceType) {
 

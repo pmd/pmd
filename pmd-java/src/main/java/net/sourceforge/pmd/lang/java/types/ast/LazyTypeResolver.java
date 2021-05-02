@@ -3,7 +3,7 @@
  */
 
 
-package net.sourceforge.pmd.lang.java.ast;
+package net.sourceforge.pmd.lang.java.types.ast;
 
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.binaryNumericPromotion;
@@ -14,7 +14,59 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayDimensions;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTCharLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
+import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
+import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -37,10 +89,11 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 
 /**
- * Lazy version of ClassTypeResolver. This is not appropriate for
- * all nodes, though it is appropriate for standalone expressions.
+ * Resolves types of expressions. This is used as the implementation of
+ * {@link TypeNode#getTypeMirror(TypingContext)} and is INTERNAL.
  */
-final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTypeMirror> {
+@InternalApi
+public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTypeMirror> {
 
     private final TypeSystem ts;
     private final PolyResolution polyResolution;
@@ -49,7 +102,7 @@ final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTy
     private final Infer infer;
 
 
-    LazyTypeResolver(JavaAstProcessor processor, TypeInferenceLogger logger) {
+    public LazyTypeResolver(JavaAstProcessor processor, TypeInferenceLogger logger) {
         this.ts = processor.getTypeSystem();
         this.infer = new Infer(ts, processor.getJdkVersion(), logger);
         this.polyResolution = new PolyResolution(infer);
@@ -57,7 +110,7 @@ final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTy
         this.processor = processor;
     }
 
-    ExprContext getConversionContextForExternalUse(ASTExpression e) {
+    public ExprContext getConversionContextForExternalUse(ASTExpression e) {
         return polyResolution.getConversionContextForExternalUse(e);
     }
 
@@ -118,7 +171,7 @@ final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTy
 
     @Override
     public JTypeMirror visitType(ASTType node, TypingContext ctx) {
-        return TypesFromAst.fromAst(ts, Substitution.EMPTY, node);
+        return InternalApiBridge.buildTypeFromAstInternal(ts, Substitution.EMPTY, node);
     }
 
     @Override
@@ -451,7 +504,7 @@ final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTy
                 JFieldSymbol enumConstant = ((JClassSymbol) testedSym).getDeclaredField(node.getName());
                 if (enumConstant != null) {
                     // field exists and can be resolved
-                    node.setTypedSym(ts.sigOf(testedType, enumConstant));
+                    InternalApiBridge.setTypedSym(node, ts.sigOf(testedType, enumConstant));
                 }
                 return testedType;
             } // fallthrough
@@ -462,7 +515,7 @@ final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTy
             // An out-of-scope field. Use context to resolve it.
             return polyResolution.getContextTypeForStandaloneFallback(node);
         }
-        node.setTypedSym(result);
+        InternalApiBridge.setTypedSym(node, result);
 
         JTypeMirror resultMirror = null;
 
@@ -513,7 +566,7 @@ final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTy
         NameResolver<FieldSig> fieldResolver = TypeOps.getMemberFieldResolver(qualifierT, node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getName());
 
         FieldSig sig = fieldResolver.resolveFirst(node.getName()); // could be an ambiguity error
-        node.setTypedSym(sig);
+        InternalApiBridge.setTypedSym(node, sig);
 
         if (sig == null) {
             return polyResolution.getContextTypeForStandaloneFallback(node);
