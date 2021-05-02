@@ -26,7 +26,8 @@ public final class ASTMethodReference extends AbstractJavaExpr
     implements ASTPrimaryExpression,
                QualifiableExpression,
                LeftRecursiveNode,
-               MethodUsage {
+               MethodUsage,
+               FunctionalExpression {
 
     private JMethodSig functionalMethod;
     private JMethodSig compileTimeDecl;
@@ -131,6 +132,7 @@ public final class ASTMethodReference extends AbstractJavaExpr
      * @see #getReferencedMethod()
      * @see #getTypeMirror()
      */
+    @Override
     public JMethodSig getFunctionalMethod() {
         forceTypeResolution();
         return assertNonNullAfterTypeRes(functionalMethod);

@@ -102,22 +102,23 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             return false;
         }
 
-        MethodCtDecl result = doOverloadResolutionWithoutTypeArgs(call, context.getTargetType());
+        SpyInvocMirror mirror = doOverloadResolutionWithoutTypeArgs(call, context.getTargetType());
+        MethodCtDecl result = Objects.requireNonNull(mirror.getCtDecl());
 
         // inference succeeded without errors
         return !result.isFailed()
-            // same overload is selected
-            && result.getMethodType().getSymbol().equals(call.getMethodType().getSymbol())
+            // doesn't change bindings of lambdas
+            && mirror.isEquivalentToUnderlyingAst()
             // inferred type is compatible with context
             && context.acceptsType(result.getMethodType().getReturnType());
     }
 
-    private static MethodCtDecl doOverloadResolutionWithoutTypeArgs(ASTConstructorCall call, JTypeMirror expectedType) {
+    private static SpyInvocMirror doOverloadResolutionWithoutTypeArgs(ASTConstructorCall call, JTypeMirror expectedType) {
         Infer infer = InternalApiBridge.getInferenceEntryPoint(call);
         SpyInvocMirror spyMirror = makeSpy(infer, call);
         MethodCallSite fakeCallSite = infer.newCallSite(spyMirror, expectedType);
         infer.inferInvocationRecursively(fakeCallSite);
-        return spyMirror.result;
+        return spyMirror;
     }
 
     private static SpyInvocMirror makeSpy(Infer infer, ASTConstructorCall ctorCall) {
@@ -169,7 +170,6 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
 
         private final CtorInvocationMirror base;
         private final JClassType modifiedNewType;
-        private MethodCtDecl result;
 
         SpyInvocMirror(CtorInvocationMirror base, JClassType baseNewType) {
             this.base = base;
@@ -204,18 +204,17 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             throw new IndexOutOfBoundsException();
         }
 
-
-        @Override
-        public void setMethodType(MethodCtDecl methodType) {
-            result = methodType;
-        }
-
-        @Override
-        public @Nullable MethodCtDecl getMethodType() {
-            return result;
-        }
-
         // delegated methods
+
+        @Override
+        public void setCtDecl(MethodCtDecl methodType) {
+            base.setCtDecl(methodType);
+        }
+
+        @Override
+        public @Nullable MethodCtDecl getCtDecl() {
+            return base.getCtDecl();
+        }
 
         @Override
         public JavaNode getLocation() {
@@ -264,7 +263,12 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
 
         @Override
         public TypingContext getTypingContext() {
-            return TypingContext.DEFAULT;
+            return base.getTypingContext();
+        }
+
+        @Override
+        public boolean isEquivalentToUnderlyingAst() {
+            return base.isEquivalentToUnderlyingAst();
         }
     }
 

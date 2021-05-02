@@ -175,7 +175,7 @@ final class ExprCheckHelper {
             // else it's ts.UNRESOLVED
             if (mayMutateExpr()) {
                 invoc.setInferredType(fallback);
-                invoc.setMethodType(infer.NO_CTDECL);
+                invoc.setCtDecl(infer.NO_CTDECL);
             }
         }
 
@@ -200,7 +200,7 @@ final class ExprCheckHelper {
                 solved -> {
                     JMethodSig ground = solved.ground(mostSpecific);
                     invoc.setInferredType(ground.getReturnType());
-                    invoc.setMethodType(argCtDecl.withMethod(ground));
+                    invoc.setCtDecl(argCtDecl.withMethod(ground));
                 }
             );
         }
@@ -444,7 +444,7 @@ final class ExprCheckHelper {
 
     JMethodSig inferMethodRefInvocation(MethodRefMirror mref, JMethodSig targetType, MethodCtDecl ctdecl) {
         InvocationMirror wrapper = methodRefAsInvocation(mref, targetType, false);
-        wrapper.setMethodType(ctdecl);
+        wrapper.setCtDecl(ctdecl);
         MethodCallSite mockSite = infer.newCallSite(wrapper, /* expected */ targetType.getReturnType(), site, infCtx, isSpecificityCheck());
         return infer.determineInvocationTypeOrFail(mockSite).getMethodType();
     }

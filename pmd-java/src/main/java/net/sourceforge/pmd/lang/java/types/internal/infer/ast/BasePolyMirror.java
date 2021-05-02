@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
 
 abstract class BasePolyMirror<T extends JavaNode> extends BaseExprMirror<T> implements PolyExprMirror {
+    private JTypeMirror inferredType;
 
     BasePolyMirror(JavaExprMirrors mirrors, T myNode, @Nullable ExprMirror parent) {
         super(mirrors, myNode, parent);
@@ -23,11 +24,16 @@ abstract class BasePolyMirror<T extends JavaNode> extends BaseExprMirror<T> impl
 
     @Override
     public void setInferredType(JTypeMirror mirror) {
+        this.inferredType = mirror;
         if (myNode instanceof TypeNode && mayMutateAst()) {
             InternalApiBridge.setTypeMirrorInternal((TypeNode) myNode, mirror);
         }
     }
 
+    /** Return the value set in the last call to {@link #setInferredType(JTypeMirror)}. */
+    protected JTypeMirror getInferredType() {
+        return inferredType;
+    }
 
     @Override
     public @NonNull JClassType getEnclosingType() {

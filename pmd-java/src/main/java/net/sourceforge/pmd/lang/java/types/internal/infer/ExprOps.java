@@ -348,6 +348,11 @@ final class ExprOps {
                 public TypingContext getTypingContext() {
                     return mref.getTypingContext();
                 }
+
+                @Override
+                public boolean isEquivalentToUnderlyingAst() {
+                    throw new UnsupportedOperationException("Cannot invoque isSemanticallyEquivalent on this mirror, it doesn't have a backing AST node: " + this);
+                }
             }
         );
 
@@ -402,12 +407,12 @@ final class ExprOps {
             }
 
             @Override
-            public void setMethodType(MethodCtDecl methodType) {
+            public void setCtDecl(MethodCtDecl methodType) {
                 this.mt = methodType;
             }
 
             @Override
-            public @Nullable MethodCtDecl getMethodType() {
+            public @Nullable MethodCtDecl getCtDecl() {
                 return mt;
             }
 
@@ -429,6 +434,11 @@ final class ExprOps {
             @Override
             public TypingContext getTypingContext() {
                 return mref.getTypingContext();
+            }
+
+            @Override
+            public boolean isEquivalentToUnderlyingAst() {
+                throw new UnsupportedOperationException("Cannot invoque isSemanticallyEquivalent on this mirror, it doesn't have a backing AST node: " + this);
             }
         };
     }

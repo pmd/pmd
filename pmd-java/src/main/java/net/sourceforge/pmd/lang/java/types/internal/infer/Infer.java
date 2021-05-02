@@ -169,7 +169,7 @@ public final class Infer {
     public void inferInvocationRecursively(MethodCallSite site) {
         MethodCtDecl ctdecl = goToInvocationWithFallback(site);
         InvocationMirror expr = site.getExpr();
-        expr.setMethodType(ctdecl);
+        expr.setCtDecl(ctdecl);
         if (ctdecl == NO_CTDECL) {
             expr.setInferredType(fallbackType(expr));
         } else {
@@ -244,11 +244,11 @@ public final class Infer {
 
 
     public @NonNull MethodCtDecl getCompileTimeDecl(MethodCallSite site) {
-        if (site.getExpr().getMethodType() == null) {
+        if (site.getExpr().getCtDecl() == null) {
             MethodCtDecl ctdecl = computeCompileTimeDecl(site);
-            site.getExpr().setMethodType(ctdecl); // cache it for later
+            site.getExpr().setCtDecl(ctdecl); // cache it for later
         }
-        return site.getExpr().getMethodType();
+        return site.getExpr().getCtDecl();
     }
 
     /**

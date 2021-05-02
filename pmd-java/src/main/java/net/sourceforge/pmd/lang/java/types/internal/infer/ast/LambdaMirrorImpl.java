@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -20,7 +21,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.java.types.TypingContext;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 
-class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements LambdaExprMirror {
+class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> implements LambdaExprMirror {
 
     private final List<JVariableSymbol> formalSymbols;
 
@@ -47,6 +47,27 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
             List<JTypeMirror> unknownFormals = Collections.nCopies(formalSymbols.size(), null);
             setTypingContext(parentCtx.andThenZip(formalSymbols, unknownFormals));
         }
+    }
+
+    @Override
+    public boolean isEquivalentToUnderlyingAst() {
+        JTypeMirror inferredType = getInferredType();
+        JMethodSig inferredMethod = getInferredMethod();
+        AssertionUtil.validateState(inferredType != null && inferredMethod != null,
+                                    "overload resolution is not complete");
+
+        ASTLambdaParameterList astFormals = myNode.getParameters();
+        List<JTypeMirror> thisFormals = inferredMethod.getFormalParameters();
+        for (int i = 0; i < thisFormals.size(); i++) {
+            if (!thisFormals.get(i).equals(astFormals.get(i).getTypeMirror())) {
+                return false;
+            }
+        }
+        // The intuition is that if all lambda parameters and enclosing
+        // parameters in the mirror mean the same as in the node,
+        // then all expressions occurring in the lambda must mean the
+        // same too.
+        return true;
     }
 
     @Override
@@ -76,13 +97,6 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
             return block.descendants(ASTReturnStatement.class)
                         .map(ASTReturnStatement::getExpr)
                         .toList(e -> factory.getPolyMirror(e, this));
-        }
-    }
-
-    @Override
-    public void setFunctionalMethod(JMethodSig methodType) {
-        if (mayMutateAst()) {
-            InternalApiBridge.setFunctionalMethod(myNode, methodType);
         }
     }
 

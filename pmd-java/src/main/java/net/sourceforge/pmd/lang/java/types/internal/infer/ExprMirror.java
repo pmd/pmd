@@ -102,6 +102,26 @@ public interface ExprMirror {
     }
 
 
+    /**
+     * Returns true if this mirror and its subexpressions are equivalent
+     * to the underlying AST node. This is only relevant when making mirrors
+     * that are not exactly equal to the AST node (eg, omitting explicit type arguments),
+     * in order to check if the transformation does not change the meaning of the program.
+     * It verifies that method and constructor calls are overload-selected
+     * to the same compile-time declaration, and that nested lambdas
+     * have the same type as in the AST.
+     *
+     * <p>This mirror's state, as filled-in during type resolution by
+     * {@link Infer} using the various setters of {@link ExprMirror}
+     * interfaces, is compared to the AST's corresponding state. Consequently,
+     * if this state is missing (meaning, that no overload resolution
+     * has been run using this mirror), the analysis cannot be performed
+     * and an exception is thrown.
+     *
+     * @throws IllegalStateException If this mirror has not been used for overload resolution
+     */
+    boolean isEquivalentToUnderlyingAst();
+
     /** A general category of types. */
     enum TypeSpecies {
         PRIMITIVE,
@@ -174,13 +194,17 @@ public interface ExprMirror {
         default void setStandalone() {
             // do nothing by default
         }
+
+
+        @Override
+        default boolean isEquivalentToUnderlyingAst() {
+            return branchesMatch(ExprMirror::isEquivalentToUnderlyingAst);
+        }
     }
 
     /**
      * Mirror of some expression that targets a functional interface type:
      * lambda or method reference.
-     *
-     * todo possibly, introduce the same kind of interface in the AST
      */
     interface FunctionalExprMirror extends PolyExprMirror {
 
@@ -384,16 +408,15 @@ public interface ExprMirror {
         int getArgumentCount();
 
 
-        void setMethodType(MethodCtDecl methodType);
+        void setCtDecl(MethodCtDecl methodType);
 
 
         /**
-         * Returns the method type set with {@link #setMethodType(MethodCtDecl)}
+         * Returns the method type set with {@link #setCtDecl(MethodCtDecl)}
          * or null if that method was never called. This is used to perform
          * overload resolution exactly once per call site.
          */
-        @Nullable
-        MethodCtDecl getMethodType();
+        @Nullable MethodCtDecl getCtDecl();
 
 
         /**

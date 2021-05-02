@@ -10,6 +10,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
@@ -22,9 +23,10 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-final class MethodRefMirrorImpl extends BasePolyMirror<ASTMethodReference> implements MethodRefMirror {
+final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference> implements MethodRefMirror {
 
     private JMethodSig exactMethod;
+    private JMethodSig ctdecl;
 
     MethodRefMirrorImpl(JavaExprMirrors mirrors, ASTMethodReference lambda, ExprMirror parent) {
         super(mirrors, lambda, parent);
@@ -38,6 +40,15 @@ final class MethodRefMirrorImpl extends BasePolyMirror<ASTMethodReference> imple
         // don't call this one as it would mean to the node "don't recompute my type"
         // even if a parent conditional failed its standalone test
         // setInferredType(mirrors.ts.UNKNOWN);
+    }
+
+
+    @Override
+    public boolean isEquivalentToUnderlyingAst() {
+        AssertionUtil.validateState(ctdecl != null, "overload resolution is not complete");
+
+        // must bind to the same ctdecl.
+        return myNode.getReferencedMethod().equals(ctdecl);
     }
 
     @Override
@@ -64,14 +75,8 @@ final class MethodRefMirrorImpl extends BasePolyMirror<ASTMethodReference> imple
     }
 
     @Override
-    public void setFunctionalMethod(JMethodSig methodType) {
-        if (mayMutateAst()) {
-            InternalApiBridge.setFunctionalMethod(myNode, methodType);
-        }
-    }
-
-    @Override
     public void setCompileTimeDecl(JMethodSig methodType) {
+        this.ctdecl = methodType;
         InternalApiBridge.setCompileTimeDecl(myNode, methodType);
     }
 

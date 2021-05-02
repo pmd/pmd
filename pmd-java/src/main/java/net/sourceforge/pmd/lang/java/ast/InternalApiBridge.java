@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
@@ -154,12 +155,14 @@ public final class InternalApiBridge {
         node.setTypedSym(sig);
     }
 
-    public static void setFunctionalMethod(ASTMethodReference methodReference, JMethodSig methodType) {
-        methodReference.setFunctionalMethod(methodType);
-    }
-
-    public static void setFunctionalMethod(ASTLambdaExpression lambda, @Nullable JMethodSig methodType) {
-        lambda.setFunctionalMethod(methodType);
+    public static void setFunctionalMethod(FunctionalExpression node, JMethodSig methodType) {
+        if (node instanceof ASTMethodReference) {
+            ((ASTMethodReference) node).setFunctionalMethod(methodType);
+        } else if (node instanceof ASTLambdaExpression) {
+            ((ASTLambdaExpression) node).setFunctionalMethod(methodType);
+        } else {
+            throw AssertionUtil.shouldNotReachHere("" + node);
+        }
     }
 
     public static void setCompileTimeDecl(ASTMethodReference methodReference, JMethodSig methodType) {

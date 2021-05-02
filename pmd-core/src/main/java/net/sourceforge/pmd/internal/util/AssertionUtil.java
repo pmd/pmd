@@ -44,6 +44,14 @@ public final class AssertionUtil {
         return "Invalid range [" + startInclusive + "," + endExclusive + "[ in [" + minIndex + "," + maxIndex + "[";
     }
 
+
+    public static void validateState(boolean condition, String failed) {
+        if (!condition) {
+            throw new IllegalStateException(failed);
+        }
+    }
+
+
     /**
      * @throws IllegalArgumentException if [startInclusive,endExclusive[ is
      *                                  not a valid substring range for the given string

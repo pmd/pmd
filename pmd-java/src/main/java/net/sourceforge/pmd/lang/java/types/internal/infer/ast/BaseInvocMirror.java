@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
@@ -31,6 +32,16 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
         super(mirrors, call, parent);
     }
 
+    @Override
+    public boolean isEquivalentToUnderlyingAst() {
+        MethodCtDecl ctDecl = getCtDecl();
+        AssertionUtil.validateState(ctDecl != null, "overload resolution is not complete");
+        if (!myNode.getMethodType().getSymbol().equals(ctDecl.getMethodType().getSymbol())) {
+            return false;
+        }
+
+        return CollectionUtil.all(this.getArgumentExpressions(), ExprMirror::isEquivalentToUnderlyingAst);
+    }
 
     protected MethodCtDecl getStandaloneCtdecl() {
         MethodCallSite site = factory.infer.newCallSite(this, null);
@@ -66,16 +77,16 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
     }
 
     @Override
-    public void setMethodType(MethodCtDecl methodType) {
+    public void setCtDecl(MethodCtDecl methodType) {
+        ctDecl = methodType;
         if (mayMutateAst()) {
             InternalApiBridge.setOverload(myNode, methodType);
         }
-        ctDecl = methodType;
     }
 
 
     @Override
-    public @Nullable MethodCtDecl getMethodType() {
+    public @Nullable MethodCtDecl getCtDecl() {
         return ctDecl;
     }
 
