@@ -472,7 +472,7 @@ class Scratch {
 
         val infer = Infer(testTypeSystem, 8, TypeInferenceLogger.noop())
         val mirrors = JavaExprMirrors.forTypeResolution(infer)
-        val (a, b, c, d, e, f, h) = acu.descendants(ASTLambdaExpression::class.java).toList { mirrors.getFunctionalMirror(it) as ExprMirror.LambdaExprMirror }
+        val (a, b, c, d, e, f, h) = acu.descendants(ASTLambdaExpression::class.java).toList { mirrors.getTopLevelFunctionalMirror(it) as ExprMirror.LambdaExprMirror }
 
         fun ExprMirror.LambdaExprMirror.shouldBeCompat(void: Boolean = false, value: Boolean = false) {
             withClue(this) {

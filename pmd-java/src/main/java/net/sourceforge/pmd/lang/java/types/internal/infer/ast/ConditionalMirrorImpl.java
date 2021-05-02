@@ -27,10 +27,10 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
     ExprMirror elseBranch;
     private final boolean mayBePoly;
 
-    ConditionalMirrorImpl(JavaExprMirrors mirrors, ASTConditionalExpression expr, boolean isStandalone) {
-        super(mirrors, expr);
-        thenBranch = mirrors.getPolyMirror(myNode.getThenBranch(), isStandalone);
-        elseBranch = mirrors.getPolyMirror(myNode.getElseBranch(), isStandalone);
+    ConditionalMirrorImpl(JavaExprMirrors mirrors, ASTConditionalExpression expr, boolean isStandalone, @Nullable ExprMirror parent) {
+        super(mirrors, expr, parent);
+        thenBranch = mirrors.getPolyMirror(myNode.getThenBranch(), isStandalone, this);
+        elseBranch = mirrors.getPolyMirror(myNode.getElseBranch(), isStandalone, this);
         this.mayBePoly = !isStandalone;
     }
 

@@ -18,13 +18,14 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 
 class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements InvocationMirror {
 
 
-    MethodInvocMirror(JavaExprMirrors mirrors, ASTMethodCall call) {
-        super(mirrors, call);
+    MethodInvocMirror(JavaExprMirrors mirrors, ASTMethodCall call, @Nullable ExprMirror parent) {
+        super(mirrors, call, parent);
     }
 
     @Override

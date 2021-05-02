@@ -111,7 +111,7 @@ final class PolyResolution {
                 // only reference conditional expressions take the target type,
                 // but the spec special-cases some forms of conditionals ("numeric" and "boolean")
                 // The mirror recognizes these special cases
-                BranchingMirror polyMirror = (BranchingMirror) exprMirrors.getPolyMirror((ASTExpression) e);
+                BranchingMirror polyMirror = exprMirrors.getPolyBranchingMirror((ASTExpression) e);
                 JTypeMirror standaloneType = polyMirror.getStandaloneType();
                 if (standaloneType != null) { // then it is one of those special cases
                     polyMirror.setStandalone(); // record this fact
@@ -151,8 +151,9 @@ final class PolyResolution {
         }
     }
 
+    // only outside of invocation context
     private JTypeMirror inferLambdaOrMref(ASTExpression e, @Nullable JTypeMirror targetType) {
-        FunctionalExprMirror mirror = exprMirrors.getFunctionalMirror(e);
+        FunctionalExprMirror mirror = exprMirrors.getTopLevelFunctionalMirror(e);
         PolySite<FunctionalExprMirror> site = infer.newFunctionalSite(mirror, targetType);
         infer.inferFunctionalExprInUnambiguousContext(site);
         JTypeMirror result = InternalApiBridge.getTypeMirrorInternal(e);
@@ -210,7 +211,7 @@ final class PolyResolution {
      * }</pre>
      */
     private JTypeMirror inferInvocation(InvocationNode ctxNode, TypeNode actualResultTarget, @Nullable JTypeMirror targetType) {
-        InvocationMirror mirror = exprMirrors.getInvocationMirror(ctxNode);
+        InvocationMirror mirror = exprMirrors.getTopLevelInvocationMirror(ctxNode);
         MethodCallSite site = infer.newCallSite(mirror, targetType);
         infer.inferInvocationRecursively(site);
         // errors are on the call site if any

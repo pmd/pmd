@@ -464,6 +464,8 @@ final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTy
         }
         node.setTypedSym(result);
 
+        JTypeMirror resultMirror = null;
+
         JVariableSymbol symbol = result.getSymbol();
         if (symbol instanceof JLocalVariableSymbol) {
             ASTVariableDeclaratorId id = symbol.tryGetNode();
@@ -473,15 +475,17 @@ final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTy
                 // then the type of the parameter depends on the type
                 // of the lambda, which most likely depends on the overload
                 // resolution of an enclosing invocation context
-                ASTLambdaExpression lambda = id.ancestors(ASTLambdaExpression.class).firstOrThrow();
-                lambda.forceTypeResolution(); // noop if we're already doing its resolution
+                resultMirror = id.getTypeMirror();
             }
         }
 
+        if (resultMirror == null) {
+            resultMirror = result.getTypeMirror();
+        }
         // https://docs.oracle.com/javase/specs/jls/se14/html/jls-6.html#jls-6.5.6
         // Only capture if the name is on the RHS
-        return node.getAccessType() == AccessType.READ ? TypeConversion.capture(result.getTypeMirror())
-                                                       : result.getTypeMirror();
+        return node.getAccessType() == AccessType.READ ? TypeConversion.capture(resultMirror)
+                                                       : resultMirror;
     }
 
     @Override

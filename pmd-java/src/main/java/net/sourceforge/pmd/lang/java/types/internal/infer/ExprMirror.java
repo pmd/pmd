@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
 
 /**
  * Adapter class to manipulate expressions. The framework
@@ -76,6 +77,7 @@ public interface ExprMirror {
         return std == null ? UNKNOWN : getSpecies(std);
     }
 
+
     /** A general category of types. */
     enum TypeSpecies {
         PRIMITIVE,
@@ -103,6 +105,9 @@ public interface ExprMirror {
      * that way, we don't repeat computation.
      */
     void setInferredType(JTypeMirror mirror);
+
+
+    TypingContext getTypingContext();
 
 
     interface PolyExprMirror extends ExprMirror {
@@ -301,6 +306,8 @@ public interface ExprMirror {
          * </blockquote>
          */
         boolean isVoidCompatible();
+
+        void updateTypingContext(JMethodSig groundFun);
     }
 
     /**

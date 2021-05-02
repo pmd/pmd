@@ -27,8 +27,8 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
     private MethodCtDecl ctDecl;
     private List<ExprMirror> args;
 
-    BaseInvocMirror(JavaExprMirrors mirrors, T call) {
-        super(mirrors, call);
+    BaseInvocMirror(JavaExprMirrors mirrors, T call, @Nullable ExprMirror parent) {
+        super(mirrors, call, parent);
     }
 
 
@@ -55,7 +55,7 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
     public List<ExprMirror> getArgumentExpressions() {
         if (this.args == null) {
             ASTArgumentList args = myNode.getArguments();
-            this.args = CollectionUtil.map(ASTList.orEmpty(args), factory::getPolyMirror);
+            this.args = CollectionUtil.map(ASTList.orEmpty(args), e -> factory.getPolyMirror(e, this));
         }
         return args;
     }

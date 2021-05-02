@@ -35,7 +35,7 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
 
     @Override
     public @NonNull JTypeMirror getTypeMirror() {
-        return getTypeMirror(TypingContext.EMPTY);
+        return getTypeMirror(TypingContext.DEFAULT);
     }
 
     @Override

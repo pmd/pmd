@@ -12,8 +12,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 
 class StandaloneExprMirror extends BaseExprMirror<ASTExpression> implements ExprMirror {
 
-    StandaloneExprMirror(JavaExprMirrors factory, ASTExpression myNode) {
-        super(factory, myNode);
+    StandaloneExprMirror(JavaExprMirrors factory, ASTExpression myNode, @Nullable ExprMirror parent) {
+        super(factory, myNode, parent);
     }
 
     @Override

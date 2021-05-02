@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -25,8 +26,8 @@ final class MethodRefMirrorImpl extends BasePolyMirror<ASTMethodReference> imple
 
     private JMethodSig exactMethod;
 
-    MethodRefMirrorImpl(JavaExprMirrors mirrors, ASTMethodReference lambda) {
-        super(mirrors, lambda);
+    MethodRefMirrorImpl(JavaExprMirrors mirrors, ASTMethodReference lambda, ExprMirror parent) {
+        super(mirrors, lambda, parent);
         exactMethod = mirrors.ts.UNRESOLVED_METHOD;
 
         // this is in case of failure: if the inference doesn't succeed

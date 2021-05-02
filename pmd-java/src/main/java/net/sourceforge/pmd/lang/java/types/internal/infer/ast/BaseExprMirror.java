@@ -14,11 +14,13 @@ abstract class BaseExprMirror<T extends JavaNode> implements ExprMirror {
 
     final JavaExprMirrors factory;
     final T myNode;
+    private final ExprMirror parent;
     private TypingContext typingContext;
 
-    BaseExprMirror(JavaExprMirrors factory, T myNode) {
+    BaseExprMirror(JavaExprMirrors factory, T myNode, ExprMirror parent) {
         this.factory = factory;
         this.myNode = myNode;
+        this.parent = parent;
     }
 
     @Override
@@ -35,9 +37,15 @@ abstract class BaseExprMirror<T extends JavaNode> implements ExprMirror {
         return this.factory.mayMutateAst();
     }
 
-    protected TypingContext getTypingContext() {
-        return typingContext == null ? TypingContext.EMPTY
-                                     : typingContext;
+    @Override
+    public TypingContext getTypingContext() {
+        if (typingContext != null) {
+            return typingContext;
+        } else if (parent != null) {
+            return parent.getTypingContext();
+        } else {
+            return TypingContext.DEFAULT;
+        }
     }
 
     public void setTypingContext(TypingContext typingCtx) {

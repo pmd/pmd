@@ -475,6 +475,7 @@ final class ExprCheckHelper {
         if (mayMutateExpr()) {
             lambda.setInferredType(groundTargetType);
             lambda.setFunctionalMethod(groundFun);
+            lambda.updateTypingContext(groundFun);
 
             // set the final type when done
             if (phase.isInvocation()) {
@@ -554,7 +555,9 @@ final class ExprCheckHelper {
                 solvedCtx -> {
                     if (mayMutateExpr()) {
                         lambda.setInferredType(solvedCtx.ground(groundTargetType));
-                        lambda.setFunctionalMethod(solvedCtx.ground(groundFun));
+                        JMethodSig solvedGroundFun = solvedCtx.ground(groundFun);
+                        lambda.setFunctionalMethod(solvedGroundFun);
+                        lambda.updateTypingContext(solvedGroundFun);
                     }
                     JTypeMirror groundResult = solvedCtx.ground(result);
                     for (ExprMirror expr : lambda.getResultExpressions()) {

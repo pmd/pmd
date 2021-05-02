@@ -22,16 +22,25 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 
 class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements LambdaExprMirror {
 
+    private final List<JVariableSymbol> formalSymbols;
 
-    LambdaMirrorImpl(JavaExprMirrors mirrors, ASTLambdaExpression lambda) {
-        super(mirrors, lambda);
+    LambdaMirrorImpl(JavaExprMirrors mirrors, ASTLambdaExpression lambda, @Nullable ExprMirror parent) {
+        super(mirrors, lambda, parent);
+
+        TypingContext parentCtx = getTypingContext(); // default impl returns parent || EMPTY
+
+        formalSymbols = myNode.getParameters().toStream().toList(p -> p.getVarId().getSymbol());
+        List<JTypeMirror> unknownFormals = Collections.nCopies(formalSymbols.size(), null);
+        setTypingContext(parentCtx.andThenZip(formalSymbols, unknownFormals));
     }
 
     @Override
@@ -56,11 +65,11 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
     public List<ExprMirror> getResultExpressions() {
         ASTBlock block = myNode.getBlock();
         if (block == null) {
-            return Collections.singletonList(factory.getPolyMirror(myNode.getExpression()));
+            return Collections.singletonList(factory.getPolyMirror(myNode.getExpression(), this));
         } else {
             return block.descendants(ASTReturnStatement.class)
                         .map(ASTReturnStatement::getExpr)
-                        .toList(factory::getPolyMirror);
+                        .toList(e -> factory.getPolyMirror(e, this));
         }
     }
 
@@ -69,6 +78,12 @@ class LambdaMirrorImpl extends BasePolyMirror<ASTLambdaExpression> implements La
         if (mayMutateAst()) {
             InternalApiBridge.setFunctionalMethod(myNode, methodType);
         }
+    }
+
+    @Override
+    public void updateTypingContext(JMethodSig groundFun) {
+        // update bindings
+        setTypingContext(getTypingContext().andThenZip(formalSymbols, groundFun.getFormalParameters()));
     }
 
     @Override

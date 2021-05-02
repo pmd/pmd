@@ -39,7 +39,7 @@ public interface TypeNode extends JavaNode {
      */
     @NonNull
     default JTypeMirror getTypeMirror() {
-        return getTypeMirror(TypingContext.EMPTY);
+        return getTypeMirror(TypingContext.DEFAULT);
     }
 
     JTypeMirror getTypeMirror(TypingContext typing);

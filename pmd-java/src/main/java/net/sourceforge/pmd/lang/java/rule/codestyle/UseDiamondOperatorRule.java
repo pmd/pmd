@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
@@ -122,7 +123,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
     private static SpyInvocMirror makeSpy(Infer infer, ASTConstructorCall ctorCall) {
         // this may not mutate the AST
         JavaExprMirrors factory = JavaExprMirrors.forObservation(infer);
-        CtorInvocationMirror baseMirror = (CtorInvocationMirror) factory.getInvocationMirror(ctorCall);
+        CtorInvocationMirror baseMirror = (CtorInvocationMirror) factory.getTopLevelInvocationMirror(ctorCall);
         JTypeMirror newType = ctorCall.getTypeNode().getTypeMirror();
         return new SpyInvocMirror(baseMirror, (JClassType) newType);
     }
@@ -259,6 +260,11 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         @Override
         public String toString() {
             return base.toString();
+        }
+
+        @Override
+        public TypingContext getTypingContext() {
+            return TypingContext.DEFAULT;
         }
     }
 
