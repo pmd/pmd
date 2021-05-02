@@ -56,7 +56,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
      * Maximum length of the argument list (including parentheses) for
      * it to be included in the violation message instead of an ellipsis {@code (...)}.
      */
-    private static final int MAX_ARGS_LENGTH = 10;
+    private static final int MAX_ARGS_LENGTH = 25;
 
     public UseDiamondOperatorRule() {
         super(ASTConstructorCall.class);
