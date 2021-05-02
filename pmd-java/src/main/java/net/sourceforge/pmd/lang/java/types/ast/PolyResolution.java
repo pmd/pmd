@@ -61,7 +61,7 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
-import net.sourceforge.pmd.lang.java.types.ast.ExprContext.CtxKind;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.RegularCtx;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
@@ -657,35 +657,35 @@ final class PolyResolution {
     }
 
     static ExprContext newAssignmentCtx(JTypeMirror targetType) {
-        return ExprContext.newOtherContext(targetType, CtxKind.Assignment);
+        return ExprContext.newOtherContext(targetType, ExprContextKind.ASSIGNMENT);
     }
 
     static ExprContext newNonPolyContext(JTypeMirror targetType) {
-        return ExprContext.newOtherContext(targetType, CtxKind.OtherNonPoly);
+        return ExprContext.newOtherContext(targetType, ExprContextKind.BOOLEAN);
     }
 
     static ExprContext newStringCtx(TypeSystem ts) {
         JClassType stringType = (JClassType) TypesFromReflection.fromReflect(String.class, ts);
-        return ExprContext.newOtherContext(stringType, CtxKind.String);
+        return ExprContext.newOtherContext(stringType, ExprContextKind.STRING);
     }
 
     static ExprContext newNumericContext(JTypeMirror targetType) {
         if (targetType.isPrimitive()) {
             assert targetType.isNumeric() : targetType;
-            return ExprContext.newOtherContext(targetType, CtxKind.Numeric);
+            return ExprContext.newOtherContext(targetType, ExprContextKind.NUMERIC);
         }
         return ExprContext.getMissingInstance(); // error
     }
 
     static ExprContext newCastCtx(JTypeMirror targetType) {
-        return ExprContext.newOtherContext(targetType, CtxKind.Cast);
+        return ExprContext.newOtherContext(targetType, ExprContextKind.CAST);
     }
 
     static ExprContext newSuperCtorCtx(JTypeMirror superclassType) {
-        return ExprContext.newOtherContext(superclassType, CtxKind.Assignment);
+        return ExprContext.newOtherContext(superclassType, ExprContextKind.ASSIGNMENT);
     }
 
     static ExprContext newStandaloneTernaryCtx(JTypeMirror ternaryType) {
-        return ExprContext.newOtherContext(ternaryType, CtxKind.Ternary);
+        return ExprContext.newOtherContext(ternaryType, ExprContextKind.TERNARY);
     }
 }

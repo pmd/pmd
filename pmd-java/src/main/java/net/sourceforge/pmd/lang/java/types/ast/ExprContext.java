@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.types.ast;
 
+import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.ASSIGNMENT;
+import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.CAST;
+import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.INVOCATION;
+import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.MISSING;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -25,9 +30,9 @@ public abstract class ExprContext {
     // note: most members of this class are quite low-level and should
     // stay package-private for exclusive use by PolyResolution.
 
-    final CtxKind kind;
+    final ExprContextKind kind;
 
-    private ExprContext(CtxKind kind) {
+    private ExprContext(ExprContextKind kind) {
         this.kind = kind;
     }
 
@@ -59,7 +64,7 @@ public abstract class ExprContext {
 
         // todo there's a gritty detail about compound assignment operators
         //  with a primitive LHS, see https://github.com/pmd/pmd/issues/2023
-        return kind == CtxKind.Cast ? TypeConversion.isConvertibleInCastContext(type, targetType)
+        return kind == CAST ? TypeConversion.isConvertibleInCastContext(type, targetType)
                                     : TypeConversion.isConvertibleUsingBoxing(type, targetType);
     }
 
@@ -68,18 +73,18 @@ public abstract class ExprContext {
      * This is then a sentinel object.
      */
     public boolean isMissing() {
-        return kind == CtxKind.Missing;
+        return kind == MISSING;
     }
 
     /** Returns the kind of context this is. */
-    public CtxKind getKind() {
+    public ExprContextKind getKind() {
         return kind;
     }
 
     final boolean canGiveContextToPoly(boolean lambdaOrMethodRef) {
-        return kind == CtxKind.Assignment
-            || kind == CtxKind.Invocation
-            || kind == CtxKind.Cast && lambdaOrMethodRef;
+        return this.hasKind(ASSIGNMENT)
+            || this.hasKind(INVOCATION)
+            || this.hasKind(CAST) && lambdaOrMethodRef;
     }
 
     @Nullable InvocationNode getInvocNodeIfInvocContext() {
@@ -100,7 +105,7 @@ public abstract class ExprContext {
         return getTargetType();
     }
 
-    static ExprContext newOtherContext(@NonNull JTypeMirror targetType, CtxKind kind) {
+    static ExprContext newOtherContext(@NonNull JTypeMirror targetType, ExprContextKind kind) {
         AssertionUtil.requireParamNotNull("target type", targetType);
         return new RegularCtx(targetType, kind);
     }
@@ -118,13 +123,17 @@ public abstract class ExprContext {
         return RegularCtx.NO_CTX;
     }
 
+    public boolean hasKind(ExprContextKind kind) {
+        return getKind() == kind;
+    }
+
     private static final class InvocCtx extends ExprContext {
 
         final int arg;
         final InvocationNode node;
 
         InvocCtx(int arg, InvocationNode node) {
-            super(CtxKind.Invocation);
+            super(INVOCATION);
             this.arg = arg;
             this.node = node;
         }
@@ -153,9 +162,9 @@ public abstract class ExprContext {
     /**
      * Kind of context.
      */
-    public enum CtxKind {
+    public enum ExprContextKind {
         /** Invocation context (method arguments). */
-        Invocation,
+        INVOCATION,
 
         /**
          * Assignment context. This includes:
@@ -169,14 +178,14 @@ public abstract class ExprContext {
          * <p>An assignment context flows through ternary/switch branches.
          * They are a context for poly expressions.
          */
-        Assignment,
+        ASSIGNMENT,
 
         /**
          * Cast context. Lambdas and method refs can use them as a
          * target type, but no other expressions. Cast contexts do not
          * flow through ternary/switch branches.
          */
-        Cast,
+        CAST,
 
         /**
          * Numeric context. May determine that an (un)boxing or
@@ -192,7 +201,7 @@ public abstract class ExprContext {
          * integer + 1.0  // Integer is unboxed to int, then widened to double
          * }</pre>
          */
-        Numeric,
+        NUMERIC,
 
         /**
          * String contexts, which convert the operand to a string using {@link String#valueOf(Object)},
@@ -200,38 +209,35 @@ public abstract class ExprContext {
          * This is the context for the operands of a string concatenation expression,
          * and for the message of an assert statement.
          */
-        String,
+        STRING,
 
         /** Kind for a standalone ternary (both branches are then in this context). */
-        Ternary,
+        TERNARY,
 
         /** Kind for a missing context ({@link RegularCtx#NO_CTX}). */
-        Missing,
+        MISSING,
 
         /**
-         * Other kinds of situation that have a target type for conversions,
-         * but not for poly expressions. These do not flow through ternary branches.
-         * These include:
-         * <ul>
-         * <li>
-         * <li>Boolean contexts, which unbox their operand to a boolean.
+         * Boolean contexts, which unbox their operand to a boolean.
          * They accept operands of type boolean or Boolean. This is the
          * context for e.g. the condition of an {@code if} statement, an
          * assert statement, etc.
-         * </ul>
+         *
+         * <p>This provides a target type for conversions, but not for poly
+         * expressions.
          */
-        OtherNonPoly,
+        BOOLEAN,
     }
 
     static final class RegularCtx extends ExprContext {
 
-        private static final RegularCtx NO_CTX = new RegularCtx(null, CtxKind.Missing);
+        private static final RegularCtx NO_CTX = new RegularCtx(null, MISSING);
 
         final @Nullable JTypeMirror targetType;
 
-        RegularCtx(@Nullable JTypeMirror targetType, CtxKind kind) {
+        RegularCtx(@Nullable JTypeMirror targetType, ExprContextKind kind) {
             super(kind);
-            assert kind != CtxKind.Invocation;
+            assert kind != INVOCATION;
             this.targetType = targetType;
         }
 

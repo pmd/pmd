@@ -36,7 +36,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.java.types.ast.ExprContext.CtxKind;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 
 /**
  * Detects casts where the operand is already a subtype of the context
@@ -73,7 +73,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         if (operand instanceof ASTLambdaExpression || operand instanceof ASTMethodReference) {
             // Then the cast provides a target type for the expression (always).
             // We need to check the enclosing context, as if it's invocation we give up for now
-            if (context.isMissing() || context.getKind() == CtxKind.Invocation) {
+            if (context.isMissing() || context.hasKind(ExprContextKind.INVOCATION)) {
                 // Then the cast may be used to determine the overload.
                 // We need to treat the casted lambda as a whole unit.
                 // todo see below
@@ -120,7 +120,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     private static boolean castIsUnnecessaryToMatchContext(ExprContext context,
                                                            JTypeMirror coercionType,
                                                            JTypeMirror operandType) {
-        if (context.getKind() == CtxKind.Invocation) {
+        if (context.hasKind(ExprContextKind.INVOCATION)) {
             // todo unsupported for now, the cast may be disambiguating overloads
             return false;
         }
@@ -153,13 +153,13 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // a branch of a ternary
             return true;
 
-        } else if (context.getKind() == CtxKind.String && isInfixExprWithOperator(castExpr.getParent(), ADD)) {
+        } else if (context.hasKind(ExprContextKind.STRING) && isInfixExprWithOperator(castExpr.getParent(), ADD)) {
 
             // inside string concatenation
             return !TypeTestUtil.isA(String.class, JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr))
                 && !TypeTestUtil.isA(String.class, operandType);
 
-        } else if (context.getKind() == CtxKind.Numeric && castExpr.getParent() instanceof ASTInfixExpression) {
+        } else if (context.hasKind(ExprContextKind.NUMERIC) && castExpr.getParent() instanceof ASTInfixExpression) {
             // numeric expr
             ASTInfixExpression parent = (ASTInfixExpression) castExpr.getParent();
 
