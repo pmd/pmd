@@ -804,22 +804,24 @@ public class MyTest {
 
     <rule name="JUnit5TestShouldBePackagePrivate"
           language="java"
-          since="6.35"
-          message="JUnit 5 tests that use @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest should be package private."
+          since="6.35.0"
+          message="JUnit 5 tests should be package-private."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate">
         <description>
-            JUnit 5 tests should be package private at the class level and for each method that uses @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.
+JUnit 5 tests should be package private at the class level and for each method that uses @Test, @RepeatedTest,
+@TestFactory, @TestTemplate or @ParameterizedTest.
+Contrary to JUnit4 tests that required public visibility to be run by the engine, JUnit5 tests may be run
+only with package private visibility. Marking them as such is a good practice to limit their visibility.
         </description>
         <priority>3</priority>
         <properties>
             <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
-                    <![CDATA[
+<![CDATA[
 //ClassOrInterfaceDeclaration[
-       matches(@SimpleName, $testClassPattern) and
        @Abstract=false() and
        @PackagePrivate=false()]
        [ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
@@ -830,8 +832,7 @@ public class MyTest {
             or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         ]]]
 |
-//ClassOrInterfaceDeclaration[
-       matches(@SimpleName, $testClassPattern)]
+//ClassOrInterfaceDeclaration
     /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
         [MethodDeclaration[@PackagePrivate=false()]]
         [Annotation//Name[
@@ -841,32 +842,22 @@ public class MyTest {
         ]]
 ]]>
                 </value>
-            </property>
-            <property name="testClassPattern" type="Regex" description="The regex pattern used to identify test classes" value="Test" />
-            <property name="version" value="2.0"/>
+            </property><property name="version" value="2.0"/>
         </properties>
         <example>
             <![CDATA[
-class MyTest {
+class MyTest { // not public, that's fine
     @Test
-    public void testBad() {
-        doSomething();
-    }
+    public void testBad() { } // should not have a public modifier
 
     @Test
-    private void testNotRun() {
-        doSomething();
-    }
+    protected void testAlsoBad() { } // should not have a protected modifier
 
     @Test
-    void testGood() {
-        doSomething();
-    }
+    private void testNoRun() { } // should not have a private modifier
 
     @Test
-    protected void testAcceptable() {
-        doSomething();
-    }
+    void testGood() { } // package private as expected
 }
 ]]>
         </example>

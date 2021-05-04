@@ -60,4 +60,16 @@ protected class MyTests {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Public JUnit4 tests are not flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+public class Foo {
+    @Test
+    public void testFoo() { }
+}
+        ]]></code>
+    </test-code>
 </test-data>
