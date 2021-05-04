@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   doc
     *   [#3230](https://github.com/pmd/pmd/issues/3230): \[doc] Remove "Edit me" button for language index pages
+*   java-errorprone
+    *   [#3249](https://github.com/pmd/pmd/pull/3249): \[java] AvoidFieldNameMatchingTypeName: False negative with interfaces
 
 ### API Changes
 
