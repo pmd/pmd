@@ -847,7 +847,7 @@ public class MyTest {
         </properties>
         <example>
             <![CDATA[
-public class MyTest {
+class MyTest {
     @Test
     public void testBad() {
         doSomething();
