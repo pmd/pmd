@@ -834,12 +834,12 @@ only with package private visibility. Marking them as such is a good practice to
 |
 //ClassOrInterfaceDeclaration
     /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-        [MethodDeclaration[@PackagePrivate=false()]]
         [Annotation//Name[
             pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
             or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
             or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         ]]
+        /MethodDeclaration[@PackagePrivate=false()]
 ]]>
                 </value>
             </property><property name="version" value="2.0"/>
