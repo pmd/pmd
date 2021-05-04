@@ -802,13 +802,13 @@ public class MyTest {
         </example>
     </rule>
 
-    <!-- TODO add externalInfoUrl to the rationale -->
     <rule name="JUnit5TestShouldBePackagePrivate"
           language="java"
-          since="4.0"
+          since="6.35"
           message="JUnit 5 tests that use @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest should be package private."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true">
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate">
         <description>
             JUnit 5 tests should be package private at the class level and for each method that uses @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.
         </description>
