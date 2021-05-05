@@ -1,6 +1,7 @@
 /*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+// note: the weird name is because there is a TypeTestUtil.java in the main source tree
 
 @file:Suppress("PropertyName", "unused")
 
@@ -181,3 +182,12 @@ val JTypeMirror.isExlusiveIntersectionBound
     get() = this is JArrayType
             || this is JClassType && this.symbol.isClass
             || this is JTypeVar
+
+/**
+ * Was added in java 12.
+ */
+val <T> Class<T>.arrayType: Class<Array<T>>
+    get() {
+        val arr = java.lang.reflect.Array.newInstance(this, 0)
+        return arr::class.java as Class<Array<T>>
+    }

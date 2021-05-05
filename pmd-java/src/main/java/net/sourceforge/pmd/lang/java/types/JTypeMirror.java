@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 
 /**
  * Type mirrors represent Java types. They are created by a {@link TypeSystem}
- * from {@link JTypeDeclSymbol symbols}, a layer of abstraction above reflection
+ * from {@linkplain JTypeDeclSymbol symbols}, a layer of abstraction above reflection
  * classes.
  *
  * <p>Type mirrors can be obtained {@linkplain TypesFromReflection from reflected types},

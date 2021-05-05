@@ -244,6 +244,8 @@ public interface JClassType extends JTypeMirror {
      * @throws IllegalArgumentException If the type argument list doesn't
      *                                  match the type parameters of this
      *                                  type in length
+     * @throws IllegalArgumentException If any type of the list is null, or
+     *                                  a primitive type
      */
     JClassType withTypeArguments(List<? extends JTypeMirror> args);
 

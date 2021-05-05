@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
-import static net.sourceforge.pmd.lang.java.types.TypeTestUtilKt.captureMatcher;
+import static net.sourceforge.pmd.lang.java.types.TestUtilitiesForTypesKt.captureMatcher;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.eqBound;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.lower;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.upper;
