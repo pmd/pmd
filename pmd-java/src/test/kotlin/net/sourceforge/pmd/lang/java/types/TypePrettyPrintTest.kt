@@ -44,7 +44,7 @@ class TypePrettyPrintTest : FunSpec({
         with(TypeDslOf(ts)) {
             ts.OBJECT.pp() shouldBe "Object"
             ts.OBJECT.toArray().pp() shouldBe "Object[]"
-            Map::class[TypePrettyPrintTest::class.raw, ts.INT.box()].pp() shouldBe "Map<TypesToStringTest, Integer>"
+            Map::class[List::class[`?`], ts.INT.box()].pp() shouldBe "Map<List<?>, Integer>"
         }
     }
 
