@@ -13,6 +13,7 @@ public final class AssertionUtil {
 
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("[\\w$]+(\\.[\\w$]+)*|");
     private static final Pattern BINARY_NAME_PATTERN = Pattern.compile("[\\w$]+(?:\\.[\\w$]+)*(?:\\[])*");
+    private static final Pattern BINARY_NAME_NO_ARRAY = Pattern.compile("[\\w$]++(?:\\.[\\w$]++)*");
 
     private AssertionUtil() {
         // utility class
@@ -28,6 +29,15 @@ public final class AssertionUtil {
      */
     public static void assertValidJavaBinaryName(CharSequence name) {
         if (!isJavaBinaryName(name)) {
+            throw new IllegalArgumentException("Not a Java binary name '" + name + "'");
+        }
+    }
+
+    /**
+     * @throws IllegalArgumentException if the name is not a binary name
+     */
+    public static void assertValidJavaBinaryNameNoArray(CharSequence name) {
+        if (!BINARY_NAME_NO_ARRAY.matcher(name).matches()) {
             throw new IllegalArgumentException("Not a Java binary name '" + name + "'");
         }
     }

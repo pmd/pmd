@@ -38,34 +38,35 @@ import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
  */
 public interface JMethodSig extends JTypeVisitable {
 
+    /** Return the type system with which this method was created. */
     TypeSystem getTypeSystem();
 
 
-    /** Returns the symbol of the method or constructor. */
+    /** Return the symbol of the method or constructor. */
     JExecutableSymbol getSymbol();
 
     /**
-     * Returns the name of the method. If this is a constructor,
+     * Return the name of the method. If this is a constructor,
      * returns {@link JConstructorSymbol#CTOR_NAME}.
      */
     default String getName() {
         return getSymbol().getSimpleName();
     }
 
-    /** Returns whether this is a constructor. */
+    /** Return whether this is a constructor. */
     default boolean isConstructor() {
         return JConstructorSymbol.CTOR_NAME.equals(getName());
     }
 
 
-    /** Returns method modifiers as decodable by {@link java.lang.reflect.Modifier}. */
+    /** Return method modifiers as decodable by {@link java.lang.reflect.Modifier}. */
     default int getModifiers() {
         return getSymbol().getModifiers();
     }
 
 
     /**
-     * Returns the type that declares this method. May be an array type,
+     * Return the type that declares this method. May be an array type,
      * a class type. If this is a constructor for a generic class, returns
      * the generic type declaration of the constructor.
      */
@@ -73,7 +74,7 @@ public interface JMethodSig extends JTypeVisitable {
 
 
     /**
-     * Returns the result type of the method. If this is a constructor,
+     * Return the result type of the method. If this is a constructor,
      * returns the type of the instance produced by the constructor. In
      * particular, for a diamond constructor call, returns the inferred
      * type. For example for {@code List<String> l = new ArrayList<>()},
@@ -97,7 +98,7 @@ public interface JMethodSig extends JTypeVisitable {
 
 
     /**
-     * Returns the types of the formal parameters. If this is a varargs
+     * Return the types of the formal parameters. If this is a varargs
      * method, the last parameter should have an array type. For generic
      * methods that have been inferred, these are substituted with the
      * inferred type parameters. For example for {@code Arrays.asList("a", "b")},
@@ -114,7 +115,7 @@ public interface JMethodSig extends JTypeVisitable {
     }
 
     /**
-     * Returns the type parameters of the method. After type inference,
+     * Return the type parameters of the method. After type inference,
      * occurrences of these type parameters are replaced by their instantiation
      * in formals, return type and thrown exceptions (but not type parameter bounds).
      * If instantiation failed, some variables might have been substituted
@@ -123,28 +124,32 @@ public interface JMethodSig extends JTypeVisitable {
     List<JTypeVar> getTypeParameters();
 
     /**
-     * Returns the list of thrown exception types. Exception types may
+     * Return the list of thrown exception types. Exception types may
      * be type variables of the method or of an enclosing context, that
      * extend Throwable.
      */
     List<JTypeMirror> getThrownExceptions();
 
 
+    /** Return true if this method is abstract. */
     default boolean isAbstract() {
         return Modifier.isAbstract(getModifiers());
     }
 
 
+    /** Return true if this method is static. */
     default boolean isStatic() {
         return Modifier.isStatic(getModifiers());
     }
 
-
+    /** Return true if this method has a varargs parameter. */
     default boolean isVarargs() {
         return getSymbol().isVarargs();
     }
 
-
+    /**
+     * Return true if this method signature declares type parameters.
+     */
     default boolean isGeneric() {
         // do not override
         // the type parameters may be adapted and we

@@ -114,7 +114,7 @@ class SubtypingTest : FunSpec({
 
                 val someEnum = SomeEnum::class.decl
 
-                val sup = ts.parameterise(ts.getClassSymbol(java.lang.Enum::class.java), listOf(someEnum))
+                val sup = ts.parameterise(ts.getClassSymbol(java.lang.Enum::class.java)!!, listOf(someEnum))
 
                 someEnum.isRaw shouldBe false
                 someEnum shouldBeSubtypeOf sup
