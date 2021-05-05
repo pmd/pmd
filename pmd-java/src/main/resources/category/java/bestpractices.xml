@@ -812,8 +812,8 @@ public class MyTest {
         <description>
 JUnit 5 tests should be package private at the class level and for each method that uses @Test, @RepeatedTest,
 @TestFactory, @TestTemplate or @ParameterizedTest.
-Contrary to JUnit4 tests that required public visibility to be run by the engine, JUnit5 tests may be run
-only with package private visibility. Marking them as such is a good practice to limit their visibility.
+Contrary to JUnit4 tests that required public visibility to be run by the engine, JUnit5 tests can also be run
+if they're package-private. Marking them as such is a good practice to limit their visibility.
         </description>
         <priority>3</priority>
         <properties>
@@ -822,27 +822,27 @@ only with package private visibility. Marking them as such is a good practice to
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration[
-       @Abstract=false() and
-       @PackagePrivate=false()]
-       [ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-        [MethodDeclaration]
+    (: a Junit 5 test class, ie, it has methods with the annotation :)
+    ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
         [Annotation//Name[
             pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
             or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
             or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        ]]]
-|
-//ClassOrInterfaceDeclaration
-    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+        ]]
+        [MethodDeclaration]
+]/(
+    self::*[@Abstract=false() and @PackagePrivate=false()]
+|   ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
         [Annotation//Name[
             pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
             or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
             or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         ]]
         /MethodDeclaration[@PackagePrivate=false()]
+)
 ]]>
                 </value>
-            </property><property name="version" value="2.0"/>
+            </property>
         </properties>
         <example>
             <![CDATA[
