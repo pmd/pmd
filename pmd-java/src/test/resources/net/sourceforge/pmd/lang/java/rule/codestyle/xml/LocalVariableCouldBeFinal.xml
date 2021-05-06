@@ -211,4 +211,72 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negative with default methods in interfaces</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithDefaultMethod {
+    default void bar() {
+        String a = "a";
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with class inside interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithClass {
+    class Inner {
+        void bar() {
+            String a = "a";
+            System.out.println(a);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with anonymous classes</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,11</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithAnon {
+    void method() {
+        final ClassWithAnon anon = new ClassWithAnon() {
+            void bar() {
+                String a = "a";
+                System.out.println(a);
+            }
+        };
+        final Runnable runnable = new Runnable() {
+            public void run() {
+                int a = 0;
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with lambdas</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithLambda {
+    void method() {
+        final Runnable runnable = () -> {
+            int a = 0;
+        };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
