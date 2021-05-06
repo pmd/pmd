@@ -234,4 +234,18 @@ public class AvoidReassigningParameters {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3254 AvoidReassigningParameters reports wrong line numbers</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+public class AvoidReassigningParameters {
+    public void a(String b) {
+        b = "1";
+        b = "2";
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

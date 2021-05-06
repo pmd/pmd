@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   doc
     *   [#3230](https://github.com/pmd/pmd/issues/3230): \[doc] Remove "Edit me" button for language index pages
+*   java-bestpractices
+    *   [#3254](https://github.com/pmd/pmd/issues/3254): \[java] AvoidReassigningParameters reports violations on wrong line numbers
 
 ### API Changes
 
