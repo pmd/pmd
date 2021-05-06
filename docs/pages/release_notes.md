@@ -20,6 +20,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3230](https://github.com/pmd/pmd/issues/3230): \[doc] Remove "Edit me" button for language index pages
 *   java-codestyle
     *   [#2655](https://github.com/pmd/pmd/issues/2655): \[java] UnnecessaryImport false positive for on-demand imports
+*   java-design
+    *   [#2780](https://github.com/pmd/pmd/issues/2780): \[java] DataClass example from documentation results in false-negative
 
 ### API Changes
 

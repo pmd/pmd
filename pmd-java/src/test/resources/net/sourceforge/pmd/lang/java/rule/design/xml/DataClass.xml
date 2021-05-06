@@ -220,4 +220,28 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Example from the documentation</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The class 'DataClass' is suspected to be a Data Class (WOC=0.000%, NOPA=3, NOAM=1, WMC=1)</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class DataClass {
+
+                // class exposes public attributes
+                public String name = "";
+                public int bar = 0;
+                public int na = 0;
+
+                private int bee = 0;
+
+                // and private ones through getters
+                public void setBee(int n) {
+                    bee = n;
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
