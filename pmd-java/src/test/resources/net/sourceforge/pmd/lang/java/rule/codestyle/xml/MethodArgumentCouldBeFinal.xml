@@ -159,7 +159,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>False negative with default methods in interface</description>
+        <description>#3265 False negative with default methods in interface</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>2,7</expected-linenumbers>
         <code><![CDATA[
@@ -177,7 +177,7 @@ public interface DefaultMethodInInterface {
     </test-code>
 
     <test-code>
-        <description>False negative with classes in interfaces</description>
+        <description>#3265 False negative with classes in interfaces</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,6</expected-linenumbers>
         <code><![CDATA[
