@@ -157,4 +157,40 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negative with default methods in interface</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,7</expected-linenumbers>
+        <code><![CDATA[
+public interface DefaultMethodInInterface {
+    default String toString(Object one) {
+        return toString(one, one);
+    }
+    String toString(Object one, Object two);
+
+    default Object justReturn(Object o) {
+        return o;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with classes in interfaces</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,6</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithClass {
+    class Inner {
+        public Inner(Object o) {
+            Object a = o;
+        }
+        public Object justReturn(Object o) {
+            return o;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
