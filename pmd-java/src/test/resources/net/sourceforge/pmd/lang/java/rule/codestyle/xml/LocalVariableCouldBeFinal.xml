@@ -213,7 +213,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>False negative with default methods in interfaces</description>
+        <description>#3266 False negative with default methods in interfaces</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
@@ -227,7 +227,7 @@ public interface InterfaceWithDefaultMethod {
     </test-code>
 
     <test-code>
-        <description>False negative with class inside interface</description>
+        <description>#3266 False negative with class inside interface</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
@@ -243,7 +243,7 @@ public interface InterfaceWithClass {
     </test-code>
 
     <test-code>
-        <description>False negative with anonymous classes</description>
+        <description>#3266 False negative with anonymous classes</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>5,11</expected-linenumbers>
         <code><![CDATA[
@@ -266,7 +266,7 @@ public class ClassWithAnon {
     </test-code>
 
     <test-code>
-        <description>False negative with lambdas</description>
+        <description>#3266 False negative with lambdas</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
