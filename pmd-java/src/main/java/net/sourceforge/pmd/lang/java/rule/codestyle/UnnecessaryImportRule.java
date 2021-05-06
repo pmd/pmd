@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
@@ -161,7 +162,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
      * Remove the import wrapper that imports the name referenced by the
      * given node.
      */
-    protected void check(Node referenceNode, RuleContext ruleCtx) {
+    protected void check(JavaNode referenceNode, RuleContext ruleCtx) {
         if (imports.isEmpty()) {
             return;
         }
@@ -181,6 +182,20 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                     reportWithMessage(i.getNode(), ruleCtx, IMPORT_FROM_JAVA_LANG_MESSAGE);
                 }
                 return;
+            }
+        }
+
+        // check on-demand imports
+        it = imports.iterator();
+        while (it.hasNext()) {
+            ImportWrapper i = it.next();
+            if (!i.isStaticOnDemand() && i.isOnDemand()) {
+                String possibleClassName = i.getFullName() + "." + candName;
+                Class<?> possibleClazz = referenceNode.getRoot().getClassTypeResolver()
+                        .loadClassOrNull(possibleClassName);
+                if (possibleClazz != null) {
+                    it.remove();
+                }
             }
         }
 
