@@ -125,29 +125,27 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
     }
 
     private boolean isStringLiteralFirstArgumentOfSuffix(ASTPrimarySuffix primarySuffix) {
-        try {
-            JavaNode firstLiteralArg = getFirstLiteralArgument(primarySuffix);
-            JavaNode firstNameArg = getFirstNameArgument(primarySuffix);
-            return isStringLiteral(firstLiteralArg) || isConstantString(firstNameArg);
-        } catch (NullPointerException e) {
+        JavaNode argumentPrimaryPrefix = getArgumentPrimaryPrefix(primarySuffix);
+        if (argumentPrimaryPrefix == null) {
             return false;
         }
-    }
-
-    private JavaNode getFirstLiteralArgument(ASTPrimarySuffix primarySuffix) {
-        return getArgumentPrimaryPrefix(primarySuffix).getFirstChildOfType(ASTLiteral.class);
-    }
-
-    private JavaNode getFirstNameArgument(ASTPrimarySuffix primarySuffix) {
-        return getArgumentPrimaryPrefix(primarySuffix).getFirstChildOfType(ASTName.class);
+        JavaNode firstLiteralArg = argumentPrimaryPrefix.getFirstChildOfType(ASTLiteral.class);
+        JavaNode firstNameArg = argumentPrimaryPrefix.getFirstChildOfType(ASTName.class);
+        return isStringLiteral(firstLiteralArg) || isConstantString(firstNameArg);
     }
 
     private JavaNode getArgumentPrimaryPrefix(ASTPrimarySuffix primarySuffix) {
-        ASTArguments arguments = primarySuffix.getFirstChildOfType(ASTArguments.class);
-        ASTArgumentList argumentList = arguments.getFirstChildOfType(ASTArgumentList.class);
-        ASTExpression expression = argumentList.getFirstChildOfType(ASTExpression.class);
+        ASTExpression expression = primarySuffix.getFirstChildOfType(ASTArguments.class)
+                                                .getFirstChildOfType(ASTArgumentList.class)
+                                                .getFirstChildOfType(ASTExpression.class);
+
+        assert expression != null : "We checked before that we had exactly one argument, so this cannot fail";
+
         ASTPrimaryExpression primaryExpression = expression.getFirstChildOfType(ASTPrimaryExpression.class);
-        return primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+        if (primaryExpression != null) {
+            return primaryExpression.getChild(0);
+        }
+        return null;
     }
 
     private boolean isStringLiteral(JavaNode node) {
