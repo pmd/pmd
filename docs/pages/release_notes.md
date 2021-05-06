@@ -20,6 +20,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3230](https://github.com/pmd/pmd/issues/3230): \[doc] Remove "Edit me" button for language index pages
 *   java-codestyle
     *   [#2655](https://github.com/pmd/pmd/issues/2655): \[java] UnnecessaryImport false positive for on-demand imports
+*   java-errorprone
+    *   [#3248](https://github.com/pmd/pmd/issues/3248): \[java] Documentation is wrong for SingletonClassReturningNewInstance rule
 
 ### API Changes
 
