@@ -24,6 +24,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractOptimizationRule {
 
     public LocalVariableCouldBeFinalRule() {
         definePropertyDescriptor(IGNORE_FOR_EACH);
+        addRuleChainVisit(ASTLocalVariableDeclaration.class);
     }
 
     @Override
