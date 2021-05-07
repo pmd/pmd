@@ -823,6 +823,7 @@ if they're package-private. Marking them as such is a good practice to limit the
 <![CDATA[
 //ClassOrInterfaceDeclaration[
     (: a Junit 5 test class, ie, it has methods with the annotation :)
+    @Interface=false() and
     ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
         [Annotation//Name[
             pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')

@@ -19,13 +19,39 @@ public class MyTests {
 
     <test-code>
         <description>Package private modifiers are what is required</description>
-        <expected-problems>0    </expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.jupiter.api.Test;
 
 class MyTests {
     @Test
     void testRegular() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Public modifier is allowed on an abstract test classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+public abstract class MyTests {
+    @Test
+    void testRegular() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Public modifier is allowed on test interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+public interface MyTests {
+    @Test
+    default void testRegular() { }
 }
         ]]></code>
     </test-code>
