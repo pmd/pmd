@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath;
 import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.RealPrimitiveSymbol;
 import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.VoidSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
@@ -53,7 +54,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * <p>The lifetime of a type system is the analysis: it is shared by
  * all compilation units.
  * TODO this is hacked together by comparing the ClassLoader, but this
- *  should be in the language instance
+ * should be in the language instance
  *
  * <p>Nodes have a reference to the type system they were created for:
  * {@link JavaNode#getTypeSystem()}.
@@ -179,8 +180,20 @@ public final class TypeSystem {
      *                                to populate the fields of the new type
      *                                system
      */
-    public TypeSystem(ClassLoader bootstrapResourceLoader) {
-        this(ts -> new AsmSymbolResolver(ts, bootstrapResourceLoader));
+    public static TypeSystem usingClassLoaderClasspath(ClassLoader bootstrapResourceLoader) {
+        return usingClasspath(Classpath.forClassLoader(bootstrapResourceLoader));
+    }
+
+    /**
+     * Builds a new type system. Its public fields will be initialized
+     * with fresh types, unrelated to other types.
+     *
+     * @param bootstrapResourceLoader Classpath used to resolve class files
+     *                                to populate the fields of the new type
+     *                                system
+     */
+    public static TypeSystem usingClasspath(Classpath bootstrapResourceLoader) {
+        return new TypeSystem(ts -> new AsmSymbolResolver(ts, bootstrapResourceLoader));
     }
 
     /**
@@ -724,6 +737,7 @@ public final class TypeSystem {
     }
 
     private static final class NullType implements JTypeMirror {
+
         private final TypeSystem ts;
 
         NullType(TypeSystem ts) {
