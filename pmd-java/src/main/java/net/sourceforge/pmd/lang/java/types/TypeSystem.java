@@ -495,17 +495,12 @@ public final class TypeSystem {
         return typeOf(klass, false);
     }
 
-
-    // TODO spec
-    //  - should be equivalent to rawType(klass).withTypeArguments(typeArgs)
-    //  - should not accept malformed types, esp. those where there is an enclosing type
-    //  - test: should not recreate OBJECT
-
     /**
      * Produce a parameterized type with the given symbol and type arguments.
      * The type argument list must match the declared formal type parameters in
      * length. Non-generic symbols are accepted by this method, provided the
-     * argument list is empty.
+     * argument list is empty. If the symbol is unresolved, any type argument
+     * list is accepted.
      *
      * <p>This method is equivalent to {@code rawType(klass).withTypeArguments(typeArgs)},
      * but that code would require a cast.

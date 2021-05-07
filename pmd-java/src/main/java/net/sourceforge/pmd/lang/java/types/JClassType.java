@@ -248,7 +248,8 @@ public interface JClassType extends JTypeMirror {
      *
      * @throws IllegalArgumentException If the type argument list doesn't
      *                                  match the type parameters of this
-     *                                  type in length
+     *                                  type in length. If the symbol is unresolved,
+     *                                  any number of type arguments is accepted.
      * @throws IllegalArgumentException If any type of the list is null, or
      *                                  a primitive type
      */
