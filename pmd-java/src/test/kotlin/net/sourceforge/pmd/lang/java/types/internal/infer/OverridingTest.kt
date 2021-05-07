@@ -10,6 +10,7 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.util.OptionalBool
+import org.intellij.lang.annotations.Language
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -183,16 +184,16 @@ class F<G> {
         }
     }
 
-   parserTest("f:Static method with different bound") {
+   parserTest("Static method with different bound") {
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 import java.util.List;
 class Sup { 
-    static <E> E m(F<? extends E> e) { return null; }
+    static <E, _X> E m(F<? extends E> e) { return null; }
 }
 
 class Sub extends Sup { 
-    static <S extends List<S>> F<S> m(F<? extends S> e) { return null; }
+    static <S extends List<TP>, TP> F<S> m(F<? extends S> e) { return null; }
 }
 
 class F<G> {
@@ -212,7 +213,7 @@ class F<G> {
         // their type parameters have a different bound
         // technically this is a compile-time error:
         // both methods have the same erasure but neither hides the other
-        assertFalse("Methods are override-equivalent") {
+        assertFalse("Methods should not override each other\n\t$subE\n\t$supE") {
             TypeOps.overrides(subE, supE, subE.declaringType)
         }
 
