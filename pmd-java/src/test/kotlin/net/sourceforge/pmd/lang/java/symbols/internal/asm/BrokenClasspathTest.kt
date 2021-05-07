@@ -63,7 +63,7 @@ class BrokenClasspathTest : FunSpec({
         // and now since the super interface *type* is parameterized, we'll try to create SuperItf<D,D>
         // Except SuperItf is unresolved.
 
-        val expected =  ts.parameterise(unresolvedItfSym, listOf(tvarD, tvarD))
+        val expected = ts.parameterise(unresolvedItfSym, listOf(tvarD, tvarD))
 
         expected shouldBe superItfType.withTypeArguments(listOf(tvarD, tvarD))
         subclassType.superInterfaces[0] shouldBe expected
@@ -72,3 +72,7 @@ class BrokenClasspathTest : FunSpec({
     }
 
 })
+
+fun TypeSystem.createUnresolvedAsmSymbol(binaryName: String) =
+    AsmSymbolResolver(this, Classpath.contextClasspath())
+        .resolveFromInternalNameCannotFail(binaryName.replace('.', '/'))

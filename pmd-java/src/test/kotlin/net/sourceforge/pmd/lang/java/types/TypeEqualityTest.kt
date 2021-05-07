@@ -10,6 +10,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.forAllEqual
 
 /**
@@ -77,6 +79,20 @@ class TypeEqualityTest : FunSpec({
                         glb(t, s) == glb(t, s)
                     }
                 }
+            }
+
+
+            test("Test non well-formed types") {
+                val sym = ts.createUnresolvedAsmSymbol("does.not.Exist") as JClassSymbol
+                // not equal
+                sym[t_String, t_String] shouldNotBe sym[t_String]
+                sym[t_String] shouldNotBe sym[t_String, t_String]
+                sym[t_Integer] shouldNotBe sym[t_String]
+
+                // equal
+                sym[t_String, t_String] shouldBe sym[t_String, t_String]
+                sym[t_String] shouldBe sym[t_String]
+                sym[t_String, t_Integer] shouldBe sym[t_String, t_Integer]
             }
         }
     }
