@@ -1946,12 +1946,14 @@ public final class TypeOps {
         return t == ts.UNKNOWN || t == ts.ERROR;
     }
 
+    /**
+     * Return true if the argument is a {@link JClassType} with
+     * {@linkplain JClassSymbol#isUnresolved() an unresolved symbol} or
+     * a {@link JArrayType} whose element type matches the first criterion.
+     */
     public static boolean hasUnresolvedSymbol(@Nullable JTypeMirror t) {
         if (!(t instanceof JClassType)) {
-            if (t instanceof JArrayType) {
-                return hasUnresolvedSymbol(((JArrayType) t).getElementType());
-            }
-            return false;
+            return t instanceof JArrayType && hasUnresolvedSymbol(((JArrayType) t).getElementType());
         }
         return t.getSymbol() != null && t.getSymbol().isUnresolved();
     }
