@@ -199,7 +199,7 @@ class ClassTypeImpl implements JClassType {
         }
 
         int expected = symbol.getTypeParameterCount();
-        if (expected == 0 && typeArgs.isEmpty()) {
+        if (expected == 0 && typeArgs.isEmpty() && this.typeArgs.isEmpty()) {
             return this; // non-generic
         }
         return new ClassTypeImpl(ts, symbol, CollectionUtil.defensiveUnmodifiableCopy(typeArgs), false);
