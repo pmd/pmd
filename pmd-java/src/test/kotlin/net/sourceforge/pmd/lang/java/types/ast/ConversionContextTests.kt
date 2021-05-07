@@ -251,7 +251,7 @@ class ConversionContextTests : ProcessorTestSpec({
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""
             class Scratch {
                 static void m(int i) {
-                    eat(i < i + 1);     //l0
+                    eat(i < i++);       //l0
                     eat(i > (long) i);  //l1
                 }
                 void eat(Object d) {}
