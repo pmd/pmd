@@ -182,38 +182,45 @@ import java.util.logging.Logger;
             return forClass(Object.class);
         }
 
-        if (type instanceof Class) { // Raw types take this branch as well
-            return forClass((Class<?>) type);
-        } else if (type instanceof ParameterizedType) {
-            final ParameterizedType parameterizedType = (ParameterizedType) type;
+        try {
+            if (type instanceof Class) { // Raw types take this branch as well
+                return forClass((Class<?>) type);
+            } else if (type instanceof ParameterizedType) {
+                final ParameterizedType parameterizedType = (ParameterizedType) type;
 
-            // recursively determine each type argument's type def.
-            final Type[] typeArguments = parameterizedType.getActualTypeArguments();
-            final JavaTypeDefinition[] genericBounds = new JavaTypeDefinition[typeArguments.length];
-            for (int i = 0; i < typeArguments.length; i++) {
-                genericBounds[i] = resolveTypeDefinition(typeArguments[i], method, methodTypeArgs);
-            }
+                // recursively determine each type argument's type def.
+                final Type[] typeArguments = parameterizedType.getActualTypeArguments();
+                final JavaTypeDefinition[] genericBounds = new JavaTypeDefinition[typeArguments.length];
+                for (int i = 0; i < typeArguments.length; i++) {
+                    genericBounds[i] = resolveTypeDefinition(typeArguments[i], method, methodTypeArgs);
+                }
 
-            // TODO : is this cast safe?
-            return forClass((Class<?>) parameterizedType.getRawType(), genericBounds);
-        } else if (type instanceof TypeVariable) {
-            return getGenericType(((TypeVariable<?>) type).getName(), method, methodTypeArgs);
-        } else if (type instanceof WildcardType) {
-            final Type[] wildcardLowerBounds = ((WildcardType) type).getLowerBounds();
+                // TODO : is this cast safe?
+                return forClass((Class<?>) parameterizedType.getRawType(), genericBounds);
+            } else if (type instanceof TypeVariable) {
+                return getGenericType(((TypeVariable<?>) type).getName(), method, methodTypeArgs);
+            } else if (type instanceof WildcardType) {
+                final Type[] wildcardLowerBounds = ((WildcardType) type).getLowerBounds();
 
-            if (wildcardLowerBounds.length != 0) { // lower bound wildcard
-                return forClass(LOWER_WILDCARD, resolveTypeDefinition(wildcardLowerBounds[0], method, methodTypeArgs));
-            } else { // upper bound wildcard
-                final Type[] wildcardUpperBounds = ((WildcardType) type).getUpperBounds();
-                return forClass(UPPER_WILDCARD, resolveTypeDefinition(wildcardUpperBounds[0], method, methodTypeArgs));
+                if (wildcardLowerBounds.length != 0) { // lower bound wildcard
+                    return forClass(LOWER_WILDCARD, resolveTypeDefinition(wildcardLowerBounds[0], method, methodTypeArgs));
+                } else { // upper bound wildcard
+                    final Type[] wildcardUpperBounds = ((WildcardType) type).getUpperBounds();
+                    return forClass(UPPER_WILDCARD, resolveTypeDefinition(wildcardUpperBounds[0], method, methodTypeArgs));
+                }
+            } else if (type instanceof GenericArrayType) {
+                JavaTypeDefinition component = resolveTypeDefinition(((GenericArrayType) type).getGenericComponentType(), method, methodTypeArgs);
+                // only if we could determine the actual type
+                if (component != null) {
+                    // TODO: retain the generic types of the array component...
+                    return forClass(Array.newInstance(component.getType(), 0).getClass());
+                }
             }
-        } else if (type instanceof GenericArrayType) {
-            JavaTypeDefinition component = resolveTypeDefinition(((GenericArrayType) type).getGenericComponentType(), method, methodTypeArgs);
-            // only if we could determine the actual type
-            if (component != null) {
-                // TODO: retain the generic types of the array component...
-                return forClass(Array.newInstance(component.getType(), 0).getClass());
-            }
+        } catch (TypeNotPresentException | LinkageError e) {
+            // might be thrown by parameterizedType.getActualTypeArguments(), type.getLowerBounds(),
+            // type.getUpperBounds(), type.getGenericComponentType()
+            // This is an incomplete classpath, report the missing class
+            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while resolving generic types", e);
         }
 
         // TODO : Shall we throw here?
