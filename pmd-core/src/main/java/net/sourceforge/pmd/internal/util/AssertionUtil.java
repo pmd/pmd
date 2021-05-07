@@ -7,6 +7,7 @@ package net.sourceforge.pmd.internal.util;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AssertionUtil {
@@ -136,4 +137,15 @@ public final class AssertionUtil {
                                                : prefix + ": " + message;
         return new AssertionError(message);
     }
+
+    public static ContextedRuntimeException addContextValue(RuntimeException e, String label, Object value) {
+        return e instanceof ContextedRuntimeException
+               ? ((ContextedRuntimeException) e).addContextValue(label, value)
+               : new ContextedRuntimeException(e).addContextValue(label, value);
+    }
+
+    public static ContextedAssertionError addContextValue(AssertionError e, String label, Object value) {
+        return ContextedAssertionError.wrap(e).addContextValue(label, value);
+    }
+
 }

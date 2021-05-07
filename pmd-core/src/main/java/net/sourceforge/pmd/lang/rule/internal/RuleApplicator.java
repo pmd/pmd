@@ -17,6 +17,7 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.internal.SystemProps;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /** Applies a set of rules to a set of ASTs. */
@@ -63,28 +64,31 @@ public class RuleApplicator {
                     rcto.close(1);
                 } catch (RuntimeException e) {
                     if (ctx.isIgnoreExceptions()) {
-                        ctx.getReport().addError(new ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
-
-                        if (LOG.isLoggable(Level.WARNING)) {
-                            LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
-                                + ctx.getSourceCodeFile() + ", continuing with next rule", e);
-                        }
+                        reportException(ctx, rule, node, e);
                     } else {
-                        throw e;
+                        throw AssertionUtil.addContextValue(e, "Rule applied on node", node);
                     }
                 } catch (StackOverflowError | AssertionError e) {
                     if (SystemProps.isErrorRecoveryMode()) {
-                        ctx.getReport().addError(new ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
-
-                        if (LOG.isLoggable(Level.WARNING)) {
-                            LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
-                                + ctx.getSourceCodeFile() + ", continuing with next rule", e);
-                        }
+                        reportException(ctx, rule, node, e);
                     } else {
+                        if (e instanceof AssertionError) {
+                            throw AssertionUtil.addContextValue((AssertionError) e, "Rule applied on node", node);
+                        }
                         throw e;
                     }
                 }
             }
+        }
+    }
+
+    private void reportException(RuleContext ctx, Rule rule, Node node, Throwable e) {
+        ctx.getReport().addError(new ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
+
+        if (LOG.isLoggable(Level.WARNING)) {
+            LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
+                + ctx.getSourceCodeFile() + ", continuing with next rule", e);
+            LOG.log(Level.WARNING, "Exception occurred on node " + node, e);
         }
     }
 

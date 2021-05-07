@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
 import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
@@ -50,20 +50,16 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
         try {
             result = this.acceptVisitor(resolver, context);
             assert result != null : "LazyTypeResolver returned null";
-        } catch (Exception | AssertionError e) {
-            // this will add every type in the chain
-            throw addContextValue(e, "Resolving type of", this);
+        } catch (RuntimeException e) {
+            throw AssertionUtil.addContextValue(e, "Resolving type of", this);
+        } catch (AssertionError e) {
+            throw AssertionUtil.addContextValue(e, "Resolving type of", this);
         }
 
         if (context.isEmpty() && typeMirror == null) {
             typeMirror = result; // cache it
         }
         return result;
-    }
-
-    private static ContextedRuntimeException addContextValue(Throwable e, String label, Object value) {
-        return e instanceof ContextedRuntimeException ? ((ContextedRuntimeException) e).addContextValue(label, value)
-                                                      : new ContextedRuntimeException(e).addContextValue(label, value);
     }
 
     JTypeMirror getTypeMirrorInternal() {
