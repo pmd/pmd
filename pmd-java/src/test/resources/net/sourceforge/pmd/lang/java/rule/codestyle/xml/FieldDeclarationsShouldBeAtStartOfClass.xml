@@ -74,7 +74,7 @@ public class Foo {
     ;
 
     private int id;
-    private MyType myType;
+    private Foo myType;
     private String name;
 
     // OK, now constructors, getters, setters, etc.
@@ -152,6 +152,7 @@ interface OnClickListener { void onClick(Object view); }
         <description>#1244 FieldDeclarationsShouldBeAtStartOfClass and anonymous classes, fail</description>
         <rule-property name="ignoreAnonymousClassDeclarations">false</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
 public class MyClass {
     private final String name;
@@ -249,6 +250,44 @@ public class TestFieldDeclarations {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>False negative with anon classes (1)</description>
+        <rule-property name="ignoreAnonymousClassDeclarations">false</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,5,7</expected-linenumbers>
+        <code><![CDATA[
+public class TestFieldDeclarations {
+    class Inner {
+        void method1() { }
+        private int field1; // violation 1
+        private Inner anon = new Inner() { // violation 2 - field "anon"
+            void method2() { }
+            private int field2; // violation 3
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with anon classes (2)</description>
+        <rule-property name="ignoreAnonymousClassDeclarations">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <code><![CDATA[
+public class TestFieldDeclarations {
+    class Inner {
+        void method1() { }
+        private int field1; // violation 1
+        private Inner anon = new Inner() { // ignored due to ignoreAnonymousClassDeclarations
+            void method2() { }
+            private int field2; // violation 2
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
 
     <test-code>
         <description>Initializers don't count</description>
@@ -289,6 +328,4 @@ public class TestFieldDeclarations {
             }
             ]]></code>
     </test-code>
-
-
 </test-data>
