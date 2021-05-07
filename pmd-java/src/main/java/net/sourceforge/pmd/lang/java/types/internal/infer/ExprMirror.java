@@ -68,6 +68,8 @@ public interface ExprMirror {
      */
     void setInferredType(JTypeMirror mirror);
 
+    /** Return the value set in the last call to {@link #setInferredType(JTypeMirror)}. */
+    @Nullable JTypeMirror getInferredType();
 
     /**
      * Returns typing information for the lambdas parameters in scope
@@ -172,7 +174,6 @@ public interface ExprMirror {
     }
 
 
-
     /** Mirrors a conditional or switch expression. */
     interface BranchingMirror extends PolyExprMirror {
 
@@ -222,7 +223,8 @@ public interface ExprMirror {
         /**
          * This is the method that is overridden in getInferredType.
          * E.g. in {@code stringStream.map(String::isEmpty)}, this is
-         * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>.apply(java.lang.String) -> java.lang.Boolean}
+         * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>.apply(java.lang.String) ->
+         * java.lang.Boolean}
          *
          * <p>May be null if we're resetting some partial data.
          */

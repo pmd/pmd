@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference> implements MethodRefMirror {
@@ -28,8 +29,8 @@ final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference>
     private JMethodSig exactMethod;
     private JMethodSig ctdecl;
 
-    MethodRefMirrorImpl(JavaExprMirrors mirrors, ASTMethodReference lambda, ExprMirror parent) {
-        super(mirrors, lambda, parent);
+    MethodRefMirrorImpl(JavaExprMirrors mirrors, ASTMethodReference lambda, ExprMirror parent, MirrorMaker subexprMaker) {
+        super(mirrors, lambda, parent, subexprMaker);
         exactMethod = mirrors.ts.UNRESOLVED_METHOD;
 
         // this is in case of failure: if the inference doesn't succeed

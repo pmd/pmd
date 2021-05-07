@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -29,6 +30,7 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
@@ -194,6 +196,14 @@ public final class InternalApiBridge {
 
     public static Infer getInferenceEntryPoint(JavaNode n) {
         return n.getRoot().getLazyTypeResolver().getInfer();
+    }
+
+    public static @NonNull LazyTypeResolver getLazyTypeResolver(JavaNode n) {
+        return n.getRoot().getLazyTypeResolver();
+    }
+
+    public static @NonNull ExprContext getTopLevelExprContext(TypeNode n) {
+        return n.getRoot().getLazyTypeResolver().getTopLevelContextIncludingInvocation(n);
     }
 
     public static void setSymbolTable(JavaNode node, JSymbolTable table) {

@@ -14,9 +14,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
-import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -25,9 +26,10 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
-import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
@@ -78,7 +80,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             return null;
         }
 
-        if (hasUnnecessaryTypeArgs(ctorCall)) {
+        if (inferenceSucceedsWithoutTypeArgs(ctorCall)) {
             // report it
             JavaNode reportNode = targs == null ? newTypeNode : targs;
             String message = targs == null ? RAW_TYPE_MESSAGE : REPLACE_TYPE_ARGS_MESSAGE;
@@ -94,37 +96,45 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
 
 
     /** Redo inference as described in the javadoc of this class. */
-    private static boolean hasUnnecessaryTypeArgs(ASTConstructorCall call) {
-
+    private static boolean inferenceSucceedsWithoutTypeArgs(ASTConstructorCall call) {
         ExprContext context = call.getConversionContext();
         if (context.isMissing()) {
             return false;
         }
 
-        SpyInvocMirror mirror = doOverloadResolutionWithoutTypeArgs(call, context.getTargetType());
-        MethodCtDecl result = Objects.requireNonNull(mirror.getCtDecl());
-
-        // inference succeeded without errors
-        return !result.isFailed()
-            // doesn't change bindings of lambdas
-            && mirror.isEquivalentToUnderlyingAst()
-            // inferred type is compatible with context
-            && context.acceptsType(result.getMethodType().getReturnType());
-    }
-
-    private static SpyInvocMirror doOverloadResolutionWithoutTypeArgs(ASTConstructorCall call, JTypeMirror expectedType) {
         Infer infer = InternalApiBridge.getInferenceEntryPoint(call);
-        SpyInvocMirror spyMirror = makeSpy(infer, call);
-        MethodCallSite fakeCallSite = infer.newCallSite(spyMirror, expectedType);
-        infer.inferInvocationRecursively(fakeCallSite);
-        return spyMirror;
-    }
-
-    private static SpyInvocMirror makeSpy(Infer infer, ASTConstructorCall ctorCall) {
         // this may not mutate the AST
         JavaExprMirrors factory = JavaExprMirrors.forObservation(infer);
-        CtorInvocationMirror baseMirror = (CtorInvocationMirror) factory.getTopLevelInvocationMirror(ctorCall);
-        return new SpyInvocMirror(baseMirror);
+
+        InvocationNode invocContext = InternalApiBridge.getTopLevelExprContext(call).getInvocNodeIfInvocContext();
+        ExprContext topmostContext;
+        InvocationMirror mirror;
+        if (invocContext == null) {
+            CtorInvocationMirror defaultMirror = (CtorInvocationMirror) factory.getTopLevelInvocationMirror(call);
+            mirror = new SpyInvocMirror(defaultMirror);
+            topmostContext = call.getConversionContext();
+        } else {
+            mirror = factory.getInvocationMirror(invocContext, (e, parent, self) -> {
+                ExprMirror defaultImpl = factory.defaultMirrorMaker().createMirrorForSubexpression(e, parent, self);
+                if (e == call) {
+                    return new SpyInvocMirror((CtorInvocationMirror) defaultImpl);
+                } else {
+                    return defaultImpl;
+                }
+            });
+
+            if (invocContext instanceof ASTExpression) {
+                topmostContext = ((ASTExpression) invocContext).getConversionContext();
+            } else {
+                topmostContext = ExprContext.getMissingInstance();
+            }
+        }
+        JTypeMirror targetType = topmostContext.getPolyTargetType(false);
+        MethodCallSite fakeCallSite = infer.newCallSite(mirror, targetType);
+        infer.inferInvocationRecursively(fakeCallSite);
+
+        return mirror.isEquivalentToUnderlyingAst()
+            && topmostContext.acceptsType(mirror.getInferredType());
     }
 
 
@@ -200,6 +210,11 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         @Override
         public void setInferredType(JTypeMirror mirror) {
             base.setInferredType(mirror);
+        }
+
+        @Override
+        public JTypeMirror getInferredType() {
+            return base.getInferredType();
         }
 
         @Override

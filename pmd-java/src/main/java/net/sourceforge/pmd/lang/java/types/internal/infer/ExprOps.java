@@ -330,6 +330,11 @@ final class ExprOps {
                 }
 
                 @Override
+                public @Nullable JTypeMirror getInferredType() {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Override
                 public JavaNode getLocation() {
                     return mref.getLocation();
                 }
@@ -416,9 +421,17 @@ final class ExprOps {
                 return mt;
             }
 
+            JTypeMirror inferred;
+
             @Override
             public void setInferredType(JTypeMirror mirror) {
                 // todo is this useful for method refs?
+                inferred = mirror;
+            }
+
+            @Override
+            public JTypeMirror getInferredType() {
+                return inferred;
             }
 
             @Override
@@ -491,7 +504,8 @@ final class ExprOps {
             boolean acceptsInstanceMethods = canUseInstanceMethods(actualTypeToSearch, targetType, mref);
 
             Predicate<JMethodSymbol> prefilter = TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol())
-                                                        .and(m -> Modifier.isStatic(m.getModifiers()) || acceptsInstanceMethods);
+                                                        .and(m -> Modifier.isStatic(m.getModifiers())
+                                                            || acceptsInstanceMethods);
             return actualTypeToSearch.streamMethods(prefilter).collect(Collectors.toList());
         }
     }

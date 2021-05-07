@@ -25,11 +25,12 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 
 class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements CtorInvocationMirror {
 
-    CtorInvocMirror(JavaExprMirrors mirrors, ASTConstructorCall call, ExprMirror parent) {
-        super(mirrors, call, parent);
+    CtorInvocMirror(JavaExprMirrors mirrors, ASTConstructorCall call, ExprMirror parent, MirrorMaker subexprMaker) {
+        super(mirrors, call, parent, subexprMaker);
     }
 
     @Override
@@ -128,8 +129,8 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     static class EnumCtorInvocMirror extends BaseInvocMirror<ASTEnumConstant> implements CtorInvocationMirror {
 
 
-        EnumCtorInvocMirror(JavaExprMirrors mirrors, ASTEnumConstant call, ExprMirror parent) {
-            super(mirrors, call, parent);
+        EnumCtorInvocMirror(JavaExprMirrors mirrors, ASTEnumConstant call, ExprMirror parent, MirrorMaker subexprMaker) {
+            super(mirrors, call, parent, subexprMaker);
         }
 
         @Override
@@ -161,8 +162,8 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     static class ExplicitCtorInvocMirror extends BaseInvocMirror<ASTExplicitConstructorInvocation> implements CtorInvocationMirror {
 
 
-        ExplicitCtorInvocMirror(JavaExprMirrors mirrors, ASTExplicitConstructorInvocation call, ExprMirror parent) {
-            super(mirrors, call, parent);
+        ExplicitCtorInvocMirror(JavaExprMirrors mirrors, ASTExplicitConstructorInvocation call, ExprMirror parent, MirrorMaker subexprMaker) {
+            super(mirrors, call, parent, subexprMaker);
         }
 
         @Override

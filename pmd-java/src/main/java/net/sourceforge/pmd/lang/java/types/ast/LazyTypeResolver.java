@@ -85,6 +85,7 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 
@@ -112,6 +113,20 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
     public ExprContext getConversionContextForExternalUse(ASTExpression e) {
         return polyResolution.getConversionContextForExternalUse(e);
+    }
+
+    public ExprContext getTopLevelContextIncludingInvocation(TypeNode e) {
+        ExprContext toplevel = polyResolution.getTopLevelConversionContext(e);
+
+        while (toplevel.hasKind(ExprContextKind.INVOCATION)) {
+            ExprContext surrounding = polyResolution.getTopLevelConversionContext(toplevel.getInvocNodeIfInvocContext());
+            if (!surrounding.isMissing()) {
+                toplevel = surrounding;
+            } else {
+                break;
+            }
+        }
+        return toplevel;
     }
 
     public Infer getInfer() {
@@ -268,7 +283,6 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
      * constructor calls, are standalone. To reduce the number of branches in the
      * code they still go through Infer, so that their method type is set like all
      * the others.
-     *
      */
     private JTypeMirror handlePoly(TypeNode node) {
         return polyResolution.computePolyType(node);

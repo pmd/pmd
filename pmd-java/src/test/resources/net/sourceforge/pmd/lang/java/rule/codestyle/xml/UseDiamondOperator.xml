@@ -320,9 +320,6 @@ public class Generic<T> {
 public class Generic<T> {
     <E> Generic<E> method(Generic<E> e) { return e; }
     public Generic<T> test() {
-        // todo need to create spy,
-        //  ask someone (PolyResolution?) to create enclosing mirrors,
-        //  then hand that to Infer, then unwrap
         var m = method(new Generic<T>());
     }
 }

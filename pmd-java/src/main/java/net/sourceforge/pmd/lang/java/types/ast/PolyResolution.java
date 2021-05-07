@@ -102,7 +102,7 @@ final class PolyResolution {
             throw shouldNotReachHere("Unknown poly " + e);
         }
 
-        ExprContext ctx = contextOf(e, false, true);
+        ExprContext ctx = getTopLevelConversionContext(e);
 
         InvocationNode outerInvocNode = ctx.getInvocNodeIfInvocContext();
         if (outerInvocNode != null) {
@@ -326,7 +326,7 @@ final class PolyResolution {
         // with how we retry failed invocation resolution, see history
         // of this comment
 
-        @NonNull ExprContext ctx = contextOf(e, false, true);
+        @NonNull ExprContext ctx = getTopLevelConversionContext(e);
 
         if (e.getParent() instanceof ASTSwitchLabel) {
             ASTSwitchLike switchLike = e.ancestors(ASTSwitchLike.class).firstOrThrow();
@@ -336,7 +336,7 @@ final class PolyResolution {
         }
 
         if (ctx instanceof RegularCtx) {
-            JTypeMirror targetType = ((RegularCtx) ctx).getPolyTargetType(false);
+            JTypeMirror targetType = ctx.getPolyTargetType(false);
             if (targetType != null) {
                 return targetType;
             }
@@ -350,6 +350,10 @@ final class PolyResolution {
      */
     ExprContext getConversionContextForExternalUse(ASTExpression e) {
         return contextOf(e, false, false);
+    }
+
+    ExprContext getTopLevelConversionContext(TypeNode e) {
+        return contextOf(e, false, true);
     }
 
     private static @Nullable JTypeMirror returnTargetType(ASTReturnStatement context) {

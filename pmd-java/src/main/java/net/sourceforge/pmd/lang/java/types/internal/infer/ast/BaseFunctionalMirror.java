@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 
 /**
  *
@@ -18,8 +19,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalE
 abstract class BaseFunctionalMirror<N extends FunctionalExpression> extends BasePolyMirror<N> implements FunctionalExprMirror {
     private JMethodSig inferredMethod;
 
-    BaseFunctionalMirror(JavaExprMirrors mirrors, N myNode, @Nullable ExprMirror parent) {
-        super(mirrors, myNode, parent);
+    BaseFunctionalMirror(JavaExprMirrors mirrors, N myNode, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
+        super(mirrors, myNode, parent, subexprMaker);
     }
 
     @Override

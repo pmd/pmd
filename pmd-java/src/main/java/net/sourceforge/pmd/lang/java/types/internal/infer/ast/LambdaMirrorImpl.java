@@ -28,13 +28,14 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 
 class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> implements LambdaExprMirror {
 
     private final List<JVariableSymbol> formalSymbols;
 
-    LambdaMirrorImpl(JavaExprMirrors mirrors, ASTLambdaExpression lambda, @Nullable ExprMirror parent) {
-        super(mirrors, lambda, parent);
+    LambdaMirrorImpl(JavaExprMirrors mirrors, ASTLambdaExpression lambda, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
+        super(mirrors, lambda, parent, subexprMaker);
 
         if (isExplicitlyTyped()) {
             formalSymbols = Collections.emptyList();
@@ -92,11 +93,11 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
     public List<ExprMirror> getResultExpressions() {
         ASTBlock block = myNode.getBlock();
         if (block == null) {
-            return Collections.singletonList(factory.getPolyMirror(myNode.getExpression(), this));
+            return Collections.singletonList(createSubexpression(myNode.getExpression()));
         } else {
             return block.descendants(ASTReturnStatement.class)
                         .map(ASTReturnStatement::getExpr)
-                        .toList(e -> factory.getPolyMirror(e, this));
+                        .toList(this::createSubexpression);
         }
     }
 

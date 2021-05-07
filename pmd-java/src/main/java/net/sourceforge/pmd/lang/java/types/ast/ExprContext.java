@@ -65,7 +65,7 @@ public abstract class ExprContext {
         // todo there's a gritty detail about compound assignment operators
         //  with a primitive LHS, see https://github.com/pmd/pmd/issues/2023
         return kind == CAST ? TypeConversion.isConvertibleInCastContext(type, targetType)
-                                    : TypeConversion.isConvertibleUsingBoxing(type, targetType);
+                            : TypeConversion.isConvertibleUsingBoxing(type, targetType);
     }
 
     /**
@@ -87,8 +87,12 @@ public abstract class ExprContext {
             || this.hasKind(CAST) && lambdaOrMethodRef;
     }
 
-    @Nullable InvocationNode getInvocNodeIfInvocContext() {
+    public @Nullable InvocationNode getInvocNodeIfInvocContext() {
         return this instanceof InvocCtx ? ((InvocCtx) this).node : null;
+    }
+
+    public @NonNull ExprContext getToplevelCtx() {
+        return this; // todo
     }
 
     /**
@@ -98,7 +102,7 @@ public abstract class ExprContext {
      *                          lambda or method ref. In this case, cast
      *                          contexts can give a target type.
      */
-    @Nullable JTypeMirror getPolyTargetType(boolean lambdaOrMethodRef) {
+    public @Nullable JTypeMirror getPolyTargetType(boolean lambdaOrMethodRef) {
         if (!canGiveContextToPoly(lambdaOrMethodRef)) {
             return null;
         }

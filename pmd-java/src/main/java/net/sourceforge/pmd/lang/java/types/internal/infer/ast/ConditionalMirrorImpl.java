@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 
 class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> implements BranchingMirror {
 
@@ -27,10 +28,10 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
     ExprMirror elseBranch;
     private final boolean mayBePoly;
 
-    ConditionalMirrorImpl(JavaExprMirrors mirrors, ASTConditionalExpression expr, boolean isStandalone, @Nullable ExprMirror parent) {
-        super(mirrors, expr, parent);
-        thenBranch = mirrors.getPolyMirror(myNode.getThenBranch(), isStandalone, this);
-        elseBranch = mirrors.getPolyMirror(myNode.getElseBranch(), isStandalone, this);
+    ConditionalMirrorImpl(JavaExprMirrors mirrors, ASTConditionalExpression expr, boolean isStandalone, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
+        super(mirrors, expr, parent, subexprMaker);
+        thenBranch = mirrors.getBranchMirrorSubexpression(myNode.getThenBranch(), isStandalone, this, subexprMaker);
+        elseBranch = mirrors.getBranchMirrorSubexpression(myNode.getElseBranch(), isStandalone, this, subexprMaker);
         this.mayBePoly = !isStandalone;
     }
 
