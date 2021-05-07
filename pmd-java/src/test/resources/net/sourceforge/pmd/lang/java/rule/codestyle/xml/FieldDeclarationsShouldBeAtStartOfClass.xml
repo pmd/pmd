@@ -74,7 +74,7 @@ public class Foo {
     ;
 
     private int id;
-    private MyType myType;
+    private Foo myType;
     private String name;
 
     // OK, now constructors, getters, setters, etc.
