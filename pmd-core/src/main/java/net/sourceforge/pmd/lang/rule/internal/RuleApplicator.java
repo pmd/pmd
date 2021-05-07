@@ -63,21 +63,24 @@ public class RuleApplicator {
                     rule.apply(node, ctx);
                     rcto.close(1);
                 } catch (RuntimeException e) {
-                    if (ctx.isIgnoreExceptions()) {
-                        reportException(ctx, rule, node, e);
-                    } else {
-                        throw AssertionUtil.addContextValue(e, "Rule applied on node", node);
-                    }
-                } catch (StackOverflowError | AssertionError e) {
-                    if (SystemProps.isErrorRecoveryMode()) {
-                        reportException(ctx, rule, node, e);
-                    } else {
-                        if (e instanceof AssertionError) {
-                            throw AssertionUtil.addContextValue((AssertionError) e, "Rule applied on node", node);
-                        }
-                        throw e;
-                    }
+                    reportOrRethrow(ctx, rule, node, e, ctx.isIgnoreExceptions());
+                } catch (AssertionError | StackOverflowError e) {
+                    reportOrRethrow(ctx, rule, node, e, SystemProps.isErrorRecoveryMode());
                 }
+            }
+        }
+    }
+
+    private <E extends Throwable> void reportOrRethrow(RuleContext ctx, Rule rule, Node node, E e, boolean reportAndDontThrow) throws E {
+        if (reportAndDontThrow) {
+            reportException(ctx, rule, node, e);
+        } else {
+            if (e instanceof RuntimeException) {
+                throw AssertionUtil.addContextValue((RuntimeException) e, "Rule applied on node", node);
+            } else if (e instanceof AssertionError) {
+                throw AssertionUtil.addContextValue((AssertionError) e, "Rule applied on node", node);
+            } else {
+                throw e;
             }
         }
     }
