@@ -661,6 +661,10 @@ final class PolyResolution {
     }
 
     static ExprContext newAssignmentCtx(JTypeMirror targetType) {
+        if (targetType == null) {
+            // invalid syntax
+            return ExprContext.getMissingInstance();
+        }
         return ExprContext.newOtherContext(targetType, ExprContextKind.ASSIGNMENT);
     }
 
