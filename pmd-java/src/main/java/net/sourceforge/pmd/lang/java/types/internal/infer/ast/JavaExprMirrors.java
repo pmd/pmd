@@ -32,7 +32,7 @@ public final class JavaExprMirrors {
     final Infer infer;
     final TypeSystem ts;
     private final boolean mayMutateAst;
-    private final MirrorMaker DEFAULT_SUBEXPR_MAKER = this::makeSubexprDefault;
+    private final MirrorMaker defaultSubexprMaker = this::makeSubexprDefault;
 
     private JavaExprMirrors(Infer infer, boolean mayMutateAst) {
         this.infer = infer;
@@ -42,7 +42,7 @@ public final class JavaExprMirrors {
 
 
     public MirrorMaker defaultMirrorMaker() {
-        return DEFAULT_SUBEXPR_MAKER;
+        return defaultSubexprMaker;
     }
 
 
