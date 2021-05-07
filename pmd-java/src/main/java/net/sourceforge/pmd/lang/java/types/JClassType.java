@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 
 /**
  * Represents class and interface types, including functional interface
@@ -128,31 +129,44 @@ public interface JClassType extends JTypeMirror {
 
     /**
      * A specific instantiation of the type variables in {@link #getFormalTypeParams()}.
+     * Note that the type arguments and formal type parameters may be mismatched in size,
+     * (only if the symbol is unresolved). In any case, no attempt is made to check that
+     * the type arguments conform to the bound on type parameters in methods like
+     * {@link #withTypeArguments(List)}, although this is taken into account during type
+     * inference.
      *
      * <p>If this type is not generic, or a raw type, returns an empty list.
+     * <p>If this is a {@linkplain #isGenericTypeDeclaration() generic type declaration},
+     * returns exactly the same list as {@link #getFormalTypeParams()}.
+     *
+     * @see #getFormalTypeParams()
      */
     List<JTypeMirror> getTypeArgs();
 
 
     /**
      * Returns the list of type variables declared by the generic type declaration.
-     * These match {@link #getTypeArgs()} if this is a {@linkplain #isGenericTypeDeclaration() generic type
-     * declaration},
-     * which is distinct from a {@linkplain #isRaw() raw type}.
      *
-     * <p>If this type is not generic, returns an empty list.
+     * <p>If this type is not generic, returns an empty list. Note that if the symbol
+     * is unresolved, it is considered non-generic. But it still may have type arguments.
+     *
+     * @see #getTypeArgs()
      */
     List<JTypeVar> getFormalTypeParams();
 
 
     /**
      * Returns the substitution mapping the formal type parameters of all
-     * enclosing types to type arguments. If a type is raw, then its type
+     * enclosing types to their type arguments. If a type is raw, then its type
      * parameters are not part of the returned mapping. Note, that this
      * does not include type parameters of the supertypes.
      *
      * <p>If this type is erased, returns a substitution erasing all type
      * parameters.
+     *
+     * <p>For instance, in the type {@code List<String>}, this is the substitution mapping
+     * the type parameter {@code T} of {@code interface List<T>} to {@code String}.
+     * It is suitable for use in e.g. {@link JMethodSymbol#getReturnType(Substitution)}.
      */
     Substitution getTypeParamSubst();
 
@@ -174,8 +188,7 @@ public interface JClassType extends JTypeMirror {
      * @throws IllegalArgumentException If the symbol is not a member type
      *                                  of this type (local/anon classes don't work)
      * @throws IllegalArgumentException If the type arguments don't match the
-     *                                  type parameters of the symbol (unless they're empty,
-     *                                  in which case the selected type is raw)
+     *                                  type parameters of the symbol (see {@link #withTypeArguments(List)})
      * @throws IllegalArgumentException If this type is raw and the inner type is not,
      *                                  or this type is parameterized and the inner type is not
      */
