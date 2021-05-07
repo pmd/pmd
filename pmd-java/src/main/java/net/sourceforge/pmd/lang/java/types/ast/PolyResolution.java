@@ -57,6 +57,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -540,6 +541,7 @@ final class PolyResolution {
             // numeric contexts, maybe
             BinaryOp op = ((ASTInfixExpression) papa).getOperator();
             JTypeMirror nodeType = ((ASTExpression) node).getTypeMirror();
+            JTypeMirror otherType = JavaRuleUtil.getOtherOperandIfInInfixExpr(node).getTypeMirror();
             JTypeMirror ctxType = ((ASTInfixExpression) papa).getTypeMirror();
             switch (op) {
             case CONDITIONAL_OR:
@@ -548,7 +550,8 @@ final class PolyResolution {
             case OR:
             case XOR:
             case AND:
-                return ctxType == ts.BOOLEAN ? booleanCtx : newNumericContext(ctxType); // NOPMD CompareObjectsWithEquals
+                return ctxType == ts.BOOLEAN ? booleanCtx
+                                             : newNumericContext(ctxType); // NOPMD CompareObjectsWithEquals
             case LEFT_SHIFT:
             case RIGHT_SHIFT:
             case UNSIGNED_RIGHT_SHIFT:
@@ -556,9 +559,8 @@ final class PolyResolution {
                                                     : newNumericContext(nodeType.unbox());
             case EQ:
             case NE:
-                ASTExpression otherOperand = JavaRuleUtil.getOtherOperandIfInInfixExpr(node);
-                if (otherOperand.getTypeMirror().isPrimitive() != nodeType.isPrimitive()) {
-                    return newNonPolyContext(otherOperand.getTypeMirror().unbox());
+                if (otherType.isPrimitive() != nodeType.isPrimitive()) {
+                    return newNonPolyContext(otherType.unbox());
                 }
                 return ExprContext.getMissingInstance();
             case ADD:
@@ -567,15 +569,16 @@ final class PolyResolution {
                     return stringCtx;
                 }
                 // fallthrough
-            case LE:
-            case GE:
-            case GT:
-            case LT:
             case SUB:
             case MUL:
             case DIV:
             case MOD:
                 return newNumericContext(ctxType); // binary promoted by LazyTypeResolver
+            case LE:
+            case GE:
+            case GT:
+            case LT:
+                return newNumericContext(TypeConversion.binaryNumericPromotion(nodeType, otherType));
             default:
                 return ExprContext.getMissingInstance();
             }
@@ -679,7 +682,7 @@ final class PolyResolution {
 
     static ExprContext newNumericContext(JTypeMirror targetType) {
         if (targetType.isPrimitive()) {
-            assert targetType.isNumeric() : targetType;
+            assert targetType.isNumeric() : "Not a numeric type - " + targetType;
             return ExprContext.newOtherContext(targetType, ExprContextKind.NUMERIC);
         }
         return ExprContext.getMissingInstance(); // error
