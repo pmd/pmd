@@ -826,4 +826,58 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Consider also default methods in interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithDefaultMethod {
+    default void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            i = 5; // not OK
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consider also classes in interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithClass {
+    class Inner {
+        void foo(int bar) {
+            for (int i=0; i < 10; i++) {
+                doSomethingWith(i);
+                i = 5; // not OK
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consider also anonymous classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithAnon {
+    void bar() {
+        ClassWithAnon anon = new ClassWithAnon() {
+            void foo(int bar) {
+                for (int i=0; i < 10; i++) {
+                    doSomethingWith(i);
+                    i = 5; // not OK
+                }
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
