@@ -21,14 +21,14 @@ class BrokenClasspathTest : FunSpec({
     val brokenCp = rootCp.exclude(setOf("javasymbols/brokenclasses/SuperItf.class"))
 
     test("Test classpath setup ") {
-        rootCp.getURLForResource("javasymbols/brokenclasses/BrokenGeneric.class") shouldNotBe null
-        rootCp.getURLForResource("javasymbols/brokenclasses/SuperItf.class") shouldNotBe null
-        rootCp.getURLForResource("javasymbols/brokenclasses/SuperKlass.class") shouldNotBe null
+        rootCp.findResource("javasymbols/brokenclasses/BrokenGeneric.class") shouldNotBe null
+        rootCp.findResource("javasymbols/brokenclasses/SuperItf.class") shouldNotBe null
+        rootCp.findResource("javasymbols/brokenclasses/SuperKlass.class") shouldNotBe null
 
         // this one is null
-        brokenCp.getURLForResource("javasymbols/brokenclasses/SuperItf.class") shouldBe null
-        brokenCp.getURLForResource("javasymbols/brokenclasses/BrokenGeneric.class") shouldNotBe null
-        brokenCp.getURLForResource("javasymbols/brokenclasses/SuperKlass.class") shouldNotBe null
+        brokenCp.findResource("javasymbols/brokenclasses/SuperItf.class") shouldBe null
+        brokenCp.findResource("javasymbols/brokenclasses/BrokenGeneric.class") shouldNotBe null
+        brokenCp.findResource("javasymbols/brokenclasses/SuperKlass.class") shouldNotBe null
     }
 
     test("Test load subclass (symbol only)") {

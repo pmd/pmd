@@ -104,7 +104,7 @@ public class AsmSymbolResolver implements SymbolResolver {
 
     @Nullable
     URL getUrlOfInternalName(String internalName) {
-        return classLoader.getURLForResource(internalName + ".class");
+        return classLoader.findResource(internalName + ".class");
     }
 
     /*
