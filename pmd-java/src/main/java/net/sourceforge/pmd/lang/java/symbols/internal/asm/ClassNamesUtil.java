@@ -22,10 +22,12 @@ import org.apache.commons.lang3.NotImplementedException;
  *
  * <p>Binary names lift the ambiguity between inner class selection and
  * package name that exists in canonical names. They're more convenient
- * to work with when loading classes.
+ * to work with when loading classes. They're typically the kind of name
+ * you find when using reflective APIs.
  *
  * <p>Internal names are burned into class files are they allow getting
  * a file path to the referenced class file just by appending {@code .class}.
+ * They are only useful at the level of class files, eg when using ASM.
  *
  * <p><i>Type descriptors</i> are another class of "names" that use internal names,
  * but are more general, as they can represent all kinds of types. Eg the
@@ -33,7 +35,8 @@ import org.apache.commons.lang3.NotImplementedException;
  * {@code boolean} is {@code Z}, and the one of {@code boolean[]} is {@code [Z}.
  *
  * <p><i>Type signatures</i> are a superset of type descriptors that can
- * also represent generic types.
+ * also represent generic types. These need to be parsed when reading info
+ * from a class file.
  */
 public final class ClassNamesUtil {
 

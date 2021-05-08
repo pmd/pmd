@@ -8,7 +8,6 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 
 
@@ -66,16 +65,14 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
      * the tested expression could not be resolved.
      */
     default boolean isExhaustiveEnumSwitch() {
-        ASTExpression expression = getTestedExpression();
-        JTypeDeclSymbol symbol = expression.getTypeMirror().getSymbol();
-        if (!(symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isEnum())) {
-            return false;
+        JTypeDeclSymbol symbol = getTestedExpression().getTypeMirror().getSymbol();
+        if (symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isEnum()) {
+            long numConstants = ((JClassSymbol) symbol).getEnumConstants().size();
+            // we assume there's no duplicate labels
+            int numLabels = getBranches().sumByInt(it -> it.getLabel().getNumChildren());
+            return numLabels == numConstants;
         }
-
-        // we assume there's no duplicate labels
-        long numConstants = ((JClassSymbol) symbol).getDeclaredFields().stream().filter(JFieldSymbol::isEnumConstant).count();
-        int numLabels = getBranches().map(ASTSwitchBranch::getLabel).flatMap(ASTSwitchLabel::getExprList).count();
-        return numLabels == numConstants;
+        return false;
     }
 
 

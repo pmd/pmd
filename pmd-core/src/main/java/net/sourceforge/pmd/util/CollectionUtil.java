@@ -637,4 +637,9 @@ public final class CollectionUtil {
         }
         return sb;
     }
+
+    public static @NonNull <T> List<T> makeUnmodifiableAndNonNull(@Nullable List<? extends T> list) {
+        return list == null || list.isEmpty() ? emptyList()
+                                              : Collections.unmodifiableList(list);
+    }
 }

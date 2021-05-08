@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forExactly
 import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -144,12 +143,12 @@ class AsmLoaderTest : FunSpec({
         val outerName = Enums::class.java.name
 
         val emptyEnum = symLoader.resolveClassFromBinaryName("$outerName\$Empty")!!
-        emptyEnum::getEnumConstantNames shouldBe emptySet()
+        emptyEnum::getEnumConstants shouldBe emptySet()
 
         val withConstants = symLoader.resolveClassFromBinaryName("$outerName\$SomeConstants")!!
-        withConstants::getEnumConstantNames shouldBe setOf("A", "B")
+        withConstants::getEnumConstants shouldBe setOf("A", "B")
 
         val notAnEnum = symLoader.resolveClassFromBinaryName(outerName)!!
-        notAnEnum::getEnumConstantNames shouldBe null
+        notAnEnum::getEnumConstants shouldBe null
     }
 })

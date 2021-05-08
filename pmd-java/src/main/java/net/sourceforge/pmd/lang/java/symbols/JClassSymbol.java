@@ -168,11 +168,13 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     }
 
     /**
-     * Returns a set with all enum constant names. If this symbol does
-     * not represent an enum, returns null.
+     * Returns a list with all enum constants. If this symbol does
+     * not represent an enum, returns an empty set. The returned list
+     * is a subset of {@link #getDeclaredFields()}. The order of fields
+     * denotes the normal order of enum constants.
      */
-    default @Nullable Set<String> getEnumConstantNames() {
-        return null;
+    default @NonNull List<JFieldSymbol> getEnumConstants() {
+        return Collections.emptyList();
     }
 
 
@@ -221,6 +223,10 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     boolean isAnonymousClass();
 
+    /**
+     * Return the simple names of all annotation attributes. If this
+     * is not an annotation type, return an empty set.
+     */
     default Set<String> getAnnotationAttributeNames() {
         return Collections.emptySet();
     }
@@ -244,9 +250,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     // todo isSealed + getPermittedSubclasses
     //  (isNonSealed is not so useful I think)
 
-    // todo getEnumConstants
-
-
     /**
      * This returns true if this is not an interface, primitive or array.
      */
@@ -259,8 +262,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * Returns the toplevel class containing this class. If this is a
      * toplevel class, returns this.
      */
-    @NonNull
-    default JClassSymbol getNestRoot() {
+    default @NonNull JClassSymbol getNestRoot() {
         JClassSymbol e = this;
         while (e.getEnclosingClass() != null) {
             e = e.getEnclosingClass();

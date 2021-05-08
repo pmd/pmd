@@ -122,8 +122,6 @@ public interface JElementSymbol {
     boolean equals(Object o);
 
 
-    // TODO access to annotations could be added to the API if we publish it
-
     /**
      * Dispatch to the appropriate visit method of the visitor and returns its result.
      */

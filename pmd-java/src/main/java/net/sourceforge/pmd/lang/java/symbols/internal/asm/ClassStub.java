@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -38,6 +37,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.LexicalScope;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
@@ -62,7 +62,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private List<JClassSymbol> memberClasses = new ArrayList<>();
     private List<JMethodSymbol> methods = new ArrayList<>();
     private List<JConstructorSymbol> ctors = new ArrayList<>();
-    private Set<String> enumConstantNames = null;
+    private List<JFieldSymbol> enumConstants = null;
 
     private List<SymAnnot> annotations = new ArrayList<>();
 
@@ -113,7 +113,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 ctors = Collections.unmodifiableList(ctors);
                 fields = Collections.unmodifiableList(fields);
                 memberClasses = Collections.unmodifiableList(memberClasses);
-                enumConstantNames = enumConstantNames == null ? null : Collections.unmodifiableSet(enumConstantNames);
+                enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
                 annotations = Collections.unmodifiableList(annotations);
                 annotAttributes = (accessFlags & Opcodes.ACC_ANNOTATION) != 0
                                   ? getDeclaredMethods().stream().map(JElementSymbol::getSimpleName).collect(Collectors.toSet())
@@ -194,7 +194,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         this.accessFlags = myAccess | accessFlags;
 
         if ((accessFlags & Opcodes.ACC_ENUM) != 0) {
-            this.enumConstantNames = new HashSet<>();
+            this.enumConstants = new ArrayList<>();
         }
     }
 
@@ -211,8 +211,8 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     void addField(FieldStub fieldStub) {
         fields.add(fieldStub);
 
-        if (fieldStub.isEnumConstant() && enumConstantNames != null) {
-            enumConstantNames.add(fieldStub.getSimpleName());
+        if (fieldStub.isEnumConstant() && enumConstants != null) {
+            enumConstants.add(fieldStub);
         }
     }
 
@@ -327,9 +327,9 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     }
 
     @Override
-    public @Nullable Set<String> getEnumConstantNames() {
+    public @NonNull List<JFieldSymbol> getEnumConstants() {
         parseLock.ensureParsed();
-        return enumConstantNames;
+        return enumConstants;
     }
 
     @Override

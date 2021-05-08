@@ -14,6 +14,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -628,6 +629,22 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     // ASTs are not so big as to warrant using a 'long' here
     int count();
+
+    /**
+     * Returns the sum of the value of the function applied to all
+     * elements of this stream.
+     *
+     * @param intMapper Mapping function
+     *
+     * @return The sum
+     */
+    default int sumByInt(ToIntFunction<? super T> intMapper) {
+        int sum = 0;
+        for (T item : this) {
+            sum += intMapper.applyAsInt(item);
+        }
+        return sum;
+    }
 
 
     /**

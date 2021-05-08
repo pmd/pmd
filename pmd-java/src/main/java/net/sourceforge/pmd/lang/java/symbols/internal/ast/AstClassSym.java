@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -54,7 +53,7 @@ final class AstClassSym
     private final List<JMethodSymbol> declaredMethods;
     private final List<JConstructorSymbol> declaredCtors;
     private final List<JFieldSymbol> declaredFields;
-    private final Set<String> enumConstantNames;
+    private final List<JFieldSymbol> enumConstants; // subset of declaredFields
 
     AstClassSym(ASTAnyTypeDeclaration node,
                 AstSymFactory factory,
@@ -69,7 +68,7 @@ final class AstClassSym
         final List<JMethodSymbol> myMethods = new ArrayList<>();
         final List<JConstructorSymbol> myCtors = new ArrayList<>();
         final List<JFieldSymbol> myFields = new ArrayList<>();
-        final Set<String> enumConstantNames;
+        final List<JFieldSymbol> enumConstants;
 
         final List<JFieldSymbol> recordComponents;
         if (isRecord()) {
@@ -87,14 +86,15 @@ final class AstClassSym
         }
 
         if (isEnum()) {
-            enumConstantNames = new HashSet<>();
+            enumConstants = new ArrayList<>();
             node.getEnumConstants()
                 .forEach(constant -> {
-                    enumConstantNames.add(constant.getName());
-                    myFields.add(new AstFieldSym(constant.getVarId(), factory, this));
+                    AstFieldSym fieldSym = new AstFieldSym(constant.getVarId(), factory, this);
+                    enumConstants.add(fieldSym);
+                    myFields.add(fieldSym);
                 });
         } else {
-            enumConstantNames = null;
+            enumConstants = null;
         }
 
 
@@ -139,7 +139,7 @@ final class AstClassSym
         this.declaredMethods = Collections.unmodifiableList(myMethods);
         this.declaredCtors = Collections.unmodifiableList(myCtors);
         this.declaredFields = Collections.unmodifiableList(myFields);
-        this.enumConstantNames = enumConstantNames == null ? null : Collections.unmodifiableSet(enumConstantNames);
+        this.enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
     }
 
     private List<JFieldSymbol> mapComponentsToMutableList(AstSymFactory factory, ASTRecordComponentList components) {
@@ -208,8 +208,8 @@ final class AstClassSym
     }
 
     @Override
-    public @Nullable Set<String> getEnumConstantNames() {
-        return enumConstantNames;
+    public @NonNull List<JFieldSymbol> getEnumConstants() {
+        return enumConstants;
     }
 
     @Override
