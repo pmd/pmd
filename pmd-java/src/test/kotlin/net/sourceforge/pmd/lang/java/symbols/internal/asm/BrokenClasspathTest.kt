@@ -18,28 +18,28 @@ import net.sourceforge.pmd.lang.java.types.testTypeSystem
 class BrokenClasspathTest : FunSpec({
 
     val rootCp = Classpath.contextClasspath()
-    val brokenCp = rootCp.exclude(setOf("javasymbols/brokenclasses/SuperItf.class"))
+    val brokenCp = rootCp.exclude(setOf("javasymbols/testdata/SuperItf.class"))
 
     test("Test classpath setup ") {
-        rootCp.findResource("javasymbols/brokenclasses/BrokenGeneric.class") shouldNotBe null
-        rootCp.findResource("javasymbols/brokenclasses/SuperItf.class") shouldNotBe null
-        rootCp.findResource("javasymbols/brokenclasses/SuperKlass.class") shouldNotBe null
+        rootCp.findResource("javasymbols/testdata/BrokenGeneric.class") shouldNotBe null
+        rootCp.findResource("javasymbols/testdata/SuperItf.class") shouldNotBe null
+        rootCp.findResource("javasymbols/testdata/SuperKlass.class") shouldNotBe null
 
         // this one is null
-        brokenCp.findResource("javasymbols/brokenclasses/SuperItf.class") shouldBe null
-        brokenCp.findResource("javasymbols/brokenclasses/BrokenGeneric.class") shouldNotBe null
-        brokenCp.findResource("javasymbols/brokenclasses/SuperKlass.class") shouldNotBe null
+        brokenCp.findResource("javasymbols/testdata/SuperItf.class") shouldBe null
+        brokenCp.findResource("javasymbols/testdata/BrokenGeneric.class") shouldNotBe null
+        brokenCp.findResource("javasymbols/testdata/SuperKlass.class") shouldNotBe null
     }
 
     test("Test load subclass (symbol only)") {
 
         val resolver = AsmSymbolResolver(testTypeSystem, brokenCp)
 
-        val found = resolver.resolveClassFromBinaryName("javasymbols.brokenclasses.BrokenGeneric")
+        val found = resolver.resolveClassFromBinaryName("javasymbols.testdata.BrokenGeneric")
             ?: fail("not found")
 
-        found.superclass!!::getBinaryName shouldBe "javasymbols.brokenclasses.SuperKlass"
-        found.superInterfaces!!.map { it.binaryName } shouldBe listOf("javasymbols.brokenclasses.SuperItf")
+        found.superclass!!::getBinaryName shouldBe "javasymbols.testdata.SuperKlass"
+        found.superInterfaces!!.map { it.binaryName } shouldBe listOf("javasymbols.testdata.SuperItf")
 
         withClue("Isn't resolved") {
             found.superInterfaces[0]::isUnresolved shouldBe true
@@ -50,7 +50,7 @@ class BrokenClasspathTest : FunSpec({
     test("Test load from typesystem") {
 
         val ts = TypeSystem.usingClasspath(brokenCp)
-        val subclassSym = ts.getClassSymbol("javasymbols.brokenclasses.BrokenGeneric")!!
+        val subclassSym = ts.getClassSymbol("javasymbols.testdata.BrokenGeneric")!!
 
         val unresolvedItfSym = subclassSym.superInterfaces[0]
         unresolvedItfSym::isUnresolved shouldBe true
