@@ -2927,7 +2927,10 @@ effectively.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>All switch statements should include a default option to catch any unspecified values.</p>
+<p>Switch statements should be exhaustive, to make their control flow
+easier to follow. This can be achieved by adding a <code class="language-plaintext highlighter-rouge">default</code> case, or,
+if the switch is on an enum type, by ensuring there is one switch branch
+for each enum constant.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="p">[</span><span class="na">@DefaultCase</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@ExhaustiveEnumSwitch</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
@@ -2935,14 +2938,14 @@ effectively.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{{</span>
     <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
     <span class="k">switch</span> <span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="o">{</span>
       <span class="k">case</span> <span class="mi">1</span><span class="o">:</span> <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">6</span><span class="o">;</span>
       <span class="k">case</span> <span class="mi">2</span><span class="o">:</span> <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">8</span><span class="o">;</span>
-          <span class="c1">// missing default: here</span>
+      <span class="c1">// missing default: here</span>
     <span class="o">}</span>
-<span class="o">}</span>
+<span class="o">}}</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>

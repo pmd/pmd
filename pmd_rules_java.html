@@ -1465,7 +1465,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_bestpractices.html#replaceenumerationwithiterator">ReplaceEnumerationWithIterator</a>: Consider replacing Enumeration usages with the newer java.util.Iterator</li>
   <li><a href="pmd_rules_java_bestpractices.html#replacehashtablewithmap">ReplaceHashtableWithMap</a>: Consider replacing Hashtable usage with the newer java.util.Map if thread safety is not required.</li>
   <li><a href="pmd_rules_java_bestpractices.html#replacevectorwithlist">ReplaceVectorWithList</a>: Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe oper…</li>
-  <li><a href="pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">SwitchStmtsShouldHaveDefault</a>: All switch statements should include a default option to catch any unspecified values.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">SwitchStmtsShouldHaveDefault</a>: Switch statements should be exhaustive, to make their control flow             easier to follow. …</li>
   <li><a href="pmd_rules_java_bestpractices.html#systemprintln">SystemPrintln</a>: References to System.(out|err).print are usually intended for debugging purposes and can remain …</li>
   <li><a href="pmd_rules_java_bestpractices.html#unusedassignment">UnusedAssignment</a>: Reports assignments to variables that are never used before the variable is overwritten,         …</li>
   <li><a href="pmd_rules_java_bestpractices.html#unusedformalparameter">UnusedFormalParameter</a>: Reports parameters of methods and constructors that are not referenced them in the method body. P…</li>
@@ -1706,7 +1706,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_errorprone.html#returnfromfinallyblock">ReturnFromFinallyBlock</a>: Avoid returning from a finally block, this can discard exceptions.</li>
   <li><a href="pmd_rules_java_errorprone.html#simpledateformatneedslocale">SimpleDateFormatNeedsLocale</a>: Be sure to specify a Locale when creating SimpleDateFormat instances to ensure that locale-approp…</li>
   <li><a href="pmd_rules_java_errorprone.html#singlemethodsingleton">SingleMethodSingleton</a>: Some classes contain overloaded getInstance. The problem with overloaded getInstance methods is t…</li>
-  <li><a href="pmd_rules_java_errorprone.html#singletonclassreturningnewinstance">SingletonClassReturningNewInstance</a>: Some classes contain overloaded getInstance. The problem with overloaded getInstance methods is t…</li>
+  <li><a href="pmd_rules_java_errorprone.html#singletonclassreturningnewinstance">SingletonClassReturningNewInstance</a>: A singleton class should only ever have one instance. Failure to check             whether an ins…</li>
   <li><a href="pmd_rules_java_errorprone.html#staticejbfieldshouldbefinal">StaticEJBFieldShouldBeFinal</a>: According to the J2EE specification, an EJB should not have any static fields with write access. …</li>
   <li><a href="pmd_rules_java_errorprone.html#stringbufferinstantiationwithchar">StringBufferInstantiationWithChar</a>: Individual character values provided as initialization arguments will be converted into integers….</li>
   <li><a href="pmd_rules_java_errorprone.html#suspiciousequalsmethodname">SuspiciousEqualsMethodName</a>: The method name and parameter number are suspiciously close to ‘Object.equals’, which can denote …</li>

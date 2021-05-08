@@ -4633,9 +4633,9 @@ for each call and new objects will be created for every invocation.</p>
 
 <p><strong>Priority:</strong> Medium High (2)</p>
 
-<p>Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
-is that the instance created using the overloaded method is not cached and so,
-for each call and new objects will be created for every invocation.</p>
+<p>A singleton class should only ever have one instance. Failure to check
+whether an instance has already been created may result in multiple
+instances being created.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/SingletonClassReturningNewInstanceRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.SingletonClassReturningNewInstanceRule</a></p>
 
@@ -4645,7 +4645,7 @@ for each call and new objects will be created for every invocation.</p>
     <span class="kd">private</span> <span class="kd">static</span> <span class="nc">Singleton</span> <span class="n">instance</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
     <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Singleton</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>
         <span class="kd">synchronized</span><span class="o">(</span><span class="nc">Singleton</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="k">new</span> <span class="nf">Singleton</span><span class="o">();</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">Singleton</span><span class="o">();</span> <span class="c1">// this should be assigned to the field</span>
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
