@@ -114,7 +114,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone.compareobjectswithequals;
 
 public class CompareObjectsWithEqualsSample {
     void array(int[] a, String[] b) {
-        if (a[1] == b[1]) {} // int == String - this comparison doesn't make sense
+        if (a[1] == b[1]) {} // int == String - this comparison doesn't make sense (and doesn't compile...)
     }
     void array2(int[] c, int[] d) {
         if (c[1] == d[1]) {}
@@ -407,6 +407,95 @@ public class C0 {
         }
     }
 }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CompareObjectsWithEqualsRule: False positive with Enums #2716</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class EnumTest {
+    enum Type {
+        A, B;
+    }
+    private final Type type = Type.A;
+    public String isTypeA(Type param) {
+        return param == type ? "Yes" : "No";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>static constant #3205</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class MyClass {
+                static final MyClass MISSING = new MyClass();
+
+                public static void isMissing(MyClass obj) {
+                    return obj == MISSING; // no violation expected...
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>static constant in other class #3205</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class MyClass {
+                static class Ts {
+                    static final MyClass MISSING = new MyClass();
+                }
+
+                public static void isMissing(MyClass obj) {
+                    return obj == Ts.MISSING; // no violation expected...
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>constant field on some object #3205</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class MyClass {
+                static class Ts {
+                    final MyClass MISSING = new MyClass();
+                }
+
+                public static void isMissing(MyClass obj, Ts ts) {
+                    return obj == ts.MISSING; // no violation expected...
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>constant field on some object, more complicated expr #3205</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class MyClass {
+                static class Ts {
+                    final MyClass MISSING = new MyClass();
+                    Ts id() { return this; }
+                }
+
+                public static void isMissing(MyClass obj, Ts ts) {
+                    return obj == (ts.id()).id().MISSING; // no violation expected...
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Property typesThatCompareByReference #3110</description>
+        <rule-property name="typesThatCompareByReference">java.lang.String</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class MyClass {
+                public static void isMissing(String obj, Object ts) {
+                    return obj == ts;
+                }
+            }
         ]]></code>
     </test-code>
 
