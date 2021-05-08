@@ -5,6 +5,16 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
+        <description>NPE on nested record decl #3224</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                public record NestedRecord(int x, int y) { }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -968,9 +978,10 @@ class Test{
 class Test{
     public static void main(String[] args){
         int t1 = 0 ;
-        Test2 test = new Test2() ;
+        Test test = new Test() ;
         t1 = test.simpleTest(t1) ;
     }
+    Test simpleTest(Test t) {return t;}
 }
         ]]></code>
     </test-code>
@@ -987,9 +998,10 @@ class Test{
     public static void main(String[] args){
         int t1 = 0 ;
         int t2 = 0 ;
-        Test2 test = new Test2();
+        Test test = new Test();
         if((t1 = test.simpleTest(t1)) == t2);
     }
+    Test simpleTest(Test t) {return t;}
 }
         ]]></code>
     </test-code>
@@ -1022,9 +1034,10 @@ class Test{
     public static void main(String[] args){
         int t1 = 0 ;
 
-        Test2 test = new Test2();
+        Test test = new Test();
         if( (t1 = test.simpleTest(t1)) == t1);
    }
+    Test simpleTest(Test t) {return t;}
 }
         ]]></code>
     </test-code>
@@ -1044,9 +1057,10 @@ class Test{
     public static void main(String[] args){
         int t1 = 0;
         int t2 = 0;
-        Test2 test = new Test2() ;
+        Test test = new Test() ;
         if( t1 == (t1 = test.simpleTest(t1))) ;
    }
+    Test simpleTest(Test t) {return t;}
 }
         ]]></code>
     </test-code>
@@ -1093,11 +1107,15 @@ public class Test {
         </expected-messages>
         <code><![CDATA[
 public class Test {
-    public void test(){
+    public void test(Test node, ScopeData before){
        ScopeData iter = acceptOpt(node.getBody(), before.fork()); // this assignment is unused
        iter = acceptOpt(node.getCondition(), before.fork());
        iter = acceptOpt(node.getBody(), iter);
     }
+    Test getBody() { return this; }
+    Test getCondition() { return this; }
+    ScopeData acceptOpt(Test node, ScopeData data) {return data;}
+    class ScopeData {ScopeData fork() {return this;}}
 }
         ]]></code>
     </test-code>
@@ -1106,6 +1124,7 @@ public class Test {
         <description>Var usage in lambda (#1304)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Set;
 public class Foo {
 
     public boolean dummyMethod(final String captured, final Set<String> dummySet) {
@@ -1119,11 +1138,12 @@ public class Foo {
     <test-code>
         <description>Try/catch</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>The initializer for variable 'a' is never used (overwritten on lines 6 and 8)</message>
+            <message>The initializer for variable 'a' is never used (overwritten on lines 7 and 9)</message>
         </expected-messages>
         <code><![CDATA[
+import java.io.*;
 public class Foo {
 
     public int foo() {
@@ -1143,6 +1163,7 @@ public class Foo {
         <description>Try with several catches</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.*;
 public class Foo {
 
     public int foo() {
@@ -1164,6 +1185,7 @@ public class Foo {
         <description>Try with resources: resources should be used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.*;
 public class Foo {
 
     public void foo() {
@@ -1221,6 +1243,7 @@ public class Foo {
             System.out.println(halfway);
         }
     }
+    void trySomethingWhichFails() throws Exception {}
 }
 
 
@@ -1246,6 +1269,7 @@ public class Foo {
             System.out.println(halfway);
         }
     }
+    void trySomethingWhichFails() throws RuntimeException {}
 }
 
 
@@ -1256,6 +1280,7 @@ public class Foo {
         <description>Try/catch finally</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.*;
 public class Foo {
 
     public int foo() {
@@ -1275,11 +1300,12 @@ public class Foo {
     <test-code>
         <description>Try/catch finally 3</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>The initializer for variable 'a' is never used (overwritten on lines 6 and 8)</message>
+            <message>The initializer for variable 'a' is never used (overwritten on lines 7 and 9)</message>
         </expected-messages>
         <code><![CDATA[
+import java.io.*;
 public class Foo {
 
     public int foo() {
@@ -1299,13 +1325,14 @@ public class Foo {
     <test-code>
         <description>Try/catch finally 4</description>
         <expected-problems>3</expected-problems>
-        <expected-linenumbers>4,6,8</expected-linenumbers>
+        <expected-linenumbers>5,7,9</expected-linenumbers>
         <expected-messages>
-            <message>The initializer for variable 'a' is never used (overwritten on lines 6, 8 and 10)</message>
-            <message>The value assigned to variable 'a' is never used (overwritten on line 10)</message>
-            <message>The value assigned to variable 'a' is never used (overwritten on line 10)</message>
+            <message>The initializer for variable 'a' is never used (overwritten on lines 7, 9 and 11)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 11)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 11)</message>
         </expected-messages>
         <code><![CDATA[
+import java.io.*;
 public class Foo {
 
     public int foo() {
@@ -1426,16 +1453,20 @@ class Foo {
         <description>Lambda captured var use</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 class Foo {
 
-  public Flux<Object> decode() {
-    Flux<List<XMLEvent>> splitEvents = splitEvts();
-
+  public Stream<Object> decode() {
+    Stream<List<String>> splitEvents = null;
     return map(events -> {
-      return unmarshal(events.append(splitEvents));
+      return unmarshal(events, splitEvents);
     });
   }
-
+  Stream<Object> map(Function<List<String>, Object> f) {return null;}
+  Object unmarshal(List<String> items, Stream<List<String>> splitEvts) { return null;}
 }
         ]]></code>
     </test-code>
@@ -1464,31 +1495,37 @@ class Foo {
         <description>Lambda returns 2</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>4,7</expected-linenumbers>
+        <expected-linenumbers>9,11</expected-linenumbers>
         <expected-messages>
             <message>The initializer for variable 'splitEvents' is never used</message>
             <message>The value assigned to variable 'events' is never used</message>
         </expected-messages>
         <code><![CDATA[
-class Foo {
+            import java.util.ArrayList;
+            import java.util.List;
+            import java.util.function.Function;
+            import java.util.stream.Stream;
 
-  public Flux<Object> decode() {
-    Flux<List<XMLEvent>> splitEvents = splitEvts();
+            class Foo {
 
-    return map(events -> {
-      events = events.normalize();
-      return dontUseEvents();
-    });
-  }
+                public Stream<Object> decode() {
+                    Stream<List<String>> splitEvents = null;
+                    return map(events -> {
+                        events = new ArrayList<>(events);
+                        return null;
+                    });
+                }
 
-}
-        ]]></code>
+                Stream<Object> map(Function<List<String>, Object> f) { f.apply(null); return null; }
+            }
+            ]]></code>
     </test-code>
     <test-code>
         <description>FP in try</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package foo;
+import java.lang.reflect.Method;
 class Foo {
 
     public Object getSubject() {
@@ -1503,6 +1540,10 @@ class Foo {
       }
     }
 
+    static class Other {
+        Method currentUserMethod;
+        Method anonymousSubjectMethod;
+    }
 }
         ]]></code>
     </test-code>
@@ -1638,8 +1679,8 @@ class Foo {
         <code><![CDATA[
 class Foo {
 
-    Bar f1 = 0;
-    Bar f2 = 0;
+    Bar f1 = new Bar();
+    Bar f2 = null;
 
     Foo(Bar f1) {
         this.f1.field = f1;
@@ -1647,9 +1688,10 @@ class Foo {
 
     Foo(Bar f1, Bar g) {
         this.f1 = f1;
-        this.f2 = f1 + g;
+        this.f2 = f1.plus(g);
     }
 
+    static class Bar { Bar field; Bar plus(Bar other) { return other; }}
 }
         ]]></code>
     </test-code>
@@ -1689,6 +1731,7 @@ class Foo {
         <description>Static initializer</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.lang.annotation.Annotation;
 class Foo {
 	private static Class<? extends Annotation> ejbRefClass;
 
@@ -1703,7 +1746,7 @@ class Foo {
 		}
 
 		try {
-			Class<? extends Annotation> clazz = Class.forName("javax.ejb.EJB");
+			Class<? extends Annotation> clazz = (Class) Class.forName("javax.ejb.EJB");
 			ejbRefClass = clazz;
 		} catch (ClassNotFoundException ex) {
 			ejbRefClass = null;
@@ -1722,6 +1765,16 @@ class Foo {
         <description>FP with anonymous classes on the way</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import static java.security.AccessController.getProtectionDomain;
+
+import java.lang.reflect.*;
+import java.lang.invoke.*;
+import java.security.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sourceforge.pmd.FooRule;
+
 class Foo {
     private static final Method privateLookupInMethod;
 
@@ -1768,7 +1821,7 @@ class Foo {
                                                                String.class, byte[].class, Integer.TYPE, Integer.TYPE, ProtectionDomain.class);
                 }
             });
-            protectionDomain = getProtectionDomain(ReflectUtils.class);
+            protectionDomain = getProtectionDomain(Foo.class);
             AccessController.doPrivileged(new PrivilegedExceptionAction() {
                 public Object run() throws Exception {
                     Method[] methods = Object.class.getDeclaredMethods();
@@ -1891,17 +1944,19 @@ class Foo {
     <test-code>
         <description>FN with casts</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
-
+import static org.junit.Assert.assertSame;
 class Foo {
 
-	public void test() {
+	public void test(BeanFactory bf, Foo tb) {
 		// Two calls
-		OptionalCollectionResourceInjectionBean bean = (OptionalCollectionResourceInjectionBean) bf.getBean("annotatedBean");
-		bean = (OptionalCollectionResourceInjectionBean) bf.getBean("annotatedBean");
+		Foo bean = (Foo) bf.getBean("annotatedBean");
+		bean = (Foo) bf.getBean("annotatedBean");
 		assertSame(tb, bean.getTestBean());
 		assertSame(tb, bean.getTestBean2());
 	}
+	class BeanFactory { Object getBean(String name) {return null;}}
 }
         ]]></code>
     </test-code>
@@ -2036,6 +2091,7 @@ public class Foo {
         ++i;
         ++i;
     }
+    void foo(int i) {}
 }
         ]]></code>
     </test-code>
@@ -2052,6 +2108,7 @@ public class Foo {
         ++i;
         foo(++i);
     }
+    void foo(int i) {}
 }
         ]]></code>
     </test-code>
@@ -2073,6 +2130,7 @@ public class Foo {
         ++i;
         foo(++i);
     }
+    void foo(int i) {}
 }
         ]]></code>
     </test-code>
@@ -2093,6 +2151,7 @@ public class Foo {
         --i;
         foo(--i);
     }
+    void foo(int i) {}
 }
         ]]></code>
     </test-code>
@@ -2396,11 +2455,12 @@ class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             import static org.apache.commons.lang3.StringUtils.trimToNull;
+            import java.util.Set;
 
             public class DummyService {
 
                 public boolean dummyMethod(final String stringValue, final Set<String> dummySet) {
-                    final String trimmedValue = trimToNull(stringValue);
+                    final String trimmedValue = stringValue.trim();
                     return dummySet.stream()
                                    .noneMatch(value -> value.equalsIgnoreCase(trimmedValue));
                 }
@@ -2414,6 +2474,8 @@ class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class Test {
+                boolean[] digits;
+                int size;
                 public int indexOf(Object obj) {
                     // throws ClassCastException
                     Integer dig = (Integer)obj;
@@ -2437,8 +2499,9 @@ class Foo {
         <description>DataflowAnomalyAnalysis: DD false positive #400</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Test {
-                public T addS(List<T> args) {
+            public class Test<T> {
+                T zeroS() {return null;}
+                public T addS(java.util.List<T> args) {
                     T res = zeroS();//<res
                     for (T arg : args) {
                         res = res.add(arg);
@@ -2454,13 +2517,11 @@ class Foo {
         <description>DU Anomaly #1107</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Sample {
+public class Sample {
 
-                private static final LocalTime ONE_PAST_MIDNIGHT = MIDNIGHT.plusMinutes(1);
-
-                public ZonedDateTime sample(final String date, final ZonedDateTime paymentTimeStamp) {
-                    final ZonedDateTime startOfDayOnInceptionDate = zonedDateTimeAtOnePastMidnight(date, paymentTimeStamp.getZone());
-                    final ZonedDateTime startOfDayOnPaymentDate = zonedDateTimeAtOnePastMidnight(paymentTimeStamp.toLocalDate(), paymentTimeStamp.getZone());
+                public ZDT sample(final String date, final ZDT paymentTimeStamp) {
+                    final ZDT startOfDayOnInceptionDate = zonedDateTimeAtOnePastMidnight(date, paymentTimeStamp.getZone());
+                    final ZDT startOfDayOnPaymentDate = zonedDateTimeAtOnePastMidnight(paymentTimeStamp.toLocalDate(), paymentTimeStamp.getZone());
                     if (startOfDayOnInceptionDate.isAfter(paymentTimeStamp)) {
                         return startOfDayOnInceptionDate;
                     } else if (paymentTimeStamp.isAfter(startOfDayOnPaymentDate)) {
@@ -2470,13 +2531,24 @@ class Foo {
                     }
                 }
 
-                public ZonedDateTime zonedDateTimeAtOnePastMidnight(final String date, final ZoneId zoneId) {
+                public ZDT zonedDateTimeAtOnePastMidnight(final String date, final ZoneId zoneId) {
                     return zonedDateTimeAtOnePastMidnight(parseStringWithIsoDateFormat(date), zoneId);
                 }
 
-                private ZonedDateTime zonedDateTimeAtOnePastMidnight(final LocalDate localDate, final ZoneId zoneId) {
-                    return ZonedDateTime.of(localDate, ONE_PAST_MIDNIGHT, zoneId);
+                private ZDT zonedDateTimeAtOnePastMidnight(final LocalDate localDate, final ZoneId zoneId) {
+                    return ZDT.of(localDate, zoneId);
                 }
+
+                LocalDate parseStringWithIsoDateFormat(String s) {return null;}
+                static abstract class ZDT {
+                    abstract boolean isAfter(ZDT zdt);
+                    abstract boolean isBefore(ZDT zdt);
+                    abstract ZoneId getZone();
+                    abstract LocalDate toLocalDate();
+                    static ZDT of(LocalDate date, ZoneId zone) {return null;}
+                }
+                static class LocalDate { }
+                static enum ZoneId { }
             }
 
         ]]></code>
@@ -2487,15 +2559,18 @@ class Foo {
         <description>DataflowAnomalyAnalysis: DD false positive for arrays #1251</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+            import java.math.BigInteger;
             public class Test {
-                public void test() {
+                public void test(int x2) {
                     final BigInteger[] msg2 = new BigInteger[11];
-                    msg2[0] = G1.modPow(x2, OtrCryptoEngine.MODULUS);
+                    msg2[0] = modPow(x2, 4);
                     BigInteger[] res = proofKnowLog(x2, 3);
                     msg2[1] = res[0];
                     msg2[2] = res[1];
                     // etc.
                 }
+                BigInteger modPow(int x2, int op);
+                BigInteger[] proofKnowLog(int x2, int op);
             }
         ]]></code>
     </test-code>
@@ -2509,7 +2584,7 @@ class Foo {
                 private Fib() {}
 
                 public static int fib(final int n) {
-                    Preconditions.checkArgument(n >= 0);
+                    checkArgument(n >= 0);
 
                     if (n < 2) {
                         return n;
@@ -2534,18 +2609,19 @@ class Foo {
     <test-code>
         <description>false-positive in DD-part of DataflowAnomalyAnalysis #1675</description>
         <expected-problems>0</expected-problems>
-        <code><![CDATA[
-            public class Test {
-                public void test() {
+        <code><![CDATA[import java.lang.reflect.InvocationTargetException;
+
+public class Formatter {
+                public Formatter test(String formatterClassName) {
                     Formatter formatter = null;
                     if (formatterClassName != null) {
                         try {
-                            Class<? extends Formatter> formatterClass = findClass(formatterClassName);
+                            Class<? extends Formatter> formatterClass = (Class) Class.forName(formatterClassName);
                             formatter = formatterClass.getDeclaredConstructor().newInstance();
-                        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException ignored) {
+                        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException ignored) {
                         }
                     }
-                    setFormatter((formatter == null) ? new SimpleFormatter() : formatter);
+                    return ((formatter == null) ? new Formatter() : formatter);
                 }
             }
         ]]></code>
@@ -2554,22 +2630,31 @@ class Foo {
     <test-code>
         <description>DU false positive in DataflowAnomalyAnalysis #1682</description>
         <expected-problems>0</expected-problems>
-        <code><![CDATA[
-            public class Test {
-                public void append(LogEvent event) {
-                    String logMessage = wrapIn.wrap(new String(getLayout().toByteArray(event), getLayout().getCharset()));
-                    DiscordManager discordManager = findDiscordManager();
-                    if (discordManager == null) {
-                        bufferMessage(logMessage, event.getTimeMillis());
-                    } else {
-                        bufferedMessagesByAppenderName.computeIfPresent(getName(), (name, bufferedMessages) -> {
-                            bufferedMessages.forEach(bufferedMessage -> sendMessage(discordManager, bufferedMessage));
-                            return null;
-                        });
-                        sendMessage(discordManager, logMessage);
-                    }
-                }
-            }
+        <code><![CDATA[import java.util.Map;
+import java.util.List;
+
+public class Test {
+
+    Map<String, List<String>> bufferedMessages;
+
+    static class LogEvent { int timeMillis; String message; }
+    static class DiscordManager { }
+    void sendMessage(DiscordManager discordManager, String message) {}
+    void bufferMessage(String message, int time) {}
+
+    public void append(LogEvent event, DiscordManager discordManager) {
+        String logMessage = event.message;
+        if (discordManager == null) {
+            bufferMessage(logMessage, event.timeMillis);
+        } else {
+            bufferedMessages.computeIfPresent("getName()", (name, bufferedMessages) -> {
+                bufferedMessages.forEach(bufferedMessage -> sendMessage(discordManager, bufferedMessage));
+                return null;
+            });
+            sendMessage(discordManager, logMessage);
+        }
+    }
+}
         ]]></code>
     </test-code>
 
@@ -2619,8 +2704,6 @@ class Foo {
         <expected-problems>4</expected-problems>
         <code><![CDATA[
 
-            import static unknown.K.*;
-
             class Foo {
                 {
                     for (String s : someExpression()) {
@@ -2639,6 +2722,7 @@ class Foo {
 
                     }
                 }
+                @interface Annot {}
             }
 
         ]]></code>
@@ -2649,8 +2733,6 @@ class Foo {
         <description>Catch in loop</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-
-            import static unknown.K.*;
 
             class Foo {
                 {
@@ -2672,14 +2754,11 @@ class Foo {
         <description>Catch in loop (reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
             <message>Exception parameter 'e' is never used</message>
         </expected-messages>
         <code><![CDATA[
-
-            import static unknown.K.*;
-
             class Foo {
                 {
                     for (String s : someExpression()) {
@@ -2702,8 +2781,6 @@ class Foo {
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>6</expected-problems>
         <code><![CDATA[
-
-            import static unknown.K.*;
 
             class Foo {
                 void method(int i) {
@@ -2797,10 +2874,10 @@ class Foo {
     <test-code>
         <description>Test ignored name 0</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
             class Foo {
-                int method(int param) {
+                int method(int param, int other) {
                     return 2;
                 }
             }
@@ -2809,12 +2886,12 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Test ignored name 1</description>
+        <description>Test ignored name 1 (method param, reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             class Foo {
-                int method(int ignored) {
+                int method(int ignored, int unused) {
                     return 2;
                 }
             }
@@ -2823,7 +2900,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Test ignored name 2</description>
+        <description>Test ignored name 2 (single underscore, reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -2841,7 +2918,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Test ignored name 2</description>
+        <description>Test ignored name 3 (reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -2858,13 +2935,16 @@ class Foo {
                         return;
                     }
                 }
+                static class Something {
+                    static Something create() {}
+                }
             }
 
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Test ignored name 2</description>
+        <description>Test ignored name 3 (!reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">false</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -3179,6 +3259,181 @@ public class UnusedAssignmentNative {
                         }
                     }
                     return 0;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <!-- This was an unhandled edge case in PMD 6, fixed in PMD 7 -->
+        <description>Call chain with side-effects in try</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The initializer for variable 'a' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                int a() {
+                    int a = 10;
+                    try {
+                        // both method calls may throw, so a = 2 and a = 4 reach after the try,
+                        // but not a = 10
+                        "".substring(a = 2)
+                          .substring(a = 4);
+                    } catch (RuntimeException e) {
+
+                    }
+                    return a;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code regressionTest="false">
+        <!-- TODO for later -->
+        <description>Explicit this ctor call</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for field 'field' is never used (overwritten on line 10)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+
+                private int field = 0;
+
+                Test() {
+                    this(0);
+                }
+
+                Test(int i) {
+                    field = i;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field access on something else than this</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                int field;
+                void foo(Test t) {
+                    t.field = 2 * t.field;
+                    if (t.field > 5) {
+                        t.field = 5;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment to an ignorable prefix increment</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'd' is never used (overwritten on line 6)</message>
+            <message>The value assigned to variable 'd' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                static {
+                    int b = 0;
+                    int d = 0;
+                    {
+                        d = ++b;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Static field reassignment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'b' is never used (overwritten on line 4)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                static int b = 0;
+                static {
+                    b = 2;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static field reassignment with ctor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'b' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                static int b = 0;
+                Test() {
+                    System.out.println(b); // does not count as usage
+                }
+                static {
+                    b = 2;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Branches in switch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                private int getC(int c) { return c + 1; }
+                private int use(int cc) { return cc + 2; }
+                private String readUTF(int index, final int utfLen, final char[] buf) {
+                    int endIndex = index + utfLen;
+                    int c;
+                    char cc = 0;
+                    while (index < endIndex) {
+                        c = getC(index++);
+                        switch (st) {
+                        case 0:
+                            if (c < 0xE0 && c > 0xBF) cc = 1;
+                            else cc = 0;
+                            break;
+
+                        case 1:
+                            use(cc); break;
+
+                        case 2:
+                            cc = use(cc); break;
+                        }
+                    }
+                    return "";
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This field in method</description>
+        <!-- https://chunk.io/pmd/22cd54bf483045218e268ee7580716c6/diff2/spring-framework/index.html#A33 -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test<T> {
+                private final java.util.List<T> interceptors;
+                private int preProcessIndex = -1;
+
+                public void applyPreProcess(String request, java.util.concurrent.Callable<?> task) throws Exception {
+                    for (T interceptor : this.interceptors) {
+                        interceptor.preProcess(request, task);
+                        this.preProcessIndex++;
+                    }
                 }
             }
             ]]></code>

@@ -4,10 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Comparator;
+import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.util.CollectionUtil;
+
 /**
  * Represents the operator of an {@linkplain ASTInfixExpression infix expression}.
  * Constants are roughly ordered by precedence, except some of them have the same
- * precedence. TODO add method to compare precedence -> useful for UnnecessaryParenthesesRule
+ * precedence.
+ *
+ * <p>All of those operators are left-associative.
  *
  * @see UnaryOp
  * @see AssignmentOp
@@ -75,6 +85,9 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     /** Modulo {@code "%"} operator. */
     MOD("%");
 
+    /** Use with {@link #isInfixExprWithOperator(JavaNode, Set)}. */
+    public static final Set<BinaryOp> COMPARISON_OPS = CollectionUtil.immutableEnumSet(LE, GE, GT, LT);
+    public static final Set<BinaryOp> SHIFT_OPS = CollectionUtil.immutableEnumSet(LEFT_SHIFT, RIGHT_SHIFT, UNSIGNED_RIGHT_SHIFT);
 
     private final String code;
 
@@ -89,87 +102,117 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
         return code;
     }
 
-    /**
-     * Returns true if this is an equality operator, ie one of
-     * {@link #EQ}, or {@link #NE}.
-     */
-    public boolean isEquality() {
-        switch (this) {
-        case EQ:
-        case NE:
-            return true;
-        default:
-            return false;
-        }
-    }
-
-    /**
-     * Returns true if this is a relational operator, ie one of
-     * {@link #LE}, {@link #GE}, {@link #GT}, {@link #LT}, or {@link #INSTANCEOF}.
-     */
-    public boolean isRelational() {
-        switch (this) {
-        case LE:
-        case GE:
-        case GT:
-        case LT:
-        case INSTANCEOF:
-            return true;
-        default:
-            return false;
-        }
-    }
-
-    /**
-     * Returns true if this is a multiplicative operator, ie one of
-     * {@link #MUL}, {@link #DIV}, {@link #MOD}.
-     */
-    public boolean isMultiplicative() {
-        switch (this) {
-        case MUL:
-        case DIV:
-        case MOD:
-            return true;
-        default:
-            return false;
-        }
-    }
-
-
-    /**
-     * Returns true if this is a shift operator, ie one of
-     * {@link #LEFT_SHIFT}, {@link #RIGHT_SHIFT}, or {@link #UNSIGNED_RIGHT_SHIFT}.
-     */
-    public boolean isShift() {
-        switch (this) {
-        case LEFT_SHIFT:
-        case RIGHT_SHIFT:
-        case UNSIGNED_RIGHT_SHIFT:
-            return true;
-        default:
-            return false;
-        }
-    }
-
-    /**
-     * Returns true if this is a bitwise (or logical) operator, ie one
-     * of {@link #XOR}, {@link #AND}, or {@link #OR}.
-     */
-    public boolean isBitwise() {
-        switch (this) {
-        case XOR:
-        case AND:
-        case OR:
-            return true;
-        default:
-            return false;
-        }
-    }
 
     @Override
     public String toString() {
         return this.code;
     }
 
+    /**
+     * Compare the precedence of this operator with that of the other,
+     * as if with a {@link Comparator}. Returns a positive integer if
+     * this operator has a higher precedence as the argument, zero if
+     * they have the same precedence, etc.
+     *
+     * @throws NullPointerException If the argument is null
+     */
+    public int comparePrecedence(@NonNull BinaryOp other) {
+        // arguments are flipped because precedence class decreases
+        return Integer.compare(other.precedenceClass(), this.precedenceClass());
+    }
 
+    /**
+     * Returns true if this operator has the same relative precedence
+     * as the argument. For example, {@link #ADD} and {@link #SUB} have
+     * the same precedence.
+     *
+     * @throws NullPointerException If the argument is null
+     */
+    public boolean hasSamePrecedenceAs(@NonNull BinaryOp other) {
+        return comparePrecedence(other) == 0;
+    }
+
+    private int precedenceClass() {
+        switch (this) {
+        case CONDITIONAL_OR:
+            return 9;
+        case CONDITIONAL_AND:
+            return 8;
+        case OR:
+            return 7;
+        case XOR:
+            return 6;
+        case AND:
+            return 5;
+        case EQ:
+        case NE:
+            return 4;
+        case LE:
+        case GE:
+        case GT:
+        case LT:
+        case INSTANCEOF:
+            return 3;
+        case LEFT_SHIFT:
+        case RIGHT_SHIFT:
+        case UNSIGNED_RIGHT_SHIFT:
+            return 2;
+        case ADD:
+        case SUB:
+            return 1;
+        case MUL:
+        case DIV:
+        case MOD:
+            return 0;
+        default:
+            return -1;
+        }
+    }
+
+
+    /**
+     * Complement, for boolean operators. Eg for {@code ==}, return {@code !=},
+     * for {@code <=}, returns {@code >}. Returns null if this is another kind
+     * of operator.
+     */
+    public @Nullable BinaryOp getComplement() {
+        switch (this) {
+        case CONDITIONAL_OR: return CONDITIONAL_AND;
+        case CONDITIONAL_AND: return CONDITIONAL_OR;
+        case OR: return AND;
+        case AND: return OR;
+
+        case EQ: return NE;
+        case NE: return EQ;
+        case LE: return GT;
+        case GE: return LT;
+        case GT: return LE;
+        case LT: return GE;
+
+        default: return null;
+        }
+    }
+
+
+    /**
+     * Tests if the node is an {@link ASTInfixExpression} with one of the given operators.
+     */
+    public static boolean isInfixExprWithOperator(@Nullable JavaNode e, Set<BinaryOp> operators) {
+        if (e instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) e;
+            return operators.contains(infix.getOperator());
+        }
+        return false;
+    }
+
+    /**
+     * Tests if the node is an {@link ASTInfixExpression} with the given operator.
+     */
+    public static boolean isInfixExprWithOperator(@Nullable JavaNode e, BinaryOp operator) {
+        if (e instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) e;
+            return operator == infix.getOperator();
+        }
+        return false;
+    }
 }

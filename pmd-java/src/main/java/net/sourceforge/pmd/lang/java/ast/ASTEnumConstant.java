@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
 /**
@@ -22,7 +23,8 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
                InvocationNode,
                AccessNode,
                ASTBodyDeclaration,
-               InternalInterfaces.VariableIdOwner {
+               InternalInterfaces.VariableIdOwner,
+               JavadocCommentOwner {
 
     private OverloadSelectionResult result;
 
@@ -30,6 +32,10 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
         super(id);
     }
 
+    @Override
+    protected @Nullable JavaccToken getPreferredReportLocation() {
+        return getVarId().getFirstToken();
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

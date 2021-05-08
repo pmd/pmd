@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>sObject field (from controller) assigned to url variable in style tag (html encoded)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<apex:page>
+<style>
+ div {
+  background: url('{!HTMLENCODE(XSSHere)}');
+}
+</style>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>sObject field (from controller) assigned to url variable in style tag (JS encoded)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<apex:page>
+<style>
+ div {
+  background: url('{!JSENCODE(XSSHere)}');
+}
+</style>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>sObject field (from controller) assigned to url variable in style tag (JSINHTML encoded)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+<style>
+ div {
+  background: url('{!JSINHTMLENCODE(XSSHere)}');
+}
+</style>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>sObject field (from controller) assigned to url variable in style tag (URL encoded)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+<style>
+ div {
+  background: url('{!URLENCODE(XSSHere)}');
+}
+</style>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>sObject field (from controller) assigned to url variable in style tag</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<apex:page>
+<style>
+ div {
+  background: url('{!XSSHere}');
+}
+</style>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>sObject field (from controller) assigned to variable in style tag</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<apex:page>
+<style>
+a { {!XSSHere} }
+</style>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>sObject field (from controller) assigned to variable in style tag with some encoding</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+<style>
+a { {!JSENCODE(XSSHere)} }
+</style>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>EL assigned to url variable in style tag within a safe resource</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+<style>
+ div {
+  background:url({!URLFOR($Resource.valid)});
+}
+</style>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+</test-data>

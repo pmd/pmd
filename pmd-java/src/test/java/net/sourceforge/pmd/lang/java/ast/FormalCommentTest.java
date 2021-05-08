@@ -4,16 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
-public class FormalCommentTest {
+public class FormalCommentTest extends BaseParserTest {
 
     @Test
     public void testJavadocTagsAsChildren() {
-        String comment = "    /**\n"
+        ASTCompilationUnit acu = java.parse(
+            "interface Metric {"
+                + "   /**\n"
                 + "     * Checks if the metric can be computed on the node.\n"
                 + "     *\n"
                 + "     * @param node The node to check\n"
@@ -21,10 +25,20 @@ public class FormalCommentTest {
                 + "     * @return True if the metric can be computed\n"
                 + "     */\n"
                 + "    boolean supports(N node);\n"
-                + "";
+                + "}");
 
-        JavaccToken token = new JavaccToken(comment);
-        FormalComment commentNode = new FormalComment(token);
+        ASTType booleanT = acu.descendants(ASTType.class).firstOrThrow();
+        JavaccToken firstToken = booleanT.getFirstToken();
+        assertEquals("Boolean", JavaTokenKinds.BOOLEAN, firstToken.kind);
+        JavaccToken comment = firstToken.getPreviousComment();
+        assertEquals("Implicit modifier list", JavaccToken.IMPLICIT_TOKEN, comment.kind);
+        comment = comment.getPreviousComment();
+        assertEquals("Whitespace", JavaTokenKinds.WHITESPACE, comment.kind);
+        assertEquals("\n    ", comment.getImage());
+        comment = comment.getPreviousComment();
+        assertEquals("Formal comment", JavaTokenKinds.FORMAL_COMMENT, comment.kind);
+
+        FormalComment commentNode = new FormalComment(comment);
 
         Assert.assertEquals(2, commentNode.getNumChildren());
 

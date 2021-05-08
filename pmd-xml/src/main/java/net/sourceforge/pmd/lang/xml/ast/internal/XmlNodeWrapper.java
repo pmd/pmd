@@ -5,19 +5,22 @@
 package net.sourceforge.pmd.lang.xml.ast.internal;
 
 
-import java.util.ArrayList;
+import static java.util.Collections.emptyIterator;
+
+import java.util.AbstractList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
-import net.sourceforge.pmd.util.CompoundIterator;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
@@ -61,7 +64,7 @@ class XmlNodeWrapper implements XmlNode {
         }
         NodeList childNodes = parent.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
-            if (node == childNodes.item(i)) {
+            if (node == childNodes.item(i)) { // NOPMD CompareObjectsWithEquals
                 return i;
             }
         }
@@ -118,47 +121,36 @@ class XmlNodeWrapper implements XmlNode {
 
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
-        List<Iterator<Attribute>> iterators = new ArrayList<>();
-
-        // Expose DOM Attributes
-        final NamedNodeMap attributes = node.getAttributes();
-        iterators.add(new Iterator<Attribute>() {
-            private int index;
-
-
-            @Override
-            public boolean hasNext() {
-                return attributes != null && index < attributes.getLength();
-            }
-
-
-            @Override
-            public Attribute next() {
-                org.w3c.dom.Node attributeNode = attributes.item(index++);
-                return new Attribute(XmlNodeWrapper.this,
-                                     attributeNode.getNodeName(),
-                                     attributeNode.getNodeValue());
-            }
-
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        });
 
         // Expose Text/CDATA nodes to have an 'Image' attribute like AST Nodes
         if (node instanceof Text) {
-            iterators.add(Collections.singletonList(new Attribute(this, "Image", ((Text) node).getData())).iterator());
+            return Collections.singletonList(new Attribute(this, "Image", ((Text) node).getData())).iterator();
         }
 
-        // Expose Java Attributes
-        // iterators.add(new AttributeAxisIterator((net.sourceforge.pmd.lang.ast.Node) p));
+        // Expose DOM Attributes
+        if (node.getAttributes() == null) {
+            return emptyIterator();
+        } else {
+            return IteratorUtil.map(
+                asList(node.getAttributes()).iterator(),
+                n -> new Attribute(this, n.getNodeName(), n.getNodeValue())
+            );
+        }
+    }
 
-        @SuppressWarnings("unchecked")
-        Iterator<Attribute>[] it = new Iterator[iterators.size()];
+    private static List<Node> asList(NamedNodeMap nodeList) {
+        return new AbstractList<Node>() {
+            @Override
+            public Node get(int index) {
+                return nodeList.item(index);
+            }
 
-        return new CompoundIterator<>(iterators.toArray(it));
+
+            @Override
+            public int size() {
+                return nodeList.getLength();
+            }
+        };
     }
 
     @Override

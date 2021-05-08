@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.util;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,6 +51,7 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
 @Deprecated
 @InternalApi
 public final class CollectionUtil {
+
     private static final int UNKNOWN_SIZE = -1;
 
     @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
@@ -140,7 +142,6 @@ public final class CollectionUtil {
         }
         return map;
     }
-
 
 
     /**
@@ -251,6 +252,17 @@ public final class CollectionUtil {
         return Collections.unmodifiableSet(union);
     }
 
+    /**
+     * Returns an unmodifiable set containing the given elements.
+     *
+     * @param first First element
+     * @param rest  Following elements
+     */
+    @SafeVarargs
+    public static <T extends Enum<T>> Set<T> immutableEnumSet(T first, T... rest) {
+        return Collections.unmodifiableSet(EnumSet.of(first, rest));
+    }
+
 
     @SafeVarargs
     public static <T> List<T> listOf(T first, T... rest) {
@@ -259,7 +271,7 @@ public final class CollectionUtil {
         }
         List<T> union = new ArrayList<>();
         union.add(first);
-        union.addAll(Arrays.asList(rest));
+        union.addAll(asList(rest));
         return Collections.unmodifiableList(union);
     }
 
@@ -294,6 +306,23 @@ public final class CollectionUtil {
         return newM;
     }
 
+    /**
+     * Returns an unmodifiable set containing the set union of the collection,
+     * and the new elements.
+     */
+    @SafeVarargs
+    @SuppressWarnings("unchecked")
+    public static <V> Set<V> setUnion(Collection<? extends V> set, V first, V... newElements) {
+        if (set instanceof PSet) {
+            return ((PSet<V>) set).plus(first).plusAll(asList(newElements));
+        }
+        Set<V> newSet = new LinkedHashSet<>(set.size() + 1 + newElements.length);
+        newSet.addAll(set);
+        newSet.add(first);
+        Collections.addAll(newSet, newElements);
+        return Collections.unmodifiableSet(newSet);
+    }
+
 
     /**
      * Returns a map associating each key in the first list to its
@@ -308,7 +337,7 @@ public final class CollectionUtil {
         AssertionUtil.requireParamNotNull("values", to);
         Validate.isTrue(from.size() == to.size(), "Mismatched list sizes %s to %s", from, to);
 
-        if (from.isEmpty()) {
+        if (from.isEmpty()) { //NOPMD: we really want to compare references here
             return emptyMap();
         }
 
@@ -397,7 +426,7 @@ public final class CollectionUtil {
         if (from == null) {
             return emptyList();
         }
-        return map(Arrays.asList(from), f);
+        return map(asList(from), f);
     }
 
     /**
@@ -459,16 +488,19 @@ public final class CollectionUtil {
      * @param <T> Type of accumulated values
      */
     public static <T> Collector<T, ?, List<T>> toMutableList() {
-        return Collector.<T, ArrayList<T>, List<T>>of(
-            ArrayList::new,
-            ArrayList::add,
-            (left, right) -> {
-                left.addAll(right);
-                return left;
-            },
-            a -> a,
-            Characteristics.IDENTITY_FINISH
-        );
+        return Collectors.toCollection(ArrayList::new);
+    }
+
+
+    /**
+     * A collector that returns a mutable set. This contrasts with
+     * {@link Collectors#toSet()}, which makes no guarantee about the
+     * mutability of the set.
+     *
+     * @param <T> Type of accumulated values
+     */
+    public static <T> Collector<T, ?, Set<T>> toMutableSet() {
+        return Collectors.toCollection(HashSet::new);
     }
 
     /**
@@ -490,6 +522,7 @@ public final class CollectionUtil {
      */
     public static <T> Collector<T, ?, PSet<T>> toPersistentSet() {
         class Holder {
+
             MapPSet<T> set = HashTreePSet.empty();
         }
 
@@ -567,5 +600,41 @@ public final class CollectionUtil {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Returns an unmodifiable copy of the list. This is to be preferred
+     * to {@link Collections#unmodifiableList(List)} if you don't trust
+     * the source of the list, because no one holds a reference to the buffer
+     * except the returned unmodifiable list.
+     *
+     * @param list A list
+     * @param <T>  Type of items
+     */
+    public static <T> List<T> defensiveUnmodifiableCopy(List<? extends T> list) {
+        if (list.isEmpty()) {
+            return emptyList();
+        }
+        return Collections.unmodifiableList(new ArrayList<>(list));
+    }
+
+    /**
+     * Like {@link String#join(CharSequence, Iterable)}, except it appends
+     * on a preexisting {@link StringBuilder}. The result value is that StringBuilder.
+     */
+    public static <T> StringBuilder joinOn(StringBuilder sb,
+                                           Iterable<? extends T> iterable,
+                                           BiConsumer<? super StringBuilder, ? super T> appendItem,
+                                           String delimiter) {
+        boolean first = true;
+        for (T t : iterable) {
+            appendItem.accept(sb, t);
+            if (first) {
+                first = false;
+            } else {
+                sb.append(delimiter);
+            }
+        }
+        return sb;
     }
 }

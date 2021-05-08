@@ -6,28 +6,6 @@ layout: default
    <h1 class="post-title-main">{{ page.title }}</h1>
 </div>
 
-{% if page.simple_map == true %}
-
-<script>
-    $(document).ready ( function(){
-        $('.box{{page.box_number}}').addClass('active');
-    });
-</script>
-
-{% include custom/{{page.map_name}}.html %}
-
-{% elsif page.complex_map == true %}
-
-<script>
-    $(document).ready ( function(){
-        $('.modalButton{{page.box_number}}').addClass('active');
-    });
-</script>
-
-{% include custom/{{page.map_name}}.html %}
-
-{% endif %}
-
 <div class="post-content">
 
    {% if page.summary %}
@@ -45,8 +23,9 @@ layout: default
         {% if page.editmepath %}
             {% assign editmepath = page.editmepath %}
         {% endif %}
-
-    <a target="_blank" href="https://github.com/{{site.github_editme_path}}{{editmepath}}" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+        {% unless page.editmepath == false %}
+        <a target="_blank" href="https://github.com/{{site.github_editme_path}}{{editmepath}}" class="btn btn-outline-secondary githubEditButton" role="button"><i class="fab fa-github fa-lg"></i> Edit me</a>
+        {% endunless %}
 
     {% endif %}
 
@@ -58,13 +37,11 @@ layout: default
         {% assign projectTags = site.data.tags.allowed-tags %}
         {% for tag in page.tags %}
         {% if projectTags contains tag %}
-        <a href="{{ "tag_" | append: tag | append: ".html" }}" class="btn btn-default navbar-btn cursorNorm" role="button">{{page.tagName}}{{tag}}</a>
+        <a href="{{ "tag_" | append: tag | append: ".html" }}" class="btn btn-outline-secondary navbar-btn cursorNorm" role="button">{{page.tagName}}{{tag}}</a>
         {% endif %}
         {% endfor %}
         {% endif %}
     </div>
-
-{% include disqus.html %}
 
 </div>
 

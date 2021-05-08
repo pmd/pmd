@@ -59,17 +59,17 @@ public class TypeResTestRule extends AbstractJavaRule {
 
     private State state = new State();
 
-    private static final boolean IS_SINGLE_FILE;
+    private static final boolean PRINT_ALL_UNRESOLVED;
 
 
     static {
-        IS_SINGLE_FILE = "true".equalsIgnoreCase(System.getProperties().getOrDefault("PRINT_ALL_UNRESOLVED", "").toString());
+        PRINT_ALL_UNRESOLVED = Boolean.parseBoolean(System.getProperties().getOrDefault("PRINT_ALL_UNRESOLVED", "true").toString());
     }
 
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        FILENAME.set(((RuleContext) data).getSourceCodeFile().toString());
+        FILENAME.set(node.getAstInfo().getFileName());
         for (JavaNode descendant : node.descendants().crossFindBoundaries()) {
             visitJavaNode(descendant, data);
         }
@@ -84,8 +84,8 @@ public class TypeResTestRule extends AbstractJavaRule {
                 JTypeMirror t = ((TypeNode) node).getTypeMirror();
                 TypeSystem ts = t.getTypeSystem();
                 if (t == ts.ERROR || t == ts.UNKNOWN) {
-                    if (true) {
-                        System.err.println("Unresolved at " + position(node, data) + "\t"
+                    if (PRINT_ALL_UNRESOLVED) {
+                        System.err.println("Unresolved at " + position(node) + "\t"
                                                + StringUtil.escapeJava(StringUtils.truncate(node.toString(), 100)));
                     }
                     state.numUnresolved++;
@@ -93,7 +93,7 @@ public class TypeResTestRule extends AbstractJavaRule {
                     state.numResolved++;
                 }
             } catch (Throwable e) {
-                System.err.println(position(node, data));
+                System.err.println(position(node));
                 e.printStackTrace();
                 state.numerrors++;
                 if (e instanceof Error) {
@@ -106,14 +106,9 @@ public class TypeResTestRule extends AbstractJavaRule {
     }
 
 
-    private static boolean isUnresolved(@NonNull JTypeMirror s) {
-        TypeSystem ts = s.getTypeSystem();
-        return s == ts.UNKNOWN || s == ts.ERROR || s.getSymbol() != null && s.getSymbol().isUnresolved();
-    }
-
     @NonNull
-    public String position(JavaNode node, Object data) {
-        return "In: " + ((RuleContext) data).getSourceCodeFile() + ":" + node.getBeginLine() + ":" + node.getBeginColumn();
+    public String position(JavaNode node) {
+        return "In: " + node.getAstInfo().getFileName() + ":" + node.getBeginLine() + ":" + node.getBeginColumn();
     }
 
     @Override

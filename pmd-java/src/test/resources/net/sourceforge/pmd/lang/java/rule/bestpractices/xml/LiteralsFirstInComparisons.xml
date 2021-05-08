@@ -30,10 +30,10 @@ public class Foo {
 
     <test-code>
         <description>ok, empty literal in .equals comparison</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>4</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    void bar(String str) {
         if ((str == null) || (str.equals(""))) {
             str = "snafu";
         }
@@ -55,9 +55,10 @@ public class Foo {
         <description>Test case from bug [1472195] - PositionLiteralsFirstInComparisons gives many .equals false positives</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
 public class Foo
 {
-    public void bug()
+    public void bug(Number number)
     {
         if (number.equals(new BigDecimal("123"))) {}
     }
@@ -139,6 +140,7 @@ public class Foo {
         <description>Test case from bug [1472195] - PositionLiteralsFirstInComparisons gives many .equalsIgnoreCase false positives</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
 public class Foo
 {
     public void bug()
@@ -280,10 +282,11 @@ public class Foo {
         <description>bad, testing false negative at the end of a chain</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.io.File;
 public class Foo {
     public boolean bar() {
         File f;
-        return f.getFileType().equals("testStr");
+        return f.getParent().equals("testStr");
     }
 }
         ]]></code>
@@ -314,6 +317,76 @@ public class Foo {
     public void bar() {
         if (getStr("b").equals("ab")) { }   // nok
         if ("ab".equals(getStr("b"))) { }   // ok
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with unresolved types</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.util.Map;
+import my.Unknown;
+class Foo {
+    public void testObjectArray(Unknown uk) {
+        Unknown hasMap = (Unknown) this.beanFactory.getBean("literalMap");
+        assertTrue(hasMap.getMap().size() == 3);
+        assertTrue(hasMap.getMap().get("foo").equals("bar"));
+        assertTrue(hasMap.getMap().get("fi").equals("fum"));
+        assertTrue(hasMap.getMap().get("fa") == null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#575 LiteralsFirstInComparisons to consider constant fields, i.e. static final Strings</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final String TEST_CONSTANT = "Test-Constant";
+    public boolean test(String someString) {
+        return someString.equals(TEST_CONSTANT);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#575 LiteralsFirstInComparisons must not trigger if the field is not final</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static String TEST_CONSTANT = "Test-Constant";
+    public boolean test(String someString) {
+        return someString.equals(TEST_CONSTANT);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#575 LiteralsFirstInComparisons must not trigger if the field is not static</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final String TEST_CONSTANT = "Test-Constant";
+    public boolean test(String someString) {
+        return someString.equals(TEST_CONSTANT);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#575 LiteralsFirstInComparisons must not trigger if the constant field is not a String</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final Integer TEST_CONSTANT = 5;
+    public boolean test(String someString) {
+        return someString.equals(TEST_CONSTANT);
     }
 }
         ]]></code>

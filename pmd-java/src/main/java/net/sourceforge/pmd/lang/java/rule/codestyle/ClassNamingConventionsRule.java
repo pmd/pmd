@@ -8,14 +8,11 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -33,82 +30,24 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
 
     public ClassNamingConventionsRule() {
+        super(ASTClassOrInterfaceDeclaration.class,
+              ASTEnumDeclaration.class,
+              ASTAnnotationTypeDeclaration.class,
+              ASTRecordDeclaration.class);
         definePropertyDescriptor(classRegex);
         definePropertyDescriptor(abstractClassRegex);
         definePropertyDescriptor(interfaceRegex);
         definePropertyDescriptor(enumerationRegex);
         definePropertyDescriptor(annotationRegex);
         definePropertyDescriptor(utilityClassRegex);
-
-        addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
-        addRuleChainVisit(ASTEnumDeclaration.class);
-        addRuleChainVisit(ASTAnnotationTypeDeclaration.class);
     }
-
-
-    // This could probably be moved to ClassOrInterfaceDeclaration
-    // to share the implementation and be used from XPath
-    private boolean isUtilityClass(ASTAnyTypeDeclaration node) {
-        if (node.isInterface() || node.isEnum()) {
-            return false;
-        }
-
-        ASTClassOrInterfaceDeclaration classNode = (ASTClassOrInterfaceDeclaration) node;
-
-        // A class with a superclass or interfaces should not be considered
-        if (classNode.getSuperClassTypeNode() != null
-                || !classNode.getSuperInterfaceTypeNodes().isEmpty()) {
-            return false;
-        }
-
-        // A class without declarations shouldn't be reported
-        boolean hasAny = false;
-
-        for (ASTBodyDeclaration declNode : classNode.getDeclarations()) {
-            if (declNode instanceof ASTFieldDeclaration
-                || declNode instanceof ASTMethodDeclaration) {
-
-                hasAny = isNonPrivate(declNode) && !isMainMethod(declNode);
-                if (!((AccessNode) declNode).isStatic()) {
-                    return false;
-                }
-
-            } else if (declNode instanceof ASTInitializer) {
-                if (!((ASTInitializer) declNode).isStatic()) {
-                    return false;
-                }
-            }
-        }
-
-        return hasAny;
-    }
-
-    private boolean isNonPrivate(ASTBodyDeclaration decl) {
-        return !((AccessNode) decl).isPrivate();
-    }
-
-
-    private boolean isMainMethod(ASTBodyDeclaration bodyDeclaration) {
-        if (!(bodyDeclaration instanceof ASTMethodDeclaration)) {
-            return false;
-        }
-
-        ASTMethodDeclaration decl = (ASTMethodDeclaration) bodyDeclaration;
-
-        return decl.isStatic()
-                && "main".equals(decl.getName())
-                && decl.getResultType().isVoid()
-                && decl.getFormalParameters().size() == 1
-                && String[].class.equals(decl.getFormalParameters().iterator().next().getType());
-    }
-
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 
         if (node.isAbstract()) {
             checkMatches(node, abstractClassRegex, data);
-        } else if (isUtilityClass(node)) {
+        } else if (JavaRuleUtil.isUtilityClass(node)) {
             checkMatches(node, utilityClassRegex, data);
         } else if (node.isInterface()) {
             checkMatches(node, interfaceRegex, data);
@@ -126,6 +65,11 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         return data;
     }
 
+    @Override
+    public Object visit(ASTRecordDeclaration node, Object data) {
+        checkMatches(node, classRegex, data); // property?
+        return data;
+    }
 
     @Override
     public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
@@ -139,9 +83,14 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         return PASCAL_CASE;
     }
 
+    @Override
+    String nameExtractor(ASTAnyTypeDeclaration node) {
+        return node.getSimpleName();
+    }
+
 
     @Override
     String kindDisplayName(ASTAnyTypeDeclaration node, PropertyDescriptor<Pattern> descriptor) {
-        return isUtilityClass(node) ? "utility class" : PrettyPrintingUtil.kindName(node);
+        return JavaRuleUtil.isUtilityClass(node) ? "utility class" : PrettyPrintingUtil.getPrintableNodeKind(node);
     }
 }

@@ -4,15 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -22,10 +27,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -64,7 +70,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         } else if (node instanceof ASTMethodDeclaration) {
             return TreeIconId.METHOD;
         } else if (node instanceof ASTConstructorDeclaration
-            || node instanceof ASTRecordConstructorDeclaration) {
+            || node instanceof ASTCompactConstructorDeclaration) {
             return TreeIconId.CONSTRUCTOR;
         } else if (node instanceof ASTVariableDeclaratorId) {
             return TreeIconId.VARIABLE;
@@ -74,33 +80,39 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
 
     @Override
     public Collection<AdditionalInfo> getAdditionalInfo(Node node) {
+        List<AdditionalInfo> info = new ArrayList<>(super.getAdditionalInfo(node));
         if (node instanceof ASTLambdaExpression) {
             ASTLambdaExpression lambda = (ASTLambdaExpression) node;
-            return listOf(
-                new AdditionalInfo("Type: " + lambda.getTypeMirror()),
-                new AdditionalInfo("Function type: " + lambda.getFunctionalMethod())
-            );
-        } else if (node instanceof ASTMethodReference) {
-            ASTMethodReference lambda = (ASTMethodReference) node;
-            return listOf(
-                new AdditionalInfo("Type: " + lambda.getTypeMirror()),
-                new AdditionalInfo("Function type: " + lambda.getFunctionalMethod()),
-                new AdditionalInfo("CTDecl: " + lambda.getReferencedMethod())
-            );
-        } else if (node instanceof InvocationNode) {
-            InvocationNode invoc = (InvocationNode) node;
-            return listOf(
-                new AdditionalInfo("Type: " + invoc.getTypeMirror()),
-                new AdditionalInfo("Function: " + invoc.getMethodType()),
-                new AdditionalInfo("VarargsCall: " + invoc.getOverloadSelectionInfo().isVarargsCall()),
-                new AdditionalInfo("Unchecked: " + invoc.getOverloadSelectionInfo().needsUncheckedConversion()),
-                new AdditionalInfo("Failed: " + invoc.getOverloadSelectionInfo().isFailed())
-            );
-        } else if (node instanceof TypeNode) {
-            JTypeMirror typeMirror = ((TypeNode) node).getTypeMirror();
-            return Collections.singletonList(new AdditionalInfo("Type: " + typeMirror));
+            info.add(new AdditionalInfo("Function type: " + lambda.getFunctionalMethod()));
         }
-        return super.getAdditionalInfo(node);
+        if (node instanceof ASTMethodReference) {
+            ASTMethodReference lambda = (ASTMethodReference) node;
+            info.add(new AdditionalInfo("Function type: " + lambda.getFunctionalMethod()));
+            info.add(new AdditionalInfo("CTDecl: " + lambda.getReferencedMethod()));
+        }
+        if (node instanceof InvocationNode) {
+            InvocationNode invoc = (InvocationNode) node;
+            info.add(new AdditionalInfo("Function: " + invoc.getMethodType()));
+            info.add(new AdditionalInfo("VarargsCall: " + invoc.getOverloadSelectionInfo().isVarargsCall()));
+            info.add(new AdditionalInfo("Unchecked: " + invoc.getOverloadSelectionInfo().needsUncheckedConversion()));
+            info.add(new AdditionalInfo("Failed: " + invoc.getOverloadSelectionInfo().isFailed()));
+        }
+        if (node instanceof TypeNode) {
+            JTypeMirror typeMirror = ((TypeNode) node).getTypeMirror();
+            info.add(new AdditionalInfo("Type: " + typeMirror));
+        }
+        if (node instanceof AccessNode) {
+            String effective = formatModifierSet(((AccessNode) node).getModifiers().getEffectiveModifiers());
+            String explicit = formatModifierSet(((AccessNode) node).getModifiers().getExplicitModifiers());
+            info.add(new AdditionalInfo("pmd-java:modifiers(): " + effective));
+            info.add(new AdditionalInfo("pmd-java:explicitModifiers(): " + explicit));
+        }
+        return info;
+    }
+
+    @NonNull
+    private String formatModifierSet(Set<JModifier> modifierSet) {
+        return modifierSet.stream().map(JModifier::toString).collect(Collectors.joining(", ", "(", ")"));
     }
 
     @Override

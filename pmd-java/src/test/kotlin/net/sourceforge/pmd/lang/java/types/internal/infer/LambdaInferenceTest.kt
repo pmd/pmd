@@ -17,6 +17,7 @@ import java.util.function.DoubleConsumer
 import java.util.function.Supplier
 import kotlin.test.assertEquals
 
+@Suppress("UNUSED_VARIABLE")
 class LambdaInferenceTest : ProcessorTestSpec({
 
 
@@ -42,13 +43,13 @@ class LambdaInferenceTest : ProcessorTestSpec({
 
         node.shouldMatchN {
             methodCall("collect") {
-                it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[int.box()] } // List<Integer>
+                it shouldHaveType with(it.typeDsl) { gen.t_List[int.box()] } // List<Integer>
 
                 it::getQualifier shouldBe methodCall("peek") {
-                    it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
+                    it shouldHaveType with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
 
                     it::getQualifier shouldBe methodCall("of") {
-                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
+                        it shouldHaveType with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
                         it::getQualifier shouldBe typeExpr {
                             qualClassType("java.util.stream.Stream")
                         }
@@ -101,13 +102,13 @@ class LambdaInferenceTest : ProcessorTestSpec({
 
         node.shouldMatchN {
             methodCall("collect") {
-                it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[ts.UNKNOWN] } // List</*unresolved*/>
+                it shouldHaveType with(it.typeDsl) { gen.t_List[ts.UNKNOWN] } // List</*unresolved*/>
 
                 it::getQualifier shouldBe methodCall("map") {
-                    it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[ts.UNKNOWN] } // Stream</*unresolved*/>
+                    it shouldHaveType with(it.typeDsl) { gen.t_Stream[ts.UNKNOWN] } // Stream</*unresolved*/>
 
                     it::getQualifier shouldBe methodCall("of") {
-                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
+                        it shouldHaveType with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
                         it::getQualifier shouldBe typeExpr {
                             qualClassType("java.util.stream.Stream")
                         }
@@ -176,7 +177,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
                         lambdaFormals(1)
                         methodCall("length") {
                             variableAccess("s") {
-                                it.typeMirror shouldBe it.typeSystem.STRING
+                                it shouldHaveType it.typeSystem.STRING
                             }
                             argList(0)
                         }
@@ -226,7 +227,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
                         lambdaFormals(1)
                         methodCall("length") {
                             variableAccess("s") {
-                                it.typeMirror shouldBe it.typeSystem.STRING
+                                it shouldHaveType it.typeSystem.STRING
                             }
                             argList(0)
                         }
@@ -269,13 +270,13 @@ class LambdaInferenceTest : ProcessorTestSpec({
                         lambdaFormals(1)
 
                         fieldAccess("i") {
-                            it.typeMirror shouldBe it.typeSystem.INT
+                            it shouldHaveType it.typeSystem.INT
                             constructorCall {
                                 variableAccess("s") {
-                                    it.typeMirror shouldBe t_Scratch
+                                    it shouldHaveType t_Scratch
                                 }
                                 classType("WithField") {
-                                    it.typeMirror shouldBe t_WithField
+                                    it shouldHaveType t_WithField
                                 }
                                 argList(0)
                             }
@@ -323,10 +324,10 @@ class LambdaInferenceTest : ProcessorTestSpec({
                         lambdaFormals(1)
 
                         fieldAccess("i") {
-                            it.typeMirror shouldBe it.typeSystem.INT
+                            it shouldHaveType it.typeSystem.INT
                             methodCall("fetch") {
                                 variableAccess("s") {
-                                    it.typeMirror shouldBe t_Scratch
+                                    it shouldHaveType t_Scratch
                                 }
                                 argList(0)
                             }
@@ -674,6 +675,54 @@ class NodeStream<T> {
                 )
                 it shouldHaveType t_Iterator[rvar]
             }
+        }
+    }
+
+    parserTest("Lambda bug with nested lambdas") {
+
+        fun makeTest(insideOut: Boolean) {
+
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+                        interface Function<U,V> {
+                            V apply(U u);
+                        }
+
+                        class Scratch {
+
+                            <T> void chainingWithLambda(Function<?, ? extends T> f) {
+                                this.<Function<Scratch, String>>chainingWithLambda(x -> y -> y.contains(0));
+                            }
+                        }
+                """.trimIndent()
+            )
+
+            val (t_Function, t_Scratch) = acu.declaredTypeSignatures()
+            val (lambdaX, lambdaY) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries()
+                .toList()
+
+
+            spy.shouldBeOk {
+                val t_lambdaY = t_Function[t_Scratch, ts.STRING]
+                val t_lambdaX = t_Function[ts.OBJECT, t_lambdaY]
+
+                if (insideOut) {
+                    lambdaY shouldHaveType t_lambdaY
+                    lambdaX shouldHaveType t_lambdaX
+                } else {
+                    lambdaX shouldHaveType t_lambdaX
+                    lambdaY shouldHaveType t_lambdaY
+                }
+            }
+        }
+
+
+        doTest("Outside in") {
+            makeTest(false)
+        }
+
+        doTest("Inside out") {
+            makeTest(true)
         }
     }
 

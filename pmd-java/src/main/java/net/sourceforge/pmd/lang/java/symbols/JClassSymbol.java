@@ -167,6 +167,14 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         return null;
     }
 
+    /**
+     * Returns a set with all enum constant names. If this symbol does
+     * not represent an enum, returns null.
+     */
+    default @Nullable Set<String> getEnumConstantNames() {
+        return null;
+    }
+
 
     /** Returns the list of super interface types, under the given substitution. */
     List<JClassType> getSuperInterfaceTypes(Substitution substitution);

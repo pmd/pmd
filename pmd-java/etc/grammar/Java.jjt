@@ -1,4 +1,16 @@
 /**
+ * Fix #3117 - infinite loop when parsing invalid code nested in lambdas
+ * Andreas Dangel 03/2021
+ *====================================================================
+ * Fix #3145 - parse exception with local records
+ * Clément Fournier 03/2021
+ *====================================================================
+ * Remove support for Java 14 preview language features
+ * JEP 397: Sealed Classes (Second Preview) for Java16 Preview
+ * JEP 395: Records for Java16
+ * JEP 394: Pattern Matching for instanceof for Java16
+ * Andreas Dangel 02/2021
+ *====================================================================
  * Remove support for Java 13 preview language features.
  * Promote text blocks as a permanent language features with Java 15.
  * Support Pattern Matching for instanceof with Java 15 Preview.
@@ -226,6 +238,11 @@ options {
   VISITOR = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
 
+  // disable the calculation of expected tokens when a parse error occurs
+  // depending on the possible allowed next tokens, this
+  // could be expensive (see https://github.com/pmd/pmd/issues/3117)
+  //ERROR_REPORTING = false;
+
   //DEBUG_PARSER = true;
   //DEBUG_LOOKAHEAD = true;
   //DEBUG_TOKEN_MANAGER = true;
@@ -273,7 +290,7 @@ class JavaParserImpl {
 
 
   private boolean isRecordTypeSupported() {
-    return (jdkVersion == 14 || jdkVersion == 15) && preview;
+    return jdkVersion == 15 && preview || jdkVersion >= 16;
   }
 
   private boolean localTypesSupported() {
@@ -281,9 +298,8 @@ class JavaParserImpl {
   }
 
   private boolean isSealedClassSupported() {
-      return jdkVersion == 15 && preview;
+      return jdkVersion == 15 && preview || jdkVersion == 16 && preview;
   }
-
 
   /**
    * Keeps track during tree construction, whether we are currently building a switch label.
@@ -294,7 +310,6 @@ class JavaParserImpl {
    * See also comment at #Expression().
    */
   private boolean inSwitchLabel = false;
-
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -308,7 +323,7 @@ class JavaParserImpl {
   }
 
   private boolean isRecordStart() {
-    return isRecordTypeSupported() && isKeyword("record");
+    return isRecordTypeSupported() && isKeyword("record") && isToken(2, IDENTIFIER);
   }
 
   private boolean isEnumStart() {
@@ -377,8 +392,7 @@ class JavaParserImpl {
               next.kind == INTERFACE
            || next.kind == AT && isToken(2, INTERFACE)
            || next.kind == IDENTIFIER && next.getImage().equals("enum")
-           ||
-           next.kind == IDENTIFIER && next.image.equals("record")
+           || next.kind == IDENTIFIER && next.getImage().equals("record") && isToken(2, IDENTIFIER)
       );
   }
 
@@ -484,6 +498,32 @@ class JavaParserImpl {
         emptyMods.setLastToken(tok);
 
         jjtree.pushNode(emptyMods);
+  }
+
+  private void insertEmptyModifierListWithAnnotations(AbstractJavaNode node, AbstractJavaNode nodeWithAnnotations) {
+        ASTModifierList emptyMods = new ASTModifierList(JJTMODIFIERLIST);
+
+        emptyMods.setDeclaredModifiers(Collections.emptySet());
+
+        JavaccToken tok = JavaccToken.implicitBefore(node.getFirstToken());
+        emptyMods.setFirstToken(tok);
+        emptyMods.setLastToken(tok);
+
+        List<ASTAnnotation> annotations = new ArrayList<ASTAnnotation>();
+        while (nodeWithAnnotations.getNumChildren() > 0 && nodeWithAnnotations.getChild(0) instanceof ASTAnnotation) {
+            ASTAnnotation annotation = (ASTAnnotation) nodeWithAnnotations.getChild(0);
+            nodeWithAnnotations.removeChildAtIndex(0);
+            annotations.add(annotation);
+        }
+        for (int i = 0; i < annotations.size(); i++) {
+            emptyMods.addChild(annotations.get(i), i);
+        }
+        if (!annotations.isEmpty()) {
+            emptyMods.setFirstToken(annotations.get(0).getFirstToken());
+            emptyMods.setLastToken(annotations.get(annotations.size() - 1).getLastToken());
+        }
+
+        node.insertChild(emptyMods, 0);
   }
 
   private void forceTypeContext() {
@@ -923,8 +963,6 @@ ASTCompilationUnit CompilationUnit() :
   // a module (most common case)
   [ LOOKAHEAD(ModuleDeclLahead()) ModuleDeclaration() ( EmptyDeclaration() )* ]
   ( TypeDeclaration() ( EmptyDeclaration() )* )*
-  ( < "\u001a" > )?
-  ( < "~[]" > )? // what's this for? Do you mean ( < ~[] > )*, i.e. "any character"?
   <EOF>
   {
      jjtThis.setComments(token_source.comments);
@@ -1039,8 +1077,8 @@ void PermittedSubclasses() #PermitsList:
           throw new ParseException("ERROR: expecting permits");
         }
     }
-    (TypeAnnotation())* ClassOrInterfaceType()
-    ( "," (TypeAnnotation())* ClassOrInterfaceType() )*
+    TypeName()
+    ( "," TypeName() )*
 }
 
 void EnumDeclaration():
@@ -1086,15 +1124,21 @@ void RecordDeclaration():
   }
   t=<IDENTIFIER> {jjtThis.setImage(t.image);}
   [ TypeParameters() ]
-  RecordComponentList()
+  RecordHeader()
   [ ImplementsList() ]
   RecordBody()
+}
+
+void RecordHeader() #void:
+{}
+{
+  "(" RecordComponentList() ")"
 }
 
 void RecordComponentList() :
 {}
 {
-  "(" [ RecordComponent() ("," RecordComponent())* ] ")"
+  [ RecordComponent() ("," RecordComponent())* ]
 }
 
 void RecordComponent():
@@ -1102,7 +1146,7 @@ void RecordComponent():
 {
   ModAnnotationList()
   FormalParamType()
-  VariableIdWithDims()
+  VariableDeclaratorId()
 }
 
 void RecordBody():
@@ -1116,18 +1160,18 @@ void RecordBody():
 void RecordBodyDeclaration() #void :
 {}
 {
-  LOOKAHEAD(RecordCtorLookahead()) ModifierList() RecordConstructorDeclaration()
+  LOOKAHEAD(CompactConstructorDeclarationLookahead()) ModifierList() CompactConstructorDeclaration()
   |
   ClassOrInterfaceBodyDeclaration()
 }
 
-private void RecordCtorLookahead() #void:
+private void CompactConstructorDeclarationLookahead() #void:
 {}
 {
     ModifierList() <IDENTIFIER> "{"
 }
 
-void RecordConstructorDeclaration():
+void CompactConstructorDeclaration():
 {}
 {
   <IDENTIFIER> { jjtThis.setImage(token.image); }
@@ -1184,12 +1228,6 @@ void VariableDeclarator() :
 
 void VariableDeclaratorId() :
 {}
-{
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }
-}
-
-void BindingVarId() #VariableDeclaratorId:
-{ pushEmptyModifierList(); }
 {
   <IDENTIFIER> { setLastTokenImage(jjtThis); }
 }
@@ -1313,6 +1351,17 @@ void Initializer() :
 {}
 {
   [ "static" {jjtThis.setStatic();} ] Block()
+}
+
+void TypeName() #ClassOrInterfaceType:
+{
+  StringBuilder s = new StringBuilder();
+  Token t;
+}
+{
+    t=<IDENTIFIER> {s.append(t.image);}
+    ( "." t=<IDENTIFIER> {s.append('.').append(t.image);} )*
+    {jjtThis.setImage(s.toString());}
 }
 
 
@@ -1671,18 +1720,25 @@ void InstanceOfExpression() #void:
   RelationalExpression() [
     LOOKAHEAD(1)
     ("instanceof"
-        AnnotatedRefType() [ BindingVarId() #TypeTestPattern(2) ]
+        (
+            AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
+            |
+            ( LocalVarModifierList() ReferenceType() VariableDeclaratorId() ) #TypePattern(3)
+        )
         {
             jjtThis.setOp(BinaryOp.INSTANCEOF);
             AbstractJavaNode top = jjtree.popNode();
             if (top instanceof ASTPattern) {
+               if (top.getNumChildren() == 2) {
+                   insertEmptyModifierListWithAnnotations(top, (AbstractJavaNode) top.getChild(0));
+               }
                top = new ASTPatternExpression((ASTPattern) top);
             } else {
                top = new ASTTypeExpression((ASTType) top);
             }
             jjtree.pushNode(top);
         }
-        {}
+        {} // seems to be important?
     ) #InfixExpression(2)
   ]
 }
@@ -2237,7 +2293,6 @@ void LocalTypeDecl() #void:
 {  // waiting for the next node to open. We want that node to be the type declaration,
    // not the wrapper statement node.
   ( ClassOrInterfaceDeclaration()
-  | AnnotationTypeDeclaration()
   | LOOKAHEAD({isKeyword("record")}) RecordDeclaration()
   | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration()
   ) {

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.types;
 
 import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -61,7 +60,7 @@ public interface JClassType extends JTypeMirror {
         }
 
         List<JTypeMirror> targs = getTypeArgs();
-        if (targs.isEmpty() && encl == getEnclosingType()) {
+        if (targs.isEmpty() && encl == getEnclosingType()) { // NOPMD CompareObjectsWithEquals
             return this;
         }
         List<JTypeMirror> newArgs = TypeOps.subst(targs, fun);
@@ -180,25 +179,8 @@ public interface JClassType extends JTypeMirror {
      * @throws IllegalArgumentException If this type is raw and the inner type is not,
      *                                  or this type is parameterized and the inner type is not
      */
-    JClassType selectInner(JClassSymbol symbol, List<JTypeMirror> targs);
+    JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs);
 
-
-    default List<JClassType> getDeclaredClasses() {
-        return Collections.emptyList();
-    }
-
-
-    default List<FieldSig> getDeclaredFields() {
-        return Collections.emptyList();
-    }
-
-    default @Nullable FieldSig getDeclaredField(String simpleName) {
-        return null;
-    }
-
-    default @Nullable JClassType getDeclaredClass(String simpleName) {
-        return null;
-    }
 
     /**
      * Returns the generic superclass type. Returns null if this is
@@ -209,7 +191,7 @@ public interface JClassType extends JTypeMirror {
 
 
     @Override
-    default @Nullable JClassType getAsSuper(JClassSymbol symbol) {
+    default @Nullable JClassType getAsSuper(@NonNull JClassSymbol symbol) {
         return (JClassType) JTypeMirror.super.getAsSuper(symbol);
     }
 
@@ -222,15 +204,38 @@ public interface JClassType extends JTypeMirror {
      */
     @Nullable JMethodSig getDeclaredMethod(JExecutableSymbol sym);
 
+    /**
+     * Return the list of declared nested classes. They are substituted
+     * with the actual type arguments of this type, if it is parameterized.
+     * Does not look into supertypes.
+     */
+    List<JClassType> getDeclaredClasses();
+
+    /**
+     * Return the list of declared fields. They are substituted
+     * with the actual type arguments of this type, if it is parameterized.
+     * Does not look into supertypes.
+     */
+    List<FieldSig> getDeclaredFields();
+
+    /**
+     * Return the field with the given name, or null if there
+     * is none. Does not look into supertypes.
+     */
+    @Nullable FieldSig getDeclaredField(String simpleName);
+
+    /**
+     * Return the nested class with the given name, or null if there
+     * is none. Does not look into supertypes.
+     */
+    @Nullable JClassType getDeclaredClass(String simpleName);
+
 
     @Override
     JClassType getErasure();
 
 
-    /**
-     * Returns the list of interface types directly implemented by this
-     * type.
-     */
+    /** Return the list of interface types directly implemented by this type. */
     List<JClassType> getSuperInterfaces();
 
 
@@ -244,6 +249,8 @@ public interface JClassType extends JTypeMirror {
      * @throws IllegalArgumentException If the type argument list doesn't
      *                                  match the type parameters of this
      *                                  type in length
+     * @throws IllegalArgumentException If any type of the list is null, or
+     *                                  a primitive type
      */
     JClassType withTypeArguments(List<? extends JTypeMirror> args);
 

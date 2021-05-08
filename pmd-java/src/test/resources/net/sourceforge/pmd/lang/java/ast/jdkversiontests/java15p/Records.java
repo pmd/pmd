@@ -45,7 +45,9 @@ public class Records {
 
     public record VarRec(@Nullable @Deprecated String @Nullable ... x) {}
 
-    public record ArrayRec(int x[]) {}
+    // note: Java 15 Preview allowed c-style arrays "public record ArrayRec(int x[]) {}"
+    // but PMD doesn't
+    public record ArrayRec(int[] x) {}
 
     public record EmptyRec<Type>() {
         public void foo() { }

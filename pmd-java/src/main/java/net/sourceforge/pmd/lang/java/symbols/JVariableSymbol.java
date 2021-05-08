@@ -19,6 +19,15 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 public interface JVariableSymbol extends BoundToNode<ASTVariableDeclaratorId> {
 
     /**
+     * Returns true if this is a field symbol.
+     *
+     * @see JFieldSymbol
+     */
+    default boolean isField() {
+        return false;
+    }
+
+    /**
      * Returns true if this declaration is declared final.
      * This takes implicit modifiers into account.
      */

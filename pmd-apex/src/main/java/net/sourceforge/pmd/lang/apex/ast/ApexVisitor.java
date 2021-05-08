@@ -168,6 +168,10 @@ public interface ApexVisitor<P, R> extends AstVisitor<P, R> {
         return visitApexNode(node, data);
     }
 
+    default R visit(ASTInvalidDependentCompilation node, P data) {
+        return visitApexNode(node, data);
+    }
+
     default R visit(ASTJavaMethodCallExpression node, P data) {
         return visitApexNode(node, data);
     }

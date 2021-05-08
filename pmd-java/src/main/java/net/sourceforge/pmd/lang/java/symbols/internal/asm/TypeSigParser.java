@@ -320,9 +320,6 @@ final class TypeSigParser {
 
 
         public JTypeMirror getBaseType(char baseType) {
-            // this is used for tests but is dead code in production.
-            // the override uses a more efficient implementation
-            // TODO the override is more elegant, but probably not significantly more efficient
             switch (baseType) {
             case 'V': return ts.NO_TYPE;
             case 'Z': return ts.BOOLEAN;

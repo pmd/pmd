@@ -92,6 +92,7 @@ public class FooX extends net.sourceforge.pmd.lang.java.rule.errorprone.MyInterf
         <description>ok, extends superclass AND implements cloneable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class Bar {}
 public class Foo extends Bar implements Cloneable{
     void clone() {}
 }
@@ -156,6 +157,8 @@ public enum Foo {
         <description>#1534 [java] CloneMethodMustImplementCloneable: ClassCastException with Annotation (java8)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+@interface Readonly {}
 public class UnmodifiableList<T> implements @Readonly List<@Readonly T> {}
         ]]></code>
     </test-code>
@@ -165,6 +168,16 @@ public class UnmodifiableList<T> implements @Readonly List<@Readonly T> {}
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 interface TestInterface extends Cloneable {
+    TestInterface clone();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1532 [java] CloneMethodMustImplementCloneable: Implemented Interface extends Cloneable - part 2: interface</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+interface TestInterface {
     TestInterface clone();
 }
         ]]></code>
@@ -184,6 +197,16 @@ class CloneableClass implements TestInterface {
         // clone implementation
     }
 }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] CloneMethodMustImplementCloneable triggers for interfaces #1005</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public interface Foo
+                    extends java.io.Serializable, Cloneable {
+                Foo clone() throws CloneNotSupportedException;
+            }
         ]]></code>
     </test-code>
 </test-data>

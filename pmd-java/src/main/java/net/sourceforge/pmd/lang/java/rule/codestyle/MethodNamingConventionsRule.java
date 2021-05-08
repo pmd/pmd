@@ -4,26 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
 public class MethodNamingConventionsRule extends AbstractNamingConventionRule<ASTMethodDeclaration> {
 
-    private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
+    private final Map<String, String> descriptorToDisplayName = new HashMap<>();
 
     private final PropertyDescriptor<Pattern> instanceRegex = defaultProp("", "instance").build();
     private final PropertyDescriptor<Pattern> staticRegex = defaultProp("static").build();
@@ -34,6 +28,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
 
 
     public MethodNamingConventionsRule() {
+        super(ASTMethodDeclaration.class);
         definePropertyDescriptor(instanceRegex);
         definePropertyDescriptor(staticRegex);
         definePropertyDescriptor(nativeRegex);
@@ -42,47 +37,22 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
         definePropertyDescriptor(junit5Regex);
     }
 
-    private boolean isJunit5Test(ASTMethodDeclaration node) {
-        return node.isAnnotationPresent("org.junit.jupiter.api.Test");
-    }
-
-    private boolean isJunit4Test(ASTMethodDeclaration node) {
-        return node.isAnnotationPresent("org.junit.Test");
-    }
-
-
-    private boolean isJunit3Test(ASTMethodDeclaration node) {
-        if (!node.getName().startsWith("test")) {
-            return false;
-        }
-
-        // Considers anonymous classes, TODO with #905 this will be easier
-        JavaNode parent = node.ancestors().firstNonNull(asInstanceOf(ASTEnumConstant.class, ASTAllocationExpression.class, ASTAnyTypeDeclaration.class));
-
-        if (!(parent instanceof ASTClassOrInterfaceDeclaration) || ((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
-            return false;
-        }
-
-        return TypeTestUtil.isA("junit.framework.TestCase", (ASTClassOrInterfaceDeclaration) parent);
-    }
-
-
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
 
-        if (node.isAnnotationPresent(Override.class)) {
+        if (node.isOverridden()) {
             return super.visit(node, data);
         }
 
-        if (node.isNative()) {
+        if (node.hasModifiers(JModifier.NATIVE)) {
             checkMatches(node, nativeRegex, data);
         } else if (node.isStatic()) {
             checkMatches(node, staticRegex, data);
-        } else if (isJunit5Test(node)) {
+        } else if (TestFrameworksUtil.isJUnit5Method(node)) {
             checkMatches(node, junit5Regex, data);
-        } else if (isJunit4Test(node)) {
+        } else if (TestFrameworksUtil.isJUnit4Method(node)) {
             checkMatches(node, junit4Regex, data);
-        } else if (isJunit3Test(node)) {
+        } else if (TestFrameworksUtil.isJUnit3Method(node)) {
             checkMatches(node, junit3Regex, data);
         } else {
             checkMatches(node, instanceRegex, data);
@@ -108,7 +78,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
         String display = (displayName + " method").trim();
         RegexPropertyBuilder prop = super.defaultProp(name.isEmpty() ? "method" : name, display);
 
-        DESCRIPTOR_TO_DISPLAY_NAME.put(prop.getName(), display);
+        descriptorToDisplayName.put(prop.getName(), display);
 
         return prop;
     }
@@ -116,6 +86,6 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
 
     @Override
     String kindDisplayName(ASTMethodDeclaration node, PropertyDescriptor<Pattern> descriptor) {
-        return DESCRIPTOR_TO_DISPLAY_NAME.get(descriptor.name());
+        return descriptorToDisplayName.get(descriptor.name());
     }
 }

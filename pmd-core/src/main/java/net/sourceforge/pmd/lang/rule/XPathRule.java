@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
@@ -20,6 +21,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
@@ -122,53 +124,51 @@ public final class XPathRule extends AbstractRule {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
-        if (xPathRuleQueryNeedsInitialization()) {
-            initXPathRuleQuery();
+        getQueryMaybeInitialize();
+
+        List<Node> nodesWithViolation;
+        try {
+            nodesWithViolation = xpathRuleQuery.evaluate(target);
+        } catch (PmdXPathException e) {
+            throw addExceptionContext(e);
         }
 
-        List<Node> nodesWithViolation = xpathRuleQuery.evaluate(target);
         for (Node nodeWithViolation : nodesWithViolation) {
             addViolation(ctx, nodeWithViolation, nodeWithViolation.getImage());
         }
     }
 
+    private ContextedRuntimeException addExceptionContext(PmdXPathException e) {
+        return e.addRuleName(getName());
+    }
 
-    /**
-     * Initializes {@link #xpathRuleQuery} iff {@link #xPathRuleQueryNeedsInitialization()} is true. To select the
-     * engine in which the query will be run it looks at the XPath version.
-     */
-    private void initXPathRuleQuery() {
-        String xpath = getXPathExpression();
-        XPathVersion version = getVersion();
+    private SaxonXPathRuleQuery getQueryMaybeInitialize() throws PmdXPathException {
+        if (xpathRuleQuery == null) {
+            String xpath = getXPathExpression();
+            XPathVersion version = getVersion();
 
-        if (version == null) {
-            throw new IllegalStateException("Invalid XPath version, should have been caught by Rule::dysfunctionReason");
+            if (version == null) {
+                throw new IllegalStateException("Invalid XPath version, should have been caught by Rule::dysfunctionReason");
+            }
+
+            try {
+                xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
+                                                         version,
+                                                         getPropertiesByPropertyDescriptor(),
+                                                         getLanguage().getDefaultVersion().getLanguageVersionHandler().getXPathHandler(),
+                                                         attrLogger);
+            } catch (PmdXPathException e) {
+                throw addExceptionContext(e);
+            }
         }
-
-        xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
-                                                 version,
-                                                 getPropertiesByPropertyDescriptor(),
-                                                 getLanguage().getDefaultVersion().getLanguageVersionHandler().getXPathHandler(),
-                                                 attrLogger);
+        return xpathRuleQuery;
     }
 
-
-    /**
-     * Checks if the {@link #xpathRuleQuery} is null and therefore requires initialization.
-     *
-     * @return true if {@link #xpathRuleQuery} is null
-     */
-    private boolean xPathRuleQueryNeedsInitialization() {
-        return xpathRuleQuery == null;
-    }
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
-        if (xPathRuleQueryNeedsInitialization()) {
-            initXPathRuleQuery();
-        }
 
-        List<String> visits = xpathRuleQuery.getRuleChainVisits();
+        List<String> visits = getQueryMaybeInitialize().getRuleChainVisits();
 
         logXPathRuleChainUsage(!visits.isEmpty());
 

@@ -162,7 +162,11 @@ final class TypesFromAst {
             // the actual enclosing type may be a supertype of the one that was explicitly written
             // (Sub <: Sup) => (Sub.Inner = Sup.Inner)
             // We normalize them to the actual declaring class
-            enclosing = enclosing.getAsSuper(reference.getEnclosingClass());
+            JClassSymbol enclosingClassAccordingToReference = reference.getEnclosingClass();
+            if (enclosingClassAccordingToReference == null) {
+                return null;
+            }
+            enclosing = enclosing.getAsSuper(enclosingClassAccordingToReference);
             assert enclosing != null : "We got this symbol by looking into enclosing";
             return (JClassType) enclosing;
         }
@@ -184,12 +188,13 @@ final class TypesFromAst {
             if (qualifier != null) {
                 assert node.getImplicitEnclosing() == null
                     : "Qualified ctor calls should be handled lazily";
+                // note: this triggers recursive type resolution of the qualifier
                 JTypeMirror qualifierType = qualifier.getTypeMirror();
+                JClassSymbol symbol;
                 if (qualifierType instanceof JClassType) {
                     JClassType enclosing = (JClassType) qualifierType;
                     JClassType resolved = JavaResolvers.getMemberClassResolver(enclosing, node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getSimpleName())
                                                        .resolveFirst(node.getSimpleName());
-                    JClassSymbol symbol;
                     if (resolved == null) {
                         // compile-time error
                         symbol = (JClassSymbol) node.getTypeSystem().UNKNOWN.getSymbol();
@@ -199,9 +204,12 @@ final class TypesFromAst {
                         assert actualEnclosing != null : "We got this symbol by looking into enclosing";
                         node.setImplicitEnclosing(actualEnclosing);
                     }
-                    node.setSymbol(symbol);
-                    return symbol;
+                } else {
+                    // qualifier is unresolved, compile-time error
+                    symbol = (JClassSymbol) node.getTypeSystem().UNKNOWN.getSymbol();
                 }
+                node.setSymbol(symbol);
+                return symbol;
             } // else fallthrough
         }
         throw new IllegalStateException("Disambiguation pass should resolve everything except qualified ctor calls");

@@ -30,6 +30,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it should haveVisibility(V_PUBLIC)
                     it shouldNot haveExplicitModifier(PUBLIC)
                     it should haveModifier(PUBLIC)
+                    it.preferredReportLocation!!.image shouldBe "foo"
 
                     modifiers {}
                     unspecifiedChildren(2)
@@ -41,6 +42,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it should haveVisibility(V_PUBLIC)
                     it should haveExplicitModifier(PUBLIC)
                     it should haveModifier(PUBLIC)
+                    it.preferredReportLocation!!.image shouldBe "kk"
 
                     modifiers {}
                     unspecifiedChildren(2)
@@ -81,6 +83,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it shouldNot haveModifier(PUBLIC)
                     it should haveExplicitModifier(PRIVATE)
                     it should haveModifier(PRIVATE)
+                    it.preferredReportLocation!!.image shouldBe "de"
 
 
                     unspecifiedChildren(4)
@@ -359,6 +362,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it::getModifiers shouldBe modifiers { }
                     it::getResultTypeNode shouldBe classType("Override")
                     it::getFormalParameters shouldBe formalsList(0)
+                    it.preferredReportLocation!!.image shouldBe "bar"
 
                     it::getExtraDimensions shouldBe child {
                         arrayDim {}

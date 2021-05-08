@@ -129,6 +129,7 @@ public class CommentRequired {
         <description>#1434 CommentRequired raises violation on serialVersionUID field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.Serializable;
 /** The class comment */
 public class CommentRequired implements Serializable {
     private static final long serialVersionUID = 42L;
@@ -142,7 +143,7 @@ public class CommentRequired implements Serializable {
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 /** The class comment */
-public class CommentRequired implements Serializable {
+public class CommentRequired implements java.io.Serializable {
     private static final int serialVersionUID = 42L;
 }
         ]]></code>
@@ -155,7 +156,7 @@ public class CommentRequired implements Serializable {
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 /** The class comment */
-public class CommentRequired implements Serializable {
+public class CommentRequired implements java.io.Serializable {
     private static final long serialVersionUID = 42L;
 }
         ]]></code>
@@ -165,8 +166,10 @@ public class CommentRequired implements Serializable {
         <description>#1684 whitelist serialPersistentFields</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.ObjectStreamField;
+import java.util.List;
 /** The class comment */
-public class CommentRequired implements Serializable {
+public class CommentRequired implements java.io.Serializable {
     /** My list */
     List next;
     private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("next", List.class)};
@@ -177,10 +180,11 @@ public class CommentRequired implements Serializable {
     <test-code>
         <description>#1684 comment required on serialPersistentFields of wrong type</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+import java.util.List;
 /** The class comment */
-public class CommentRequired implements Serializable {
+public class CommentRequired implements java.io.Serializable {
     /** My list */
     List next;
     private static final String[] serialPersistentFields = {"next"};
@@ -191,10 +195,12 @@ public class CommentRequired implements Serializable {
     <test-code>
         <description>#1684 comment required on serialPersistentFields of wrong visibility</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
+import java.io.ObjectStreamField;
+import java.util.List;
 /** The class comment */
-public class CommentRequired implements Serializable {
+public class CommentRequired implements java.io.Serializable {
     /** My list */
     List next;
     static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("next", List.class)};
@@ -205,10 +211,12 @@ public class CommentRequired implements Serializable {
     <test-code>
         <description>#1684 comment required on serialPersistentFields not static</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
+import java.io.ObjectStreamField;
+import java.util.List;
 /** The class comment */
-public class CommentRequired implements Serializable {
+public class CommentRequired implements java.io.Serializable {
     /** My list */
     List next;
     private final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("next", List.class)};
@@ -219,10 +227,12 @@ public class CommentRequired implements Serializable {
     <test-code>
         <description>#1684 comment required on serialPersistentFields not final</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
+import java.io.ObjectStreamField;
+import java.util.List;
 /** The class comment */
-public class CommentRequired implements Serializable {
+public class CommentRequired implements java.io.Serializable {
     /** My list */
     List next;
     private static ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("next", List.class)};
@@ -234,10 +244,12 @@ public class CommentRequired implements Serializable {
         <description>#1684 serialPersistentFields comment required</description>
         <rule-property name="serialPersistentFieldsCommentRequired">Required</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
+import java.io.ObjectStreamField;
+import java.util.List;
 /** The class comment */
-public class CommentRequired implements Serializable {
+public class CommentRequired implements java.io.Serializable {
     /** My list */
     List next;
     private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("next", List.class)};
@@ -374,6 +386,8 @@ public class CommentRequired {
         <description>Test @override methods unwanted</description>
         <rule-property name="methodWithOverrideCommentRequirement">Unwanted</rule-property>
         <expected-problems>2</expected-problems>
+        <!-- Not the line of the annotation, the line of the identifier. -->
+        <expected-linenumbers>9,16</expected-linenumbers>
         <code><![CDATA[
 /**
  * Comment required test class.

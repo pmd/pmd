@@ -8,6 +8,7 @@
         <description>Contains tearDown</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
 public class Foo {
     public void tearDown() {
     }
@@ -19,9 +20,11 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Contains @tearDown</description>
+        <description>Contains @After tearDown</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
+import org.junit.After;
 public class Foo {
     @After
     public void tearDown() {
@@ -37,6 +40,8 @@ public class Foo {
         <description>Renamed tearDown</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
+import org.junit.After;
 public class Foo {
     @After
     public void clean() {
@@ -53,12 +58,15 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
 
 public class Foo {
     @AfterMethod
-    public void tearDown(Method m) {
+    public void tearDown(java.lang.reflect.Method m) {
       //...
     }
+    @Test
+    public void someTest() {}
 }
         ]]></code>
     </test-code>
@@ -67,13 +75,16 @@ public class Foo {
         <description>#940 False positive with JUnit4TestShouldUseAfterAnnotation when JUnit5's 'AfterEach' is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.*;
 
 public class Foo {
     @AfterEach
     public void tearDown() {
       //...
     }
+    @Test
+    public void someTest() {}
+
 }
         ]]></code>
     </test-code>
@@ -82,14 +93,42 @@ public class Foo {
         <description>#940 False positive with JUnit4TestShouldUseAfterAnnotation when JUnit5's 'AfterAll' is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.*;
 
 public class Foo {
     @AfterAll
     public void tearDown() {
       //...
     }
+    @Test
+    public void someTest() {}
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Contains tearDown, not a junit 4 test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void tearDown() {
+                }
+                public void foo() {
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Contains tearDown with different signature</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.junit.Test;
+            public class Foo {
+                public void tearDown(int something) {
+                }
+                @Test
+                public void foo() {
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

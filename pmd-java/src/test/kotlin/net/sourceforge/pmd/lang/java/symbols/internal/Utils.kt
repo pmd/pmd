@@ -51,12 +51,13 @@ object TestClassesGen : Arb<Class<*>>() {
                     Integer.TYPE,
                     Array<String>::class.java)
 
-    override fun values(rs: RandomSource): Sequence<Sample<Class<*>>> {
-        val someClasses = getClassesInPackage(javaClass.`package`.name + ".internal.testdata").asSequence()
-
-        return someClasses.map { Sample(it) }
+    override fun sample(rs: RandomSource): Sample<Class<*>> {
+        val classes = getClassesInPackage()
+        if (classes.isEmpty()) {
+            return Sample(java.lang.Object::class.java)
+        }
+        return Sample(classes.random(rs.random))
     }
-
 
     /**
      * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
@@ -66,7 +67,7 @@ object TestClassesGen : Arb<Class<*>>() {
      * @throws ClassNotFoundException
      * @throws IOException
      */
-    fun getClassesInPackage(packageName: String): List<Class<*>> {
+    fun getClassesInPackage(packageName: String = javaClass.`package`.name + ".internal.testdata"): List<Class<*>> {
 
         val result = ArrayList<Class<*>>()
 

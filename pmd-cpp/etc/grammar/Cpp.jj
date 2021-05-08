@@ -193,12 +193,14 @@ TOKEN :
 
 TOKEN:
 {
-  <  #DECIMALDIGIT: ["0"-"9"] >
+  <  #BINARYDIGIT:  ["0"-"1"] >
 | <  #OCTALDIGIT:   ["0"-"7"] >
+| <  #DECIMALDIGIT: ["0"-"9"] >
 | <  #HEXDIGIT:     ["a"-"f", "A"-"F", "0"-"9"] >
 | <  #INT_SUFFIX:   ["u", "U", "l", "L"] | "uL" | "Ul" | "UL" | "ul" | "lu" | "Lu" | "lU" | "LU" >
 
 | <  ZERO: "0" >
+| <  BINARY_INT_LITERAL:      "0" ["b", "B"]            ("'" | <BINARYDIGIT>)+  (<INT_SUFFIX>)? >
 | <  OCTAL_INT_LITERAL:       "0"                       ("'" | <OCTALDIGIT>)+   (<INT_SUFFIX>)? >
 | <  DECIMAL_INT_LITERAL:     ["1"-"9"]                 ("'" | <DECIMALDIGIT>)* (<INT_SUFFIX>)? >
 | <  HEXADECIMAL_INT_LITERAL: "0" ["x", "X"] <HEXDIGIT> ("'" | <HEXDIGIT>)+     (<INT_SUFFIX>)? >

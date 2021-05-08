@@ -411,11 +411,11 @@ public class Foo {
     private Bar var2;
 
     //followed by many imports of unique objects
-    void ObjectC doWork() {
+    ObjectC doWork() {
         Bardo var55;
         ObjectA var44;
         ObjectZ var93;
-        return something;
+        return something();
     }
 }
 ]]>
@@ -435,7 +435,7 @@ in a single method makes its behaviour hard to read and change.
 Cyclomatic complexity assesses the complexity of a method by counting the number of decision points in a method,
 plus one for the method entry. Decision points are places where the control flow jumps to another place in the
 program. As such, they include all control flow statements, such as `if`, `while`, `for`, and `case`. For more
-details on the calculation, see the documentation of the [Cyclo metric](pmd_java_metrics_index.html#cyclomatic-complexity-cyclo).
+details on the calculation, see the documentation {% jdoc java::lang.java.metrics.JavaMetrics#CYCLO %}.
 
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity. By default, this rule reports methods with a complexity >= 10.
@@ -495,6 +495,18 @@ Refactoring a Data Class should focus on restoring a good data-behaviour proximi
 most cases, that means moving the operations defined on the data back into the class.
 In some other cases it may make sense to remove entirely the class and move the data
 into the former client classes.
+
+The rule uses metrics to implement its detection strategy. The violation message
+gives information about the values of these metrics:
+* WMC: a class complexity measure for a class, see {% jdoc java::lang.java.metrics.JavaMetrics#WEIGHED_METHOD_COUNT %}
+* WOC: a 'non-triviality' measure for a class, see {% jdoc java::lang.java.metrics.JavaMetrics#WEIGHT_OF_CLASS %}
+* NOPA: number of public attributes, see {% jdoc java::lang.java.metrics.JavaMetrics#NUMBER_OF_PUBLIC_FIELDS %}
+* NOAM: number of public accessor methods, see {% jdoc java::lang.java.metrics.JavaMetrics#NUMBER_OF_ACCESSORS %}
+
+The rule identifies a god class by looking for classes which have all of the following properties:
+* High NOPA + NOAM
+* Low WOC
+* Low WMC
         </description>
         <priority>3</priority>
         <example>
@@ -616,7 +628,7 @@ user-specified threshold.
 <![CDATA[
 import blah.blah.Baz;
 import blah.blah.Bif;
-// 18 others from the same package elided
+// 28 others from the same package elided
 public class Foo {
     public void doWork() {}
 }
@@ -753,11 +765,22 @@ are very big and overly complex. They should be split apart to be more object-or
 The rule uses the detection strategy described in "Object-Oriented Metrics in Practice".
 The violations are reported against the entire class.
 
-See also the references:
+The rule uses metrics to implement its detection strategy. The violation message
+gives information about the values of these metrics:
+* WMC: a class complexity measure, see {% jdoc java::lang.java.metrics.JavaMetrics#WEIGHED_METHOD_COUNT %}
+* ATFD: a measure of how much data external data the class uses, see {% jdoc java::lang.java.metrics.JavaMetrics#ACCESS_TO_FOREIGN_DATA %}
+* TCC: a measure of how tightly related the methods are, see {% jdoc java::lang.java.metrics.JavaMetrics#TIGHT_CLASS_COHESION %}
 
-Michele Lanza and Radu Marinescu. Object-Oriented Metrics in Practice:
+The rule identifies a god class by looking for classes which have all of the following properties:
+* High WMC
+* High ATFD
+* Low TCC
+
+See also the reference:
+
+Michele Lanza and Radu Marinescu. *Object-Oriented Metrics in Practice:
 Using Software Metrics to Characterize, Evaluate, and Improve the Design
-of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
+of Object-Oriented Systems.* Springer, Berlin, 1 edition, October 2006. Page 80.
         </description>
         <priority>3</priority>
     </rule>
@@ -906,8 +929,8 @@ public class Bar {
         <description>
 This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines
 of code in a class, method or constructor. NCSS ignores comments, blank lines, and only counts actual
-statements. For more details on the calculation, see the documentation of
-the [NCSS metric](pmd_java_metrics_index.html#non-commenting-source-statements-ncss).
+statements. For more details on the calculation, see the documentation
+{% jdoc java::lang.java.metrics.JavaMetrics#NCSS %}.
         </description>
         <priority>3</priority>
         <example>
@@ -952,7 +975,7 @@ The NPath complexity of a method is the number of acyclic execution paths throug
 While cyclomatic complexity counts the number of decision points in a method, NPath counts the number of
 full paths from the beginning to the end of the block of the method. That metric grows exponentially, as
 it multiplies the complexity of statements in the same block. For more details on the calculation, see the
-documentation of the [NPath metric](pmd_java_metrics_index.html#npath-complexity-npath).
+documentation {% jdoc java::lang.java.metrics.JavaMetrics#NPATH %}.
 
 A threshold of 200 is generally considered the point where measures should be taken to reduce
 complexity and increase readability.
@@ -1144,8 +1167,7 @@ Avoid unnecessary comparisons in boolean expressions, they serve no purpose and 
             <property name="xpath">
                 <value>
 <![CDATA[
-//EqualityExpression/PrimaryExpression
- /PrimaryPrefix/Literal/BooleanLiteral
+//InfixExpression[@Operator = ("==", "!=")]/BooleanLiteral
 ]]>
                 </value>
             </property>

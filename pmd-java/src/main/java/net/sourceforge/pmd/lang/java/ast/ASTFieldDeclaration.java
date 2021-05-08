@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
@@ -23,19 +24,23 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  * </pre>
  */
 public final class ASTFieldDeclaration extends AbstractJavaNode
-    implements SignedNode<ASTFieldDeclaration>,
-               Iterable<ASTVariableDeclaratorId>,
+    implements Iterable<ASTVariableDeclaratorId>,
                LeftRecursiveNode,
                AccessNode,
                ASTBodyDeclaration,
-               InternalInterfaces.MultiVariableIdOwner {
+               InternalInterfaces.MultiVariableIdOwner,
+               JavadocCommentOwner {
 
-    private JavaFieldSignature signature;
 
     ASTFieldDeclaration(int id) {
         super(id);
     }
 
+    @Override
+    protected @Nullable JavaccToken getPreferredReportLocation() {
+        // report on the identifier and not the annotations
+        return getVarIds().firstOrThrow().getFirstToken();
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
@@ -55,22 +60,9 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
     @Deprecated
     @DeprecatedAttribute(replaceWith = "VariableDeclaratorId/@Name")
     public String getVariableName() {
-        ASTVariableDeclaratorId decl = getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        if (decl != null) {
-            return decl.getImage();
-        }
-        return null;
+        return getVarIds().firstOrThrow().getName();
     }
 
-
-    @Override
-    public JavaFieldSignature getSignature() {
-        if (signature == null) {
-            signature = JavaFieldSignature.buildFor(this);
-        }
-
-        return signature;
-    }
 
     /**
      * Returns the type node at the beginning of this field declaration.

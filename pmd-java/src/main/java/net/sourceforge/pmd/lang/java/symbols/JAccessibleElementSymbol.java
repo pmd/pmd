@@ -32,6 +32,11 @@ public interface JAccessibleElementSymbol extends JElementSymbol, AnnotableSymbo
     int getModifiers();
 
 
+    default boolean isStatic() {
+        return Modifier.isStatic(getModifiers());
+    }
+
+
     /**
      * Returns the class that directly encloses this declaration.
      * This is equivalent to {@link Class#getEnclosingClass()}.

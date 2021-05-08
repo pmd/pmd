@@ -11,6 +11,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -35,6 +36,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
 
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
 final class ExprOps {
 
     private final Infer infer;
@@ -254,7 +256,9 @@ final class ExprOps {
                 }
             }
 
-            return adaptGetClass(candidate, mref.getTypeToSearch().getErasure());
+            // For exact method references, the return type is Class<? extends T> (no erasure).
+            // So it's mref::getTypeToSearch and not mref.getTypeToSearch()::getErasure
+            return adaptGetClass(candidate, mref::getTypeToSearch);
         } else {
             return null;
         }
@@ -487,12 +491,22 @@ final class ExprOps {
     }
 
 
-    static JMethodSig adaptGetClass(JMethodSig sig, JTypeMirror erasedReceiverType) {
+    /**
+     * Calls to {@link Object#getClass()} on a type {@code T} have type
+     * {@code Class<? extends |T|>}. If the selected method is that method, then
+     * we need to replace its return type (the symbol has return type {@link Object}).
+     *
+     * <p>For exact method reference expressions, the type is {@code <? extends T>} (no erasure).
+     *
+     * @param sig                   Selected signature
+     * @param replacementReturnType Lazily created, because in many cases it's not necessary
+     *
+     * @return Signature, adapted if it is {@link Object#getClass()}
+     */
+    static JMethodSig adaptGetClass(JMethodSig sig, Supplier<JTypeMirror> replacementReturnType) {
         TypeSystem ts = sig.getTypeSystem();
         if ("getClass".equals(sig.getName()) && sig.getDeclaringType().equals(ts.OBJECT)) {
-            if (erasedReceiverType != null) {
-                return sig.internalApi().withReturnType(getClassReturn(erasedReceiverType, ts)).internalApi().markAsAdapted();
-            }
+            return sig.internalApi().withReturnType(getClassReturn(replacementReturnType.get(), ts)).internalApi().markAsAdapted();
         }
         return sig;
     }

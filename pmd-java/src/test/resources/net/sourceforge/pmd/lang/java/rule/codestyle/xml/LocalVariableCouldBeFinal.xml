@@ -5,19 +5,20 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>TEST1</description>
+        <description>May be final</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void test1() {
         int a = 0;
+        System.out.println(a);
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>TEST2</description>
+        <description>Final local var</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -29,7 +30,19 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST3</description>
+        <description>Unused, no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        int a = 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assigned</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -42,7 +55,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST4</description>
+        <description>Compound assignment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -55,7 +68,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST5</description>
+        <!-- TODO blank local may also be final, all three should be violations -->
+        <description>Blank local var</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -70,7 +84,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST6</description>
+        <description>Prefix increment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -96,7 +110,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST8</description>
+        <description>Postfix increment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -158,10 +172,11 @@ public class Foo {
        <description>Verify another case for Bug #1047 False Positive in 'for' loops for LocalVariableCouldBeFinal in 5.0.1</description>
        <expected-problems>0</expected-problems>
        <code><![CDATA[
+import org.junit.Assert;
 public class Test {
-    public void bar() {
-        for (final List<Integer> list : result) {
-            Assert.assertEquals( array.size() - 1, list.size() );
+    public void bar(java.util.List<java.util.List<Integer>> result) {
+        for (final java.util.List<Integer> list : result) {
+            Assert.assertEquals( list.size() - 1, list.size() );
         }
     }
 }
@@ -207,6 +222,75 @@ public class Foo {
         for (int i = 0; i < 10; i++ ) {
             System.out.println(i);
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3266 False negative with default methods in interfaces</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithDefaultMethod {
+    default void bar() {
+        String a = "a";
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3266 False negative with class inside interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithClass {
+    class Inner {
+        void bar() {
+            String a = "a";
+            System.out.println(a);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3266 False negative with anonymous classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithAnon {
+    void method() {
+        final ClassWithAnon anon = new ClassWithAnon() {
+            void method() {
+                String a = "a";
+                System.out.println(a);
+            }
+        };
+        final Runnable runnable = new Runnable() {
+            public void run() {
+                int a = 0; //unused so no warning
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3266 False negative with lambdas</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithLambda {
+    void method() {
+        final Runnable runnable = () -> {
+            int a = 0;
+            System.out.println(a);
+        };
     }
 }
         ]]></code>

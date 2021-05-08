@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -23,7 +22,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
@@ -56,6 +54,7 @@ final class AstClassSym
     private final List<JMethodSymbol> declaredMethods;
     private final List<JConstructorSymbol> declaredCtors;
     private final List<JFieldSymbol> declaredFields;
+    private final Set<String> enumConstantNames;
 
     AstClassSym(ASTAnyTypeDeclaration node,
                 AstSymFactory factory,
@@ -70,6 +69,7 @@ final class AstClassSym
         final List<JMethodSymbol> myMethods = new ArrayList<>();
         final List<JConstructorSymbol> myCtors = new ArrayList<>();
         final List<JFieldSymbol> myFields = new ArrayList<>();
+        final Set<String> enumConstantNames;
 
         final List<JFieldSymbol> recordComponents;
         if (isRecord()) {
@@ -84,10 +84,17 @@ final class AstClassSym
 
         } else {
             recordComponents = Collections.emptyList();
-            if (node instanceof ASTEnumDeclaration) {
-                node.getEnumConstants()
-                    .forEach(constant -> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
-            }
+        }
+
+        if (isEnum()) {
+            enumConstantNames = new HashSet<>();
+            node.getEnumConstants()
+                .forEach(constant -> {
+                    enumConstantNames.add(constant.getName());
+                    myFields.add(new AstFieldSym(constant.getVarId(), factory, this));
+                });
+        } else {
+            enumConstantNames = null;
         }
 
 
@@ -132,6 +139,7 @@ final class AstClassSym
         this.declaredMethods = Collections.unmodifiableList(myMethods);
         this.declaredCtors = Collections.unmodifiableList(myCtors);
         this.declaredFields = Collections.unmodifiableList(myFields);
+        this.enumConstantNames = enumConstantNames == null ? null : Collections.unmodifiableSet(enumConstantNames);
     }
 
     private List<JFieldSymbol> mapComponentsToMutableList(AstSymFactory factory, ASTRecordComponentList components) {
@@ -200,12 +208,20 @@ final class AstClassSym
     }
 
     @Override
+    public @Nullable Set<String> getEnumConstantNames() {
+        return enumConstantNames;
+    }
+
+    @Override
     public @Nullable JClassType getSuperclassType(Substitution substitution) {
         TypeSystem ts = getTypeSystem();
-        if (node instanceof ASTEnumDeclaration) {
-            JClassSymbol enumClass = ts.getClassSymbol(Enum.class);
-            return (JClassType) ts.parameterise(enumClass, listOf(ts.declaration(this)));
+
+        if (node.isEnum()) {
+
+            return factory.enumSuperclass(this);
+
         } else if (node instanceof ASTClassOrInterfaceDeclaration) {
+
             ASTClassOrInterfaceType superClass = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
             return superClass == null
                    ? ts.OBJECT
@@ -226,9 +242,17 @@ final class AstClassSym
                        ? (JClassType) sym
                        : factory.types().OBJECT;
             }
+
+        } else if (isRecord()) {
+
+            return factory.recordSuperclass();
+
+        } else if (isAnnotation()) {
+
+            return ts.OBJECT;
+
         }
 
-        // TODO records
         return null;
     }
 
@@ -237,13 +261,25 @@ final class AstClassSym
         // notice this relies on the fact that the extends clause
         // (or the type node of the constructor call, for an anonymous class),
         // was disambiguated early
+
+        // We special case anonymous classes so as not to trigger overload resolution
+        if (isAnonymousClass() && node.getParent() instanceof ASTConstructorCall) {
+
+            @NonNull JTypeMirror sym = ((ASTConstructorCall) node.getParent()).getTypeNode().getTypeMirror();
+
+            return sym instanceof JClassType && !sym.isInterface()
+                   ? ((JClassType) sym).getSymbol()
+                   : factory.types().OBJECT.getSymbol();
+
+        }
+
         JClassType sup = getSuperclassType(Substitution.EMPTY);
         return sup == null ? null : sup.getSymbol();
     }
 
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
-        return CollectionUtil.mapNotNull(
+        List<JClassSymbol> itfs = CollectionUtil.mapNotNull(
             node.getSuperInterfaceTypeNodes(),
             n -> {
                 // we play safe here, but the symbol is either a JClassSymbol
@@ -253,11 +289,19 @@ final class AstClassSym
                 return sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
             }
         );
+        if (isAnnotation()) {
+            itfs = CollectionUtil.concatView(Collections.singletonList(factory.annotationSym()), itfs);
+        }
+        return itfs;
     }
 
     @Override
     public List<JClassType> getSuperInterfaceTypes(Substitution subst) {
-        return CollectionUtil.map(node.getSuperInterfaceTypeNodes(), n -> (JClassType) TypeOps.subst(n.getTypeMirror(), subst));
+        List<JClassType> itfs = CollectionUtil.map(node.getSuperInterfaceTypeNodes(), n -> (JClassType) TypeOps.subst(n.getTypeMirror(), subst));
+        if (isAnnotation()) {
+            itfs = CollectionUtil.concatView(Collections.singletonList(factory.annotationType()), itfs);
+        }
+        return itfs;
     }
 
     @Override

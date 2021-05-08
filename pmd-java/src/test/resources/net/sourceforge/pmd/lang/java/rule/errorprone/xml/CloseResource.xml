@@ -999,6 +999,8 @@ public class Foo {
         }
         return -1;
     }
+
+    InputStream getInputStreamFromSomewhere() { return null; }
 }
         ]]></code>
     </test-code>
@@ -1133,7 +1135,8 @@ public class CloseResourcePrintWriter {
         <expected-linenumbers>7,8,10</expected-linenumbers>
         <expected-messages>
             <message>Ensure that resources like this FileInputStream object are closed after use</message>
-            <message>Ensure that resources like this Scanner object are closed after use</message>
+            <!-- Note: it picks up on System.in -->
+            <message>Ensure that resources like this InputStream object are closed after use</message>
             <message>Ensure that resources like this FileInputStream object are closed after use</message>
         </expected-messages>
         <code><![CDATA[
@@ -1387,5 +1390,294 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] [6.27.0] Exception applying rule CloseResource on file ... java.lang.NullPointerException #2755</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class Foo {
+    public int bar() {
+        var inputStream = getInputStreamFromSomewhere();
+        if (inputStream != null) {
+            try (InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8")) {
+                char c = reader.read();
+                return c;
+            }
+        }
+        return -1;
+    }
+
+    InputStream getInputStreamFromSomewhere() { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CloseResource with var</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+public class CloseResourceWithVar {
+    public int bar() throws IOException {
+        var inputStream = new FileInputStream("bar.txt");
+        int c = inputStream.read();
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2764 false-negative when re-assigning connection</description>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>'c' is reassigned, but the original instance is not closed</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.sql.Connection;
+
+public class Foo {
+    void bar() {
+        Connection c = pool.getConnection();
+        try {
+          c = pool.getConnection();
+        } catch (Exception e) {
+        } finally {
+            c.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2764 false-negative when re-assigning connection - no problem when closed before</description>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.Connection;
+
+public class Foo {
+    void bar() {
+        Connection c = pool.getConnection();
+        try {
+          c.close();
+          c = pool.getConnection();
+        } catch (Exception e) {
+        } finally {
+            c.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource: false positive with reassignment detection #2977</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.RandomAccessFile;
+
+public class FalsePositive {
+    private boolean isHundredBytes = false;
+
+    public void bar() throws Exception {
+        RandomAccessFile file = null;
+        try {
+            file = new RandomAccessFile("name", "r");
+            this.isHundredBytes = file.length() == 100;  /* violation here... */
+        } finally {
+            file.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3062 CloseResource FP with reassigned stream</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.stream.Stream;
+
+public class Foo {
+    void bar() {
+        Stream<T> stream = Stream.of(2);
+        if (condition) {
+            stream = stream.skip(2);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource rule throws exception on spaces in property types #3089</description>
+        <!-- all whitespaces for the properties are important for the test: leading, tailing, and in the middle -->
+        <rule-property name="types"> java.sql.Connection , java.sql.Statement , java.sql.ResultSet </rule-property>
+        <rule-property name="allowedResourceTypes"> java.io.ByteArrayOutputStream | java.io.ByteArrayInputStream | java.io.StringWriter | java.io.CharArrayWriter | java.util.stream.Stream | java.util.stream.IntStream | java.util.stream.LongStream | java.util.stream.DoubleStream </rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+public class Foo {
+    public void bar() {
+        InputStream in = null;
+        try {
+            in = new FileInputStream("test");
+        } catch (IOException ignored) {
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource with close target nested in a if null-check and try within finally #3148</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+
+public class FalsePositive {
+
+    public void bar(Connection conn, String sqL) {
+        PreparedStatement lPreparedStmt = null;
+        try {
+            lPreparedStmt = conn.prepareStatement(sqL);
+            lPreparedStmt.execute();
+        } catch (SQLException ex) {
+            System.out.println("lPreparedStmt.execute();loooooooooooooose" + ex);
+        } finally {
+            if (lPreparedStmt != null) {
+                try {
+                    lPreparedStmt.close();
+                } catch (SQLException pEx) {
+                    System.err.println("unrecoverable:" + pEx);
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource with close target nested in a if Objects.nonNull and try within finally (1) #3148</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+import java.util.Objects;
+
+public class FalsePositive {
+
+    public void bar(Connection conn, String sqL) {
+        PreparedStatement lPreparedStmt = null;
+        try {
+            lPreparedStmt = conn.prepareStatement(sqL);
+            lPreparedStmt.execute();
+        } catch (SQLException ex) {
+            System.out.println("lPreparedStmt.execute();loooooooooooooose" + ex);
+        } finally {
+            if (Objects.nonNull(lPreparedStmt)) {
+                try {
+                    lPreparedStmt.close();
+                } catch (SQLException pEx) {
+                    System.err.println("unrecoverable:" + pEx);
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource with close target nested in a if Objects.nonNull and try within finally (2) #3148</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+import static java.util.Objects.nonNull;
+
+public class FalsePositive {
+
+    public void bar(Connection conn, String sqL) {
+        PreparedStatement lPreparedStmt = null;
+        try {
+            lPreparedStmt = conn.prepareStatement(sqL);
+            lPreparedStmt.execute();
+        } catch (SQLException ex) {
+            System.out.println("lPreparedStmt.execute();loooooooooooooose" + ex);
+        } finally {
+            if (nonNull(lPreparedStmt)) {
+                try {
+                    lPreparedStmt.close();
+                } catch (SQLException pEx) {
+                    System.err.println("unrecoverable:" + pEx);
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource with close target nested in a if Objects.nonNull and try within finally (3) #3148</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+import static java.util.Objects.*;
+
+public class FalsePositive {
+
+    public void bar(Connection conn, String sqL) {
+        PreparedStatement lPreparedStmt = null;
+        try {
+            lPreparedStmt = conn.prepareStatement(sqL);
+            lPreparedStmt.execute();
+        } catch (SQLException ex) {
+            System.out.println("lPreparedStmt.execute();loooooooooooooose" + ex);
+        } finally {
+            if (nonNull(lPreparedStmt)) {
+                try {
+                    lPreparedStmt.close();
+                } catch (SQLException pEx) {
+                    System.err.println("unrecoverable:" + pEx);
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2757 support @lombok.Cleanup annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.errorprone.closeresource;
+            import lombok.Cleanup;
+            import lombok.val;
+
+            public class Mwe2757 {
+                private static SomeClass getCreator() {
+                    @Cleanup val context = new FakeContext(); // FakeContext is is the package
+                    return context.getBean(SomeClass.class);
+                }
+
+                public Mwe2757() {
+
+                }
+                static class SomeClass {}
+            }
+            ]]></code>
     </test-code>
 </test-data>

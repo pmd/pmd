@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -25,6 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -39,7 +41,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
-import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -142,7 +143,7 @@ public final class SymbolTableResolver {
             task.node.acceptVisitor(this, task.enclosingCtx);
             JSymbolTable last = stack.pop();
 
-            assert last == task.localStackTop
+            assert last == task.localStackTop  // NOPMD CompareObjectsWithEquals
                 : "Unbalanced stack push/pop! Started with " + task.localStackTop + ", finished on " + last;
         }
 
@@ -218,7 +219,7 @@ public final class SymbolTableResolver {
             int pushed = pushOnStack(f.selfType(top(), node.getTypeMirror()));
             pushed += pushOnStack(f.typeHeader(top(), node.getSymbol()));
 
-            NodeStream<? extends JavaNode> notBody = node.children().drop(1).take(node.getNumChildren() - 2);
+            NodeStream<? extends JavaNode> notBody = node.children().drop(1).dropLast(1);
             for (JavaNode it : notBody) {
                 setTopSymbolTable(it);
             }
@@ -245,14 +246,12 @@ public final class SymbolTableResolver {
             setTopSymbolTable(node.getBody());
 
             // preprocess siblings
-            node.getDeclarations()
-                .filterIs(ASTAnyTypeDeclaration.class)
+            node.getDeclarations(ASTAnyTypeDeclaration.class)
                 .forEach(d -> processTypeHeader(d, bodyCtx));
 
 
             // process fields first, their type is needed for JSymbolTable#resolveValue
-            f.disambig(node.getDeclarations()
-                           .filterIs(ASTFieldDeclaration.class)
+            f.disambig(node.getDeclarations(ASTFieldDeclaration.class)
                            .map(ASTFieldDeclaration::getTypeNode),
                        bodyCtx);
             visitChildren(node.getBody(), bodyCtx);
@@ -300,7 +299,7 @@ public final class SymbolTableResolver {
 
 
         @Override
-        public Void visit(ASTRecordConstructorDeclaration node, @NonNull ReferenceCtx ctx) {
+        public Void visit(ASTCompactConstructorDeclaration node, @NonNull ReferenceCtx ctx) {
             setTopSymbolTable(node.getModifiers());
             int pushed = pushOnStack(f.recordCtor(top(), enclosing(), node.getSymbol()));
             setTopSymbolTableAndRecurse(node, ctx);
@@ -369,7 +368,10 @@ public final class SymbolTableResolver {
             // the varId is only in scope in the body and not the iterable expr
             setTopSymbolTableAndRecurse(node.getIterableExpr(), ctx);
 
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getVarId().getSymbol()));
+            ASTVariableDeclaratorId varId = node.getVarId();
+            acceptIfNotNull(varId.getTypeNode(), ctx);
+
+            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
             ASTStatement body = node.getBody();
             if (body instanceof ASTBlock) { // if it's a block then it will be set
                 body.acceptVisitor(this, ctx);
@@ -391,6 +393,11 @@ public final class SymbolTableResolver {
             return null;
         }
 
+        void acceptIfNotNull(@Nullable JavaNode node, ReferenceCtx ctx) {
+            if (node != null) {
+                node.acceptVisitor(this, ctx);
+            }
+        }
 
         @Override
         public Void visit(ASTTryStatement node, @NonNull ReferenceCtx ctx) {
@@ -441,7 +448,7 @@ public final class SymbolTableResolver {
         }
 
         private int pushOnStack(JSymbolTable table) {
-            if (table == top()) {
+            if (table == top()) { // NOPMD CompareObjectsWithEquals
                 return 0; // and don't set the stack top
             }
             stack.push(table);

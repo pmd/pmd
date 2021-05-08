@@ -5,6 +5,8 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
@@ -99,7 +101,6 @@ class CtorInferenceTest : ProcessorTestSpec({
 
 
     parserTest("Generic enum constant ctors") {
-        logTypeInference(true)
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
@@ -277,6 +278,32 @@ class CtorInferenceTest : ProcessorTestSpec({
                 it.symbol shouldBe innerCtor.symbol
                 it.symbol.tryGetNode() shouldBe innerCtor
             }
+        }
+    }
+
+    parserTest("Unresolved enclosing type for inner class ctor") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+            class Scratch  {{
+                    someUnresolvedQualifier().new Inner();
+            }}
+            """)
+
+        val (ctor) = acu.ctorCalls().toList()
+
+        spy.shouldBeOk {
+            ctor.qualifier!!.shouldHaveType(ts.UNKNOWN)
+            ctor.typeNode.simpleName shouldBe "Inner"
+            ctor.typeNode.typeMirror.shouldBeSameInstanceAs(ctor.typeMirror)
+            ctor.typeNode shouldHaveType ts.UNKNOWN
+            // if we ever switch to creating a fake symbol
+            // .typeMirror.shouldBeA<JClassType> {
+            //     it.symbol.isUnresolved shouldBe true
+            //     it.symbol.simpleName shouldBe "Inner"
+            // }
+
+            ctor.methodType.shouldBe(ts.UNRESOLVED_METHOD)
         }
     }
 

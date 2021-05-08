@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -31,6 +30,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -203,21 +203,21 @@ public final class TypeOps {
                 return false;
             }
 
-            Map<JTypeMirror, JTypeMirror> tMap = new HashMap<>();
-            for (JTypeMirror ti : t.getInterfaces()) {
-                tMap.put(ti.getErasure(), ti);
-            }
-            for (JTypeMirror si : s2.getInterfaces()) {
-                JTypeMirror siErased = si.getErasure();
-                if (!tMap.containsKey(siErased)) {
+            List<JTypeMirror> sComps = ((JIntersectionType) s).getComponents();
+            for (JTypeMirror ti : t.getComponents()) {
+                boolean found = false;
+                for (JTypeMirror si : sComps) {
+                    // todo won't this behaves weirdly during inference? test it
+                    if (isSameType(ti, si, inInference)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
                     return false;
                 }
-                JTypeMirror ti = tMap.remove(siErased);
-                if (!isSameType(ti, si, inInference)) {
-                    return false;
-                }
             }
-            return tMap.isEmpty();
+            return true;
         }
 
         @Override
@@ -434,7 +434,7 @@ public final class TypeOps {
      * implies convertibility (the conversion is technically called
      * "widening reference conversion"). You can check those cases using:
      *
-     * {@link #bySubtyping() t.isConvertibleTo(s).naturally()}
+     * {@link #bySubtyping() t.isConvertibleTo(s).bySubtyping()}
      *
      * <p>Unchecked conversion may go backwards from subtyping. For example,
      * {@code List<String>} is a subtype of the raw type {@code List}, and
@@ -475,8 +475,8 @@ public final class TypeOps {
          * {@code T <: |S|} and {@code T </: S}, but S is
          * parameterized with only unbounded wildcards. This is a special
          * case of unchecked conversion that produces no warning. We keep
-         * it distinct from subtyping to help some algorithms that subtyping
-         * to be a partial order.
+         * it distinct from subtyping to help some algorithms that require
+         * subtyping to be a partial order.
          *
          * <p>For example, {@code List<String>} is a subtype of the raw
          * {@code Collection}, not a subtype of {@code Collection<?>},
@@ -661,6 +661,49 @@ public final class TypeOps {
     }
 
 
+    /**
+     * Generalises containment to check if for each i, {@code Ti <= Si}.
+     */
+    static Convertibility typeArgsAreContained(JClassType t, JClassType s) {
+        List<JTypeMirror> targs = t.getTypeArgs();
+        List<JTypeMirror> sargs = s.getTypeArgs();
+
+        if (targs.isEmpty()) {
+            if (sargs.isEmpty()) {
+                // Some "erased" non-generic types may appear as the supertypes
+                // of raw types, and they're different from the regular flavor
+                // as their own supertypes are erased, yet they're not considered
+                // raw. To fix the subtyping relation, we say that `C <: (erased) C`
+                // but `(erased) C` converts to `C` by unchecked conversion, without
+                // warning.
+                boolean tRaw = t.hasErasedSuperTypes();
+                boolean sRaw = s.hasErasedSuperTypes();
+                if (tRaw && !sRaw) {
+                    return Convertibility.UNCHECKED_NO_WARNING;
+                } else {
+                    return Convertibility.SUBTYPING;
+                }
+            }
+            // for some C, S = C<...> and T = C, ie T is raw
+            // T is convertible to S, by unchecked conversion.
+            // If S = D<?, .., ?>, then the conversion produces
+            // no unchecked warning.
+            return allArgsAreUnboundedWildcards(sargs) ? Convertibility.UNCHECKED_NO_WARNING
+                                                       : Convertibility.UNCHECKED_WARNING;
+        }
+
+        Convertibility result = Convertibility.SUBTYPING;
+        for (int i = 0; i < targs.size(); i++) {
+            Convertibility sub = typeArgContains(sargs.get(i), targs.get(i));
+            if (sub == Convertibility.NEVER) {
+                return Convertibility.NEVER;
+            }
+            result = result.and(sub);
+        }
+
+        return result;
+    }
+
     private static final class SubtypeVisitor implements JTypeVisitor<Convertibility, JTypeMirror> {
 
         static final SubtypeVisitor INSTANCE = new SubtypeVisitor();
@@ -725,48 +768,8 @@ public final class TypeOps {
                 // a raw type C is a supertype for all the family of parameterized type generated by C<F1, .., Fn>
                 return Convertibility.SUBTYPING;
             } else {
-                return typeArgsAreContained(superDecl, cs, superDecl.getTypeArgs(), cs.getTypeArgs());
+                return typeArgsAreContained(superDecl, cs);
             }
-        }
-
-        /**
-         * Generalises equality to check if for each i, {@code Ti <= Si}.
-         */
-        private Convertibility typeArgsAreContained(JClassType t, JClassType s, List<JTypeMirror> targs, List<JTypeMirror> sargs) {
-            if (targs.isEmpty()) {
-                if (sargs.isEmpty()) {
-                    // Some "erased" non-generic types may appear as the supertypes
-                    // of raw types, and they're different from the regular flavor
-                    // as their own supertypes are erased, yet they're not considered
-                    // raw. To fix the subtyping relation, we say that `C <: (erased) C`
-                    // but `(erased) C` converts to `C` by unchecked conversion, without
-                    // warning.
-                    boolean tRaw = t.hasErasedSuperTypes();
-                    boolean sRaw = s.hasErasedSuperTypes();
-                    if (tRaw && !sRaw) {
-                        return Convertibility.UNCHECKED_NO_WARNING;
-                    } else {
-                        return Convertibility.SUBTYPING;
-                    }
-                }
-                // for some C, S = C<...> and T = C, ie T is raw
-                // T is convertible to S, by unchecked conversion.
-                // If S = D<?, .., ?>, then the conversion produces
-                // no unchecked warning.
-                return allArgsAreUnboundedWildcards(sargs) ? Convertibility.UNCHECKED_NO_WARNING
-                                                           : Convertibility.UNCHECKED_WARNING;
-            }
-
-            Convertibility result = Convertibility.SUBTYPING;
-            for (int i = 0; i < targs.size(); i++) {
-                Convertibility sub = typeArgContains(sargs.get(i), targs.get(i));
-                if (sub == Convertibility.NEVER) {
-                    return Convertibility.NEVER;
-                }
-                result = result.and(sub);
-            }
-
-            return result;
         }
 
         @Override
@@ -822,6 +825,10 @@ public final class TypeOps {
             }
             return Convertibility.NEVER;
         }
+    }
+
+    public static boolean isStrictSubtype(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
+        return !t.equals(s) && t.isSubtypeOf(s);
     }
 
     // </editor-fold>
@@ -1208,7 +1215,10 @@ public final class TypeOps {
      * m1 is a subsignature of m2 or m2 is a subsignature of m1. This does
      * not look at the origin of the methods (their declaring class).
      *
-     * https://docs.oracle.com/javase/specs/jls/se9/html/jls-8.html#jls-8.4.2
+     * <p>This is a prerequisite for one method to override the other,
+     * but not the only condition. See {@link #overrides(JMethodSig, JMethodSig, JTypeMirror)}.
+     *
+     * See <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-8.html#jls-8.4.2">JLS§8</a>
      */
     public static boolean areOverrideEquivalent(JMethodSig m1, JMethodSig m2) {
         // This method is a very hot spot as it is used to prune shadowed/overridden/hidden
@@ -1218,31 +1228,9 @@ public final class TypeOps {
             return false; // easy case
         } else if (m1 == m2) {
             return true;
-        }
-        // Two methods can only have the same signature if they have the same type parameters
-        // But a generic method is allowed to override a non-generic one, and vice versa
-        // So we first project both methods into a form that has the same number of type parameters
-        boolean m1Gen = m1.isGeneric();
-        boolean m2Gen = m2.isGeneric();
-        if (m1Gen ^ m2Gen) {
-            if (m1Gen) {
-                m1 = m1.getErasure();
-            } else {
-                m2 = m2.getErasure();
-            }
-        }
-        return haveSameSignature(m1, m2);
-    }
-
-    public static boolean areOverrideEquivalentFast(JMethodSig m1, JMethodSig m2) {
-        // This method is a very hot spot as it is used to prune shadowed/overridden/hidden
-        // methods from overload candidates before overload resolution.
-        // Any optimization makes a big impact.
-        if (m1.getArity() != m2.getArity()) {
-            return false; // easy case
-        } else if (m1 == m2) {
-            return true;
         } else if (!m1.getName().equals(m2.getName())) {
+            // note: most call sites statically know this is true
+            // profile to figure out whether this matters
             return false;
         }
 
@@ -1256,7 +1244,11 @@ public final class TypeOps {
                 return false;
             }
         }
-        return true;
+
+        // a non-generic method may override a generic one
+        return !m1.isGeneric() || !m2.isGeneric()
+            // if both are generic, they must have the same type params
+            || haveSameTypeParams(m1, m2);
     }
 
     /**
@@ -1323,7 +1315,7 @@ public final class TypeOps {
         JTypeMirror m1Owner = m1.getDeclaringType();
         JClassType m2Owner = (JClassType) m2.getDeclaringType();
 
-        if (isOverridableIn(m2, m2Owner.getSymbol(), m1Owner.getSymbol())) {
+        if (isOverridableIn(m2, m1Owner.getSymbol())) {
             JClassType m2AsM1Supertype = (JClassType) m1Owner.getAsSuper(m2Owner.getSymbol());
             if (m2AsM1Supertype != null) {
                 JMethodSig m2Prime = m2AsM1Supertype.getDeclaredMethod(m2.getSymbol());
@@ -1337,7 +1329,7 @@ public final class TypeOps {
         // todo that is very weird
         if (m1.isAbstract()
             || !m2.isAbstract() && !m2.getSymbol().isDefaultMethod()
-            || !isOverridableIn(m2, m2Owner.getSymbol(), origin.getSymbol())
+            || !isOverridableIn(m2, origin.getSymbol())
             || !(m1Owner instanceof JClassType)) {
             return false;
         }
@@ -1353,6 +1345,10 @@ public final class TypeOps {
         return false;
     }
 
+    private static boolean isOverridableIn(JMethodSig m, JTypeDeclSymbol origin) {
+        return isOverridableIn(m.getSymbol(), origin);
+    }
+
     /**
      * Returns true if the given method can be overridden in the origin
      * class. This only checks access modifiers and not eg whether the
@@ -1365,10 +1361,13 @@ public final class TypeOps {
      * if the method is static.
      *
      * @param m         Method to test
-     * @param declaring Symbol of the declaring type of m
      * @param origin    Site of the potential override
      */
-    private static boolean isOverridableIn(JMethodSig m, JClassSymbol declaring, JTypeDeclSymbol origin) {
+    public static boolean isOverridableIn(JExecutableSymbol m, JTypeDeclSymbol origin) {
+        if (m instanceof JConstructorSymbol) {
+            return false;
+        }
+
         final int accessFlags = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
 
         // JLS 8.4.6.1
@@ -1380,7 +1379,7 @@ public final class TypeOps {
         case 0:
             // package private
             return
-                declaring.getPackageName().equals(origin.getPackageName())
+                m.getPackageName().equals(origin.getPackageName())
                     && !origin.isInterface();
         default:
             // private
@@ -1557,7 +1556,7 @@ public final class TypeOps {
     /**
      * @see JTypeMirror#getAsSuper(JClassSymbol)
      */
-    public static @Nullable JTypeMirror asSuper(JTypeMirror t, JClassSymbol s) {
+    public static @Nullable JTypeMirror asSuper(@NonNull JTypeMirror t, @NonNull JClassSymbol s) {
 
         if (!t.isPrimitive() && s.equals(t.getTypeSystem().OBJECT.getSymbol())) {
             // interface types need to have OBJECT somewhere up their hierarchy
@@ -1611,7 +1610,7 @@ public final class TypeOps {
                 return res;
             } else {
                 // then look in interfaces if possible
-                if (target.isInterface()) {
+                if (target.isInterface() || target.isUnresolved()) {
                     return firstResult(target, t.getSuperInterfaces());
                 }
             }
@@ -1946,6 +1945,11 @@ public final class TypeOps {
 
     public static boolean isUnresolvedOrNull(@Nullable JTypeMirror t) {
         return t == null || isUnresolved(t);
+    }
+
+
+    public static @Nullable JTypeMirror getArrayComponent(@Nullable JTypeMirror t) {
+        return t instanceof JArrayType ? ((JArrayType) t).getComponentType() : null;
     }
 
     // </editor-fold>

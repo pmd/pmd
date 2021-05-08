@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -60,6 +62,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private List<JClassSymbol> memberClasses = new ArrayList<>();
     private List<JMethodSymbol> methods = new ArrayList<>();
     private List<JConstructorSymbol> ctors = new ArrayList<>();
+    private Set<String> enumConstantNames = null;
 
     private List<SymAnnot> annotations = new ArrayList<>();
 
@@ -67,8 +70,16 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     private final ParseLock parseLock;
 
+    /** Note that '.' is forbidden because in internal names they're replaced by slashes '/'. */
+    private static final Pattern INTERNAL_NAME_FORBIDDEN_CHARS = Pattern.compile("[;<>\\[.]");
+
+    private static boolean isValidInternalName(String internalName) {
+        return !internalName.isEmpty() && !INTERNAL_NAME_FORBIDDEN_CHARS.matcher(internalName).find();
+    }
 
     ClassStub(AsmSymbolResolver resolver, String internalName, @NonNull Loader loader, int observedArity) {
+        assert isValidInternalName(internalName) : internalName;
+
         this.resolver = resolver;
         this.internalName = internalName;
         this.loader = loader;
@@ -102,6 +113,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 ctors = Collections.unmodifiableList(ctors);
                 fields = Collections.unmodifiableList(fields);
                 memberClasses = Collections.unmodifiableList(memberClasses);
+                enumConstantNames = enumConstantNames == null ? null : Collections.unmodifiableSet(enumConstantNames);
                 annotations = Collections.unmodifiableList(annotations);
                 annotAttributes = (accessFlags & Opcodes.ACC_ANNOTATION) != 0
                                   ? getDeclaredMethods().stream().map(JElementSymbol::getSimpleName).collect(Collectors.toSet())
@@ -180,6 +192,10 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
             myAccess = myAccess & ~Opcodes.ACC_PUBLIC;
         }
         this.accessFlags = myAccess | accessFlags;
+
+        if ((accessFlags & Opcodes.ACC_ENUM) != 0) {
+            this.enumConstantNames = new HashSet<>();
+        }
     }
 
     void setOuterClass(String outerName, @Nullable String methodName, @Nullable String methodDescriptor) {
@@ -194,6 +210,10 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     void addField(FieldStub fieldStub) {
         fields.add(fieldStub);
+
+        if (fieldStub.isEnumConstant() && enumConstantNames != null) {
+            enumConstantNames.add(fieldStub.getSimpleName());
+        }
     }
 
     void addMemberClass(ClassStub classStub) {
@@ -304,6 +324,12 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     public @Nullable JExecutableSymbol getEnclosingMethod() {
         parseLock.ensureParsed();
         return enclosingInfo.getEnclosingMethod();
+    }
+
+    @Override
+    public @Nullable Set<String> getEnumConstantNames() {
+        parseLock.ensureParsed();
+        return enumConstantNames;
     }
 
     @Override

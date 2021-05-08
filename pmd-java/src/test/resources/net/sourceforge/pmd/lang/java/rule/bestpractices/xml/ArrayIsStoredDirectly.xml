@@ -222,18 +222,18 @@ public class AISD {
         <description>do not allow private methods</description>
         <rule-property name="allowPrivate">false</rule-property>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>3,6</expected-linenumbers>
+        <expected-linenumbers>4,7</expected-linenumbers>
         <code><![CDATA[
 public class AISD {
     private final byte[] buf;
     private AISD(final byte[] buf) {
         this.buf = buf;
     }
-    private void set(final byte[] buf) {
-        this.buf = buf;
+    private void set(final byte[] buf2) {
+        this.buf = buf2;
     }
-    public AISD of(final byte[] buf) {
-        return new AISD(buf.clone());
+    public AISD of(final byte[] buf3) {
+        return new AISD(buf3.clone());
     }
 }
         ]]></code>

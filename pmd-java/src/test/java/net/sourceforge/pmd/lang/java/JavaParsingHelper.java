@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java;
 
 import java.io.PrintStream;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,11 +17,12 @@ import org.jetbrains.annotations.NotNull;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.ast.SemanticException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
@@ -40,15 +40,16 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
     public static final TypeSystem TEST_TYPE_SYSTEM = new TypeSystem(JavaParsingHelper.class.getClassLoader());
 
     /** This just runs the parser and no processing stages. */
-    public static final JavaParsingHelper JUST_PARSE = new JavaParsingHelper(Params.getDefaultNoProcess(), NoopSemanticLogger.INSTANCE, TEST_TYPE_SYSTEM, TypeInferenceLogger.noop());
-    /** This runs all processing stages when parsing. */
-    public static final JavaParsingHelper WITH_PROCESSING = new JavaParsingHelper(Params.getDefaultProcess(), NoopSemanticLogger.INSTANCE, TEST_TYPE_SYSTEM, TypeInferenceLogger.noop());
+    public static final JavaParsingHelper JUST_PARSE = new JavaParsingHelper(Params.getDefaultNoProcess(), SemanticErrorReporter.noop(), TEST_TYPE_SYSTEM, TypeInferenceLogger.noop());
 
-    private final SemanticChecksLogger semanticLogger;
+    /** This runs all processing stages when parsing. */
+    public static final JavaParsingHelper WITH_PROCESSING = new JavaParsingHelper(Params.getDefaultProcess(), SemanticErrorReporter.noop(), TEST_TYPE_SYSTEM, TypeInferenceLogger.noop());
+
+    private final SemanticErrorReporter semanticLogger;
     private final TypeSystem ts;
     private final TypeInferenceLogger typeInfLogger;
 
-    private JavaParsingHelper(Params params, SemanticChecksLogger logger, TypeSystem ts, TypeInferenceLogger typeInfLogger) {
+    private JavaParsingHelper(Params params, SemanticErrorReporter logger, TypeSystem ts, TypeInferenceLogger typeInfLogger) {
         super(JavaLanguageModule.NAME, ASTCompilationUnit.class, params);
         this.semanticLogger = logger;
         this.ts = ts;
@@ -65,7 +66,7 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         return typeInfLogger;
     }
 
-    public JavaParsingHelper withLogger(SemanticChecksLogger logger) {
+    public JavaParsingHelper withLogger(SemanticErrorReporter logger) {
         return new JavaParsingHelper(this.getParams(), logger, this.ts, this.typeInfLogger);
     }
 
@@ -86,62 +87,43 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         return new JavaParsingHelper(params, semanticLogger, ts, typeInfLogger);
     }
 
-    static class NoopSemanticLogger implements SemanticChecksLogger {
+    public static class TestCheckLogger implements SemanticErrorReporter {
 
-        public static final SemanticChecksLogger INSTANCE = new NoopSemanticLogger();
+        public final Map<String, List<kotlin.Pair<Node, Object[]>>> warnings = new HashMap<>();
+        public final Map<String, List<kotlin.Pair<Node, Object[]>>> errors = new HashMap<>();
 
-        @Override
-        public void warning(JavaNode location, String message, Object... args) {
-
-        }
-
-        @Override
-        public void error(JavaNode location, String message, Object... args) {
-
-        }
-    }
-
-    public static class TestCheckLogger implements SemanticChecksLogger {
-
-        private static final Logger LOG = Logger.getLogger(TestCheckLogger.class.getName());
-        public final Map<String, List<kotlin.Pair<JavaNode, Object[]>>> warnings = new HashMap<>();
-        public final Map<String, List<kotlin.Pair<JavaNode, Object[]>>> errors = new HashMap<>();
-
-        private final boolean doLogOnConsole;
+        private final SemanticErrorReporter baseLogger;
 
         public TestCheckLogger() {
             this(false);
         }
 
         public TestCheckLogger(boolean doLogOnConsole) {
-            this.doLogOnConsole = doLogOnConsole;
+            Logger consoleLogger = Logger.getAnonymousLogger();
+            if (!doLogOnConsole) {
+                consoleLogger.setLevel(Level.OFF);
+            }
+            baseLogger = SemanticErrorReporter.reportToLogger(consoleLogger);
         }
 
         @Override
-        public void warning(JavaNode location, String message, Object... args) {
-            log(location, message, args, Level.WARNING);
+        public void warning(Node location, String message, Object... args) {
             warnings.computeIfAbsent(message, k -> new ArrayList<>())
                     .add(new Pair<>(location, args));
+
+            baseLogger.warning(location, message, args);
         }
 
         @Override
-        public void error(JavaNode location, String message, Object... args) {
-            log(location, message, args, Level.SEVERE);
+        public SemanticException error(Node location, String message, Object... args) {
             errors.computeIfAbsent(message, k -> new ArrayList<>())
                   .add(new Pair<>(location, args));
+            return baseLogger.error(location, message, args);
         }
 
-
-        public void log(JavaNode location, String message, Object[] args, Level level) {
-            if (doLogOnConsole) {
-                LOG.log(level, formatLoc(location) + new MessageFormat(message).format(args));
-            }
+        @Override
+        public boolean hasError() {
+            return baseLogger.hasError();
         }
-
-        @NonNull
-        private String formatLoc(JavaNode location) {
-            return "[" + location.getBeginLine() + "," + location.getBeginColumn() + "] ";
-        }
-
     }
 }

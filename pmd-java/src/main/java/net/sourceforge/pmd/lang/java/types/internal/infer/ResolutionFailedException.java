@@ -177,6 +177,13 @@ final class ResolutionFailedException extends RuntimeException {
     }
 
 
+    static ResolutionFailedException missingTargetTypeForFunctionalExpr(TypeInferenceLogger logger, ExprMirror loc) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(loc.getLocation(),
+                                                                 "Missing target type for functional expression"));
+    }
+
+
     static ResolutionFailedException lambdaCannotTargetGenericFunction(TypeInferenceLogger logger, JMethodSig fun, ExprMirror loc) {
         return getShared(logger.isNoop() ? UNKNOWN
                                          : new ResolutionFailure(loc.getLocation(),

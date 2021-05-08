@@ -37,7 +37,8 @@ public interface ASTAnyTypeDeclaration
             TypeParamOwnerNode,
             ASTBodyDeclaration,
             ASTTopLevelDeclaration,
-            FinalizableNode {
+            FinalizableNode,
+            JavadocCommentOwner {
 
     @Override
     @NonNull
@@ -156,12 +157,21 @@ public interface ASTAnyTypeDeclaration
 
 
     /**
-     * Retrieves the member declarations (fields, methods, classes, etc.) from the body of this type declaration.
-     *
-     * @return The member declarations declared in this type declaration
+     * Retrieves the member declarations (fields, methods, classes, etc.)
+     * from the body of this type declaration.
      */
     default NodeStream<ASTBodyDeclaration> getDeclarations() {
         return getBody().toStream();
+    }
+
+    /**
+     * Returns the declarations of a particular type.
+     *
+     * @param klass   Type of the declarations
+     * @param <T>Type of the declarations
+     */
+    default <T extends ASTBodyDeclaration> NodeStream<T> getDeclarations(Class<? extends T> klass) {
+        return getDeclarations().filterIs(klass);
     }
 
 
@@ -246,6 +256,15 @@ public interface ASTAnyTypeDeclaration
      * like {@link #isInterface()} counts annotations in.
      */
     default boolean isRegularClass() {
+        return false;
+    }
+
+
+    /**
+     * Returns true if this is a regular interface declaration (not an annotation).
+     * Note that {@link #isInterface()} counts annotations in.
+     */
+    default boolean isRegularInterface() {
         return false;
     }
 

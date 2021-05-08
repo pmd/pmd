@@ -124,11 +124,9 @@ public class FooTest extends TestCase {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
-public abstract class AbstractAggregateCreatorTest extends TestCase{
+public abstract class AbstractAggregateCreatorTest extends TestCase {
     public abstract int getType();
-    public abstract ProfileAggregate create(DatabaseTransaction db,
-        DailyProfileList profiles, ProfileType type, ProfileStatus status)
-        throws VixenException;
+    public abstract String create(int status) throws Exception;
 }
         ]]></code>
     </test-code>
@@ -254,6 +252,7 @@ public class Foo_Test
         new Foo().doSomething(-1);
         // Note - no assert is needed as we expect an exception (which is basically an assert).
     }
+    class Foo {}
 }
         ]]></code>
     </test-code>
@@ -261,9 +260,10 @@ public class Foo_Test
     <test-code>
         <description>#285 Issues with @Rule annotation and ExpectedException</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 import org.junit.*;
+import org.junit.rules.*;
 public class SimpleExpectedExceptionTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -277,8 +277,9 @@ public class SimpleExpectedExceptionTest {
     public void throwsIllegalArgumentExceptionIfIconIsNull() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Icon is null, not a file, or doesn't exist.");
-        new DigitalAssetManager(null, null);
+        new Foo();
     }
+    class Foo {}
 }
         ]]></code>
     </test-code>
@@ -288,6 +289,7 @@ public class SimpleExpectedExceptionTest {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 public class SimpleExpectedExceptionTest {
      @org.junit.Rule
      public ExpectedException thrown = ExpectedException.none();
@@ -306,7 +308,8 @@ public class SimpleExpectedExceptionTest {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.junit.*;
-import javafx.embed.swing.JFXPanel;
+import my.JFXPanel;
+import my.UART;
 
 public class BaseConsoleTest extends UART {
     @Test
@@ -356,6 +359,8 @@ public class FooTest {
 
         verify(bar, times(1)).actuallyDoTask();
     }
+    class Foo {}
+    class Bar {}
 }
         ]]></code>
     </test-code>
@@ -383,6 +388,8 @@ public class FooTest {
 
         Mockito.verify(bar, Mockito.times(1)).actuallyDoTask();
     }
+    class Foo {}
+    class Bar {}
 }
         ]]></code>
     </test-code>
@@ -405,6 +412,7 @@ public class FooTest {
         assertEquals("doesn't matter", "doesn't matter");
     }
 }
+class Foo {}
         ]]></code>
     </test-code>
 
@@ -481,6 +489,7 @@ class FooTest {
         <code><![CDATA[
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Test;
+import org.junit.Rule;
 
 public class FooTest {
 
@@ -500,6 +509,7 @@ public class FooTest {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 public class DigitalAssetManagerTest {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -508,9 +518,10 @@ public class DigitalAssetManagerTest {
     public void throwsIllegalArgumentExceptionIfIconIsNull() {
         this.exception.expect(IllegalArgumentException.class);
         this.exception.expectMessage("Icon is null, not a file, or doesn't exist.");
-        new DigitalAssetManager(null, null);
+        new Foo();
     }
 }
+class Foo {}
         ]]></code>
     </test-code>
 
@@ -530,6 +541,113 @@ public class FooTest extends TestCase {
         assertThat("doesn't matter", null, Matchers.nullValue());
     }
 }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] JUnitTestsShouldIncludeAssert - false positives with lambdas and static methods #2147</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import static org.hamcrest.MatcherAssert.*;
+import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import com.fasterxml.jackson.databind.JsonNode;
+
+public class FooTest extends TestCase {
+
+    @Test
+    public void testDemo() {
+        JsonNode jsonNode = assertSuccessResponse();
+        final int totalFieldsCount = jsonNode.get("count").asInt();
+        jsonNode.get("data").forEach(item -> assertTrue(item.size() <= totalFieldsCount));
+    }
+
+    public static JsonNode assertSuccessResponse() {
+        JsonNode jsonNode = doStuffToBuildTheJsonNode();
+        assertTrue(jsonNode.hasNonNull("count"));
+        assertTrue(jsonNode.hasNonNull("data"));
+        assertTrue(jsonNode.get("count").asInt() > 0);
+        assertEquals(jsonNode.get("count").asInt(), jsonNode.get("data").size());
+        return jsonNode;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] JUnitTestsShouldIncludeAssert false positive with inherited @Rule field #1422</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.junit.Rule;
+            import org.junit.Test;
+            import org.junit.rules.ExpectedException;
+
+            abstract class Shape {
+                double size;
+
+                Shape(double size) {
+                    if (size < 0) {
+                        throw new IllegalArgumentException("negative size");
+                    }
+                    this.size = size;
+                }
+
+                public abstract double area();
+            }
+
+            class Square extends Shape {
+                Square(double size) {
+                    super(size);
+                }
+
+                public double area() {
+                    return size * size;
+                }
+            }
+
+            class Weird extends Shape {
+                Weird(double size) {
+                    super(size);
+                }
+
+                public double area() {
+                    throw new RuntimeException("just 'cause");
+                }
+            }
+
+            public abstract class ShapeTester {
+                protected abstract Shape factory(double size);
+
+                @Rule
+                public ExpectedException e = ExpectedException.none();
+
+                @Test
+                public void notAProblem() {
+                    e.expect(IllegalArgumentException.class);
+                    factory(-5);
+                }
+
+                public static final class SquareTester extends ShapeTester {
+                    protected Shape factory(double size) {
+                        return new Square(size);
+                    }
+                }
+
+                public static final class WeirdTester extends ShapeTester {
+                    protected Shape factory(double size) {
+                        return new Weird(size);
+                    }
+
+                    @Test
+                    public void thisOneTriggersRule() {
+                        e.expect(RuntimeException.class);
+                        e.expectMessage("just 'cause");
+                        factory(42).area();
+                    }
+                }
+            }
         ]]></code>
     </test-code>
 </test-data>

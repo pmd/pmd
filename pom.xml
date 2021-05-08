@@ -19,7 +19,7 @@
 
     <url>https://pmd.github.io/</url>
     <ciManagement>
-        <url>https://travis-ci.org/pmd/pmd</url>
+        <url>https://github.com/pmd/pmd/actions</url>
     </ciManagement>
     <inceptionYear>2002</inceptionYear>
     <licenses>
@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2020-08-31T16:30:18Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2021-04-24T14:41:16Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -85,19 +85,19 @@
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.3.72</kotlin.version>
-        <kotest.version>4.1.2</kotest.version>
-        <dokka.version>0.10.1</dokka.version>
+        <kotlin.version>1.4.10</kotlin.version>
+        <kotest.version>4.3.1</kotest.version>
+        <dokka.version>1.4.30</dokka.version>
 
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.0.0-M5</surefire.version>
-        <checkstyle.version>8.30</checkstyle.version>
-        <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
-        <pmd.plugin.version>3.13.0</pmd.plugin.version>
-        <ant.version>1.10.1</ant.version>
+        <checkstyle.version>8.42</checkstyle.version>
+        <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
+        <pmd.plugin.version>3.14.0</pmd.plugin.version>
+        <ant.version>1.10.9</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
-        <antlr.version>4.7</antlr.version>
+        <antlr.version>4.8</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -105,7 +105,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>8</pmd.build-tools.version>
+        <pmd.build-tools.version>12</pmd.build-tools.version>
 
         <pmd-designer.version>6.27.0</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
@@ -284,7 +284,7 @@
                         <dependency>
                             <groupId>org.junit.vintage</groupId>
                             <artifactId>junit-vintage-engine</artifactId>
-                            <version>5.6.2</version>
+                            <version>5.7.0</version>
                         </dependency>
                         <!-- Junit5 Platform Engine for Kotlin Tests -->
                         <dependency>
@@ -320,7 +320,7 @@
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <offlineLinks>
                             <offlineLink>
-                                <location>${project.basedir}/../pmd-lang-test/target/dokka/pmd-lang-test</location>
+                                <location>${project.basedir}/../pmd-lang-test/target/dokkaJavadocJar</location>
                                 <url>../../pmd-lang-test/${project.version}</url>
                             </offlineLink>
                             <offlineLink>
@@ -415,12 +415,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.27.0</version>
+                            <version>6.34.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.27.0</version>
+                            <version>6.34.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -537,9 +537,6 @@
                 <configuration>
                     <serverId>ossrh</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <!-- if autoReleaseAfterClose is true, then the artifacts will be
-                         automatically promoted to maven central -->
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
         </plugins>
@@ -663,7 +660,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.0-beta</version>
+                <version>9.1</version>
             </dependency>
             <dependency>
                 <groupId>org.pcollections</groupId>
@@ -683,7 +680,7 @@
             <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <version>10.1</version>
+                <version>10.2</version>
             </dependency>
             <dependency>
                 <groupId>org.mozilla</groupId>
@@ -699,7 +696,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.6</version>
+                <version>2.6</version> <!-- note: this is the last version compatible with java7 -->
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -719,7 +716,7 @@
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>2.4.7</version>
+                <version>2.4.21</version>
             </dependency>
 
             <!-- TEST DEPENDENCIES -->
@@ -753,8 +750,8 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <!-- using 29.0-android flavor instead of 29.0-jre, so that we are compatible with java7 -->
-                <version>29.0-android</version>
+                <!-- using 30.0-android flavor instead of 30.0-jre, so that we are compatible with java7 -->
+                <version>30.0-android</version>
                 <scope>test</scope>
             </dependency>
 
@@ -768,7 +765,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.13</version>
+                <version>4.13.1</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -1029,6 +1026,7 @@
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
                 <sonar.organization>pmd</sonar.organization>
+                <sonar.java.source>1.8</sonar.java.source>
             </properties>
             <build>
                 <pluginManagement>

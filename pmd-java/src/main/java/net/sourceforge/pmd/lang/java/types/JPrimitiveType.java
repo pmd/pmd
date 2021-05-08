@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -63,7 +64,7 @@ public final class JPrimitiveType implements JTypeMirror {
      * The returned type {@link Class#isPrimitive()} is true.
      */
     @Override
-    public JClassSymbol getSymbol() {
+    public @NonNull JClassSymbol getSymbol() {
         return type;
     }
 
@@ -76,6 +77,16 @@ public final class JPrimitiveType implements JTypeMirror {
     @Override
     public boolean isPrimitive(PrimitiveTypeKind kind) {
         return this.kind == Objects.requireNonNull(kind, "null kind");
+    }
+
+    @Override
+    public boolean isFloatingPoint() {
+        return PrimitiveTypeKind.FLOATING_POINT_TYPES.contains(this.kind);
+    }
+
+    @Override
+    public boolean isIntegral() {
+        return kind != PrimitiveTypeKind.BOOLEAN && !isFloatingPoint();
     }
 
     @Override
@@ -125,6 +136,8 @@ public final class JPrimitiveType implements JTypeMirror {
         LONG(long.class),
         FLOAT(float.class),
         DOUBLE(double.class);
+
+        static final EnumSet<PrimitiveTypeKind> FLOATING_POINT_TYPES = EnumSet.of(FLOAT, DOUBLE);
 
         final String name = name().toLowerCase(Locale.ROOT);
         private final Class<?> jvm;

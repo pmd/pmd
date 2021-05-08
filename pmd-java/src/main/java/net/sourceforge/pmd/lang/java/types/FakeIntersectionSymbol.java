@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.types;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -25,15 +27,15 @@ class FakeIntersectionSymbol implements JClassSymbol {
     private final JClassType superClass;
     private final List<JClassType> superItfs;
 
-    FakeIntersectionSymbol(String name, JClassType superClass, List<JClassType> superItfs) {
+    FakeIntersectionSymbol(String name, @NonNull JClassType superClass, List<JClassType> superItfs) {
         this.name = name;
-        this.superClass = superClass;
+        this.superClass = Objects.requireNonNull(superClass, "null superclass");
         this.superItfs = superItfs;
     }
 
     @Override
     public boolean isInterface() {
-        return superClass == superClass.getTypeSystem().OBJECT;
+        return superClass.isTop();
     }
 
     @Override
@@ -69,6 +71,11 @@ class FakeIntersectionSymbol implements JClassSymbol {
     @Override
     public List<JFieldSymbol> getDeclaredFields() {
         return Collections.emptyList();
+    }
+
+    @Override
+    public @Nullable Set<String> getEnumConstantNames() {
+        return superClass.getSymbol().getEnumConstantNames();
     }
 
     @Override

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
+import java.util.Comparator;
+
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
@@ -46,8 +48,20 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
 
     @Override
     public CharSequence getText() {
-        String fullText = getFirstToken().document.getFullText();
+        String fullText = getFirstToken().getDocument().getFullText();
         return fullText.substring(getStartOffset(), getEndOffset());
+    }
+
+    private static final Comparator<JjtreeNode<?>> JJT_COMPARATOR =
+        Comparator.<JjtreeNode<?>, JavaccToken>comparing(JjtreeNode::getFirstToken)
+            .thenComparing(JjtreeNode::getLastToken);
+
+    @Override
+    public final int compareLocation(Node other) {
+        if (other instanceof JjtreeNode<?>) {
+            return JJT_COMPARATOR.compare(this, (JjtreeNode<?>) other);
+        }
+        return super.compareLocation(other);
     }
 
     /**

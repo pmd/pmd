@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
@@ -34,6 +36,10 @@ public final class ASTConstructorDeclaration extends AbstractMethodOrConstructor
         return getImage();
     }
 
+    @Override
+    protected @Nullable JavaccToken getPreferredReportLocation() {
+        return getModifiers().getLastToken().getNext();
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

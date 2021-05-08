@@ -126,6 +126,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Arrays;
+import java.util.List;
 public class Foo {
     List list = Arrays.asList("one");
 }
@@ -135,8 +136,13 @@ public class Foo {
     <test-code>
         <description>13, invalid static method call</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.util': 'Arrays' is already in scope because it is imported in this file</message>
+        </expected-messages>
         <code><![CDATA[
 import java.util.Arrays;
+import java.util.List;
 public class Foo {
     List list = java.util.Arrays.asList("one");
 }
@@ -148,6 +154,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import static java.util.Arrays.asList;
+import java.util.List;
 public class Foo {
     List list = asList("one");
 }
@@ -159,6 +166,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import static java.util.Arrays.asList;
+import java.util.List;
 public class Foo {
     List list = java.util.Arrays.asList("one");
 }
@@ -171,6 +179,7 @@ public class Foo {
         <code><![CDATA[
 import java.util.Arrays;
 import static java.util.Arrays.asList;
+import java.util.List;
 public class Foo {
     List list = asList("one");
 }
@@ -182,6 +191,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Arrays;
+import java.util.List;
 import static java.util.Arrays.asList;
 public class Foo {
     List list = Arrays.asList("one");
@@ -216,6 +226,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import static java.util.Arrays.asList;
+import java.util.List;
 public class Foo {
     List list = asList("one");
 }
@@ -227,6 +238,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import static java.util.Arrays.*;
+import java.util.List;
 public class Foo {
     List list = java.util.Arrays.asList("one");
 }
@@ -239,6 +251,7 @@ public class Foo {
         <code><![CDATA[
 import java.util.Arrays;
 import static java.util.Arrays.*;
+import java.util.List;
 public class Foo {
     List list = asList("one");
 }
@@ -251,6 +264,7 @@ public class Foo {
         <code><![CDATA[
 import java.util.Arrays;
 import static java.util.Arrays.*;
+import java.util.List;
 public class Foo {
     List list = Arrays.asList("one");
 }
@@ -272,28 +286,26 @@ public class Test {}
     <test-code>
         <description>#1404 Java8 'Unnecessary use of fully qualified name' in Streams Collector</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>17</expected-linenumbers>
+        <expected-linenumbers>15</expected-linenumbers>
         <expected-messages>
-            <message>Unnecessary use of fully qualified name 'Collectors.toList' due to existing static import 'java.util.stream.Collectors.toList'</message>
+            <message>Unnecessary qualifier 'Collectors': 'toList' is already in scope</message>
         </expected-messages>
         <code><![CDATA[
 // https://github.com/FenixEdu/fenixedu-learning/blob/master/src/main/java/org/fenixedu/learning/domain/executionCourse/components/InitialPageComponent.java#L50
 import java.util.Comparator;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-public class InitialPageComponent extends BaseExecutionCourseComponent {
-    public void handle(Page page, TemplateContext componentContext, TemplateContext globalContext) {
-        ExecutionCourse executionCourse = ((ExecutionCourseSite) page.getSite()).getExecutionCourse();
-        globalContext.put(
-                "professorships",
-                executionCourse
-                        .getProfessorshipsSet()
-                        .stream()
-                        .sorted(Comparator.comparing(Professorship::isResponsibleFor).reversed()
-                                .thenComparing(Professorship.COMPARATOR_BY_PERSON_NAME)).collect(Collectors.toList()));
+public class InitialPageComponent {
+    public void handle(Map<String, List<String>> globalContext) {
+        List<String> lst = new ArrayList<>();
+        globalContext.put("professorships",
+                lst.stream().sorted(Comparator.comparingInt(String::length).reversed()
+                            .collect(Collectors.toList())));
     }
 }
         ]]></code>
@@ -323,10 +335,10 @@ public class UnnecessaryFullyQualifiedName {
         <code><![CDATA[
 import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito;
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito.*;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyPowerMockito.*;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.Container.PhonyMockito.*;
 
 public class Foo {
-    private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) is ambiguous (compile error)
+    private Foo bar = PhonyMockito.mock(Foo.class); // doing simply mock(Foo.class) is ambiguous (compile error)
 }
         ]]></code>
     </test-code>
@@ -337,10 +349,10 @@ public class Foo {
         <code><![CDATA[
 import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito;
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito.*;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyPowerMockito.mock;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.Container.PhonyMockito.mock;
 
 public class Foo {
-    private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) would use a differen method than intended
+    private Foo bar = PhonyMockito.mock(Foo.class); // doing simply mock(Foo.class) would use a differen method than intended
 }
         ]]></code>
     </test-code>
@@ -373,13 +385,12 @@ final class Test {
         <description>#1114 - Star import overwritten by explicit import is not correctly handled</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import One.*;
-import Two.Problem;
-
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.subpackage.*;
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.MyClass;
 
 public class CauseProblem {
-    public Problem convert(One.Problem original) {
-        return new Problem();
+    public MyClass convert(net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.subpackage.MyClass original) { // necessary
+        return new MyClass();
     }
 }
             ]]></code>
@@ -389,7 +400,7 @@ public class CauseProblem {
         <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: without import</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary use of fully qualified name 'java.lang.String' due to existing implicit import 'java.lang.*'</message>
+            <message>Unnecessary qualifier 'java.lang': 'String' is already in scope because it is declared in java.lang</message>
         </expected-messages>
         <code><![CDATA[
 public class JavaLang {
@@ -405,7 +416,7 @@ public class JavaLang {
         <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: with import</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary use of fully qualified name 'java.lang.String' due to existing import 'java.lang.String'</message>
+            <message>Unnecessary qualifier 'java.lang': 'String' is already in scope because it is imported in this file</message>
         </expected-messages>
         <code><![CDATA[
 import java.lang.String;
@@ -449,6 +460,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.util.Arrays;
 import java.util.asList.*; // we don't use stream since we're on java 7
+import java.util.List;
 
 public final class Test {
     public static List<String> stream(Container parent) {
@@ -492,11 +504,14 @@ public class TestArrayType {
         <description>#1199 false negative for same package FQCN</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.util': 'ArrayList' is already in scope because it is declared in the same package</message>
+        </expected-messages>
         <code><![CDATA[
-package org.foo;
+package java.util;
 
 public class SamePackage {
-    public void convert(org.foo.Bar s) { // violation
+    public void convert(java.util.ArrayList s) { // violation
     }
 }
         ]]></code>
@@ -541,7 +556,7 @@ class length {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>Unnecessary use of fully qualified name 'threads.length.foo' due to existing same package import 'threads.*'</message>
+            <message>Unnecessary qualifier 'threads': 'length' is already in scope because it is declared in the same package</message>
         </expected-messages>
         <code><![CDATA[
 package threads;
@@ -644,23 +659,37 @@ package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedna
         <description>False-Negative when referencing inner class</description>
         <expected-problems>7</expected-problems>
         <expected-linenumbers>3,4,6,7,8,9,12</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is already in scope because it is declared in the same package</message>
+            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is already in scope because it is declared in the same package</message>
+            <message>Unnecessary qualifier 'com.example.ClassOne': 'MyException' is already in scope because it is declared in an enclosing type</message>
+            <message>Unnecessary qualifier 'com.example.ClassOne': 'Builder' is already in scope because it is declared in an enclosing type</message>
+            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is already in scope because it is declared in the same package</message>
+            <message>Unnecessary qualifier 'com.example.ClassOne': 'MyException' is already in scope because it is declared in an enclosing type</message>
+            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is already in scope because it is declared in the same package</message>
+        </expected-messages>
         <code><![CDATA[
 package com.example;
 
-public class ClassOne extends com.example.ClassTwo {
-    com.example.ClassTwo.Builder builder = null;
+public class ClassOne extends com.example.ClassTwo { // 3
+    com.example.ClassTwo.Builder builder = null;     // 4
 
-    public void run() throws com.example.ClassOne.MyException {
-        com.example.ClassOne.Builder builder = null;
-        com.example.ClassTwo.Builder builder2 = null;
-        throw new com.example.ClassOne.MyException();
+    public void run() throws com.example.ClassOne.MyException { // 6
+        com.example.ClassOne.Builder builder = null;            // 7
+        com.example.ClassTwo.Builder builder2 = null;           // 8
+        throw new com.example.ClassOne.MyException();           // 9
     }
 
-    public class Builder extends com.example.ClassTwo.Builder {
+    public class Builder extends com.example.ClassTwo.Builder { // 12
     }
 
     public static class MyException extends Exception { }
 }
+
+class ClassTwo {
+    class Builder { }
+}
+
         ]]></code>
     </test-code>
 
@@ -683,5 +712,302 @@ public class SomeClass {
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Type parameter shadows java lang</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package ohio;
+
+public class InnerClass<RuntimeException extends ClassCastException> {
+    public void method1() throws RuntimeException,
+                                 java.lang.RuntimeException {
+    }
+}
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Static import on demand does not import same method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package ohio;
+
+import static org.junit.Assert.*;
+
+public class Something{
+    {
+        // this is ohio.Assert.isNull, not org.junit.Assert.isNull
+        Assert.isNull(null);
+    }
+}
+
+class Assert {
+
+    public static void isNull(Object o) {}
+
+}
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Static import on demand from same file</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package ohio;
+
+import static ohio.Assert.*;
+
+public class Something{
+    {
+        Assert.isNull(null);
+    }
+}
+
+class Assert {
+
+    public static void isNull(Object o) {}
+
+}
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1790 Enum constant obscures type name!</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public enum DataType {
+                Float(Float.class) {
+                    @Override
+                    public String toString(final Object value) {
+                        if (value == null) {
+                            return null;
+                        }
+                        final int bits = java.lang.Float.floatToIntBits((java.lang.Float) value); // false positive
+                        return "";
+                    }
+                };
+                private Class<?> dataClass;
+
+                private DataType(Class<?> dataClass) {
+                    this.dataClass = dataClass;
+                }
+
+                @Override
+                public Class<?> getDataClass() {
+                    return dataClass;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2299 Package should not use startsWith</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package a.b.c;
+
+            class A {
+                a.b.car.Car c;
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Just the Map prefix is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.util': 'Map' is already in scope because it is imported in this file</message>
+        </expected-messages>
+        <code><![CDATA[
+            package a;
+
+            import java.util.Map;
+            import java.util.Set;
+
+            class A<K, V> {
+                public Set<java.util.Map.Entry<K, V>> entrySet() {return null;}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Inherited method is in scope</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'ClassLoader': 'registerAsParallelCapable' is already in scope</message>
+        </expected-messages>
+        <code><![CDATA[
+            package a;
+            import java.net.URLClassLoader;
+
+            class MyClassLoader extends URLClassLoader {
+                {
+                    ClassLoader.registerAsParallelCapable();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FQCN before field access</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.lang': 'Math' is already in scope because it is declared in java.lang </message>
+        </expected-messages>
+        <code><![CDATA[
+            class ComplexButNotFlagged {
+
+                public final double SpecialSum = 2 + 1e10,
+                                    SpecialDifference = 4 - java.lang.Math.PI;
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>If there are type argument before method, it should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package ohio;
+
+            import static ohio.Assert.*;
+
+            public class Something{
+                {
+                    Assert.<Class<?>>isNull(null);
+                }
+            }
+
+            class Assert {
+
+                public static <T> void isNull(Object o) {}
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <!-- TODO this causes an error, bc of early disambiguation       -->
+        <!--  solution: import on demands must be made entirely lazy     -->
+        <description>FN with static method imported through subtype (same file)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            package ohio;
+
+            import org.junit.Assert;
+            import static ohio.Assert2.*;
+
+            public class Something {
+                {
+                    // this is actually a reference to org.junit.Assert.isNull
+                    Assert2.isNull(null);
+                }
+            }
+
+            class Assert2 extends Assert {}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FN with static method imported through subtype</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary qualifier 'MockitoInherited': 'PhonyMockito::mock' is already in scope</message>
+        </expected-messages>
+        <code><![CDATA[
+            package ohio;
+
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito.mock;
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.MockitoInherited.*;
+
+            import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.MockitoInherited;
+
+            public class Something {
+
+                {
+                    // this is actually a reference to PhonyMockito::mock
+                    MockitoInherited.mock(null);
+                }
+            }
+
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test field access</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary qualifier 'Math': 'PI' is already in scope because it is imported in this file</message>
+        </expected-messages>
+        <code><![CDATA[
+            package ohio;
+
+            import static java.lang.Math.PI;
+
+            public class Something {
+                static int i = Math.PI * 2;
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test field access FQCN</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.lang.Math': 'PI' is already in scope because it is imported in this file</message>
+        </expected-messages>
+        <code><![CDATA[
+            package ohio;
+
+            import static java.lang.Math.PI;
+
+            public class Something {
+                static int i = java.lang.Math.PI * 2;
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test field access disabled</description>
+        <rule-property name="reportStaticFields">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package ohio;
+
+            import static java.lang.Math.PI;
+
+            public class Something {
+                static int i = Math.PI * 2;
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test field access disabled, FQCN is still reported</description>
+        <rule-property name="reportStaticFields">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.lang': 'Math' is already in scope because it is declared in java.lang</message>
+        </expected-messages>
+        <code><![CDATA[
+            package ohio;
+
+            import static java.lang.Math.PI;
+
+            public class Something {
+                static int i = java.lang.Math.PI * 2;
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test field access imported through subtype</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary qualifier 'MockitoInherited': 'PhonyMockito::TWO' is already in scope because it is imported in this file</message>
+        </expected-messages>
+        <code><![CDATA[
+            package ohio;
+
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito.mock;
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.MockitoInherited.*;
+
+            import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.MockitoInherited;
+
+            public class Something {
+                static int i = MockitoInherited.TWO * 2;
+            }
+            ]]></code>
     </test-code>
 </test-data>

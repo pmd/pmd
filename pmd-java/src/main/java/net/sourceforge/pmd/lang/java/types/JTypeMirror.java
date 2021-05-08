@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 
 /**
  * Type mirrors represent Java types. They are created by a {@link TypeSystem}
- * from {@link JTypeDeclSymbol symbols}, a layer of abstraction above reflection
+ * from {@linkplain JTypeDeclSymbol symbols}, a layer of abstraction above reflection
  * classes.
  *
  * <p>Type mirrors can be obtained {@linkplain TypesFromReflection from reflected types},
@@ -198,7 +198,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * <p>Returns null if that can't be found, meaning that the given type
      * is not a supertype of this type.
      */
-    default @Nullable JTypeMirror getAsSuper(JClassSymbol symbol) {
+    default @Nullable JTypeMirror getAsSuper(@NonNull JClassSymbol symbol) {
         return TypeOps.asSuper(this, symbol);
     }
 
@@ -234,6 +234,22 @@ public interface JTypeMirror extends JTypeVisitable {
         return false; // overridden in JPrimitiveType
     }
 
+    /**
+     * Returns true if this type is a {@linkplain JPrimitiveType primitive type}
+     * of a floating point type.
+     */
+    default boolean isFloatingPoint() {
+        return false; // overridden in JPrimitiveType
+    }
+
+    /**
+     * Returns true if this type is a {@linkplain JPrimitiveType primitive type}
+     * of an integral type.
+     */
+    default boolean isIntegral() {
+        return false; // overridden in JPrimitiveType
+    }
+
 
     /** Returns true if this type is a {@linkplain JTypeVar type variable}. */
     default boolean isTypeVariable() {
@@ -245,7 +261,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * whose {@link #unbox()} method returns a {@link JPrimitiveType}.
      */
     default boolean isBoxedPrimitive() {
-        return unbox() != this;
+        return unbox() != this; // NOPMD CompareObjectsWithEquals
     }
 
 
@@ -267,7 +283,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * Returns true if this is {@link TypeSystem#OBJECT}.
      */
     default boolean isTop() {
-        return this == getTypeSystem().OBJECT;
+        return this == getTypeSystem().OBJECT; // NOPMD CompareObjectsWithEquals
     }
 
 
@@ -282,7 +298,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * Returns true if this is {@link TypeSystem#NO_TYPE}, ie {@code void}.
      */
     default boolean isVoid() {
-        return this == getTypeSystem().NO_TYPE;
+        return this == getTypeSystem().NO_TYPE; // NOPMD CompareObjectsWithEquals
     }
 
     /** Returns true if this is an {@linkplain JArrayType array type}. */

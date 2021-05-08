@@ -14,7 +14,7 @@ import io.kotest.matchers.should as ktShould
 
 /** An adapter for [baseShouldMatchSubtree]. */
 object NodeTreeLikeAdapter : DoublyLinkedTreeLikeAdapter<Node> {
-    override fun getChildren(node: Node): List<Node> = node.findChildrenOfType(Node::class.java)
+    override fun getChildren(node: Node): List<Node> = node.children().toList()
 
     override fun nodeName(type: Class<out Node>): String = type.simpleName.removePrefix("AST")
 

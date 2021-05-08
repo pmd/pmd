@@ -369,7 +369,7 @@ fun TreeNodeWrapper<Node, *>.methodDecl(contents: NodeSpec<ASTMethodDeclaration>
 
 fun TreeNodeWrapper<Node, *>.typeParam(name: String, contents: ValuedNodeSpec<ASTTypeParameter, ASTType?> = { null }) =
         child<ASTTypeParameter> {
-            it::getParameterName shouldBe name
+            it::getName shouldBe name
             it::getTypeBoundNode shouldBe contents()
         }
 

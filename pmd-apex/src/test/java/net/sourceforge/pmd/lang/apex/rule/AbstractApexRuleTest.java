@@ -4,20 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.rule;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnonymousClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
-
-import apex.jorje.semantic.ast.compilation.Compilation;
+import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 
 public class AbstractApexRuleTest extends ApexParserTestBase {
 
@@ -42,15 +38,15 @@ public class AbstractApexRuleTest extends ApexParserTestBase {
     }
 
     private void run(String code) {
-        ApexNode<Compilation> node = parse(code);
-        RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(apex.getDefaultVersion());
         TopLevelRule rule = new TopLevelRule();
-        rule.apply(node, ctx);
-        assertEquals(1, ctx.getReport().getViolations().size());
+        rule.setMessage("Message");
+
+        Report report = apex.executeRule(rule, code);
+        TestUtilsKt.assertSize(report, 1);
     }
 
     private static class TopLevelRule extends AbstractApexRule {
+
         @Override
         public Object visit(ASTUserClass node, Object data) {
             addViolation(data, node);

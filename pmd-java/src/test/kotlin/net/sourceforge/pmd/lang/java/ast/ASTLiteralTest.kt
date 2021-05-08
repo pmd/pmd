@@ -46,7 +46,7 @@ class ASTLiteralTest : ParserTestSpec({
         }
     }
 
-    parserTest("Text block literal", javaVersions = since(J14__PREVIEW)) {
+    parserTest("Text block literal", javaVersions = since(J15__PREVIEW)) {
 
         val delim = "\"\"\""
 
@@ -349,6 +349,11 @@ $delim
             "0" should parseAs {
                 number(INT) {
                     it::getBase shouldBe 10 // by convention
+                }
+            }
+            "0.5" should parseAs {
+                number(DOUBLE) {
+                    it::getBase shouldBe 10
                 }
             }
         }

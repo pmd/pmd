@@ -15,7 +15,6 @@ import java.util.Stack;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
 
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import apex.jorje.data.Location;
@@ -24,6 +23,7 @@ import apex.jorje.parser.impl.ApexLexer;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.AnonymousClass;
 import apex.jorje.semantic.ast.compilation.ConstructorPreamble;
+import apex.jorje.semantic.ast.compilation.InvalidDependentCompilation;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserClassMethods;
 import apex.jorje.semantic.ast.compilation.UserEnum;
@@ -152,6 +152,8 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(DmlUpdateStatement.class, ASTDmlUpdateStatement.class);
         register(DmlUpsertStatement.class, ASTDmlUpsertStatement.class);
         register(DoLoopStatement.class, ASTDoLoopStatement.class);
+        register(ElseWhenBlock.class, ASTElseWhenBlock.class);
+        register(EmptyReferenceExpression.class, ASTEmptyReferenceExpression.class);
         register(Expression.class, ASTExpression.class);
         register(ExpressionStatement.class, ASTExpressionStatement.class);
         register(Field.class, ASTField.class);
@@ -159,12 +161,15 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(FieldDeclarationStatements.class, ASTFieldDeclarationStatements.class);
         register(ForEachStatement.class, ASTForEachStatement.class);
         register(ForLoopStatement.class, ASTForLoopStatement.class);
+        register(IdentifierCase.class, ASTIdentifierCase.class);
         register(IfBlockStatement.class, ASTIfBlockStatement.class);
         register(IfElseBlockStatement.class, ASTIfElseBlockStatement.class);
         register(IllegalStoreExpression.class, ASTIllegalStoreExpression.class);
         register(InstanceOfExpression.class, ASTInstanceOfExpression.class);
+        register(InvalidDependentCompilation.class, ASTInvalidDependentCompilation.class);
         register(JavaMethodCallExpression.class, ASTJavaMethodCallExpression.class);
         register(JavaVariableExpression.class, ASTJavaVariableExpression.class);
+        register(LiteralCase.class, ASTLiteralCase.class);
         register(LiteralExpression.class, ASTLiteralExpression.class);
         register(MapEntryNode.class, ASTMapEntryNode.class);
         register(Method.class, ASTMethod.class);
@@ -199,29 +204,25 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(StatementExecuted.class, ASTStatementExecuted.class);
         register(SuperMethodCallExpression.class, ASTSuperMethodCallExpression.class);
         register(SuperVariableExpression.class, ASTSuperVariableExpression.class);
+        register(SwitchStatement.class, ASTSwitchStatement.class);
         register(TernaryExpression.class, ASTTernaryExpression.class);
         register(ThisMethodCallExpression.class, ASTThisMethodCallExpression.class);
         register(ThisVariableExpression.class, ASTThisVariableExpression.class);
         register(ThrowStatement.class, ASTThrowStatement.class);
         register(TriggerVariableExpression.class, ASTTriggerVariableExpression.class);
         register(TryCatchFinallyBlockStatement.class, ASTTryCatchFinallyBlockStatement.class);
+        register(TypeWhenBlock.class, ASTTypeWhenBlock.class);
         register(UserClass.class, ASTUserClass.class);
         register(UserClassMethods.class, ASTUserClassMethods.class);
         register(UserExceptionMethods.class, ASTUserExceptionMethods.class);
         register(UserEnum.class, ASTUserEnum.class);
         register(UserInterface.class, ASTUserInterface.class);
         register(UserTrigger.class, ASTUserTrigger.class);
+        register(ValueWhenBlock.class, ASTValueWhenBlock.class);
         register(VariableDeclaration.class, ASTVariableDeclaration.class);
         register(VariableDeclarationStatements.class, ASTVariableDeclarationStatements.class);
         register(VariableExpression.class, ASTVariableExpression.class);
         register(WhileLoopStatement.class, ASTWhileLoopStatement.class);
-        register(SwitchStatement.class, ASTSwitchStatement.class);
-        register(ElseWhenBlock.class, ASTElseWhenBlock.class);
-        register(TypeWhenBlock.class, ASTTypeWhenBlock.class);
-        register(ValueWhenBlock.class, ASTValueWhenBlock.class);
-        register(LiteralCase.class, ASTLiteralCase.class);
-        register(IdentifierCase.class, ASTIdentifierCase.class);
-        register(EmptyReferenceExpression.class, ASTEmptyReferenceExpression.class);
     }
 
     private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends AbstractApexNode<T>> nodeAdapterType) {
@@ -245,11 +246,11 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private final List<ApexDocTokenLocation> apexDocTokenLocations;
     private final Map<Integer, String> suppressMap;
 
-    ApexTreeBuilder(String sourceCode, ParserOptions parserOptions, SourceCodePositioner positioner) {
+    ApexTreeBuilder(String sourceCode, String suppressMarker, SourceCodePositioner positioner) {
         this.sourceCode = sourceCode;
         sourceCodePositioner = positioner;
 
-        CommentInformation commentInformation = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
+        CommentInformation commentInformation = extractInformationFromComments(sourceCode, suppressMarker);
         apexDocTokenLocations = commentInformation.docTokenLocations;
         suppressMap = commentInformation.suppressMap;
     }
@@ -276,7 +277,6 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     <T extends AstNode> AbstractApexNode<T> build(T astNode) {
         // Create a Node
         AbstractApexNode<T> node = createNodeAdapter(astNode);
-        node.calculateLineNumbers(sourceCodePositioner);
         node.handleSourceCode(sourceCode);
 
         // Append to parent
@@ -297,6 +297,11 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             addFormalComments();
         }
 
+        // calculate line numbers after the tree is built
+        // so that we can look at parent/children to figure
+        // out the positions if necessary.
+        node.calculateLineNumbers(sourceCodePositioner);
+
         return node;
     }
 
@@ -314,7 +319,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     private void buildFormalComment(AstNode node) {
-        if (parents.peek() == node) {
+        if (node.equals(parents.peek())) {
             assignApexDocTokenToNode(node, nodes.peek());
         }
     }
@@ -412,7 +417,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     private boolean visit(AstNode node) {
-        if (parents.peek() == node) {
+        if (node.equals(parents.peek())) {
             return true;
         } else {
             build(node);

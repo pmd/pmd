@@ -60,8 +60,8 @@ All property assignments must be enclosed in a `properties` element, which is it
 
 Some properties take multiple values (a list), in which case you can provide them all by delimiting them with a delimiter character. It is usually a pipe ('\|'), or a comma (',') for numeric properties, e.g.
 ```xml
- <property name="legalCollectionTypes"
-           value="java.util.ArrayList|java.util.Vector|java.util.HashMap"/>
+<property name="legalCollectionTypes"
+          value="java.util.ArrayList|java.util.Vector|java.util.HashMap"/>
 ```
 
 These properties are referred to as **multivalued properties** in this documentation.

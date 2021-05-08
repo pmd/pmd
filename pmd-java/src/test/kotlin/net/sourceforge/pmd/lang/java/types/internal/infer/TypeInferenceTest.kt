@@ -95,13 +95,13 @@ class TypeInferenceTest : ProcessorTestSpec({
     val streamSpec: NodeSpec<ASTMethodCall> = {
 
         it::getMethodName shouldBe "collect"
-        it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[boolean.box()] } // List<Boolean>
+        it shouldHaveType with(it.typeDsl) { gen.t_List[boolean.box()] } // List<Boolean>
         it::getQualifier shouldBe child<ASTMethodCall> {
             it::getMethodName shouldBe "map"
-            it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[boolean.box()] } // Stream<Boolean>
+            it shouldHaveType with(it.typeDsl) { gen.t_Stream[boolean.box()] } // Stream<Boolean>
             it::getQualifier shouldBe child<ASTMethodCall> {
                 it::getMethodName shouldBe "of"
-                it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] } // Stream<String>
+                it shouldHaveType with(it.typeDsl) { gen.t_Stream[gen.t_String] } // Stream<String>
                 it::getQualifier shouldBe typeExpr {
                     classType("Stream")
                 }
@@ -121,7 +121,7 @@ class TypeInferenceTest : ProcessorTestSpec({
 
                     val `t_Function{String, Boolean}` = with(it.typeDsl) { gen.t_Function[gen.t_String, boolean.box()] }
 
-                    it.typeMirror shouldBe `t_Function{String, Boolean}`
+                    it shouldHaveType `t_Function{String, Boolean}`
                     with(it.typeDsl) {
                         it.functionalMethod.shouldMatchMethod(
                                 named = "apply",
@@ -140,7 +140,7 @@ class TypeInferenceTest : ProcessorTestSpec({
                     it::getExpression shouldBe child<ASTMethodCall> {
                         it shouldHaveType it.typeSystem.BOOLEAN
                         it::getQualifier shouldBe variableAccess("it") {
-                            it.typeMirror shouldBe it.typeSystem.STRING
+                            it shouldHaveType it.typeSystem.STRING
                         }
                         it::getArguments shouldBe child {}
                     }
@@ -175,7 +175,7 @@ class TypeInferenceTest : ProcessorTestSpec({
                     it::isTypeInferred shouldBe true
                     varDeclarator {
                         variableId("foo") {
-                            it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[boolean.box()] }
+                            it shouldHaveType with(it.typeDsl) { gen.t_List[boolean.box()] }
                         }
 
                         child(nodeSpec = streamSpec)
@@ -197,7 +197,7 @@ class TypeInferenceTest : ProcessorTestSpec({
                     unspecifiedChild()
                     variableDeclarator("map") {
                         methodCall("collect") {
-                            it.typeMirror shouldBe with(it.typeDsl) {
+                            it shouldHaveType with(it.typeDsl) {
                                 java.util.Map::class[ts.STRING, ts.STRING]
                             }
                             unspecifiedChild()
@@ -207,13 +207,13 @@ class TypeInferenceTest : ProcessorTestSpec({
                                     argList {
                                         methodCall("identity") {
                                             unspecifiedChildren(2)
-                                            it.typeMirror shouldBe with(it.typeDsl) {
+                                            it shouldHaveType with(it.typeDsl) {
                                                 java.util.function.Function::class[ts.STRING, ts.STRING]
                                             }
                                         }
                                         methodCall("identity") {
                                             unspecifiedChildren(2)
-                                            it.typeMirror shouldBe with(it.typeDsl) {
+                                            it shouldHaveType with(it.typeDsl) {
                                                 java.util.function.Function::class[ts.STRING, ts.STRING]
                                             }
                                         }
@@ -348,13 +348,39 @@ class MyMap<K, V> {
                 }
 
                 it::getTypeNode shouldBe classType("KeyIter") {
-                    it.typeMirror shouldBe `t_MyMap{K,V}KeyIter`
+                    it shouldHaveType `t_MyMap{K,V}KeyIter`
                 }
 
                 argList(2)
             }
         }
 
+    }
+
+    parserTest("Concurrent modification exception when propagating bounds modifies self var") {
+        // problem is the ivar for E has Enum as upper bound and no Object,
+        // so Object is backpropagated to it during its own propagateAllBounds action
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+class Foo {
+
+    void descendingKeyIterator() { 
+        assertThat(caseInsensitiveValueOf(Tropes.values(), "foo"), is(Tropes.FOO));
+    }
+
+    public static <T> void assertThat(T actual, Matcher<? super T> matcher) { }
+    public static <T> Matcher<T> is(Class<T> matcher) {}
+    public static <T> Matcher<T> is(T value) {return null;}
+    public static <E extends Enum<?>> E caseInsensitiveValueOf(E[] enumValues, String constant) {return null;}
+    interface Matcher<T> {}
+    enum Tropes { FOO, BAR, baz }
+}
+
+        """.trimIndent())
+
+        spy.shouldBeOk {
+            acu.firstMethodCall() shouldHaveType void
+        }
     }
 
 

@@ -27,6 +27,7 @@ public class Report {
     private final List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
     private final List<ProcessingError> errors = new ArrayList<>();
     private final List<ConfigurationError> configErrors = new ArrayList<>();
+    private final Object lock = new Object();
 
     /**
      * Creates a new, initialized, empty report for the given file name.
@@ -218,18 +219,23 @@ public class Report {
      * summary over all violations is needed as PMD creates one report per file
      * by default.
      *
-     * @param r
-     *            the report to be merged into this.
+     * <p>This is synchronized on an internal lock (note that other mutation
+     * operations are not synchronized, todo for pmd 7).
+     *
+     * @param r the report to be merged into this.
+     *
      * @see AbstractAccumulatingRenderer
      */
     public void merge(Report r) {
-        errors.addAll(r.errors);
-        configErrors.addAll(r.configErrors);
-        suppressedRuleViolations.addAll(r.suppressedRuleViolations);
+        synchronized (lock) {
+            errors.addAll(r.errors);
+            configErrors.addAll(r.configErrors);
+            suppressedRuleViolations.addAll(r.suppressedRuleViolations);
 
-        for (RuleViolation violation : r.getViolations()) {
-            int index = Collections.binarySearch(violations, violation, RuleViolation.DEFAULT_COMPARATOR);
-            violations.add(index < 0 ? -index - 1 : index, violation);
+            for (RuleViolation violation : r.getViolations()) {
+                int index = Collections.binarySearch(violations, violation, RuleViolation.DEFAULT_COMPARATOR);
+                violations.add(index < 0 ? -index - 1 : index, violation);
+            }
         }
     }
 

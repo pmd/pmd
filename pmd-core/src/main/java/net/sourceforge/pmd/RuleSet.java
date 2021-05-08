@@ -25,6 +25,7 @@ import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 
 /**
  * This class represents a collection of rules along with some optional filter
@@ -91,6 +92,89 @@ public class RuleSet implements ChecksumAware {
         filter = rs.filter; // filters are immutable, can be shared
     }
 
+    /**
+     * Creates a new ruleset containing a single rule. The ruleset will
+     * have default description, name, and null file name.
+     *
+     * @param rule The rule being created
+     *
+     * @return The newly created RuleSet
+     */
+    public static RuleSet forSingleRule(final Rule rule) {
+        final long checksum;
+        if (rule instanceof XPathRule) {
+            checksum = ((XPathRule) rule).getXPathExpression().hashCode();
+        } else {
+            // TODO : Is this good enough? all properties' values + rule name
+            checksum = rule.getPropertiesByPropertyDescriptor().values().hashCode() * 31 + rule.getName().hashCode();
+        }
+
+        final RuleSetBuilder builder =
+            new RuleSetBuilder(checksum)
+                .withName(rule.getName())
+                .withDescription("RuleSet for " + rule.getName());
+        builder.addRule(rule);
+        return builder.build();
+    }
+
+
+    /**
+     * Creates a new ruleset with the given metadata such as name, description,
+     * fileName, exclude/include patterns are used. The rules are taken from the given
+     * collection.
+     *
+     * <p><strong>Note:</strong> The rule instances are shared between the collection
+     * and the new ruleset (copy-by-reference). This might lead to concurrency issues,
+     * if the rules of the collection are also referenced by other rulesets and used
+     * in different threads.
+     * </p>
+     *
+     * @param name            the name of the ruleset
+     * @param description     the description
+     * @param fileName        the filename
+     * @param excludePatterns list of exclude patterns
+     * @param includePatterns list of include patterns, that override the exclude patterns
+     * @param rules           the collection with the rules to add to the new ruleset
+     *
+     * @return the new ruleset
+     *
+     * @throws NullPointerException If any parameter is null, or the collections contain null elements
+     */
+    public static RuleSet create(String name,
+                                 String description,
+                                 String fileName,
+                                 Collection<Pattern> excludePatterns,
+                                 Collection<Pattern> includePatterns,
+                                 Iterable<? extends Rule> rules) {
+        RuleSetBuilder builder = new RuleSetBuilder(0L); // TODO: checksum missing
+        builder.withName(name)
+               .withDescription(description)
+               .withFileName(fileName)
+               .replaceFileExclusions(excludePatterns)
+               .replaceFileInclusions(includePatterns);
+        for (Rule rule : rules) {
+            builder.addRule(rule);
+        }
+        return builder.build();
+    }
+
+    /**
+     * Creates a copy of the given ruleset. All properties like name, description, fileName
+     * and exclude/include patterns are copied.
+     *
+     * <p><strong>Note:</strong> The rule instances are shared between the original
+     * and the new ruleset (copy-by-reference). This might lead to concurrency issues,
+     * if the original ruleset and the new ruleset are used in different threads.
+     * </p>
+     *
+     * @param original the original rule set to copy from
+     *
+     * @return the copy
+     */
+    public static RuleSet copy(RuleSet original) {
+        return new RuleSet(original);
+    }
+
     /* package */ static class RuleSetBuilder {
 
         public String description;
@@ -132,7 +216,7 @@ public class RuleSet implements ChecksumAware {
             // check for duplicates - adding more than one rule with the same name will
             // be problematic - see #RuleSet.getRuleByName(String)
             for (Rule rule : rules) {
-                if (rule.getName().equals(newRule.getName()) && rule.getLanguage() == newRule.getLanguage()) {
+                if (rule.getName().equals(newRule.getName()) && rule.getLanguage().equals(newRule.getLanguage())) {
                     LOG.warning("The rule with name " + newRule.getName() + " is duplicated. "
                             + "Future versions of PMD will reject to load such rulesets.");
                     break;
@@ -150,7 +234,7 @@ public class RuleSet implements ChecksumAware {
          */
         Rule getExistingRule(final Rule rule) {
             for (Rule r : rules) {
-                if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
+                if (r.getName().equals(rule.getName()) && r.getLanguage().equals(rule.getLanguage())) {
                     return r;
                 }
             }
@@ -185,7 +269,7 @@ public class RuleSet implements ChecksumAware {
 
             for (final Iterator<Rule> it = rules.iterator(); it.hasNext();) {
                 final Rule r = it.next();
-                if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
+                if (r.getName().equals(rule.getName()) && r.getLanguage().equals(rule.getLanguage())) {
                     it.remove();
                 }
             }
@@ -470,18 +554,6 @@ public class RuleSet implements ChecksumAware {
     }
 
     /**
-     * @deprecated Use {@link #getFileExclusions()}
-     */
-    @Deprecated
-    public List<String> getExcludePatterns() {
-        List<String> excludes = new ArrayList<>();
-        for (Pattern p : excludePatterns) {
-            excludes.add(p.pattern());
-        }
-        return excludes;
-    }
-
-    /**
      * Returns the number of rules in this ruleset
      *
      * @return an int representing the number of rules
@@ -636,18 +708,6 @@ public class RuleSet implements ChecksumAware {
 
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * @deprecated Use {@link #getFileInclusions()}
-     */
-    @Deprecated
-    public List<String> getIncludePatterns() {
-        List<String> includes = new ArrayList<>();
-        for (Pattern p : includePatterns) {
-            includes.add(p.pattern());
-        }
-        return includes;
     }
 
     /**

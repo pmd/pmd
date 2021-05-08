@@ -7,16 +7,11 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.isConvertible;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.isSameType;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.ArrayList;
 import java.util.Set;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
 /**
@@ -47,20 +42,6 @@ abstract class IncorporationAction {
      */
     static class CheckBound extends IncorporationAction {
 
-        private static final ThreadLocal<Map<JTypeMirror, Set<JTypeMirror>>> CHECK_CACHE = ThreadLocal.withInitial(() -> new LinkedHashMap<JTypeMirror, Set<JTypeMirror>>() {
-            // Even with a relatively small cache size, the hit ratio is
-            // very high (around 75% on the tests we have here, discounting
-            // the stress tests)
-            // TODO refresh numbers using a real codebase
-            private static final int MAX_SIZE = 200;
-
-            @Override
-            protected boolean removeEldestEntry(Entry<JTypeMirror, Set<JTypeMirror>> eldest) {
-                return size() > MAX_SIZE;
-            }
-        });
-
-
         private final BoundKind myKind;
         private final JTypeMirror myBound;
 
@@ -84,7 +65,7 @@ abstract class IncorporationAction {
         public void apply(InferenceContext ctx) {
             for (BoundKind k : boundsToCheck()) {
                 for (JTypeMirror b : ivar.getBounds(k)) {
-                    if (!checkBound(b, k)) {
+                    if (!checkBound(b, k, ctx)) {
                         throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, myKind, myBound, k, b);
                     }
                 }
@@ -94,7 +75,7 @@ abstract class IncorporationAction {
         /**
          * Check compatibility between this bound and another.
          */
-        private boolean checkBound(JTypeMirror otherBound, BoundKind otherKind) {
+        private boolean checkBound(JTypeMirror otherBound, BoundKind otherKind, InferenceContext ctx) {
             // myKind != EQ => otherKind != myKind
 
             int compare = myKind.compareTo(otherKind);
@@ -104,47 +85,44 @@ abstract class IncorporationAction {
 
             if (compare > 0) {
                 // myBound <: alpha, alpha <: otherBound
-                return checkBound(false, myBound, otherBound);
+                return checkBound(false, myBound, otherBound, ctx);
             } else if (compare < 0) {
                 // otherBound <: alpha, alpha <: myBound
-                return checkBound(false, otherBound, myBound);
+                return checkBound(false, otherBound, myBound, ctx);
             } else {
-                return checkBound(true, myBound, otherBound);
+                return checkBound(true, myBound, otherBound, ctx);
             }
         }
 
         /**
          * If 'eq', checks that {@code T = S}, else checks that {@code T <: S}.
          */
-        boolean checkBound(boolean eq, JTypeMirror t, JTypeMirror s) {
+        boolean checkBound(boolean eq, JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
             // eq bounds are so rare we shouldn't care if they're cached
             return eq ? isSameType(t, s, true)
-                      : checkSubtype(t, s);
+                      : checkSubtype(t, s, ctx);
         }
 
-        private static boolean checkSubtype(JTypeMirror t, JTypeMirror s) {
-            JTypeMirror key = cacheKey(t);
-            if (key == null) { // don't cache result
-                return isConvertible(t, s).somehow();
+        private boolean checkSubtype(JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
+            if (ctx.getSupertypeCheckCache().isCertainlyASubtype(t, s)) {
+                return true; // supertype was already cached
             }
 
-            Set<JTypeMirror> supertypesOfT = CHECK_CACHE.get().computeIfAbsent(key, k -> new HashSet<>());
-            if (supertypesOfT.contains(s)) {
-                return true;
-            } else if (isConvertible(t, s).somehow()) {
-                supertypesOfT.add(s);
-                return true;
+            Convertibility isConvertible = isConvertible(t, s);
+            boolean doCache = true;
+            if (isConvertible.withUncheckedWarning()) {
+                ctx.setNeedsUncheckedConversion();
+                // cannot cache those, or the side effect
+                // will not occur on every context
+                doCache = false;
             }
-            return false;
+
+            boolean result = isConvertible.somehow();
+            if (doCache && result) {
+                ctx.getSupertypeCheckCache().remember(t, s);
+            }
+            return result;
         }
-
-        private static @Nullable JTypeMirror cacheKey(JTypeMirror t) {
-            if (t instanceof InferenceVar || t instanceof JPrimitiveType) {
-                return null; // don't cache those
-            }
-            return t;
-        }
-
 
         @Override
         public String toString() {
@@ -194,7 +172,7 @@ abstract class IncorporationAction {
         @Override
         void apply(InferenceContext ctx) {
             for (BoundKind kind : BoundKind.values()) {
-                for (JTypeMirror bound : ivar.getBounds(kind)) {
+                for (JTypeMirror bound : new ArrayList<>(ivar.getBounds(kind))) { //copy to avoid comodification
                     new PropagateBounds(ivar, kind, bound).apply(ctx);
                 }
             }

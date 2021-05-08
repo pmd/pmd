@@ -13,6 +13,7 @@ package net.sourceforge.pmd;
  * @version $Revision$, $Date$
  * @since August 30, 2002
  */
+@Deprecated
 public class PMDException extends Exception {
     private static final long serialVersionUID = 6938647389367956874L;
 
@@ -37,7 +38,7 @@ public class PMDException extends Exception {
      * @param reason
      *            the root cause
      */
-    public PMDException(String message, Exception reason) {
+    public PMDException(String message, Throwable reason) {
         super(message, reason);
     }
 

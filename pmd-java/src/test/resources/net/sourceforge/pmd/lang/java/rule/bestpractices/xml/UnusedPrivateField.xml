@@ -225,6 +225,7 @@ public class Foo {
         <description>don't count Serialization fields as being unused</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.*;
 public class Foo {
     private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("foo", String.class)};
 }
@@ -466,7 +467,7 @@ public class Foo {
         <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 3</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import lombok.*;
+import lombok.Data;
 @Data
 public class Foo {
     private String bar;
@@ -512,7 +513,7 @@ public class Foo {
         <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 7</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-@Data
+@lombok.Data
 public class Foo {
     private String bar;
 }
@@ -524,6 +525,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javafx.fxml.FXML;
+import javafx.scene.control.TabPane;
 
 public class NodeInfoPanelController {
     @FXML
@@ -559,6 +561,8 @@ public class Foo {
         <description>#1428 False positive in UnusedPrivateField when local variable hides member variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
+import org.junit.BeforeClass;
 public class IssueUnusedPrivateField {
 
     private static Object helper;   // PMD warns unused
@@ -620,7 +624,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatefield.Value;
+import somewhere.Value; // 3rd party Value annotation, ie not lombok
 
 public class Foo {
 
@@ -636,6 +640,18 @@ public class Foo {
         <code><![CDATA[
 import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2673 UnusedPrivateField false positive with lombok annotation EqualsAndHashCode</description>
+        <rule-property name="ignoredAnnotations">lombok.Getter|lombok.Data</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.RequiredArgsConstructor;
+@RequiredArgsConstructor
 public class Foo {
     private String bar;
 }

@@ -6,13 +6,14 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.Iterator;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -22,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
@@ -40,23 +42,22 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 @Deprecated
 public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 
-    public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message, int beginLine, int endLine) {
-        this(rule, ctx, node, message);
+    public JavaRuleViolation(Rule rule, @NonNull JavaNode node, String filename, String message) {
+        super(rule, filename, node, message);
 
-        setLines(beginLine, endLine);
-    }
+        ASTCompilationUnit root = node.getRoot();
 
-    public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message) {
-        super(rule, ctx, node, message);
+        packageName = root.getPackageName();
+        className = getClassName(node);
+        methodName = getMethodName(node);
+        variableName = getVariableNameIfExists(node);
 
-        if (node != null) {
-            ASTCompilationUnit root = node.getRoot();
-
-            packageName = root.getPackageName();
-
-            className = getClassName(node);
-            methodName = getMethodName(node);
-            variableName = getVariableNameIfExists(node);
+        JavaccToken preferredLoc = InternalApiBridge.getReportLocation(node);
+        if (preferredLoc != null) {
+            beginLine = preferredLoc.getBeginLine();
+            beginColumn = preferredLoc.getBeginColumn();
+            endLine = preferredLoc.getEndLine();
+            endColumn = preferredLoc.getEndColumn();
         }
     }
 

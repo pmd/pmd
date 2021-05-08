@@ -150,7 +150,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void foo(int bar) {
+    int i;
+    void foo(int bar, Foo otherObject) {
         for (int i=0; i < 10; i++) {
             doSomethingWith(i);
             otherObject.i++;
@@ -316,6 +317,44 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>violation: break inside switch case</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            switch (foo()) {
+                case 1: break; //breaks the switch, not the loop
+            }
+            i++;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: continue inside switch case</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            switch (foo()) {
+                case 1: continue;
+            }
+            i++;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>violation: incremented 'for' loop variable inside switch expression</description>
         <rule-property name="forReassign">skip</rule-property>
         <expected-problems>1</expected-problems>
@@ -414,6 +453,63 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: incremented 'for' loop variable after nested for with break</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            for (int j=0; j < foo(); j++) break;
+            i++;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: incremented 'for' loop variable after nested for with labeled break</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        outer:
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            for (int j=0; j < foo(); j++) break outer;
+            i++;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: incremented 'for' loop variable inside nested for</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                void foo(int bar) {
+                    for (int i = 0; i < 10; i++) {
+                        doSomethingWith(i);
+                        for (int j = 0; j < foo(); j++) {
+                            if (j > 4) {
+                                break;
+                            }
+                            i++;
+                        }
+                    }
+                }
+            }
+            ]]></code>
     </test-code>
 
     <test-code>
@@ -577,7 +673,8 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code>
+    <!-- Deactivated because this is hard to implement in the general case. -->
+    <test-code regressionTest="false">
         <description>violation: various conditional reassignments of 'for' loop variable, skip allowed</description>
         <rule-property name="forReassign">skip</rule-property>
         <expected-problems>4</expected-problems>
@@ -694,6 +791,91 @@ public class Foo {
             s = s.toUpper(); // not OK
             doSomethingElseWith(s);
         }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>AvoidReassigningLoopVariables detects some harmless reassigning of loop variables in foreach #2595</description>
+        <rule-property name="foreachReassign">firstOnly</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    void foo(int bar, int httpMethods, int large, int len) {
+        String[] strings = getStrings();
+        List<String> lines = new ArrayList<>();
+        for (String g : strings) {
+            g = g.substring(0,g.lastIndexOf(":"));
+            g = g + ": 1;"; // here
+            System.out.println(g);
+        }
+        for (String item : strings) {
+            item = item.trim();
+            httpMethods = httpMethods | getHttpMethod(item);
+        }
+        for (String message : strings) {
+            message = escape(message);
+            lines.add(String.format(large ? "  %s  " : " %s ", message));
+            len = Math.max(length(message) + (large ? 4 : 2), len);
+        }
+
+
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consider also default methods in interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithDefaultMethod {
+    default void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            i = 5; // not OK
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consider also classes in interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithClass {
+    class Inner {
+        void foo(int bar) {
+            for (int i=0; i < 10; i++) {
+                doSomethingWith(i);
+                i = 5; // not OK
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consider also anonymous classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithAnon {
+    void bar() {
+        ClassWithAnon anon = new ClassWithAnon() {
+            void foo(int bar) {
+                for (int i=0; i < 10; i++) {
+                    doSomethingWith(i);
+                    i = 5; // not OK
+                }
+            }
+        };
     }
 }
         ]]></code>

@@ -43,7 +43,7 @@ public class TypesTreeDumpTest extends BaseTreeDumpTest {
     protected @NonNull String normalize(@NonNull String str) {
         return super.normalize(str)
                     // capture IDs are unstable from run to run
-                    .replaceAll("capture#\\d+", "capture#...");
+                    .replaceAll("capture#-?\\d+", "capture#...");
     }
 
     /**

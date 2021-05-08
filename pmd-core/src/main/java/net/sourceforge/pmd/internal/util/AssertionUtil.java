@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.internal.util;
 
-
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +12,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public final class AssertionUtil {
 
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("[\\w$]+(\\.[\\w$]+)*|");
+    private static final Pattern BINARY_NAME_PATTERN = Pattern.compile("[\\w$]+(?:\\.[\\w$]+)*(?:\\[])*");
+    private static final Pattern BINARY_NAME_NO_ARRAY = Pattern.compile("[\\w$]++(?:\\.[\\w$]++)*");
 
     private AssertionUtil() {
         // utility class
@@ -23,8 +24,26 @@ public final class AssertionUtil {
         return PACKAGE_PATTERN.matcher(name).matches();
     }
 
+    /**
+     * @throws IllegalArgumentException if the name is not a binary name
+     */
+    public static void assertValidJavaBinaryName(CharSequence name) {
+        if (!isJavaBinaryName(name)) {
+            throw new IllegalArgumentException("Not a Java binary name '" + name + "'");
+        }
+    }
+
+    /**
+     * @throws IllegalArgumentException if the name is not a binary name
+     */
+    public static void assertValidJavaBinaryNameNoArray(CharSequence name) {
+        if (!BINARY_NAME_NO_ARRAY.matcher(name).matches()) {
+            throw new IllegalArgumentException("Not a Java binary name '" + name + "'");
+        }
+    }
+
     public static boolean isJavaBinaryName(CharSequence name) {
-        return name.length() > 0 && PACKAGE_PATTERN.matcher(name).matches();
+        return name.length() > 0 && BINARY_NAME_PATTERN.matcher(name).matches();
     }
 
     private static boolean isValidRange(int startInclusive, int endExclusive, int minIndex, int maxIndex) {
@@ -109,5 +128,4 @@ public final class AssertionUtil {
                                                : prefix + ": " + message;
         return new AssertionError(message);
     }
-
 }

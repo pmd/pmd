@@ -114,7 +114,7 @@ class SubtypingTest : FunSpec({
 
                 val someEnum = SomeEnum::class.decl
 
-                val sup = ts.parameterise(ts.getClassSymbol(java.lang.Enum::class.java), listOf(someEnum))
+                val sup = ts.parameterise(ts.getClassSymbol(java.lang.Enum::class.java)!!, listOf(someEnum))
 
                 someEnum.isRaw shouldBe false
                 someEnum shouldBeSubtypeOf sup
@@ -139,7 +139,7 @@ class SubtypingTest : FunSpec({
 
             test("Test capture variable subtyping") {
 
-                val (k, f, c) = ParserTestCtx().makeDummyTVars("K", "F", "C")
+                val (k, f) = ParserTestCtx().makeDummyTVars("K", "F")
 
                 val wild = `?` `super` k
                 val superList = capture(List::class[wild])
@@ -295,7 +295,7 @@ class SubtypingTest : FunSpec({
             test("Captured subtyping wild vs wild") {
 
                 checkAll(ts.subtypesArb(unchecked = false)) { (t, s) ->
-                    println("$t <: $s")
+                    // println("$t <: $s")
 
                     capture(t_List[`?` extends t]) shouldSubtypeNoCapture t_List[`?` extends s]
                 }

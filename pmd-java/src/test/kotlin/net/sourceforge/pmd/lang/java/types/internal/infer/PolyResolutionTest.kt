@@ -266,7 +266,7 @@ class O {
                 unspecifiedChild()
                 unspecifiedChild()
                 methodCall("length") {
-                    it.typeMirror shouldBe it.typeSystem.INT
+                    it shouldHaveType it.typeSystem.INT
 
                     unspecifiedChild()
                     unspecifiedChild()

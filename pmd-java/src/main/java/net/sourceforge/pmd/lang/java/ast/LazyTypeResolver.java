@@ -55,6 +55,10 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         this.processor = processor;
     }
 
+    ExprContext getConversionContextForExternalUse(ASTExpression e) {
+        return polyResolution.getConversionContextForExternalUse(e);
+    }
+
     public JavaAstProcessor getProcessor() {
         return processor;
     }
@@ -156,7 +160,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
             ASTLambdaExpression lambda = (ASTLambdaExpression) node.getNthParent(3);
             // force resolution of the enclosing lambda
             JMethodSig mirror = lambda.getFunctionalMethod();
-            if (mirror == null || mirror == ts.UNRESOLVED_METHOD) {
+            if (isUnresolved(mirror)) {
                 return ts.UNKNOWN;
             }
             return mirror.getFormalParameters().get(param.getIndexInParent());
@@ -268,22 +272,29 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
             final JTypeMirror lhs = node.getLeftOperand().getTypeMirror();
             final JTypeMirror rhs = node.getRightOperand().getTypeMirror();
 
-            if ((lhs.isPrimitive() || isUnresolved(rhs)) && lhs.equals(rhs)
-                || isUnresolved(rhs)) {
-                // BOOL       & BOOL        -> BOOL
-                // UNRESOLVED & UNRESOLVED  -> UNRESOLVED
-                // BOOL       & UNRESOLVED  -> BOOL
-                // NUMERIC(N) & UNRESOLVED  -> N
-                // NUMERIC(N) & NUMERIC(N)  -> N
-                return lhs;
-            } else if (isUnresolved(lhs)) {
-                // UNRESOLVED & BOOL        -> BOOL
-                // UNRESOLVED & NUMERIC(N)  -> N
-                return rhs;
-            } else {
+            if (lhs.isNumeric() && rhs.isNumeric()) {
                 // NUMERIC(N) & NUMERIC(M)  -> promote(N, M)
-                // anything else, including error types & such: ERROR_TYPE
                 return binaryNumericPromotion(lhs, rhs);
+            } else if (lhs.equals(rhs)) {
+                // BOOL       & BOOL        -> BOOL
+                // UNRESOLVED & UNRESOLVED  -> UNKNOWN
+                return lhs;
+            } else if (isUnresolved(lhs) ^ isUnresolved(rhs)) {
+                // UNRESOLVED & NUMERIC(N)  -> promote(N)
+                // NUMERIC(N) & UNRESOLVED  -> promote(N)
+
+                // BOOL       & UNRESOLVED  -> BOOL
+                // UNRESOLVED & BOOL        -> BOOL
+
+                // UNRESOLVED & anything    -> ERROR
+
+                JTypeMirror resolved = isUnresolved(lhs) ? rhs : lhs;
+                return resolved.isNumeric() ? unaryNumericPromotion(resolved)
+                                            : resolved == ts.BOOLEAN ? resolved  // NOPMD #3205
+                                                                     : ts.ERROR;
+            } else {
+                // anything else, including error types & such: ERROR
+                return ts.ERROR;
             }
         }
         case LEFT_SHIFT:
@@ -314,7 +325,11 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     }
 
     private boolean isUnresolved(JTypeMirror t) {
-        return t == ts.UNKNOWN;
+        return t == ts.UNKNOWN;  // NOPMD CompareObjectsWithEquals
+    }
+
+    private boolean isUnresolved(JMethodSig m) {
+        return m == null || m == ts.UNRESOLVED_METHOD;  // NOPMD CompareObjectsWithEquals
     }
 
     @Override
@@ -339,8 +354,8 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     @Override
     public JTypeMirror visit(ASTPatternExpression node, Void data) {
         ASTPattern pattern = node.getPattern();
-        if (pattern instanceof ASTTypeTestPattern) {
-            return ((ASTTypeTestPattern) pattern).getTypeNode().getTypeMirror();
+        if (pattern instanceof ASTTypePattern) {
+            return ((ASTTypePattern) pattern).getTypeNode().getTypeMirror();
         }
         throw new IllegalArgumentException("Unknown pattern " + pattern);
     }
@@ -423,13 +438,11 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
             JTypeDeclSymbol testedSym = testedType.getSymbol();
             if (testedSym instanceof JClassSymbol && ((JClassSymbol) testedSym).isEnum()) {
                 JFieldSymbol enumConstant = ((JClassSymbol) testedSym).getDeclaredField(node.getName());
-                if (enumConstant == null) {
-                    // no symbol, but type is there
-                    return ts.declaration((JClassSymbol) testedSym);
-                } else {
+                if (enumConstant != null) {
+                    // field exists and can be resolved
                     node.setTypedSym(ts.sigOf(testedType, enumConstant));
-                    return testedType;
                 }
+                return testedType;
             } // fallthrough
         }
 
@@ -470,7 +483,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         lambda.getTypeMirror();
 
         JMethodSig m = lambda.getFunctionalMethod(); // this forces resolution of the lambda
-        if (m != getTypeSystem().UNRESOLVED_METHOD) {
+        if (!isUnresolved(m)) {
             return m.getFormalParameters().get(node.getIndexInParent());
         }
         return ts.UNKNOWN;
@@ -479,7 +492,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
     @Override
     public JTypeMirror visit(ASTFieldAccess node, Void data) {
         JTypeMirror qualifierT = capture(node.getQualifier().getTypeMirror());
-        if (qualifierT == ts.UNKNOWN) {
+        if (isUnresolved(qualifierT)) {
             return polyResolution.getContextTypeForStandaloneFallback(node);
         }
 
@@ -505,7 +518,7 @@ final class LazyTypeResolver extends JavaVisitorBase<Void, @NonNull JTypeMirror>
         JTypeMirror arrType = node.getQualifier().getTypeMirror();
         if (arrType instanceof JArrayType) {
             compType = ((JArrayType) arrType).getComponentType();
-        } else if (arrType == ts.UNKNOWN) {
+        } else if (isUnresolved(arrType)) {
             compType = polyResolution.getContextTypeForStandaloneFallback(node);
         } else {
             compType = ts.ERROR;

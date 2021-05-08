@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.types
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
-import net.sourceforge.pmd.lang.java.types.testdata.LubTestData
 import net.sourceforge.pmd.lang.java.types.testdata.LubTestData.*
-import java.io.Serializable
 
 /**
+ * Tests "least upper bound" (lub).
+ * See net.sourceforge.pmd.lang.java.types.TypeSystem.lub(Collection<? extends JTypeMirror>).
+ *
  * @author Clément Fournier
  */
 class LubTest : FunSpec({
@@ -80,10 +80,26 @@ class LubTest : FunSpec({
                 ) shouldBe listOf(`t_List{Integer}`, `t_List{String}`)
             }
 
-            test("Test lub with related type arguments") {
+            test("Test lub with related type arguments (LCTA)") {
 
-                lub(GenericSub::class[t_Integer], GenericSub::class[t_Number]) shouldBe GenericSub::class[`?` extends t_Number]
+                fun checkLcta(vararg components: JTypeMirror, expected: JTypeMirror) {
+                    val l = ts.lub(components.map { GenericSub::class[it] }) as JClassType
+                    l.typeArgs[0] shouldBe expected
+                }
+
                 lub(GenericSub::class[t_Integer], GenericSub::class[`?` extends t_Number]) shouldBe GenericSub::class[`?` extends t_Number]
+
+                checkLcta(t_Integer,             t_Number,              expected = `?` extends t_Number)
+                checkLcta(t_Integer,             `?` extends t_Number,  expected = `?` extends t_Number)
+                checkLcta(t_Integer,             `?` `super` t_Number,  expected = `?` `super` t_Integer)
+                checkLcta(t_Integer,             `?` `super` t_Integer, expected = `?` `super` t_Integer)
+                checkLcta(t_Integer,             `?` extends t_Integer, expected = `?` extends t_Integer)
+
+                checkLcta(`?` `super` t_Integer, `?` `super` t_Number,  expected = `?` `super` t_Integer)
+                checkLcta(`?` extends t_Integer, `?` extends t_Number,  expected = `?` extends t_Number)
+                checkLcta(`?` extends t_Integer, `?` `super` t_Number,  expected = `?`)
+                checkLcta(`?` `super` t_Integer, `?` extends t_Number,  expected = `?`)
+
             }
 
             test("Test lub with identical type arguments") {
@@ -104,6 +120,12 @@ class LubTest : FunSpec({
                     lub(ref) shouldBe ref
                 }
 
+            }
+
+            test("Test lub of zero types") {
+                shouldThrow<IllegalArgumentException> {
+                    ts.lub(emptyList())
+                }
             }
 
             test("Test lub with interface intersection") {

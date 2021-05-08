@@ -2,7 +2,7 @@
 title: Report formats for PMD
 tags: [pmd, userdocs]
 keywords: [formats, renderers]
-summary: "Overview of the built-in report formats for CPD"
+summary: "Overview of the built-in report formats for PMD"
 permalink: pmd_userdocs_report_formats.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
 ---
@@ -18,6 +18,18 @@ arguments to the `-format` option. When a format accepts *properties*,
 those can be specified with the `-property` / `-P` option on the command-line.
 
 {% include note.html content="Suppressed violations are only reported, if the CLI parameter `-showsuppressed` is set." %}
+
+## sarif
+
+"SARIF, the Static Analysis Results Interchange Format, is a standard, JSON-based format for the output of static
+analysis tools. It has been approved as an OASIS standard" - <https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html>.
+
+SARIF schema can be found here: <https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json>.
+
+PMD holds an initial implementation version of SARIF rendering. This means SARIF allows for more complexity and the
+current implementation can be extended.
+
+[Example](report-examples/pmd-report.sarif.json)
 
 ## codeclimate
 
@@ -169,8 +181,8 @@ and configuration errors are reported.
 Example:
 
 ```
-/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java:124:    Logger calls should be surrounded by log level guards.
-/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java:58:   This for loop can be replaced by a foreach loop
+/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java:124:    GuardLogStatement:    Logger calls should be surrounded by log level guards.
+/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java:58:    ForLoopCanBeForeach:   This for loop can be replaced by a foreach loop
 /home/pmd/source/pmd-core/src/test/resources/net/sourceforge/pmd/cpd/files/file_with_ISO-8859-1_encoding.java    -   PMDException: Error while parsing /home/pmd/source/pmd-core/src/test/resources/net/sourceforge/pmd/cpd/files/file_with_ISO-8859-1_encoding.java
 CloseResource rule violation suppressed by Annotation in /home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/PMD.java
 LoosePackageCoupling    -   No packages or classes specified
