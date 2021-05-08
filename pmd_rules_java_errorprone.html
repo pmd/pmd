@@ -2773,19 +2773,30 @@ just remove "AutoCloseable" from the types.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Use equals() to compare object references; avoid comparing them with ==.</p>
+<p>Use <code class="language-plaintext highlighter-rouge">equals()</code> to compare object references; avoid comparing them with <code class="language-plaintext highlighter-rouge">==</code>.</p>
+
+<p>Since comparing objects with named constants is useful in some cases (eg, when
+defining constants for sentinel values), the rule ignores comparisons against
+fields with all-caps name (eg <code class="language-plaintext highlighter-rouge">this == SENTINEL</code>), which is a common naming
+convention for constant fields.</p>
+
+<p>You may allow some types to be compared by reference by listing the exceptions
+in the <code class="language-plaintext highlighter-rouge">typesThatCompareByReference</code> property.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">EqualityExpression</span><span class="w">
-    </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="w">
-        </span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Object'</span><span class="p">)]</span><span class="w">
-        </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Enum'</span><span class="p">))]</span><span class="w">
-        </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Class'</span><span class="p">))])</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">2</span><span class="w">
+    </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="w">
+        </span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Object'</span><span class="p">)]</span><span class="w">
+        </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kr">some</span><span class="w"> </span><span class="nv">$t</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nv">$typesThatCompareByReference</span><span class="w"> </span><span class="kr">satisfies</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="nv">$t</span><span class="p">))]</span><span class="w">
+       </span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">2</span><span class="w">
     </span><span class="p">]</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="nt">PrimaryPrefix</span><span class="err">/</span><span class="na">@ThisModifier</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
                           </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="p">)]</span><span class="w">
                           </span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'equals'</span><span class="p">]])</span><span class="w">
     </span><span class="p">]</span><span class="w">
+    </span><span class="c">(: Is not a field access with an all-caps identifier :)</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nf">upper-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="err">=</span><span class="na">@Image</span><span class="p">]</span><span class="w">
+     </span><span class="ow">or</span><span class="w"> </span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="nf">last</span><span class="p">()][</span><span class="nf">upper-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="err">=</span><span class="na">@Image</span><span class="p">]])]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2797,8 +2808,37 @@ just remove "AutoCloseable" from the types.</p>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>typesThatCompareByReference</td>
+      <td>java.lang.Enum , java.lang.Class</td>
+      <td>List of canonical type names for which reference comparison is allowed.</td>
+      <td>yes. Delimiter is ‘,’.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/CompareObjectsWithEquals"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/CompareObjectsWithEquals"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"typesThatCompareByReference"</span> <span class="na">value=</span><span class="s">"java.lang.Enum,java.lang.Class"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="constructorcallsoverridablemethod">ConstructorCallsOverridableMethod</h2>
@@ -5226,7 +5266,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 7, 2021 <br />
+ Site last generated: May 8, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
