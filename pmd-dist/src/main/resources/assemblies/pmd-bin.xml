@@ -12,11 +12,7 @@
     <fileSets>
         <fileSet>
             <includes>
-                <include>bgastviewer.bat</include>
-                <include>cpd.bat</include>
-                <include>cpdgui.bat</include>
-                <include>designer.bat</include>
-                <include>pmd.bat</include>
+                <include>*.bat</include>
             </includes>
             <directory>target/extra-resources/scripts</directory>
             <outputDirectory>bin</outputDirectory>
