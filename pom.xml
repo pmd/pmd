@@ -92,8 +92,8 @@
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.0.0-M5</surefire.version>
-        <checkstyle.version>8.30</checkstyle.version>
-        <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
+        <checkstyle.version>8.42</checkstyle.version>
+        <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
         <pmd.plugin.version>3.14.0</pmd.plugin.version>
         <ant.version>1.10.9</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
@@ -105,7 +105,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>11</pmd.build-tools.version>
+        <pmd.build-tools.version>12</pmd.build-tools.version>
 
         <pmd-designer.version>6.27.0</pmd-designer.version>
     </properties>
@@ -701,7 +701,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.6</version>
+                <version>2.6</version> <!-- note: this is the last version compatible with java7 -->
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
