@@ -21,7 +21,7 @@ public class FooRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTUserClass c, Object ctx) {
-        if (c.getImage().equalsIgnoreCase("Foo")) {
+        if (c.getSimpleName().equalsIgnoreCase("Foo")) {
             addViolation(ctx, c);
         }
         return super.visit(c, ctx);

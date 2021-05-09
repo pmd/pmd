@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import apex.jorje.semantic.ast.compilation.UserEnum;
 
-public final class ASTUserEnum extends AbstractApexNode<UserEnum> {
+public final class ASTUserEnum extends BaseApexClass<UserEnum> {
 
     ASTUserEnum(UserEnum userEnum) {
         super(userEnum);
@@ -41,13 +41,4 @@ public final class ASTUserEnum extends AbstractApexNode<UserEnum> {
         return visitor.visit(this, data);
     }
 
-    @Override
-    public String getImage() {
-        String apexName = getDefiningType();
-        return apexName.substring(apexName.lastIndexOf('.') + 1);
-    }
-
-    public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
-    }
 }
