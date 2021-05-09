@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 
-import apex.jorje.semantic.ast.AstNode;
+import apex.jorje.semantic.ast.compilation.Compilation;
 
-abstract class BaseApexClass<T extends AstNode> extends AbstractApexNode<T> implements ASTUserClassOrInterface<T> {
+abstract class BaseApexClass<T extends Compilation> extends AbstractApexNode<T> implements ASTUserClassOrInterface<T> {
 
     private ApexQualifiedName qname;
 
@@ -28,7 +28,7 @@ abstract class BaseApexClass<T extends AstNode> extends AbstractApexNode<T> impl
     @Deprecated
     @DeprecatedUntil700
     public String getImage() {
-        return super.getImage();
+        return getSimpleName();
     }
 
     @Override
