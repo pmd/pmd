@@ -1276,18 +1276,27 @@ class Foo {
           class="net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#singularfield">
         <description>
-Fields whose scopes are limited to just single methods do not rely on the containing
-object to provide them to other methods. They may be better implemented as local variables
-within those methods.
+Reports fields which may be converted to a local variable. This is so because
+in every method where the field is used, it is assigned before it is first read.
+Hence, the value that the field had before the method call may not be observed,
+so it might as well not be stored in the enclosing object.
+
+Limitations: We can only check private fields for now.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
 public class Foo {
-    private int x;  // no reason to exist at the Foo instance level
+    private int x; // this will be reported
+
     public void foo(int y) {
-     x = y + 5;
-     return x;
+       x = y + 5; // assigned before any read
+       return x;
+    }
+
+    public void fooOk(int y) {
+       int z = y + 5; // might as well be a local like here
+       return z;
     }
 }
 ]]>

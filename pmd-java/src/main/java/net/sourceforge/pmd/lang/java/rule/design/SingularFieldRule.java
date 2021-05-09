@@ -6,11 +6,13 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.ast.JModifier.FINAL;
 import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -44,13 +46,27 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public class SingularFieldRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<List<String>> IGNORED_ANNOT_PROPERTY =
-        JavaPropertyUtil.ignoredAnnotationsDescriptor(JavaRuleUtil.LOMBOK_ANNOTATIONS);
+    private static final Set<String> INVALIDATING_CLASS_ANNOT = setOf(
+        "lombok.Builder",
+        "lombok.EqualsAndHashCode",
+        "lombok.Getter",
+        "lombok.Setter",
+        "lombok.Data",
+        "lombok.Value"
+    );
 
+    private static final PropertyDescriptor<List<String>> IGNORED_FIELD_ANNOTATIONS =
+        JavaPropertyUtil.ignoredAnnotationsDescriptor(
+            "lombok.Setter",
+            "lombok.Getter",
+            "java.lang.Deprecated",
+            "lombok.experimental.Delegate",
+            "javafx.fxml.FXML"
+        );
 
     public SingularFieldRule() {
         super(ASTCompilationUnit.class, ASTFieldDeclaration.class);
-        definePropertyDescriptor(IGNORED_ANNOT_PROPERTY);
+        definePropertyDescriptor(IGNORED_FIELD_ANNOTATIONS);
     }
 
     @Override
@@ -64,8 +80,8 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         ASTAnyTypeDeclaration enclosingType = node.getEnclosingType();
         if (node.getVisibility() != Visibility.V_PRIVATE
             || node.hasModifiers(STATIC)
-            || JavaRuleUtil.hasAnyAnnotation(enclosingType, getProperty(IGNORED_ANNOT_PROPERTY))
-            || JavaRuleUtil.hasAnyAnnotation(node, getProperty(IGNORED_ANNOT_PROPERTY))) {
+            || JavaRuleUtil.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)
+            || JavaRuleUtil.hasAnyAnnotation(node, getProperty(IGNORED_FIELD_ANNOTATIONS))) {
             return data;
         }
 
