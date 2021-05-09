@@ -104,12 +104,13 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void foo(String a) {
+    public String foo(String a) {
         try {
             int i = Integer.parseInt(a);
         } catch(Exception e){
-            throw new Exception(Bar.foo(e),e);
+            throw new Exception(Foo.foo(e),e);
         }
+        return "";
     }
 }
         ]]></code>
@@ -342,15 +343,20 @@ public class Foo {
         <description>19, False positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 
-    private static boolean isInstanceOf(final MBeanServer mbs,
-                                        final ObjectName name,
-                                        final String className) {
+public class Logger {
+    static Logger logger;
+
+    void fine(String s, String e) {}
+    void debug(String s, Throwable e) {}
+
+    private static boolean isInstanceOf(final String className) {
         PrivilegedExceptionAction<Boolean> act =
             new PrivilegedExceptionAction<Boolean>() {
-                public Boolean run() throws InstanceNotFoundException {
-                    return mbs.isInstanceOf(name, className);
+                public Boolean run() throws InstantiationException {
+                    throw new InstantiationException();
                 }
             };
         try {
@@ -370,18 +376,23 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    java.util.List exception_vec;
 
-    private CodeException[] getCodeExceptions() {
+    private CodeException[] getCodeExceptions(int cp) {
         int             size  = exception_vec.size();
         CodeException[] c_exc = new CodeException[size];
 
         try {
             for (int i=0; i < size; i++) {
-                CodeExceptionGen c = (CodeExceptionGen)exception_vec.get(i);
+                CodeException c = (CodeException)exception_vec.get(i);
                 c_exc[i] = c.getCodeException(cp);
             }
         } catch(ArrayIndexOutOfBoundsException e) {}
         return c_exc;
+    }
+
+    static class CodeException extends Exception {
+        CodeException getCodeException(int i) { return this; }
     }
 }
         ]]></code>
@@ -427,12 +438,12 @@ class MultiCatch {
         <code><![CDATA[
 public class Stuff {
     @SuppressWarnings("unused")
-    public void doStuff() throws SomeException {
+    public void doStuff() throws RuntimeException {
         try {
             doMoreStuff();
         } catch (Exception e) {
             StringBuffer irrelevantSB = new StringBuffer("Irrelevant").append(" string").append(" buffer");
-            SomeException someException = new SomeException(e);
+            RuntimeException someException = new RuntimeException(e);
             throw someException;
         }
     }
@@ -462,7 +473,7 @@ public class Test {
 
         try {
             // do something
-        } catch (ArrayOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             throw (IllegalStateException)new IllegalStateException().initCause(e);
         }
     }
@@ -474,6 +485,7 @@ public class Test {
         <description>#1087 PreserveStackTrace (still) ignores initCause() - negative test case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.NoSuchElementException;
 public class Test {
     public void foo() {
         try {
@@ -522,7 +534,7 @@ public class Bug {
         try {
             // do something
         } catch (final IOException e) {
-            throw uncheckedException(ErrorCodeCommon.DIRECTORY_NOT_FOUND)
+            throw uncheckedException("ErrorCodeCommon.DIRECTORY_NOT_FOUND")
                     .withField("dirname", dirname)
                     .causedBy(e)
                     .build();
@@ -567,6 +579,55 @@ public class SomeOtherUserDefinedException extends Exception {
             }
             throw exception;
         }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FN with exception getter</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.Closeable;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.rmi.RemoteException;
+
+public class SomeOtherUserDefinedException extends Exception {
+
+    SomeOtherUserDefinedException(String m, Throwable cause) { super(m, cause); }
+
+    static Object getSomething() throws Throwable { }
+
+    protected void doInvoke() throws Throwable {
+        Object ejb = null;
+        try {
+            ejb = getSomething();
+        } catch (IOException ex) {
+            throw new IllegalArgumentException("xxx", ex); // ok
+        } catch (InvocationTargetException ex) {
+            Throwable targetEx = ex.getTargetException();
+            if (targetEx instanceof RemoteException) {
+                RemoteException rex = (RemoteException) targetEx;
+                throw convertRmiAccessException(rex, isConnectFailure(rex)); // not ok
+            } else if (targetEx instanceof CreateException) {
+                throw convertRmiAccessException(targetEx, "message");
+            }
+            throw targetEx;
+        } finally {
+            if (ejb instanceof Closeable) {
+                ((Closeable) ejb).close();
+            }
+        }
+    }
+
+    private Throwable convertRmiAccessException(Throwable rex, boolean connectFailure) {return this;}
+
+    private Throwable convertRmiAccessException(Throwable rex, String m) {return this;}
+
+    private static boolean isConnectFailure(RemoteException rex) {return rex != null;}
+
+    static class CreateException extends InvocationTargetException {
+
     }
 }
         ]]></code>
