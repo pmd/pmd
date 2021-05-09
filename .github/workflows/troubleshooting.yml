@@ -16,12 +16,14 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: |
-            ~/.m2/repository
-            ~/.cache
-            vendor/bundle
-          key: push-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+              ~/.m2/repository
+              ~/.gradle/caches
+              ~/.cache
+              ~/work/pmd/target/repositories
+              vendor/bundle
+          key: v1-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            push-${{ runner.os }}-
+            v1-${{ runner.os }}-
       - name: Set up Ruby 2.7
         uses: actions/setup-ruby@v1
         with:
