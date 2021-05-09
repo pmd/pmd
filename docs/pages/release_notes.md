@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   apex
+    *   [#3243](https://github.com/pmd/pmd/pull/3243): \[apex] Correct findBoundary when traversing AST
 *   doc
     *   [#3230](https://github.com/pmd/pmd/issues/3230): \[doc] Remove "Edit me" button for language index pages
 *   dist
