@@ -22,11 +22,15 @@ public final class JavaPropertyUtil {
     }
 
 
-    public static PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor(String... defaults) {
+    public static PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor(Collection<String> defaults) {
         return stringListProperty("ignoredAnnotations")
             .desc("Fully qualified names of the annotation types that should be ignored by this rule")
-            .defaultValue(Arrays.asList(defaults))
+            .defaultValue(defaults)
             .build();
+    }
+
+    public static PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor(String... defaults) {
+        return ignoredAnnotationsDescriptor(Arrays.asList(defaults));
     }
 
 }

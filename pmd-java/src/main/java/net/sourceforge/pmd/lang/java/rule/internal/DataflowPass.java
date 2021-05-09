@@ -1374,7 +1374,7 @@ public final class DataflowPass {
         }
 
         public boolean isForeachVar() {
-            return node.isLocalVariable() && node.ancestors().get(2) instanceof ASTForeachStatement;
+            return node.isForeachVariable();
         }
 
         public ASTVariableDeclaratorId getVarId() {

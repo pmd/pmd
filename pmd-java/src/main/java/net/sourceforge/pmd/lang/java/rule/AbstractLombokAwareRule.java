@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.Collection;
-import java.util.Set;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -30,11 +29,10 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
     private boolean lombokImported = false;
     private boolean classHasLombokAnnotation = false;
     private static final String LOMBOK_PACKAGE = "lombok";
-    private static final Set<String> LOMBOK_ANNOTATIONS = JavaRuleUtil.LOMBOK_ANNOTATIONS;
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        return LOMBOK_ANNOTATIONS;
+        return JavaRuleUtil.LOMBOK_ANNOTATIONS;
     }
 
     @Override
@@ -78,6 +76,6 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
      * @return <code>true</code> if a lombok annotation has been found
      */
     protected boolean hasLombokAnnotation(Annotatable node) {
-        return LOMBOK_ANNOTATIONS.stream().anyMatch(node::isAnnotationPresent);
+        return JavaRuleUtil.LOMBOK_ANNOTATIONS.stream().anyMatch(node::isAnnotationPresent);
     }
 }

@@ -110,7 +110,9 @@ public final class JavaRuleUtil {
         "lombok.RequiredArgsConstructor",
         "lombok.AllArgsConstructor",
         "lombok.NoArgsConstructor",
-        "lombok.Builder"
+        "lombok.Builder",
+        "lombok.EqualsAndHashCode",
+        "lombok.experimental.Delegate"
     );
 
     private JavaRuleUtil() {
@@ -775,13 +777,6 @@ public final class JavaRuleUtil {
             return e1 instanceof ASTVariableAccess && e2 instanceof ASTVariableAccess;
         } else if (e1 instanceof ASTThisExpression || e2 instanceof ASTThisExpression) {
             return e1.getClass() == e2.getClass();
-        }
-        return false;
-    }
-
-    private static boolean isSyntacticThisFieldAccess(ASTExpression v1) {
-        if (v1 instanceof ASTFieldAccess) {
-            return ((ASTFieldAccess) v1).getQualifier() instanceof ASTThisExpression;
         }
         return false;
     }

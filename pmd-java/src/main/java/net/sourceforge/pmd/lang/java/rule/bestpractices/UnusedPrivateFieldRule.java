@@ -23,12 +23,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<List<String>> IGNORED_ANNOTATIONS =
-        JavaPropertyUtil.ignoredAnnotationsProperty(
+        JavaPropertyUtil.ignoredAnnotationsDescriptor(
             CollectionUtil.union(JavaRuleUtil.LOMBOK_ANNOTATIONS,
                                  setOf("java.lang.Deprecated",
-                                       "javafx.fxml.FXML",
-                                       "lombok.experimental.Delegate",
-                                       "lombok.EqualsAndHashCode"))
+                                       "javafx.fxml.FXML"))
         );
 
     public UnusedPrivateFieldRule() {

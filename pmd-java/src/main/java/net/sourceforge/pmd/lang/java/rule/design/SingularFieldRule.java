@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.ast.JModifier.FINAL;
 import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
-import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +29,6 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefiniti
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -47,11 +45,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public class SingularFieldRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<List<String>> IGNORED_ANNOT_PROPERTY =
-        JavaPropertyUtil.ignoredAnnotationsProperty(
-            CollectionUtil.union(JavaRuleUtil.LOMBOK_ANNOTATIONS,
-                                 setOf("lombok.experimental.Delegate",
-                                       "lombok.EqualsAndHashCode"))
-        );
+        JavaPropertyUtil.ignoredAnnotationsDescriptor(JavaRuleUtil.LOMBOK_ANNOTATIONS);
 
 
     public SingularFieldRule() {
