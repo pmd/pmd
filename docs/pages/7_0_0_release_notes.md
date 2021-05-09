@@ -89,6 +89,7 @@ The default version is always ES6.
     reading and understanding the expressions.
 *   The rule {% rule "java/bestpractices/LooseCoupling" %} has a new property to allow some types to be coupled to (`allowedTypes`).
 *   {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+*   {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed. The rule is now more precise and will check these cases properly.
 
 #### Removed Rules
 

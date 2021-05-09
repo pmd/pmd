@@ -909,4 +909,16 @@ public final class JavaRuleUtil {
     private static boolean isPure(ASTMethodCall call) {
         return isGetterCall(call) || KNOWN_PURE_METHODS.anyMatch(call);
     }
+
+    /**
+     * Checks whether the given node is annotated with any lombok annotation.
+     * The node should be annotateable.
+     *
+     * @param node
+     *            the Annotatable node to check
+     * @return <code>true</code> if a lombok annotation has been found
+     */
+    public static boolean hasLombokAnnotation(Annotatable node) {
+        return LOMBOK_ANNOTATIONS.stream().anyMatch(node::isAnnotationPresent);
+    }
 }

@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 
@@ -52,7 +51,7 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         boolean oldValue = classHasLombokAnnotation;
-        classHasLombokAnnotation = hasLombokAnnotation(node);
+        classHasLombokAnnotation = JavaRuleUtil.hasLombokAnnotation(node);
         Object result = super.visit(node, data);
         classHasLombokAnnotation = oldValue;
         return result;
@@ -61,21 +60,10 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
         boolean oldValue = classHasLombokAnnotation;
-        classHasLombokAnnotation = hasLombokAnnotation(node);
+        classHasLombokAnnotation = JavaRuleUtil.hasLombokAnnotation(node);
         Object result = super.visit(node, data);
         classHasLombokAnnotation = oldValue;
         return result;
     }
 
-    /**
-     * Checks whether the given node is annotated with any lombok annotation.
-     * The node should be annotateable.
-     *
-     * @param node
-     *            the Annotatable node to check
-     * @return <code>true</code> if a lombok annotation has been found
-     */
-    protected boolean hasLombokAnnotation(Annotatable node) {
-        return JavaRuleUtil.LOMBOK_ANNOTATIONS.stream().anyMatch(node::isAnnotationPresent);
-    }
 }

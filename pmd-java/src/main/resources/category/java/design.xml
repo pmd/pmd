@@ -785,15 +785,19 @@ of Object-Oriented Systems.* Springer, Berlin, 1 edition, October 2006. Page 80.
     <rule name="ImmutableField"
           language="java"
           since="2.0"
-          message="Private field ''{0}'' could be made final; it is only initialized in the declaration or constructor."
+          message="Field ''{0}'' could be made final"
           class="net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#immutablefield">
         <description>
-Identifies private fields whose values never change once object initialization ends either in the declaration
-of the field or by a constructor. This helps in converting existing classes to becoming immutable ones.
-Note that this rule does not enforce referenced object to be immutable itself. A class can still be mutable, even
-if all its member fields are declared final. This is referred to as shallow immutability. For more information on
-mutability, see Effective Java, 3rd Edition, Item 17: Minimize mutability.
+Reports non-final fields whose value never changes once object initialization ends,
+and hence may be marked final.
+
+Note that this rule does not enforce that the field value be deeply immutable itself.
+An object can still have mutable state, even if all its member fields are declared final.
+This is referred to as shallow immutability. For more information on mutability,
+see *Effective Java, 3rd Edition, Item 17: Minimize mutability*.
+
+Limitations: We can only check private fields for now.
         </description>
         <priority>3</priority>
         <example>

@@ -179,8 +179,10 @@ public class Foo {
 public class Foo {
     private int x = 0;
 
+    Foo(int y) {}
+
     public void bar() {
-        Object y = new Bar(x++);
+        Object y = new Foo(x++);
     }
 }
         ]]></code>
@@ -244,15 +246,19 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     private int x = 2;
+    MouseAdapter mouseListener;
 
     public Foo() {
         mouseListener = new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                x = e.getSource();
-                super.mouseClicked(e);
+            public void mouseClicked(Object e) {
+                x = e.hashCode();
             }
         };
     }
+}
+
+interface MouseAdapter {
+    void mouseClicked(Object e);
 }
         ]]></code>
     </test-code>
@@ -355,7 +361,7 @@ public class pmd_inc {
 public class MyClass {
     private long counter = 0;
 
-    public <E> void run(final E entity, final Class<? extends TemplatedClass<E>> m) throws MyException {
+    public <E> void run(final E entity, final Class<?> m) throws Exception {
         this.counter += 1;
     }
 }
