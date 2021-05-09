@@ -4,26 +4,47 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.DIV;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.GE;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.GT;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.LE;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.LT;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.MOD;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.MUL;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SHIFT_OPS;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
+
+import java.util.EnumSet;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * Detects casts where the operand is already a subtype of the context
  * type, or may be converted to it implicitly.
  */
 public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
+
+    private static final EnumSet<BinaryOp> BINARY_PROMOTED_OPS =
+        EnumSet.of(LE, GE, GT, LT, ADD, SUB, MUL, DIV, MOD);
 
     public UnnecessaryCastRule() {
         super(ASTCastExpression.class);
@@ -41,8 +62,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         JTypeMirror operandType = operand.getTypeMirror();                      // int
 
         if (TypeOps.isUnresolvedOrNull(operandType)
-            || TypeOps.isUnresolvedOrNull(coercionType)
-            || context.isMissing()) {
+            || TypeOps.isUnresolvedOrNull(coercionType)) {
             return null;
         }
 
@@ -52,7 +72,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         if (operand instanceof ASTLambdaExpression || operand instanceof ASTMethodReference) {
             // Then the cast provides a target type for the expression (always).
             // We need to check the enclosing context, as if it's invocation we give up for now
-            if (castExpr.getConversionContext().isInvocationContext()) {
+            if (context.isMissing() || context.isInvocationContext()) {
                 // Then the cast may be used to determine the overload.
                 // We need to treat the casted lambda as a whole unit.
                 // todo see below
@@ -70,68 +90,102 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // Eg `SuperItf obj = (SubItf) ()-> {};`
             // If we remove the cast, even if it might compile,
             // the object will not implement SubItf anymore.
-            return null;
-        }
-
-        boolean isInTernary = castExpr.getParent() instanceof ASTConditionalExpression;
-
-        if (castIsUnnecessary(context, coercionType, operandType, isInTernary)) {
+        } else if (isCastUnnecessary(castExpr, context, coercionType, operandType)) {
             reportCast(castExpr, data);
         }
         return null;
+    }
+
+    private boolean isCastUnnecessary(ASTCastExpression castExpr, @NonNull ExprContext context, JTypeMirror coercionType, JTypeMirror operandType) {
+        if (operandType.equals(coercionType)) {
+            // with the exception of the lambda thing above, casts to
+            // the same type are always unnecessary
+            return true;
+        } else if (context.isMissing()) {
+            // then we have fewer violation conditions
+
+            return !operandType.isBottom() // casts on a null literal are necessary
+                && operandType.isSubtypeOf(coercionType);
+        }
+
+        return !isCastDeterminingContext(castExpr, context, coercionType, operandType)
+            && castIsUnnecessaryToMatchContext(context, coercionType, operandType);
     }
 
     private void reportCast(ASTCastExpression castExpr, Object data) {
         addViolation(data, castExpr, PrettyPrintingUtil.prettyPrintType(castExpr.getCastType()));
     }
 
-    private boolean castIsUnnecessary(@NonNull ExprContext context, JTypeMirror coercionType, JTypeMirror operandType, boolean isInTernary) {
-        if (isInTernary) {
-            return castIsUnnecessaryInTernary(operandType, coercionType);
-        } else {
-            return castIsUnnecessary(context, operandType, coercionType);
-        }
-    }
-
-    /**
-     *
-     */
-    private static boolean castIsUnnecessary(ExprContext context,
-                                             JTypeMirror operandType,
-                                             JTypeMirror coercionType) {
+    private static boolean castIsUnnecessaryToMatchContext(ExprContext context,
+                                                           JTypeMirror coercionType,
+                                                           JTypeMirror operandType) {
         if (context.isInvocationContext()) {
             // todo unsupported for now, the cast may be disambiguating overloads
             return false;
         }
+
         JTypeMirror contextType = context.getTargetType();
-
-        {
-            boolean isNarrowing = !TypeConversion.isConvertibleUsingBoxing(operandType, coercionType);
-            if (isNarrowing) {
-                return false;
-            }
+        if (contextType == null) {
+            return false; // should not occur in valid code
+        } else if (!TypeConversion.isConvertibleUsingBoxing(operandType, coercionType)) {
+            // narrowing cast
+            return false;
+        } else if (!context.acceptsType(operandType)) {
+            // then removing the cast would produce uncompilable code
+            return false;
         }
 
-        // tests that actually deleting the cast would not give uncompilable code
-        boolean canOperandSuitContext;
-        if (context.isCastContext()) {
-            // then boxing/unboxing are restricted
-            canOperandSuitContext = TypeConversion.isConvertibleInCastContext(operandType, contextType);
-        } else {
-            canOperandSuitContext = TypeConversion.isConvertibleUsingBoxing(operandType, contextType);
-        }
         boolean isBoxingFollowingCast = contextType.isPrimitive() != coercionType.isPrimitive();
-        boolean boxingBehaviorIsSame = !isBoxingFollowingCast || operandType.unbox().isSubtypeOf(contextType.unbox());
-
-        return canOperandSuitContext && boxingBehaviorIsSame;
+        // means boxing behavior is equivalent
+        return !isBoxingFollowingCast || operandType.unbox().isSubtypeOf(contextType.unbox());
     }
 
     /**
-     * A cast in a ternary branch may be necessary in more cases
-     * as both branches influence the target type.
+     * Returns whether the context type actually depends on the cast.
+     * This means our analysis as written above won't work, and usually
+     * that the cast is necessary, because there's some primitive conversions
+     * happening, or some other corner case.
      */
-    private static boolean castIsUnnecessaryInTernary(JTypeMirror operandType, JTypeMirror coercionType) {
-        return operandType.equals(coercionType);
+    private static boolean isCastDeterminingContext(ASTCastExpression castExpr, ExprContext context, @NonNull JTypeMirror coercionType, JTypeMirror operandType) {
+
+        if (castExpr.getParent() instanceof ASTConditionalExpression && castExpr.getIndexInParent() != 0) {
+            // a branch of a ternary
+            return true;
+
+        } else if (context.isString() && isInfixExprWithOperator(castExpr.getParent(), ADD)) {
+
+            // inside string concatenation
+            return !TypeTestUtil.isA(String.class, JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr))
+                && !TypeTestUtil.isA(String.class, operandType);
+
+        } else if (context.isNumeric() && castExpr.getParent() instanceof ASTInfixExpression) {
+            // numeric expr
+            ASTInfixExpression parent = (ASTInfixExpression) castExpr.getParent();
+
+            if (isInfixExprWithOperator(parent, SHIFT_OPS)) {
+                // if so, then the cast is determining the width of expr
+                // the right operand is always int
+                if (castExpr == parent.getLeftOperand()) {
+                    return !TypeOps.isStrictSubtype(operandType.unbox(), operandType.getTypeSystem().INT);
+                } else {
+                    return false;
+                }
+            } else if (isInfixExprWithOperator(parent, BINARY_PROMOTED_OPS)) {
+                ASTExpression otherOperand = JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr);
+                JTypeMirror otherType = otherOperand.getTypeMirror();
+
+                // Ie, the type that is taken by the binary promotion
+                // is the type of the cast, not the type of the operand.
+                // Eg in
+                //     int i; ((double) i) * i
+                // the only reason the mult expr has type double is because of the cast
+                return TypeOps.isStrictSubtype(otherType, coercionType)
+                    // but not for integers strictly smaller than int
+                    && !TypeOps.isStrictSubtype(otherType.unbox(), otherType.getTypeSystem().INT);
+            }
+
+        }
+        return false;
     }
 
 }

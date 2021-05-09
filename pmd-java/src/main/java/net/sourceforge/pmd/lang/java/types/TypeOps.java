@@ -827,6 +827,10 @@ public final class TypeOps {
         }
     }
 
+    public static boolean isStrictSubtype(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
+        return !t.equals(s) && t.isSubtypeOf(s);
+    }
+
     // </editor-fold>
 
     // <editor-fold  defaultstate="collapsed" desc="Substitution">
@@ -1552,7 +1556,7 @@ public final class TypeOps {
     /**
      * @see JTypeMirror#getAsSuper(JClassSymbol)
      */
-    public static @Nullable JTypeMirror asSuper(JTypeMirror t, JClassSymbol s) {
+    public static @Nullable JTypeMirror asSuper(@NonNull JTypeMirror t, @NonNull JClassSymbol s) {
 
         if (!t.isPrimitive() && s.equals(t.getTypeSystem().OBJECT.getSymbol())) {
             // interface types need to have OBJECT somewhere up their hierarchy

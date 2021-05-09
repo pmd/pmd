@@ -50,8 +50,8 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
         return getNode().getDefiningType().getCodeUnitDetails().getVersion().getExternal();
     }
 
-    public ApexNode<Compilation> getMainNode() {
-        return (ApexNode<Compilation>) getChild(0);
+    public ASTUserClassOrInterface<?> getMainNode() {
+        return (ASTUserClassOrInterface<?>) getChild(0);
     }
 
     @Override

@@ -47,14 +47,14 @@ public final class TypePrettyPrint {
         return sb.getResult();
     }
 
-    public static @NonNull String prettyPrintWithSimpleNames(@NonNull JTypeMirror sig) {
+    public static @NonNull String prettyPrintWithSimpleNames(@NonNull JTypeVisitable sig) {
         TypePrettyPrinter sb = new TypePrettyPrinter();
         sb.qualifyNames = false;
         sig.acceptVisitor(PrettyPrintVisitor.INSTANCE, sb);
         return sb.getResult();
     }
 
-    public static String prettyPrintWithTvarQualifier(@NonNull JTypeMirror t) {
+    public static String prettyPrintWithTvarQualifier(@NonNull JTypeVisitable t) {
         TypePrettyPrinter sb = new TypePrettyPrinter();
         sb.qualifyTvars = true;
         t.acceptVisitor(PrettyPrintVisitor.INSTANCE, sb);

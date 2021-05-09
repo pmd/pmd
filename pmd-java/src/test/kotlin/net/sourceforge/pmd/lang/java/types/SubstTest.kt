@@ -43,7 +43,7 @@ class SubstTest : ProcessorTestSpec({
         val map = Map::class
 
         // assert the form of the type
-        fieldT.typeMirror shouldBe with (typeDsl) {
+        fieldT shouldHaveType with (typeDsl) {
             map[map[k, f], map[f, c]]
         }
 

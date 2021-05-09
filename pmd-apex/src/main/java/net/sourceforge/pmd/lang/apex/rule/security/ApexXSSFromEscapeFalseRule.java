@@ -22,6 +22,10 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
     private static final String ADD_ERROR = "addError";
 
+    public ApexXSSFromEscapeFalseRule() {
+        addRuleChainVisit(ASTUserClass.class);
+    }
+
     @Override
     public Object visit(ASTUserClass node, Object data) {
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {

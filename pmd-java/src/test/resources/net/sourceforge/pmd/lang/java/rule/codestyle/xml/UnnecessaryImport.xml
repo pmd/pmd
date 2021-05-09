@@ -898,4 +898,20 @@ class NPEImport {}
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryImport false positive for on-demand imports #2655</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.package1;
+
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.package2.*; // SUPPRESS CHECKSTYLE needed for test case
+
+public class U {
+    private void g() {
+        String k = C.V;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

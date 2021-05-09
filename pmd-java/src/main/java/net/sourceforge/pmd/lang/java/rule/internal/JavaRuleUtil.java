@@ -475,6 +475,13 @@ public final class JavaRuleUtil {
                    .collect(Collectors.toSet());
     }
 
+    public static boolean isAnonymousClassCreation(@Nullable ASTExpression expression) {
+        if (expression instanceof ASTConstructorCall) {
+            return ((ASTConstructorCall) expression).isAnonymousClass();
+        }
+        return false;
+    }
+
     /**
      * Will cut through argument lists, except those of enum constants
      * and explicit invocation nodes.

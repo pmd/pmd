@@ -50,7 +50,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                 argList {
                     constructorCall {
                         classType("Gen") {
-                            it.typeMirror shouldBe t_Gen.erasure
+                            it shouldHaveType t_Gen.erasure
                             diamond()
                         }
 
@@ -68,7 +68,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                         }
 
                         child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
-                            it.typeMirror shouldBe t_Anon
+                            it shouldHaveType t_Anon
                         }
                     }
                 }
@@ -114,7 +114,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                         it.symbol shouldBe ts.OBJECT.symbol.constructors[0]
                     }
                 }
-                it.typeMirror shouldBe t_BitMetric
+                it shouldHaveType t_BitMetric
 
                 argList {}
 
@@ -170,7 +170,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                 }
 
                 child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
-                    it.typeMirror shouldBe t_Anon // though
+                    it shouldHaveType t_Anon // though
 
                 }
             }
@@ -203,7 +203,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                 constructorCall {
                     unspecifiedChildren(2)
 
-                    it.typeMirror shouldBe t_Inner
+                    it shouldHaveType t_Inner
 
                     t_Inner.shouldBeA<JClassType> {
                         it.enclosingType shouldBe t_Scratch
@@ -222,7 +222,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                     argList(0)
 
                     child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
-                        it.typeMirror shouldBe t_Anon // though
+                        it shouldHaveType t_Anon // though
                     }
                 }
             }
@@ -261,7 +261,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                 constructorCall {
                     unspecifiedChildren(2)
 
-                    it.typeMirror shouldBe t_Inner[gen.t_String]
+                    it shouldHaveType t_Inner[gen.t_String]
 
                     t_Inner.shouldBeA<JClassType> {
                         it.enclosingType shouldBe t_Scratch
@@ -280,7 +280,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                     argList(0)
 
                     child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
-                        it.typeMirror shouldBe t_Anon // though
+                        it shouldHaveType t_Anon // though
                     }
                 }
             }
@@ -341,7 +341,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                     unspecifiedChildren(2)
 
 
-                    it.typeMirror shouldBe innerT
+                    it shouldHaveType innerT
 
                     it.methodType.shouldMatchMethod(
                             named = JConstructorSymbol.CTOR_NAME,
@@ -356,7 +356,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                     argList(0)
 
                     child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
-                        it.typeMirror shouldBe t_Anon // though
+                        it shouldHaveType t_Anon // though
                     }
                 }
             }
@@ -422,7 +422,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                             it.symbol shouldBe call.typeSystem.OBJECT.symbol.constructors[0]
                         }
 
-                        it.typeMirror shouldBe t_BitMetric
+                        it shouldHaveType t_BitMetric
 
                         argList {}
 
@@ -492,7 +492,7 @@ class AnonCtorsTest : ProcessorTestSpec({
                 .firstCtorCall()
 
         spy.shouldBeOk {
-            call.typeMirror shouldBe java.lang.Throwable::class.decl
+            call shouldHaveType java.lang.Throwable::class.decl
         }
     }
 

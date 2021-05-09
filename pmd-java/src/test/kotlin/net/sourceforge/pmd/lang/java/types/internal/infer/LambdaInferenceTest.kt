@@ -43,13 +43,13 @@ class LambdaInferenceTest : ProcessorTestSpec({
 
         node.shouldMatchN {
             methodCall("collect") {
-                it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[int.box()] } // List<Integer>
+                it shouldHaveType with(it.typeDsl) { gen.t_List[int.box()] } // List<Integer>
 
                 it::getQualifier shouldBe methodCall("peek") {
-                    it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
+                    it shouldHaveType with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
 
                     it::getQualifier shouldBe methodCall("of") {
-                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
+                        it shouldHaveType with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
                         it::getQualifier shouldBe typeExpr {
                             qualClassType("java.util.stream.Stream")
                         }
@@ -102,13 +102,13 @@ class LambdaInferenceTest : ProcessorTestSpec({
 
         node.shouldMatchN {
             methodCall("collect") {
-                it.typeMirror shouldBe with(it.typeDsl) { gen.t_List[ts.UNKNOWN] } // List</*unresolved*/>
+                it shouldHaveType with(it.typeDsl) { gen.t_List[ts.UNKNOWN] } // List</*unresolved*/>
 
                 it::getQualifier shouldBe methodCall("map") {
-                    it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[ts.UNKNOWN] } // Stream</*unresolved*/>
+                    it shouldHaveType with(it.typeDsl) { gen.t_Stream[ts.UNKNOWN] } // Stream</*unresolved*/>
 
                     it::getQualifier shouldBe methodCall("of") {
-                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
+                        it shouldHaveType with(it.typeDsl) { gen.t_Stream[int.box()] } // Stream<Integer>
                         it::getQualifier shouldBe typeExpr {
                             qualClassType("java.util.stream.Stream")
                         }
@@ -177,7 +177,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
                         lambdaFormals(1)
                         methodCall("length") {
                             variableAccess("s") {
-                                it.typeMirror shouldBe it.typeSystem.STRING
+                                it shouldHaveType it.typeSystem.STRING
                             }
                             argList(0)
                         }
@@ -227,7 +227,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
                         lambdaFormals(1)
                         methodCall("length") {
                             variableAccess("s") {
-                                it.typeMirror shouldBe it.typeSystem.STRING
+                                it shouldHaveType it.typeSystem.STRING
                             }
                             argList(0)
                         }
@@ -270,13 +270,13 @@ class LambdaInferenceTest : ProcessorTestSpec({
                         lambdaFormals(1)
 
                         fieldAccess("i") {
-                            it.typeMirror shouldBe it.typeSystem.INT
+                            it shouldHaveType it.typeSystem.INT
                             constructorCall {
                                 variableAccess("s") {
-                                    it.typeMirror shouldBe t_Scratch
+                                    it shouldHaveType t_Scratch
                                 }
                                 classType("WithField") {
-                                    it.typeMirror shouldBe t_WithField
+                                    it shouldHaveType t_WithField
                                 }
                                 argList(0)
                             }
@@ -324,10 +324,10 @@ class LambdaInferenceTest : ProcessorTestSpec({
                         lambdaFormals(1)
 
                         fieldAccess("i") {
-                            it.typeMirror shouldBe it.typeSystem.INT
+                            it shouldHaveType it.typeSystem.INT
                             methodCall("fetch") {
                                 variableAccess("s") {
-                                    it.typeMirror shouldBe t_Scratch
+                                    it shouldHaveType t_Scratch
                                 }
                                 argList(0)
                             }

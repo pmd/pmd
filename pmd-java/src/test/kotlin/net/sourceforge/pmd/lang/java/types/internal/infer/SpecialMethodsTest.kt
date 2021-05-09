@@ -5,16 +5,12 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
-import net.sourceforge.pmd.lang.java.types.captureMatcher
-import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
-import net.sourceforge.pmd.lang.java.types.typeDsl
-import net.sourceforge.pmd.lang.java.types.varId
+import net.sourceforge.pmd.lang.java.types.*
 import java.util.function.Supplier
 
 /**
@@ -25,8 +21,8 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
     parserTest("Test getClass special type") {
 
-
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             import java.util.function.Function;
             import java.util.function.Supplier;
 
@@ -46,60 +42,53 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
         """.trimIndent())
 
-        val t_Scratch = acu.descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
-
-        val (k, k2, raw, call) = acu.descendants(ASTMethodCall::class.java).toList()
+        val t_Scratch = acu.declaredTypeSignatures()[0]
+        val kvar = acu.typeVar("K")
+        val (k, k2, raw, call) = acu.methodCalls().toList()
 
         doTest("Test this::getClass") {
-            k.shouldMatchN {
-                methodCall("sup") {
-                    thisExpr { it.typeMirror shouldBe t_Scratch; null }
-                    argList {
-                        methodRef("getClass") {
-                            thisExpr()
-
-                            it.typeMirror shouldBe with(it.typeDsl) {
-                                Supplier::class[Class::class[captureMatcher(`?` extends t_Scratch.erasure)]]
+            spy.shouldBeOk {
+                k.shouldMatchN {
+                    methodCall("sup") {
+                        thisExpr { it shouldHaveType t_Scratch[kvar]; null }
+                        argList {
+                            methodRef("getClass") {
+                                thisExpr()
+                                it shouldHaveType Supplier::class[Class::class[captureMatcher(`?` extends t_Scratch[kvar])]]
                             }
                         }
                     }
                 }
             }
+            spy.resetInteractions()
         }
 
         doTest("Test Scratch<K>::getClass") {
-            k2.shouldMatchN {
-                methodCall("id") {
-                    thisExpr()
-                    argList {
-                        methodRef("getClass") {
-                            typeExpr {
-                                classType("Scratch")
-                            }
+            spy.shouldBeOk {
+                k2.arguments[0].shouldMatchN {
+                    methodRef("getClass") {
+                        typeExpr {
+                            classType("Scratch")
+                        }
 
-
-                            it.typeMirror shouldBe with(it.typeDsl) {
-                                val capture = captureMatcher(`?` extends t_Scratch.erasure)
-                                // same capture in both params
-                                java.util.function.Function::class[capture, Class::class[capture]]
-                            }
+                        it shouldHaveType let {
+                            // note the return type is
+                            // `? extends Scratch<K>`
+                            // not the erasure
+                            // `? extends Scratch`
+                            val capture = captureMatcher(`?` extends t_Scratch[kvar])
+                            // same capture in both params
+                            java.util.function.Function::class[capture, Class::class[capture]]
                         }
                     }
                 }
             }
+            spy.resetInteractions()
         }
 
         doTest("Test method call") {
-            call.shouldMatchN {
-                methodCall("getClass") {
-
-                    it::getTypeMirror shouldBe with(it.typeDsl) {
-                        Class::class[`?` extends t_Scratch.erasure]
-                    }
-
-                    variableAccess("k")
-                    argList {}
-                }
+            spy.shouldBeOk {
+                call shouldHaveType Class::class[`?` extends t_Scratch.erasure]
             }
         }
     }
@@ -107,7 +96,8 @@ class SpecialMethodsTest : ProcessorTestSpec({
     parserTest("Test enum methods") {
 
 
-        val acu = parser.parse("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             import java.util.Arrays;
 
             enum Foo {
@@ -118,30 +108,16 @@ class SpecialMethodsTest : ProcessorTestSpec({
                 }
             }
 
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val t_Foo = acu.descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
 
         val streamCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        streamCall.shouldMatchN {
-            methodCall("stream") {
-                it.typeMirror shouldBe with(it.typeDsl) {
-                    gen.t_Stream[t_Foo]
-                }
-
-                skipQualifier()
-
-                argList {
-                    methodCall("values") {
-                        it.typeMirror shouldBe with(it.typeDsl) {
-                            t_Foo.toArray()
-                        }
-
-                        argList(0)
-                    }
-                }
-            }
+        spy.shouldBeOk {
+            streamCall shouldHaveType gen.t_Stream[t_Foo]
+            streamCall.arguments[0] shouldHaveType t_Foo.toArray()
         }
     }
 
@@ -170,13 +146,13 @@ class SpecialMethodsTest : ProcessorTestSpec({
         spy.shouldBeOk {
             call.shouldMatchN {
                 methodCall("copyOf") {
-                    it.typeMirror shouldBe ts.OBJECT.toArray()
+                    it shouldHaveType ts.OBJECT.toArray()
 
                     argList {
                         variableAccess("elements")
 
                         methodCall("getClass") {
-                            it.typeMirror shouldBe Class::class[`?` extends ts.OBJECT.toArray()]
+                            it shouldHaveType Class::class[`?` extends ts.OBJECT.toArray()]
 
                             variableAccess("a")
 

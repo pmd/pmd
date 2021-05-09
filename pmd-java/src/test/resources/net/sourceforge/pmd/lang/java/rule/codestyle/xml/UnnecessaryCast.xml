@@ -604,4 +604,197 @@ class Scratch {
 }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Assert statements</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Boolean boxedBool, boolean bool, String str) {
+                    assert (boolean) boxedBool;
+                    assert (boolean) bool;
+                    assert bool : (String) str;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Conditionals and loop statements</description>
+        <expected-problems>5</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Boolean boxedBool, boolean bool, String str, int[] ints) {
+                    if ((boolean) boxedBool);
+                    while ((boolean) boxedBool);
+                    for (int i = 0; (boolean) boxedBool; i++) {}
+                    do; while ((boolean) boxedBool);
+                    for (int i : (int[]) ints);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Conditional expr condition</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Boolean boxedBool, boolean bool, String str, int[] ints) {
+                    str = (boolean) boxedBool ? "a" : "b";
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Necessary cast for condition</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Object obj) {
+                    // both are necessary
+                    if ((Boolean) obj
+                        || (boolean) obj);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Missing context identity cast</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+
+                static void m(Boolean boxedBool) {
+                    ((Boolean) boxedBool).booleanValue(); // same type
+                    ((Object) boxedBool).toString(); // supertype
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Casts in arithmetic</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+                static void m(int i, double d) {
+                    Object o;
+                    o = ((double) i) * d; // unnecessary
+                    o = ((double) i) * i; // necessary
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Casts in shift exprs</description>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>5,8,9,10,12,13,14</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+                static void m(int i, short s, long l, Integer boxedInt) {
+                    l  = (long) i << 2; // "necessary"
+                    l  = (long) i << 34; // definitely necessary
+                    l  = (long) (i << 34); // unnecessary, l5
+
+                    i = i << (int) l;          // necessary
+                    i = i << (int) boxedInt;   // unnecessary
+                    i = (int) i << boxedInt;   // unnecessary
+                    i = (int) (i << boxedInt); // unnecessary
+
+                    i = (int) s << boxedInt;   // unnecessary, widened anyway
+                    i = ((int) s) << boxedInt; // unnecessary, same expression with unnecessary parens
+                    i = (int) (s << boxedInt); // unnecessary
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Casts in arithmetic smaller than int </description>
+        <expected-problems>9</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                // they're all unecessary
+                static void m(int i, byte b, char c, short s) {
+                    i = b * (int) b; // 4
+                    i = (int) b * b;
+                    i = b * (int) s; // 6
+                    i = b * (int) c;
+                    i = b * (short) b; // 8
+                    i = i * (short) b;
+                    i = i * (short) s; // 10
+                    i = i * (int) c;
+                    i = i * (char) c; // 11
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Casts in arithmetic with unboxing + widening</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Integer i, Double d, Object lhs) {
+                    lhs = (int) i * 1.0;
+                    lhs = (double) d * 1.01;
+                    lhs = 1.01 * (int) i;
+                    lhs = 1.01 * (double) d;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>"Narrowing" cast from char to short is necessary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+
+                static void m(int i, byte b, char c, short s) {
+                    i = i * (short) c;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>char cast to int in string context is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+
+                static void m(String s, char c) {
+                    // the toString is different -> necessary (string contexts aren't implemented yet)
+                    s = "(" + (int) c + ")" + c;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>String cast determining context</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+            class Scratch {
+                static void m(Object a, Object b) {
+                    String s = a + (String) b   // necessary, determines context
+                            + a + (String) b    // technically unnecessary, but narrowing
+                            + a + (String) null // unnecessary
+                            ;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Cast on both sides of arithmetic</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary cast (int)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Scratch {
+                static void m(short s, Object b) {
+                    b = (int) s
+                            + (long) s;
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror
 import net.sourceforge.pmd.lang.java.types.TypeDslMixin
 import net.sourceforge.pmd.lang.java.types.TypeDslOf
 import net.sourceforge.pmd.lang.ast.test.IntelliMarker
+import net.sourceforge.pmd.lang.java.types.shouldHaveType
 
 /**
  * Base class for grammar tests that use the DSL. Tests are layered into
@@ -193,7 +194,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
                 fun haveType(type: TypeDslMixin.() -> JTypeMirror): Assertions<String> = {
 
                     val node = doParse(it)
-                    if (node is TypeNode) node::getTypeMirror shouldBe TypeDslOf(node.typeSystem).type()
+                    if (node is TypeNode) node shouldHaveType TypeDslOf(node.typeSystem).type()
                     else throw AssertionError("Not a TypeNode: $node")
 
                 }

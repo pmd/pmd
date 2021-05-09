@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.java.types.testdata.BoolLogic
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import net.sourceforge.pmd.lang.java.types.typeDsl
@@ -297,17 +298,17 @@ class StressTest : ProcessorTestSpec({
                 localVarDecl {
                     modifiers { }
                     classType("List") {
-                        //                it.typeMirror shouldBe RefTypeGen.`t_List{Integer}`
+                        //                it shouldHaveType RefTypeGen.`t_List{Integer}`
                         typeArgList()
                     }
 
                     child<ASTVariableDeclarator> {
                         variableId("c") {
-                            it.typeMirror shouldBe it.typeDsl.gen.`t_List{Integer}`
+                            it shouldHaveType it.typeDsl.gen.`t_List{Integer}`
                         }
                         child<ASTMethodCall>(ignoreChildren = true) {
                             val t = measureTimeMillis {
-                                it.typeMirror shouldBe it.typeDsl.gen.`t_List{Integer}`
+                                it shouldHaveType it.typeDsl.gen.`t_List{Integer}`
                             }
 
                             myLog("huge call chain: $t ms")

@@ -1,8 +1,8 @@
 ---
-name: Rule violation
-about: Let us know about a false positive/false negative
+name: Rule violation (false-negative)
+about: Let us know about a false-negative (no violation is reported on problematic code)
 title: ''
-labels: 'a:false-positive, a:false-negative'
+labels: 'a:false-negative'
 assignees: ''
 
 ---
@@ -25,8 +25,6 @@ Please provide the rule name and a link to the rule documentation:
 
 **Expected outcome:**
 
-*   Does PMD report a violation, where there shouldn't be one? -> false-positive
-*   Is PMD missing to report a violation, where there should be one? -> false-negative
-
+PMD should report a violation at line ..., but doesn't. This is a false-negative.
 
 **Running PMD through:** *[CLI | Ant | Maven | Gradle | Designer | Other]*
