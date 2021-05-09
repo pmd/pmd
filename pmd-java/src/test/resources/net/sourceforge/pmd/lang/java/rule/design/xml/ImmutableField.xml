@@ -582,8 +582,10 @@ public class TestFinal {
         <description>Blank field should not be considered final, it's most probably not used that way.</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-private static class QualifiedByAnnotationTestBean {
+private static class Person {
 
     @Autowired @Qualifier("special")
     private Person larry;
@@ -598,14 +600,18 @@ private static class QualifiedByAnnotationTestBean {
     <test-code>
         <description>Multiple ctors writing a subset of fields</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Field 'beanName' may be declared final</message>
+        </expected-messages>
         <code><![CDATA[
-            class GroovyBeanDefinitionWrapper extends GroovyObjectSupport {
+            import java.util.Collection;
+            class GroovyBeanDefinitionWrapper {
 
                 private String beanName;
                 private Class<?> clazz;
                 private Collection<?> constructorArgs;
-                private AbstractBeanDefinition definition;
+                private Object definition;
 
 
                 public GroovyBeanDefinitionWrapper(String beanName) {
@@ -625,7 +631,7 @@ private static class QualifiedByAnnotationTestBean {
 
                 public Collection<?> getConstructorArgs() {return constructorArgs;}
                 public String getBeanName() {return beanName;}
-                public AbstractBeanDefinition getDefinition() {return definition;}
+                public Object getDefinition() {return definition;}
                 public Class<?> getClazz() {return clazz;}
             }
             ]]></code>

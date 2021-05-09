@@ -785,7 +785,7 @@ of Object-Oriented Systems.* Springer, Berlin, 1 edition, October 2006. Page 80.
     <rule name="ImmutableField"
           language="java"
           since="2.0"
-          message="Field ''{0}'' could be made final"
+          message="Field ''{0}'' may be declared final"
           class="net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#immutablefield">
         <description>

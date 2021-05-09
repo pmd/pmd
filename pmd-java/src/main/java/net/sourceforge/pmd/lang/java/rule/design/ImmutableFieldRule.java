@@ -34,8 +34,17 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
     private static final PropertyDescriptor<List<String>> IGNORED_ANNOTS =
         JavaPropertyUtil.ignoredAnnotationsDescriptor();
 
-    private static final Set<String> INVALIDATING_CLASS_ANNOT = setOf("lombok.Builder", "lombok.Data", "lombok.Value");
-    private static final Set<String> INVALIDATING_FIELD_ANNOTS = setOf("lombok.Setter", "lombok.Singular");
+    private static final Set<String> INVALIDATING_CLASS_ANNOT =
+        setOf(
+            "lombok.Builder",
+            "lombok.Data",
+            "lombok.Getter",
+            "lombok.Setter",
+            "lombok.Value"
+        );
+
+    private static final Set<String> INVALIDATING_FIELD_ANNOTS =
+        setOf("lombok.Setter");
 
     public ImmutableFieldRule() {
         super(ASTFieldDeclaration.class);
