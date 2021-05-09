@@ -17,6 +17,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface JFieldSymbol extends JAccessibleElementSymbol, JVariableSymbol {
 
+    @Override
+    default boolean isField() {
+        return true;
+    }
 
     /** Returns true if this field is an enum constant. */
     boolean isEnumConstant();

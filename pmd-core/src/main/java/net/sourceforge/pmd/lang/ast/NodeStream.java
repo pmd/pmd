@@ -285,8 +285,24 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * @throws IllegalArgumentException if n is negative
      * @see Stream#skip(long)
      * @see #take(int)
+     * @see #dropLast(int)
      */
     NodeStream<T> drop(int n);
+
+    /**
+     * Returns a stream consisting of the elements of this stream except
+     * the n tail elements. If n is greater than the number of elements
+     * of this stream, returns an empty stream. This requires a lookahead
+     * buffer in general.
+     *
+     * @param n the number of trailing elements to skip
+     *
+     * @return A new node stream
+     *
+     * @throws IllegalArgumentException if n is negative
+     * @see #drop(int)
+     */
+    NodeStream<T> dropLast(int n);
 
 
     /**

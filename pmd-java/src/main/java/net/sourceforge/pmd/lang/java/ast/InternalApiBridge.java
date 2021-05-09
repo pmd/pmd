@@ -204,4 +204,8 @@ public final class InternalApiBridge {
     public static @Nullable JavaccToken getReportLocation(JavaNode node) {
         return ((AbstractJavaNode) node).getPreferredReportLocation();
     }
+
+    public static void setStandaloneTernary(ASTConditionalExpression node) {
+        node.setStandaloneTernary();
+    }
 }

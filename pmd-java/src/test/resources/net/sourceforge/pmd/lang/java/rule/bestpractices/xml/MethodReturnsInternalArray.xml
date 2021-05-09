@@ -136,6 +136,7 @@ public interface Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Test {
+    byte[] content;
     public byte[] getContent() {
         return this.content == null ? null : content.clone();
     }
@@ -147,6 +148,7 @@ public class Test {
         <description>#1299 MethodReturnsInternalArray false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Arrays;
 public class WebServiceResponseMessage {
     private Object[] responseObjects;
     public Object[] getResponseObjects() {
@@ -165,6 +167,7 @@ public class Test {
     public Hit[] getHits() {
         return hits == null ? null : hits.clone();
     }
+    static class Hit {}
 }
         ]]></code>
     </test-code>
@@ -249,6 +252,9 @@ public class MethodReturnsInternalArrayCase {
                 protected final byte[] getData() {
                     return SomeClass.UNRESOLVED;
                 }
+            }
+            class SomeClass {
+                // unresolved field, should assume public
             }
             ]]></code>
     </test-code>

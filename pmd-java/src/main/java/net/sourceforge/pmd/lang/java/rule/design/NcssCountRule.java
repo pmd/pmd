@@ -97,7 +97,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
             int classHighest = (int) MetricsUtil.computeStatistics(JavaMetrics.NCSS, node.getOperations(), ncssOptions).getMax();
 
             if (classSize >= level) {
-                String[] messageParams = {PrettyPrintingUtil.kindName(node),
+                String[] messageParams = {PrettyPrintingUtil.getPrintableNodeKind(node),
                                           node.getSimpleName(),
                                           classSize + " (Highest = " + classHighest + ")", };
 

@@ -697,7 +697,7 @@ private int getMoreFoo(){
     <rule name="BrokenNullCheck"
           language="java"
           since="3.8"
-          message="Method call on object which may be null"
+          message="This expression will throw a NullPointerException"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.BrokenNullCheckRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#brokennullcheck">
         <description>
@@ -1091,11 +1091,22 @@ public class Bar {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#compareobjectswithequals">
         <description>
-Use equals() to compare object references; avoid comparing them with ==.
+Use `equals()` to compare object references; avoid comparing them with `==`.
+
+Since comparing objects with named constants is useful in some cases (eg, when
+defining constants for sentinel values), the rule ignores comparisons against
+fields with all-caps name (eg `this == SENTINEL`), which is a common naming
+convention for constant fields.
+
+You may allow some types to be compared by reference by listing the exceptions
+in the `typesThatCompareByReference` property.
         </description>
         <priority>3</priority>
         <properties>
             <property name="version" value="2.0"/>
+            <property name="typesThatCompareByReference" type="List[String]" delimiter="," description="List of canonical type names for which reference comparison is allowed.">
+                <value>java.lang.Enum,java.lang.Class</value>
+            </property>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1104,10 +1115,13 @@ Use equals() to compare object references; avoid comparing them with ==.
     [count(*
         [not(self::NullLiteral)]
         [pmd-java:typeIs('java.lang.Object')]
-        [not(pmd-java:typeIs('java.lang.Enum'))]
-        [not(pmd-java:typeIs('java.lang.Class'))]) = 2
+        [not(some $t in $typesThatCompareByReference satisfies pmd-java:typeIs($t))]
+      ) = 2
     ]
     [not(ancestor::MethodDeclaration[1][@Name = "equals"])]
+    (: Is not a field access with an all-caps identifier :)
+    [not(FieldAccess[upper-case(@Name)=@Name]
+     or VariableAccess[upper-case(@Name)=@Name])]
 ]]>
         </value>
             </property>
@@ -2016,28 +2030,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="ImportFromSamePackage"
-          language="java"
-          since="1.02"
-          message="No need to import a type that lives in the same package"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.ImportFromSamePackageRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#importfromsamepackage">
-        <description>
-There is no need to import a type that lives in the same package.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-package foo;
-
-import foo.Buz;     // no need for this
-import foo.*;       // or this
-
-public class Bar{}
-]]>
-        </example>
-    </rule>
-
     <rule name="InstantiationToGetClass"
           language="java"
           since="2.0"
@@ -2800,9 +2792,9 @@ public class Singleton {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.SingletonClassReturningNewInstanceRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#singletonclassreturningnewinstance">
         <description>
-Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
-is that the instance created using the overloaded method is not cached and so,
-for each call and new objects will be created for every invocation.
+            A singleton class should only ever have one instance. Failure to check
+            whether an instance has already been created may result in multiple
+            instances being created.
         </description>
         <priority>2</priority>
         <example>
@@ -2811,7 +2803,7 @@ class Singleton {
     private static Singleton instance = null;
     public static Singleton getInstance() {
         synchronized(Singleton.class) {
-            return new Singleton();
+            return new Singleton(); // this should be assigned to the field
         }
     }
 }

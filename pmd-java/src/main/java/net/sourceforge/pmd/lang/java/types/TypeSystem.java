@@ -8,7 +8,6 @@ import static java.util.Collections.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -37,6 +36,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver;
 import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.RealPrimitiveSymbol;
 import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.VoidSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Root context object for type analysis. Type systems own a global
@@ -212,7 +212,6 @@ public final class TypeSystem {
         FLOAT = createPrimitive(PrimitiveTypeKind.FLOAT, Float.class);
         DOUBLE = createPrimitive(PrimitiveTypeKind.DOUBLE, Double.class);
 
-        // this relies on the fact that setOf always returns immutable sets
         BOOLEAN.superTypes = immutableSetOf(BOOLEAN);
         CHAR.superTypes = immutableSetOf(CHAR, INT, LONG, FLOAT, DOUBLE);
         BYTE.superTypes = immutableSetOf(BYTE, SHORT, INT, LONG, FLOAT, DOUBLE);
@@ -376,7 +375,7 @@ public final class TypeSystem {
             return getPrimitive(kind).getSymbol();
         }
 
-        AssertionUtil.assertValidJavaBinaryName(name);
+        AssertionUtil.assertValidJavaBinaryNameNoArray(name);
 
         return isCanonical ? resolver.resolveClassFromCanonicalName(name)
                            : resolver.resolveClassFromBinaryName(name);
@@ -396,9 +395,7 @@ public final class TypeSystem {
      * <li>If it represents a primitive type, the corresponding {@link JPrimitiveType}
      * is returned (one of {@link #INT}, {@link #CHAR}, etc.).
      * <li>If it represents an array type, a new {@link JArrayType} is
-     * returned. Note that the component type will always be erased;
-     * creating a generic array type should instead be done with
-     * {@link #arrayType(JTypeMirror, int)}.
+     * returned. The component type will be built with a recursive call.
      * <li>If it represents a class or interface type, a {@link JClassType}
      * is returned.
      * <ul>
@@ -438,16 +435,16 @@ public final class TypeSystem {
         if (symbol instanceof JClassSymbol) {
             JClassSymbol classSym = (JClassSymbol) symbol;
             if (classSym.isArray()) {
-                // generic array types are created by #arrayType, see spec in javadoc
-                JTypeMirror component = rawType(classSym.getArrayComponent());
-                return arrayType(component);
+                JTypeMirror component = typeOf(classSym.getArrayComponent(), isErased);
+                assert component != null : "the symbol necessarily has an array component symbol";
+                return arrayType(component, classSym);
             } else {
                 return new ClassTypeImpl(this, classSym, emptyList(), !isErased);
             }
         } else if (symbol instanceof JTypeParameterSymbol) {
             return ((JTypeParameterSymbol) symbol).getTypeMirror();
         }
-        throw new AssertionError("Uncategorized type symbol " + symbol.getClass() + ": " + symbol);
+        throw AssertionUtil.shouldNotReachHere("Uncategorized type symbol " + symbol.getClass() + ": " + symbol);
     }
 
     // test only for now
@@ -490,12 +487,28 @@ public final class TypeSystem {
     //  - should be equivalent to rawType(klass).withTypeArguments(typeArgs)
     //  - should not accept malformed types, esp. those where there is an enclosing type
     //  - test: should not recreate OBJECT
-    public @NonNull JTypeMirror parameterise(JClassSymbol klass, List<? extends JTypeMirror> typeArgs) {
+
+    /**
+     * Produce a parameterized type with the given symbol and type arguments.
+     * The type argument list must match the declared formal type parameters in
+     * length. Non-generic symbols are accepted by this method, provided the
+     * argument list is empty.
+     *
+     * <p>This method is equivalent to {@code rawType(klass).withTypeArguments(typeArgs)},
+     * but that code would require a cast.
+     *
+     * @param klass    A symbol
+     * @param typeArgs List of type arguments
+     *
+     * @throws IllegalArgumentException see {@link JClassType#withTypeArguments(List)}
+     */
+    // todo how does this behave with nested generic types
+    public @NonNull JTypeMirror parameterise(@NonNull JClassSymbol klass, @NonNull List<? extends JTypeMirror> typeArgs) {
         if (!klass.isGeneric() && typeArgs.isEmpty()) {
             return rawType(klass); // note this ensures that OBJECT and such is preserved
         }
         // if the type arguments are mismatched, the constructor will throw
-        return new ClassTypeImpl(this, klass, new ArrayList<>(typeArgs), false);
+        return new ClassTypeImpl(this, klass, CollectionUtil.defensiveUnmodifiableCopy(typeArgs), false);
     }
 
 
@@ -546,8 +559,13 @@ public final class TypeSystem {
      * @throws NullPointerException     If the element type is null
      */
     public JArrayType arrayType(@NonNull JTypeMirror component) {
+        return arrayType(component, null);
+    }
+
+    /** Trusted constructor. */
+    private JArrayType arrayType(@NonNull JTypeMirror component, @Nullable JClassSymbol symbol) {
         checkArrayElement(component);
-        return new JArrayType(this, component);
+        return new JArrayType(this, component, symbol);
     }
 
 

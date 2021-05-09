@@ -16,9 +16,7 @@ import java.util.function.*
 import java.util.stream.Collector
 import java.util.function.Function as JavaFunction
 
-/**
- *
- */
+@Suppress("UNUSED_VARIABLE")
 class MethodRefInferenceTest : ProcessorTestSpec({
 
 
@@ -342,10 +340,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
             package scratch;
 
-            import static java.util.stream.Collectors.joining;
-
             import java.util.Comparator;
-            import java.util.Deque;
 
             class Archive {
 
@@ -1123,7 +1118,7 @@ class Scratch {
             mref.functionalMethod shouldBe plus
             val rvar = plus.typeParameters[0]!!
             mref.referencedMethod shouldBe abstractColl[rvar].getDeclaredMethod(inAbstractColl.symbol)
-            mref.typeMirror shouldBe t_Additioner
+            mref shouldHaveType t_Additioner
         }
     }
 

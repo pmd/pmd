@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static java.util.Arrays.asList;
 import static net.sourceforge.pmd.internal.util.AssertionUtil.shouldNotReachHere;
-import static net.sourceforge.pmd.lang.java.types.TypeConversion.isConvertibleThroughBoxing;
+import static net.sourceforge.pmd.lang.java.types.TypeConversion.isConvertibleUsingBoxing;
 import static net.sourceforge.pmd.util.CollectionUtil.all;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
 
@@ -17,13 +17,18 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.types.JArrayType;
+import net.sourceforge.pmd.lang.java.ast.ExprContext.InvocCtx;
+import net.sourceforge.pmd.lang.java.ast.ExprContext.RegularCtx;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
@@ -40,11 +45,18 @@ final class PolyResolution {
     private final Infer infer;
     private final TypeSystem ts;
     private final JavaExprMirrors exprMirrors;
+    private final ExprContext booleanCtx;
+    private final ExprContext stringCtx;
+    private final ExprContext intCtx;
 
     PolyResolution(Infer infer) {
         this.infer = infer;
         this.ts = infer.getTypeSystem();
         this.exprMirrors = new JavaExprMirrors(infer);
+
+        this.stringCtx = ExprContext.newStringCtx(ts);
+        this.booleanCtx = ExprContext.newNonPolyContext(ts.BOOLEAN);
+        this.intCtx = ExprContext.newNumericContext(ts.INT);
     }
 
     JTypeMirror computePolyType(final TypeNode e) {
@@ -52,28 +64,22 @@ final class PolyResolution {
             throw shouldNotReachHere("Unknown poly " + e);
         }
 
-        // here ctx can be
-        // - e (no context)
-        // - an InvocationNode -> invocation context
-        // - a ReturnStatement, AssignmentExpression, VariableDeclarator, ArrayInitializer -> assignment context
-        // - a CastExpression -> cast context
-        final JavaNode ctx = contextOf(e, false);
+        ExprContext ctx = contextOf(e, false, true);
 
-        if (ctx == null) {
-            return polyTypeNoContext(e);
-        } else if (ctx instanceof InvocationNode) {
-            return polyTypeInvocationCtx(e, (InvocationNode) ctx);
+        if (ctx instanceof InvocCtx) {
+            return polyTypeInvocationCtx(e, (InvocCtx) ctx);
         }
 
-        return polyTypeOtherCtx(e, ctx);
+        return polyTypeOtherCtx(e, (RegularCtx) ctx);
     }
 
-    private JTypeMirror polyTypeOtherCtx(TypeNode e, JavaNode ctx) {
+    private JTypeMirror polyTypeOtherCtx(TypeNode e, RegularCtx ctx) {
         // we have a context, that is not an invocation
         if (e instanceof InvocationNode) {
             // The original expr was an invocation, but we have
             // a context type (eg assignment context)
-            JTypeMirror targetType = getTargetType(ctx, false);
+            JTypeMirror targetType = ctx.getPolyTargetType(false);
+
             return inferInvocation((InvocationNode) e, e, targetType);
         } else if (e instanceof ASTSwitchExpression || e instanceof ASTConditionalExpression) {
             // Those are standalone if possible, otherwise they take
@@ -82,26 +88,55 @@ final class PolyResolution {
             // Note that this creates expr mirrors for all subexpressions,
             // and may trigger inference on them (which does not go through PolyResolution).
             // Because this process may fail if the conditional is not standalone,
-            // of this the ctors for expr mirrors must have only trivial side-effects.
+            // the ctors for expr mirrors must have only trivial side-effects.
             // See comment in MethodRefMirrorImpl
-            BranchingMirror branchingMirror = (BranchingMirror) exprMirrors.getMirror((ASTExpression) e);
-            JTypeMirror standalone = branchingMirror.getStandaloneType();
-            if (standalone != null) {
-                return standalone;
+            JTypeMirror target = ctx.getPolyTargetType(false);
+            if (target != null) {
+                // then it is a poly expression
+                // only reference conditional expressions take the target type,
+                // but the spec special-cases some forms of conditionals ("numeric" and "boolean")
+                // The mirror recognizes these special cases
+                BranchingMirror polyMirror = (BranchingMirror) exprMirrors.getPolyMirror((ASTExpression) e);
+                JTypeMirror standaloneType = polyMirror.getStandaloneType();
+                if (standaloneType != null) { // then it is one of those special cases
+                    polyMirror.setStandalone(); // record this fact
+                    return standaloneType;
+                }
+                // otherwise it's the target type
+                return target;
+            } else {
+                // then it is standalone
+                BranchingMirror branchingMirror = exprMirrors.getStandaloneBranchingMirror((ASTExpression) e);
+                branchingMirror.setStandalone(); // record this fact
+
+                JTypeMirror standalone = branchingMirror.getStandaloneType();
+                if (standalone != null) {
+                    return standalone;
+                } else if (!ctx.canGiveContextToPoly(false)) {
+
+                    // null standalone, force resolution anyway, because there is no context
+                    // this is more general than ExprMirror#getStandaloneType, it's not a bug
+                    if (e instanceof ASTSwitchExpression) {
+                        // todo merge this fallback into SwitchMirror
+                        //  That would be less easily testable that what's below...
+                        List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
+                        return computeStandaloneConditionalType(ts, branches);
+                    } else {
+                        throw AssertionUtil.shouldNotReachHere("ConditionalMirrorImpl returns non-null for conditionals");
+                    }
+                }
+                return ts.ERROR;
             }
-            // else use the target type (cast, or assignment)
-            JTypeMirror target = getTargetType(ctx, true);
-            return target == null ? ts.ERROR : target;
         } else if (e instanceof ASTMethodReference || e instanceof ASTLambdaExpression) {
             // these may use a cast as a target type
-            JTypeMirror targetType = getTargetType(ctx, true);
+            JTypeMirror targetType = ctx.getPolyTargetType(true);
             return inferLambdaOrMref((ASTExpression) e, targetType);
         } else {
             throw shouldNotReachHere("Unknown poly " + e);
         }
     }
 
-    private JTypeMirror inferLambdaOrMref(ASTExpression e, JTypeMirror targetType) {
+    private JTypeMirror inferLambdaOrMref(ASTExpression e, @Nullable JTypeMirror targetType) {
         FunctionalExprMirror mirror = exprMirrors.getFunctionalMirror(e);
         PolySite<FunctionalExprMirror> site = infer.newFunctionalSite(mirror, targetType);
         infer.inferFunctionalExprInUnambiguousContext(site);
@@ -110,48 +145,16 @@ final class PolyResolution {
         return result;
     }
 
-    private @NonNull JTypeMirror polyTypeInvocationCtx(TypeNode e, InvocationNode ctx) {
+    private @NonNull JTypeMirror polyTypeInvocationCtx(TypeNode e, InvocCtx ctx) {
         // an outer invocation ctx
-        if (ctx instanceof ASTExpression) {
+        InvocationNode ctxInvoc = ctx.node;
+        if (ctxInvoc instanceof ASTExpression) {
             // method call or regular constructor call
             // recurse, that will fetch the outer context
-            ctx.getTypeMirror();
+            ctxInvoc.getTypeMirror();
             return fetchCascaded(e);
         } else {
-            return inferInvocation(ctx, e, null);
-        }
-    }
-
-    private JTypeMirror polyTypeNoContext(TypeNode e) {
-        // no surrounding context
-        if (e instanceof InvocationNode) {
-            JTypeMirror targetType = null;
-            if (e instanceof ASTExplicitConstructorInvocation) {
-                // target type is superclass type
-                targetType = e.getEnclosingType().getTypeMirror().getSuperClass();
-            }
-            // Invocation context: infer the called method, which will cascade down this node.
-            // This branch is also taken, if e is an invocation and has no surrounding context (ctx == e).
-            return inferInvocation((InvocationNode) e, e, targetType);
-        }
-
-        // no context for a poly that's not an invocation? This could either mean
-        // - a lambda or mref that occurs outside of a cast, invoc, or assignment context
-        //   -> semantic error
-        // - a conditional or switch that is outside an assignment or invocation context,
-        // in which case either
-        //   - it occurs outside of the contexts where it is allowed, eg a conditional as
-        //   an expression statement (for switch it's ok, simply a SwitchStatement in this case)
-        //      -> parsing error, cannot occur at this stage
-        //   - it is not a poly, which is ok (eg 1 + (a ? 2 : 3) )
-        // - a poly in a var assignment context: var f = a ? b : c;
-        if (e instanceof ASTConditionalExpression) {
-            return computeStandaloneConditionalType((ASTConditionalExpression) e);
-        } else if (e instanceof ASTSwitchExpression) {
-            List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
-            return computeStandaloneConditionalType(ts, branches);
-        } else {
-            return ts.ERROR;
+            return inferInvocation(ctxInvoc, e, null);
         }
     }
 
@@ -225,8 +228,6 @@ final class PolyResolution {
                 }
                 return targetT;
             }
-        } else if (e.getParent() instanceof ASTConditionalExpression && e.getIndexInParent() != 0) {
-            return fetchCascaded((TypeNode) e.getParent());
         }
 
         // if we're here, we failed
@@ -241,26 +242,14 @@ final class PolyResolution {
      * generic method params to error naturally
      */
     private @NonNull JTypeMirror fallbackIfCtxDidntSet(@Nullable TypeNode e) {
-        if (e instanceof InvocationNode) {
-            return inferInvocation((InvocationNode) e, e, null); // retry with no context
-        }
-        infer.LOG.polyResolutionFailure(e);
-
-        // we need to set those additional stuff, which are asserted
-        // not to be null after type resolution
-        // todo test this
-        if (e instanceof ASTLambdaExpression) {
-            ((ASTLambdaExpression) e).setFunctionalMethod(ts.UNRESOLVED_METHOD);
-        } else if (e instanceof ASTMethodReference) {
-            ((ASTMethodReference) e).setFunctionalMethod(ts.UNRESOLVED_METHOD);
-            ((ASTMethodReference) e).setCompileTimeDecl(ts.UNRESOLVED_METHOD);
-        }
-        return ts.UNKNOWN;
+        // retry with no context
+        return polyTypeOtherCtx(e, ExprContext.RegularCtx.NO_CTX);
+        // infer.LOG.polyResolutionFailure(e);
     }
 
     /**
      * If true, the expression may depends on its target type. There may not
-     * be a target type though - this is given by the {@link #contextOf(JavaNode, boolean)}.
+     * be a target type though - this is given by the {@link #contextOf(JavaNode, boolean, boolean)}.
      *
      * <p>If false, then the expression is standalone and its type is
      * only determined by the type of its subexpressions.
@@ -283,76 +272,58 @@ final class PolyResolution {
      * context, that context must not be called.
      */
     JTypeMirror getContextTypeForStandaloneFallback(ASTExpression e) {
-        JavaNode ctx = contextOf(e, false);
-        if (ctx == null) {
-            if (e.getParent() instanceof ASTSwitchLabel) {
-                ASTSwitchLike switchLike = e.ancestors(ASTSwitchLike.class).firstOrThrow();
-                // this may trigger some inference, which doesn't matter
-                // as it is out of context
-                return switchLike.getTestedExpression().getTypeMirror();
-            }
-            return ts.UNKNOWN;
-        } else if (ctx instanceof InvocationNode) {
-            // This is the case mentioned in the doc
-            // TODO we could do that by setting a sentinel value to prevent
-            //  reentry (most likely, UNKNOWN).
+        // The case mentioned by the doc is removed. We could be smarter
+        // with how we retry failed invocation resolution, see history
+        // of this comment
 
-            // OverloadSelectionResult ctxInvoc = ((InvocationNode) ctx).getOverloadSelectionInfo();
-            // return getFormalTypeForArgument(e, ctxInvoc);
-            return ts.UNKNOWN;
-        } else {
-            JTypeMirror targetType = getTargetType(ctx, false);
-            return targetType == null ? ts.UNKNOWN : targetType;
+        @NonNull ExprContext ctx = contextOf(e, false, true);
+
+        if (e.getParent() instanceof ASTSwitchLabel) {
+            ASTSwitchLike switchLike = e.ancestors(ASTSwitchLike.class).firstOrThrow();
+            // this may trigger some inference, which doesn't matter
+            // as it is out of context
+            return switchLike.getTestedExpression().getTypeMirror();
         }
+
+        if (ctx instanceof RegularCtx) {
+            JTypeMirror targetType = ((RegularCtx) ctx).getPolyTargetType(false);
+            if (targetType != null) {
+                return targetType;
+            }
+        }
+
+        return ts.UNKNOWN;
     }
 
     /**
-     * Returns the target type bestowed by the given context.
-     * If the context was an {@link InvocationNode}, it should go elsewhere.
+     * Not meant to be used by the main typeres paths, only for rules.
      */
-    private @Nullable JTypeMirror getTargetType(JavaNode context, boolean allowCasts) {
+    ExprContext getConversionContextForExternalUse(ASTExpression e) {
+        return contextOf(e, false, false);
+    }
 
-        if (context instanceof ASTReturnStatement) {
-            // assignment context
+    private static @Nullable JTypeMirror returnTargetType(ASTReturnStatement context) {
+        Node methodDecl =
+            context.ancestors().first(
+                it -> it instanceof ASTMethodDeclaration
+                    || it instanceof ASTLambdaExpression
+                    || it instanceof ASTAnyTypeDeclaration
+            );
 
-            Node methodDecl =
-                context.ancestors().first(
-                    it -> it instanceof ASTMethodDeclaration
-                        || it instanceof ASTLambdaExpression
-                        || it instanceof ASTAnyTypeDeclaration
-                );
-
-            if (methodDecl == null || methodDecl instanceof ASTAnyTypeDeclaration) {
-                // in initializer, or constructor decl, return with expression is forbidden
-                return null;
-            } else if (methodDecl instanceof ASTLambdaExpression) {
-                // return within a lambda
-                // "assignment context", deferred to lambda inference
-                JMethodSig fun = ((ASTLambdaExpression) methodDecl).getFunctionalMethod();
-                return fun == null ? null : fun.getReturnType();
-            } else {
-                @NonNull ASTType resultType = ((ASTMethodDeclaration) methodDecl).getResultTypeNode();
-                return resultType instanceof ASTVoidType ? null : resultType.getTypeMirror();
-            }
-        } else if (context instanceof ASTAssignmentExpression) {
-            // assignment context
-            return ((ASTAssignmentExpression) context).getLeftOperand().getTypeMirror();
-        } else if (context instanceof ASTArrayInitializer) {
-            // assignment context, in an array initializer
-            JTypeMirror type = ((ASTArrayInitializer) context).getTypeMirror();
-            return type.isArray() ? ((JArrayType) type).getComponentType()
-                                  : ts.ERROR;
-        } else if (context instanceof ASTVariableDeclarator) {
-            assert ((ASTVariableDeclarator) context).getVarId().getTypeNode() != null
-                : "Local var inference should not have a context node, this could loop forever";
-            return ((ASTVariableDeclarator) context).getVarId().getTypeMirror();
-        } else if (context instanceof ASTCastExpression) {
-            return allowCasts ? ((ASTCastExpression) context).getCastType().getTypeMirror()
-                              : null;
+        if (methodDecl == null || methodDecl instanceof ASTAnyTypeDeclaration) {
+            // in initializer, or constructor decl, return with expression is forbidden
+            // (this is an error)
+            return null;
+        } else if (methodDecl instanceof ASTLambdaExpression) {
+            // return within a lambda
+            // "assignment context", deferred to lambda inference
+            JMethodSig fun = ((ASTLambdaExpression) methodDecl).getFunctionalMethod();
+            return fun == null ? null : fun.getReturnType();
         } else {
-            throw shouldNotReachHere("No target type for " + context);
+            @NonNull ASTType resultType = ((ASTMethodDeclaration) methodDecl).getResultTypeNode();
+            return resultType instanceof ASTVoidType ? null // (this is an error)
+                                                     : resultType.getTypeMirror();
         }
-
     }
 
     /**
@@ -389,7 +360,7 @@ final class PolyResolution {
      *
      * </pre>
      */
-    private static @Nullable JavaNode contextOf(JavaNode node, boolean onlyInvoc) {
+    private @NonNull ExprContext contextOf(final JavaNode node, boolean onlyInvoc, boolean internalUse) {
         final JavaNode papa = node.getParent();
         if (papa instanceof ASTArgumentList) {
             // invocation context, return *the first method*
@@ -402,43 +373,152 @@ final class PolyResolution {
 
             // we can't just recurse directly up, because then contextOf(bog) = lhs,
             // and that's not true (bog() is in an invocation context)
-            final JavaNode papi = papa.getParent();
+            final InvocationNode papi = (InvocationNode) papa.getParent();
 
             if (papi instanceof ASTExplicitConstructorInvocation || papi instanceof ASTEnumConstant) {
-                return papi;
+                return new InvocCtx(node.getIndexInParent(), papi);
             } else {
                 // Constructor or method call, maybe there's another context around
                 // We want to fetch the outermost invocation node, but not further
-                JavaNode outerCtx = contextOf(papi, /*onlyInvoc:*/true);
-                return outerCtx == null ? papi : outerCtx;
+                ExprContext outerCtx = contextOf(papi, /*onlyInvoc:*/true, internalUse);
+                return outerCtx.canGiveContextToPoly(false)
+                       ? outerCtx
+                       // otherwise we're done, this is the outermost context
+                       : new InvocCtx(node.getIndexInParent(), papi);
             }
-        } else if (doesCascadesContext(papa, node)) {
+        } else if (doesCascadesContext(papa, node, internalUse)) {
             // switch/conditional
-            return contextOf(papa, onlyInvoc);
+            return contextOf(papa, onlyInvoc, internalUse);
         }
 
         if (onlyInvoc) {
-            return null;
+            return RegularCtx.NO_CTX;
         }
 
         if (papa instanceof ASTArrayInitializer) {
-            return papa; // assignment ctx
+
+            JTypeMirror target = TypeOps.getArrayComponent(((ASTArrayInitializer) papa).getTypeMirror());
+            return ExprContext.newAssignmentCtx(target);
+
         } else if (papa instanceof ASTCastExpression) {
-            // cast context
-            return papa;
+
+            JTypeMirror target = ((ASTCastExpression) papa).getCastType().getTypeMirror();
+            return ExprContext.newCastCtx(target);
+
         } else if (papa instanceof ASTAssignmentExpression && node.getIndexInParent() == 1) { // second operand
-            return papa;
-        } else if (papa instanceof ASTReturnStatement
-            || papa instanceof ASTVariableDeclarator && !((ASTVariableDeclarator) papa).getVarId().isTypeInferred()) {
-            // this counts as assignment context
-            return papa;
+
+            JTypeMirror target = ((ASTAssignmentExpression) papa).getLeftOperand().getTypeMirror();
+            return ExprContext.newAssignmentCtx(target);
+
+        } else if (papa instanceof ASTReturnStatement) {
+
+            return ExprContext.newAssignmentCtx(returnTargetType((ASTReturnStatement) papa));
+
+        } else if (papa instanceof ASTVariableDeclarator
+            && !((ASTVariableDeclarator) papa).getVarId().isTypeInferred()) {
+
+            return ExprContext.newAssignmentCtx(((ASTVariableDeclarator) papa).getVarId().getTypeMirror());
+
         } else if (papa instanceof ASTYieldStatement) {
+
             // break with value (switch expr)
             ASTSwitchExpression owner = ((ASTYieldStatement) papa).getYieldTarget();
-            return contextOf(owner, false);
+            return contextOf(owner, false, internalUse);
+
+        } else if (node instanceof ASTExplicitConstructorInvocation
+            && ((ASTExplicitConstructorInvocation) node).isSuper()) {
+
+            // the superclass type is taken as a target type for inference,
+            // when the super ctor is generic/ the superclass is generic
+            return ExprContext.newSuperCtorCtx(node.getEnclosingType().getTypeMirror().getSuperClass());
+
+        }
+
+        if (!internalUse) {
+            // Only ASTExpression#getConversionContext needs this level of detail
+            // These anyway do not give a context to poly expression so can be ignored
+            // for poly resolution.
+            return conversionContextOf(node, papa);
+        }
+
+        // stop recursion
+        return RegularCtx.NO_CTX;
+    }
+
+    // more detailed
+    private ExprContext conversionContextOf(JavaNode node, JavaNode papa) {
+        if (papa instanceof ASTArrayAccess && node.getIndexInParent() == 1) {
+
+            // array index
+            return intCtx;
+
+        } else if (papa instanceof ASTAssertStatement) {
+
+            return node.getIndexInParent() == 0 ? booleanCtx // condition
+                                                : stringCtx; // message
+
+        } else if (papa instanceof ASTIfStatement
+            || papa instanceof ASTLoopStatement && !(papa instanceof ASTForeachStatement)) {
+
+            return booleanCtx; // condition
+
+        } else if (papa instanceof ASTConditionalExpression) {
+
+            if (node.getIndexInParent() == 0) {
+                return booleanCtx; // the condition
+            } else {
+                // a branch
+                assert ((ASTConditionalExpression) papa).isStandalone()
+                    : "Expected standalone ternary, otherwise doesCascadeContext(..) would have returned true";
+
+                return ExprContext.newStandaloneTernaryCtx(((ASTConditionalExpression) papa).getTypeMirror());
+            }
+
+        } else if (papa instanceof ASTInfixExpression) {
+            // numeric contexts, maybe
+            BinaryOp op = ((ASTInfixExpression) papa).getOperator();
+            JTypeMirror nodeType = ((ASTExpression) node).getTypeMirror();
+            JTypeMirror ctxType = ((ASTInfixExpression) papa).getTypeMirror();
+            switch (op) {
+            case CONDITIONAL_OR:
+            case CONDITIONAL_AND:
+                return booleanCtx;
+            case OR:
+            case XOR:
+            case AND:
+                return ctxType == ts.BOOLEAN ? booleanCtx : ExprContext.newNumericContext(ctxType); // NOPMD CompareObjectsWithEquals
+            case LEFT_SHIFT:
+            case RIGHT_SHIFT:
+            case UNSIGNED_RIGHT_SHIFT:
+                return node.getIndexInParent() == 1 ? intCtx
+                                                    : ExprContext.newNumericContext(nodeType.unbox());
+            case EQ:
+            case NE:
+                ASTExpression otherOperand = JavaRuleUtil.getOtherOperandIfInInfixExpr(node);
+                if (otherOperand.getTypeMirror().isPrimitive() != nodeType.isPrimitive()) {
+                    return ExprContext.newNonPolyContext(otherOperand.getTypeMirror().unbox());
+                }
+                return RegularCtx.NO_CTX;
+            case ADD:
+                if (TypeTestUtil.isA(String.class, ctxType)) {
+                    // string concat expr
+                    return stringCtx;
+                }
+                // fallthrough
+            case LE:
+            case GE:
+            case GT:
+            case LT:
+            case SUB:
+            case MUL:
+            case DIV:
+            case MOD:
+                return ExprContext.newNumericContext(ctxType); // binary promoted by LazyTypeResolver
+            default:
+                return RegularCtx.NO_CTX;
+            }
         } else {
-            // stop recursion
-            return null;
+            return RegularCtx.NO_CTX;
         }
     }
 
@@ -447,10 +527,16 @@ final class PolyResolution {
      * Identifies a node that can forward an invocation/assignment context
      * inward. If their parent has no context, then they don't either.
      */
-    private static boolean doesCascadesContext(JavaNode node, JavaNode child) {
+    private static boolean doesCascadesContext(JavaNode node, JavaNode child, boolean internalUse) {
         if (child.getParent() != node) {
             // means the "node" is a "stop recursion because no context" result in contextOf
             return false;
+        } else if (!internalUse
+            && node instanceof ASTConditionalExpression
+            && child.getIndexInParent() != 0) {
+            // conditional branch
+            ((ASTConditionalExpression) node).getTypeMirror(); // force resolution
+            return !((ASTConditionalExpression) node).isStandalone();
         }
         return node instanceof ASTSwitchExpression && child.getIndexInParent() != 0 // not the condition
             || node instanceof ASTSwitchArrowBranch
@@ -459,14 +545,6 @@ final class PolyResolution {
             || node instanceof ASTLambdaExpression && child.getIndexInParent() == 1; // the body expression
     }
 
-
-    private JTypeMirror computeStandaloneConditionalType(ASTConditionalExpression node) {
-        return computeStandaloneConditionalType(
-            ts,
-            node.getThenBranch().getTypeMirror(),
-            node.getElseBranch().getTypeMirror()
-        );
-    }
 
     // test only
     static JTypeMirror computeStandaloneConditionalType(TypeSystem ts, JTypeMirror t2, JTypeMirror t3) {
@@ -507,7 +585,7 @@ final class PolyResolution {
 
         List<JTypeMirror> boxed = map(branchTypes, JTypeMirror::box);
         for (JTypeMirror a : boxed) {
-            if (all(unboxed, it -> isConvertibleThroughBoxing(it, a))) {
+            if (all(unboxed, it -> isConvertibleUsingBoxing(it, a))) {
                 // then all types are convertible to a through boxing
                 return a;
             }
@@ -516,6 +594,5 @@ final class PolyResolution {
         // at worse returns Object
         return ts.lub(branchTypes);
     }
-
 
 }

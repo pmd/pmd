@@ -10,12 +10,12 @@ These rules deal with different problems that can occur with import statements.
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="category/java/bestpractices.xml/UnusedImports" deprecated="true" />
+    <!--    <rule ref="category/java/bestpractices.xml/UnusedImports" deprecated="true" />-->
 
-    <rule ref="category/java/errorprone.xml/ImportFromSamePackage" deprecated="true" />
+    <!--    <rule ref="category/java/errorprone.xml/ImportFromSamePackage" deprecated="true" />-->
 
-    <rule ref="category/java/codestyle.xml/DontImportJavaLang" deprecated="true" />
-    <rule ref="category/java/codestyle.xml/DuplicateImports" deprecated="true" />
+    <!--    <rule ref="category/java/codestyle.xml/DontImportJavaLang" deprecated="true" />-->
+    <!--    <rule ref="category/java/codestyle.xml/DuplicateImports" deprecated="true" />-->
     <rule ref="category/java/codestyle.xml/TooManyStaticImports" deprecated="true" />
     <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName" deprecated="true" />
 </ruleset>

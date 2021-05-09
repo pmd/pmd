@@ -8,6 +8,7 @@
         <description>failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Bar {
     void foo() {
         Integer[] ints = new Integer(10);
@@ -24,6 +25,7 @@ public class Bar {
         <description>adding first element repeatedly</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Bar {
     void foo() {
         Integer[] ints = new Integer(10);
@@ -40,6 +42,7 @@ public class Bar {
         <description>inside conditional</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Bar {
     void foo() {
         Integer[] ints = new Integer(10);
@@ -58,6 +61,7 @@ public class Bar {
         <description>adding new object</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Bar {
     void foo() {
         Integer[] ints = new Integer(10);
@@ -74,6 +78,7 @@ public class Bar {
         <description>calling method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Bar {
     void foo() {
         Integer[] ints = new Integer(10);
@@ -90,6 +95,7 @@ public class Bar {
         <description>Integer array passed as argument</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
@@ -109,6 +115,7 @@ public class Test {
         <description>#1099 UseArraysAsList false positives</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Test {
     public void foo() {
         String [] result = new String[10000];

@@ -35,7 +35,7 @@ class OverloadSpecificityTest : ProcessorTestSpec({
                                 returning = ts.NO_TYPE
                         )
 
-                        it.typeMirror shouldBe ts.NO_TYPE
+                        it shouldHaveType ts.NO_TYPE
                     }
 
                     it::getArguments shouldBe child {
@@ -64,7 +64,7 @@ class OverloadSpecificityTest : ProcessorTestSpec({
                         )
 
                         // List<String>
-                        it.typeMirror shouldBe gen.t_List[gen.t_String]
+                        it shouldHaveType gen.t_List[gen.t_String]
                         it.overloadSelectionInfo.isVarargsCall shouldBe false // selected in strict phase
                     }
 

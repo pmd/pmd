@@ -5,6 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="argoUML-dataclass"><![CDATA[
+import java.util.*;
 public class Property implements Comparable { // Woc = 10%, Noam = 6, Nopa = 0, Wmc = 10
 
     private String      _name;
@@ -67,6 +68,9 @@ public class Property implements Comparable { // Woc = 10%, Noam = 6, Nopa = 0, 
 
 
     <code-fragment id="testDescriptor"><![CDATA[
+import java.util.*;
+import my.Rule;
+import my.LanguageVersion;
 public class TestDescriptor {
     private Rule rule;
     private Properties properties;

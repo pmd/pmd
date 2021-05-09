@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.internal;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,10 +21,12 @@ public final class JavaPropertyUtil {
         // utility class
     }
 
-    public static PropertyDescriptor<List<String>> ignoredAnnotationsProperty(Collection<String> defaultValue) {
+
+    public static PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor(String... defaults) {
         return stringListProperty("ignoredAnnotations")
             .desc("Fully qualified names of the annotation types that should be ignored by this rule")
-            .defaultValue(defaultValue)
+            .defaultValue(Arrays.asList(defaults))
             .build();
     }
+
 }
