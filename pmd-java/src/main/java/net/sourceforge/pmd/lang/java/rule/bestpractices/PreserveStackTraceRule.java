@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -23,7 +22,6 @@ import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 
 /**
@@ -41,74 +39,93 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTCatchClause catchStmt, Object data) {
-        ASTVariableDeclaratorId target = catchStmt.getParameter().getVarId();
-        JVariableSymbol exceptionSym = target.getSymbol();
+        ASTVariableDeclaratorId exceptionParam = catchStmt.getParameter().getVarId();
 
         // Inspect all the throw stmt inside the catch stmt
         for (ASTThrowStatement throwStatement : catchStmt.getBody().descendants(ASTThrowStatement.class)) {
             ASTExpression thrownExpr = throwStatement.getExpr();
-            if (thrownExpr instanceof ASTConstructorCall) {
-                // new Exception(e)
-                if (!isCtorOk(exceptionSym, (ASTConstructorCall) thrownExpr)) {
-                    addViolation(data, throwStatement);
-                }
-            } else if (thrownExpr instanceof ASTVariableAccess) {
-                // IllegalStateException ex = new IllegalStateException();
-                // ex.initCause(e);
-                // throw ex;
 
-                // id of the throw var
-                ASTVariableDeclaratorId decl = ((ASTVariableAccess) thrownExpr).getReferencedSym().tryGetNode();
-                if (decl == null || target == decl) {
-                    continue;
-                }
-
-                // Exception e = new Exception(target);
-                // throw e;
-                if (isInitializerOk(exceptionSym, decl)) {
-                    continue;
-                }
-
-                if (!initCauseWasCalledOnUsages(exceptionSym, decl)) {
-                    addViolation(data, throwStatement);
-                }
+            if (!exprConsumesException(exceptionParam, thrownExpr, true)) {
+                addViolation(data, thrownExpr);
             }
-
         }
         return null;
     }
 
-    private boolean isCtorOk(JVariableSymbol exceptionSym, ASTConstructorCall ctorCall) {
-        return ctorCall.isAnonymousClass() && callsInitCauseInAnonInitializer(exceptionSym, ctorCall)
-            || hasReferenceAsArgument(ctorCall, exceptionSym);
-    }
+    private static boolean exprConsumesException(ASTVariableDeclaratorId exceptionParam, ASTExpression expr, boolean mayBeSelf) {
+        if (expr instanceof ASTConstructorCall) {
+            // new Exception(e)
+            return isCtorOk(exceptionParam, (ASTConstructorCall) expr);
 
-    private boolean callsInitCauseInAnonInitializer(JVariableSymbol exceptionSym, ASTConstructorCall ctorCall) {
-        return ctorCall.getAnonymousClassDeclaration().getDeclarations().map(NodeStream.asInstanceOf(ASTFieldDeclaration.class, ASTInitializer.class))
-                       .descendants().filterIs(ASTMethodCall.class)
-                       .any(it -> isInitCauseWithTargetInArg(exceptionSym, it));
-    }
+        } else if (expr instanceof ASTMethodCall) {
 
-    private static boolean isInitializerOk(JVariableSymbol exceptionSym, ASTVariableDeclaratorId decl) {
-        ASTExpression initializer = peelCasts(decl.getInitializer());
-        if (initializer instanceof ASTConstructorCall) {
-            return hasReferenceAsArgument((InvocationNode) initializer, exceptionSym);
-        } else if (FILL_IN_STACKTRACE.matchesCall(initializer)) {
-            return JavaRuleUtil.isReferenceToVar(((ASTMethodCall) initializer).getQualifier(), exceptionSym);
+            return isMethodOk(exceptionParam, (ASTMethodCall) expr);
+
+        } else if (expr instanceof ASTCastExpression) {
+
+            ASTExpression innermost = JavaRuleUtil.peelCasts(expr);
+            return exprConsumesException(exceptionParam, innermost, mayBeSelf);
+
+        } else if (expr instanceof ASTVariableAccess) {
+            // fixme sloppy, should be reaching definition not necessarily initializer.
+            //  For now we're assuming the var is effectively final.
+            ASTVariableDeclaratorId decl = ((ASTVariableAccess) expr).getReferencedSym().tryGetNode();
+
+            if (decl == null) {
+                return false;
+            } else if (decl == exceptionParam) {
+                return mayBeSelf;
+            } else if (decl.getInitializer() != null && exprConsumesException(exceptionParam, decl.getInitializer(), mayBeSelf)) {
+                return true;
+            }
+
+            for (ASTNamedReferenceExpr usage : decl.getLocalUsages()) {
+                if (JavaRuleUtil.followingCallChain(usage).any(it -> consumesExceptionNonRecursive(exceptionParam, it))) {
+                    return true;
+                }
+            }
+
+            return false;
+        } else {
+            // we don't know
+            return true;
         }
-        return false;
     }
 
-    private static boolean initCauseWasCalledOnUsages(JVariableSymbol exceptionSym, ASTVariableDeclaratorId decl) {
-        for (ASTNamedReferenceExpr usage : decl.getLocalUsages()) {
-            if (isInitCauseWithTargetInArg(exceptionSym, usage.getParent())) {
+    private static boolean isCtorOk(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
+        return ctorCall.isAnonymousClass() && callsInitCauseInAnonInitializer(exceptionParam, ctorCall)
+            || hasReferenceAsArgument(ctorCall, exceptionParam);
+    }
+
+    private static boolean consumesExceptionNonRecursive(ASTVariableDeclaratorId exceptionParam, ASTExpression expr) {
+        if (expr instanceof ASTConstructorCall) {
+            ASTConstructorCall ctorCall = (ASTConstructorCall) expr;
+            if (ctorCall.isAnonymousClass() && callsInitCauseInAnonInitializer(exceptionParam, ctorCall)) {
                 return true;
             }
         }
-        return false;
+        return expr instanceof InvocationNode && hasReferenceAsArgument((InvocationNode) expr, exceptionParam);
     }
 
-    private static boolean isInitCauseWithTargetInArg(JVariableSymbol exceptionSym, JavaNode expr) {
+    private static boolean isMethodOk(ASTVariableDeclaratorId exceptionParam, ASTMethodCall call) {
+        if (hasReferenceAsArgument(call, exceptionParam)) {
+            return true;
+        }
+        ASTExpression qualifier = call.getQualifier();
+        if (qualifier == null) {
+            return false;
+        }
+        boolean mayBeSelf = FILL_IN_STACKTRACE.matchesCall(call);
+        return exprConsumesException(exceptionParam, qualifier, mayBeSelf);
+    }
+
+    private static boolean callsInitCauseInAnonInitializer(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
+        return ctorCall.getAnonymousClassDeclaration().getDeclarations().map(NodeStream.asInstanceOf(ASTFieldDeclaration.class, ASTInitializer.class))
+                       .descendants().filterIs(ASTMethodCall.class)
+                       .any(it -> isInitCauseWithTargetInArg(exceptionParam, it));
+    }
+
+    private static boolean isInitCauseWithTargetInArg(ASTVariableDeclaratorId exceptionSym, JavaNode expr) {
         if (INIT_CAUSE.matchesCall(expr)) {
             ASTMethodCall initCauseCall = (ASTMethodCall) expr;
             return hasReferenceAsArgument(initCauseCall, exceptionSym);
@@ -116,19 +133,13 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
         return false;
     }
 
-    private static boolean hasReferenceAsArgument(InvocationNode thrownExpr, @NonNull JVariableSymbol toFind) {
+    private static boolean hasReferenceAsArgument(InvocationNode thrownExpr, @NonNull ASTVariableDeclaratorId toFind) {
         for (ASTExpression arg : thrownExpr.getArguments()) {
-            if (JavaRuleUtil.isReferenceToVar(arg, toFind)) {
+            if (JavaRuleUtil.isReferenceToVar(arg, toFind.getSymbol())) {
                 return true;
             }
         }
         return false;
     }
 
-    private static ASTExpression peelCasts(@Nullable ASTExpression expr) {
-        while (expr instanceof ASTCastExpression) {
-            expr = ((ASTCastExpression) expr).getOperand();
-        }
-        return expr;
-    }
 }
