@@ -11,32 +11,27 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import apex.jorje.semantic.ast.AstNode;
 
 /**
+ * An Apex type declaration.
+ *
  * @author Clément Fournier
  */
 public interface ASTUserClassOrInterface<T extends AstNode> extends ApexQualifiableNode, ApexNode<T> {
 
-    /**
-     * Finds the type kind of this declaration.
-     *
-     * @return The type kind of this declaration.
-     */
-    TypeKind getTypeKind();
+    /** Return the simple name of the type defined by this node. */
+    String getSimpleName();
 
+    /**
+     * Return the modifier node for this type declaration.
+     */
+    default ASTModifierNode getModifiers() {
+        return firstChild(ASTModifierNode.class);
+    }
 
     /**
      * Returns the (non-synthetic) methods defined in this type.
      */
-    @NonNull
-    default NodeStream<ASTMethod> getMethods() {
+    default @NonNull NodeStream<ASTMethod> getMethods() {
         return children(ASTMethod.class).filterNot(it -> it.getImage().matches("(<clinit>|<init>|clone)"));
-    }
-
-
-    /**
-     * The kind of type this node declares.
-     */
-    enum TypeKind {
-        CLASS, INTERFACE
     }
 
 
