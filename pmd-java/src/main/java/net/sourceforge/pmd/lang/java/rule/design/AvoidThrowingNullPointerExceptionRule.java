@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -43,8 +44,8 @@ public class AvoidThrowingNullPointerExceptionRule extends AbstractJavaRulechain
     }
 
     private boolean hasNpeValue(ASTVariableAccess thrown, JLocalVariableSymbol sym) {
-        DataflowPass.ensureProcessed(thrown.getRoot());
-        ReachingDefinitionSet reaching = DataflowPass.getReachingDefinitions(thrown);
+        DataflowResult dataflow = DataflowPass.getDataflowResult(thrown.getRoot());
+        ReachingDefinitionSet reaching = dataflow.getReachingDefinitions(thrown);
         if (reaching == null || reaching.isNotFullyKnown()) {
             // we lean towards false negatives... maybe we should be able
             // to report this with a lower priority

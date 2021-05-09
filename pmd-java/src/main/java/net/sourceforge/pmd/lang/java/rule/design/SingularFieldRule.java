@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -19,14 +19,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
@@ -65,43 +66,43 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         );
 
     public SingularFieldRule() {
-        super(ASTCompilationUnit.class, ASTFieldDeclaration.class);
+        super(ASTAnyTypeDeclaration.class);
         definePropertyDescriptor(IGNORED_FIELD_ANNOTATIONS);
     }
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
-        DataflowPass.ensureProcessed(node);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
-        ASTAnyTypeDeclaration enclosingType = node.getEnclosingType();
-        if (node.getVisibility() != Visibility.V_PRIVATE
-            || node.hasModifiers(STATIC)
-            || JavaRuleUtil.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)
-            || JavaRuleUtil.hasAnyAnnotation(node, getProperty(IGNORED_FIELD_ANNOTATIONS))) {
-            return data;
+    public Object visitJavaNode(JavaNode node, Object data) {
+        ASTAnyTypeDeclaration enclosingType = (ASTAnyTypeDeclaration) node;
+        if (JavaRuleUtil.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)) {
+            return null;
         }
 
-        for (ASTVariableDeclaratorId varId : node.getVarIds()) {
-            if (mayBeSingular(varId) && isSingularField(enclosingType, varId)) {
-                addViolation(data, varId, varId.getName());
+        DataflowResult dataflow = null;
+        for (ASTFieldDeclaration fieldDecl : enclosingType.getDeclarations(ASTFieldDeclaration.class)) {
+            if (!mayBeSingular(fieldDecl)
+                || JavaRuleUtil.hasAnyAnnotation(fieldDecl, getProperty(IGNORED_FIELD_ANNOTATIONS))) {
+                continue;
+            }
+            for (ASTVariableDeclaratorId varId : fieldDecl.getVarIds()) {
+                if (dataflow == null) { //compute lazily
+                    dataflow = DataflowPass.getDataflowResult(node.getRoot());
+                }
+                if (isSingularField(enclosingType, varId, dataflow)) {
+                    addViolation(data, varId, varId.getName());
+                }
             }
         }
-
-        return data;
+        return null;
     }
 
-    public static boolean mayBeSingular(ASTVariableDeclaratorId varId) {
+    public static boolean mayBeSingular(AccessNode varId) {
         return varId.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
             && !varId.getModifiers().hasAny(STATIC, FINAL);
     }
 
-    private boolean isSingularField(ASTAnyTypeDeclaration fieldOwner, ASTVariableDeclaratorId varId) {
+    private boolean isSingularField(ASTAnyTypeDeclaration fieldOwner, ASTVariableDeclaratorId varId, DataflowResult dataflow) {
         if (JavaRuleUtil.isNeverUsed(varId)) {
-            return false;// don't report unused field
+            return false; // don't report unused field
         }
 
         //Check usages for validity & group them by scope
@@ -120,7 +121,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
 
         // the field is singular if it is used as a local var in every method.
         for (ASTBodyDeclaration method : usagesByScope.keySet()) {
-            if (method != null && !usagesDontObserveValueBeforeMethodCall(usagesByScope.get(method))) {
+            if (method != null && !usagesDontObserveValueBeforeMethodCall(usagesByScope.get(method), dataflow)) {
                 return false;
             }
         }
@@ -140,9 +141,9 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
                     .any(it -> it instanceof ASTLambdaExpression);
     }
 
-    private boolean usagesDontObserveValueBeforeMethodCall(List<ASTNamedReferenceExpr> usages) {
+    private boolean usagesDontObserveValueBeforeMethodCall(List<ASTNamedReferenceExpr> usages, DataflowResult dataflow) {
         for (ASTNamedReferenceExpr usage : usages) {
-            ReachingDefinitionSet reaching = DataflowPass.getReachingDefinitions(usage);
+            ReachingDefinitionSet reaching = dataflow.getReachingDefinitions(usage);
             if (reaching != null && reaching.containsInitialFieldValue()) {
                 return false;
             }

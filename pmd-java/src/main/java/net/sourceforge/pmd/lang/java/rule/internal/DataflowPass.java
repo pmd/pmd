@@ -108,17 +108,17 @@ public final class DataflowPass {
     private static final SimpleDataKey<ReachingDefinitionSet> REACHING_DEFS = DataMap.simpleDataKey("java.dataflow.reaching.backwards");
     private static final SimpleDataKey<AssignmentEntry> VAR_DEFINITION = DataMap.simpleDataKey("java.dataflow.field.def");
     private static final SimpleDataKey<OptionalBool> SWITCH_BRANCH_FALLS_THROUGH = DataMap.simpleDataKey("java.dataflow.switch.fallthrough");
+    
+    private DataflowPass() {
+        // utility class
+    }
 
+    /**
+     * Returns the info computed by the dataflow pass for the given file.
+     * The computation is done at most once.
+     */
     public static DataflowResult getDataflowResult(ASTCompilationUnit acu) {
         return acu.getUserMap().computeIfAbsent(DATAFLOW_RESULT_K, () -> process(acu));
-    }
-
-    public static void ensureProcessed(ASTCompilationUnit acu) {
-        getDataflowResult(acu);
-    }
-
-    public static @Nullable ReachingDefinitionSet getReachingDefinitions(ASTNamedReferenceExpr expr) {
-        return expr.getUserMap().get(REACHING_DEFS);
     }
 
     /**
@@ -132,13 +132,6 @@ public final class DataflowPass {
             return null;
         }
         return varId.getUserMap().get(VAR_DEFINITION);
-    }
-
-    public static @NonNull OptionalBool switchBranchFallsThrough(ASTSwitchBranch b) {
-        if (b instanceof ASTSwitchFallthroughBranch) {
-            return Objects.requireNonNull(b.getUserMap().get(SWITCH_BRANCH_FALLS_THROUGH));
-        }
-        return OptionalBool.NO;
     }
 
     private static DataflowResult process(ASTCompilationUnit node) {
@@ -155,7 +148,8 @@ public final class DataflowPass {
             }
 
             CollectionUtil.mergeMaps(
-                dataflowResult.killRecord, subResult.killRecord,
+                dataflowResult.killRecord,
+                subResult.killRecord,
                 (s1, s2) -> {
                     s1.addAll(s2);
                     return s1;
@@ -167,7 +161,7 @@ public final class DataflowPass {
 
     /**
      * A set of reaching definitions, ie the assignments that are visible
-     * at some point. One can use {@link #getReachingDefinitions(ASTNamedReferenceExpr)}
+     * at some point. One can use {@link DataflowResult#getReachingDefinitions(ASTNamedReferenceExpr)}
      * to get the data flow that reaches a variable usage (and go backwards with
      * the {@linkplain DataflowResult#getKillers(AssignmentEntry) kill record}).
      */
@@ -209,6 +203,7 @@ public final class DataflowPass {
     /**
      * Global result of the dataflow analysis.
      */
+    // this is a façade class
     public static final class DataflowResult {
 
         final Set<AssignmentEntry> unusedAssignments;
@@ -232,6 +227,25 @@ public final class DataflowPass {
          */
         public @NonNull Set<AssignmentEntry> getKillers(AssignmentEntry assignment) {
             return killRecord.getOrDefault(assignment, Collections.emptySet());
+        }
+
+        // These methods are only valid to be called if the dataflow pass has run.
+        // This is why they are instance methods here: by asking for the DataflowResult
+        // instance to get access to them, you ensure that the pass has been executed properly.
+
+        /**
+         * Returns whether the switch branch falls-through to the next one (or the end of the switch).
+         */
+        public @NonNull OptionalBool switchBranchFallsThrough(ASTSwitchBranch b) {
+            if (b instanceof ASTSwitchFallthroughBranch) {
+                return Objects.requireNonNull(b.getUserMap().get(SWITCH_BRANCH_FALLS_THROUGH));
+            }
+            return OptionalBool.NO;
+        }
+
+
+        public @Nullable ReachingDefinitionSet getReachingDefinitions(ASTNamedReferenceExpr expr) {
+            return expr.getUserMap().get(REACHING_DEFS);
         }
     }
 
