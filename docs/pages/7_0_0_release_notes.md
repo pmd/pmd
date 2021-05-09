@@ -80,15 +80,17 @@ The default version is always ES6.
 
 ##### Java
 
-*   {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %} has two new properties, to selectively disable reporting on
-    static field and method qualifiers. The rule also has been improved to be more precise.
-*   The rule {% rule "java/codestyle/UselessParentheses" %} has two new properties which control how strict
-    the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
-    not necessary are allowed, if they separate expressions of different precedence.
-    The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
-    reading and understanding the expressions.
-*   The rule {% rule "java/bestpractices/LooseCoupling" %} has a new property to allow some types to be coupled to (`allowedTypes`).
-*   {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+* {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %}: the rule has two new properties,
+  to selectively disable reporting on static field and method qualifiers. The rule also has been improved to be more precise.
+* {% rule "java/codestyle/UselessParentheses" %}: the rule has two new properties which control how strict
+  the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
+  not necessary are allowed, if they separate expressions of different precedence.
+  The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
+  reading and understanding the expressions.
+* {% rule "java/bestpractices/LooseCoupling" %}: the rule has a new property to allow some types to be coupled to (`allowedTypes`).
+* {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+* {% rule "java/codestyle/UseDiamondOperator" %}: the property `java7Compatibility` is removed. The rule now handles Java 7
+  properly without a property.
 
 #### Removed Rules
 
