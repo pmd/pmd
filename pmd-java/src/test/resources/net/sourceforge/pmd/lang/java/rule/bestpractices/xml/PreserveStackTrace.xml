@@ -666,4 +666,27 @@ public class SomeOtherUserDefinedException extends Exception {
             ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>#2134 [java] PreserveStackTrace not handling Throwable.addSuppressed(...)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.io.IOException;
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                        return;
+                    } catch (IOException outerException) {
+                        try {
+                            return;
+                        } catch (IOException innerException) {
+                            innerException.addSuppressed(outerException);
+                            throw new RuntimeException(innerException);
+                        }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>
