@@ -35,15 +35,14 @@ public class AvoidThrowingNullPointerExceptionRule extends AbstractJavaRulechain
             addViolation(data, throwStmt);
         } else if (thrown instanceof ASTVariableAccess) {
             JVariableSymbol sym = ((ASTVariableAccess) thrown).getReferencedSym();
-            if (sym instanceof JLocalVariableSymbol
-                && hasNpeValue((ASTVariableAccess) thrown, (JLocalVariableSymbol) sym)) {
+            if (sym instanceof JLocalVariableSymbol && hasNpeValue((ASTVariableAccess) thrown)) {
                 addViolation(data, throwStmt);
             }
         }
         return null;
     }
 
-    private boolean hasNpeValue(ASTVariableAccess thrown, JLocalVariableSymbol sym) {
+    private boolean hasNpeValue(ASTVariableAccess thrown) {
         DataflowResult dataflow = DataflowPass.getDataflowResult(thrown.getRoot());
         ReachingDefinitionSet reaching = dataflow.getReachingDefinitions(thrown);
         if (reaching == null || reaching.isNotFullyKnown()) {

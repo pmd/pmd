@@ -819,7 +819,7 @@ public final class DataflowPass {
                 && enclosingClassScope.equals(((JFieldSymbol) var).getEnclosingClass());
         }
 
-        private static JVariableSymbol getVarIfUnaryAssignment(ASTUnaryExpression node) {
+        private static JVariableSymbol getVarIfUnaryAssignment(ASTUnaryExpression node) { // NOPMD UnusedPrivateMethod
             ASTExpression operand = node.getOperand();
             if (!node.getOperator().isPure() && operand instanceof ASTNamedReferenceExpr) {
                 return ((ASTNamedReferenceExpr) operand).getReferencedSym();
@@ -1005,7 +1005,7 @@ public final class DataflowPass {
 
         // and produce an independent instance
         VarLocalInfo merge(VarLocalInfo other) {
-            if (other == this) {
+            if (other == this) { // NOPMD #3205
                 return this;
             }
             Set<AssignmentEntry> merged = new HashSet<>(reachingDefs.size() + other.reachingDefs.size());
@@ -1270,7 +1270,7 @@ public final class DataflowPass {
 
             // a spanInfo may be absorbed several times so this method should not
             // destroy the parameter
-            if (other == this || other == null || other.symtable.isEmpty()) {
+            if (other == this || other == null || other.symtable.isEmpty()) { // NOPMD #3205
                 return this;
             }
 
@@ -1371,7 +1371,7 @@ public final class DataflowPass {
 
         public boolean isUnaryReassign() {
             return rhs instanceof ASTUnaryExpression
-                && ReachingDefsVisitor.getVarIfUnaryAssignment((ASTUnaryExpression) rhs) == var;
+                && ReachingDefsVisitor.getVarIfUnaryAssignment((ASTUnaryExpression) rhs) == var; // NOPMD #3205
         }
 
         @Override
