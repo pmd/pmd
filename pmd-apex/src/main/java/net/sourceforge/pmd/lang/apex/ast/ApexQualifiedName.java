@@ -151,7 +151,7 @@ public final class ApexQualifiedName {
     }
 
 
-    static ApexQualifiedName ofNestedClass(ApexQualifiedName parent, ASTUserClassOrInterface astUserClass) {
+    static ApexQualifiedName ofNestedClass(ApexQualifiedName parent, ASTUserClassOrInterface<?> astUserClass) {
 
         String[] classes = Arrays.copyOf(parent.classes, parent.classes.length + 1);
         classes[classes.length - 1] = astUserClass.getImage();
@@ -182,9 +182,9 @@ public final class ApexQualifiedName {
 
 
     static ApexQualifiedName ofMethod(ASTMethod node) {
-        ASTUserClassOrInterface<?> parent = node.getFirstParentOfType(ASTUserClassOrInterface.class);
-        if (parent == null) {
-            ASTUserTrigger trigger = node.getFirstParentOfType(ASTUserTrigger.class);
+        ASTUserClassOrInterface<?> parent = node.ancestors(ASTUserClassOrInterface.class).firstOrThrow();
+        if (parent instanceof ASTUserTrigger) {
+            ASTUserTrigger trigger = (ASTUserTrigger) parent;
             String ns = trigger.getNamespace();
             String targetObj = trigger.getTargetName();
 
