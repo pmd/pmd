@@ -64,32 +64,4 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="StaticFieldMustBeFinal"
-          language="java"
-          since="6.34.0"
-          message="Do not use non-final visible static fields"
-          class="net.sourceforge.pmd.lang.rule.XPathRule">
-        <description>
-            Visible static fields must be made constants (or immutable
-            references) by declaring them final.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//FieldDeclaration[@Static = true() and @Private = false() and @Final = false()]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-            <![CDATA[
-public class Greeter { public static Foo foo = new Foo(); ... }       // avoid this
-public class Greeter { public static final Foo FOO = new Foo(); ... } // use this instead
-]]>
-        </example>
-    </rule>
-
 </ruleset>
