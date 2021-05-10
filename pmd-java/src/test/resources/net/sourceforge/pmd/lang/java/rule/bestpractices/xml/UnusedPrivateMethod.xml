@@ -1715,4 +1715,31 @@ public class Outer {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1175 False positive with Junit 5 MethodSource</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+
+public class Outer {
+    private static Stream<Arguments> basenameKeyArguments() {
+        return Stream.of(
+                Arguments.of("simple", "simple"),
+                Arguments.of("simple", "one/two/many/simple"),
+                Arguments.of("simple", "//////an/////awful/key////simple")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("basenameKeyArguments")
+    void basenameKeyTest(final String expected, final String testString) {
+        assertEquals(expected, NetworkTable.basenameKey(testString));
+    }
+
+}
+        ]]></code>
+    </test-code>
 </test-data>
