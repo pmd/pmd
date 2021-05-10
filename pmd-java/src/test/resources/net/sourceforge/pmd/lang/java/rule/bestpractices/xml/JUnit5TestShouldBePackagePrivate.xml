@@ -7,6 +7,7 @@
     <test-code>
         <description>Public modifier is not necessary on a test method nor on the class</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
         <code><![CDATA[
 import org.junit.jupiter.api.Test;
 
@@ -59,6 +60,7 @@ public interface MyTests {
     <test-code>
         <description>Non package private modifiers on all JUnit5 test types should be rejected</description>
         <expected-problems>6</expected-problems>
+        <expected-linenumbers>8,10,13,16,19,23</expected-linenumbers>
         <code><![CDATA[
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.RepeatedTest;
