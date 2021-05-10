@@ -138,14 +138,13 @@ public final class AssertionUtil {
         return new AssertionError(message);
     }
 
-    public static ContextedRuntimeException addContextValue(RuntimeException e, String label, Object value) {
-        return e instanceof ContextedRuntimeException
-               ? ((ContextedRuntimeException) e).addContextValue(label, value)
-               : new ContextedRuntimeException(e).addContextValue(label, value);
+    public static @NonNull ContextedAssertionError contexted(AssertionError e) {
+        return ContextedAssertionError.wrap(e);
     }
 
-    public static ContextedAssertionError addContextValue(AssertionError e, String label, Object value) {
-        return ContextedAssertionError.wrap(e).addContextValue(label, value);
+    public static @NonNull ContextedRuntimeException contexted(RuntimeException e) {
+        return e instanceof ContextedRuntimeException ? (ContextedRuntimeException) e
+                                                      : new ContextedRuntimeException(e);
     }
 
 }

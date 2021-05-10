@@ -51,9 +51,9 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
             result = this.acceptVisitor(resolver, context);
             assert result != null : "LazyTypeResolver returned null";
         } catch (RuntimeException e) {
-            throw AssertionUtil.addContextValue(e, "Resolving type of", this);
+            throw AssertionUtil.contexted(e).addContextValue("Resolving type of", this);
         } catch (AssertionError e) {
-            throw AssertionUtil.addContextValue(e, "Resolving type of", this);
+            throw AssertionUtil.contexted(e).addContextValue("Resolving type of", this);
         }
 
         if (context.isEmpty() && typeMirror == null) {

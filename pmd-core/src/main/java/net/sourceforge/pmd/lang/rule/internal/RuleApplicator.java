@@ -76,9 +76,9 @@ public class RuleApplicator {
             reportException(ctx, rule, node, e);
         } else {
             if (e instanceof RuntimeException) {
-                throw AssertionUtil.addContextValue((RuntimeException) e, "Rule applied on node", node);
+                throw AssertionUtil.contexted((RuntimeException) e).addContextValue("Rule applied on node", node);
             } else if (e instanceof AssertionError) {
-                throw AssertionUtil.addContextValue((AssertionError) e, "Rule applied on node", node);
+                throw AssertionUtil.contexted((AssertionError) e).addContextValue("Rule applied on node", node);
             } else {
                 throw e;
             }

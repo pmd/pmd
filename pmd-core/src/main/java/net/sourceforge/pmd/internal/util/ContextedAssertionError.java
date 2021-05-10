@@ -18,7 +18,7 @@ public class ContextedAssertionError extends AssertionError implements Exception
 
     private final ExceptionContext exceptionContext = new DefaultExceptionContext();
 
-    public ContextedAssertionError(AssertionError e) {
+    private ContextedAssertionError(AssertionError e) {
         super(e.getMessage());
         setStackTrace(e.getStackTrace()); // pretend we're a regular assertion error
     }
