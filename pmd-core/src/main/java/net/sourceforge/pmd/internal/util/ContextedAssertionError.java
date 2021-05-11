@@ -14,7 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 /**
  * An {@link AssertionError} with nice messages.
  */
-public class ContextedAssertionError extends AssertionError implements ExceptionContext {
+public final class ContextedAssertionError extends AssertionError implements ExceptionContext {
 
     private final ExceptionContext exceptionContext = new DefaultExceptionContext();
 
