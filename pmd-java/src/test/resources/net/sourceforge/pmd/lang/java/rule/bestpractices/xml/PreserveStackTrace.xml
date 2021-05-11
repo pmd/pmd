@@ -265,6 +265,7 @@ public class B {
     <test-code>
         <description>14, Nested with same name catch and throw, fail on inner</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 public class B {
     public void bla() {
@@ -669,7 +670,7 @@ public class SomeOtherUserDefinedException extends Exception {
 
     <test-code>
         <description>#2134 [java] PreserveStackTrace not handling Throwable.addSuppressed(...)</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
             import java.io.IOException;
             public class Foo {
@@ -813,6 +814,49 @@ public class SomeOtherUserDefinedException extends Exception {
                         throw ex.getCause();
                     }
                 }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Arguments may consume exception recursively</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                public void foo(String a) {
+                    try {
+                        System.out.println(a);
+                    } catch (NumberFormatException ex) {
+                        // the exception is consumed by a constructor, which is
+                        // consumed by the thrown expression
+                        throw new InternalParseException(new SpelParseException(ex, "SpelMessage.NOT_A_LONG", "numberToken"));
+                    }
+                }
+
+                static class InternalParseException {}
+                static class SpelParseException {}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Arguments may consume exception recursively, even across variables</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                public void foo(String a) {
+                    try {
+                        System.out.println(a);
+                    } catch (NumberFormatException ex) {
+                        // same as above with intermediary variable
+                        SpelParseException other = new SpelParseException(ex, "SpelMessage.NOT_A_LONG", "numberToken");
+                        throw new InternalParseException(other);
+                    }
+                }
+
+                static class InternalParseException { }
+                static class SpelParseException { }
             }
             ]]></code>
     </test-code>

@@ -93,25 +93,25 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
             return false;
         } else {
-            // we don't know
-            return true;
+            // assume it doesn't
+            return false;
         }
     }
 
     private static boolean ctorConsumesException(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
         return ctorCall.isAnonymousClass() && callsInitCauseInAnonInitializer(exceptionParam, ctorCall)
-            || hasReferenceAsArgument(ctorCall, exceptionParam);
+            || anArgumentConsumesException(exceptionParam, ctorCall);
     }
 
     private static boolean consumesExceptionNonRecursive(ASTVariableDeclaratorId exceptionParam, ASTExpression expr) {
         if (expr instanceof ASTConstructorCall) {
             return ctorConsumesException(exceptionParam, (ASTConstructorCall) expr);
         }
-        return expr instanceof InvocationNode && hasReferenceAsArgument((InvocationNode) expr, exceptionParam);
+        return expr instanceof InvocationNode && anArgumentConsumesException(exceptionParam, (InvocationNode) expr);
     }
 
     private static boolean methodConsumesException(ASTVariableDeclaratorId exceptionParam, ASTMethodCall call) {
-        if (hasReferenceAsArgument(call, exceptionParam)) {
+        if (anArgumentConsumesException(exceptionParam, call)) {
             return true;
         }
         ASTExpression qualifier = call.getQualifier();
@@ -130,14 +130,14 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
     private static boolean isInitCauseWithTargetInArg(ASTVariableDeclaratorId exceptionSym, JavaNode expr) {
         if (INIT_CAUSE.matchesCall(expr)) {
-            return hasReferenceAsArgument((ASTMethodCall) expr, exceptionSym);
+            return anArgumentConsumesException(exceptionSym, (ASTMethodCall) expr);
         }
         return false;
     }
 
-    private static boolean hasReferenceAsArgument(InvocationNode thrownExpr, @NonNull ASTVariableDeclaratorId toFind) {
+    private static boolean anArgumentConsumesException(@NonNull ASTVariableDeclaratorId exceptionParam, InvocationNode thrownExpr) {
         for (ASTExpression arg : ASTList.orEmptyStream(thrownExpr.getArguments())) {
-            if (JavaRuleUtil.isReferenceToVar(arg, toFind.getSymbol())) {
+            if (exprConsumesException(exceptionParam, arg, true)) {
                 return true;
             }
         }
