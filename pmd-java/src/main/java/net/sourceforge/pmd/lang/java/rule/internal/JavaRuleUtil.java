@@ -181,6 +181,13 @@ public final class JavaRuleUtil {
         return null;
     }
 
+    public static @Nullable ASTExpression getOtherOperandIfInAssignmentExpr(@Nullable JavaNode e) {
+        if (e != null && e.getParent() instanceof ASTAssignmentExpression) {
+            return (ASTExpression) e.getParent().getChild(1 - e.getIndexInParent());
+        }
+        return null;
+    }
+
     /**
      * Returns true if the expression is a stringbuilder (or stringbuffer)
      * append call, or a constructor call for one of these classes.

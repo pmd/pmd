@@ -621,8 +621,8 @@ public class SomeOtherUserDefinedException extends Exception {
             ejb = getSomething();
         } catch (IOException ex) {
             throw new IllegalArgumentException("xxx", ex); // ok
-        } catch (InvocationTargetException ex) {
-            Throwable targetEx = ex.getTargetException();
+        } catch (IOException ex) {
+            Throwable targetEx = ex.getCause();
             if (targetEx instanceof RemoteException) {
                 RemoteException rex = (RemoteException) targetEx;
                 throw convertRmiAccessException(rex, isConnectFailure(rex)); // not ok
@@ -737,6 +737,80 @@ public class SomeOtherUserDefinedException extends Exception {
                         Exception e = new Exception();
                         e = outerException;
                         throw e; // throws the outer exception here, so this is not a violation
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore InvocationTargetException#getTargetException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.reflect.InvocationTargetException;
+
+            public class Foo {
+
+                public void withCast(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (InvocationTargetException ex) {
+                        if (ex.getTargetException() instanceof RuntimeException) {
+                            throw (RuntimeException) ex.getTargetException();
+                        }
+                    }
+                }
+                public void throwRuntime(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (InvocationTargetException ex) {
+                        Exception e = ex.getTargetException();
+                        if (e instanceof RuntimeException) {
+                            throw (RuntimeException) e;
+                        }
+                    }
+                }
+                public void directRethrow(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (InvocationTargetException ex) {
+                        throw ex.getTargetException();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore InvocationTargetException#getCause</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.reflect.InvocationTargetException;
+
+            public class Foo {
+
+                public void withCast(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (InvocationTargetException ex) {
+                        if (ex.getCause() instanceof RuntimeException) {
+                            throw (RuntimeException) ex.getCause();
+                        }
+                    }
+                }
+                public void throwRuntime(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (InvocationTargetException ex) {
+                        Exception e = ex.getCause();
+                        if (e instanceof RuntimeException) {
+                            throw (RuntimeException) e;
+                        }
+                    }
+                }
+                public void directRethrow(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (InvocationTargetException ex) {
+                        throw ex.getCause();
                     }
                 }
             }

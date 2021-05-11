@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
@@ -23,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
 
 /**
  * @author Unknown,
@@ -31,7 +33,11 @@ import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
     private static final InvocationMatcher INIT_CAUSE = InvocationMatcher.parse("java.lang.Throwable#initCause(_)");
-    private static final InvocationMatcher FILL_IN_STACKTRACE = InvocationMatcher.parse("java.lang.Throwable#fillInStackTrace()");
+    private static final CompoundInvocationMatcher ALLOWED_GETTERS = InvocationMatcher.parseAll(
+        "java.lang.Throwable#fillInStackTrace()", // returns this
+        "java.lang.reflect.InvocationTargetException#getTargetException()", // allowed, to unwrap reflection frames
+        "java.lang.reflect.InvocationTargetException#getCause()" // this is equivalent to getTargetException, see javadoc
+    );
 
     public PreserveStackTraceRule() {
         super(ASTCatchClause.class);
@@ -55,11 +61,11 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
     private static boolean exprConsumesException(ASTVariableDeclaratorId exceptionParam, ASTExpression expr, boolean mayBeSelf) {
         if (expr instanceof ASTConstructorCall) {
             // new Exception(e)
-            return isCtorOk(exceptionParam, (ASTConstructorCall) expr);
+            return ctorConsumesException(exceptionParam, (ASTConstructorCall) expr);
 
         } else if (expr instanceof ASTMethodCall) {
 
-            return isMethodOk(exceptionParam, (ASTMethodCall) expr);
+            return methodConsumesException(exceptionParam, (ASTMethodCall) expr);
 
         } else if (expr instanceof ASTCastExpression) {
 
@@ -92,22 +98,19 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
         }
     }
 
-    private static boolean isCtorOk(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
+    private static boolean ctorConsumesException(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
         return ctorCall.isAnonymousClass() && callsInitCauseInAnonInitializer(exceptionParam, ctorCall)
             || hasReferenceAsArgument(ctorCall, exceptionParam);
     }
 
     private static boolean consumesExceptionNonRecursive(ASTVariableDeclaratorId exceptionParam, ASTExpression expr) {
         if (expr instanceof ASTConstructorCall) {
-            ASTConstructorCall ctorCall = (ASTConstructorCall) expr;
-            if (ctorCall.isAnonymousClass() && callsInitCauseInAnonInitializer(exceptionParam, ctorCall)) {
-                return true;
-            }
+            return ctorConsumesException(exceptionParam, (ASTConstructorCall) expr);
         }
         return expr instanceof InvocationNode && hasReferenceAsArgument((InvocationNode) expr, exceptionParam);
     }
 
-    private static boolean isMethodOk(ASTVariableDeclaratorId exceptionParam, ASTMethodCall call) {
+    private static boolean methodConsumesException(ASTVariableDeclaratorId exceptionParam, ASTMethodCall call) {
         if (hasReferenceAsArgument(call, exceptionParam)) {
             return true;
         }
@@ -115,7 +118,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
         if (qualifier == null) {
             return false;
         }
-        boolean mayBeSelf = FILL_IN_STACKTRACE.matchesCall(call);
+        boolean mayBeSelf = ALLOWED_GETTERS.anyMatch(call);
         return exprConsumesException(exceptionParam, qualifier, mayBeSelf);
     }
 
@@ -127,14 +130,13 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
     private static boolean isInitCauseWithTargetInArg(ASTVariableDeclaratorId exceptionSym, JavaNode expr) {
         if (INIT_CAUSE.matchesCall(expr)) {
-            ASTMethodCall initCauseCall = (ASTMethodCall) expr;
-            return hasReferenceAsArgument(initCauseCall, exceptionSym);
+            return hasReferenceAsArgument((ASTMethodCall) expr, exceptionSym);
         }
         return false;
     }
 
     private static boolean hasReferenceAsArgument(InvocationNode thrownExpr, @NonNull ASTVariableDeclaratorId toFind) {
-        for (ASTExpression arg : thrownExpr.getArguments()) {
+        for (ASTExpression arg : ASTList.orEmptyStream(thrownExpr.getArguments())) {
             if (JavaRuleUtil.isReferenceToVar(arg, toFind.getSymbol())) {
                 return true;
             }
