@@ -1021,6 +1021,21 @@ public class SomeOtherUserDefinedException extends Exception {
     </test-code>
 
     <test-code>
+        <description>Ignored exception name</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public abstract class AbstractNamedValueMethodArgumentResolver {
+
+                public final Object resolveArgument() throws Throwable {
+                    try {
+                    } catch (Throwable ignored) {
+                        throw new Exception();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
         <description>Ternary with both branches ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

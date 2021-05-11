@@ -1082,7 +1082,8 @@ exception as argument preserves the original stack trace.
 
 The rule allows `InvocationTargetException` and `PrivilegedActionException` to be
 replaced by their cause exception. The discarded part of the stack trace is in those
-cases only JDK-internal code, which is not very useful.
+cases only JDK-internal code, which is not very useful. The rule also ignores exceptions
+whose name starts with `ignored`.
         </description>
         <priority>3</priority>
         <example>

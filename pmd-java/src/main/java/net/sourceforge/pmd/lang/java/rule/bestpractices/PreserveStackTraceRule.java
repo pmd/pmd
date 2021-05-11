@@ -52,6 +52,10 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTCatchClause catchStmt, Object data) {
         ASTVariableDeclaratorId exceptionParam = catchStmt.getParameter().getVarId();
+        if (JavaRuleUtil.isExplicitUnusedVarName(exceptionParam.getName())) {
+            // ignore those
+            return null;
+        }
 
         // Inspect all the throw stmt inside the catch stmt
         for (ASTThrowStatement throwStatement : catchStmt.getBody().descendants(ASTThrowStatement.class)) {
