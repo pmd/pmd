@@ -5,9 +5,11 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -73,15 +75,18 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
             return exprConsumesException(exceptionParam, innermost, mayBeSelf);
 
         } else if (expr instanceof ASTVariableAccess) {
-            // fixme sloppy, should be reaching definition not necessarily initializer.
-            //  For now we're assuming the var is effectively final.
             ASTVariableDeclaratorId decl = ((ASTVariableAccess) expr).getReferencedSym().tryGetNode();
 
             if (decl == null) {
                 return false;
             } else if (decl == exceptionParam) {
                 return mayBeSelf;
-            } else if (decl.getInitializer() != null && exprConsumesException(exceptionParam, decl.getInitializer(), mayBeSelf)) {
+            }
+
+            ASTExpression exprValue = getSingleAssignment(decl);
+            if (exprValue == null) {
+                return true; // we don't know
+            } else if (exprConsumesException(exceptionParam, exprValue, mayBeSelf)) {
                 return true;
             }
 
@@ -96,6 +101,33 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
             // assume it doesn't
             return false;
         }
+    }
+
+    /**
+     * Returns the expression representing the value of the variable, if
+     * it is set exactly once. Otherwise returns null.
+     */
+    // todo this should use reaching definitions to support branches/ reassignment
+    private static @Nullable ASTExpression getSingleAssignment(ASTVariableDeclaratorId variable) {
+        @Nullable ASTExpression singleAssignment = variable.getInitializer();
+
+        // check that there is really a single one
+        for (ASTNamedReferenceExpr usage : variable.getLocalUsages()) {
+            if (usage.getAccessType() == AccessType.WRITE) {
+                if (singleAssignment != null) { // multiple assignments
+                    return null;
+                }
+
+                ASTExpression thisRhs = JavaRuleUtil.getOtherOperandIfInAssignmentExpr(usage);
+                if (thisRhs == null) {
+                    // not in an assignment, ie, this is
+                    // an increment expr, so the var is not eff. final
+                    return null;
+                }
+                singleAssignment = thisRhs;
+            }
+        }
+        return singleAssignment;
     }
 
     private static boolean ctorConsumesException(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
