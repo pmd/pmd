@@ -688,5 +688,59 @@ public class SomeOtherUserDefinedException extends Exception {
             }
             ]]></code>
     </test-code>
+    <test-code regressionTest="false">
+        <!-- todo reaching definitions analysis -->
+        <description>FP with reassigned exception</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                        System.out.println(a);
+                    } catch (Exception outerException) {
+                        outerException = new Exception();
+                        throw outerException;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <!-- todo reaching definitions analysis -->
+        <description>FP with reassigned exception (branch)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                        System.out.println(a);
+                    } catch (Exception outerException) {
+                        if (a!=null) outerException = new Exception();
+                        else outerException = new RuntimeException();
+
+                        throw outerException;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <!-- todo reaching definitions analysis -->
+        <description>FP with reassigned exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                        System.out.println(a);
+                    } catch (Exception outerException) {
+                        Exception e = new Exception();
+                        e = outerException;
+                        throw e; // throws the outer exception here, so this is not a violation
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 
 </test-data>
