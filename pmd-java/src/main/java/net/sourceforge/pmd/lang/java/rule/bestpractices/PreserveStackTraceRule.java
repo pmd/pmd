@@ -55,7 +55,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
             ASTExpression thrownExpr = throwStatement.getExpr();
 
             if (!exprConsumesException(exceptionParam, thrownExpr, true)) {
-                addViolation(data, thrownExpr);
+                addViolation(data, thrownExpr, exceptionParam.getName());
             }
         }
         return null;
