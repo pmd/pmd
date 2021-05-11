@@ -940,4 +940,85 @@ public class SomeOtherUserDefinedException extends Exception {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Ternary with both branches ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public abstract class AbstractNamedValueMethodArgumentResolver {
+
+                public final Object resolveArgument() throws Throwable {
+                    try {
+                    } catch (Throwable ex) {
+                        Exception rae = transform(ex);
+                        throw rae != null ? rae
+                                          : ex;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ternary with only one branch ok</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,14</expected-linenumbers>
+        <code><![CDATA[
+            public abstract class AbstractNamedValueMethodArgumentResolver {
+
+                public final Object resolveArgument() throws Throwable {
+                    try {
+                    } catch (Throwable ex) {
+                        throw "".isEmpty() ? new IllegalArgumentException()
+                                           : ex;
+                    }
+
+                    // equivalent with if
+                    try {
+                    } catch (Throwable ex) {
+                        if ("".isEmpty()) {
+                            throw new IllegalArgumentException();
+                        } else {
+                            throw ex;
+                        }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code regressionTest="false">
+        <!-- TODO both should have equivalent behavior       -->
+        <description>Branch in dataflow should be merged</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>14,21</expected-linenumbers>
+        <code><![CDATA[
+            public abstract class AbstractNamedValueMethodArgumentResolver {
+                // both of those should be equivalent
+
+                public final Object resolveArgument() throws Throwable {
+                    // equivalent with if
+                    try {
+                    } catch (Throwable ex) {
+                        Throwable v;
+                        if ("".isEmpty()) {
+                            v = new IllegalArgumentException();
+                        } else {
+                            v = ex;
+                        }
+                        throw v;
+                    }
+
+                    // equivalent without interm. var.
+                    try {
+                    } catch (Throwable ex) {
+                        if ("".isEmpty()) {
+                            throw new IllegalArgumentException();
+                        } else {
+                            throw ex;
+                        }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>

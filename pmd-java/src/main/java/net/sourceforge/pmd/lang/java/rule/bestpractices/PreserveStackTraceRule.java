@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -73,6 +74,12 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
             ASTExpression innermost = JavaRuleUtil.peelCasts(expr);
             return exprConsumesException(exceptionParam, innermost, mayBeSelf);
+
+        } else if (expr instanceof ASTConditionalExpression) {
+
+            ASTConditionalExpression ternary = (ASTConditionalExpression) expr;
+            return exprConsumesException(exceptionParam, ternary.getThenBranch(), mayBeSelf)
+                && exprConsumesException(exceptionParam, ternary.getElseBranch(), mayBeSelf);
 
         } else if (expr instanceof ASTVariableAccess) {
             JVariableSymbol referencedSym = ((ASTVariableAccess) expr).getReferencedSym();
