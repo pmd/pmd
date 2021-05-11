@@ -298,7 +298,7 @@
     <!-- <rule ref="category/java/performance.xml/InsufficientStringBufferDeclaration"/> -->
     <rule ref="category/java/performance.xml/IntegerInstantiation"/>
     <rule ref="category/java/performance.xml/LongInstantiation"/>
-    <!-- <rule ref="category/java/performance.xml/OptimizableToArrayCall"/> -->
+    <rule ref="category/java/performance.xml/OptimizableToArrayCall"/>
     <rule ref="category/java/performance.xml/RedundantFieldInitializer"/>
     <rule ref="category/java/performance.xml/ShortInstantiation"/>
     <rule ref="category/java/performance.xml/SimplifyStartsWith"/>

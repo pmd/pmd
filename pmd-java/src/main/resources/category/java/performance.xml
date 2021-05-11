@@ -588,7 +588,7 @@ public class Foo {
     <rule name="OptimizableToArrayCall"
           language="java"
           since="1.8"
-	  minimumLanguageVersion="1.6"
+          minimumLanguageVersion="1.6"
           message="This call to Collection.toArray() may be optimizable"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#optimizabletoarraycall">
@@ -610,13 +610,8 @@ is faster, but returns only an array of type `Object[]`.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
-[PrimaryPrefix/Name[ends-with(@Image, 'toArray')]]
-[
-PrimarySuffix/Arguments/ArgumentList/Expression
- /PrimaryExpression/PrimaryPrefix/AllocationExpression
- /ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix[not(Literal[@Image='0'])]
-]
+//MethodCall[pmd-java:matchesSig("java.util.Collection#toArray(_)")]
+    [ArgumentList/ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr[not(NumericLiteral[@Image="0"])]]
 ]]>
                 </value>
             </property>
