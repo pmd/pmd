@@ -1079,6 +1079,10 @@ the new exception, using `Throwable#initCause`, or passed as a constructor argum
 to the new exception. It may also be preserved using `Throwable#addSuppressed`.
 The rule actually assumes that any method or constructor that takes the original
 exception as argument preserves the original stack trace.
+
+The rule allows `InvocationTargetException` and `PrivilegedActionException` to be
+replaced by their cause exception. The discarded part of the stack trace is in those
+cases only JDK-internal code, which is not very useful.
         </description>
         <priority>3</priority>
         <example>

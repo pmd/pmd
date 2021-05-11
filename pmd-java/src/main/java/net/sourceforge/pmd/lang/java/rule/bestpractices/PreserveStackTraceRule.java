@@ -39,7 +39,10 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
     private static final CompoundInvocationMatcher ALLOWED_GETTERS = InvocationMatcher.parseAll(
         "java.lang.Throwable#fillInStackTrace()", // returns this
         "java.lang.reflect.InvocationTargetException#getTargetException()", // allowed, to unwrap reflection frames
-        "java.lang.reflect.InvocationTargetException#getCause()" // this is equivalent to getTargetException, see javadoc
+        "java.lang.reflect.InvocationTargetException#getCause()", // this is equivalent to getTargetException, see javadoc
+        // same rationale as for InvocationTargetException
+        "java.security.PrivilegedActionException#getException()",
+        "java.security.PrivilegedActionException#getCause()"
     );
 
     public PreserveStackTraceRule() {

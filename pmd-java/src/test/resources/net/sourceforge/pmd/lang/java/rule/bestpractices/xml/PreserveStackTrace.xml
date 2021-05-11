@@ -865,6 +865,86 @@ public class SomeOtherUserDefinedException extends Exception {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Ignore PrivilegedActionException#getCause</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.reflect.InvocationTargetException;
+            import java.security.PrivilegedActionException;
+
+            public class Foo {
+
+                public void withCast(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (PrivilegedActionException ex) {
+                        if (ex.getCause() instanceof RuntimeException) {
+                            throw (RuntimeException) ex.getCause();
+                        }
+                    }
+                }
+
+                public void throwRuntime(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (PrivilegedActionException ex) {
+                        Exception e = ex.getCause();
+                        if (e instanceof RuntimeException) {
+                            throw (RuntimeException) e;
+                        }
+                    }
+                }
+
+                public void directRethrow(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (PrivilegedActionException ex) {
+                        throw ex.getCause();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore PrivilegedActionException#getException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.reflect.InvocationTargetException;
+            import java.security.PrivilegedActionException;
+
+            public class Foo {
+
+                public void withCast(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (PrivilegedActionException ex) {
+                        if (ex.getException() instanceof RuntimeException) {
+                            throw (RuntimeException) ex.getException();
+                        }
+                    }
+                }
+
+                public void throwRuntime(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (PrivilegedActionException ex) {
+                        Exception e = ex.getException();
+                        if (e instanceof RuntimeException) {
+                            throw (RuntimeException) e;
+                        }
+                    }
+                }
+
+                public void directRethrow(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (PrivilegedActionException ex) {
+                        throw ex.getException();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 
     <test-code>
         <description>Arguments may consume exception recursively</description>
