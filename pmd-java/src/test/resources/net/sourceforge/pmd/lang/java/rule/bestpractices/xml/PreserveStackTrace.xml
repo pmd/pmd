@@ -581,6 +581,36 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
+        <description>Don't ignore effectively final parameters</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+
+    public static <T> T getBean(String name, Class<T> requiredType) throws Exception {
+        try {
+            return name != null ? doGetSingleton(name, requiredType) : lookup(name, requiredType);
+        } catch (NameNotFoundException ex) {
+            // this one
+            throw new NoSuchBeanDefinitionException(name, "not found in JNDI environment");
+        } catch (NamingException ex) {
+            throw new NoSuchBeanDefinitionException("JNDI environment", name, "JNDI lookup failed", ex);
+        }
+    }
+
+    private static <T> T doGetSingleton(String name, Class<T> requiredType) throws NamingException {return null;}
+    private static <T> T lookup(String name, Class<T> requiredType) throws NameNotFoundException {return null;}
+
+    static class NoSuchBeanDefinitionException extends Exception {
+        public NoSuchBeanDefinitionException(String s, String name, String message, Exception ex) {}
+        public NoSuchBeanDefinitionException(String s, String name) {}
+    }
+    static class NameNotFoundException extends Exception { }
+    static class NamingException extends Exception { }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
         <description>[java] PreserveStackTrace false-positive #1747</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -673,14 +703,33 @@ public class SomeOtherUserDefinedException extends Exception {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             import java.io.IOException;
+
+            public class Foo {
+
+                public void foo(String a) {
+                    try {
+                        return;
+                    } catch (Exception innerException) {
+                        RuntimeException inner = new RuntimeException();
+                        inner.addSuppressed(innerException);
+                        throw inner;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Consume exception into another</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
             public class Foo {
                 public void foo(String a) {
                     try {
                         return;
-                    } catch (IOException outerException) {
+                    } catch (Exception outerException) {
                         try {
                             return;
-                        } catch (IOException innerException) {
+                        } catch (Exception innerException) {
                             innerException.addSuppressed(outerException);
                             throw new RuntimeException(innerException);
                         }
