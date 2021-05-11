@@ -881,4 +881,9 @@ public final class JavaRuleUtil {
         }
         return expr;
     }
+
+    public static @Nullable ASTVariableDeclaratorId getReferencedNode(ASTNamedReferenceExpr expr) {
+        JVariableSymbol referencedSym = expr.getReferencedSym();
+        return referencedSym == null ? null : referencedSym.tryGetNode();
+    }
 }

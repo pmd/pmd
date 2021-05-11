@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
@@ -23,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
 
@@ -73,7 +75,11 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
             return exprConsumesException(exceptionParam, innermost, mayBeSelf);
 
         } else if (expr instanceof ASTVariableAccess) {
-            ASTVariableDeclaratorId decl = ((ASTVariableAccess) expr).getReferencedSym().tryGetNode();
+            JVariableSymbol referencedSym = ((ASTVariableAccess) expr).getReferencedSym();
+            if (referencedSym == null) {
+                return true; // invalid code, avoid FP
+            }
+            ASTVariableDeclaratorId decl = referencedSym.tryGetNode();
 
             if (decl == exceptionParam) {
                 return mayBeSelf;
@@ -89,7 +95,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
             }
 
             for (ASTNamedReferenceExpr usage : decl.getLocalUsages()) {
-                if (assignmentRhsConsumesException(exceptionParam, usage)) {
+                if (assignmentRhsConsumesException(exceptionParam, decl, usage)) {
                     return true;
                 }
 
@@ -105,9 +111,17 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
         }
     }
 
-    private static boolean assignmentRhsConsumesException(ASTVariableDeclaratorId exceptionParam, ASTNamedReferenceExpr usage) {
-        return usage.getIndexInParent() == 0
-            && exprConsumesException(exceptionParam, JavaRuleUtil.getOtherOperandIfInAssignmentExpr(usage), true);
+    private static boolean assignmentRhsConsumesException(ASTVariableDeclaratorId exceptionParam, ASTVariableDeclaratorId lhsVariable, ASTNamedReferenceExpr usage) {
+        if (usage.getIndexInParent() == 0) {
+            ASTExpression assignmentRhs = JavaRuleUtil.getOtherOperandIfInAssignmentExpr(usage);
+            boolean rhsIsSelfReferential =
+                NodeStream.of(assignmentRhs)
+                          .descendantsOrSelf()
+                          .filterIs(ASTVariableAccess.class)
+                          .any(it -> JavaRuleUtil.isReferenceToVar(it, lhsVariable.getSymbol()));
+            return !rhsIsSelfReferential && exprConsumesException(exceptionParam, assignmentRhs, true);
+        }
+        return false;
     }
 
     private static boolean ctorConsumesException(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
@@ -135,9 +149,11 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean callsInitCauseInAnonInitializer(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
-        return ctorCall.getAnonymousClassDeclaration().getDeclarations().map(NodeStream.asInstanceOf(ASTFieldDeclaration.class, ASTInitializer.class))
-                       .descendants().filterIs(ASTMethodCall.class)
-                       .any(it -> isInitCauseWithTargetInArg(exceptionParam, it));
+        return NodeStream.of(ctorCall.getAnonymousClassDeclaration())
+                         .flatMap(ASTAnyTypeDeclaration::getDeclarations)
+                         .map(NodeStream.asInstanceOf(ASTFieldDeclaration.class, ASTInitializer.class))
+                         .descendants().filterIs(ASTMethodCall.class)
+                         .any(it -> isInitCauseWithTargetInArg(exceptionParam, it));
     }
 
     private static boolean isInitCauseWithTargetInArg(ASTVariableDeclaratorId exceptionSym, JavaNode expr) {

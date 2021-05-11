@@ -908,5 +908,36 @@ public class SomeOtherUserDefinedException extends Exception {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>StackOverflow with variable RHS which refers to itself</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public abstract class TestCase {
+                public final Object resolveArgument(String parameter) throws Exception {
+                    Object arg = resolveName(parameter);
+                    try {
+                        arg = useArg(arg);
+                    } catch (Exception ex) {
+                        throw new Exception(arg, ex);
+                    }
+                    return arg;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Avoid NPE for unresolved variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public abstract class AbstractNamedValueMethodArgumentResolver {
+                public final Object resolveArgument() {
+                    try { }
+                    catch (Exception e) {
+                        throw unresolved;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 
 </test-data>
