@@ -286,6 +286,4 @@ public final class TypeTestUtil {
         // Note: annotations may be implemented by classes
         return Modifier.isFinal(clazz.getModifiers()) && !clazz.isArray() || clazz.isPrimitive();
     }
-
-
 }
