@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.TEST_METHOD;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -14,35 +16,29 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
 public class ApexUnitTestMethodShouldHaveIsTestAnnotationRule extends AbstractApexUnitTestRule {
-    private static final Set<String> ASSERT_METHODS = new HashSet<>();
-
-    static {
-        ASSERT_METHODS.add("system.assert");
-        ASSERT_METHODS.add("system.assertequals");
-        ASSERT_METHODS.add("system.assertnotequals");
-    }
 
     @Override
     public Object visit(final ASTMethod node, final Object data) {
-        // test methods should have @isTest annotation.
+        // test methods should have @isTest annotation not testMethod
         if (isTestMethodOrClass(node)) {
-            return data;
-        }
-        return checkForAssertStatements(node, data);
-    }
-
-    private Object checkForAssertStatements(final ASTMethod testMethod, final Object data) {
-        List<ASTMethodCallExpression> methodCallList = testMethod.findDescendantsOfType(ASTMethodCallExpression.class);
-        String assertMethodName;
-        for (ASTMethodCallExpression assertMethodCall : methodCallList) {
-            assertMethodName = assertMethodCall.getFullMethodName().toLowerCase(Locale.ROOT);
-            if (ASSERT_METHODS.contains(assertMethodName)) {
-                addViolationWithMessage(data, testMethod,
-                        "''{0}'' method should have @IsTest annotation.",
-                        new Object[] { testMethod.getImage() });
-                return data;
+            if (hasDeprecatedTestMethodAnnotation(node)) {
+                return addViolation(node, data);
             }
         }
+        return data;
+    }
+
+    private boolean hasDeprecatedTestMethodAnnotation(final ASTMethod method) {
+        return method.getNode().getModifiers().has(TEST_METHOD);
+    }
+
+    private Object addViolation(final ASTMethod testMethod, final Object data) {
+        addViolationWithMessage(
+            data,
+            testMethod,
+            "''{0}'' method should have @IsTest annotation.",
+            new Object[] { testMethod.getImage() }
+        );
         return data;
     }
 }
