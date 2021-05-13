@@ -99,7 +99,7 @@ public class Something {
           class="net.sourceforge.pmd.lang.apex.rule.performance.OperationWithLimitsInLoopRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#operationwithlimitsinloop">
         <description>
-            Database class methods, DML operations, SOQL queries, or SOSL queries within loops can cause governor limit exceptions. Instead, try to batch up the data into a list and invoke the operation once on that list of data outside the loop.
+            Database class methods, DML operations, SOQL queries, SOSL queries, Approval class methods, Email sending, async scheduling or queueing within loops can cause governor limit exceptions. Instead, try to batch up the data into a list and invoke the operation once on that list of data outside the loop.
         </description>
         <priority>3</priority>
         <example>
@@ -128,6 +128,32 @@ public class Something {
     public void soslInsideOfLoop() {
         for (Integer i = 0; i < 10; i++) {
             List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+        }
+    }
+
+    public void messageInsideOfLoop() {
+        for (Integer i = 0; i < 10; i++) {
+            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+            Messaging.sendEmail(new Messaging.SingleEmailMessage[]{email});
+        }
+    }
+
+    public void approvalInsideOfLoop(Account[] accs) {
+        for (Integer i = 0; i < 10; i++) {
+            Account acc = accs[i];
+            Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+            req.setObjectId(acc.Id);
+            Approval.process(req);
+            Approval.lock(acc);
+            Approval.unlock(acc);
+        }
+    }
+
+    public void asyncInsideOfLoop() {
+        for (Integer i = 0; i < 10; i++) {
+            System.enqueueJob(new MyQueueable());
+            System.schedule('x', '0 0 0 1 1 ?', new MySchedule());
+            System.scheduleBatch(new MyBatch(), 'x', 1);
         }
     }
 }
