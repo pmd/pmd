@@ -3,7 +3,7 @@
  */
 
 
-package net.sourceforge.pmd.lang.java.types.internal.infer
+package net.sourceforge.pmd.lang.java.types.ast
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
@@ -244,6 +244,28 @@ class ConversionContextTests : ProcessorTestSpec({
                     it.rightOperand.conversionContext::getTargetType shouldBe ts.STRING
                 }
             }
+        }
+    }
+    parserTest("Relational ops") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Scratch {
+                static void m(int i) {
+                    eat(i < i++);       //l0
+                    eat(i > (long) i);  //l1
+                }
+                void eat(Object d) {}
+            }
+        """)
+
+        val (l0, l1) = acu.descendants(ASTInfixExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            l0.leftOperand.conversionContext::getTargetType shouldBe int
+            l0.rightOperand.conversionContext::getTargetType shouldBe int
+
+            l1.leftOperand.conversionContext::getTargetType shouldBe long
+            l1.rightOperand.conversionContext::getTargetType shouldBe long
         }
     }
 })

@@ -37,7 +37,7 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
      * default options of JavaParsingHelper. This allows constants like
      * the null type to be compared.
      */
-    public static final TypeSystem TEST_TYPE_SYSTEM = new TypeSystem(JavaParsingHelper.class.getClassLoader());
+    public static final TypeSystem TEST_TYPE_SYSTEM = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
 
     /** This just runs the parser and no processing stages. */
     public static final JavaParsingHelper JUST_PARSE = new JavaParsingHelper(Params.getDefaultNoProcess(), SemanticErrorReporter.noop(), TEST_TYPE_SYSTEM, TypeInferenceLogger.noop());

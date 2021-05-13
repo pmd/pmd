@@ -845,23 +845,25 @@ public class Foo {
         <description>#1228 UnusedPrivateMethod returns false positives (7)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-
-interface JTree {}
-class TreeNode implements JTree {}
+class JTree {
+    JTree getRoot() {return this;}
+}
+class TreeNode extends JTree {}
 
 public class Box {
     interface Action { void perform(); }
+
+    void add(Action a) {}
 
     private final JTree tree = new JTree();
     public void makeUI() {
         Box box = new Box();
         box.add(new Action() {
             @Override public void perform() {
-                TreeNode root = (TreeNode) tree.getModel().getRoot();
+                TreeNode root = (TreeNode) tree.getRoot();
                 visitAll(tree, true); // line 14
             }
         });
-        return p;
     }
     private static void visitAll(JTree tree, boolean expand) { }
 }

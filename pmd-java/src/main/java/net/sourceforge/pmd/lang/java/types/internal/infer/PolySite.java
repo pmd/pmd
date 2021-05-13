@@ -29,7 +29,7 @@ public class PolySite<E extends PolyExprMirror> {
         return expectedType;
     }
 
-    E getExpr() {
+    public final E getExpr() {
         return expr;
     }
 

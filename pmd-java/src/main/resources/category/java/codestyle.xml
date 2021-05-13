@@ -1701,49 +1701,39 @@ public class Foo {
     <rule name="UseDiamondOperator"
           language="java"
           since="6.11.0"
-          message="Explicit type arguments can be replaced by Diamond Operator"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          message="Explicit type arguments can be replaced by a diamond: `{0}`"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UseDiamondOperatorRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#usediamondoperator"
           minimumLanguageVersion="1.7">
-        <description>
-Use the diamond operator to let the type be inferred automatically. With the Diamond operator it is possible
-to avoid duplication of the type parameters.
-Instead, the compiler is now able to infer the parameter types for constructor calls,
-which makes the code also more readable.
+        <description><![CDATA[
+In some cases, explicit type arguments in a constructor call for a generic type
+may be replaced by diamond type arguments (`<>`), and be inferred by the compiler.
+This rule recommends that you use diamond type arguments anywhere possible, since
+it avoids duplication of the type arguments, and makes the code more concise and readable.
 
-The diamond operator has been introduced with java 7. However, type inference has been improved further
-with java8, rendering more type parameters unnecessary. This is only possible with java8 and the resulting
-code won't compile with java7. If you use java7, make sure to enable `java7Compatibility` for this rule to avoid
-false positives.
-        </description>
+This rule is useful when upgrading a codebase to Java 1.7, Java 1.8, or Java 9.
+The diamond syntax was first introduced in Java 1.7. In Java 8, improvements in Java's
+type inference made more type arguments redundant. In Java 9, type arguments inference
+was made possible for anonymous class constructors.
+            ]]></description>
         <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0" />
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-(
-//VariableInitializer[preceding-sibling::VariableDeclaratorId[1]/@TypeInferred=false()]
-|
-//StatementExpression[AssignmentOperator and PrimaryExpression/PrimaryPrefix[not(Expression)]]
-)
-/(Expression | Expression[$java7Compatibility = false()]/ConditionalExpression | Expression[$java7Compatibility = false()]/ConditionalExpression/Expression)
-/PrimaryExpression[not(PrimarySuffix) and not(ancestor::ArgumentList)]
-/PrimaryPrefix
-/AllocationExpression
-    [@AnonymousClass=false()]
-    [ClassOrInterfaceType/TypeArguments[@Diamond=false() and not($java7Compatibility = true() and .//TypeArgument[@Wildcard=true()])]]
-    [not(ArrayDimsAndInits)]
-]]>
-                </value>
-            </property>
-            <property name="java7Compatibility" type="Boolean" description="If disabled, the rule shows also violations that are applicable for java8+" value="false" />
-        </properties>
         <example>
             <![CDATA[
-List<String> strings = new ArrayList<String>(); // unnecessary duplication of type parameters
-List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operator is more concise
-]]>
+            import java.util.*;
+            class Foo {
+                static {
+                    List<String> strings;
+                    strings = new ArrayList<String>(); // unnecessary duplication of type parameters
+                    strings = new ArrayList<>();       // using diamond type arguments is more concise
+
+                    strings = new ArrayList(); // accidental use of a raw type, you can use ArrayList<> instead
+
+                    strings = new ArrayList<>() {
+                        // for anonymous classes, this is possible since Java 9 only
+                    };
+                }
+            }
+            ]]>
         </example>
     </rule>
 
