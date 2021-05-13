@@ -119,7 +119,7 @@ public class OnlyOneReturn {
     </test-code>
 
     <test-code>
-        <description>False positive with anonymous class #3274</description>
+        <description>False negative with anonymous class #3274</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>6,7</expected-linenumbers>
         <code><![CDATA[
