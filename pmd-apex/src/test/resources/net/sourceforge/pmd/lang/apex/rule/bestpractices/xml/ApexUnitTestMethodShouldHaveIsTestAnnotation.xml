@@ -14,7 +14,7 @@ private class ATest {
     @isTest
     static void methodATest() {
     }
-    static void methodBTest() {
+    static testmethod void methodBTest() {
         System.assert(1==2);
     }
     @isTest static void methodCTest() {
@@ -26,7 +26,7 @@ private class ATest {
     static void methodETest() {
         System.debug('I am a debug statement.');
     }
-    static void methodFTest() {
+    static testmethod void methodFTest() {
         System.assertEquals(1,2);
     }
     private void fetchData() {
