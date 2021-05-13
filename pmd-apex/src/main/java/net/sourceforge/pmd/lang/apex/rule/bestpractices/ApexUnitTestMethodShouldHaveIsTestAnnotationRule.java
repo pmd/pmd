@@ -30,7 +30,7 @@ public class ApexUnitTestMethodShouldHaveIsTestAnnotationRule extends AbstractAp
         addViolationWithMessage(
             data,
             testMethod,
-            "''{0}'' method should have @IsTest annotation.",
+            "''{0}'' method should have @isTest annotation.",
             new Object[] { testMethod.getImage() }
         );
         return data;
