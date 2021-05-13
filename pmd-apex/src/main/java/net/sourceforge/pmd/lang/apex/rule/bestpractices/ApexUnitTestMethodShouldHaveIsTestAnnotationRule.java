@@ -6,13 +6,7 @@ package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.TEST_METHOD;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
 public class ApexUnitTestMethodShouldHaveIsTestAnnotationRule extends AbstractApexUnitTestRule {
