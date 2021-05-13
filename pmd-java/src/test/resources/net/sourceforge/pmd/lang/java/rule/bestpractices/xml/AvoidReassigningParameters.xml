@@ -5,6 +5,24 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
+        <description>example</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Hello {
+  private void greet(String name) {
+    name = name.trim();
+    System.out.println("Hello " + name);
+
+    // preferred
+    String trimmedName = name.trim();
+    System.out.println("Hello " + trimmedName);
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>reassigned parameter, bad</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
