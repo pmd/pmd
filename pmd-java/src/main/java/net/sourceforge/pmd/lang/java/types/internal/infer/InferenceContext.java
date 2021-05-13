@@ -101,7 +101,7 @@ final class InferenceContext {
 
     private void addPrimaryBound(InferenceVar ivar) {
         for (JTypeMirror ui : asList(ivar.getBaseVar().getUpperBound())) {
-            ivar.addBound(BoundKind.UPPER, mapToIVars(ui));
+            ivar.addPrimaryBound(BoundKind.UPPER, mapToIVars(ui));
         }
     }
 
@@ -324,16 +324,16 @@ final class InferenceContext {
     }
 
 
-    void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
+    void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isPrimary) {
         // guard against α <: Object
         // all variables have it, it's useless to propagate it
         if (kind != BoundKind.UPPER || bound != ts.OBJECT) { // NOPMD CompareObjectsWithEquals
             if (parent != null) {
-                parent.onBoundAdded(ivar, kind, bound, isSubstitution);
+                parent.onBoundAdded(ivar, kind, bound, isPrimary);
                 return;
             }
 
-            logger.boundAdded(this, ivar, kind, bound, isSubstitution);
+            logger.boundAdded(this, ivar, kind, bound, isPrimary);
 
             incorporationActions.add(new CheckBound(ivar, kind, bound));
             incorporationActions.add(new PropagateBounds(ivar, kind, bound));
@@ -377,7 +377,11 @@ final class InferenceContext {
      * @throws ResolutionFailedException Because it calls {@link #incorporate()}
      */
     void solve() {
-        solve(new GraphWalk(this));
+        solve(false);
+    }
+
+    boolean solve(boolean onlyBoundedVars) {
+        return solve(new GraphWalk(this, onlyBoundedVars));
     }
 
     /**
@@ -388,7 +392,7 @@ final class InferenceContext {
         solve(new GraphWalk(var));
     }
 
-    private void solve(VarWalkStrategy walker) {
+    private boolean solve(VarWalkStrategy walker) {
         incorporate();
 
         while (walker.hasNext()) {
@@ -410,6 +414,7 @@ final class InferenceContext {
                 }
             }
         }
+        return freeVars.isEmpty();
     }
 
     /**

@@ -61,6 +61,24 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
         return version.length() > 0 ? language.getTerseName() + ' ' + version : language.getTerseName();
     }
 
+    /**
+     * Compare this version to another version of the same language identified
+     * by the given version string.
+     *
+     * @param versionString The version with which to compare
+     *
+     * @throws IllegalArgumentException If the argument is not a valid version
+     *                                  string for the parent language
+     */
+    public int compareToVersion(String versionString) {
+        LanguageVersion otherVersion = language.getVersion(versionString);
+        if (otherVersion == null) {
+            throw new IllegalArgumentException(
+                "No such version '" + versionString + "' for language " + language.getName());
+        }
+        return this.compareTo(otherVersion);
+    }
+
     @Override
     public int compareTo(LanguageVersion o) {
         if (o == null) {
