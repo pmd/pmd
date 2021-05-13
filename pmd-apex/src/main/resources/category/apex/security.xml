@@ -53,7 +53,9 @@ should be [suppressed](pmd_userdocs_suppressing_warnings.html).
 <![CDATA[
 public class Foo {
     public Contact foo(String status, String ID) {
-        Contact c = [SELECT Status__c FROM Contact WHERE Id=:ID];
+
+        // validate you can actually query what you intend to retrieve
+        Contact c = [SELECT Status__c FROM Contact WHERE Id=:ID WITH SECURITY_ENFORCED];
 
         // Make sure we can update the database before even trying
         if (!Schema.sObjectType.Contact.fields.Name.isUpdateable()) {
