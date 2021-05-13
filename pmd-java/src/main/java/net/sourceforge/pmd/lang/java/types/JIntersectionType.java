@@ -186,7 +186,7 @@ public final class JIntersectionType implements JTypeMirror {
                 }
             } else if (ci instanceof JClassType) {
                 // must be an interface, as per isExclusiveBlabla
-                assert ci.isInterface();
+                assert ci.isInterface() || TypeOps.hasUnresolvedSymbol(ci);
             } else {
                 throw malformedIntersection(primary, flattened);
             }

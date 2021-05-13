@@ -159,8 +159,6 @@ public final class TypeConversion {
         List<JTypeMirror> typeArgs = type.getTypeArgs();
         List<JTypeVar> typeParams = type.getFormalTypeParams();
 
-        assert typeParams.size() == typeArgs.size() : "Type is not well formed " + type + " (expects " + typeParams.size() + " params)";
-
         // This is the algorithm described at https://docs.oracle.com/javase/specs/jls/se10/html/jls-5.html#jls-5.1.10
 
         // Let G name a generic type declaration (§8.1.2, §9.1.2)
@@ -176,11 +174,14 @@ public final class TypeConversion {
 
         List<JTypeMirror> freshVars = makeFreshVars(type);
 
+        // types may be non-well formed if the symbol is unresolved
+        // in this case the typeParams list is most likely empty
+        boolean wellFormed = typeParams.size() == freshVars.size();
+
         // Map of Ai to Si, for the substitution
-        Substitution subst = Substitution.mapping(typeParams, freshVars);
+        Substitution subst = wellFormed ? Substitution.mapping(typeParams, freshVars) : Substitution.EMPTY;
 
         for (int i = 0; i < typeArgs.size(); i++) {
-            JTypeVar param = typeParams.get(i);         // Ai
             JTypeMirror fresh = freshVars.get(i);       // Si
             JTypeMirror arg = typeArgs.get(i);          // Ti
 
@@ -191,7 +192,7 @@ public final class TypeConversion {
                 JWildcardType w = (JWildcardType) arg;        // Ti alias
                 TypeVarImpl.CapturedTypeVar freshVar = (TypeVarImpl.CapturedTypeVar) fresh; // Si alias
 
-                JTypeMirror prevUpper = param.getUpperBound(); // Ui
+                JTypeMirror prevUpper = wellFormed ? typeParams.get(i).getUpperBound() : ts.OBJECT; // Ui
                 JTypeMirror substituted = TypeOps.subst(prevUpper, subst);
 
                 if (w.isUnbounded()) {
