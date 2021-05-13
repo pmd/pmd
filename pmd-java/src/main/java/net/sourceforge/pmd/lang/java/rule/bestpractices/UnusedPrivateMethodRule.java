@@ -13,15 +13,20 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * This rule detects private methods, that are not used and can therefore be
@@ -41,25 +46,45 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * Visit each method declaration.
-     *
-     * @param node
-     *            the method declaration
-     * @param data
-     *            data - rule context
-     * @return data
+     * Return a set of method names which are considered used. Only the
+     * no-arg overload is considered used.
      */
+    private static Set<String> methodsUsedByAnnotations(ASTClassOrInterfaceDeclaration klassDecl) {
+        Set<String> result = Collections.emptySet();
+        for (ASTAnyTypeBodyDeclaration declaration : klassDecl.getDeclarations()) {
+            for (ASTAnnotation annot : declaration.findChildrenOfType(ASTAnnotation.class)) {
+                if (TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", annot)) {
+                    // MethodSource#value() -> String[], there may be several of those methods
+                    // todo this is not robust, revisit in pmd 7
+                    for (ASTLiteral literal : annot.findDescendantsOfType(ASTLiteral.class)) {
+                        if (literal.isStringLiteral()) {
+                            if (result.isEmpty()) {
+                                result = new HashSet<>(); // make writable
+                            }
+                            result.add(StringUtil.removeDoubleQuotes(literal.getImage()));
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
             return data;
         }
 
+        Set<String> methodsUsedByAnnotations = methodsUsedByAnnotations(node);
+
         Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class)
-                .getMethodDeclarations();
+                                                                       .getMethodDeclarations();
         for (MethodNameDeclaration mnd : findUnique(methods)) {
             List<NameOccurrence> occs = methods.get(mnd);
-            if (!privateAndNotExcluded(mnd) || hasIgnoredAnnotation((Annotatable) mnd.getNode().getParent())) {
+            if (!privateAndNotExcluded(mnd)
+                || hasIgnoredAnnotation((Annotatable) mnd.getNode().getParent())
+                || mnd.getParameterCount() == 0 && methodsUsedByAnnotations.contains(mnd.getName())) {
                 continue;
             }
             if (occs.isEmpty()) {

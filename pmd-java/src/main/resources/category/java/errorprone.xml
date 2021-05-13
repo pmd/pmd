@@ -1100,24 +1100,38 @@ public class Bar {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#compareobjectswithequals">
         <description>
-Use equals() to compare object references; avoid comparing them with ==.
+Use `equals()` to compare object references; avoid comparing them with `==`.
+
+Since comparing objects with named constants is useful in some cases (eg, when
+defining constants for sentinel values), the rule ignores comparisons against
+fields with all-caps name (eg `this == SENTINEL`), which is a common naming
+convention for constant fields.
+
+You may allow some types to be compared by reference by listing the exceptions
+in the `typesThatCompareByReference` property.
         </description>
         <priority>3</priority>
         <properties>
             <property name="version" value="2.0"/>
+            <property name="typesThatCompareByReference" type="List[String]" delimiter="," description="List of canonical type names for which reference comparison is allowed.">
+                <value>java.lang.Enum,java.lang.Class</value>
+            </property>
             <property name="xpath">
                 <value>
 <![CDATA[
 //EqualityExpression
-    [count(PrimaryExpression
-        [pmd-java:typeIs('java.lang.Object')]
-        [not(pmd-java:typeIs('java.lang.Enum'))]
-        [not(pmd-java:typeIs('java.lang.Class'))]) = 2
+    [count(
+        PrimaryExpression[pmd-java:typeIs('java.lang.Object')]
+        [not(some $t in $typesThatCompareByReference satisfies pmd-java:typeIs($t))]
+       ) = 2
     ]
     [not(PrimaryExpression[PrimaryPrefix/@ThisModifier = true()]
                           [not(PrimarySuffix)]
                           [ancestor::MethodDeclaration[@Name = 'equals']])
     ]
+    (: Is not a field access with an all-caps identifier :)
+    [not(PrimaryExpression[not(PrimarySuffix) and PrimaryPrefix/Name[upper-case(@Image)=@Image]
+     or PrimaryExpression/PrimarySuffix[last()][upper-case(@Image)=@Image]])]
 ]]>
                 </value>
             </property>
@@ -2953,9 +2967,9 @@ public class Singleton {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.SingletonClassReturningNewInstanceRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#singletonclassreturningnewinstance">
         <description>
-Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
-is that the instance created using the overloaded method is not cached and so,
-for each call and new objects will be created for every invocation.
+            A singleton class should only ever have one instance. Failure to check
+            whether an instance has already been created may result in multiple
+            instances being created.
         </description>
         <priority>2</priority>
         <example>
@@ -2964,7 +2978,7 @@ class Singleton {
     private static Singleton instance = null;
     public static Singleton getInstance() {
         synchronized(Singleton.class) {
-            return new Singleton();
+            return new Singleton(); // this should be assigned to the field
         }
     }
 }

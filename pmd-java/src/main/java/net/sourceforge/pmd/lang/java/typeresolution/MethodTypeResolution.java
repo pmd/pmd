@@ -37,6 +37,11 @@ import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
 @Deprecated
 @InternalApi
 public final class MethodTypeResolution {
+    /**
+     * 
+     */
+    private static final String MESSAGE_INCOMPLETE_AUXCLASSPATH = "Possible incomplete auxclasspath: Error while processing methods";
+
     private MethodTypeResolution() {}
 
     private static final Logger LOG = Logger.getLogger(MethodTypeResolution.class.getName());
@@ -477,7 +482,7 @@ public final class MethodTypeResolution {
             }
         } catch (final LinkageError e) {
             // This is an incomplete classpath, report the missing class
-            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
+            LOG.log(Level.FINE, MESSAGE_INCOMPLETE_AUXCLASSPATH, e);
         }
 
         // search it's supertype
@@ -496,7 +501,7 @@ public final class MethodTypeResolution {
             } catch (TypeNotPresentException | LinkageError e) {
                 // might be thrown by contextClass.getGenericSuperclass()
                 // This is an incomplete classpath, report the missing class
-                LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
+                LOG.log(Level.FINE, MESSAGE_INCOMPLETE_AUXCLASSPATH, e);
             }
         }
 
@@ -509,7 +514,7 @@ public final class MethodTypeResolution {
         } catch (TypeNotPresentException | LinkageError e) {
             // might be thrown by contextClass.getGenericInterface()
             // This is an incomplete classpath, report the missing class
-            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing methods", e);
+            LOG.log(Level.FINE, MESSAGE_INCOMPLETE_AUXCLASSPATH, e);
         }
 
         return result;
@@ -522,15 +527,22 @@ public final class MethodTypeResolution {
             return MethodType.build(method);
         }
 
-        JavaTypeDefinition returnType = context.resolveTypeDefinition(method.getGenericReturnType(),
-                                                                      method, typeArguments);
-        List<JavaTypeDefinition> argTypes = new ArrayList<>();
+        try {
+            JavaTypeDefinition returnType = context.resolveTypeDefinition(method.getGenericReturnType(),
+                                                                          method, typeArguments);
+            List<JavaTypeDefinition> argTypes = new ArrayList<>();
 
-        for (Type argType : method.getGenericParameterTypes()) {
-            argTypes.add(context.resolveTypeDefinition(argType, method, typeArguments));
+            for (Type argType : method.getGenericParameterTypes()) {
+                argTypes.add(context.resolveTypeDefinition(argType, method, typeArguments));
+            }
+            return MethodType.build(returnType, argTypes, method);
+        } catch (TypeNotPresentException | LinkageError e) {
+            // might be thrown by method.getGenericReturnType() and method.getGenericParameterTypes()
+            // This is an incomplete classpath, report the missing class
+            LOG.log(Level.FINE, MESSAGE_INCOMPLETE_AUXCLASSPATH, e);
+
+            return MethodType.build(method);
         }
-
-        return MethodType.build(returnType, argTypes, method);
     }
 
 
@@ -682,6 +694,12 @@ public final class MethodTypeResolution {
             // example result: List<String>.getAsSuper(Collection) becomes Collection<String>
             JavaTypeDefinition argSuper = argument.getAsSuper(parameter.getType());
             // argSuper can't be null because isAssignableFrom check above returned true
+            // it might be null however, if the auxclasspath was not complete...
+            if (argSuper == null) {
+                // that's not really correct, because the generic type are ignored...
+                // be we can't compare the types
+                return true;
+            }
 
             // right now we only check if generic arguments are the same
             // TODO: add support for wildcard types
