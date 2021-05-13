@@ -274,7 +274,7 @@ public class ObjectCreator {
     </test-code>
 
     <test-code>
-        <description>FN with lambdas</description>
+        <description>FN with lambdas #3275</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
@@ -289,7 +289,7 @@ public class UnnecessaryLocal {
     </test-code>
 
     <test-code>
-        <description>FN with anonymous classes</description>
+        <description>FN with anonymous classes #3275</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
