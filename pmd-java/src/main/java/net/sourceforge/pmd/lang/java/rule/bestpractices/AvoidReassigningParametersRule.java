@@ -41,8 +41,10 @@ public class AvoidReassigningParametersRule extends AbstractJavaRule {
                         && (!decl.isArray()
                                 || jocc.getLocation().getParent().getParent().getNumChildren() == 1)) {
                     // not an array or no primary suffix to access the array values
-                    // note: this reports each assignment separately
                     addViolation(data, occ.getLocation(), decl.getImage());
+
+                    // only the first assignment should be reported
+                    break;
                 }
             }
         }
