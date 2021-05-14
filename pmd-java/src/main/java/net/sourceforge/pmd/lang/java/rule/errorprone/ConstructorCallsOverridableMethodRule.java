@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
@@ -857,6 +858,12 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
         // just skip Enums
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
+        // just skip Annotations
         return data;
     }
 
