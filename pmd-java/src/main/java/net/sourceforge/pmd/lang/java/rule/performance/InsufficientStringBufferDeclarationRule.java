@@ -302,8 +302,6 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             } else {
                 iConstructorLength = calculateExpression(argumentList);
             }
-        } else {
-            iConstructorLength = DEFAULT_BUFFER_SIZE;
         }
 
         if (iConstructorLength == 0) {

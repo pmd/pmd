@@ -1299,4 +1299,17 @@ public class InsufficientStringBufferDeclaration {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive with method formal parameter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class InsufficientStringBufferDeclaration {
+    protected void appendHintMessage(StringBuilder msg) {
+        msg.append("A very long text");
+        msg.append("that is longer than 16 characters");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
