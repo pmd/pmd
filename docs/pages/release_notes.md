@@ -48,7 +48,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3248](https://github.com/pmd/pmd/issues/3248): \[java] Documentation is wrong for SingletonClassReturningNewInstance rule
     *   [#3110](https://github.com/pmd/pmd/issues/3110): \[java] Enhance CompareObjectsWithEquals with list of exceptions
     *   [#3205](https://github.com/pmd/pmd/issues/3205): \[java] Make CompareObjectWithEquals allow comparing against constants
-
+*   java-performance
+    *   [#1438](https://github.com/pmd/pmd/issues/1438): \[java] InsufficientStringBufferDeclaration false positive for initial calculated StringBuilder size
 
 ### API Changes
 
