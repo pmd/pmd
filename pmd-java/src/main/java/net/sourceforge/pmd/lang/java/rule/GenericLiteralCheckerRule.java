@@ -30,6 +30,7 @@ public class GenericLiteralCheckerRule extends AbstractJavaRule {
 
     public GenericLiteralCheckerRule() {
         definePropertyDescriptor(REGEX_PROPERTY);
+        addRuleChainVisit(ASTLiteral.class);
     }
 
     private void init() {
