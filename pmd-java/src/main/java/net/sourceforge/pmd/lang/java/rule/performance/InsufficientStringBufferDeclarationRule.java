@@ -14,7 +14,9 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -31,9 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -77,7 +77,9 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
         constructorLength = getConstructorLength(node, constructorLength);
         anticipatedLength = getInitialLength(node);
-
+        if (anticipatedLength > 0) {
+            constructorLength = anticipatedLength + DEFAULT_BUFFER_SIZE;
+        }
         anticipatedLength += getConstructorAppendsLength(node);
 
         List<NameOccurrence> usage = node.getUsages();
@@ -114,9 +116,13 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                     }
 
                     // new initial capacity
-                    constructorLength = getConstructorLength(n, constructorLength);
+                    constructorLength = getConstructorLength(n, DEFAULT_BUFFER_SIZE);
                     rootNode = n;
                     anticipatedLength = getInitialLength(n);
+                    if (anticipatedLength > 0) {
+                        constructorLength = anticipatedLength + DEFAULT_BUFFER_SIZE;
+                    }
+                    anticipatedLength += getConstructorAppendsLength(n);
                 }
 
                 if (constructorLength != -1 && anticipatedLength > constructorLength) {
@@ -258,6 +264,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                                 // base 10 integer string: 3735928559
                                 anticipatedLength += String.valueOf(literal.getValueAsLong()).length();
                             }
+                        } else if (literal.isLongLiteral()) {
+                            anticipatedLength += String.valueOf(literal.getValueAsLong()).length();
                         } else {
                             anticipatedLength += str.length();
                         }
@@ -294,6 +302,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             } else {
                 iConstructorLength = calculateExpression(argumentList);
             }
+        } else {
+            iConstructorLength = DEFAULT_BUFFER_SIZE;
         }
 
         if (iConstructorLength == 0) {
@@ -361,16 +371,20 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     }
 
     private int getInitialLength(Node node) {
-
         Node block = node.getFirstParentOfType(ASTBlockStatement.class);
-
         if (block == null) {
             block = node.getFirstParentOfType(ASTFieldDeclaration.class);
             if (block == null) {
                 block = node.getFirstParentOfType(ASTFormalParameter.class);
             }
         }
-        List<ASTLiteral> literals = block.findDescendantsOfType(ASTLiteral.class);
+
+        ASTAllocationExpression allocation = block.getFirstDescendantOfType(ASTAllocationExpression.class);
+        if (allocation == null) {
+            return 0;
+        }
+
+        List<ASTLiteral> literals = allocation.findDescendantsOfType(ASTLiteral.class);
         if (literals.size() == 1) {
             ASTLiteral literal = literals.get(0);
             String str = literal.getImage();
@@ -383,22 +397,23 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     }
 
     private int getConstructorAppendsLength(final Node node) {
-        final Node parent = node.getFirstParentOfType(ASTVariableDeclarator.class);
-        int size = 0;
-        if (parent != null) {
-            final Node initializer = parent.getFirstChildOfType(ASTVariableInitializer.class);
-            if (initializer != null) {
-                final Node primExp = initializer.getFirstDescendantOfType(ASTPrimaryExpression.class);
-                if (primExp != null) {
-                    for (int i = 0; i < primExp.getNumChildren(); i++) {
-                        final Node sn = primExp.getChild(i);
-                        if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
-                            continue;
-                        }
-                        size += processNode(sn);
-                    }
-                }
+        Node block = node.getFirstParentOfType(ASTBlockStatement.class);
+        if (block == null) {
+            block = node.getFirstParentOfType(ASTFieldDeclaration.class);
+            if (block == null) {
+                block = node.getFirstParentOfType(ASTFormalParameter.class);
             }
+        }
+
+        int size = 0;
+        // these are constructor arguments and method arguments from all method calls
+        // but we want here only method calls, that are chained
+        List<ASTArguments> arguments = block.findDescendantsOfType(ASTArguments.class);
+        for (ASTArguments arg : arguments) {
+            if (arg.getParent() instanceof ASTAllocationExpression) {
+                continue;
+            }
+            size += processNode(arg);
         }
         return size;
     }

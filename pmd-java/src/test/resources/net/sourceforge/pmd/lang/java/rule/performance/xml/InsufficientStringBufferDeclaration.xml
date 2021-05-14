@@ -9,7 +9,6 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer(16);
         sb.append("foo");
@@ -128,8 +127,8 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,11</expected-linenumbers>
         <expected-messages>
-            <message>StringBuffer has been initialized with size 16, but has at least 52 characters appended.</message>
-            <message>StringBuilder has been initialized with size 16, but has at least 52 characters appended.</message>
+            <message>StringBuffer has been initialized with size 40, but has at least 52 characters appended.</message>
+            <message>StringBuilder has been initialized with size 40, but has at least 52 characters appended.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -283,14 +282,13 @@ public class Foo {
     <test-code>
         <description>13, compound append</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-linenumbers>3,7</expected-linenumbers>
         <expected-messages>
             <message>StringBuffer has been initialized with size 16, but has at least 25 characters appended.</message>
             <message>StringBuilder has been initialized with size 16, but has at least 25 characters appended.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer();
         sb.append("foo").append("this will make it long");
@@ -308,7 +306,6 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer(30);
         sb.append("foo").append("this is presized just right");
@@ -324,21 +321,20 @@ public class Foo {
     <test-code>
         <description>15, Append long, incorrect presize</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-linenumbers>3,7</expected-linenumbers>
         <expected-messages>
-            <message>StringBuffer has been initialized with size 16, but has at least 21 characters appended.</message>
-            <message>StringBuilder has been initialized with size 16, but has at least 21 characters appended.</message>
+            <message>StringBuffer has been initialized with size 16, but has at least 19 characters appended.</message>
+            <message>StringBuilder has been initialized with size 16, but has at least 19 characters appended.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer();
-        sb.append(12345678901234567890L);
+        sb.append(1234567890123456789L);
     }
     public void bar2() {
         StringBuilder sb = new StringBuilder();
-        sb.append(12345678901234567890L);
+        sb.append(1234567890123456789L);
     }
 }
         ]]></code>
@@ -349,7 +345,6 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer();
         sb.append(12345);
@@ -366,14 +361,13 @@ public class Foo {
     <test-code>
         <description>17, Append char, incorrect presize</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>4,10</expected-linenumbers>
+        <expected-linenumbers>3,9</expected-linenumbers>
         <expected-messages>
             <message>StringBuffer has been initialized with size 2, but has at least 3 characters appended.</message>
             <message>StringBuilder has been initialized with size 2, but has at least 3 characters appended.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer(2);
         sb.append('a');
@@ -395,7 +389,6 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer(3);
         sb.append('a');
@@ -415,14 +408,13 @@ public class Foo {
     <test-code>
         <description>19, String concatenation, incorrect presize</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-linenumbers>3,7</expected-linenumbers>
         <expected-messages>
             <message>StringBuffer has been initialized with size 16, but has at least 33 characters appended.</message>
             <message>StringBuilder has been initialized with size 16, but has at least 33 characters appended.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer();
         sb.append("This string" + " " + "isn't nice, but valid");
@@ -438,14 +430,13 @@ public class Foo {
     <test-code>
         <description>20, String concatenation with non-literal, incorrect presize</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-linenumbers>3,7</expected-linenumbers>
         <expected-messages>
             <message>StringBuffer has been initialized with size 16, but has at least 32 characters appended.</message>
             <message>StringBuilder has been initialized with size 16, but has at least 32 characters appended.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar(String x) {
         StringBuffer sb = new StringBuffer();
         sb.append("This string" + x + "isn't nice, but valid");
@@ -1026,16 +1017,21 @@ public class Test {
 
     <test-code>
         <description>#1371 InsufficientStringBufferDeclaration not detected properly on StringBuffer</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
         <expected-messages>
             <message>StringBuffer has been initialized with size 16, but has at least 41 characters appended.</message>
+            <message>StringBuffer has been initialized with size 16, but has at least 52 characters appended.</message>
         </expected-messages>
         <code><![CDATA[
 public class StringBufferTest {
     public void test() {
         final StringBuffer stringBuffer = new StringBuffer().append("Added ").append(" a ");
         stringBuffer.append("string longer than 16 characters");
+
+        // reassignment with chaining
+        stringBuffer = new StringBuffer().append("Added ").append(" a ");
+        stringBuffer.append("string longer than 16 characters and longer");
     }
 }
         ]]></code>
