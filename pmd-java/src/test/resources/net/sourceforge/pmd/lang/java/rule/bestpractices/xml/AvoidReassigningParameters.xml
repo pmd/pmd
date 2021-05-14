@@ -5,8 +5,27 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
+        <description>example</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Hello {
+  private void greet(String name) {
+    name = name.trim();
+    System.out.println("Hello " + name);
+
+    // preferred
+    String trimmedName = name.trim();
+    System.out.println("Hello " + trimmedName);
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>reassigned parameter, bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void foo(int bar) {
@@ -29,6 +48,7 @@ public class Foo {
     <test-code>
         <description>instance variable and parameter have same name</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private int bar;
@@ -95,6 +115,7 @@ public class Foo {
     <test-code>
         <description>throws a stacktrace</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void foo(int x) {
@@ -110,6 +131,7 @@ public class Foo {
     <test-code>
         <description>postfix increment in array dereference is bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void foo(int x) {
@@ -134,6 +156,7 @@ public class Foo {
     <test-code>
         <description>assignment to array</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     int y[];
@@ -146,7 +169,8 @@ public class Foo {
 
     <test-code>
         <description>The rule should also detect parameter reassignment in constructors (at least to help young programmers still learning java basic)</description>
-        <expected-problems>3</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public Foo(int arg, String arg2, Object arg3) {
@@ -174,6 +198,7 @@ public class RealClass extends AbstractClass {
     <test-code>
         <description>parameter name starting with "this" or "super" should still be flagged</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
         <code><![CDATA[
 public class RealClass {
     public void setString(int thisParam, int superParam) {
@@ -230,6 +255,20 @@ public class PmdBug {
 public class AvoidReassigningParameters {
     public void a(String... s) {
         s[0] =  "";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3254 AvoidReassigningParameters reports wrong line numbers</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class AvoidReassigningParameters {
+    public void a(String b) {
+        b = "1";
+        b = "2"; // this is not reported, only the first assignment is
     }
 }
         ]]></code>

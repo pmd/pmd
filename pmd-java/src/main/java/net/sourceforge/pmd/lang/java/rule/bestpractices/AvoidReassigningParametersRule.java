@@ -40,9 +40,11 @@ public class AvoidReassigningParametersRule extends AbstractJavaRule {
                         && jocc.getNameForWhichThisIsAQualifier() == null && !jocc.useThisOrSuper() && !decl.isVarargs()
                         && (!decl.isArray()
                                 || jocc.getLocation().getParent().getParent().getNumChildren() == 1)) {
-                    // not an array or no primary suffix to access the array
-                    // values
-                    addViolation(data, decl.getNode(), decl.getImage());
+                    // not an array or no primary suffix to access the array values
+                    addViolation(data, occ.getLocation(), decl.getImage());
+
+                    // only the first assignment should be reported
+                    break;
                 }
             }
         }

@@ -21,6 +21,10 @@ public class UselessAssignment extends AbstractJavaRule implements Executable {
 
     private RuleContext rc;
 
+    public UselessAssignment() {
+        addRuleChainVisit(ASTMethodDeclaration.class);
+    }
+
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         this.rc = (RuleContext) data;
