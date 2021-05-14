@@ -1784,15 +1784,30 @@ is always the one thrown in a try block.</p>
 
 <p><strong>Priority:</strong> Medium High (2)</p>
 
-<p>Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.</p>
+<p>Reassigning values to incoming parameters of a method or constructor is not recommended, as this can
+make the code more difficult to understand. The code is often read with the assumption that parameter values
+don’t change and an assignment violates therefore the principle of least astonishment. This is especially a
+problem if the parameter is documented e.g. in the method’s javadoc and the new content differs from the original
+documented content.</p>
+
+<p>Use temporary local variables instead. This allows you to assign a new name, which makes the code better
+understandable.</p>
+
+<p>Note that this rule considers both methods and constructors. If there are multiple assignments for a formal
+parameter, then only the first assignment is reported.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AvoidReassigningParametersRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningParametersRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="nc">String</span> <span class="n">bar</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">bar</span> <span class="o">=</span> <span class="s">"something else"</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Hello</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">greet</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="na">trim</span><span class="o">();</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello "</span> <span class="o">+</span> <span class="n">name</span><span class="o">);</span>
+
+    <span class="c1">// preferred</span>
+    <span class="nc">String</span> <span class="n">trimmedName</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="na">trim</span><span class="o">();</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello "</span> <span class="o">+</span> <span class="n">trimmedName</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -3799,7 +3814,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 10, 2021 <br />
+ Site last generated: May 14, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

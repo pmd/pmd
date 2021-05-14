@@ -1436,7 +1436,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_bestpractices.html#avoidprintstacktrace">AvoidPrintStackTrace</a>: Avoid printStackTrace(); use a logger call instead.</li>
   <li><a href="pmd_rules_java_bestpractices.html#avoidreassigningcatchvariables">AvoidReassigningCatchVariables</a>: Reassigning exception variables caught in a catch statement should be avoided because of: 1) If i…</li>
   <li><a href="pmd_rules_java_bestpractices.html#avoidreassigningloopvariables">AvoidReassigningLoopVariables</a>: Reassigning loop variables can lead to hard-to-find bugs. Prevent or limit how these variables ca…</li>
-  <li><a href="pmd_rules_java_bestpractices.html#avoidreassigningparameters">AvoidReassigningParameters</a>: Reassigning values to incoming parameters is not recommended.  Use temporary local variables inst…</li>
+  <li><a href="pmd_rules_java_bestpractices.html#avoidreassigningparameters">AvoidReassigningParameters</a>: Reassigning values to incoming parameters of a method or constructor is not recommended, as this …</li>
   <li><a href="pmd_rules_java_bestpractices.html#avoidstringbufferfield">AvoidStringBufferField</a>: StringBuffers/StringBuilders can grow considerably, and so may become a source of memory leaks if…</li>
   <li><a href="pmd_rules_java_bestpractices.html#avoidusinghardcodedip">AvoidUsingHardCodedIP</a>: Application with hard-coded IP addresses can become impossible to deploy in some cases. Externali…</li>
   <li><a href="pmd_rules_java_bestpractices.html#checkresultset">CheckResultSet</a>: Always check the return values of navigation methods (next, previous, first, last) of a ResultSet…</li>
@@ -1637,7 +1637,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_errorprone.html#avoidduplicateliterals">AvoidDuplicateLiterals</a>: Code containing duplicate String literals can usually be improved by declaring the String as a co…</li>
   <li><a href="pmd_rules_java_errorprone.html#avoidenumasidentifier">AvoidEnumAsIdentifier</a>: Use of the term ‘enum’ will conflict with newer versions of Java since it is a reserved word.</li>
   <li><a href="pmd_rules_java_errorprone.html#avoidfieldnamematchingmethodname">AvoidFieldNameMatchingMethodName</a>: It can be confusing to have a field name with the same name as a method. While this is permitted,…</li>
-  <li><a href="pmd_rules_java_errorprone.html#avoidfieldnamematchingtypename">AvoidFieldNameMatchingTypeName</a>: It is somewhat confusing to have a field name matching the declaring class name. This probably me…</li>
+  <li><a href="pmd_rules_java_errorprone.html#avoidfieldnamematchingtypename">AvoidFieldNameMatchingTypeName</a>: It is somewhat confusing to have a field name matching the declaring type name. This probably mea…</li>
   <li><a href="pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause">AvoidInstanceofChecksInCatchClause</a>: Each caught exception type should be handled in its own catch clause.</li>
   <li><a href="pmd_rules_java_errorprone.html#avoidliteralsinifcondition">AvoidLiteralsInIfCondition</a>: Avoid using hard-coded literals in conditional statements. By declaring them as static variables …</li>
   <li><a href="pmd_rules_java_errorprone.html#avoidlosingexceptioninformation">AvoidLosingExceptionInformation</a>: Statements in a catch block that invoke accessors on the exception without using the information …</li>
@@ -2092,7 +2092,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 10, 2021 <br />
+ Site last generated: May 14, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
