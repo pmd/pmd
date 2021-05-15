@@ -1115,5 +1115,25 @@ public class SomeOtherUserDefinedException extends Exception {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Test the message</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Thrown exception does not preserve the stack trace of exception 'ex' on all code paths</message>
+        </expected-messages>
+        <code><![CDATA[
+            public abstract class AbstractNamedValueMethodArgumentResolver {
+                protected void setThrowingNameNoCheck(String name) {
+                    try {
+                        // this.discoveredThrowingType = ClassUtils.forName(name, getAspectClassLoader());
+                    } catch (Throwable ex) {
+                        throw new IllegalArgumentException("Throwing name '" + name  +
+                                                                   "' is neither a valid argument name nor the fully-qualified " +
+                                                                   "name of a Java type on the classpath. Root cause: " + ex);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 
 </test-data>

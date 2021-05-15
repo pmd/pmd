@@ -1066,7 +1066,7 @@ String name,
     <rule name="PreserveStackTrace"
           language="java"
           since="3.7"
-          message="Thrown exception does not preserve the stack trace of exception '{0}' on all code paths"
+          message="Thrown exception does not preserve the stack trace of exception ''{0}'' on all code paths"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.PreserveStackTraceRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#preservestacktrace">
         <description>
