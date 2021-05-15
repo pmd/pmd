@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +18,9 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TestRule;
 
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.internal.SystemProps;
+import net.sourceforge.pmd.internal.util.ContextedAssertionError;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -65,8 +71,9 @@ public class SourceCodeProcessorTest {
         ctx.setLanguageVersion(dummyDefault);
 
         processor.processSourceCode(sourceCode, new RuleSets(rulesets), ctx);
-        Assert.assertEquals(1, ctx.getReport().getProcessingErrors().size());
-        Assert.assertSame(AssertionError.class, ctx.getReport().getProcessingErrors().get(0).getError().getClass());
+        List<ProcessingError> errors = ctx.getReport().getProcessingErrors();
+        assertThat(errors, hasSize(1));
+        assertThat(errors.get(0).getError(), instanceOf(ContextedAssertionError.class));
     }
 
     @Test

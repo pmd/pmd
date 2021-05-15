@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.exception.ExceptionContext;
+
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -63,25 +65,25 @@ public class RuleApplicator {
                     rule.apply(node, ctx);
                     rcto.close(1);
                 } catch (RuntimeException e) {
-                    reportOrRethrow(ctx, rule, node, e, ctx.isIgnoreExceptions());
-                } catch (AssertionError | StackOverflowError e) {
-                    reportOrRethrow(ctx, rule, node, e, SystemProps.isErrorRecoveryMode());
+                    reportOrRethrow(ctx, rule, node, AssertionUtil.contexted(e), ctx.isIgnoreExceptions());
+                } catch (StackOverflowError e) {
+                    reportOrRethrow(ctx, rule, node, AssertionUtil.contexted(e), SystemProps.isErrorRecoveryMode());
+                } catch (AssertionError e) {
+                    reportOrRethrow(ctx, rule, node, AssertionUtil.contexted(e), SystemProps.isErrorRecoveryMode());
                 }
             }
         }
     }
 
     private <E extends Throwable> void reportOrRethrow(RuleContext ctx, Rule rule, Node node, E e, boolean reportAndDontThrow) throws E {
+        if (e instanceof ExceptionContext) {
+            ((ExceptionContext) e).addContextValue("Rule applied on node", node);
+        }
+
         if (reportAndDontThrow) {
             reportException(ctx, rule, node, e);
         } else {
-            if (e instanceof RuntimeException) {
-                throw AssertionUtil.contexted((RuntimeException) e).addContextValue("Rule applied on node", node);
-            } else if (e instanceof AssertionError) {
-                throw AssertionUtil.contexted((AssertionError) e).addContextValue("Rule applied on node", node);
-            } else {
-                throw e;
-            }
+            throw e;
         }
     }
 
