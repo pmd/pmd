@@ -1135,5 +1135,37 @@ public class SomeOtherUserDefinedException extends Exception {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Avoid stackoverflow</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Foo(Foo foo) {}
+    Foo() {}
+
+    public void inject(Object bean, String beanName) throws Throwable {
+        Foo field = new Foo();
+        Object value;
+        Foo desc = new Foo(field);
+        try {
+            value = Foo.resolveDependency(desc, beanName);
+        } catch (IllegalArgumentException ex) {
+            throw new FooException(beanName, new Foo(field), ex);
+        }
+        if (value != null) {
+            field.set(bean, value);
+        }
+    }
+
+    static Object resolveDependency(Foo f, String n) { return null; }
+    void set(Object b, Object v) { }
+
+    static class FooException extends RuntimeException {
+
+        FooException(String s, Foo f, Throwable e) {}
+    }
+}
+            ]]></code>
+    </test-code>
 
 </test-data>

@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -29,11 +32,8 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
 
-/**
- * @author Unknown,
- * @author Romain PELISSE, belaran@gmail.com, fix for bug 1808110
- */
 public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
+    // todo dfa
 
     private static final InvocationMatcher INIT_CAUSE = InvocationMatcher.parse("java.lang.Throwable#initCause(_)");
     private static final CompoundInvocationMatcher ALLOWED_GETTERS = InvocationMatcher.parseAll(
@@ -44,6 +44,8 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
         "java.security.PrivilegedActionException#getException()",
         "java.security.PrivilegedActionException#getCause()"
     );
+
+    private final Set<ASTVariableDeclaratorId> recursingOnVars = new HashSet<>();
 
     public PreserveStackTraceRule() {
         super(ASTCatchClause.class);
@@ -65,10 +67,11 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
                 addViolation(data, thrownExpr, exceptionParam.getName());
             }
         }
+        recursingOnVars.clear();
         return null;
     }
 
-    private static boolean exprConsumesException(ASTVariableDeclaratorId exceptionParam, ASTExpression expr, boolean mayBeSelf) {
+    private boolean exprConsumesException(ASTVariableDeclaratorId exceptionParam, ASTExpression expr, boolean mayBeSelf) {
         if (expr instanceof ASTConstructorCall) {
             // new Exception(e)
             return ctorConsumesException(exceptionParam, (ASTConstructorCall) expr);
@@ -101,6 +104,11 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
                 return false;
             }
 
+            if (!this.recursingOnVars.add(decl)) {
+                // already recursing on this variable, avoid stackoverflow
+                return false;
+            }
+
             // if any of the initializer and usages consumes the variable,
             // answer true.
 
@@ -125,7 +133,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
         }
     }
 
-    private static boolean assignmentRhsConsumesException(ASTVariableDeclaratorId exceptionParam, ASTVariableDeclaratorId lhsVariable, ASTNamedReferenceExpr usage) {
+    private boolean assignmentRhsConsumesException(ASTVariableDeclaratorId exceptionParam, ASTVariableDeclaratorId lhsVariable, ASTNamedReferenceExpr usage) {
         if (usage.getIndexInParent() == 0) {
             ASTExpression assignmentRhs = JavaRuleUtil.getOtherOperandIfInAssignmentExpr(usage);
             boolean rhsIsSelfReferential =
@@ -138,19 +146,19 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
         return false;
     }
 
-    private static boolean ctorConsumesException(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
+    private boolean ctorConsumesException(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
         return ctorCall.isAnonymousClass() && callsInitCauseInAnonInitializer(exceptionParam, ctorCall)
             || anArgumentConsumesException(exceptionParam, ctorCall);
     }
 
-    private static boolean consumesExceptionNonRecursive(ASTVariableDeclaratorId exceptionParam, ASTExpression expr) {
+    private boolean consumesExceptionNonRecursive(ASTVariableDeclaratorId exceptionParam, ASTExpression expr) {
         if (expr instanceof ASTConstructorCall) {
             return ctorConsumesException(exceptionParam, (ASTConstructorCall) expr);
         }
         return expr instanceof InvocationNode && anArgumentConsumesException(exceptionParam, (InvocationNode) expr);
     }
 
-    private static boolean methodConsumesException(ASTVariableDeclaratorId exceptionParam, ASTMethodCall call) {
+    private boolean methodConsumesException(ASTVariableDeclaratorId exceptionParam, ASTMethodCall call) {
         if (anArgumentConsumesException(exceptionParam, call)) {
             return true;
         }
@@ -162,7 +170,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
         return exprConsumesException(exceptionParam, qualifier, mayBeSelf);
     }
 
-    private static boolean callsInitCauseInAnonInitializer(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
+    private boolean callsInitCauseInAnonInitializer(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
         return NodeStream.of(ctorCall.getAnonymousClassDeclaration())
                          .flatMap(ASTAnyTypeDeclaration::getDeclarations)
                          .map(NodeStream.asInstanceOf(ASTFieldDeclaration.class, ASTInitializer.class))
@@ -170,14 +178,14 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
                          .any(it -> isInitCauseWithTargetInArg(exceptionParam, it));
     }
 
-    private static boolean isInitCauseWithTargetInArg(ASTVariableDeclaratorId exceptionSym, JavaNode expr) {
+    private boolean isInitCauseWithTargetInArg(ASTVariableDeclaratorId exceptionSym, JavaNode expr) {
         if (INIT_CAUSE.matchesCall(expr)) {
             return anArgumentConsumesException(exceptionSym, (ASTMethodCall) expr);
         }
         return false;
     }
 
-    private static boolean anArgumentConsumesException(@NonNull ASTVariableDeclaratorId exceptionParam, InvocationNode thrownExpr) {
+    private boolean anArgumentConsumesException(@NonNull ASTVariableDeclaratorId exceptionParam, InvocationNode thrownExpr) {
         for (ASTExpression arg : ASTList.orEmptyStream(thrownExpr.getArguments())) {
             if (exprConsumesException(exceptionParam, arg, true)) {
                 return true;
