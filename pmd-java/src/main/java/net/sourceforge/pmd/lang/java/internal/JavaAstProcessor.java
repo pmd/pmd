@@ -175,7 +175,7 @@ public final class JavaAstProcessor {
                                           SemanticErrorReporter logger,
                                           TypeInferenceLogger typeInfLogger) {
 
-        TypeSystem typeSystem = TYPE_SYSTEMS.computeIfAbsent(classLoader, TypeSystem::new);
+        TypeSystem typeSystem = TYPE_SYSTEMS.computeIfAbsent(classLoader, TypeSystem::usingClassLoaderClasspath);
         return new JavaAstProcessor(
             typeSystem,
             typeSystem.bootstrapResolver(),

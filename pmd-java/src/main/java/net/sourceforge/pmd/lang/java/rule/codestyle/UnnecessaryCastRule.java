@@ -28,7 +28,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
-import net.sourceforge.pmd.lang.java.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
@@ -36,6 +35,8 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 
 /**
  * Detects casts where the operand is already a subtype of the context
@@ -72,7 +73,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         if (operand instanceof ASTLambdaExpression || operand instanceof ASTMethodReference) {
             // Then the cast provides a target type for the expression (always).
             // We need to check the enclosing context, as if it's invocation we give up for now
-            if (context.isMissing() || context.isInvocationContext()) {
+            if (context.isMissing() || context.hasKind(ExprContextKind.INVOCATION)) {
                 // Then the cast may be used to determine the overload.
                 // We need to treat the casted lambda as a whole unit.
                 // todo see below
@@ -119,7 +120,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     private static boolean castIsUnnecessaryToMatchContext(ExprContext context,
                                                            JTypeMirror coercionType,
                                                            JTypeMirror operandType) {
-        if (context.isInvocationContext()) {
+        if (context.hasKind(ExprContextKind.INVOCATION)) {
             // todo unsupported for now, the cast may be disambiguating overloads
             return false;
         }
@@ -152,13 +153,13 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // a branch of a ternary
             return true;
 
-        } else if (context.isString() && isInfixExprWithOperator(castExpr.getParent(), ADD)) {
+        } else if (context.hasKind(ExprContextKind.STRING) && isInfixExprWithOperator(castExpr.getParent(), ADD)) {
 
             // inside string concatenation
             return !TypeTestUtil.isA(String.class, JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr))
                 && !TypeTestUtil.isA(String.class, operandType);
 
-        } else if (context.isNumeric() && castExpr.getParent() instanceof ASTInfixExpression) {
+        } else if (context.hasKind(ExprContextKind.NUMERIC) && castExpr.getParent() instanceof ASTInfixExpression) {
             // numeric expr
             ASTInfixExpression parent = (ASTInfixExpression) castExpr.getParent();
 

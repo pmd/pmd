@@ -7,6 +7,7 @@ package net.sourceforge.pmd.internal.util;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AssertionUtil {
@@ -53,6 +54,14 @@ public final class AssertionUtil {
     private static String invalidRangeMessage(int startInclusive, int endExclusive, int minIndex, int maxIndex) {
         return "Invalid range [" + startInclusive + "," + endExclusive + "[ in [" + minIndex + "," + maxIndex + "[";
     }
+
+
+    public static void validateState(boolean condition, String failed) {
+        if (!condition) {
+            throw new IllegalStateException(failed);
+        }
+    }
+
 
     /**
      * @throws IllegalArgumentException if [startInclusive,endExclusive[ is
@@ -128,4 +137,14 @@ public final class AssertionUtil {
                                                : prefix + ": " + message;
         return new AssertionError(message);
     }
+
+    public static @NonNull ContextedAssertionError contexted(AssertionError e) {
+        return ContextedAssertionError.wrap(e);
+    }
+
+    public static @NonNull ContextedRuntimeException contexted(RuntimeException e) {
+        return e instanceof ContextedRuntimeException ? (ContextedRuntimeException) e
+                                                      : new ContextedRuntimeException(e);
+    }
+
 }

@@ -408,6 +408,34 @@ public final class StringUtil {
         return sb.toString();
     }
 
+    /**
+     * If the string starts and ends with the delimiter, returns the substring
+     * within the delimiters. Otherwise returns the original string. The
+     * start and end delimiter must be 2 separate instances.
+     * <pre>{@code
+     * removeSurrounding("",     _ )  = ""
+     * removeSurrounding("q",   'q')  = "q"
+     * removeSurrounding("qq",  'q')  = ""
+     * removeSurrounding("q_q", 'q')  = "_"
+     * }</pre>
+     */
+    public static String removeSurrounding(String string, char delimiter) {
+        if (string.length() >= 2
+            && string.charAt(0) == delimiter
+            && string.charAt(string.length() - 1) == delimiter) {
+            return string.substring(1, string.length() - 1);
+        }
+        return string;
+    }
+
+    /**
+     * Like {@link #removeSurrounding(String, char) removeSurrounding} with
+     * a double quote as a delimiter.
+     */
+    public static String removeDoubleQuotes(String string) {
+        return removeSurrounding(string, '"');
+    }
+
 
     /**
      * Returns an empty array of string

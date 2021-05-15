@@ -80,16 +80,18 @@ The default version is always ES6.
 
 ##### Java
 
-*   {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %} has two new properties, to selectively disable reporting on
-    static field and method qualifiers. The rule also has been improved to be more precise.
-*   The rule {% rule "java/codestyle/UselessParentheses" %} has two new properties which control how strict
-    the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
-    not necessary are allowed, if they separate expressions of different precedence.
-    The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
-    reading and understanding the expressions.
-*   The rule {% rule "java/bestpractices/LooseCoupling" %} has a new property to allow some types to be coupled to (`allowedTypes`).
-*   {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
-*   {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed. The rule is now more precise and will check these cases properly.
+* {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %}: the rule has two new properties,
+  to selectively disable reporting on static field and method qualifiers. The rule also has been improved to be more precise.
+* {% rule "java/codestyle/UselessParentheses" %}: the rule has two new properties which control how strict
+  the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
+  not necessary are allowed, if they separate expressions of different precedence.
+  The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
+  reading and understanding the expressions.
+* {% rule "java/bestpractices/LooseCoupling" %}: the rule has a new property to allow some types to be coupled to (`allowedTypes`).
+* {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+* {% rule "java/codestyle/UseDiamondOperator" %}: the property `java7Compatibility` is removed. The rule now handles Java 7
+  properly without a property.
+* {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed. The rule is now more precise and will check these cases properly.
 
 #### Removed Rules
 
@@ -152,6 +154,7 @@ The following previously deprecated rules have been finally removed:
     * [#1790](https://github.com/pmd/pmd/issues/1790): \[java] UnnecessaryFullyQualifiedName false positive with enum constant
     * [#1918](https://github.com/pmd/pmd/issues/1918): \[java] UselessParentheses false positive with boolean operators
     * [#2299](https://github.com/pmd/pmd/issues/2299): \[java] UnnecessaryFullyQualifiedName false positive with similar package name
+    * [#2391](https://github.com/pmd/pmd/issues/2391): \[java] UseDiamondOperator FP when expected type and constructed type have a different parameterization
     * [#2528](https://github.com/pmd/pmd/issues/2528): \[java] MethodNamingConventions - JUnit 5 method naming not support ParameterizedTest
     * [#2739](https://github.com/pmd/pmd/issues/2739): \[java] UselessParentheses false positive for string concatenation
     * [#2748](https://github.com/pmd/pmd/issues/2748): \[java] UnnecessaryCast false positive with unchecked cast

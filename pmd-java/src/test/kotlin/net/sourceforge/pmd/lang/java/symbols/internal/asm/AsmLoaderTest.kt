@@ -34,10 +34,11 @@ class AsmLoaderTest : FunSpec({
 
     //   method reference with static ctdecl & zero formal parameters (asInstanceMethod)
 
+    val contextClasspath = Classpath {  Thread.currentThread().contextClassLoader.getResource(it) }
 
     test("First ever ASM test") {
 
-        val symLoader = AsmSymbolResolver(testTypeSystem, Thread.currentThread().contextClassLoader)
+        val symLoader = AsmSymbolResolver(testTypeSystem, contextClasspath)
 
         val loaded = symLoader.resolveClassFromBinaryName("javasymbols.testdata.StaticNameCollision")!!
 
@@ -49,7 +50,7 @@ class AsmLoaderTest : FunSpec({
     }
 
     val ts = testTypeSystem
-    val symLoader = AsmSymbolResolver(ts, Thread.currentThread().contextClassLoader)
+    val symLoader = AsmSymbolResolver(ts, contextClasspath)
 
     test("Generic class") {
 
