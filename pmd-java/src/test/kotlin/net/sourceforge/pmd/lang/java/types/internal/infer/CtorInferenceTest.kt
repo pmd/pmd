@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
@@ -304,6 +303,31 @@ class CtorInferenceTest : ProcessorTestSpec({
             // }
 
             ctor.methodType.shouldBe(ts.UNRESOLVED_METHOD)
+        }
+    }
+
+    parserTest("Failed overload resolution of context doesn't let types dangle") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+
+                public class Generic<T> {
+                    static class Inner<K> {}
+                    <E> Generic<E> method(Generic<E> e) { return e; }
+                    public Generic<T> test() {
+                        return method(new Generic.Inner<T>());
+                    }
+                }
+            """
+        )
+
+        val (_, inner) = acu.declaredTypeSignatures()
+        val tvar = acu.typeVar("T")
+        val ctorCall = acu.firstCtorCall()
+        val ctorSymbol = inner.constructors.first().symbol
+
+        spy.shouldTriggerMissingCtDecl { // for the enclosing method call
+            ctorCall.methodType.symbol shouldBe ctorSymbol
         }
     }
 

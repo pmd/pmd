@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.ast
+package net.sourceforge.pmd.lang.java.types.ast
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

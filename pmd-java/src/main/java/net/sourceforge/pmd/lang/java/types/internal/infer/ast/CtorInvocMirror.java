@@ -23,12 +23,14 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 
 class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements CtorInvocationMirror {
 
-    CtorInvocMirror(JavaExprMirrors mirrors, ASTConstructorCall call) {
-        super(mirrors, call);
+    CtorInvocMirror(JavaExprMirrors mirrors, ASTConstructorCall call, ExprMirror parent, MirrorMaker subexprMaker) {
+        super(mirrors, call, parent, subexprMaker);
     }
 
     @Override
@@ -51,7 +53,14 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     }
 
     @Override
-    public TypeSpecies getStandaloneSpecies() {
+    public void finishStandaloneInference(@NonNull JTypeMirror standaloneType) {
+        if (mayMutateAst()) {
+            setCtDecl(getStandaloneCtdecl());
+        }
+    }
+
+    @Override
+    public @NonNull TypeSpecies getStandaloneSpecies() {
         return TypeSpecies.REFERENCE;
     }
 
@@ -77,8 +86,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     }
 
 
-    private List<JMethodSig> getVisibleCandidates() {
-        JTypeMirror newType = getNewType();
+    private List<JMethodSig> getVisibleCandidates(@NonNull JTypeMirror newType) {
         if (myNode.isAnonymousClass()) {
             return newType.isInterface() ? myNode.getTypeSystem().OBJECT.getConstructors()
                                          : newType.getConstructors();
@@ -87,8 +95,9 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     }
 
     @Override
-    public Iterable<JMethodSig> getAccessibleCandidates() {
-        return lazyFilterAccessible(getVisibleCandidates(), getEnclosingType().getSymbol());
+    public Iterable<JMethodSig> getAccessibleCandidates(JTypeMirror newType) {
+        List<JMethodSig> visibleCandidates = getVisibleCandidates(newType);
+        return lazyFilterAccessible(visibleCandidates, getEnclosingType().getSymbol());
     }
 
     @Override
@@ -120,13 +129,13 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     static class EnumCtorInvocMirror extends BaseInvocMirror<ASTEnumConstant> implements CtorInvocationMirror {
 
 
-        EnumCtorInvocMirror(JavaExprMirrors mirrors, ASTEnumConstant call) {
-            super(mirrors, call);
+        EnumCtorInvocMirror(JavaExprMirrors mirrors, ASTEnumConstant call, ExprMirror parent, MirrorMaker subexprMaker) {
+            super(mirrors, call, parent, subexprMaker);
         }
 
         @Override
-        public List<JMethodSig> getAccessibleCandidates() {
-            return getNewType().getConstructors();
+        public Iterable<JMethodSig> getAccessibleCandidates(JTypeMirror newType) {
+            return newType.getConstructors();
         }
 
         @Override
@@ -153,17 +162,17 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     static class ExplicitCtorInvocMirror extends BaseInvocMirror<ASTExplicitConstructorInvocation> implements CtorInvocationMirror {
 
 
-        ExplicitCtorInvocMirror(JavaExprMirrors mirrors, ASTExplicitConstructorInvocation call) {
-            super(mirrors, call);
+        ExplicitCtorInvocMirror(JavaExprMirrors mirrors, ASTExplicitConstructorInvocation call, ExprMirror parent, MirrorMaker subexprMaker) {
+            super(mirrors, call, parent, subexprMaker);
         }
 
         @Override
-        public Iterable<JMethodSig> getAccessibleCandidates() {
+        public Iterable<JMethodSig> getAccessibleCandidates(JTypeMirror newType) {
             if (myNode.isThis()) {
                 return getEnclosingType().getConstructors();
             }
             return IteratorUtil.mapIterator(
-                getNewType().getConstructors(),
+                newType.getConstructors(),
                 iter -> IteratorUtil.filter(iter, ctor -> JavaResolvers.isAccessibleIn(getEnclosingType().getSymbol().getNestRoot(), ctor.getSymbol(), true))
             );
         }

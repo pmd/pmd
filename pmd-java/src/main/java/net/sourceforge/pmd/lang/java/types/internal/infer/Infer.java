@@ -51,7 +51,7 @@ public final class Infer {
 
     public final TypeInferenceLogger LOG; // SUPPRESS CHECKSTYLE just easier to read I think
 
-    private final boolean isJava8; // NOPMD this is unused but may be used later
+    private final boolean isPreJava8;
     private final TypeSystem ts;
 
     final MethodCtDecl NO_CTDECL; // SUPPRESS CHECKSTYLE same
@@ -71,13 +71,17 @@ public final class Infer {
      */
     public Infer(TypeSystem ts, int jdkVersion, TypeInferenceLogger logger) {
         this.ts = ts;
-        this.isJava8 = jdkVersion >= 8;
+        this.isPreJava8 = jdkVersion < 8;
         this.LOG = logger;
 
         this.NO_CTDECL = MethodCtDecl.unresolved(ts);
         this.FAILED_INVOCATION = MethodCtDecl.unresolved(ts);
 
         this.exprOps = new ExprOps(this);
+    }
+
+    public boolean isPreJava8() {
+        return isPreJava8;
     }
 
     public TypeSystem getTypeSystem() {
@@ -165,7 +169,7 @@ public final class Infer {
     public void inferInvocationRecursively(MethodCallSite site) {
         MethodCtDecl ctdecl = goToInvocationWithFallback(site);
         InvocationMirror expr = site.getExpr();
-        expr.setMethodType(ctdecl);
+        expr.setCtDecl(ctdecl);
         if (ctdecl == NO_CTDECL) {
             expr.setInferredType(fallbackType(expr));
         } else {
@@ -240,11 +244,11 @@ public final class Infer {
 
 
     public @NonNull MethodCtDecl getCompileTimeDecl(MethodCallSite site) {
-        if (site.getExpr().getMethodType() == null) {
+        if (site.getExpr().getCtDecl() == null) {
             MethodCtDecl ctdecl = computeCompileTimeDecl(site);
-            site.getExpr().setMethodType(ctdecl); // cache it for later
+            site.getExpr().setCtDecl(ctdecl); // cache it for later
         }
-        return site.getExpr().getMethodType();
+        return site.getExpr().getCtDecl();
     }
 
     /**
@@ -548,13 +552,8 @@ public final class Infer {
 
         try {
 
-            if (phase.isInvocation()) {
-                LOG.startReturnChecks();
-                // Add return constraints before argument constraints -> this pushes the target type down
-                JTypeMirror actualResType = addReturnConstraints(infCtx, m, site); // b3
-                LOG.endReturnChecks();
-
-                m = m.internalApi().withReturnType(actualResType);
+            if (phase.isInvocation() && !isPreJava8) {
+                m = doReturnChecksAndChangeReturnType(m, site, infCtx);
             }
 
             addArgsConstraints(infCtx, m, site, phase); // c
@@ -575,7 +574,22 @@ public final class Infer {
                 }
             }
 
-            infCtx.solve(); // this may throw for incompatible bounds
+            // this may throw for incompatible bounds
+            boolean isDone = infCtx.solve(/*onlyBoundedVars:*/isPreJava8());
+
+            if (isPreJava8() && !isDone) {
+                // this means we're not in an invocation context,
+                // if we are, we must ignore it in java 7
+                if (site.getOuterCtx().isEmpty()) {
+                    // Then add the return contraints late
+                    // Java 7 only uses the context type if the arguments are not enough
+                    // https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.8
+                    m = doReturnChecksAndChangeReturnType(m, site, infCtx);
+                }
+                // otherwise force solving remaining vars
+                infCtx.solve();
+            }
+
             if (infCtx.needsUncheckedConversion()) {
                 site.setNeedsUncheckedConversion();
             }
@@ -591,10 +605,18 @@ public final class Infer {
         }
     }
 
+    private JMethodSig doReturnChecksAndChangeReturnType(JMethodSig m, MethodCallSite site, InferenceContext infCtx) {
+        LOG.startReturnChecks();
+        JTypeMirror actualResType = addReturnConstraints(infCtx, m, site); // b3
+        LOG.endReturnChecks();
+        m = m.internalApi().withReturnType(actualResType);
+        return m;
+    }
+
 
     private boolean shouldPropagateOutwards(JTypeMirror resultType, MethodCallSite target, InferenceContext inferenceContext) {
-
-        return !target.getOuterCtx().isEmpty()  //enclosing context is a generic method
+        return !isPreJava8
+            && !target.getOuterCtx().isEmpty()  //enclosing context is a generic method
             && !inferenceContext.isGround(resultType)   //return type contains inference vars
             && !(resultType instanceof InferenceVar    //no eager instantiation is required (as per 18.5.2)
             && needsEagerInstantiation((InferenceVar) resultType, target.getExpectedType(), inferenceContext));
