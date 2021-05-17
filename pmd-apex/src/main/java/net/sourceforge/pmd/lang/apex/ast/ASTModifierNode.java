@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.TEST_METHOD;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.semantic.ast.modifier.ModifierNode;
@@ -62,8 +64,14 @@ public class ASTModifierNode extends AbstractApexNode<ModifierNode> implements A
         return (node.getModifiers().getJavaModifiers() & TRANSIENT) == TRANSIENT;
     }
 
+    // true if function has `@isTest` annotation or `testmethod` modifier
     public boolean isTest() {
         return node.getModifiers().isTest();
+    }
+
+    // true if function has `testmethod` modifier
+    public boolean isTestMethod() {
+        return node.getModifiers().has(TEST_METHOD);
     }
 
     public boolean isTestOrTestSetup() {
