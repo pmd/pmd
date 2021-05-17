@@ -64,13 +64,17 @@ public class ASTModifierNode extends AbstractApexNode<ModifierNode> implements A
         return (node.getModifiers().getJavaModifiers() & TRANSIENT) == TRANSIENT;
     }
 
-    // true if function has `@isTest` annotation or `testmethod` modifier
+    /**
+     * Returns true if function has `@isTest` annotation or `testmethod` modifier
+     */
     public boolean isTest() {
         return node.getModifiers().isTest();
     }
 
-    // true if function has `testmethod` modifier
-    public boolean isTestMethod() {
+    /**
+     * Returns true if function has `testmethod` modifier
+     */
+    public boolean isDeprecatedTestMethod() {
         return node.getModifiers().has(TEST_METHOD);
     }
 

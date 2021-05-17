@@ -80,7 +80,7 @@ annotation for test classes and methods.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Method[ModifierNode[@TestMethod = true()]]
+//Method[ModifierNode[@DeprecatedTestMethod = true()]]
 ]]>
                 </value>
             </property>
