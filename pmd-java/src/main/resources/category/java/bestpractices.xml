@@ -832,14 +832,14 @@ if they're package-private. Marking them as such is a good practice to limit the
         ]]
         [MethodDeclaration]
 ]/(
-    self::*[@Abstract=false() and @PackagePrivate=false()]
+    self::*[@Abstract=false() and (@Public=true() or @Protected=true())]
 |   ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
         [Annotation//Name[
             pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
             or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
             or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         ]]
-        /MethodDeclaration[@PackagePrivate=false()]
+        /MethodDeclaration[@Public=true() or @Protected=true()]
 )
 ]]>
                 </value>

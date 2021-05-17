@@ -32,6 +32,35 @@ class MyTests {
     </test-code>
 
     <test-code>
+        <description>Private method modifiers should be reported by rule 'JUnit5TestNoPrivateModifier' and ignored by rule 'JUnit5TestShouldBePackagePrivate'</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class MyTests {
+  @Test
+  private void ignoredTest() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Private modifiers for inner classes should be reported by rule 'JUnit5TestNoPrivateModifier' and ignored by rule 'JUnit5TestShouldBePackagePrivate'</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class MyTests {
+
+  private static class InnerPrivateClass {
+    @Test
+    void testFoo() {}
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Public modifier is allowed on an abstract test classes</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -58,9 +87,9 @@ public interface MyTests {
     </test-code>
 
     <test-code>
-        <description>Non package private modifiers on all JUnit5 test types should be rejected</description>
-        <expected-problems>6</expected-problems>
-        <expected-linenumbers>8,10,13,16,19,23</expected-linenumbers>
+        <description>Public and protected modifiers on all JUnit5 test types should be rejected</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>8,10,13,19,23</expected-linenumbers>
         <code><![CDATA[
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.RepeatedTest;
