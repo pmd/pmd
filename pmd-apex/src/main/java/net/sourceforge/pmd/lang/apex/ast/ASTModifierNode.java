@@ -74,7 +74,7 @@ public class ASTModifierNode extends AbstractApexNode<ModifierNode> implements A
     /**
      * Returns true if function has `testmethod` modifier
      */
-    public boolean isDeprecatedTestMethod() {
+    public boolean hasDeprecatedTestMethod() {
         return node.getModifiers().has(TEST_METHOD);
     }
 
