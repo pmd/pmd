@@ -72,4 +72,18 @@ private class A {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>false positive with @testsetup #3282</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+public class TestFactory {
+    @testsetup static void setup() {
+        System.assertEquals(null, null, 'this should be null');
+    }
+    @isTest static void testCase1() { }
+}
+        ]]></code>
+    </test-code>
 </test-data>
