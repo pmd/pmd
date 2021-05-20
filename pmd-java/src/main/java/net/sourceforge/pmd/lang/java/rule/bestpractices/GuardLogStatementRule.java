@@ -150,7 +150,17 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
                 return !isConstantStringExpression(child);
             }
         }
-        return false;
+
+        // if there is only one argument and this is a AdditiveExpression, we assume, it is the message
+        // and this is a string concatenation even we are not sure, that the type is string.
+        // this can happen for lambda parameters.
+        return isSingleAdditiveExpression(argumentList);
+    }
+
+    private boolean isSingleAdditiveExpression(ASTArgumentList argumentList) {
+        return argumentList.size() == 1
+                && argumentList.getChild(0).getNumChildren() == 1
+                && argumentList.getChild(0).getChild(0) instanceof ASTAdditiveExpression;
     }
 
     private boolean isConstantStringExpression(JavaNode expr) {
