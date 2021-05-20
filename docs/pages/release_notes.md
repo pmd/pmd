@@ -26,6 +26,7 @@ This is a {{ site.pmd.release_type }} release.
 ### Fixed Issues
 
 *   apex
+    *   [#3183](https://github.com/pmd/pmd/issues/3183): \[apex] ApexUnitTestMethodShouldHaveIsTestAnnotation false positive with helper method
     *   [#3243](https://github.com/pmd/pmd/pull/3243): \[apex] Correct findBoundary when traversing AST
 *   core
     *   [#2639](https://github.com/pmd/pmd/issues/2639): \[core] PMD CLI output file is not created if directory or directories in path don't exist
@@ -60,6 +61,7 @@ This is a {{ site.pmd.release_type }} release.
 ### API Changes
 
 ### External Contributions
+*   [#3272](https://github.com/pmd/pmd/pull/3272): \[apex] correction for ApexUnitTestMethodShouldHaveIsTestAnnotation false positives - [William Brockhus](https://github.com/YodaDaCoda)
 
 {% endtocmaker %}
 
