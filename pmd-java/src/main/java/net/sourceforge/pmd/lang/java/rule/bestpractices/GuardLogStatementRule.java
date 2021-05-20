@@ -16,17 +16,26 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -119,13 +128,66 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
                     && !hasGuard(primary, methodCall, logLevel)) {
 
                 ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) primary.getChild(1);
-                if (primarySuffix.hasDescendantOfType(ASTAdditiveExpression.class)
+                if (hasStringConcatenationWithVars(primarySuffix)
                         || hasArgumentWithMethodCall(primarySuffix)) {
                     addViolation(data, node);
                 }
             }
         }
         return super.visit(node, data);
+    }
+
+    private boolean hasStringConcatenationWithVars(ASTPrimarySuffix node) {
+        if (!node.isArguments() || node.getArgumentCount() == 0) {
+            return false;
+        }
+        ASTArgumentList argumentList = node.getFirstChildOfType(ASTArguments.class).getFirstChildOfType(ASTArgumentList.class);
+        for (JavaNode child : argumentList.children()) {
+            if (child instanceof TypeNode && TypeTestUtil.isA(String.class, (TypeNode) child)) {
+                // only consider the first String argument - which is the log message - and return here
+                return !isConstantStringExpression(child);
+            }
+        }
+        return false;
+    }
+
+    private boolean isConstantStringExpression(JavaNode expr) {
+        if (expr instanceof ASTPrimaryExpression && expr.getChild(0) instanceof ASTPrimaryPrefix
+                && expr.getChild(0).getNumChildren() == 1
+                && expr.getChild(0).getChild(0) instanceof ASTLiteral) {
+            return ((ASTLiteral) expr.getChild(0).getChild(0)).isStringLiteral();
+        }
+        if (expr instanceof ASTPrimaryExpression && expr.getChild(0) instanceof ASTPrimaryPrefix
+                && expr.getChild(0).getNumChildren() == 1
+                && expr.getChild(0).getChild(0) instanceof ASTName) {
+            ASTName name = (ASTName) expr.getChild(0).getChild(0);
+            if (!TypeTestUtil.isA(String.class, name)) {
+                return false;
+            }
+            NameDeclaration nameDeclaration = name.getNameDeclaration();
+            if (nameDeclaration instanceof VariableNameDeclaration) {
+                ASTVariableDeclaratorId varId = ((VariableNameDeclaration) nameDeclaration).getDeclaratorId();
+                if (!varId.isFinal()) {
+                    return false;
+                }
+                if (varId.getParent() instanceof ASTVariableDeclarator) {
+                    ASTVariableInitializer initializer = ((ASTVariableDeclarator) varId.getParent()).getInitializer();
+                    if (initializer == null) {
+                        return false;
+                    }
+                    return isConstantStringExpression(initializer.getFirstChildOfType(ASTExpression.class));
+                }
+            }
+        }
+        if (expr instanceof ASTExpression || expr instanceof ASTAdditiveExpression) {
+            for (JavaNode child : expr.children()) {
+                if (!isConstantStringExpression(child)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     private boolean hasArgumentWithMethodCall(ASTPrimarySuffix node) {
