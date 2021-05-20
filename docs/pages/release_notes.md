@@ -56,6 +56,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3248](https://github.com/pmd/pmd/issues/3248): \[java] Documentation is wrong for SingletonClassReturningNewInstance rule
     *   [#3249](https://github.com/pmd/pmd/pull/3249): \[java] AvoidFieldNameMatchingTypeName: False negative with interfaces
     *   [#3268](https://github.com/pmd/pmd/pull/3268): \[java] ConstructorCallsOverridableMethod: IndexOutOfBoundsException with annotations
+    *   [#3284](https://github.com/pmd/pmd/issues/3284): \[java] InvalidLogMessageFormat may examine the value of a different but identically named String variable
 
 ### API Changes
 
