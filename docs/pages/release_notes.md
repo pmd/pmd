@@ -26,6 +26,7 @@ This is a {{ site.pmd.release_type }} release.
 ### Fixed Issues
 
 *   apex
+    *   [#3183](https://github.com/pmd/pmd/issues/3183): \[apex] ApexUnitTestMethodShouldHaveIsTestAnnotation false positive with helper method
     *   [#3243](https://github.com/pmd/pmd/pull/3243): \[apex] Correct findBoundary when traversing AST
 *   doc
     *   [#3230](https://github.com/pmd/pmd/issues/3230): \[doc] Remove "Edit me" button for language index pages
@@ -58,6 +59,7 @@ This is a {{ site.pmd.release_type }} release.
 ### API Changes
 
 ### External Contributions
+*   [#3272](https://github.com/pmd/pmd/pull/3272): \[apex] correction for ApexUnitTestMethodShouldHaveIsTestAnnotation false positives - [William Brockhus](https://github.com/YodaDaCoda)
 
 {% endtocmaker %}
 
