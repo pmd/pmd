@@ -279,4 +279,39 @@ public class ObjectCreator {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>FN with lambdas #3275</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class UnnecessaryLocal {
+    void foo() {
+        Callable<String> c = () -> { String s = "1"; return s; };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with anonymous classes #3275</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class UnnecessaryLocal {
+    void foo() {
+        Callable<String> c = new Callable<>() {
+            public String call() {
+                String s = "1";
+                return s;
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

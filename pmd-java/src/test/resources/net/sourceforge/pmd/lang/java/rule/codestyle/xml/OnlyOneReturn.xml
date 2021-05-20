@@ -108,4 +108,25 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negative with anonymous class #3274</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
+        <code><![CDATA[
+public class OnlyOneReturn {
+    void foo() {
+        Object o = new Object() {
+            void method(int i) {
+                switch (i) {
+                    case 1: return;
+                    case 2: return;
+                }
+                return;
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
