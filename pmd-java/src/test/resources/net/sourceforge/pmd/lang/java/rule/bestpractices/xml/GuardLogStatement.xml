@@ -491,6 +491,28 @@ public class Logger {
         LOGGER.debug("Some long string that has been " + 
             "separated into two constants. Contains value: {}", param);
     }
+
+    private void log(int line, String key) {
+        System.out.println(line + ":" + key);
+    }
+
+    public void case5(int line, String key) {
+        log(line, key);
+        LOGGER.debug(key);
+    }
+
+    private interface TestLambda {
+        void apply(String arg1, String arg2);
+    }
+    private void runTestLambda(TestLambda test) {
+        test.apply("one", "two");
+    }
+
+    public void case6() {
+        runTestLambda((String a, String b) -> {
+            LOGGER.debug(a);
+        });
+    }
 }
         ]]></code>
     </test-code>

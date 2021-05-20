@@ -143,7 +143,9 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
         }
         ASTArgumentList argumentList = node.getFirstChildOfType(ASTArguments.class).getFirstChildOfType(ASTArgumentList.class);
         for (JavaNode child : argumentList.children()) {
-            if (child instanceof TypeNode && TypeTestUtil.isA(String.class, (TypeNode) child)) {
+            if (child.hasDescendantOfType(ASTAdditiveExpression.class)
+                && child instanceof TypeNode
+                && TypeTestUtil.isA(String.class, (TypeNode) child)) {
                 // only consider the first String argument - which is the log message - and return here
                 return !isConstantStringExpression(child);
             }
