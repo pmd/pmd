@@ -298,7 +298,7 @@ public class UnnecessaryLocal {
     <test-code>
         <description>FN with anonymous classes #3275</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 import java.util.concurrent.Callable;
 
