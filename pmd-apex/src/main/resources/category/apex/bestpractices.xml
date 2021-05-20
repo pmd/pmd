@@ -67,7 +67,7 @@ public class Foo {
           since="6.13.0"
           language="apex"
           message="Apex test methods should have @isTest annotation."
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation">
         <description>
 Apex test methods should have `@isTest` annotation instead of the `testMethod` keyword,
