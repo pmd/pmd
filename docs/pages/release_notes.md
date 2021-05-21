@@ -18,8 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 The latest version of [Rhino](https://github.com/mozilla/rhino), the implementation of JavaScript we use
 for parsing JavaScript code, requires at least Java 8. Therefore we decided to upgrade the pmd-javascript
-module to Java 8 as well. This means, that from now on, a Java 8 or later runtime is required in order
-to analyze JavaScript code. Note, that PMD core still stays the at Java 7.
+module to Java 8 as well. This means that from now on, a Java 8 or later runtime is required in order
+to analyze JavaScript code. Note that PMD core still only requires Java 7.
 
 ### Fixed Issues
 
@@ -32,4 +32,3 @@ to analyze JavaScript code. Note, that PMD core still stays the at Java 7.
 ### External Contributions
 
 {% endtocmaker %}
-
