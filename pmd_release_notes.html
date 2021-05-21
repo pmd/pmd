@@ -1430,6 +1430,13 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="javascript-module-now-requires-at-least-java-8">Javascript module now requires at least Java 8</h4>
+
+<p>The latest version of <a href="https://github.com/mozilla/rhino">Rhino</a>, the implementation of JavaScript we use
+for parsing JavaScript code, requires at least Java 8. Therefore we decided to upgrade the pmd-javascript
+module to Java 8 as well. This means that from now on, a Java 8 or later runtime is required in order
+to analyze JavaScript code. Note that PMD core still only requires Java 7.</p>
+
 <h4 id="modified-rules">Modified rules</h4>
 
 <ul>
@@ -1503,6 +1510,12 @@ are compared. Constants are identified by looking for an all-caps identifier.</l
       <li><a href="https://github.com/pmd/pmd/pull/3268">#3268</a>: [java] ConstructorCallsOverridableMethod: IndexOutOfBoundsException with annotations</li>
     </ul>
   </li>
+  <li>javascript
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/699">#699</a>: [javascript] Update Rhino library to 1.7.13</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2081">#2081</a>: [javascript] Failing with OutOfMemoryError parsing a Javascript file</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
@@ -1528,7 +1541,7 @@ are compared. Constants are identified by looking for an all-caps identifier.</l
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 20, 2021 <br />
+ Site last generated: May 21, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
