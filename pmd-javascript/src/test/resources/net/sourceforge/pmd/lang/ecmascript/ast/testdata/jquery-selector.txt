@@ -1,4 +1,5 @@
 +- AstRoot
+   +- Comment
    +- EmptyStatement
    +- EmptyStatement
    +- EmptyStatement
@@ -9,6 +10,7 @@
    +- EmptyStatement
    +- EmptyStatement
    +- EmptyStatement
+   +- Comment
    +- EmptyStatement
    +- EmptyStatement
    +- EmptyStatement
@@ -338,6 +340,7 @@
                   |  |        +- IfStatement
                   |  |        |  +- Name
                   |  |        |  +- Scope
+                  |  |        |     +- Comment
                   |  |        |     +- ReturnStatement
                   |  |        |        +- Name
                   |  |        +- ReturnStatement
@@ -451,6 +454,7 @@
                   |     |     +- InfixExpression
                   |     |        +- Name
                   |     |        +- ArrayLiteral
+                  |     +- Comment
                   |     +- IfStatement
                   |     |  +- InfixExpression
                   |     |  |  +- InfixExpression
@@ -491,6 +495,8 @@
                   |     |     +- IfStatement
                   |     |        +- Name
                   |     |        +- Scope
+                  |     |           +- Comment
+                  |     |           +- Comment
                   |     |           +- IfStatement
                   |     |           |  +- InfixExpression
                   |     |           |  |  +- InfixExpression
@@ -505,6 +511,7 @@
                   |     |           |  |           |  +- Name
                   |     |           |  |           +- Name
                   |     |           |  +- Scope
+                  |     |           |     +- Comment
                   |     |           |     +- IfStatement
                   |     |           |        +- ParenthesizedExpression
                   |     |           |        |  +- Assignment
@@ -513,59 +520,62 @@
                   |     |           |        |        +- Name
                   |     |           |        |        +- NumberLiteral
                   |     |           |        +- Scope
+                  |     |           |        |  +- Comment
                   |     |           |        |  +- IfStatement
-                  |     |           |        |     +- InfixExpression
-                  |     |           |        |     |  +- Name
-                  |     |           |        |     |  +- NumberLiteral
-                  |     |           |        |     +- Scope
-                  |     |           |        |     |  +- IfStatement
-                  |     |           |        |     |  |  +- ParenthesizedExpression
-                  |     |           |        |     |  |  |  +- Assignment
-                  |     |           |        |     |  |  |     +- Name
-                  |     |           |        |     |  |  |     +- FunctionCall
-                  |     |           |        |     |  |  |        +- PropertyGet
-                  |     |           |        |     |  |  |        |  +- Name
-                  |     |           |        |     |  |  |        |  +- Name
-                  |     |           |        |     |  |  |        +- Name
-                  |     |           |        |     |  |  +- Scope
-                  |     |           |        |     |  |     +- ExpressionStatement
-                  |     |           |        |     |  |        +- FunctionCall
-                  |     |           |        |     |  |           +- PropertyGet
-                  |     |           |        |     |  |           |  +- Name
-                  |     |           |        |     |  |           |  +- Name
-                  |     |           |        |     |  |           +- Name
-                  |     |           |        |     |  |           +- Name
-                  |     |           |        |     |  +- ReturnStatement
-                  |     |           |        |     |     +- Name
-                  |     |           |        |     +- Scope
-                  |     |           |        |        +- IfStatement
-                  |     |           |        |           +- InfixExpression
-                  |     |           |        |           |  +- Name
-                  |     |           |        |           |  +- InfixExpression
-                  |     |           |        |           |     +- ParenthesizedExpression
-                  |     |           |        |           |     |  +- Assignment
-                  |     |           |        |           |     |     +- Name
-                  |     |           |        |           |     |     +- FunctionCall
-                  |     |           |        |           |     |        +- PropertyGet
-                  |     |           |        |           |     |        |  +- Name
-                  |     |           |        |           |     |        |  +- Name
-                  |     |           |        |           |     |        +- Name
-                  |     |           |        |           |     +- FunctionCall
-                  |     |           |        |           |        +- PropertyGet
-                  |     |           |        |           |        |  +- Name
-                  |     |           |        |           |        |  +- Name
-                  |     |           |        |           |        +- Name
-                  |     |           |        |           |        +- Name
-                  |     |           |        |           +- Scope
-                  |     |           |        |              +- ExpressionStatement
-                  |     |           |        |              |  +- FunctionCall
-                  |     |           |        |              |     +- PropertyGet
-                  |     |           |        |              |     |  +- Name
-                  |     |           |        |              |     |  +- Name
-                  |     |           |        |              |     +- Name
-                  |     |           |        |              |     +- Name
-                  |     |           |        |              +- ReturnStatement
-                  |     |           |        |                 +- Name
+                  |     |           |        |  |  +- InfixExpression
+                  |     |           |        |  |  |  +- Name
+                  |     |           |        |  |  |  +- NumberLiteral
+                  |     |           |        |  |  +- Scope
+                  |     |           |        |  |  |  +- IfStatement
+                  |     |           |        |  |  |  |  +- ParenthesizedExpression
+                  |     |           |        |  |  |  |  |  +- Assignment
+                  |     |           |        |  |  |  |  |     +- Name
+                  |     |           |        |  |  |  |  |     +- FunctionCall
+                  |     |           |        |  |  |  |  |        +- PropertyGet
+                  |     |           |        |  |  |  |  |        |  +- Name
+                  |     |           |        |  |  |  |  |        |  +- Name
+                  |     |           |        |  |  |  |  |        +- Name
+                  |     |           |        |  |  |  |  +- Scope
+                  |     |           |        |  |  |  |     +- ExpressionStatement
+                  |     |           |        |  |  |  |        +- FunctionCall
+                  |     |           |        |  |  |  |           +- PropertyGet
+                  |     |           |        |  |  |  |           |  +- Name
+                  |     |           |        |  |  |  |           |  +- Name
+                  |     |           |        |  |  |  |           +- Name
+                  |     |           |        |  |  |  |           +- Name
+                  |     |           |        |  |  |  +- ReturnStatement
+                  |     |           |        |  |  |  |  +- Name
+                  |     |           |        |  |  |  +- Comment
+                  |     |           |        |  |  +- Scope
+                  |     |           |        |  |     +- IfStatement
+                  |     |           |        |  |        +- InfixExpression
+                  |     |           |        |  |        |  +- Name
+                  |     |           |        |  |        |  +- InfixExpression
+                  |     |           |        |  |        |     +- ParenthesizedExpression
+                  |     |           |        |  |        |     |  +- Assignment
+                  |     |           |        |  |        |     |     +- Name
+                  |     |           |        |  |        |     |     +- FunctionCall
+                  |     |           |        |  |        |     |        +- PropertyGet
+                  |     |           |        |  |        |     |        |  +- Name
+                  |     |           |        |  |        |     |        |  +- Name
+                  |     |           |        |  |        |     |        +- Name
+                  |     |           |        |  |        |     +- FunctionCall
+                  |     |           |        |  |        |        +- PropertyGet
+                  |     |           |        |  |        |        |  +- Name
+                  |     |           |        |  |        |        |  +- Name
+                  |     |           |        |  |        |        +- Name
+                  |     |           |        |  |        |        +- Name
+                  |     |           |        |  |        +- Scope
+                  |     |           |        |  |           +- ExpressionStatement
+                  |     |           |        |  |           |  +- FunctionCall
+                  |     |           |        |  |           |     +- PropertyGet
+                  |     |           |        |  |           |     |  +- Name
+                  |     |           |        |  |           |     |  +- Name
+                  |     |           |        |  |           |     +- Name
+                  |     |           |        |  |           |     +- Name
+                  |     |           |        |  |           +- ReturnStatement
+                  |     |           |        |  |              +- Name
+                  |     |           |        |  +- Comment
                   |     |           |        +- IfStatement
                   |     |           |           +- ElementGet
                   |     |           |           |  +- Name
@@ -583,7 +593,8 @@
                   |     |           |           |  |        |  +- Name
                   |     |           |           |  |        +- Name
                   |     |           |           |  +- ReturnStatement
-                  |     |           |           |     +- Name
+                  |     |           |           |  |  +- Name
+                  |     |           |           |  +- Comment
                   |     |           |           +- IfStatement
                   |     |           |              +- InfixExpression
                   |     |           |              |  +- ParenthesizedExpression
@@ -636,6 +647,13 @@
                   |     |                 |  +- Assignment
                   |     |                 |     +- Name
                   |     |                 |     +- Name
+                  |     |                 +- Comment
+                  |     |                 +- Comment
+                  |     |                 +- Comment
+                  |     |                 +- Comment
+                  |     |                 +- Comment
+                  |     |                 +- Comment
+                  |     |                 +- Comment
                   |     |                 +- IfStatement
                   |     |                 |  +- InfixExpression
                   |     |                 |  |  +- InfixExpression
@@ -654,6 +672,7 @@
                   |     |                 |  |           |  +- Name
                   |     |                 |  |           +- Name
                   |     |                 |  +- Scope
+                  |     |                 |     +- Comment
                   |     |                 |     +- ExpressionStatement
                   |     |                 |     |  +- Assignment
                   |     |                 |     |     +- Name
@@ -670,6 +689,8 @@
                   |     |                 |     |        |        +- Name
                   |     |                 |     |        |        +- Name
                   |     |                 |     |        +- Name
+                  |     |                 |     +- Comment
+                  |     |                 |     +- Comment
                   |     |                 |     +- IfStatement
                   |     |                 |     |  +- InfixExpression
                   |     |                 |     |  |  +- InfixExpression
@@ -680,6 +701,7 @@
                   |     |                 |     |  |        +- Name
                   |     |                 |     |  |        +- Name
                   |     |                 |     |  +- Scope
+                  |     |                 |     |     +- Comment
                   |     |                 |     |     +- IfStatement
                   |     |                 |     |        +- ParenthesizedExpression
                   |     |                 |     |        |  +- Assignment
@@ -800,6 +822,7 @@
                   |           +- Name
                   |           +- Name
                   |           +- Name
+                  +- Comment
                   +- FunctionNode
                   |  +- Name
                   |  +- Block
@@ -812,6 +835,7 @@
                   |     |  +- Name
                   |     |  +- Name
                   |     |  +- Block
+                  |     |     +- Comment
                   |     |     +- IfStatement
                   |     |     |  +- InfixExpression
                   |     |     |  |  +- FunctionCall
@@ -825,6 +849,7 @@
                   |     |     |  |     +- Name
                   |     |     |  |     +- Name
                   |     |     |  +- Scope
+                  |     |     |     +- Comment
                   |     |     |     +- ExpressionStatement
                   |     |     |        +- UnaryExpression
                   |     |     |           +- ElementGet
@@ -844,6 +869,7 @@
                   |     |              +- Name
                   |     +- ReturnStatement
                   |        +- Name
+                  +- Comment
                   +- FunctionNode
                   |  +- Name
                   |  +- Name
@@ -856,6 +882,7 @@
                   |     |     +- KeywordLiteral
                   |     +- ReturnStatement
                   |        +- Name
+                  +- Comment
                   +- FunctionNode
                   |  +- Name
                   |  +- Name
@@ -875,6 +902,7 @@
                   |                       |  +- Name
                   |                       |  +- Name
                   |                       +- Name
+                  +- Comment
                   +- FunctionNode
                   |  +- Name
                   |  +- Name
@@ -900,19 +928,31 @@
                   |                       |  +- Name
                   |                       |  +- Name
                   |                       +- Name
+                  +- Comment
                   +- FunctionNode
                   |  +- Name
                   |  +- Name
                   |  +- Block
+                  |     +- Comment
                   |     +- ReturnStatement
                   |        +- FunctionNode
                   |           +- Name
                   |           +- Block
+                  |              +- Comment
+                  |              +- Comment
+                  |              +- Comment
                   |              +- IfStatement
                   |              |  +- InfixExpression
                   |              |  |  +- StringLiteral
                   |              |  |  +- Name
                   |              |  +- Scope
+                  |              |  |  +- Comment
+                  |              |  |  +- Comment
+                  |              |  |  +- Comment
+                  |              |  |  +- Comment
+                  |              |  |  +- Comment
+                  |              |  |  +- Comment
+                  |              |  |  +- Comment
                   |              |  |  +- IfStatement
                   |              |  |  |  +- InfixExpression
                   |              |  |  |  |  +- PropertyGet
@@ -924,6 +964,7 @@
                   |              |  |  |  |     |  +- Name
                   |              |  |  |  |     +- KeywordLiteral
                   |              |  |  |  +- Scope
+                  |              |  |  |     +- Comment
                   |              |  |  |     +- IfStatement
                   |              |  |  |     |  +- InfixExpression
                   |              |  |  |     |  |  +- StringLiteral
@@ -971,11 +1012,14 @@
                   |              |  |  |                 |  +- Name
                   |              |  |  |                 +- Name
                   |              |  |  +- ReturnStatement
-                  |              |  |     +- InfixExpression
-                  |              |  |        +- PropertyGet
-                  |              |  |        |  +- Name
-                  |              |  |        |  +- Name
-                  |              |  |        +- Name
+                  |              |  |  |  +- InfixExpression
+                  |              |  |  |     +- PropertyGet
+                  |              |  |  |     |  +- Name
+                  |              |  |  |     |  +- Name
+                  |              |  |  |     +- Name
+                  |              |  |  +- Comment
+                  |              |  |  +- Comment
+                  |              |  |  +- Comment
                   |              |  +- IfStatement
                   |              |     +- InfixExpression
                   |              |     |  +- StringLiteral
@@ -989,6 +1033,7 @@
                   |              |              +- Name
                   |              +- ReturnStatement
                   |                 +- KeywordLiteral
+                  +- Comment
                   +- FunctionNode
                   |  +- Name
                   |  +- Name
@@ -1028,6 +1073,7 @@
                   |                             |     +- PropertyGet
                   |                             |        +- Name
                   |                             |        +- Name
+                  |                             +- Comment
                   |                             +- WhileLoop
                   |                                +- UnaryExpression
                   |                                |  +- Name
@@ -1056,6 +1102,7 @@
                   |                                                        +- ElementGet
                   |                                                           +- Name
                   |                                                           +- Name
+                  +- Comment
                   +- FunctionNode
                   |  +- Name
                   |  +- Name
@@ -1071,6 +1118,7 @@
                   |              |  |     +- Name
                   |              |  +- StringLiteral
                   |              +- Name
+                  +- Comment
                   +- FunctionNode
                   |  +- Name
                   |  +- Name
@@ -1088,6 +1136,11 @@
                   |     |        |  |  +- Name
                   |     |        |  +- Name
                   |     |        +- Name
+                  |     +- Comment
+                  |     +- Comment
+                  |     +- Comment
+                  |     +- Comment
+                  |     +- Comment
                   |     +- IfStatement
                   |     |  +- InfixExpression
                   |     |  |  +- InfixExpression
@@ -1119,6 +1172,12 @@
                   |     |           |  +- Name
                   |     |           |  +- Name
                   |     |           +- Name
+                  |     +- Comment
+                  |     +- Comment
+                  |     +- Comment
+                  |     +- Comment
+                  |     +- Comment
+                  |     +- Comment
                   |     +- IfStatement
                   |        +- InfixExpression
                   |        |  +- InfixExpression
@@ -1137,6 +1196,7 @@
                   |        |        |  +- Name
                   |        |        +- Name
                   |        +- Scope
+                  |           +- Comment
                   |           +- ExpressionStatement
                   |              +- FunctionCall
                   |                 +- PropertyGet
@@ -1288,11 +1348,12 @@
                   |           |     |           |  +- StringLiteral
                   |           |     |           +- Scope
                   |           |     |           |  +- ReturnStatement
-                  |           |     |           |     +- FunctionCall
-                  |           |     |           |        +- PropertyGet
-                  |           |     |           |        |  +- Name
-                  |           |     |           |        |  +- Name
-                  |           |     |           |        +- Name
+                  |           |     |           |  |  +- FunctionCall
+                  |           |     |           |  |     +- PropertyGet
+                  |           |     |           |  |     |  +- Name
+                  |           |     |           |  |     |  +- Name
+                  |           |     |           |  |     +- Name
+                  |           |     |           |  +- Comment
                   |           |     |           +- Scope
                   |           |     |              +- ReturnStatement
                   |           |     |                 +- FunctionCall
@@ -1376,6 +1437,7 @@
                   |           |     |        |        |  +- Name
                   |           |     |        |        +- Name
                   |           |     |        |        +- Name
+                  |           |     |        +- Comment
                   |           |     |        +- ExpressionStatement
                   |           |     |        |  +- Assignment
                   |           |     |        |     +- ElementGet
@@ -1431,6 +1493,7 @@
                   |           |     |  +- FunctionNode
                   |           |     |     +- Name
                   |           |     |     +- Block
+                  |           |     |        +- Comment
                   |           |     |        +- ExpressionStatement
                   |           |     |        |  +- Assignment
                   |           |     |        |     +- ElementGet
@@ -1454,6 +1517,7 @@
                   |           |     |        |  |  |  +- NumberLiteral
                   |           |     |        |  |  +- StringLiteral
                   |           |     |        |  +- Scope
+                  |           |     |        |  |  +- Comment
                   |           |     |        |  |  +- IfStatement
                   |           |     |        |  |  |  +- UnaryExpression
                   |           |     |        |  |  |  |  +- ElementGet
@@ -1502,26 +1566,27 @@
                   |           |     |        |  |  |                          |  +- NumberLiteral
                   |           |     |        |  |  |                          +- StringLiteral
                   |           |     |        |  |  +- ExpressionStatement
-                  |           |     |        |  |     +- Assignment
-                  |           |     |        |  |        +- ElementGet
-                  |           |     |        |  |        |  +- Name
-                  |           |     |        |  |        |  +- NumberLiteral
-                  |           |     |        |  |        +- UnaryExpression
-                  |           |     |        |  |           +- ParenthesizedExpression
-                  |           |     |        |  |              +- InfixExpression
-                  |           |     |        |  |                 +- ParenthesizedExpression
-                  |           |     |        |  |                 |  +- InfixExpression
-                  |           |     |        |  |                 |     +- ElementGet
-                  |           |     |        |  |                 |     |  +- Name
-                  |           |     |        |  |                 |     |  +- NumberLiteral
-                  |           |     |        |  |                 |     +- ElementGet
-                  |           |     |        |  |                 |        +- Name
-                  |           |     |        |  |                 |        +- NumberLiteral
-                  |           |     |        |  |                 +- InfixExpression
-                  |           |     |        |  |                    +- ElementGet
-                  |           |     |        |  |                    |  +- Name
-                  |           |     |        |  |                    |  +- NumberLiteral
-                  |           |     |        |  |                    +- StringLiteral
+                  |           |     |        |  |  |  +- Assignment
+                  |           |     |        |  |  |     +- ElementGet
+                  |           |     |        |  |  |     |  +- Name
+                  |           |     |        |  |  |     |  +- NumberLiteral
+                  |           |     |        |  |  |     +- UnaryExpression
+                  |           |     |        |  |  |        +- ParenthesizedExpression
+                  |           |     |        |  |  |           +- InfixExpression
+                  |           |     |        |  |  |              +- ParenthesizedExpression
+                  |           |     |        |  |  |              |  +- InfixExpression
+                  |           |     |        |  |  |              |     +- ElementGet
+                  |           |     |        |  |  |              |     |  +- Name
+                  |           |     |        |  |  |              |     |  +- NumberLiteral
+                  |           |     |        |  |  |              |     +- ElementGet
+                  |           |     |        |  |  |              |        +- Name
+                  |           |     |        |  |  |              |        +- NumberLiteral
+                  |           |     |        |  |  |              +- InfixExpression
+                  |           |     |        |  |  |                 +- ElementGet
+                  |           |     |        |  |  |                 |  +- Name
+                  |           |     |        |  |  |                 |  +- NumberLiteral
+                  |           |     |        |  |  |                 +- StringLiteral
+                  |           |     |        |  |  +- Comment
                   |           |     |        |  +- IfStatement
                   |           |     |        |     +- ElementGet
                   |           |     |        |     |  +- Name
@@ -1572,19 +1637,20 @@
                   |           |              |  |  +- NumberLiteral
                   |           |              |  +- Scope
                   |           |              |  |  +- ExpressionStatement
-                  |           |              |  |     +- Assignment
-                  |           |              |  |        +- ElementGet
-                  |           |              |  |        |  +- Name
-                  |           |              |  |        |  +- NumberLiteral
-                  |           |              |  |        +- InfixExpression
-                  |           |              |  |           +- ElementGet
-                  |           |              |  |           |  +- Name
-                  |           |              |  |           |  +- NumberLiteral
-                  |           |              |  |           +- InfixExpression
-                  |           |              |  |              +- ElementGet
-                  |           |              |  |              |  +- Name
-                  |           |              |  |              |  +- NumberLiteral
-                  |           |              |  |              +- StringLiteral
+                  |           |              |  |  |  +- Assignment
+                  |           |              |  |  |     +- ElementGet
+                  |           |              |  |  |     |  +- Name
+                  |           |              |  |  |     |  +- NumberLiteral
+                  |           |              |  |  |     +- InfixExpression
+                  |           |              |  |  |        +- ElementGet
+                  |           |              |  |  |        |  +- Name
+                  |           |              |  |  |        |  +- NumberLiteral
+                  |           |              |  |  |        +- InfixExpression
+                  |           |              |  |  |           +- ElementGet
+                  |           |              |  |  |           |  +- Name
+                  |           |              |  |  |           |  +- NumberLiteral
+                  |           |              |  |  |           +- StringLiteral
+                  |           |              |  |  +- Comment
                   |           |              |  +- IfStatement
                   |           |              |     +- InfixExpression
                   |           |              |     |  +- Name
@@ -1620,6 +1686,7 @@
                   |           |              |     |                    +- Name
                   |           |              |     |                    +- Name
                   |           |              |     +- Scope
+                  |           |              |        +- Comment
                   |           |              |        +- ExpressionStatement
                   |           |              |        |  +- Assignment
                   |           |              |        |     +- ElementGet
@@ -2046,6 +2113,7 @@
                   |           |     |                    +- IfStatement
                   |           |     |                       +- Name
                   |           |     |                       +- Scope
+                  |           |     |                          +- Comment
                   |           |     |                          +- IfStatement
                   |           |     |                          |  +- Name
                   |           |     |                          |  +- Scope
@@ -2079,6 +2147,7 @@
                   |           |     |                          |     |     |        +- Scope
                   |           |     |                          |     |     |           +- ReturnStatement
                   |           |     |                          |     |     |              +- KeywordLiteral
+                  |           |     |                          |     |     +- Comment
                   |           |     |                          |     |     +- ExpressionStatement
                   |           |     |                          |     |        +- Assignment
                   |           |     |                          |     |           +- Name
@@ -2106,11 +2175,13 @@
                   |           |     |                          |           +- PropertyGet
                   |           |     |                          |              +- Name
                   |           |     |                          |              +- Name
+                  |           |     |                          +- Comment
                   |           |     |                          +- IfStatement
                   |           |     |                          |  +- InfixExpression
                   |           |     |                          |  |  +- Name
                   |           |     |                          |  |  +- Name
                   |           |     |                          |  +- Scope
+                  |           |     |                          |  |  +- Comment
                   |           |     |                          |  |  +- ExpressionStatement
                   |           |     |                          |  |  |  +- Assignment
                   |           |     |                          |  |  |     +- Name
@@ -2187,6 +2258,7 @@
                   |           |     |                          |  |     |                 +- Name
                   |           |     |                          |  |     |                 +- Name
                   |           |     |                          |  |     +- Scope
+                  |           |     |                          |  |        +- Comment
                   |           |     |                          |  |        +- IfStatement
                   |           |     |                          |  |           +- InfixExpression
                   |           |     |                          |  |           |  +- InfixExpression
@@ -2212,6 +2284,7 @@
                   |           |     |                          |  |              |        +- Name
                   |           |     |                          |  |              +- BreakStatement
                   |           |     |                          |  +- Scope
+                  |           |     |                          |     +- Comment
                   |           |     |                          |     +- IfStatement
                   |           |     |                          |     |  +- Name
                   |           |     |                          |     |  +- Scope
@@ -2257,6 +2330,7 @@
                   |           |     |                          |        |  +- Name
                   |           |     |                          |        |  +- KeywordLiteral
                   |           |     |                          |        +- Scope
+                  |           |     |                          |           +- Comment
                   |           |     |                          |           +- WhileLoop
                   |           |     |                          |              +- ParenthesizedExpression
                   |           |     |                          |              |  +- Assignment
@@ -2299,6 +2373,7 @@
                   |           |     |                          |                    |  +- UnaryExpression
                   |           |     |                          |                    |     +- Name
                   |           |     |                          |                    +- Scope
+                  |           |     |                          |                       +- Comment
                   |           |     |                          |                       +- IfStatement
                   |           |     |                          |                       |  +- Name
                   |           |     |                          |                       |  +- Scope
@@ -2329,6 +2404,7 @@
                   |           |     |                          |                          |  +- Name
                   |           |     |                          |                          +- Scope
                   |           |     |                          |                             +- BreakStatement
+                  |           |     |                          +- Comment
                   |           |     |                          +- ExpressionStatement
                   |           |     |                          |  +- Assignment
                   |           |     |                          |     +- Name
@@ -2356,6 +2432,10 @@
                   |           |           +- Name
                   |           |           +- Name
                   |           |           +- Block
+                  |           |              +- Comment
+                  |           |              +- Comment
+                  |           |              +- Comment
+                  |           |              +- Comment
                   |           |              +- VariableDeclaration
                   |           |              |  +- VariableInitializer
                   |           |              |  |  +- Name
@@ -2381,6 +2461,9 @@
                   |           |              |              +- InfixExpression
                   |           |              |                 +- StringLiteral
                   |           |              |                 +- Name
+                  |           |              +- Comment
+                  |           |              +- Comment
+                  |           |              +- Comment
                   |           |              +- IfStatement
                   |           |              |  +- ElementGet
                   |           |              |  |  +- Name
@@ -2487,6 +2570,9 @@
                   |                 |     +- FunctionNode
                   |                 |        +- Name
                   |                 |        +- Block
+                  |                 |           +- Comment
+                  |                 |           +- Comment
+                  |                 |           +- Comment
                   |                 |           +- VariableDeclaration
                   |                 |           |  +- VariableInitializer
                   |                 |           |  |  +- Name
@@ -2533,6 +2619,7 @@
                   |                 |                 |        |     +- PropertyGet
                   |                 |                 |        |        +- Name
                   |                 |                 |        |        +- Name
+                  |                 |                 |        +- Comment
                   |                 |                 |        +- WhileLoop
                   |                 |                 |           +- UnaryExpression
                   |                 |                 |           |  +- Name
@@ -2575,6 +2662,7 @@
                   |                 |                       |     +- KeywordLiteral
                   |                 |                       |     +- Name
                   |                 |                       |     +- Name
+                  |                 |                       +- Comment
                   |                 |                       +- ExpressionStatement
                   |                 |                       |  +- Assignment
                   |                 |                       |     +- ElementGet
@@ -2652,6 +2740,7 @@
                   |                 |     +- FunctionNode
                   |                 |        +- Name
                   |                 |        +- Block
+                  |                 |           +- Comment
                   |                 |           +- IfStatement
                   |                 |           |  +- UnaryExpression
                   |                 |           |  |  +- FunctionCall
@@ -2830,6 +2919,8 @@
                   |                 |  +- FunctionNode
                   |                 |     +- Name
                   |                 |     +- Block
+                  |                 |        +- Comment
+                  |                 |        +- Comment
                   |                 |        +- ReturnStatement
                   |                 |           +- InfixExpression
                   |                 |              +- ParenthesizedExpression
@@ -2859,11 +2950,16 @@
                   |                 |  +- FunctionNode
                   |                 |     +- Name
                   |                 |     +- Block
+                  |                 |        +- Comment
+                  |                 |        +- Comment
+                  |                 |        +- Comment
+                  |                 |        +- Comment
                   |                 |        +- IfStatement
                   |                 |        |  +- PropertyGet
                   |                 |        |  |  +- Name
                   |                 |        |  |  +- Name
                   |                 |        |  +- Scope
+                  |                 |        |     +- Comment
                   |                 |        |     +- ExpressionStatement
                   |                 |        |        +- PropertyGet
                   |                 |        |           +- PropertyGet
@@ -2881,6 +2977,10 @@
                   |                 |  +- FunctionNode
                   |                 |     +- Name
                   |                 |     +- Block
+                  |                 |        +- Comment
+                  |                 |        +- Comment
+                  |                 |        +- Comment
+                  |                 |        +- Comment
                   |                 |        +- ForLoop
                   |                 |        |  +- Assignment
                   |                 |        |  |  +- Name
@@ -3182,6 +3282,7 @@
                   |        |  +- Name
                   |        |  +- Name
                   |        +- Name
+                  +- Comment
                   +- ForInLoop
                   |  +- Name
                   |  +- ObjectLiteral
@@ -3231,6 +3332,7 @@
                   |           +- FunctionCall
                   |              +- Name
                   |              +- Name
+                  +- Comment
                   +- FunctionNode
                   |  +- Name
                   |  +- Block
@@ -3309,6 +3411,7 @@
                   |     +- WhileLoop
                   |     |  +- Name
                   |     |  +- Scope
+                  |     |     +- Comment
                   |     |     +- IfStatement
                   |     |     |  +- InfixExpression
                   |     |     |  |  +- UnaryExpression
@@ -3325,6 +3428,7 @@
                   |     |     |     +- IfStatement
                   |     |     |     |  +- Name
                   |     |     |     |  +- Scope
+                  |     |     |     |     +- Comment
                   |     |     |     |     +- ExpressionStatement
                   |     |     |     |        +- Assignment
                   |     |     |     |           +- Name
@@ -3352,6 +3456,7 @@
                   |     |     |  +- Assignment
                   |     |     |     +- Name
                   |     |     |     +- KeywordLiteral
+                  |     |     +- Comment
                   |     |     +- IfStatement
                   |     |     |  +- ParenthesizedExpression
                   |     |     |  |  +- Assignment
@@ -3468,6 +3573,9 @@
                   |     |        |  +- Name
                   |     |        +- Scope
                   |     |           +- BreakStatement
+                  |     +- Comment
+                  |     +- Comment
+                  |     +- Comment
                   |     +- IfStatement
                   |     |  +- Name
                   |     |  +- Scope
@@ -3606,6 +3714,7 @@
                   |                 |     +- ArrayLiteral
                   |                 |        +- Name
                   |                 |        +- Name
+                  |                 +- Comment
                   |                 +- IfStatement
                   |                 |  +- Name
                   |                 |  +- Scope
@@ -3702,6 +3811,7 @@
                   |                 |                       |        |  +- NumberLiteral
                   |                 |                       |        +- Name
                   |                 |                       +- Scope
+                  |                 |                       |  +- Comment
                   |                 |                       |  +- ReturnStatement
                   |                 |                       |     +- ParenthesizedExpression
                   |                 |                       |        +- Assignment
@@ -3712,12 +3822,14 @@
                   |                 |                       |              +- Name
                   |                 |                       |              +- NumberLiteral
                   |                 |                       +- Scope
+                  |                 |                          +- Comment
                   |                 |                          +- ExpressionStatement
                   |                 |                          |  +- Assignment
                   |                 |                          |     +- ElementGet
                   |                 |                          |     |  +- Name
                   |                 |                          |     |  +- Name
                   |                 |                          |     +- Name
+                  |                 |                          +- Comment
                   |                 |                          +- IfStatement
                   |                 |                             +- ParenthesizedExpression
                   |                 |                             |  +- Assignment
@@ -3985,6 +4097,8 @@
                   |                 +- IfStatement
                   |                 |  +- Name
                   |                 |  +- Scope
+                  |                 |  |  +- Comment
+                  |                 |  |  +- Comment
                   |                 |  |  +- ExpressionStatement
                   |                 |  |  |  +- Assignment
                   |                 |  |  |     +- Name
@@ -4000,6 +4114,7 @@
                   |                 |  |  |        |           +- Name
                   |                 |  |  |        +- ArrayLiteral
                   |                 |  |  |        +- Name
+                  |                 |  |  +- Comment
                   |                 |  |  +- ExpressionStatement
                   |                 |  |     +- FunctionCall
                   |                 |  |        +- Name
@@ -4012,6 +4127,7 @@
                   |                 |        +- Assignment
                   |                 |           +- Name
                   |                 |           +- Name
+                  |                 +- Comment
                   |                 +- IfStatement
                   |                 |  +- Name
                   |                 |  +- Scope
@@ -4029,6 +4145,7 @@
                   |                 |     |     +- ArrayLiteral
                   |                 |     |     +- Name
                   |                 |     |     +- Name
+                  |                 |     +- Comment
                   |                 |     +- ExpressionStatement
                   |                 |     |  +- Assignment
                   |                 |     |     +- Name
@@ -4074,6 +4191,7 @@
                   |                    |        +- IfStatement
                   |                    |        |  +- Name
                   |                    |        |  +- Scope
+                  |                    |        |     +- Comment
                   |                    |        |     +- ExpressionStatement
                   |                    |        |     |  +- Assignment
                   |                    |        |     |     +- Name
@@ -4096,6 +4214,7 @@
                   |                    |        |     |        |        +- Name
                   |                    |        |     |        |        +- Name
                   |                    |        |     |        +- Scope
+                  |                    |        |     |           +- Comment
                   |                    |        |     |           +- ExpressionStatement
                   |                    |        |     |              +- FunctionCall
                   |                    |        |     |                 +- PropertyGet
@@ -4316,6 +4435,7 @@
                   |     |              |                 +- Name
                   |     |              |                 +- Name
                   |     |              |                 +- Name
+                  |     |              +- Comment
                   |     |              +- ExpressionStatement
                   |     |              |  +- Assignment
                   |     |              |     +- Name
@@ -4376,11 +4496,13 @@
                   |     |           |           |  +- Name
                   |     |           |           |  +- Name
                   |     |           |           +- Name
+                  |     |           +- Comment
                   |     |           +- IfStatement
                   |     |           |  +- ElementGet
                   |     |           |  |  +- Name
                   |     |           |  |  +- Name
                   |     |           |  +- Scope
+                  |     |           |     +- Comment
                   |     |           |     +- ExpressionStatement
                   |     |           |     |  +- Assignment
                   |     |           |     |     +- Name
@@ -4583,6 +4705,10 @@
                   |     |           +- IfStatement
                   |     |           |  +- Name
                   |     |           |  +- Scope
+                  |     |           |     +- Comment
+                  |     |           |     +- Comment
+                  |     |           |     +- Comment
+                  |     |           |     +- Comment
                   |     |           |     +- ExpressionStatement
                   |     |           |        +- Assignment
                   |     |           |           +- Name
@@ -4615,6 +4741,10 @@
                   |     |           |     |     |  +- Assignment
                   |     |           |     |     |     +- Name
                   |     |           |     |     |     +- NumberLiteral
+                  |     |           |     |     +- Comment
+                  |     |           |     |     +- Comment
+                  |     |           |     |     +- Comment
+                  |     |           |     |     +- Comment
                   |     |           |     |     +- IfStatement
                   |     |           |     |     |  +- InfixExpression
                   |     |           |     |     |  |  +- UnaryExpression
@@ -4670,6 +4800,7 @@
                   |     |           |     +- IfStatement
                   |     |           |        +- Name
                   |     |           |        +- Scope
+                  |     |           |           +- Comment
                   |     |           |           +- IfStatement
                   |     |           |           |  +- ParenthesizedExpression
                   |     |           |           |  |  +- Assignment
@@ -4691,10 +4822,19 @@
                   |     |           |                       |  +- Name
                   |     |           |                       |  +- Name
                   |     |           |                       +- Name
+                  |     |           +- Comment
+                  |     |           +- Comment
                   |     |           +- ExpressionStatement
                   |     |           |  +- Assignment
                   |     |           |     +- Name
                   |     |           |     +- Name
+                  |     |           +- Comment
+                  |     |           +- Comment
+                  |     |           +- Comment
+                  |     |           +- Comment
+                  |     |           +- Comment
+                  |     |           +- Comment
+                  |     |           +- Comment
                   |     |           +- IfStatement
                   |     |           |  +- InfixExpression
                   |     |           |  |  +- Name
@@ -4725,6 +4865,7 @@
                   |     |           |     +- IfStatement
                   |     |           |     |  +- Name
                   |     |           |     |  +- Scope
+                  |     |           |     |     +- Comment
                   |     |           |     |     +- IfStatement
                   |     |           |     |     |  +- InfixExpression
                   |     |           |     |     |  |  +- Name
@@ -4768,6 +4909,7 @@
                   |     |           |     |     |  +- Name
                   |     |           |     |     +- Name
                   |     |           |     |     +- Name
+                  |     |           |     +- Comment
                   |     |           |     +- IfStatement
                   |     |           |        +- InfixExpression
                   |     |           |        |  +- Name
@@ -4840,6 +4982,7 @@
                   |     |  +- UnaryExpression
                   |     |  |  +- Name
                   |     |  +- Scope
+                  |     |     +- Comment
                   |     |     +- IfStatement
                   |     |     |  +- UnaryExpression
                   |     |     |  |  +- Name
@@ -4886,6 +5029,7 @@
                   |     |     |                 |  +- Name
                   |     |     |                 |  +- Name
                   |     |     |                 +- Name
+                  |     |     +- Comment
                   |     |     +- ExpressionStatement
                   |     |     |  +- Assignment
                   |     |     |     +- Name
@@ -4896,6 +5040,7 @@
                   |     |     |           +- Name
                   |     |     |           +- Name
                   |     |     |           +- Name
+                  |     |     +- Comment
                   |     |     +- ExpressionStatement
                   |     |        +- Assignment
                   |     |           +- PropertyGet
@@ -4904,6 +5049,7 @@
                   |     |           +- Name
                   |     +- ReturnStatement
                   |        +- Name
+                  +- Comment
                   +- FunctionNode
                   |  +- Name
                   |  +- Name
@@ -4951,6 +5097,8 @@
                   |     |     +- InfixExpression
                   |     |        +- Name
                   |     |        +- ArrayLiteral
+                  |     +- Comment
+                  |     +- Comment
                   |     +- IfStatement
                   |     |  +- InfixExpression
                   |     |  |  +- PropertyGet
@@ -4958,6 +5106,7 @@
                   |     |  |  |  +- Name
                   |     |  |  +- NumberLiteral
                   |     |  +- Scope
+                  |     |     +- Comment
                   |     |     +- ExpressionStatement
                   |     |     |  +- Assignment
                   |     |     |     +- Name
@@ -5038,7 +5187,8 @@
                   |     |     |     |  |  +- Name
                   |     |     |     |  +- Scope
                   |     |     |     |  |  +- ReturnStatement
-                  |     |     |     |  |     +- Name
+                  |     |     |     |  |  |  +- Name
+                  |     |     |     |  |  +- Comment
                   |     |     |     |  +- IfStatement
                   |     |     |     |     +- Name
                   |     |     |     |     +- Scope
@@ -5088,6 +5238,7 @@
                   |     |           |     +- ElementGet
                   |     |           |        +- Name
                   |     |           |        +- Name
+                  |     |           +- Comment
                   |     |           +- IfStatement
                   |     |           |  +- ElementGet
                   |     |           |  |  +- PropertyGet
@@ -5111,6 +5262,7 @@
                   |     |              |        |  +- Name
                   |     |              |        +- Name
                   |     |              +- Scope
+                  |     |                 +- Comment
                   |     |                 +- IfStatement
                   |     |                    +- ParenthesizedExpression
                   |     |                    |  +- Assignment
@@ -5145,6 +5297,7 @@
                   |     |                    |           |        +- Name
                   |     |                    |           +- Name
                   |     |                    +- Scope
+                  |     |                       +- Comment
                   |     |                       +- ExpressionStatement
                   |     |                       |  +- FunctionCall
                   |     |                       |     +- PropertyGet
@@ -5208,6 +5361,7 @@
                   |     |           +- Name
                   |     +- ReturnStatement
                   |        +- Name
+                  +- Comment
                   +- ExpressionStatement
                   |  +- FunctionCall
                   |     +- Name

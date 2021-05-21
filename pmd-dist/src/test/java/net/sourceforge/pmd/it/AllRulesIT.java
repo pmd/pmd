@@ -22,8 +22,8 @@ public class AllRulesIT extends AbstractBinaryDistributionTest {
     @Parameters
     public static Iterable<String> languagesToTest() {
         if (PMDExecutor.isJava7Test()) {
-            // note: apex, scala, and visualforce require java8
-            return Arrays.asList("java", "javascript", "jsp", "modelica",
+            // note: apex, javascript, scala, and visualforce require java8
+            return Arrays.asList("java", "jsp", "modelica",
                     "plsql", "pom", "velocitytemplate", "xml", "xsl");
         }
         // note: scala and wsdl have no rules
