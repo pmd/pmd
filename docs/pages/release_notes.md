@@ -23,6 +23,18 @@ This is a {{ site.pmd.release_type }} release.
     Additionally comparisons against constants are allowed now. This makes the rule less noisy when two constants
     are compared. Constants are identified by looking for an all-caps identifier.
 
+#### Deprecated rules
+
+*   The Java rule {% rule "java/errorprone/CloneThrowsCloneNotSupportedException" %} has been deprecated without
+    replacement.
+    
+    The rule has no real value as `CloneNotSupportedException` is a
+    checked exception and therefore you need to deal with it while implementing the `clone()` method. You either
+    need to declare the exception or catch it. If you catch it, then subclasses can't throw it themselves explicitly.
+    However, `Object.clone()` will still throw this exception if the `Cloneable` interface is not implemented.
+    
+    Note, this rule has also been removed from the Quickstart Ruleset (`rulesets/java/quickstart.xml`).
+
 ### Fixed Issues
 
 *   apex
@@ -53,6 +65,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2780](https://github.com/pmd/pmd/issues/2780): \[java] DataClass example from documentation results in false-negative
 *   java-errorprone
     *   [#3110](https://github.com/pmd/pmd/issues/3110): \[java] Enhance CompareObjectsWithEquals with list of exceptions
+    *   [#3112](https://github.com/pmd/pmd/issues/3112): \[java] Deprecate rule CloneThrowsCloneNotSupportedException
     *   [#3205](https://github.com/pmd/pmd/issues/3205): \[java] Make CompareObjectWithEquals allow comparing against constants
     *   [#3248](https://github.com/pmd/pmd/issues/3248): \[java] Documentation is wrong for SingletonClassReturningNewInstance rule
     *   [#3249](https://github.com/pmd/pmd/pull/3249): \[java] AvoidFieldNameMatchingTypeName: False negative with interfaces
