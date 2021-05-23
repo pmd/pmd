@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.ClassFanOutMetric.ClassFanOutOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.CognitiveComplexityMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOperationMetric;
@@ -19,6 +20,13 @@ import net.sourceforge.pmd.lang.metrics.MetricKey;
  * Keys identifying standard operation metrics.
  */
 public enum JavaOperationMetricKey implements MetricKey<MethodLikeNode> {
+
+    /**
+     * Cognitive complexity.
+     *
+     * @see CognitiveComplexityMetric
+     */
+    COGNITIVE(new CognitiveComplexityMetric()),
 
     /**
      * Access to Foreign Data.
