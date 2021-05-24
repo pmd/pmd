@@ -93,7 +93,7 @@ public class RuleApplicator {
         if (LOG.isLoggable(Level.WARNING)) {
             LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
                 + ctx.getSourceCodeFile() + ", continuing with next rule", e);
-            LOG.log(Level.WARNING, "Exception occurred on node " + node, e);
+            LOG.log(Level.WARNING, "Exception occurred on node " + node);
         }
     }
 
