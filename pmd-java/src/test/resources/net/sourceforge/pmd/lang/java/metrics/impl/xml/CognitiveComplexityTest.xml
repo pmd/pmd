@@ -414,9 +414,10 @@
     <test-code>
         <description>Anonymous class increase nesting level without structural increment</description>
         <rule-property name="reportLevel">1</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 2.</message>
+            <message>'Foo$1#run()' has value 1.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -439,9 +440,10 @@
     <test-code>
         <description>Lambdas increase nesting level without structural increment</description>
         <rule-property name="reportLevel">1</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 2.</message>
+            <message>'Foo#lambda$foo$0' has value 2.</message>
         </expected-messages>
         <code>
             <![CDATA[
