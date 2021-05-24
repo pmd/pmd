@@ -8,7 +8,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo(int)' has a cognitive complexity of 1, current threshold is 1</message>
+            <message>'Foo#foo(int)' has value 1.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -30,7 +30,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo(int)' has a cognitive complexity of 3, current threshold is 1</message>
+            <message>'Foo#foo(int)' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -56,7 +56,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo(int)' has a cognitive complexity of 3, current threshold is 1</message>
+            <message>'Foo#foo(int)' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -86,7 +86,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo(int)' has a cognitive complexity of 3, current threshold is 1</message>
+            <message>'Foo#foo(int)' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -110,7 +110,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo()' has a cognitive complexity of 3, current threshold is 1</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -134,7 +134,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo()' has a cognitive complexity of 3, current threshold is 1</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -159,7 +159,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo()' has a cognitive complexity of 4, current threshold is 1</message>
+            <message>'Foo#foo()' has value 4.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -184,7 +184,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo()' has a cognitive complexity of 4, current threshold is 1</message>
+            <message>'Foo#foo()' has value 4.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -209,7 +209,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo()' has a cognitive complexity of 3, current threshold is 1</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -236,7 +236,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo()' has a cognitive complexity of 4, current threshold is 1</message>
+            <message>'Foo#foo()' has value 4.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -264,7 +264,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo()' has a cognitive complexity of 5, current threshold is 1</message>
+            <message>'Foo#foo()' has value 5.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -290,7 +290,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo(int)' has a cognitive complexity of 3, current threshold is 1</message>
+            <message>'Foo#foo(int)' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -310,12 +310,12 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>6</expected-problems>
         <expected-messages>
-            <message>The method 'a(Integer)' has a cognitive complexity of 1, current threshold is 1</message>
-            <message>The method 'b(Integer)' has a cognitive complexity of 1, current threshold is 1</message>
-            <message>The method 'c(Integer)' has a cognitive complexity of 1, current threshold is 1</message>
-            <message>The method 'd(Boolean, Boolean, Boolean, Boolean, Boolean, Boolean)' has a cognitive complexity of 3, current threshold is 1</message>
-            <message>The method 'e(Boolean, Boolean, Boolean)' has a cognitive complexity of 2, current threshold is 1</message>
-            <message>The method 'f()' has a cognitive complexity of 2, current threshold is 1</message>
+            <message>'Foo#a(Integer)' has value 1.</message>
+            <message>'Foo#b(Integer)' has value 1.</message>
+            <message>'Foo#c(Integer)' has value 1.</message>
+            <message>'Foo#d(Boolean, Boolean, Boolean, Boolean, Boolean, Boolean)' has value 3.</message>
+            <message>'Foo#e(Boolean, Boolean, Boolean)' has value 2.</message>
+            <message>'Foo#f()' has value 2.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -359,7 +359,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo(Integer)' has a cognitive complexity of 3, current threshold is 1</message>
+            <message>'Foo#foo(Integer)' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -381,7 +381,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo(int)' has a cognitive complexity of 3, current threshold is 1</message>
+            <message>'Foo#foo(int)' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -416,7 +416,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo(int)' has a cognitive complexity of 2, current threshold is 1</message>
+            <message>'Foo#foo(int)' has value 2.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -441,7 +441,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'foo(int)' has a cognitive complexity of 2, current threshold is 1</message>
+            <message>'Foo#foo(int)' has value 2.</message>
         </expected-messages>
         <code>
             <![CDATA[
