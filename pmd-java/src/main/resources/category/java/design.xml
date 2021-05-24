@@ -26,10 +26,9 @@ protected constructor in order to prevent instantiation than make the class misl
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration
-    [@Abstract = true()]
-    [not(./ClassOrInterfaceBody/*/ConstructorDeclaration)]
-    [not(./ClassOrInterfaceBody/*/MethodDeclaration)]
-    [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('com.google.auto.value.AutoValue')])]
+    [@Abstract = true() and @Interface = false()]
+    [ClassOrInterfaceBody[not(ConstructorDeclaration | MethodDeclaration)]]
+    [not(pmd-java:hasAnnotation('com.google.auto.value.AutoValue'))]
 ]]>
                 </value>
             </property>
