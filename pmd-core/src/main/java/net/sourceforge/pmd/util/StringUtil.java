@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
  * A number of String-specific utility methods for use by PMD or its IDE
@@ -436,6 +437,23 @@ public final class StringUtil {
         return removeSurrounding(string, '"');
     }
 
+    /**
+     * Truncate the given string to some maximum length. If it needs
+     * truncation, the ellipsis string is appended. The length of the
+     * returned string is always lower-or-equal to the maxOutputLength,
+     * even when truncation occurs.
+     */
+    public static String elide(String string, int maxOutputLength, String ellipsis) {
+        AssertionUtil.requireNonNegative("maxOutputLength", maxOutputLength);
+        if (ellipsis.length() > maxOutputLength) {
+            throw new IllegalArgumentException("Ellipsis too long '" + ellipsis + "', maxOutputLength=" + maxOutputLength);
+        }
+        if (string.length() <= maxOutputLength) {
+            return string;
+        }
+        String truncated = string.substring(0, maxOutputLength - ellipsis.length());
+        return truncated + ellipsis;
+    }
 
     /**
      * Returns an empty array of string

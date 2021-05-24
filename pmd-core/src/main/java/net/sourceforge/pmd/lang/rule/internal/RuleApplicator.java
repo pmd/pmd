@@ -21,6 +21,7 @@ import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.StringUtil;
 
 /** Applies a set of rules to a set of ASTs. */
 public class RuleApplicator {
@@ -93,7 +94,9 @@ public class RuleApplicator {
         if (LOG.isLoggable(Level.WARNING)) {
             LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
                 + ctx.getSourceCodeFile() + ", continuing with next rule", e);
-            LOG.log(Level.WARNING, "Exception occurred on node " + node);
+
+            String nodeToString = StringUtil.elide(node.toString(), 600, " ... (truncated)");
+            LOG.log(Level.WARNING, "Exception occurred on node " + nodeToString);
         }
     }
 
