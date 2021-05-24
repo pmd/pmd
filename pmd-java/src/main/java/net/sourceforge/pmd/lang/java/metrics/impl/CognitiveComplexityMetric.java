@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CognitiveComplexityBaseVisitor;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CognitiveComplexityBaseVisitor.State;
+import net.sourceforge.pmd.lang.java.metrics.impl.internal.CognitiveComplexityVisitor;
+import net.sourceforge.pmd.lang.java.metrics.impl.internal.CognitiveComplexityVisitor.State;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
@@ -24,7 +24,7 @@ public class CognitiveComplexityMetric extends AbstractJavaOperationMetric {
     @Override
     public double computeFor(MethodLikeNode node, MetricOptions options) {
         final State resultingState = (State) node
-            .jjtAccept(CognitiveComplexityBaseVisitor.INSTANCE, new State());
+            .jjtAccept(CognitiveComplexityVisitor.INSTANCE, new State());
         return resultingState.getComplexity();
     }
 

@@ -37,11 +37,11 @@ public class CognitiveComplexityRule extends AbstractJavaMetricsRule {
 
     @Override
     public final Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-        if (!JavaOperationMetricKey.COGNITIVE.supports(node)) {
+        if (!JavaOperationMetricKey.COGNITIVE_COMPLEXITY.supports(node)) {
             return data;
         }
 
-        int cognitive = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.COGNITIVE, node);
+        int cognitive = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.COGNITIVE_COMPLEXITY, node);
         final int reportLevel = getReportLevel();
         if (cognitive >= reportLevel) {
             addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",

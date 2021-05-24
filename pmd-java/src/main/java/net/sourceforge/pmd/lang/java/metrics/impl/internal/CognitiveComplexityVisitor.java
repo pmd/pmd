@@ -2,11 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
+package net.sourceforge.pmd.lang.java.metrics.impl.internal;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
@@ -28,24 +27,21 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CognitiveComplexityBaseVisitor.State.BooleanOp;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.metrics.impl.internal.CognitiveComplexityVisitor.State.BooleanOp;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 
 
 /**
- * Default visitor for the calculation of Cognitive Complexity.
+ * Visitor for the Cognitive Complexity metric.
  *
- * @see net.sourceforge.pmd.lang.java.metrics.impl.CognitiveComplexityMetric
- *
- * @deprecated Visitor decorators are deprecated because they lead to fragile code.
+ * @author Denis Borovikov
+ * @since 6.35.0
  */
-@Deprecated
-@InternalApi
-public class CognitiveComplexityBaseVisitor extends JavaParserVisitorReducedAdapter {
+public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
 
     /** Instance. */
-    public static final CognitiveComplexityBaseVisitor INSTANCE = new CognitiveComplexityBaseVisitor();
+    public static final CognitiveComplexityVisitor INSTANCE = new CognitiveComplexityVisitor();
 
 
     public static class State {

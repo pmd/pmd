@@ -26,7 +26,7 @@ public enum JavaOperationMetricKey implements MetricKey<MethodLikeNode> {
      *
      * @see CognitiveComplexityMetric
      */
-    COGNITIVE(new CognitiveComplexityMetric()),
+    COGNITIVE_COMPLEXITY(new CognitiveComplexityMetric()),
 
     /**
      * Access to Foreign Data.
