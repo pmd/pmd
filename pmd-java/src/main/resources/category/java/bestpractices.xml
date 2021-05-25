@@ -824,12 +824,15 @@ public class MyTest {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate">
-        <description>
-JUnit 5 tests should be package private at the class level and for each method that uses @Test, @RepeatedTest,
-@TestFactory, @TestTemplate or @ParameterizedTest.
-Contrary to JUnit4 tests that required public visibility to be run by the engine, JUnit5 tests can also be run
-if they're package-private. Marking them as such is a good practice to limit their visibility.
-        </description>
+        <description><![CDATA[
+Reports JUnit 5 test classes and methods that are not package-private.
+Contrary to JUnit 4 tests, which required public visibility to be run by the engine,
+JUnit 5 tests can also be run if they're package-private. Marking them as such
+is a good practice to limit their visibility.
+
+Test methods are identified as those which use `@Test`, `@RepeatedTest`,
+`@TestFactory`, `@TestTemplate` or `@ParameterizedTest`.
+            ]]></description>
         <priority>3</priority>
         <properties>
             <property name="version" value="2.0"/>
