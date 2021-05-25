@@ -8,6 +8,7 @@
 This ruleset contains links to rules that are new in PMD v6.35.0
   </description>
 
+    <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" />
     <rule ref="category/java/design.xml/MutableStaticState" />
 
 </ruleset>
