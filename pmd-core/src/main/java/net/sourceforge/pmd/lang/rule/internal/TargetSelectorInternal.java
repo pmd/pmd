@@ -26,11 +26,14 @@ public abstract class TargetSelectorInternal {
     protected abstract Iterator<? extends Node> getVisitedNodes(TreeIndex index);
 
 
-    protected static class ApplicatorBuilder {
+    protected static final class ApplicatorBuilder {
 
         private final Set<String> namesToIndex = new HashSet<>();
         private final Set<Class<? extends Node>> classesToIndex = new HashSet<>();
 
+        ApplicatorBuilder() {
+            // package-private
+        }
 
         public void registerXPathNames(Set<String> names) {
             namesToIndex.addAll(names);
