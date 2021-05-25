@@ -2628,11 +2628,19 @@ of the clone method doesn’t need to cast the returned clone to the correct typ
 
 <h2 id="clonethrowsclonenotsupportedexception">CloneThrowsCloneNotSupportedException</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 1.9</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>The method clone() should throw a CloneNotSupportedException.</p>
+
+<p>This rule is deprecated since PMD 6.35.0 without replacement. The rule has no real value as
+<code class="language-plaintext highlighter-rouge">CloneNotSupportedException</code> is a checked exception and therefore you need to deal with it while
+implementing the <code class="language-plaintext highlighter-rouge">clone()</code> method. You either need to declare the exception or catch it. If you catch it,
+then subclasses can’t throw it themselves explicitly. However, <code class="language-plaintext highlighter-rouge">Object.clone()</code> will still throw this
+exception if the <code class="language-plaintext highlighter-rouge">Cloneable</code> interface is not implemented.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="w">
@@ -5269,7 +5277,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 21, 2021 <br />
+ Site last generated: May 25, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

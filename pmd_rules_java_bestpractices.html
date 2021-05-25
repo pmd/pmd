@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedAssignment, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedAssignment, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -2404,6 +2404,64 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
+<h2 id="junit5testshouldbepackageprivate">JUnit5TestShouldBePackagePrivate</h2>
+
+<p><strong>Since:</strong> PMD 6.35.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Reports JUnit 5 test classes and methods that are not package-private.
+Contrary to JUnit 4 tests, which required public visibility to be run by the engine,
+JUnit 5 tests can also be run if they’re package-private. Marking them as such
+is a good practice to limit their visibility.</p>
+
+<p>Test methods are identified as those which use <code class="language-plaintext highlighter-rouge">@Test</code>, <code class="language-plaintext highlighter-rouge">@RepeatedTest</code>,
+<code class="language-plaintext highlighter-rouge">@TestFactory</code>, <code class="language-plaintext highlighter-rouge">@TestTemplate</code> or <code class="language-plaintext highlighter-rouge">@ParameterizedTest</code>.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="w">
+    </span><span class="c">(: a Junit 5 test class, ie, it has methods with the annotation :)</span><span class="w">
+    </span><span class="na">@Interface</span><span class="err">=</span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w">
+    </span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="w">
+        </span><span class="p">[</span><span class="nt">Annotation</span><span class="o">//</span><span class="nt">Name</span><span class="p">[</span><span class="w">
+            </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
+            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestFactory'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestTemplate'</span><span class="p">)</span><span class="w">
+            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.params.ParameterizedTest'</span><span class="p">)</span><span class="w">
+        </span><span class="p">]]</span><span class="w">
+        </span><span class="p">[</span><span class="nt">MethodDeclaration</span><span class="p">]</span><span class="w">
+</span><span class="p">]</span><span class="err">/</span><span class="p">(</span><span class="w">
+    </span><span class="kn">self::</span><span class="o">*</span><span class="p">[</span><span class="na">@Abstract</span><span class="err">=</span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">(</span><span class="na">@Public</span><span class="err">=</span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Protected</span><span class="err">=</span><span class="nf">true</span><span class="p">())]</span><span class="w">
+</span><span class="p">|</span><span class="w">   </span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="w">
+        </span><span class="p">[</span><span class="nt">Annotation</span><span class="o">//</span><span class="nt">Name</span><span class="p">[</span><span class="w">
+            </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
+            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestFactory'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestTemplate'</span><span class="p">)</span><span class="w">
+            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.params.ParameterizedTest'</span><span class="p">)</span><span class="w">
+        </span><span class="p">]]</span><span class="w">
+        </span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Public</span><span class="err">=</span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Protected</span><span class="err">=</span><span class="nf">true</span><span class="p">()]</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MyTest</span> <span class="o">{</span> <span class="c1">// not public, that's fine</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testBad</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// should not have a public modifier</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">testAlsoBad</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// should not have a protected modifier</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">testNoRun</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// should not have a private modifier</span>
+
+    <span class="nd">@Test</span>
+    <span class="kt">void</span> <span class="nf">testGood</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// package private as expected</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="junitassertionsshouldincludemessage">JUnitAssertionsShouldIncludeMessage</h2>
 
 <p><strong>Since:</strong> PMD 1.04</p>
@@ -3814,7 +3872,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 21, 2021 <br />
+ Site last generated: May 25, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -1437,6 +1437,17 @@ for parsing JavaScript code, requires at least Java 8. Therefore we decided to u
 module to Java 8 as well. This means that from now on, a Java 8 or later runtime is required in order
 to analyze JavaScript code. Note that PMD core still only requires Java 7.</p>
 
+<h4 id="new-rules">New rules</h4>
+
+<ul>
+  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate"><code class="language-plaintext highlighter-rouge">JUnit5TestShouldBePackagePrivate</code></a>
+enforces the convention that JUnit 5 tests should have minimal visibility.
+You can try out this rule like so:
+    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate"</span> <span class="nt">/&gt;</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
 <h4 id="modified-rules">Modified rules</h4>
 
 <ul>
@@ -1446,6 +1457,36 @@ for comparison by reference. By default, <code class="language-plaintext highlig
 you could add custom types here.
 Additionally comparisons against constants are allowed now. This makes the rule less noisy when two constants
 are compared. Constants are identified by looking for an all-caps identifier.</li>
+</ul>
+
+<h4 id="deprecated-rules">Deprecated rules</h4>
+
+<ul>
+  <li>
+    <p>The java rule <a href="pmd_rules_java_codestyle.html#defaultpackage"><code class="language-plaintext highlighter-rouge">DefaultPackage</code></a> has been deprecated in favor of
+<a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a>.</p>
+
+    <p>The rule “DefaultPackage” assumes that any usage of package-access is accidental,
+and by doing so, prohibits using a really fundamental and useful feature of the language.</p>
+
+    <p>To satisfy the rule, you have to make the member public even if it doesn’t need to, or make it protected,
+which muddies your intent even more if you don’t intend the class to be extended, and may be at odds with
+other rules like <a href="pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass"><code class="language-plaintext highlighter-rouge">AvoidProtectedFieldInFinalClass</code></a>.</p>
+
+    <p>The rule <a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a> should be used instead.
+It flags the same thing, but has an escape hatch.</p>
+  </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception"><code class="language-plaintext highlighter-rouge">CloneThrowsCloneNotSupportedException</code></a> has been deprecated without
+replacement.</p>
+
+    <p>The rule has no real value as <code class="language-plaintext highlighter-rouge">CloneNotSupportedException</code> is a
+checked exception and therefore you need to deal with it while implementing the <code class="language-plaintext highlighter-rouge">clone()</code> method. You either
+need to declare the exception or catch it. If you catch it, then subclasses can’t throw it themselves explicitly.
+However, <code class="language-plaintext highlighter-rouge">Object.clone()</code> will still throw this exception if the <code class="language-plaintext highlighter-rouge">Cloneable</code> interface is not implemented.</p>
+
+    <p>Note, this rule has also been removed from the Quickstart Ruleset (<code class="language-plaintext highlighter-rouge">rulesets/java/quickstart.xml</code>).</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1489,6 +1530,7 @@ are compared. Constants are identified by looking for an all-caps identifier.</l
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2655">#2655</a>: [java] UnnecessaryImport false positive for on-demand imports</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3206">#3206</a>: [java] Deprecate rule DefaultPackage</li>
       <li><a href="https://github.com/pmd/pmd/pull/3262">#3262</a>: [java] FieldDeclarationsShouldBeAtStartOfClass: false negative with anon classes</li>
       <li><a href="https://github.com/pmd/pmd/pull/3265">#3265</a>: [java] MethodArgumentCouldBeFinal: false negatives with interfaces and inner classes</li>
       <li><a href="https://github.com/pmd/pmd/pull/3266">#3266</a>: [java] LocalVariableCouldBeFinal: false negatives with interfaces, anon classes</li>
@@ -1504,6 +1546,7 @@ are compared. Constants are identified by looking for an all-caps identifier.</l
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3110">#3110</a>: [java] Enhance CompareObjectsWithEquals with list of exceptions</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3112">#3112</a>: [java] Deprecate rule CloneThrowsCloneNotSupportedException</li>
       <li><a href="https://github.com/pmd/pmd/issues/3205">#3205</a>: [java] Make CompareObjectWithEquals allow comparing against constants</li>
       <li><a href="https://github.com/pmd/pmd/issues/3248">#3248</a>: [java] Documentation is wrong for SingletonClassReturningNewInstance rule</li>
       <li><a href="https://github.com/pmd/pmd/pull/3249">#3249</a>: [java] AvoidFieldNameMatchingTypeName: False negative with interfaces</li>
@@ -1541,7 +1584,7 @@ are compared. Constants are identified by looking for an all-caps identifier.</l
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 21, 2021 <br />
+ Site last generated: May 25, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

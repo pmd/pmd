@@ -2211,12 +2211,24 @@ and IfElseStmtMustUseBraces.</p>
 
 <h2 id="defaultpackage">DefaultPackage</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.4</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Use explicit scoping instead of accidental usage of default package private level.
 The rule allows methods and fields annotated with Guava’s @VisibleForTesting and JUnit 5’s annotations.</p>
+
+<p>This rule is deprecated since PMD 6.35.0. It assumes that any usage of package-access is accidental,
+and by doing so, prohibits using a really fundamental and useful feature of the language.</p>
+
+<p>To satisfy the rule, you have to make the member public even if it doesn’t need to, or make it protected,
+which muddies your intent even more if you don’t intend the class to be extended, and may be at odds with
+other rules like <a href="pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass"><code class="language-plaintext highlighter-rouge">AvoidProtectedFieldInFinalClass</code></a>.</p>
+
+<p>The rule <a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a> should be used instead. This rule flags
+the same thing, but has an escape hatch.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Interface</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
@@ -4697,7 +4709,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 21, 2021 <br />
+ Site last generated: May 25, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
