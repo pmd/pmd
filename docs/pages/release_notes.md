@@ -21,6 +21,15 @@ for parsing JavaScript code, requires at least Java 8. Therefore we decided to u
 module to Java 8 as well. This means that from now on, a Java 8 or later runtime is required in order
 to analyze JavaScript code. Note that PMD core still only requires Java 7.
 
+#### New rules
+
+*   The new Java rule {% rule "java/bestpractices/JUnit5TestShouldBePackagePrivate" %}
+    enforces the convention that JUnit 5 tests should have minimal visibility.
+    You can try out this rule like so:
+```xml
+    <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" />
+```
+
 #### Modified rules
 
 *   The Java rule {% rule "java/errorprone/CompareObjectsWithEquals" %} has now a new property
