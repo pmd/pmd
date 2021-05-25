@@ -14,6 +14,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Javascript module now requires at least Java 8
+
+The latest version of [Rhino](https://github.com/mozilla/rhino), the implementation of JavaScript we use
+for parsing JavaScript code, requires at least Java 8. Therefore we decided to upgrade the pmd-javascript
+module to Java 8 as well. This means that from now on, a Java 8 or later runtime is required in order
+to analyze JavaScript code. Note that PMD core still only requires Java 7.
+
 #### Modified rules
 
 *   The Java rule {% rule "java/errorprone/CompareObjectsWithEquals" %} has now a new property
@@ -25,14 +32,27 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Deprecated rules
 
+*   The java rule {% rule "java/codestyle/DefaultPackage" %} has been deprecated in favor of
+    {% rule "java/codestyle/CommentDefaultAccessModifier" %}.
+
+    The rule "DefaultPackage" assumes that any usage of package-access is accidental,
+    and by doing so, prohibits using a really fundamental and useful feature of the language.
+
+    To satisfy the rule, you have to make the member public even if it doesn't need to, or make it protected,
+    which muddies your intent even more if you don't intend the class to be extended, and may be at odds with
+    other rules like {% rule "java/codestyle/AvoidProtectedFieldInFinalClass" %}.
+
+    The rule {% rule "java/codestyle/CommentDefaultAccessModifier" %} should be used instead.
+    It flags the same thing, but has an escape hatch.
+
 *   The Java rule {% rule "java/errorprone/CloneThrowsCloneNotSupportedException" %} has been deprecated without
     replacement.
-    
+
     The rule has no real value as `CloneNotSupportedException` is a
     checked exception and therefore you need to deal with it while implementing the `clone()` method. You either
     need to declare the exception or catch it. If you catch it, then subclasses can't throw it themselves explicitly.
     However, `Object.clone()` will still throw this exception if the `Cloneable` interface is not implemented.
-    
+
     Note, this rule has also been removed from the Quickstart Ruleset (`rulesets/java/quickstart.xml`).
 
 ### Fixed Issues
@@ -56,6 +76,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3254](https://github.com/pmd/pmd/issues/3254): \[java] AvoidReassigningParameters reports violations on wrong line numbers
 *   java-codestyle
     *   [#2655](https://github.com/pmd/pmd/issues/2655): \[java] UnnecessaryImport false positive for on-demand imports
+    *   [#3206](https://github.com/pmd/pmd/issues/3206): \[java] Deprecate rule DefaultPackage
     *   [#3262](https://github.com/pmd/pmd/pull/3262): \[java] FieldDeclarationsShouldBeAtStartOfClass: false negative with anon classes
     *   [#3265](https://github.com/pmd/pmd/pull/3265): \[java] MethodArgumentCouldBeFinal: false negatives with interfaces and inner classes
     *   [#3266](https://github.com/pmd/pmd/pull/3266): \[java] LocalVariableCouldBeFinal: false negatives with interfaces, anon classes
@@ -70,6 +91,9 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3248](https://github.com/pmd/pmd/issues/3248): \[java] Documentation is wrong for SingletonClassReturningNewInstance rule
     *   [#3249](https://github.com/pmd/pmd/pull/3249): \[java] AvoidFieldNameMatchingTypeName: False negative with interfaces
     *   [#3268](https://github.com/pmd/pmd/pull/3268): \[java] ConstructorCallsOverridableMethod: IndexOutOfBoundsException with annotations
+*   javascript
+    *   [#699](https://github.com/pmd/pmd/issues/699): \[javascript] Update Rhino library to 1.7.13
+    *   [#2081](https://github.com/pmd/pmd/issues/2081): \[javascript] Failing with OutOfMemoryError parsing a Javascript file
 
 ### API Changes
 
@@ -77,4 +101,3 @@ This is a {{ site.pmd.release_type }} release.
 *   [#3272](https://github.com/pmd/pmd/pull/3272): \[apex] correction for ApexUnitTestMethodShouldHaveIsTestAnnotation false positives - [William Brockhus](https://github.com/YodaDaCoda)
 
 {% endtocmaker %}
-
