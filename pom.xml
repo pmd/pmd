@@ -92,8 +92,8 @@
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.0.0-M5</surefire.version>
-        <checkstyle.version>8.30</checkstyle.version>
-        <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
+        <checkstyle.version>8.42</checkstyle.version>
+        <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
         <pmd.plugin.version>3.14.0</pmd.plugin.version>
         <ant.version>1.10.9</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
@@ -105,7 +105,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>11</pmd.build-tools.version>
+        <pmd.build-tools.version>12</pmd.build-tools.version>
 
         <pmd-designer.version>6.27.0</pmd-designer.version>
     </properties>
@@ -688,11 +688,6 @@
                 <classifier>dom</classifier>
             </dependency>
             <dependency>
-                <groupId>org.mozilla</groupId>
-                <artifactId>rhino</artifactId>
-                <version>1.7.7.2</version>
-            </dependency>
-            <dependency>
                 <groupId>net.java.dev.javacc</groupId>
                 <artifactId>javacc</artifactId>
                 <version>${javacc.version}</version>
@@ -1066,7 +1061,6 @@
         <module>pmd-groovy</module>
         <module>pmd-lua</module>
         <module>pmd-java</module>
-        <module>pmd-javascript</module>
         <module>pmd-jsp</module>
         <module>pmd-kotlin</module>
         <module>pmd-matlab</module>
@@ -1086,6 +1080,7 @@
         <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
         <module>pmd-java8</module>
+        <module>pmd-javascript</module>
         <module>pmd-doc</module>
         <module>pmd-lang-test</module>
         <module>pmd-scala</module> <!-- deprecated -->

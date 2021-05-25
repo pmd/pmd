@@ -285,4 +285,23 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>IndexOutOfBoundsException with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package sample;
+
+import java.lang.annotation.*;
+
+@interface CustomAnnotation {
+    Object object = new Object() {
+        @Override
+        public String toString() {
+            return new String(new StringBuilder("Hello").append(",World"));
+        }
+    }.toString();
+}
+        ]]></code>
+    </test-code>
 </test-data>

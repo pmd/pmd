@@ -301,14 +301,29 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningParametersRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidreassigningparameters">
         <description>
-Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
+Reassigning values to incoming parameters of a method or constructor is not recommended, as this can
+make the code more difficult to understand. The code is often read with the assumption that parameter values
+don't change and an assignment violates therefore the principle of least astonishment. This is especially a
+problem if the parameter is documented e.g. in the method's javadoc and the new content differs from the original
+documented content.
+
+Use temporary local variables instead. This allows you to assign a new name, which makes the code better
+understandable.
+
+Note that this rule considers both methods and constructors. If there are multiple assignments for a formal
+parameter, then only the first assignment is reported.
         </description>
         <priority>2</priority>
         <example>
 <![CDATA[
-public class Foo {
-  private void foo(String bar) {
-    bar = "something else";
+public class Hello {
+  private void greet(String name) {
+    name = name.trim();
+    System.out.println("Hello " + name);
+
+    // preferred
+    String trimmedName = name.trim();
+    System.out.println("Hello " + trimmedName);
   }
 }
 ]]>
@@ -802,6 +817,71 @@ public class MyTest {
         </example>
     </rule>
 
+    <rule name="JUnit5TestShouldBePackagePrivate"
+          language="java"
+          since="6.35.0"
+          message="JUnit 5 tests should be package-private."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate">
+        <description><![CDATA[
+Reports JUnit 5 test classes and methods that are not package-private.
+Contrary to JUnit 4 tests, which required public visibility to be run by the engine,
+JUnit 5 tests can also be run if they're package-private. Marking them as such
+is a good practice to limit their visibility.
+
+Test methods are identified as those which use `@Test`, `@RepeatedTest`,
+`@TestFactory`, `@TestTemplate` or `@ParameterizedTest`.
+            ]]></description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration[
+    (: a Junit 5 test class, ie, it has methods with the annotation :)
+    @Interface=false() and
+    ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+        [Annotation//Name[
+            pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+            or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+        ]]
+        [MethodDeclaration]
+]/(
+    self::*[@Abstract=false() and (@Public=true() or @Protected=true())]
+|   ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+        [Annotation//Name[
+            pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+            or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+        ]]
+        /MethodDeclaration[@Public=true() or @Protected=true()]
+)
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+class MyTest { // not public, that's fine
+    @Test
+    public void testBad() { } // should not have a public modifier
+
+    @Test
+    protected void testAlsoBad() { } // should not have a protected modifier
+
+    @Test
+    private void testNoRun() { } // should not have a private modifier
+
+    @Test
+    void testGood() { } // package private as expected
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="JUnitAssertionsShouldIncludeMessage"
           language="java"
           since="1.04"
@@ -1287,12 +1367,15 @@ public class Foo {
     <rule name="SwitchStmtsShouldHaveDefault"
           language="java"
           since="1.0"
-          message="Switch statements should have a default label"
+          message="Switch statements should be exhaustive, add a default case (or missing enum branches)"
           typeResolution="true"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
         <description>
-All switch statements should include a default option to catch any unspecified values.
+            Switch statements should be exhaustive, to make their control flow
+            easier to follow. This can be achieved by adding a `default` case, or,
+            if the switch is on an enum type, by ensuring there is one switch branch
+            for each enum constant.
         </description>
         <priority>3</priority>
         <properties>
@@ -1305,14 +1388,14 @@ All switch statements should include a default option to catch any unspecified v
         </properties>
         <example>
 <![CDATA[
-public void bar() {
+class Foo {{
     int x = 2;
     switch (x) {
       case 1: int j = 6;
       case 2: int j = 8;
-          // missing default: here
+      // missing default: here
     }
-}
+}}
 ]]>
         </example>
     </rule>
