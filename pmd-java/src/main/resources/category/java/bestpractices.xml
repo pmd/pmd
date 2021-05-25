@@ -821,23 +821,26 @@ Test methods are identified as those which use `@Test`, `@RepeatedTest`,
 <![CDATA[
 //ClassOrInterfaceDeclaration[
     (: a Junit 5 test class, ie, it has methods with the annotation :)
-    @Interface=false() and
-    ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-        [Annotation//Name[
-            pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+    @Interface = false() and
+    ClassOrInterfaceBody/MethodDeclaration
+    [ModifierList/Annotation[
+               pmd-java:typeIs('org.junit.jupiter.api.Test')
+            or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
             or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        ]]
-        [MethodDeclaration]
+    ]]
 ]/(
-    self::*[@Abstract=false() and (@Public=true() or @Protected=true())]
-|   ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-        [Annotation//Name[
-            pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+       self::*[@Abstract = false() and @Visibility = ("public", "protected")]
+|      ClassOrInterfaceBody/MethodDeclaration
+       [@Visibility = ("public", "protected")]
+       [ModifierList/Annotation[
+               pmd-java:typeIs('org.junit.jupiter.api.Test')
+            or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
             or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        ]]
-        /MethodDeclaration[@Public=true() or @Protected=true()]
+       ]]
 )
 ]]>
                 </value>
