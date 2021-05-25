@@ -152,7 +152,12 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return getNthParent(2) instanceof ASTLocalVariableDeclaration;
     }
 
+    /**
+     * Returns true if this node is a variable declared in a
+     * {@linkplain ASTForStatement#isForeach() foreach loop}.
+     */
     public boolean isForeachVariable() {
+        // Foreach/LocalVarDecl/VarDeclarator/VarDeclId
         return getNthParent(3) instanceof ASTForStatement;
     }
 
