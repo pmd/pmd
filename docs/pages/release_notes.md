@@ -21,6 +21,15 @@ for parsing JavaScript code, requires at least Java 8. Therefore we decided to u
 module to Java 8 as well. This means that from now on, a Java 8 or later runtime is required in order
 to analyze JavaScript code. Note that PMD core still only requires Java 7.
 
+#### New rules
+
+*   The new Java rule {% rule "java/bestpractices/JUnit5TestShouldBePackagePrivate" %}
+    enforces the convention that JUnit 5 tests should have minimal visibility.
+    You can try out this rule like so:
+```xml
+    <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" />
+```
+
 #### Modified rules
 
 *   The Java rule {% rule "java/errorprone/CompareObjectsWithEquals" %} has now a new property
@@ -29,6 +38,31 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
     you could add custom types here.
     Additionally comparisons against constants are allowed now. This makes the rule less noisy when two constants
     are compared. Constants are identified by looking for an all-caps identifier.
+
+#### Deprecated rules
+
+*   The java rule {% rule "java/codestyle/DefaultPackage" %} has been deprecated in favor of
+    {% rule "java/codestyle/CommentDefaultAccessModifier" %}.
+
+    The rule "DefaultPackage" assumes that any usage of package-access is accidental,
+    and by doing so, prohibits using a really fundamental and useful feature of the language.
+
+    To satisfy the rule, you have to make the member public even if it doesn't need to, or make it protected,
+    which muddies your intent even more if you don't intend the class to be extended, and may be at odds with
+    other rules like {% rule "java/codestyle/AvoidProtectedFieldInFinalClass" %}.
+
+    The rule {% rule "java/codestyle/CommentDefaultAccessModifier" %} should be used instead.
+    It flags the same thing, but has an escape hatch.
+
+*   The Java rule {% rule "java/errorprone/CloneThrowsCloneNotSupportedException" %} has been deprecated without
+    replacement.
+
+    The rule has no real value as `CloneNotSupportedException` is a
+    checked exception and therefore you need to deal with it while implementing the `clone()` method. You either
+    need to declare the exception or catch it. If you catch it, then subclasses can't throw it themselves explicitly.
+    However, `Object.clone()` will still throw this exception if the `Cloneable` interface is not implemented.
+
+    Note, this rule has also been removed from the Quickstart Ruleset (`rulesets/java/quickstart.xml`).
 
 ### Fixed Issues
 
@@ -52,6 +86,7 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
     *   [#3254](https://github.com/pmd/pmd/issues/3254): \[java] AvoidReassigningParameters reports violations on wrong line numbers
 *   java-codestyle
     *   [#2655](https://github.com/pmd/pmd/issues/2655): \[java] UnnecessaryImport false positive for on-demand imports
+    *   [#3206](https://github.com/pmd/pmd/issues/3206): \[java] Deprecate rule DefaultPackage
     *   [#3262](https://github.com/pmd/pmd/pull/3262): \[java] FieldDeclarationsShouldBeAtStartOfClass: false negative with anon classes
     *   [#3265](https://github.com/pmd/pmd/pull/3265): \[java] MethodArgumentCouldBeFinal: false negatives with interfaces and inner classes
     *   [#3266](https://github.com/pmd/pmd/pull/3266): \[java] LocalVariableCouldBeFinal: false negatives with interfaces, anon classes
@@ -61,6 +96,7 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
     *   [#2780](https://github.com/pmd/pmd/issues/2780): \[java] DataClass example from documentation results in false-negative
 *   java-errorprone
     *   [#3110](https://github.com/pmd/pmd/issues/3110): \[java] Enhance CompareObjectsWithEquals with list of exceptions
+    *   [#3112](https://github.com/pmd/pmd/issues/3112): \[java] Deprecate rule CloneThrowsCloneNotSupportedException
     *   [#3205](https://github.com/pmd/pmd/issues/3205): \[java] Make CompareObjectWithEquals allow comparing against constants
     *   [#3248](https://github.com/pmd/pmd/issues/3248): \[java] Documentation is wrong for SingletonClassReturningNewInstance rule
     *   [#3249](https://github.com/pmd/pmd/pull/3249): \[java] AvoidFieldNameMatchingTypeName: False negative with interfaces
