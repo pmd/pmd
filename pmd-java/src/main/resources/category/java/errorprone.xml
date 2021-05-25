@@ -1006,6 +1006,7 @@ public class Foo implements Cloneable {
     </rule>
 
     <rule name="CloneThrowsCloneNotSupportedException"
+          deprecated="true"
           language="java"
           since="1.9"
           message="clone() method should throw CloneNotSupportedException"
@@ -1013,6 +1014,12 @@ public class Foo implements Cloneable {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception">
         <description>
 The method clone() should throw a CloneNotSupportedException.
+
+This rule is deprecated since PMD 6.35.0 without replacement. The rule has no real value as
+`CloneNotSupportedException` is a checked exception and therefore you need to deal with it while
+implementing the `clone()` method. You either need to declare the exception or catch it. If you catch it,
+then subclasses can't throw it themselves explicitly. However, `Object.clone()` will still throw this
+exception if the `Cloneable` interface is not implemented.
         </description>
         <priority>3</priority>
         <properties>

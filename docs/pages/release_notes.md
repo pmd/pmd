@@ -34,16 +34,26 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
 
 *   The java rule {% rule "java/codestyle/DefaultPackage" %} has been deprecated in favor of
     {% rule "java/codestyle/CommentDefaultAccessModifier" %}.
-    
+
     The rule "DefaultPackage" assumes that any usage of package-access is accidental,
     and by doing so, prohibits using a really fundamental and useful feature of the language.
-    
+
     To satisfy the rule, you have to make the member public even if it doesn't need to, or make it protected,
     which muddies your intent even more if you don't intend the class to be extended, and may be at odds with
     other rules like {% rule "java/codestyle/AvoidProtectedFieldInFinalClass" %}.
-    
+
     The rule {% rule "java/codestyle/CommentDefaultAccessModifier" %} should be used instead.
     It flags the same thing, but has an escape hatch.
+
+*   The Java rule {% rule "java/errorprone/CloneThrowsCloneNotSupportedException" %} has been deprecated without
+    replacement.
+
+    The rule has no real value as `CloneNotSupportedException` is a
+    checked exception and therefore you need to deal with it while implementing the `clone()` method. You either
+    need to declare the exception or catch it. If you catch it, then subclasses can't throw it themselves explicitly.
+    However, `Object.clone()` will still throw this exception if the `Cloneable` interface is not implemented.
+
+    Note, this rule has also been removed from the Quickstart Ruleset (`rulesets/java/quickstart.xml`).
 
 ### Fixed Issues
 
@@ -76,6 +86,7 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
     *   [#2780](https://github.com/pmd/pmd/issues/2780): \[java] DataClass example from documentation results in false-negative
 *   java-errorprone
     *   [#3110](https://github.com/pmd/pmd/issues/3110): \[java] Enhance CompareObjectsWithEquals with list of exceptions
+    *   [#3112](https://github.com/pmd/pmd/issues/3112): \[java] Deprecate rule CloneThrowsCloneNotSupportedException
     *   [#3205](https://github.com/pmd/pmd/issues/3205): \[java] Make CompareObjectWithEquals allow comparing against constants
     *   [#3248](https://github.com/pmd/pmd/issues/3248): \[java] Documentation is wrong for SingletonClassReturningNewInstance rule
     *   [#3249](https://github.com/pmd/pmd/pull/3249): \[java] AvoidFieldNameMatchingTypeName: False negative with interfaces
