@@ -1446,6 +1446,12 @@ You can try out this rule like so:
     <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate"</span> <span class="nt">/&gt;</span>
 </code></pre></div>    </div>
   </li>
+  <li>The new Java rule <a href="pmd_rules_java_design.html#mutablestaticstate"><code class="language-plaintext highlighter-rouge">MutableStaticState</code></a> finds non-private static fields
+that are not final. These fields break encapsulation since these fields can be modified from anywhere
+within the program. You can try out this rule like so:
+    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/MutableStaticState"</span> <span class="nt">/&gt;</span>
+</code></pre></div>    </div>
+  </li>
 </ul>
 
 <h4 id="modified-rules">Modified rules</h4>
@@ -1524,6 +1530,7 @@ However, <code class="language-plaintext highlighter-rouge">Object.clone()</code
       <li><a href="https://github.com/pmd/pmd/issues/2219">#2219</a>: [java] Document Reasons to Avoid Reassigning Parameters</li>
       <li><a href="https://github.com/pmd/pmd/issues/2737">#2737</a>: [java] Fix misleading rule message on rule SwitchStmtsShouldHaveDefault with non-exhaustive enum switch</li>
       <li><a href="https://github.com/pmd/pmd/issues/3236">#3236</a>: [java] LiteralsFirstInComparisons should consider constant fields (cont’d)</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3239">#3239</a>: [java] PMD could enforce non-public methods for Junit5 / Jupiter test methods</li>
       <li><a href="https://github.com/pmd/pmd/issues/3254">#3254</a>: [java] AvoidReassigningParameters reports violations on wrong line numbers</li>
     </ul>
   </li>
@@ -1541,6 +1548,7 @@ However, <code class="language-plaintext highlighter-rouge">Object.clone()</code
   <li>java-design
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2780">#2780</a>: [java] DataClass example from documentation results in false-negative</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2987">#2987</a>: [java] New Rule: Public and protected static fields must be final</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -1566,6 +1574,8 @@ However, <code class="language-plaintext highlighter-rouge">Object.clone()</code
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/3272">#3272</a>: [apex] correction for ApexUnitTestMethodShouldHaveIsTestAnnotation false positives - <a href="https://github.com/YodaDaCoda">William Brockhus</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3246">#3246</a>: [java] New Rule: MutableStaticState - <a href="https://github.com/vszholobov">Vsevolod Zholobov</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3247">#3247</a>: [java] New rule: JUnit5TestShouldBePackagePrivate - <a href="https://github.com/ajeans">Arnaud Jeansen</a></li>
 </ul>
 
 

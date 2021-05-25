@@ -2730,6 +2730,15 @@
 "url": "pmd_rules_java_design.html#useutilityclass",
 "summary": "Rules that help you discover design issues."
 }
+,
+
+{
+"title": "MutableStaticState (Java, Design)",
+"tags": "",
+"keywords": "MutableStaticState",
+"url": "pmd_rules_java_design.html#mutablestaticstate",
+"summary": "Rules that help you discover design issues."
+}
 
 
 
