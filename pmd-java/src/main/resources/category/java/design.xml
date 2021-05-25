@@ -1735,4 +1735,42 @@ public class MaybeAUtility {
         </example>
     </rule>
 
+    <rule name="MutableStaticState"
+          language="java"
+          since="6.35.0"
+          message="Do not use non-final non-private static fields"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#mutablestaticstate">
+        <description>
+Non-private static fields should be made constants (or immutable references) by
+declaring them final.
+
+Non-private non-final static fields break encapsulation and can lead to hard to find
+bugs, since these fields can be modified from anywhere within the program.
+Callers can trivially access and modify non-private non-final static fields. Neither
+accesses nor modifications can be guarded against, and newly set values cannot
+be validated.
+
+If you are using this rule, then you don't need this
+rule {% rule java/errorprone/AssignmentToNonFinalStatic %}.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//FieldDeclaration[@Static = true() and @Private = false() and @Final = false()]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class Greeter { public static Foo foo = new Foo(); ... }       // avoid this
+public class Greeter { public static final Foo FOO = new Foo(); ... } // use this instead
+]]>
+        </example>
+    </rule>
+
 </ruleset>

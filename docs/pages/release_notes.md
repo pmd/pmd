@@ -30,6 +30,13 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
     <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" />
 ```
 
+*   The new Java rule {% rule "java/design/MutableStaticState" %} finds non-private static fields
+    that are not final. These fields break encapsulation since these fields can be modified from anywhere
+    within the program. You can try out this rule like so:
+```xml
+    <rule ref="category/java/design.xml/MutableStaticState" />
+```
+
 #### Modified rules
 
 *   The Java rule {% rule "java/errorprone/CompareObjectsWithEquals" %} has now a new property
@@ -93,6 +100,7 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
     *   [#3275](https://github.com/pmd/pmd/pull/3275): \[java] UnnecessaryLocalBeforeReturn: false negatives with lambda and anon class
 *   java-design
     *   [#2780](https://github.com/pmd/pmd/issues/2780): \[java] DataClass example from documentation results in false-negative
+    *   [#2987](https://github.com/pmd/pmd/issues/2987): \[java] New Rule: Public and protected static fields must be final
 *   java-errorprone
     *   [#3110](https://github.com/pmd/pmd/issues/3110): \[java] Enhance CompareObjectsWithEquals with list of exceptions
     *   [#3112](https://github.com/pmd/pmd/issues/3112): \[java] Deprecate rule CloneThrowsCloneNotSupportedException
@@ -108,5 +116,6 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
 
 ### External Contributions
 *   [#3272](https://github.com/pmd/pmd/pull/3272): \[apex] correction for ApexUnitTestMethodShouldHaveIsTestAnnotation false positives - [William Brockhus](https://github.com/YodaDaCoda)
+*   [#3246](https://github.com/pmd/pmd/pull/3246): \[java] New Rule: MutableStaticState - [Vsevolod Zholobov](https://github.com/vszholobov)
 
 {% endtocmaker %}
