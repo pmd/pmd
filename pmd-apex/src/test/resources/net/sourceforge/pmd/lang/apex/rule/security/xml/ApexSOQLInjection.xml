@@ -7,6 +7,7 @@
     <test-code>
         <description>Potentially unsafe SOQL on concatenation of variables 1</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
@@ -303,6 +304,23 @@ public class Foo {
 public class Foo {
     public void test1(String name) {
         List<SObject> res = Database.query('Select Id,Name From ' + (name == 'Account' ? name : 'Cases'));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Potentially unsafe SOQL on concatenation of variables in nested class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    class MyNestedClass {
+        public void test1() {
+            String field1 = getSomeID();
+            String field2 = 'SELECT Id FROM Account WHERE Id =';
+            Database.query(field2 + field1);
+        }
     }
 }
         ]]></code>

@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -15,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
@@ -221,6 +223,12 @@ public final class TypeTestUtil {
     }
 
     private static boolean fallbackIsA(TypeNode n, String canonicalName, boolean considerSubtype) {
+        if (n instanceof ASTAnnotation) {
+            // the annotation node has no image itself
+            n = n.getFirstDescendantOfType(ASTName.class);
+            assert n != null;
+        }
+
         if (n.getImage() != null && !n.getImage().contains(".") && canonicalName.contains(".")) {
             // simple name detected, check the imports to get the full name and use that for fallback
             List<ASTImportDeclaration> imports = n.getRoot().findChildrenOfType(ASTImportDeclaration.class);

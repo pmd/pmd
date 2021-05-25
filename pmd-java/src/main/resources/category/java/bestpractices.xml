@@ -301,14 +301,29 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningParametersRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidreassigningparameters">
         <description>
-Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
+Reassigning values to incoming parameters of a method or constructor is not recommended, as this can
+make the code more difficult to understand. The code is often read with the assumption that parameter values
+don't change and an assignment violates therefore the principle of least astonishment. This is especially a
+problem if the parameter is documented e.g. in the method's javadoc and the new content differs from the original
+documented content.
+
+Use temporary local variables instead. This allows you to assign a new name, which makes the code better
+understandable.
+
+Note that this rule considers both methods and constructors. If there are multiple assignments for a formal
+parameter, then only the first assignment is reported.
         </description>
         <priority>2</priority>
         <example>
 <![CDATA[
-public class Foo {
-  private void foo(String bar) {
-    bar = "something else";
+public class Hello {
+  private void greet(String name) {
+    name = name.trim();
+    System.out.println("Hello " + name);
+
+    // preferred
+    String trimmedName = name.trim();
+    System.out.println("Hello " + trimmedName);
   }
 }
 ]]>
@@ -1349,12 +1364,15 @@ public class Foo {
     <rule name="SwitchStmtsShouldHaveDefault"
           language="java"
           since="1.0"
-          message="Switch statements should have a default label"
+          message="Switch statements should be exhaustive, add a default case (or missing enum branches)"
           typeResolution="true"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
         <description>
-All switch statements should include a default option to catch any unspecified values.
+            Switch statements should be exhaustive, to make their control flow
+            easier to follow. This can be achieved by adding a `default` case, or,
+            if the switch is on an enum type, by ensuring there is one switch branch
+            for each enum constant.
         </description>
         <priority>3</priority>
         <properties>
@@ -1367,14 +1385,14 @@ All switch statements should include a default option to catch any unspecified v
         </properties>
         <example>
 <![CDATA[
-public void bar() {
+class Foo {{
     int x = 2;
     switch (x) {
       case 1: int j = 6;
       case 2: int j = 8;
-          // missing default: here
+      // missing default: here
     }
-}
+}}
 ]]>
         </example>
     </rule>

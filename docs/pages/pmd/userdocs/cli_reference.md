@@ -111,7 +111,7 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     %}
     {% include custom/cli_option_row.html options="-reportfile,-r"
                option_arg="path"
-               description="Path to a file in which the report output will be sent. By default the report is printed on standard output."
+               description="Path to a file to which report output is written. The file is created if it does not exist. If this option is not specified, the report is rendered to standard output."
     %}
     {% include custom/cli_option_row.html options="-shortnames"
                description="Prints shortened filenames in the report."
