@@ -175,9 +175,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 if (isIgnorablePrefixIncrement(entry.rhs)) {
                     continue;
                 }
-                if (isUsedLocalVarWithoutInitializer(entry, result.usedVariables)) {
-                    continue;
-                }
 
                 Set<AssignmentEntry> killers = result.killRecord.get(entry);
                 final String reason;
@@ -249,11 +246,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return !getProperty(CHECK_PREFIX_INCREMENT) && !(assignment.getParent() instanceof ASTStatementExpression);
         }
         return false;
-    }
-
-    private boolean isUsedLocalVarWithoutInitializer(AssignmentEntry entry,
-            Set<ASTVariableDeclaratorId> usedVariables) {
-        return entry.isDeclarationOnly() && usedVariables.contains(entry.var);
     }
 
     private static String makeMessage(AssignmentEntry assignment, /* Nullable */ String reason, boolean isField) {
@@ -805,10 +797,21 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (rhs != null) {
                 rhs.jjtAccept(this, data);
                 ((SpanInfo) data).assign(var, rhs);
-            } else {
+            } else if (isAssignedImplicitly(var)) {
                 ((SpanInfo) data).assign(var, node.getVariableId());
             }
             return data;
+        }
+
+        /**
+         * Whether the variable has an implicit initializer, that is not
+         * an expression. For instance, formal parameters have a value
+         * within the method, same for exception parameters, foreach variables,
+         * fields (default value), etc. Only blank local variables have
+         * no initial value.
+         */
+        private boolean isAssignedImplicitly(ASTVariableDeclaratorId var) {
+            return !var.isLocalVariable() || var.isForeachVariable();
         }
 
 
@@ -1126,7 +1129,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         final Set<AssignmentEntry> allAssignments;
         final Set<AssignmentEntry> usedAssignments;
-        final Set<ASTVariableDeclaratorId> usedVariables;
 
         // track which assignments kill which
         // assignment -> killers(assignment)
@@ -1138,11 +1140,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         private GlobalAlgoState(Set<AssignmentEntry> allAssignments,
                                 Set<AssignmentEntry> usedAssignments,
-                                Set<ASTVariableDeclaratorId> usedVariables,
                                 Map<AssignmentEntry, Set<AssignmentEntry>> killRecord) {
             this.allAssignments = allAssignments;
             this.usedAssignments = usedAssignments;
-            this.usedVariables = usedVariables;
             this.killRecord = killRecord;
 
         }
@@ -1150,7 +1150,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         private GlobalAlgoState() {
             this(new HashSet<AssignmentEntry>(),
                  new HashSet<AssignmentEntry>(),
-                 new HashSet<ASTVariableDeclaratorId>(),
                  new HashMap<AssignmentEntry, Set<AssignmentEntry>>());
         }
     }
@@ -1252,7 +1251,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         void use(ASTVariableDeclaratorId var) {
-            global.usedVariables.add(var);
             VarLocalInfo info = symtable.get(var);
             // may be null for implicit assignments, like method parameter
             if (info != null) {
@@ -1471,15 +1469,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         AssignmentEntry(ASTVariableDeclaratorId var, JavaNode rhs) {
             this.var = var;
             this.rhs = rhs;
-        }
-
-        public boolean isDeclarationOnly() {
-            if (var == rhs && var.isLocalVariable()) {
-                ASTVariableDeclarator declarator = var.getFirstParentOfType(ASTVariableDeclarator.class);
-                ASTLocalVariableDeclaration localVar = declarator.getFirstParentOfType(ASTLocalVariableDeclaration.class);
-                return !declarator.hasInitializer() && !(localVar.getParent() instanceof ASTForStatement);
-            }
-            return false;
         }
 
         @Override
