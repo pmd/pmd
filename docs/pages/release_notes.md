@@ -30,6 +30,21 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
     Additionally comparisons against constants are allowed now. This makes the rule less noisy when two constants
     are compared. Constants are identified by looking for an all-caps identifier.
 
+#### Deprecated rules
+
+*   The java rule {% rule "java/codestyle/DefaultPackage" %} has been deprecated in favor of
+    {% rule "java/codestyle/CommentDefaultAccessModifier" %}.
+    
+    The rule "DefaultPackage" assumes that any usage of package-access is accidental,
+    and by doing so, prohibits using a really fundamental and useful feature of the language.
+    
+    To satisfy the rule, you have to make the member public even if it doesn't need to, or make it protected,
+    which muddies your intent even more if you don't intend the class to be extended, and may be at odds with
+    other rules like {% rule "java/codestyle/AvoidProtectedFieldInFinalClass" %}.
+    
+    The rule {% rule "java/codestyle/CommentDefaultAccessModifier" %} should be used instead.
+    It flags the same thing, but has an escape hatch.
+
 ### Fixed Issues
 
 *   apex
@@ -51,6 +66,7 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
     *   [#3254](https://github.com/pmd/pmd/issues/3254): \[java] AvoidReassigningParameters reports violations on wrong line numbers
 *   java-codestyle
     *   [#2655](https://github.com/pmd/pmd/issues/2655): \[java] UnnecessaryImport false positive for on-demand imports
+    *   [#3206](https://github.com/pmd/pmd/issues/3206): \[java] Deprecate rule DefaultPackage
     *   [#3262](https://github.com/pmd/pmd/pull/3262): \[java] FieldDeclarationsShouldBeAtStartOfClass: false negative with anon classes
     *   [#3265](https://github.com/pmd/pmd/pull/3265): \[java] MethodArgumentCouldBeFinal: false negatives with interfaces and inner classes
     *   [#3266](https://github.com/pmd/pmd/pull/3266): \[java] LocalVariableCouldBeFinal: false negatives with interfaces, anon classes
