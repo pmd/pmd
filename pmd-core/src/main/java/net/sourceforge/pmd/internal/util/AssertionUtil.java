@@ -142,6 +142,10 @@ public final class AssertionUtil {
         return ContextedAssertionError.wrap(e);
     }
 
+    public static @NonNull ContextedStackOverflowError contexted(StackOverflowError e) {
+        return ContextedStackOverflowError.wrap(e);
+    }
+
     public static @NonNull ContextedRuntimeException contexted(RuntimeException e) {
         return e instanceof ContextedRuntimeException ? (ContextedRuntimeException) e
                                                       : new ContextedRuntimeException(e);

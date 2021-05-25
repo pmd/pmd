@@ -27,6 +27,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert" /> -->
@@ -89,7 +90,7 @@
     <!-- <rule ref="category/java/codestyle.xml/CommentDefaultAccessModifier" /> -->
     <!-- <rule ref="category/java/codestyle.xml/ConfusingTernary" /> -->
     <rule ref="category/java/codestyle.xml/ControlStatementBraces"/>
-    <!--<rule ref="category/java/codestyle.xml/DefaultPackage"/>-->
+    <!--<rule ref="category/java/codestyle.xml/DefaultPackage"/> deprecated since 6.35.0 -->
     <!-- <rule ref="category/java/codestyle.xml/EmptyMethodInAbstractClassShouldBeAbstract" /> -->
     <rule ref="category/java/codestyle.xml/ExtendsObject"/>
     <!-- <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass" /> -->
@@ -203,7 +204,7 @@
     <rule ref="category/java/errorprone.xml/CloneMethodMustBePublic"/>
     <rule ref="category/java/errorprone.xml/CloneMethodMustImplementCloneable"/>
     <rule ref="category/java/errorprone.xml/CloneMethodReturnTypeMustMatchClassName"/>
-    <rule ref="category/java/errorprone.xml/CloneThrowsCloneNotSupportedException"/>
+    <!-- <rule ref="category/java/errorprone.xml/CloneThrowsCloneNotSupportedException"/> deprecated since 6.35.0 -->
     <rule ref="category/java/errorprone.xml/CloseResource"/>
     <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals"/>
     <!-- <rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod" /> -->

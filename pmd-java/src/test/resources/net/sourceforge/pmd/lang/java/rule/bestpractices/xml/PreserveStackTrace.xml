@@ -53,7 +53,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>4, No exception thrown, OK</description>
+        <description>fillInStackTrace returns this</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -62,6 +62,22 @@ public class Foo {
             int i = Integer.parseInt(a);
         } catch(Exception e){
             throw e.fillInStackTrace();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fillInStackTrace on another exception</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw new IllegalArgumentException().fillInStackTrace();
         }
     }
 }
@@ -104,12 +120,13 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void foo(String a) {
+    public String foo(String a) {
         try {
             int i = Integer.parseInt(a);
         } catch(Exception e){
-            throw new Exception(Bar.foo(e),e);
+            throw new Exception(Foo.foo(e),e);
         }
+        return "";
     }
 }
         ]]></code>
@@ -148,6 +165,39 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>9.5, Throwing same exception, OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                        int i = Integer.parseInt(a);
+                    } catch(Exception e){
+                        ((Exception)e).fillInStackTrace();
+                        throw e;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>9.55, Throwing same exception, OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                        int i = Integer.parseInt(a);
+                    } catch(Exception e){
+                        throw e;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description>10, Throwing new Exception, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -180,7 +230,6 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-
     <test-code>
         <description>12, Catch and throw RuntimeException</description>
         <expected-problems>0</expected-problems>
@@ -216,6 +265,7 @@ public class B {
     <test-code>
         <description>14, Nested with same name catch and throw, fail on inner</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 public class B {
     public void bla() {
@@ -310,15 +360,20 @@ public class Foo {
         <description>19, False positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 
-    private static boolean isInstanceOf(final MBeanServer mbs,
-                                        final ObjectName name,
-                                        final String className) {
+public class Logger {
+    static Logger logger;
+
+    void fine(String s, String e) {}
+    void debug(String s, Throwable e) {}
+
+    private static boolean isInstanceOf(final String className) {
         PrivilegedExceptionAction<Boolean> act =
             new PrivilegedExceptionAction<Boolean>() {
-                public Boolean run() throws InstanceNotFoundException {
-                    return mbs.isInstanceOf(name, className);
+                public Boolean run() throws InstantiationException {
+                    throw new InstantiationException();
                 }
             };
         try {
@@ -338,18 +393,23 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    java.util.List exception_vec;
 
-    private CodeException[] getCodeExceptions() {
+    private CodeException[] getCodeExceptions(int cp) {
         int             size  = exception_vec.size();
         CodeException[] c_exc = new CodeException[size];
 
         try {
             for (int i=0; i < size; i++) {
-                CodeExceptionGen c = (CodeExceptionGen)exception_vec.get(i);
+                CodeException c = (CodeException)exception_vec.get(i);
                 c_exc[i] = c.getCodeException(cp);
             }
         } catch(ArrayIndexOutOfBoundsException e) {}
         return c_exc;
+    }
+
+    static class CodeException extends Exception {
+        CodeException getCodeException(int i) { return this; }
     }
 }
         ]]></code>
@@ -395,12 +455,12 @@ class MultiCatch {
         <code><![CDATA[
 public class Stuff {
     @SuppressWarnings("unused")
-    public void doStuff() throws SomeException {
+    public void doStuff() throws RuntimeException {
         try {
             doMoreStuff();
         } catch (Exception e) {
             StringBuffer irrelevantSB = new StringBuffer("Irrelevant").append(" string").append(" buffer");
-            SomeException someException = new SomeException(e);
+            RuntimeException someException = new RuntimeException(e);
             throw someException;
         }
     }
@@ -416,6 +476,7 @@ public class Stuff {
         <description>#1087 PreserveStackTrace (still) ignores initCause()</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.NoSuchElementException;
 public class Test {
     public void foo() {
         try {
@@ -429,7 +490,7 @@ public class Test {
 
         try {
             // do something
-        } catch (ArrayOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             throw (IllegalStateException)new IllegalStateException().initCause(e);
         }
     }
@@ -441,6 +502,7 @@ public class Test {
         <description>#1087 PreserveStackTrace (still) ignores initCause() - negative test case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.NoSuchElementException;
 public class Test {
     public void foo() {
         try {
@@ -489,7 +551,7 @@ public class Bug {
         try {
             // do something
         } catch (final IOException e) {
-            throw uncheckedException(ErrorCodeCommon.DIRECTORY_NOT_FOUND)
+            throw uncheckedException("ErrorCodeCommon.DIRECTORY_NOT_FOUND")
                     .withField("dirname", dirname)
                     .causedBy(e)
                     .build();
@@ -518,4 +580,592 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Don't ignore effectively final parameters</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+
+    public static <T> T getBean(String name, Class<T> requiredType) throws Exception {
+        try {
+            return name != null ? doGetSingleton(name, requiredType) : lookup(name, requiredType);
+        } catch (NameNotFoundException ex) {
+            // this one
+            throw new NoSuchBeanDefinitionException(name, "not found in JNDI environment");
+        } catch (NamingException ex) {
+            throw new NoSuchBeanDefinitionException("JNDI environment", name, "JNDI lookup failed", ex);
+        }
+    }
+
+    private static <T> T doGetSingleton(String name, Class<T> requiredType) throws NamingException {return null;}
+    private static <T> T lookup(String name, Class<T> requiredType) throws NameNotFoundException {return null;}
+
+    static class NoSuchBeanDefinitionException extends Exception {
+        public NoSuchBeanDefinitionException(String s, String name, String message, Exception ex) {}
+        public NoSuchBeanDefinitionException(String s, String name) {}
+    }
+    static class NameNotFoundException extends Exception { }
+    static class NamingException extends Exception { }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] PreserveStackTrace false-positive #1747</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+
+public class SomeOtherUserDefinedException extends Exception {
+    public static void foo(String a) throws Exception {
+        try {
+	          // xxx
+        } catch (IOException exception) {
+            if (exception.getMessage().contains("foobar")) {
+                throw new SomeOtherUserDefinedException("Error", exception);
+            }
+            throw exception;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FN with method creating exception</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>22,24,26</expected-linenumbers>
+        <code><![CDATA[
+import java.io.Closeable;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.rmi.RemoteException;
+
+public class SomeOtherUserDefinedException extends Exception {
+
+    SomeOtherUserDefinedException(String m, Throwable cause) { super(m, cause); }
+
+    static Object getSomething() throws Throwable { }
+
+    protected void doInvoke() throws Throwable {
+        Object ejb = null;
+        try {
+            ejb = getSomething();
+        } catch (IOException ex) {
+            throw new IllegalArgumentException("xxx", ex); // ok
+        } catch (IOException ex) {
+            Throwable targetEx = ex.getCause();
+            if (targetEx instanceof RemoteException) {
+                RemoteException rex = (RemoteException) targetEx;
+                throw convertRmiAccessException(rex, isConnectFailure(rex)); // not ok
+            } else if (targetEx instanceof CreateException) {
+                throw convertRmiAccessException(targetEx, "message"); // not ok
+            }
+            throw targetEx; // not ok
+        } finally {
+            if (ejb instanceof Closeable) {
+                ((Closeable) ejb).close();
+            }
+        }
+    }
+
+    private Throwable convertRmiAccessException(Throwable rex, boolean connectFailure) {return this;}
+
+    private Throwable convertRmiAccessException(Throwable rex, String m) {return this;}
+
+    private static boolean isConnectFailure(RemoteException rex) {return rex != null;}
+
+    static class CreateException extends InvocationTargetException {
+
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Getter called on exception</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                    } catch(Exception e){
+                        throw e.getSomething();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>#2134 [java] PreserveStackTrace not handling Throwable.addSuppressed(...)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.io.IOException;
+
+            public class Foo {
+
+                public void foo(String a) {
+                    try {
+                        return;
+                    } catch (Exception innerException) {
+                        RuntimeException inner = new RuntimeException();
+                        inner.addSuppressed(innerException);
+                        throw inner;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Consume exception into another</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                        return;
+                    } catch (Exception outerException) {
+                        try {
+                            return;
+                        } catch (Exception innerException) {
+                            innerException.addSuppressed(outerException);
+                            throw new RuntimeException(innerException);
+                        }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <!-- todo reaching definitions analysis -->
+        <description>FP with reassigned exception</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                        System.out.println(a);
+                    } catch (Exception outerException) {
+                        outerException = new Exception();
+                        throw outerException;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <!-- todo reaching definitions analysis -->
+        <description>FP with reassigned exception (branch)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                        System.out.println(a);
+                    } catch (Exception outerException) {
+                        if (a!=null) outerException = new Exception();
+                        else outerException = new RuntimeException();
+
+                        throw outerException;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with reassigned exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void foo(String a) {
+                    try {
+                        System.out.println(a);
+                    } catch (Exception outerException) {
+                        Exception e = new Exception();
+                        e = outerException;
+                        throw e; // throws the outer exception here, so this is not a violation
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore InvocationTargetException#getTargetException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.reflect.InvocationTargetException;
+
+            public class Foo {
+
+                public void withCast(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (InvocationTargetException ex) {
+                        if (ex.getTargetException() instanceof RuntimeException) {
+                            throw (RuntimeException) ex.getTargetException();
+                        }
+                    }
+                }
+                public void throwRuntime(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (InvocationTargetException ex) {
+                        Exception e = ex.getTargetException();
+                        if (e instanceof RuntimeException) {
+                            throw (RuntimeException) e;
+                        }
+                    }
+                }
+                public void directRethrow(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (InvocationTargetException ex) {
+                        throw ex.getTargetException();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore InvocationTargetException#getCause</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.reflect.InvocationTargetException;
+
+            public class Foo {
+
+                public void withCast(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (InvocationTargetException ex) {
+                        if (ex.getCause() instanceof RuntimeException) {
+                            throw (RuntimeException) ex.getCause();
+                        }
+                    }
+                }
+                public void throwRuntime(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (InvocationTargetException ex) {
+                        Exception e = ex.getCause();
+                        if (e instanceof RuntimeException) {
+                            throw (RuntimeException) e;
+                        }
+                    }
+                }
+                public void directRethrow(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (InvocationTargetException ex) {
+                        throw ex.getCause();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore PrivilegedActionException#getCause</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.reflect.InvocationTargetException;
+            import java.security.PrivilegedActionException;
+
+            public class Foo {
+
+                public void withCast(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (PrivilegedActionException ex) {
+                        if (ex.getCause() instanceof RuntimeException) {
+                            throw (RuntimeException) ex.getCause();
+                        }
+                    }
+                }
+
+                public void throwRuntime(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (PrivilegedActionException ex) {
+                        Exception e = ex.getCause();
+                        if (e instanceof RuntimeException) {
+                            throw (RuntimeException) e;
+                        }
+                    }
+                }
+
+                public void directRethrow(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (PrivilegedActionException ex) {
+                        throw ex.getCause();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore PrivilegedActionException#getException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.reflect.InvocationTargetException;
+            import java.security.PrivilegedActionException;
+
+            public class Foo {
+
+                public void withCast(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (PrivilegedActionException ex) {
+                        if (ex.getException() instanceof RuntimeException) {
+                            throw (RuntimeException) ex.getException();
+                        }
+                    }
+                }
+
+                public void throwRuntime(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (PrivilegedActionException ex) {
+                        Exception e = ex.getException();
+                        if (e instanceof RuntimeException) {
+                            throw (RuntimeException) e;
+                        }
+                    }
+                }
+
+                public void directRethrow(String a) throws Exception {
+                    try {
+                        System.out.println(a);
+                    } catch (PrivilegedActionException ex) {
+                        throw ex.getException();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Arguments may consume exception recursively</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                public void foo(String a) {
+                    try {
+                        System.out.println(a);
+                    } catch (NumberFormatException ex) {
+                        // the exception is consumed by a constructor, which is
+                        // consumed by the thrown expression
+                        throw new InternalParseException(new SpelParseException(ex, "SpelMessage.NOT_A_LONG", "numberToken"));
+                    }
+                }
+
+                static class InternalParseException {}
+                static class SpelParseException {}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Arguments may consume exception recursively, even across variables</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                public void foo(String a) {
+                    try {
+                        System.out.println(a);
+                    } catch (NumberFormatException ex) {
+                        // same as above with intermediary variable
+                        SpelParseException other = new SpelParseException(ex, "SpelMessage.NOT_A_LONG", "numberToken");
+                        throw new InternalParseException(other);
+                    }
+                }
+
+                static class InternalParseException { }
+                static class SpelParseException { }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>StackOverflow with variable RHS which refers to itself</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public abstract class TestCase {
+                public final Object resolveArgument(String parameter) throws Exception {
+                    Object arg = resolveName(parameter);
+                    try {
+                        arg = useArg(arg);
+                    } catch (Exception ex) {
+                        throw new Exception(arg, ex);
+                    }
+                    return arg;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Avoid NPE for unresolved variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public abstract class AbstractNamedValueMethodArgumentResolver {
+                public final Object resolveArgument() {
+                    try { }
+                    catch (Exception e) {
+                        throw unresolved;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ignored exception name</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public abstract class AbstractNamedValueMethodArgumentResolver {
+
+                public final Object resolveArgument() throws Throwable {
+                    try {
+                    } catch (Throwable ignored) {
+                        throw new Exception();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ternary with both branches ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public abstract class AbstractNamedValueMethodArgumentResolver {
+
+                public final Object resolveArgument() throws Throwable {
+                    try {
+                    } catch (Throwable ex) {
+                        Exception rae = transform(ex);
+                        throw rae != null ? rae
+                                          : ex;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ternary with only one branch ok</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,14</expected-linenumbers>
+        <code><![CDATA[
+            public abstract class AbstractNamedValueMethodArgumentResolver {
+
+                public final Object resolveArgument() throws Throwable {
+                    try {
+                    } catch (Throwable ex) {
+                        throw "".isEmpty() ? new IllegalArgumentException()
+                                           : ex;
+                    }
+
+                    // equivalent with if
+                    try {
+                    } catch (Throwable ex) {
+                        if ("".isEmpty()) {
+                            throw new IllegalArgumentException();
+                        } else {
+                            throw ex;
+                        }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code regressionTest="false">
+        <!-- TODO both should have equivalent behavior       -->
+        <description>Branch in dataflow should be merged</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>14,21</expected-linenumbers>
+        <code><![CDATA[
+            public abstract class AbstractNamedValueMethodArgumentResolver {
+                // both of those should be equivalent
+
+                public final Object resolveArgument() throws Throwable {
+                    // equivalent with if
+                    try {
+                    } catch (Throwable ex) {
+                        Throwable v;
+                        if ("".isEmpty()) {
+                            v = new IllegalArgumentException();
+                        } else {
+                            v = ex;
+                        }
+                        throw v;
+                    }
+
+                    // equivalent without interm. var.
+                    try {
+                    } catch (Throwable ex) {
+                        if ("".isEmpty()) {
+                            throw new IllegalArgumentException();
+                        } else {
+                            throw ex;
+                        }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test the message</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Thrown exception does not preserve the stack trace of exception 'ex' on all code paths</message>
+        </expected-messages>
+        <code><![CDATA[
+            public abstract class AbstractNamedValueMethodArgumentResolver {
+                protected void setThrowingNameNoCheck(String name) {
+                    try {
+                        // this.discoveredThrowingType = ClassUtils.forName(name, getAspectClassLoader());
+                    } catch (Throwable ex) {
+                        throw new IllegalArgumentException("Throwing name '" + name  +
+                                                                   "' is neither a valid argument name nor the fully-qualified " +
+                                                                   "name of a Java type on the classpath. Root cause: " + ex);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Avoid stackoverflow</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Foo(Foo foo) {}
+    Foo() {}
+
+    public void inject(Object bean, String beanName) throws Throwable {
+        Foo field = new Foo();
+        Object value;
+        Foo desc = new Foo(field);
+        try {
+            value = Foo.resolveDependency(desc, beanName);
+        } catch (IllegalArgumentException ex) {
+            throw new FooException(beanName, new Foo(field), ex);
+        }
+        if (value != null) {
+            field.set(bean, value);
+        }
+    }
+
+    static Object resolveDependency(Foo f, String n) { return null; }
+    void set(Object b, Object v) { }
+
+    static class FooException extends RuntimeException {
+
+        FooException(String s, Foo f, Throwable e) {}
+    }
+}
+            ]]></code>
+    </test-code>
+
 </test-data>
