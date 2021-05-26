@@ -254,9 +254,11 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         State state = (State) data;
+
         state.pushMethod(node);
         Object res = super.visit(node, data);
         state.popMethod();
+
         return res;
     }
 
