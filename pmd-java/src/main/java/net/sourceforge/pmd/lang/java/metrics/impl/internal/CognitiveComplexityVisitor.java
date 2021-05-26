@@ -113,10 +113,10 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
                 boolean isChildElseIf = it.hasNext() && it.next() instanceof ASTIfStatement;
                 if (!isChildElseIf) {
                     boolean isChildElse = i == 2;
-                    if (!isElseIf && !isChildElse) {
-                        state.structuralComplexity();
-                    } else {
+                    if (isElseIf || isChildElse) {
                         state.hybridComplexity();
+                    } else {
+                        state.structuralComplexity();
                     }
                     super.visit(child, data);
                     state.decreaseNestingLevel();
