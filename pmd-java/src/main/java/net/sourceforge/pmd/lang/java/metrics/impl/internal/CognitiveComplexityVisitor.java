@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.metrics.impl.internal;
 
 import java.util.Iterator;
-
 import java.util.Stack;
+
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
