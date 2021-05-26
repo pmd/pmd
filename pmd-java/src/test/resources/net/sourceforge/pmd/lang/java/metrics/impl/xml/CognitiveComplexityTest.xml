@@ -483,6 +483,32 @@
     </test-code>
 
     <test-code>
+        <description>Call to overridden method is not counted as recursion</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 1.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n == 1) {
+                  return "one";
+                }
+
+                return foo(n, m);
+              }
+
+              public String foo(int n, int m) {
+                return "foo";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
         <description>If stmt counts condition too</description>
         <expected-problems>1</expected-problems>
         <expected-messages>

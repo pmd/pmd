@@ -249,7 +249,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         State state = (State) data;
-        state.setMethodName(node.getName());
+        state.setMethodName(node.getQualifiedName().toString());
         return super.visit(node, data);
     }
 
@@ -264,7 +264,8 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
             if (child instanceof ASTName) {
                 ASTName name = (ASTName) child;
                 if (name.getNameDeclaration() instanceof MethodNameDeclaration) {
-                    state.methodCall(name.getNameDeclaration().getName());
+                    ASTMethodDeclaration parent = (ASTMethodDeclaration) name.getNameDeclaration().getNode().getParent();
+                    state.methodCall(parent.getQualifiedName().toString());
                 }
             }
         }
