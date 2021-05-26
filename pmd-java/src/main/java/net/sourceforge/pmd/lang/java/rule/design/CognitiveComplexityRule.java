@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey.COGNITIVE_COMPLEXITY;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.impl.CognitiveComplexityMetric;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
@@ -37,11 +37,11 @@ public class CognitiveComplexityRule extends AbstractJavaMetricsRule {
 
     @Override
     public final Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-        if (!JavaOperationMetricKey.COGNITIVE_COMPLEXITY.supports(node)) {
+        if (!COGNITIVE_COMPLEXITY.supports(node)) {
             return data;
         }
 
-        int cognitive = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.COGNITIVE_COMPLEXITY, node);
+        int cognitive = (int) MetricsUtil.computeMetric(COGNITIVE_COMPLEXITY, node);
         final int reportLevel = getReportLevel();
         if (cognitive >= reportLevel) {
             addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",

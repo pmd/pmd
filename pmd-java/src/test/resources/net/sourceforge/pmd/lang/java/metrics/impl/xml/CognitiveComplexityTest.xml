@@ -483,6 +483,28 @@
     </test-code>
 
     <test-code>
+        <description>If stmt counts condition too</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(Integer)' has value 2.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public int foo(Integer n) {
+                if (                    // +1
+                    n == 0 || n == 1    // +1
+                ) {
+                  return 1;
+                }
+                return 0;
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
         <description>Switch statements only gain 1 complexity regardless of the number of cases</description>
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>

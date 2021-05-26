@@ -21,7 +21,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -103,30 +102,22 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         State state = (State) data;
-        boolean isElseIf = node.getNthParent(2) instanceof ASTIfStatement;
+        boolean isNotElseIf = !(node.getNthParent(2) instanceof ASTIfStatement);
 
-        int i = 0;
-        for (JavaNode child : node.children()) {
-            if (child instanceof ASTStatement) {
-                Iterator<? extends JavaNode> it = child.children().iterator();
-                // if the children is another if expression we will visit this node again as ASTIfStatement
-                boolean isChildElseIf = it.hasNext() && it.next() instanceof ASTIfStatement;
-                if (!isChildElseIf) {
-                    boolean isChildElse = i == 2;
-                    if (isElseIf || isChildElse) {
-                        state.hybridComplexity();
-                    } else {
-                        state.structuralComplexity();
-                    }
-                    super.visit(child, data);
-                    state.decreaseNestingLevel();
-                } else {
-                    super.visit(child, data);
-                }
-            } else { // expression
-                super.visit(child, data);
-            }
-            i++;
+        node.getCondition().jjtAccept(this, data);
+
+        if (isNotElseIf) {
+            state.structuralComplexity();
+        }
+        node.getThenBranch().jjtAccept(this, data);
+        if (isNotElseIf) {
+            state.decreaseNestingLevel();
+        }
+
+        if (node.hasElse()) {
+            state.hybridComplexity();
+            node.getElseBranch().jjtAccept(this, data);
+            state.decreaseNestingLevel();
         }
 
         return data;
