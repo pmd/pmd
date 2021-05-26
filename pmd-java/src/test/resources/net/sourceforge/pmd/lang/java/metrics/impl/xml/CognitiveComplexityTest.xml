@@ -483,6 +483,57 @@
     </test-code>
 
     <test-code>
+        <description>Recursion bumps complexity value even when called inside of nested method</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 2.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public void foo(int n) {
+                Runnable r = new Runnable() {
+                  @Override
+                  public void run() {
+                    foo(n - 1);  // +1 for recursion
+                  }
+                };
+                if (n > 0) {  // +1
+                  r.run();
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Recursion bumps complexity value after nested method has been called</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 2.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public void foo(int n) {
+                new Runnable() {
+                  @Override
+                  public void run() {
+                  }
+                }.run();
+                if (n > 0) { // +1
+                  foo(n - 1); // +1, current method should be reset to `foo`
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
         <description>Call to overridden method is not counted as recursion</description>
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
@@ -584,7 +635,7 @@
 
                     }
                   }
-                };
+                }.run(); // not a recursive call
               }
             }
             ]]>

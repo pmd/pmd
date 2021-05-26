@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl.internal;
 
 import java.util.Iterator;
 
+import java.util.Stack;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
@@ -49,7 +50,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
         private int nestingLevel = 0;
 
         private BooleanOp currentBooleanOperation = null;
-        private ASTMethodDeclaration methodName = null;
+        private Stack<ASTMethodDeclaration> methodStack = new Stack<>();
 
         public double getComplexity() {
             return complexity;
@@ -88,14 +89,18 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
             }
         }
 
-        void methodCall(ASTMethodDeclaration calledMethod) {
-            if (calledMethod == methodName) {
-                fundamentalComplexity();
-            }
+        void pushMethod(ASTMethodDeclaration calledMethod) {
+            methodStack.push(calledMethod);
         }
 
-        void setMethodName(ASTMethodDeclaration method) {
-            methodName = method;
+        void popMethod() {
+            methodStack.pop();
+        }
+
+        void callMethod(ASTMethodDeclaration calledMethod) {
+            if (methodStack.contains(calledMethod)) {
+                fundamentalComplexity();
+            }
         }
     }
 
@@ -249,8 +254,10 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         State state = (State) data;
-        state.setMethodName(node);
-        return super.visit(node, data);
+        state.pushMethod(node);
+        Object res = super.visit(node, data);
+        state.popMethod();
+        return res;
     }
 
     @Override
@@ -265,7 +272,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
                 ASTName name = (ASTName) child;
                 if (name.getNameDeclaration() instanceof MethodNameDeclaration) {
                     ASTMethodDeclaration parent = (ASTMethodDeclaration) name.getNameDeclaration().getNode().getParent();
-                    state.methodCall(parent);
+                    state.callMethod(parent);
                 }
             }
         }
