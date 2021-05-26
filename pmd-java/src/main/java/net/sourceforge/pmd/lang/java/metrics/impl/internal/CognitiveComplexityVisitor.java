@@ -56,35 +56,22 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
             return complexity;
         }
 
-        void structureComplexity() {
-            complexity += 1;
+        void hybridComplexity() {
+            complexity++;
+            nestingLevel++;
         }
 
-        void nestingComplexity() {
+        void fundamentalComplexity() {
+            complexity++;
+        }
+
+        void structuralComplexity() {
+            complexity++;
             complexity += nestingLevel;
-        }
-
-        void booleanOperation(BooleanOp op) {
-            if (currentBooleanOperation != op) {
-                if (op != null) {
-                    structureComplexity();
-                }
-
-                currentBooleanOperation = op;
-            }
+            nestingLevel++;
         }
 
         void increaseNestingLevel() {
-            structureComplexity();
-            nestingComplexity();
-            nestingLevel++;
-        }
-
-        void nestingInc() {
-            nestingLevel++;
-        }
-
-        void increaseNestingLevelWithoutStructuralComplexity() {
             nestingLevel++;
         }
 
@@ -92,9 +79,19 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
             nestingLevel--;
         }
 
+        void booleanOperation(BooleanOp op) {
+            if (currentBooleanOperation != op) {
+                if (op != null) {
+                    fundamentalComplexity();
+                }
+
+                currentBooleanOperation = op;
+            }
+        }
+
         void methodCall(String methodCalledName) {
             if (methodCalledName.equals(methodName)) {
-                structureComplexity();
+                fundamentalComplexity();
             }
         }
 
@@ -117,10 +114,9 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
                 if (!isChildAnotherIf) {
                     boolean isChildElse = (i == 2);
                     if (!isElseIf && !isChildElse) {
-                        state.increaseNestingLevel();
+                        state.structuralComplexity();
                     } else {
-                        state.nestingInc();
-                        state.structureComplexity();
+                        state.hybridComplexity();
                     }
                     super.visit(child, data);
                     state.decreaseNestingLevel();
@@ -140,7 +136,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTForStatement node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structuralComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -155,7 +151,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
         boolean hasLabel = node.getImage() != null;
 
         if (hasLabel) {
-            state.structureComplexity();
+            state.fundamentalComplexity();
         }
         return super.visit(node, data);
     }
@@ -168,7 +164,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
         boolean hasLabel = node.getImage() != null;
 
         if (hasLabel) {
-            state.structureComplexity();
+            state.fundamentalComplexity();
         }
 
         return super.visit(node, data);
@@ -178,7 +174,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTWhileStatement node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structuralComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -189,7 +185,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTCatchStatement node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structuralComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -200,7 +196,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTDoStatement node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structuralComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -211,7 +207,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTConditionalExpression node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structuralComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -289,7 +285,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTSwitchStatement node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structuralComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -300,7 +296,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTLambdaExpression node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevelWithoutStructuralComplexity();
+        state.increaseNestingLevel();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -311,7 +307,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTClassOrInterfaceBody node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevelWithoutStructuralComplexity();
+        state.increaseNestingLevel();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
