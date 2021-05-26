@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.metrics.impl.internal;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
@@ -81,6 +80,10 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
             nestingLevel++;
         }
 
+        void nestingInc() {
+            nestingLevel++;
+        }
+
         void increaseNestingLevelWithoutStructuralComplexity() {
             nestingLevel++;
         }
@@ -103,22 +106,31 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         State state = (State) data;
+        boolean isElseIf = node.getNthParent(2) instanceof ASTIfStatement;
 
+        int i = 0;
         for (JavaNode child : node.children()) {
             if (child instanceof ASTStatement) {
                 Iterator<? extends JavaNode> it = child.children().iterator();
                 // if the children is another if expression we will visit this node again as ASTIfStatement
                 boolean isChildAnotherIf = it.hasNext() && it.next() instanceof ASTIfStatement;
                 if (!isChildAnotherIf) {
-                    state.increaseNestingLevel();
-                }
-                super.visit(child, data);
-                if (!isChildAnotherIf) {
+                    boolean isChildElse = (i == 2);
+                    if (!isElseIf && !isChildElse) {
+                        state.increaseNestingLevel();
+                    } else {
+                        state.nestingInc();
+                        state.structureComplexity();
+                    }
+                    super.visit(child, data);
                     state.decreaseNestingLevel();
+                } else {
+                    super.visit(child, data);
                 }
             } else { // expression
                 super.visit(child, data);
             }
+            i++;
         }
 
         return data;
@@ -139,7 +151,12 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTContinueStatement node, Object data) {
         State state = (State) data;
 
-        state.structureComplexity();
+        // hack to detect if there is a label
+        boolean hasLabel = node.getImage() != null;
+
+        if (hasLabel) {
+            state.structureComplexity();
+        }
         return super.visit(node, data);
     }
 
@@ -147,10 +164,10 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTBreakStatement node, Object data) {
         State state = (State) data;
 
-        Node parentOfParent = node.getNthParent(3);
-        boolean isBreakInsideOfSwitch = parentOfParent instanceof ASTSwitchStatement;
+        // hack to detect if there is a label
+        boolean hasLabel = node.getImage() != null;
 
-        if (!isBreakInsideOfSwitch) {
+        if (hasLabel) {
             state.structureComplexity();
         }
 
@@ -232,11 +249,11 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
         State state = (State) data;
 
         for (JavaNode child : node.children()) {
-            child.jjtAccept(this, data);
-
             // This needs to happen because the current 'run' of boolean operations is terminated
             // once we finish a statement.
             state.booleanOperation(null);
+
+            child.jjtAccept(this, data);
         }
 
         return data;

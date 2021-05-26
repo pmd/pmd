@@ -52,6 +52,112 @@
     </test-code>
 
     <test-code>
+        <description>Nested else statements do not receive nesting increment (hybrid increment only)</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n > 0) {           // +1
+                  if (n == 1) {        // +2
+                    return "one";
+                  } else {             // +1
+                    return "positive";
+                  }
+                }
+
+                return "negative or 0";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+
+    <test-code>
+        <description>Nested else-if statements do not receive nesting increment (hybrid increment only)</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n > 0) {           // +1
+                  if (n == 1) {        // +2
+                    return "one";
+                  } else if (n == 0) {  // +1
+                    return "zero";
+                  }
+                }
+
+                return "negative or 0";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+
+    <test-code>
+        <description>else-if increases nesting level</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n > 0) {           // +1
+                   return "positive";
+                } else if (n < 0) {   // +1
+                    if (n < -10) {        // +2
+                        return "small";
+                    }
+                }
+
+                return "negative or 0";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>else increases nesting level</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n > 0) {           // +1
+                   return "positive";
+                } else {               // +1
+                    if (n < -10) {     // +2
+                        return "small";
+                    }
+                }
+
+                return "negative or 0";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
         <description>Non nested if statements don't incur a penalty</description>
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
@@ -155,11 +261,11 @@
     </test-code>
 
     <test-code>
-        <description>Continue statements increase complexity</description>
+        <description>Continue statements without label do not increase complexity</description>
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#foo()' has value 4.</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -180,11 +286,11 @@
     </test-code>
 
     <test-code>
-        <description>Break statements increase complexity</description>
+        <description>Break statements without label do not increase complexity</description>
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#foo()' has value 4.</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -264,7 +370,7 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#foo()' has value 5.</message>
+            <message>'Foo#foo()' has value 4.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -274,7 +380,7 @@
                 do {                                 // +1
                   if (n == 3) {                      // +2
                     System.out.println("n is 3");
-                  } else {                           // +2
+                  } else {                           // +1
                     System.out.println("n is not 3");
                   }
                   n++;
