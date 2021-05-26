@@ -256,10 +256,10 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
         State state = (State) data;
 
         state.pushMethod(node);
-        Object res = super.visit(node, data);
+        super.visit(node, data);
         state.popMethod();
 
-        return res;
+        return data;
     }
 
     @Override
