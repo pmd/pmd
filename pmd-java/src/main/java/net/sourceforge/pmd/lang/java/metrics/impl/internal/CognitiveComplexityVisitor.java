@@ -49,7 +49,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
         private int nestingLevel = 0;
 
         private BooleanOp currentBooleanOperation = null;
-        private String methodName = null;
+        private ASTMethodDeclaration methodName = null;
 
         public double getComplexity() {
             return complexity;
@@ -88,14 +88,14 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
             }
         }
 
-        void methodCall(String methodCalledName) {
-            if (methodCalledName.equals(methodName)) {
+        void methodCall(ASTMethodDeclaration calledMethod) {
+            if (calledMethod == methodName) {
                 fundamentalComplexity();
             }
         }
 
-        void setMethodName(String name) {
-            methodName = name;
+        void setMethodName(ASTMethodDeclaration method) {
+            methodName = method;
         }
     }
 
@@ -249,7 +249,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         State state = (State) data;
-        state.setMethodName(node.getQualifiedName().toString());
+        state.setMethodName(node);
         return super.visit(node, data);
     }
 
@@ -265,7 +265,7 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
                 ASTName name = (ASTName) child;
                 if (name.getNameDeclaration() instanceof MethodNameDeclaration) {
                     ASTMethodDeclaration parent = (ASTMethodDeclaration) name.getNameDeclaration().getNode().getParent();
-                    state.methodCall(parent.getQualifiedName().toString());
+                    state.methodCall(parent);
                 }
             }
         }
