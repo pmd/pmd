@@ -31,6 +31,7 @@
     <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation"/>
     <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation"/>
     <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation"/>
+    <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" />
     <rule ref="category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage"/>
     <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts"/>
     <rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert"/>
@@ -144,6 +145,7 @@
     <!-- <rule ref="category/java/design.xml/LawOfDemeter"/> -->
     <!-- <rule ref="category/java/design.xml/LogicInversion"/> -->
     <!-- <rule ref="category/java/design.xml/LoosePackageCoupling"/> -->
+    <rule ref="category/java/design.xml/MutableStaticState" />
     <rule ref="category/java/design.xml/NPathComplexity"/>
     <rule ref="category/java/design.xml/NcssCount"/>
     <!-- <rule ref="category/java/design.xml/SignatureDeclareThrowsException"/> -->

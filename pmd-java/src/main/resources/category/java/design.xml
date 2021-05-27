@@ -1533,7 +1533,7 @@ rule {% rule java/errorprone/AssignmentToNonFinalStatic %}.
             <property name="xpath">
                 <value>
                     <![CDATA[
-//FieldDeclaration[@Static = true() and @Private = false() and @Final = false()]
+//FieldDeclaration[pmd-java:modifiers() = "static"][not(pmd-java:modifiers() = ("private", "final"))]
 ]]>
                 </value>
             </property>
