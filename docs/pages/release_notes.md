@@ -118,14 +118,14 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
 
 #### Deprecated API
 
-*   {% jdoc !!core::PMD#doPMD(PMDConfiguration) %} is deprecated.
-    Use {% jdoc !!core::PMD#runPMD(PMDConfiguration) %} instead.
-*   {% jdoc !!core::PMD#run(String[]) %} is deprecated.
-    Use {% jdoc !!core::PMD#runPMD(String...) %} instead.
+*   {% jdoc !!core::PMD#doPMD(net.sourceforge.pmd.PMDConfiguration) %} is deprecated.
+    Use {% jdoc !!core::PMD#runPMD(net.sourceforge.pmd.PMDConfiguration) %} instead.
+*   {% jdoc !!core::PMD#run(java.lang.String[]) %} is deprecated.
+    Use {% jdoc !!core::PMD#runPMD(java.lang.String...) %} instead.
 *   {% jdoc core::ThreadSafeReportListener %} and the methods to use them in {% jdoc core::Report %}
-    ({% jdoc core::Report#addListener(ThreadSafeReportListener) %}, {% jdoc core::Report#getListeners() %},
-    {% jdoc core::Report#addListeners(List<ThreadSafeReportListener>) %}) are deprecated. This functionality
-    will be replaced by another TBD mechanism in PMD 7.
+    ({% jdoc core::Report#addListener(net.sourceforge.pmd.ThreadSafeReportListener) %},
+    {% jdoc core::Report#getListeners() %}, {% jdoc core::Report#addListeners(java.util.List) %})
+    are deprecated. This functionality will be replaced by another TBD mechanism in PMD 7.
 
 ### External Contributions
 *   [#3272](https://github.com/pmd/pmd/pull/3272): \[apex] correction for ApexUnitTestMethodShouldHaveIsTestAnnotation false positives - [William Brockhus](https://github.com/YodaDaCoda)
