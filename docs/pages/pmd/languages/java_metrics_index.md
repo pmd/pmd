@@ -76,7 +76,7 @@ control flow leading to an increase in cognitive complexity.
 Information about Cognitive complexity can be found in the original paper here:
 [CognitiveComplexity](https://www.sonarsource.com/docs/CognitiveComplexity.pdf)
 
-The rule {% rule java/design/CyclomaticComplexity %} by default reports methods with a complexity of 15 or more. 
+The rule {% rule java/design/CognitiveComplexity %} by default reports methods with a complexity of 15 or more. 
 These reported methods should be broken down into less
 complex components.
 
