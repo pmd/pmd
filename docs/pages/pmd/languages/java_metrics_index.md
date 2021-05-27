@@ -93,7 +93,7 @@ There is an increment for each of the following:
 * `for`, `foreach`
 * `while`, `do while`
 * `catch`
-* `goto LABEL`, `break LABEL`, `continue LABEL`, `break NUMBER`, `continue NUMBER`
+* `goto LABEL`, `break LABEL`, `continue LABEL`
 * sequences of binary logical operators
 * each method in a recursion cycle
 
