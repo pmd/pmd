@@ -78,6 +78,7 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
     *   [#3243](https://github.com/pmd/pmd/pull/3243): \[apex] Correct findBoundary when traversing AST
 *   core
     *   [#2639](https://github.com/pmd/pmd/issues/2639): \[core] PMD CLI output file is not created if directory or directories in path don't exist
+    *   [#3196](https://github.com/pmd/pmd/issues/3196): \[core] Deprecate ThreadSafeReportListener
 *   doc
     *   [#3230](https://github.com/pmd/pmd/issues/3230): \[doc] Remove "Edit me" button for language index pages
 *   dist
@@ -114,6 +115,17 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
     *   [#2081](https://github.com/pmd/pmd/issues/2081): \[javascript] Failing with OutOfMemoryError parsing a Javascript file
 
 ### API Changes
+
+#### Deprecated API
+
+*   {% jdoc !!core::PMD#doPMD(PMDConfiguration) %} is deprecated.
+    Use {% jdoc !!core::PMD#runPMD(PMDConfiguration) %} instead.
+*   {% jdoc !!core::PMD#run(String[]) %} is deprecated.
+    Use {% jdoc !!core::PMD#runPMD(String...) %} instead.
+*   {% jdoc core::ThreadSafeReportListener %} and the methods to use them in {% jdoc core::Report %}
+    ({% jdoc core::Report#addListener(ThreadSafeReportListener) %}, {% jdoc core::Report#getListeners() %},
+    {% jdoc core::Report#addListeners(List<ThreadSafeReportListener>) %}) are deprecated. This functionality
+    will be replaced by another TBD mechanism in PMD 7.
 
 ### External Contributions
 *   [#3272](https://github.com/pmd/pmd/pull/3272): \[apex] correction for ApexUnitTestMethodShouldHaveIsTestAnnotation false positives - [William Brockhus](https://github.com/YodaDaCoda)

@@ -312,6 +312,7 @@ public class Report implements Iterable<RuleViolation> {
      * @param listener
      *            the listener
      */
+    @Deprecated
     public void addListener(ThreadSafeReportListener listener) {
         listeners.add(listener);
     }
@@ -629,6 +630,10 @@ public class Report implements Iterable<RuleViolation> {
         return end - start;
     }
 
+    /**
+     * @deprecated {@link ThreadSafeReportListener} is deprecated
+     */
+    @Deprecated
     public List<ThreadSafeReportListener> getListeners() {
         return listeners;
     }
@@ -638,7 +643,10 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @param allListeners
      *            the report listeners
+     *
+     * @deprecated {@link ThreadSafeReportListener} is deprecated
      */
+    @Deprecated
     public void addListeners(List<ThreadSafeReportListener> allListeners) {
         listeners.addAll(allListeners);
     }
