@@ -131,5 +131,6 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
 *   [#3272](https://github.com/pmd/pmd/pull/3272): \[apex] correction for ApexUnitTestMethodShouldHaveIsTestAnnotation false positives - [William Brockhus](https://github.com/YodaDaCoda)
 *   [#3246](https://github.com/pmd/pmd/pull/3246): \[java] New Rule: MutableStaticState - [Vsevolod Zholobov](https://github.com/vszholobov)
 *   [#3247](https://github.com/pmd/pmd/pull/3247): \[java] New rule: JUnit5TestShouldBePackagePrivate - [Arnaud Jeansen](https://github.com/ajeans)
+*   [pmd.github.io#12](https://github.com/pmd/pmd.github.io/pull/12): Update quickstart.html - [Igor Lyadov](https://github.com/devigo)
 
 {% endtocmaker %}
