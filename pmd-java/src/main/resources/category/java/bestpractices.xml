@@ -817,6 +817,71 @@ public class MyTest {
         </example>
     </rule>
 
+    <rule name="JUnit5TestShouldBePackagePrivate"
+          language="java"
+          since="6.35.0"
+          message="JUnit 5 tests should be package-private."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate">
+        <description><![CDATA[
+Reports JUnit 5 test classes and methods that are not package-private.
+Contrary to JUnit 4 tests, which required public visibility to be run by the engine,
+JUnit 5 tests can also be run if they're package-private. Marking them as such
+is a good practice to limit their visibility.
+
+Test methods are identified as those which use `@Test`, `@RepeatedTest`,
+`@TestFactory`, `@TestTemplate` or `@ParameterizedTest`.
+            ]]></description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration[
+    (: a Junit 5 test class, ie, it has methods with the annotation :)
+    @Interface=false() and
+    ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+        [Annotation//Name[
+            pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+            or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+        ]]
+        [MethodDeclaration]
+]/(
+    self::*[@Abstract=false() and (@Public=true() or @Protected=true())]
+|   ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+        [Annotation//Name[
+            pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+            or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+        ]]
+        /MethodDeclaration[@Public=true() or @Protected=true()]
+)
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+class MyTest { // not public, that's fine
+    @Test
+    public void testBad() { } // should not have a public modifier
+
+    @Test
+    protected void testAlsoBad() { } // should not have a protected modifier
+
+    @Test
+    private void testNoRun() { } // should not have a private modifier
+
+    @Test
+    void testGood() { } // package private as expected
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="JUnitAssertionsShouldIncludeMessage"
           language="java"
           since="1.04"

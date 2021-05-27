@@ -11,6 +11,10 @@
         <relativePath>../</relativePath>
     </parent>
 
+    <properties>
+        <java.version>8</java.version>
+    </properties>
+
     <build>
         <resources>
             <resource>
@@ -78,6 +82,7 @@
         <dependency>
             <groupId>org.mozilla</groupId>
             <artifactId>rhino</artifactId>
+            <version>1.7.13</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

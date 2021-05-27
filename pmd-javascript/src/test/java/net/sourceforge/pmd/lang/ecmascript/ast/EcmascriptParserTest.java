@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Reader;
@@ -180,5 +181,14 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
                                            + "x <<= 2; x >>= 2; x >>>= 2; }");
         ASTAssignment infix = rootNode.getFirstDescendantOfType(ASTAssignment.class);
         assertEquals("^=", infix.getImage());
+    }
+
+    /**
+     * [javascript] Failing with OutOfMemoryError parsing a Javascript file #2081
+     */
+    @Test(timeout = 5000L)
+    public void shouldNotFailWithOutOfMemory() {
+        ASTAstRoot rootNode = js.parse("(``\n);");
+        assertNotNull(rootNode);
     }
 }
