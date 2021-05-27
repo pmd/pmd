@@ -1485,7 +1485,7 @@ as described here.</p>
         <span class="n">configuration</span><span class="o">.</span><span class="na">setReportFormat</span><span class="o">(</span><span class="s">"xml"</span><span class="o">);</span>
         <span class="n">configuration</span><span class="o">.</span><span class="na">setReportFile</span><span class="o">(</span><span class="s">"/home/workspace/pmd-report.xml"</span><span class="o">);</span>
 
-        <span class="no">PMD</span><span class="o">.</span><span class="na">doPMD</span><span class="o">(</span><span class="n">configuration</span><span class="o">);</span>
+        <span class="no">PMD</span><span class="o">.</span><span class="na">runPMD</span><span class="o">(</span><span class="n">configuration</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1493,7 +1493,7 @@ as described here.</p>
 <h2 id="programmatically-variant-2">Programmatically, variant 2</h2>
 
 <p>This gives you more control over which files are processed, but is also more complicated.
-You can also provide your own listeners and renderers.</p>
+You can also provide your own custom renderers.</p>
 
 <ol>
   <li>
@@ -1513,10 +1513,11 @@ Note: you can specify multiple class paths separated by <code class="language-pl
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>Then we need a ruleset factory. This is created using the configuration, taking the minimum priority into
+    <p>Then we need to load the rulesets. This is done by using the configuration, taking the minimum priority into
 account:</p>
 
-    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">RuleSetFactory</span> <span class="n">ruleSetFactory</span> <span class="o">=</span> <span class="nc">RulesetsFactoryUtils</span><span class="o">.</span><span class="na">createFactory</span><span class="o">(</span><span class="n">configuration</span><span class="o">);</span>
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">RuleSetLoader</span> <span class="n">ruleSetLoader</span> <span class="o">=</span> <span class="nc">RuleSetLoader</span><span class="o">.</span><span class="na">fromPmdConfig</span><span class="o">(</span><span class="n">configuration</span><span class="o">);</span>
+<span class="nc">List</span><span class="o">&lt;</span><span class="nc">RuleSet</span><span class="o">&gt;</span> <span class="n">ruleSets</span> <span class="o">=</span> <span class="n">ruleSetLoader</span><span class="o">.</span><span class="na">loadFromResources</span><span class="o">(</span><span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">configuration</span><span class="o">.</span><span class="na">getRuleSets</span><span class="o">().</span><span class="na">split</span><span class="o">(</span><span class="s">","</span><span class="o">)));</span>
 </code></pre></div>    </div>
   </li>
   <li>
@@ -1526,7 +1527,8 @@ account:</p>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>For reporting, you can use a built-in renderer, e.g. <code class="language-plaintext highlighter-rouge">XMLRenderer</code>. Note, that you must manually initialize
+    <p>For reporting, you can use a built-in renderer, e.g. <code class="language-plaintext highlighter-rouge">XMLRenderer</code> or a custom renderer implementing
+<code class="language-plaintext highlighter-rouge">Renderer</code>. Note, that you must manually initialize
 the renderer by setting a suitable <code class="language-plaintext highlighter-rouge">Writer</code> and calling <code class="language-plaintext highlighter-rouge">start()</code>. After the PMD run, you need to call
 <code class="language-plaintext highlighter-rouge">end()</code> and <code class="language-plaintext highlighter-rouge">flush()</code>. Then your writer should have received all output.</p>
 
@@ -1537,35 +1539,14 @@ the renderer by setting a suitable <code class="language-plaintext highlighter-r
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>Create a <code class="language-plaintext highlighter-rouge">RuleContext</code>. This is the context instance, that is available then in the rule implementations.
-Note: when running in multi-threaded mode (which is the default), the rule context instance is cloned for
-each thread.</p>
-
-    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">RuleContext</span> <span class="n">ctx</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RuleContext</span><span class="o">();</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>Optionally register a report listener. This allows you to react immediately on found violations. You could also
-use such a listener to implement your own renderer. The listener must implement the interface
-<code class="language-plaintext highlighter-rouge">ThreadSafeReportListener</code> and can be registered via <code class="language-plaintext highlighter-rouge">ctx.getReport().addListener(...)</code>.</p>
-
-    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ctx</span><span class="o">.</span><span class="na">getReport</span><span class="o">().</span><span class="na">addListener</span><span class="o">(</span><span class="k">new</span> <span class="nc">ThreadSafeReportListener</span><span class="o">()</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">ruleViolationAdded</span><span class="o">(</span><span class="nc">RuleViolation</span> <span class="n">ruleViolation</span><span class="o">)</span> <span class="o">{</span>
-    <span class="o">}</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">metricAdded</span><span class="o">(</span><span class="nc">Metric</span> <span class="n">metric</span><span class="o">)</span> <span class="o">{</span>
-    <span class="o">}</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
     <p>Now, all the preparations are done, and PMD can be executed. This is done by calling
-<code class="language-plaintext highlighter-rouge">PMD.processFiles(...)</code>. This method call takes the configuration, the ruleset factory, the files
-to process, the rule context and the list of renderers. Provide an empty list, if you don’t want to use
+<code class="language-plaintext highlighter-rouge">PMD.processFiles(...)</code>. This method call takes the configuration, the rulesets, the files
+to process, and the list of renderers. Provide an empty list, if you don’t want to use
 any renderer. Note: The auxclasspath needs to be closed explicitly. Otherwise the class or jar files may
 remain open and file resources are leaked.</p>
 
     <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="o">{</span>
-    <span class="no">PMD</span><span class="o">.</span><span class="na">processFiles</span><span class="o">(</span><span class="n">configuration</span><span class="o">,</span> <span class="n">ruleSetFactory</span><span class="o">,</span> <span class="n">files</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span>
-            <span class="nc">Collections</span><span class="o">.</span><span class="na">singletonList</span><span class="o">(</span><span class="n">renderer</span><span class="o">));</span>
+    <span class="no">PMD</span><span class="o">.</span><span class="na">processFiles</span><span class="o">(</span><span class="n">configuration</span><span class="o">,</span> <span class="n">ruleSets</span><span class="o">,</span> <span class="n">files</span><span class="o">,</span> <span class="nc">Collections</span><span class="o">.</span><span class="na">singletonList</span><span class="o">(</span><span class="n">renderer</span><span class="o">));</span>
 <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
     <span class="nc">ClassLoader</span> <span class="n">auxiliaryClassLoader</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">();</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">auxiliaryClassLoader</span> <span class="k">instanceof</span> <span class="nc">ClasspathClassLoader</span><span class="o">)</span> <span class="o">{</span>
@@ -1599,20 +1580,17 @@ Then you can check the rendered output.</p>
 <span class="kn">import</span> <span class="nn">java.nio.file.SimpleFileVisitor</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.nio.file.attribute.BasicFileAttributes</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.Collections</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.PMD</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.PMDConfiguration</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RuleContext</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RulePriority</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RuleSetFactory</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RuleViolation</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RulesetsFactoryUtils</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.ThreadSafeReportListener</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RuleSet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RuleSetLoader</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.renderers.Renderer</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.renderers.XMLRenderer</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.stat.Metric</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.util.ClasspathClassLoader</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.util.datasource.DataSource</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.util.datasource.FileDataSource</span><span class="o">;</span>
@@ -1624,7 +1602,8 @@ Then you can check the rendered output.</p>
         <span class="n">configuration</span><span class="o">.</span><span class="na">setMinimumPriority</span><span class="o">(</span><span class="nc">RulePriority</span><span class="o">.</span><span class="na">MEDIUM</span><span class="o">);</span>
         <span class="n">configuration</span><span class="o">.</span><span class="na">setRuleSets</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
         <span class="n">configuration</span><span class="o">.</span><span class="na">prependClasspath</span><span class="o">(</span><span class="s">"/home/workspace/target/classes"</span><span class="o">);</span>
-        <span class="nc">RuleSetFactory</span> <span class="n">ruleSetFactory</span> <span class="o">=</span> <span class="nc">RulesetsFactoryUtils</span><span class="o">.</span><span class="na">createFactory</span><span class="o">(</span><span class="n">configuration</span><span class="o">);</span>
+        <span class="nc">RuleSetLoader</span> <span class="n">ruleSetLoader</span> <span class="o">=</span> <span class="nc">RuleSetLoader</span><span class="o">.</span><span class="na">fromPmdConfig</span><span class="o">(</span><span class="n">configuration</span><span class="o">);</span>
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">RuleSet</span><span class="o">&gt;</span> <span class="n">ruleSets</span> <span class="o">=</span> <span class="n">ruleSetLoader</span><span class="o">.</span><span class="na">loadFromResources</span><span class="o">(</span><span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">configuration</span><span class="o">.</span><span class="na">getRuleSets</span><span class="o">().</span><span class="na">split</span><span class="o">(</span><span class="s">","</span><span class="o">)));</span>
 
         <span class="nc">List</span><span class="o">&lt;</span><span class="nc">DataSource</span><span class="o">&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="n">determineFiles</span><span class="o">(</span><span class="s">"/home/workspace/src/main/java/code"</span><span class="o">);</span>
 
@@ -1632,13 +1611,8 @@ Then you can check the rendered output.</p>
         <span class="nc">Renderer</span> <span class="n">renderer</span> <span class="o">=</span> <span class="n">createRenderer</span><span class="o">(</span><span class="n">rendererOutput</span><span class="o">);</span>
         <span class="n">renderer</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
 
-        <span class="nc">RuleContext</span> <span class="n">ctx</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RuleContext</span><span class="o">();</span>
-
-        <span class="n">ctx</span><span class="o">.</span><span class="na">getReport</span><span class="o">().</span><span class="na">addListener</span><span class="o">(</span><span class="n">createReportListener</span><span class="o">());</span> <span class="c1">// alternative way to collect violations</span>
-
         <span class="k">try</span> <span class="o">{</span>
-            <span class="no">PMD</span><span class="o">.</span><span class="na">processFiles</span><span class="o">(</span><span class="n">configuration</span><span class="o">,</span> <span class="n">ruleSetFactory</span><span class="o">,</span> <span class="n">files</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span>
-                <span class="nc">Collections</span><span class="o">.</span><span class="na">singletonList</span><span class="o">(</span><span class="n">renderer</span><span class="o">));</span>
+            <span class="no">PMD</span><span class="o">.</span><span class="na">processFiles</span><span class="o">(</span><span class="n">configuration</span><span class="o">,</span> <span class="n">ruleSets</span><span class="o">,</span> <span class="n">files</span><span class="o">,</span> <span class="nc">Collections</span><span class="o">.</span><span class="na">singletonList</span><span class="o">(</span><span class="n">renderer</span><span class="o">));</span>
         <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
             <span class="nc">ClassLoader</span> <span class="n">auxiliaryClassLoader</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">();</span>
             <span class="k">if</span> <span class="o">(</span><span class="n">auxiliaryClassLoader</span> <span class="k">instanceof</span> <span class="nc">ClasspathClassLoader</span><span class="o">)</span> <span class="o">{</span>
@@ -1652,21 +1626,6 @@ Then you can check the rendered output.</p>
         <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">rendererOutput</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
     <span class="o">}</span>
 
-    <span class="kd">private</span> <span class="kd">static</span> <span class="nc">ThreadSafeReportListener</span> <span class="nf">createReportListener</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="k">new</span> <span class="nf">ThreadSafeReportListener</span><span class="o">()</span> <span class="o">{</span>
-            <span class="nd">@Override</span>
-            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">ruleViolationAdded</span><span class="o">(</span><span class="nc">RuleViolation</span> <span class="n">ruleViolation</span><span class="o">)</span> <span class="o">{</span>
-                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"%-20s:%d %s%n"</span><span class="o">,</span> <span class="n">ruleViolation</span><span class="o">.</span><span class="na">getFilename</span><span class="o">(),</span>
-                        <span class="n">ruleViolation</span><span class="o">.</span><span class="na">getBeginLine</span><span class="o">(),</span> <span class="n">ruleViolation</span><span class="o">.</span><span class="na">getDescription</span><span class="o">());</span>
-            <span class="o">}</span>
-
-            <span class="nd">@Override</span>
-            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">metricAdded</span><span class="o">(</span><span class="nc">Metric</span> <span class="n">metric</span><span class="o">)</span> <span class="o">{</span>
-                <span class="c1">// ignored</span>
-            <span class="o">}</span>
-        <span class="o">};</span>
-    <span class="o">}</span>
-
     <span class="kd">private</span> <span class="kd">static</span> <span class="nc">Renderer</span> <span class="nf">createRenderer</span><span class="o">(</span><span class="nc">Writer</span> <span class="n">writer</span><span class="o">)</span> <span class="o">{</span>
         <span class="nc">XMLRenderer</span> <span class="n">xml</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">XMLRenderer</span><span class="o">(</span><span class="s">"UTF-8"</span><span class="o">);</span>
         <span class="n">xml</span><span class="o">.</span><span class="na">setWriter</span><span class="o">(</span><span class="n">writer</span><span class="o">);</span>
@@ -1675,9 +1634,9 @@ Then you can check the rendered output.</p>
 
     <span class="kd">private</span> <span class="kd">static</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">DataSource</span><span class="o">&gt;</span> <span class="nf">determineFiles</span><span class="o">(</span><span class="nc">String</span> <span class="n">basePath</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>
         <span class="nc">Path</span> <span class="n">dirPath</span> <span class="o">=</span> <span class="nc">FileSystems</span><span class="o">.</span><span class="na">getDefault</span><span class="o">().</span><span class="na">getPath</span><span class="o">(</span><span class="n">basePath</span><span class="o">);</span>
-        <span class="nc">PathMatcher</span> <span class="n">matcher</span> <span class="o">=</span> <span class="nc">FileSystems</span><span class="o">.</span><span class="na">getDefault</span><span class="o">().</span><span class="na">getPathMatcher</span><span class="o">(</span><span class="s">"glob:*.java"</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="nc">PathMatcher</span> <span class="n">matcher</span> <span class="o">=</span> <span class="nc">FileSystems</span><span class="o">.</span><span class="na">getDefault</span><span class="o">().</span><span class="na">getPathMatcher</span><span class="o">(</span><span class="s">"glob:*.java"</span><span class="o">);</span>
 
-        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">DataSource</span><span class="o">&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+        <span class="kd">final</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">DataSource</span><span class="o">&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
 
         <span class="nc">Files</span><span class="o">.</span><span class="na">walkFileTree</span><span class="o">(</span><span class="n">dirPath</span><span class="o">,</span> <span class="k">new</span> <span class="nc">SimpleFileVisitor</span><span class="o">&lt;</span><span class="nc">Path</span><span class="o">&gt;()</span> <span class="o">{</span>
             <span class="nd">@Override</span>
@@ -1725,7 +1684,7 @@ Then you can check the rendered output.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 25, 2021 <br />
+ Site last generated: May 27, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

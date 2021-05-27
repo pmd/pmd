@@ -1507,6 +1507,7 @@ However, <code class="language-plaintext highlighter-rouge">Object.clone()</code
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2639">#2639</a>: [core] PMD CLI output file is not created if directory or directories in path don’t exist</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3196">#3196</a>: [core] Deprecate ThreadSafeReportListener</li>
     </ul>
   </li>
   <li>doc
@@ -1571,6 +1572,19 @@ However, <code class="language-plaintext highlighter-rouge">Object.clone()</code
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="deprecated-api">Deprecated API</h4>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#doPMD(net.sourceforge.pmd.PMDConfiguration)"><code>PMD#doPMD</code></a> is deprecated.
+Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#runPMD(net.sourceforge.pmd.PMDConfiguration)"><code>PMD#runPMD</code></a> instead.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#run(java.lang.String[])"><code>PMD#run</code></a> is deprecated.
+Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#runPMD(java.lang.String...)"><code>PMD#runPMD</code></a> instead.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0-SNAPSHOT/net/sourceforge/pmd/ThreadSafeReportListener.html#"><code>ThreadSafeReportListener</code></a> and the methods to use them in <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0-SNAPSHOT/net/sourceforge/pmd/Report.html#"><code>Report</code></a>
+(<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0-SNAPSHOT/net/sourceforge/pmd/Report.html#addListener(net.sourceforge.pmd.ThreadSafeReportListener)"><code>addListener</code></a>,
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0-SNAPSHOT/net/sourceforge/pmd/Report.html#getListeners()"><code>getListeners</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0-SNAPSHOT/net/sourceforge/pmd/Report.html#addListeners(java.util.List)"><code>addListeners</code></a>)
+are deprecated. This functionality will be replaced by another TBD mechanism in PMD 7.</li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/3272">#3272</a>: [apex] correction for ApexUnitTestMethodShouldHaveIsTestAnnotation false positives - <a href="https://github.com/YodaDaCoda">William Brockhus</a></li>
@@ -1594,7 +1608,7 @@ However, <code class="language-plaintext highlighter-rouge">Object.clone()</code
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 25, 2021 <br />
+ Site last generated: May 27, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
