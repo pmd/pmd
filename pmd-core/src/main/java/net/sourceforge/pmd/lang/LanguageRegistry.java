@@ -18,11 +18,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Created by christoferdutz on 20.09.14.
+ * Provides access to the registered PMD languages. These are found
+ * from the classpath of the {@link ClassLoader} of this class.
  */
 public final class LanguageRegistry {
 
-    private static LanguageRegistry instance = new LanguageRegistry();
+    private static final LanguageRegistry INSTANCE = new LanguageRegistry();
 
     private final Map<String, Language> languagesByName;
     private final Map<String, Language> languagesByTerseName;
@@ -72,18 +73,36 @@ public final class LanguageRegistry {
      */
     @Deprecated
     public static LanguageRegistry getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
+    /**
+     * Returns a set of all the known languages. The ordering of the languages
+     * is by terse name.
+     */
     public static Set<Language> getLanguages() {
         return getInstance().languages;
     }
 
-    /** Gets a language from its full name ({@link Language#getName()}). */
+    /**
+     * Returns a language from its {@linkplain Language#getName() full name}
+     * (eg {@code "Java"}). This is case sensitive.
+     *
+     * @param languageName Language name
+     *
+     * @return A language, or null if the name is unknown
+     */
     public static Language getLanguage(String languageName) {
         return getInstance().languagesByName.get(languageName);
     }
 
+    /**
+     * Returns a "default language" known to the service loader. This
+     * is the Java language if available, otherwise an arbitrary one.
+     * If no languages are loaded, returns null.
+     *
+     * @return A language, or null if the name is unknown
+     */
     public static Language getDefaultLanguage() {
         Language defaultLanguage = getLanguage("Java");
         if (defaultLanguage == null) {
@@ -95,14 +114,27 @@ public final class LanguageRegistry {
         return defaultLanguage;
     }
 
+    /**
+     * Returns a language from its {@linkplain Language#getTerseName() terse name}
+     * (eg {@code "java"}). This is case sensitive.
+     *
+     * @param terseName Language terse name
+     *
+     * @return A language, or null if the name is unknown
+     */
     public static Language findLanguageByTerseName(String terseName) {
         return getInstance().languagesByTerseName.get(terseName);
     }
 
-    public static List<Language> findByExtension(String extension) {
+    /**
+     * Returns all languages that support the given extension.
+     *
+     * @param extensionWithoutDot A file extension (without '.' prefix)
+     */
+    public static List<Language> findByExtension(String extensionWithoutDot) {
         List<Language> languages = new ArrayList<>();
         for (Language language : getLanguages()) {
-            if (language.hasExtension(extension)) {
+            if (language.hasExtension(extensionWithoutDot)) {
                 languages.add(language);
             }
         }

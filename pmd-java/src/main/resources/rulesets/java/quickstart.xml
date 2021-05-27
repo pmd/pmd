@@ -147,6 +147,7 @@
     <!--         <property name="classes" value="org.sample.SampleInterface,org.sample2.SampleInterface" /> -->
     <!--     </properties> -->
     <!-- </rule> -->
+    <!-- <rule ref="category/java/design.xml/MutableStaticState" /> -->
     <!-- <rule ref="category/java/design.xml/NcssCount" /> -->
     <!-- <rule ref="category/java/design.xml/NPathComplexity" /> -->
     <!-- <rule ref="category/java/design.xml/SignatureDeclareThrowsException" /> -->
