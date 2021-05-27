@@ -7,6 +7,7 @@
     <test-code>
         <description>Apex Crypto hardcoded IV</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public Foo() {
@@ -75,6 +76,24 @@ public class Foo {
         Blob key =  Blob.valueOf('Key to be encrypted');
         Blob data = Blob.valueOf('Data to be encrypted');
         Blob encrypted = Crypto.encryptWithManagedIV('AES128', key, data);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Apex Crypto hardcoded IV in inner class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    class MyInnerClass {
+        public MyInnerClass() {
+            Blob exampleIv = Blob.valueOf('0000000000000000');
+            Blob key = Crypto.generateAesKey(128);
+            Blob data = Blob.valueOf('Data to be encrypted');
+            Blob encrypted = Crypto.encrypt('AES128', key, exampleIv, data);
+        }
     }
 }
         ]]></code>
