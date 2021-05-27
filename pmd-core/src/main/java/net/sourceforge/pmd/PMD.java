@@ -213,7 +213,7 @@ public class PMD {
     /**
      * This method is the main entry point for command line usage.
      *
-     * @param configuration the configure to use
+     * @param configuration the configuration to use
      *
      * @return number of violations found.
      *
