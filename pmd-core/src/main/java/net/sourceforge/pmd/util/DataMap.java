@@ -53,6 +53,11 @@ public final class DataMap<K> {
         return map == null ? null : (T) map.get(key);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T getOrDefault(DataKey<? extends K, ? extends T> key, T defaultValue) {
+        return map == null ? defaultValue : (T) map.getOrDefault(key, defaultValue);
+    }
+
     /**
      * Retrieve the value, or compute it if it is missing.
      *

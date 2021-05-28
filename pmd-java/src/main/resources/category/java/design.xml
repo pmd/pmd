@@ -871,7 +871,7 @@ public class Foo {
     <rule name="LawOfDemeter"
           language="java"
           since="5.0"
-          message="Potential violation of Law of Demeter"
+          message="Potential violation of the law of Demeter ({0})"
           class="net.sourceforge.pmd.lang.java.rule.design.LawOfDemeterRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#lawofdemeter">
         <description>

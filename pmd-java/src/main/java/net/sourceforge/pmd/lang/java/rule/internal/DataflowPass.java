@@ -167,9 +167,17 @@ public final class DataflowPass {
      */
     public static final class ReachingDefinitionSet {
 
+        private static final ReachingDefinitionSet UNKNOWN = new ReachingDefinitionSet();
+
         private final Set<AssignmentEntry> reaching;
         private final boolean isNotFullyKnown;
         private final boolean containsInitialFieldValue;
+
+        private ReachingDefinitionSet() {
+            this.reaching = Collections.emptySet();
+            this.containsInitialFieldValue = false;
+            this.isNotFullyKnown = true;
+        }
 
         ReachingDefinitionSet(Set<AssignmentEntry> reaching) {
             this.reaching = reaching;
@@ -244,8 +252,13 @@ public final class DataflowPass {
         }
 
 
-        public @Nullable ReachingDefinitionSet getReachingDefinitions(ASTNamedReferenceExpr expr) {
-            return expr.getUserMap().get(REACHING_DEFS);
+        /**
+         * Returns the reaching definition set for the given variable usage.
+         *
+         * @param expr A variable access
+         */
+        public @NonNull ReachingDefinitionSet getReachingDefinitions(ASTNamedReferenceExpr expr) {
+            return expr.getUserMap().getOrDefault(REACHING_DEFS, ReachingDefinitionSet.UNKNOWN);
         }
     }
 

@@ -17,6 +17,7 @@ public class Foo {
     <test-code>
         <description>Mixed local and foreign method calls</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 import java.util.*;
 public class Foo {
@@ -25,13 +26,14 @@ public class Foo {
         localMethod();
         this.localMethod();
         int localVariableC;
-        b.doC().doIt();
+        b.getC().doIt();
         int localVariableD;
     }
-    private void localMethod() {
-    }
+    private void localMethod() {}
     private int instanceVariableB;
 }
+class C { void doIt() {} }
+class Bar { C getC() {} }
         ]]></code>
     </test-code>
 
@@ -45,6 +47,8 @@ public class Foo {
         c.doIt();
     }
 }
+class C { void doIt() {} }
+class Bar { C getC() {} }
         ]]></code>
     </test-code>
 
@@ -57,6 +61,8 @@ public class Foo {
         b.getC().doIt();
     }
 }
+class C { void doIt() {} }
+class Bar { C getC() {} }
         ]]></code>
     </test-code>
 
@@ -70,6 +76,7 @@ public class Foo {
         c.doIt();
     }
 }
+class C { void doIt() {} }
         ]]></code>
     </test-code>
 
@@ -85,6 +92,7 @@ public class Foo {
         something = "no worries";
     }
 }
+class C { void doIt() {} }
         ]]></code>
     </test-code>
 
@@ -99,6 +107,7 @@ public class Foo {
         c.doIt(data);
     }
 }
+class C { void doIt() {} }
         ]]></code>
     </test-code>
 
@@ -106,6 +115,8 @@ public class Foo {
         <description>Simple Method call on local created object within nesting local scopes</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
 public class Foo {
     public void example(int c) {
         List<Integer> result = new ArrayList<Integer>();
@@ -144,10 +155,13 @@ public class Foo {
         d.doSomethingElse();
     }
 }
+class C { void doIt() {} }
+class D { void doSomethingElse() {} }
+class Bar { C getC() {} }
         ]]></code>
     </test-code>
 
-    <test-code>
+    <test-code regressionTest="false">
         <description>Static methods</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -172,17 +186,21 @@ public class Foo {
     <test-code>
         <description>Exclude iterator and list elements</description>
         <expected-problems>0</expected-problems>
-        <code>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class Foo {
     public void example() {
-        List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+        List<String> list = new ArrayList<String>();
         list.add("Tata");
-        Iterator&lt;String&gt; it = list.iterator();
+        Iterator<String> it = list.iterator();
         while (it.hasNext()) {
                 String s = it.next();
                 System.out.println(s);
         }
-        if (list != null &amp;&amp; !list.isEmpty()) {
+        if (list != null && !list.isEmpty()) {
             for (String s : list) {
                 if (!s.isEmpty()) {
                     System.out.println(s);
@@ -190,7 +208,7 @@ public class Foo {
             }
         }
 
-        List&lt;String&gt; anotherList = calcList();
+        List<String> anotherList = calcList();
         for (String s : anotherList) {
             if (!s.isEmpty()) {
                 System.out.println(s);
@@ -198,7 +216,7 @@ public class Foo {
         }
     }
 }
-        </code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -216,12 +234,21 @@ public class Test {
         return "A".equals(aString);              // < - - false positive
     }
 
+    Factory myFactory;
     // no violation, because the object is not used
     public Object create() {
         Object o = myFactory.create();
         return o;
     }
-
+}
+class Factory { Object create() { return new Object(); }}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with builder</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
     // no violation, should be an exception, as the builder pattern is used here
     public void toString() {
         StringBuilder buffer = new StringBuilder();
@@ -237,6 +264,7 @@ public class Test {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Test {
+    Factory myObjectCreator;
     // violation, because object is used
     public Object create2() {
         Object o = myObjectCreator.create();
@@ -244,20 +272,25 @@ public class Test {
         return o;
     }
 }
+class Factory { Object create() { return new Object(); }}
         ]]></code>
     </test-code>
 
-    <test-code>
+    <test-code regressionTest="false">
+        <!-- todo to me this is not a false positive -->
         <description>#1245 False Positive for Law of Demeter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
 public class Test {
+    Factory connectionFactory;
     public void bar() {
         // Create a Connection
         final Connection connection = connectionFactory.createConnection();
         connection.start();
     }
 }
+class Factory { Connection createConnection() { return new Connection(); }}
         ]]></code>
     </test-code>
 
@@ -274,6 +307,8 @@ public class Test {
         fooBuilder.withBar();
     }
 }
+class Builder {static Builder newBuilder() {}}
+class FooBuilder {static FooBuilder newBuilder() {}}
         ]]></code>
     </test-code>
 
@@ -285,9 +320,17 @@ public class Test {
     public void bar() {
         // Inner Builder pattern chained
         final Bar bar = Bar.newBuilder()
-            .withFoo("foo")
-            .build();
+                .withFoo("foo")
+                .build();
     }
+}
+
+class Bar {
+    static BarBuilder newBuilder() { }
+}
+class BarBuilder {
+    BarBuilder withFoo(String s) {}
+    Bar build() {}
 }
         ]]></code>
     </test-code>
@@ -331,7 +374,11 @@ public class Foo {
         <code><![CDATA[
 package pmdtests;
 
+import java.util.List;
+import java.util.concurrent.ForkJoinTask;
+
 class TaskManager {
+
     private final List<ForkJoinTask<Integer>> tasks;
 
     public void cancelTasks(ForkJoinTask<Integer> cancelTask) {
@@ -341,6 +388,10 @@ class TaskManager {
                 ((SearchNumberTask) task).writeCancelMessage(); // wrong violation: method chain calls
             }
         }
+    }
+
+    abstract static class SearchNumberTask extends ForkJoinTask<Integer> {
+        abstract void writeCancelMessage();
     }
 }
         ]]></code>
