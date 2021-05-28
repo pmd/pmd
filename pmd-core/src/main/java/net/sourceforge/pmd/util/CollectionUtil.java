@@ -645,9 +645,9 @@ public final class CollectionUtil {
      * merge them using the merge function, like {@link Map#merge(Object, Object, BiFunction)}.
      */
     public static <K, V> void mergeMaps(Map<K, V> result, Map<K, V> other, BinaryOperator<V> mergeFun) {
-        for (K var : other.keySet()) {
-            V otherInfo = other.get(var); // non-null
-            result.merge(var, otherInfo, mergeFun);
+        for (K otherKey : other.keySet()) {
+            V otherInfo = other.get(otherKey); // non-null
+            result.merge(otherKey, otherInfo, mergeFun);
         }
     }
 }
