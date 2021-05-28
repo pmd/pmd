@@ -99,6 +99,28 @@ public class CognitiveComplexityVisitor extends JavaParserVisitorAdapter {
 
         void callMethod(ASTMethodDeclaration calledMethod) {
             if (methodStack.contains(calledMethod)) {
+                // This means it's a recursive call.
+                // Note that we consider the entire stack and not just the top.
+                // This is an arbitrary decision that may cause FPs...
+                // Specifically it matters when anonymous classes are involved.
+                // void outer() {
+                //     Runnable r = new Runnable(){
+                //       public void run(){
+                //         outer();
+                //       }
+                //     };
+                //
+                //     r = () -> outer();
+                // }
+                //
+                // If we only consider the top of the stack, then within the anonymous class, `outer()`
+                // is not counted as a recursive call. This means the anonymous class
+                // has lower complexity than the lambda (because in the lambda the top
+                // of the stack is `outer`).
+                //
+                // TODO Arguably this could be improved by adding a complexity point
+                // for anonymous classes, because they're syntactically heavyweight.
+                // This would incentivize using lambdas.
                 fundamentalComplexity();
             }
         }
