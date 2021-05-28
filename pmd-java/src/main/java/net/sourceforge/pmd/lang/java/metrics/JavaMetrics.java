@@ -29,6 +29,8 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutVisitor;
+import net.sourceforge.pmd.lang.java.metrics.internal.CognitiveComplexityVisitor;
+import net.sourceforge.pmd.lang.java.metrics.internal.CognitiveComplexityVisitor.State;
 import net.sourceforge.pmd.lang.java.metrics.internal.CycloVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.NcssVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.NpathBaseVisitor;
@@ -121,6 +123,82 @@ public final class JavaMetrics {
     public static final Metric<ASTMethodOrConstructorDeclaration, Integer> CYCLO =
         Metric.of(JavaMetrics::computeCyclo, asMethodOrCtor(),
                   "Cyclomatic Complexity", "Cyclo");
+
+    /**
+     * Cognitive complexity is a measure of how difficult it is for humans
+     * to read and understand a method. Code that contains a break in the
+     * control flow is more complex, whereas the use of language shorthands
+     * doesn't increase the level of complexity. Nested control flows can
+     * make a method more difficult to understand, with each additional
+     * nesting of the control flow leading to an increase in cognitive
+     * complexity.
+     *
+     * <p>Information about Cognitive complexity can be found in the original paper here:
+     * <a href='https://www.sonarsource.com/docs/CognitiveComplexity.pdf'>CognitiveComplexity</a>
+     *
+     * <h3>Basic Idea</h3
+     * <ol>
+     * <li>Ignore structures that allow multiple statements to be readably shorthanded into one
+     * <li>Increment (add one) for each break in the linear flow of the code
+     * <li>Increment when flow-breaking structures are nested
+     * </ol>
+     *
+     * <h3>Increments</h3>
+     * There is an increment for each of the following:
+     * <ul>
+     * <li>`if`, `else if`, `else`, ternary operator
+     * <li>`switch`
+     * <li>`for`, `foreach`
+     * <li>`while`, `do while`
+     * <li>`catch`
+     * <li>`goto LABEL`, `break LABEL`, `continue LABEL`
+     * <li>sequences of binary logical operators
+     * <li>each method in a recursion cycle
+     * </ul>
+     *
+     * <h3>Nesting level</h3>
+     * The following structures increment the nesting level:
+     * <ul>
+     * <li>`if`, `else if`, `else`, ternary operator
+     * <li>`switch`
+     * <li>`for`, `foreach`
+     * <li>`while`, `do while`
+     * <li>`catch`
+     * <li>nested methods and method-like structures such as lambdas
+     * </ul>
+     *
+     * <h3>Nesting increments</h3>
+     * The following structures receive a nesting increment commensurate with their nested depth
+     * inside nested structures:
+     * <ul>
+     * <li>`if`, ternary operator
+     * <li>`switch`
+     * <li>`for`, `foreach`
+     * <li>`while`, `do while`
+     * <li>`catch`
+     * </ul>
+     *
+     * <h3>Code example</h3>
+     *
+     * <pre>{@code
+     * class Foo {
+     *   void myMethod () {
+     *     try {
+     *       if (condition1) { // +1
+     *         for (int i = 0; i < 10; i++) { // +2 (nesting=1)
+     *           while (condition2) { } // +3 (nesting=2)
+     *         }
+     *       }
+     *     } catch (ExcepType1 | ExcepType2 e) { // +1
+     *       if (condition2) { } // +2 (nesting=1)
+     *     }
+     *   } // Cognitive Complexity 9
+     * }
+     * }</pre>
+     */
+    public static final Metric<ASTMethodOrConstructorDeclaration, Integer> COGNITIVE_COMPLEXITY =
+        Metric.of(JavaMetrics::computeCognitive, asMethodOrCtor(),
+                  "Cognitive Complexity", "CognitiveComp");
 
     /**
      * This counts the number of other classes a given class or operation
@@ -381,6 +459,12 @@ public final class JavaMetrics {
 
     private static BigInteger computeNpath(JavaNode node, MetricOptions ignored) {
         return node.acceptVisitor(NpathBaseVisitor.INSTANCE, null);
+    }
+
+    private static int computeCognitive(JavaNode node, MetricOptions ignored) {
+        State state = new State();
+        node.acceptVisitor(CognitiveComplexityVisitor.INSTANCE, state);
+        return state.getComplexity();
     }
 
     private static int computeWmc(ASTAnyTypeDeclaration node, MetricOptions options) {

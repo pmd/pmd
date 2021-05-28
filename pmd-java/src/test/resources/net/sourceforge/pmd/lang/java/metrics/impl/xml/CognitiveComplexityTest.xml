@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>If statements have complexity 1</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 1.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n == 1) {
+                  return "one";
+                }
+
+                return "not one";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Nested if statements bump complexity level</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n > 0) {           // +1
+                  if (n == 1) {        // +2
+                    return "one";
+                  }
+
+                  return "positive";
+                }
+
+                return "negative or 0";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Nested else statements do not receive nesting increment (hybrid increment only)</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n > 0) {           // +1
+                  if (n == 1) {        // +2
+                    return "one";
+                  } else {             // +1
+                    return "positive";
+                  }
+                }
+
+                return "negative or 0";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+
+    <test-code>
+        <description>Nested else-if statements do not receive nesting increment (hybrid increment only)</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n > 0) {           // +1
+                  if (n == 1) {        // +2
+                    return "one";
+                  } else if (n == 0) {  // +1
+                    return "zero";
+                  }
+                }
+
+                return "negative or 0";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+
+    <test-code>
+        <description>else-if increases nesting level</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n > 0) {           // +1
+                   return "positive";
+                } else if (n < 0) {   // +1
+                    if (n < -10) {        // +2
+                        return "small";
+                    }
+                }
+
+                return "negative or 0";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>else increases nesting level</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n > 0) {           // +1
+                   return "positive";
+                } else {               // +1
+                    if (n < -10) {     // +2
+                        return "small";
+                    }
+                }
+
+                return "negative or 0";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Non nested if statements don't incur a penalty</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n > 0) {           // +1
+                  return "positive";
+                }
+
+                if (n == 0) {          // +1
+                  return "zero";
+                }
+
+                if (n < 0) {           // +1
+                  return "negative";
+                }
+
+                return "";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Else-if blocks count as non-nested</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n > 0) {           // +1
+                  return "positive";
+                } else if (n < 0) {    // +1
+                  return "negative";
+                } else {               // +1
+                  return "zero";
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>For loops increment nesting</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo() {
+                for (int i = 0; i < 10; i++) { // +1
+                  if (i == 3) {                // +2
+                    return "three";
+                  }
+                }
+
+                return "done";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Foreach loops increment nesting</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo() {
+                int[] myInts = new int[] {1, 2, 3};
+                for (Integer i : myInts) {         // +1
+                  if (i == 3) {                    // +2
+                    return "three";
+                  }
+                }
+
+                return "done";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Continue statements without label do not increase complexity</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo() {
+                int[] myInts = new int[] {1, 2, 3};
+                for (int i : myInts) {         // +1
+                  if (i == 3) {                // +2
+                    continue;                  // +1
+                  }
+                }
+
+                return "done";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Break statements without label do not increase complexity</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo() {
+                int[] myInts = new int[] {1, 2, 3};
+                for (Integer i : myInts) {      // +1
+                  if (i == 3) {                 // +2
+                    break;                      // +1
+                  }
+                }
+
+                return "done";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>While statements increase nesting</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo() {
+                int i = 1;
+                int n = 0;
+                while (n < 100) {  // +1
+                  i = i * n;
+                  if (i > 1000) {  // +2
+                    return "big";
+                  }
+                }
+
+                return "small";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Only the catch statement increases nesting</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo()' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public void foo() {
+                List<Integer> ints = new ArrayList<Integer>();
+                try {
+                  Integer x = ints.get(10);
+                  if (x > 0) {                           // +1
+                    return;
+                  }
+                } catch (IndexOutOfBoundsException e) {  // +1
+                  if (ints.size() > 0) {                 // +2
+                    return;
+                  }
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Do-while loops cause nesting</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo()' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public void foo() {
+                int n = 0;
+                do {                                 // +1
+                  if (n == 3) {                      // +2
+                    System.out.println("n is 3");
+                  } else {                           // +1
+                    System.out.println("n is not 3");
+                  }
+                  n++;
+                } while (n < 100);
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Ternary operators cause nesting</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public int foo(int n) {
+                return n < 0 ?          // +1
+                    -1 : n > 0 ?        // +2
+                    1 : 0;
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Boolean operators</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>6</expected-problems>
+        <expected-messages>
+            <message>'Foo#a(Integer)' has value 1.</message>
+            <message>'Foo#b(Integer)' has value 1.</message>
+            <message>'Foo#c(Integer)' has value 1.</message>
+            <message>'Foo#d(Boolean, Boolean, Boolean, Boolean, Boolean, Boolean)' has value 3.</message>
+            <message>'Foo#e(Boolean, Boolean, Boolean)' has value 2.</message>
+            <message>'Foo#f()' has value 2.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public boolean a(Integer n) {
+                return n > 0 && n > 1;          // +1
+              }
+
+              public boolean b(Integer n) {
+                return n > 0 && n > 1 && n > 2; // +1
+              }
+
+              public boolean c(Integer n) {
+                return n > 0 || n < 0;          // +1
+              }
+
+              public boolean d(Boolean a, Boolean b, Boolean c, Boolean d, Boolean e, Boolean f) {
+                return (a
+                    && b && c)                 // +1
+                    || (d || e)                // +1
+                    && f;                      // +1
+              }
+
+              public boolean e(Boolean a, Boolean b, Boolean c) {
+                return a
+                    &&                        // +1
+                    !(b && c);                // +1
+              }
+
+              public boolean f() {
+                Boolean a = true && false;    // +1
+                return a && true;             // +1
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Recursion bumps complexity value</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(Integer)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public int foo(Integer n) {
+                if (n == 0 || n == 1) { // +2
+                  return 1;
+                }
+
+                return n * foo(n - 1); // +1
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Recursion bumps complexity value even when called inside of nested method</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 2.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public void foo(int n) {
+                Runnable r = new Runnable() {
+                  @Override
+                  public void run() {
+                    foo(n - 1);  // +1 for recursion
+                  }
+                };
+                if (n > 0) {  // +1
+                  r.run();
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Recursion bumps complexity value after nested method has been called</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 2.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public void foo(int n) {
+                new Runnable() {
+                  @Override
+                  public void run() {
+                  }
+                }.run();
+                if (n > 0) { // +1
+                  foo(n - 1); // +1, current method should be reset to `foo`
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Call to overridden method is not counted as recursion</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 1.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public String foo(int n) {
+                if (n == 1) {
+                  return "one";
+                }
+
+                return foo(n, m);
+              }
+
+              public String foo(int n, int m) {
+                return "foo";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>If stmt counts condition too</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(Integer)' has value 2.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public int foo(Integer n) {
+                if (                    // +1
+                    n == 0 || n == 1    // +1
+                ) {
+                  return 1;
+                }
+                return 0;
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Switch statements only gain 1 complexity regardless of the number of cases</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public void foo(int n) {
+                switch(n) {                       // +1
+                  case 1:
+                    System.out.println("when block 1");
+                    break;
+                  case 2:
+                  case 3:
+                  case 4:
+                  case 5:
+                    if (n <= 3) {                   // +2
+                      System.out.println("n <= 3");
+                    }
+
+                    System.out.println("when block 2");
+                    break;
+                  default:
+                    System.out.println("default");
+                    break;
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Anonymous class increase nesting level without structural increment</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 2.</message>
+            <message>'Foo$1#run()' has value 1.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public void foo(int n) {
+                Runnable r = new Runnable() {  // +0 (but nesting level is now 1)
+                  @Override
+                  public void run() {
+                    if ( n > 1) {              // +2 (nesting=1)
+
+                    }
+                  }
+                }.run(); // not a recursive call
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Lambdas increase nesting level without structural increment</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 2.</message>
+            <message>'Foo#lambda$foo$0' has value 2.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public void foo(int n) {
+                Runnable r = () -> { // +0 (but nesting level is now 1)
+                  if ( n > 1) {      // +2 (nesting=1)
+
+                  }
+                };
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+</test-data>

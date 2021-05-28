@@ -503,7 +503,7 @@ sb.append(System.getProperty("java.io.tmpdir"));
     <rule name="InsufficientStringBufferDeclaration"
           language="java"
           since="3.6"
-          message="StringBuffer constructor is initialized with size {0}, but has at least {1} characters appended."
+          message="{0} has been initialized with size {1}, but has at least {2} characters appended."
           class="net.sourceforge.pmd.lang.java.rule.performance.InsufficientStringBufferDeclarationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#insufficientstringbufferdeclaration">
         <description>
@@ -516,10 +516,10 @@ is assumed if the length of the constructor can not be determined.
         <priority>3</priority>
         <example>
 <![CDATA[
-StringBuffer bad = new StringBuffer();
+StringBuilder bad = new StringBuilder();
 bad.append("This is a long string that will exceed the default 16 characters");
 
-StringBuffer good = new StringBuffer(41);
+StringBuilder good = new StringBuilder(41);
 good.append("This is a long string, which is pre-sized");
 ]]>
         </example>
