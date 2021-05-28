@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.metrics.internal;
 
-import java.util.Iterator;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
@@ -15,19 +15,20 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
-import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 
 
 /**
@@ -50,7 +51,17 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
         private int nestingLevel = 0;
 
         private BooleanOp currentBooleanOperation = null;
-        private Stack<ASTMethodDeclaration> methodStack = new Stack<>();
+        private final Deque<ASTMethodDeclaration> methodStack;
+
+        public State(JavaNode topNode) {
+            this.methodStack = new ArrayDeque<>();
+            // push enclosing methods on the stack
+            // so that the stack is independent of where we started the visitor;
+            topNode.ancestors()
+                   .filterIs(ASTMethodDeclaration.class)
+                   .forEach(methodStack::addLast);
+
+        }
 
         public int getComplexity() {
             return complexity;
@@ -97,8 +108,9 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
             methodStack.pop();
         }
 
-        void callMethod(ASTMethodDeclaration calledMethod) {
-            if (methodStack.contains(calledMethod)) {
+        void callMethod(JMethodSymbol calledMethod) {
+            ASTMethodDeclaration methodNode = calledMethod.tryGetNode();
+            if (methodNode != null && methodStack.contains(methodNode)) {
                 // This means it's a recursive call.
                 // Note that we consider the entire stack and not just the top.
                 // This is an arbitrary decision that may cause FPs...
@@ -124,11 +136,20 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
                 fundamentalComplexity();
             }
         }
+
+        @Override
+        public String toString() {
+            return "State{" +
+                "complexity=" + complexity +
+                ", nestingLevel=" + nestingLevel +
+                ", currentBooleanOperation=" + currentBooleanOperation +
+                '}';
+        }
     }
 
     @Override
     public Void visit(ASTIfStatement node, State state) {
-        boolean isNotElseIf = !(node.getNthParent(2) instanceof ASTIfStatement);
+        boolean isNotElseIf = !(node.getParent() instanceof ASTIfStatement);
 
         node.getCondition().acceptVisitor(this, state);
 
@@ -150,16 +171,6 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     }
 
     @Override
-    public Void visit(ASTForStatement node, State state) {
-
-        state.structuralComplexity();
-        super.visit(node, state);
-        state.decreaseNestingLevel();
-
-        return null;
-    }
-
-    @Override
     public Void visit(ASTContinueStatement node, State state) {
 
         // hack to detect if there is a label
@@ -168,7 +179,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
         if (hasLabel) {
             state.fundamentalComplexity();
         }
-        return super.visit(node, state);
+        return visitChildren(node, state);
     }
 
     @Override
@@ -181,47 +192,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
             state.fundamentalComplexity();
         }
 
-        return super.visit(node, state);
-    }
-
-    @Override
-    public Void visit(ASTWhileStatement node, State state) {
-
-        state.structuralComplexity();
-        super.visit(node, state);
-        state.decreaseNestingLevel();
-
-        return null;
-    }
-
-    @Override
-    public Void visit(ASTCatchClause node, State state) {
-
-        state.structuralComplexity();
-        super.visit(node, state);
-        state.decreaseNestingLevel();
-
-        return null;
-    }
-
-    @Override
-    public Void visit(ASTDoStatement node, State state) {
-
-        state.structuralComplexity();
-        super.visit(node, state);
-        state.decreaseNestingLevel();
-
-        return null;
-    }
-
-    @Override
-    public Void visit(ASTConditionalExpression node, State state) {
-
-        state.structuralComplexity();
-        super.visit(node, state);
-        state.decreaseNestingLevel();
-
-        return null;
+        return visitChildren(node, state);
     }
 
     @Override
@@ -234,7 +205,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
             state.booleanOperation(BooleanOp.OR);
             break;
         }
-        return super.visit(node, state);
+        return visitChildren(node, state);
     }
 
     @Override
@@ -244,7 +215,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
             state.booleanOperation(null);
         }
 
-        return super.visit(node, state);
+        return visitChildren(node, state);
     }
 
     @Override
@@ -265,7 +236,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     public Void visit(ASTMethodDeclaration node, State state) {
 
         state.pushMethod(node);
-        super.visit(node, state);
+        visitChildren(node, state);
         state.popMethod();
 
         return null;
@@ -274,49 +245,71 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     @Override
     public Void visit(ASTMethodCall node, State state) {
 
-        // check if this primary prefix is a method call
-        Iterator<? extends JavaNode> it = node.children().iterator();
-        if (it.hasNext()) {
-            final JavaNode child = it.next();
-            if (child instanceof ASTName) {
-                ASTName name = (ASTName) child;
-                if (name.getNameDeclaration() instanceof MethodNameDeclaration) {
-                    ASTMethodDeclaration parent = (ASTMethodDeclaration) name.getNameDeclaration().getNode().getParent();
-                    state.callMethod(parent);
-                }
-            }
+        JExecutableSymbol calledSymbol = node.getOverloadSelectionInfo().getMethodType().getSymbol();
+        if (calledSymbol instanceof JMethodSymbol) {
+            state.callMethod((JMethodSymbol) calledSymbol);
         }
+        return visitChildren(node, state);
+    }
 
-        return super.visit(node, state);
+    @Override
+    public Void visit(ASTForStatement node, State state) {
+        return structural(node, state);
+    }
+
+    @Override
+    public Void visit(ASTForeachStatement node, State state) {
+        return structural(node, state);
     }
 
     @Override
     public Void visit(ASTSwitchStatement node, State state) {
-
-        state.structuralComplexity();
-        super.visit(node, state);
-        state.decreaseNestingLevel();
-
-        return null;
+        return structural(node, state);
     }
 
     @Override
     public Void visit(ASTLambdaExpression node, State state) {
-
-        state.increaseNestingLevel();
-        super.visit(node, state);
-        state.decreaseNestingLevel();
-
-        return null;
+        return nonStructural(node, state);
     }
 
     @Override
     public Void visit(ASTClassOrInterfaceBody node, State state) {
+        return nonStructural(node, state);
+    }
 
+
+    @Override
+    public Void visit(ASTWhileStatement node, State state) {
+        return structural(node, state);
+    }
+
+    @Override
+    public Void visit(ASTCatchClause node, State state) {
+        return structural(node, state);
+    }
+
+    @Override
+    public Void visit(ASTDoStatement node, State state) {
+        return structural(node, state);
+    }
+
+    @Override
+    public Void visit(ASTConditionalExpression node, State state) {
+        return structural(node, state);
+    }
+
+
+    private Void nonStructural(JavaNode node, State state) {
         state.increaseNestingLevel();
-        super.visit(node, state);
+        visitChildren(node, state);
         state.decreaseNestingLevel();
+        return null;
+    }
 
+    private Void structural(JavaNode node, State state) {
+        state.structuralComplexity();
+        visitChildren(node, state);
+        state.decreaseNestingLevel();
         return null;
     }
 }

@@ -5,7 +5,6 @@
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description>If statements have complexity 1</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 1.</message>
@@ -27,7 +26,6 @@
 
     <test-code>
         <description>Nested if statements bump complexity level</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 3.</message>
@@ -53,7 +51,6 @@
 
     <test-code>
         <description>Nested else statements do not receive nesting increment (hybrid increment only)</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 4.</message>
@@ -80,7 +77,6 @@
 
     <test-code>
         <description>Nested else-if statements do not receive nesting increment (hybrid increment only)</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 4.</message>
@@ -107,7 +103,6 @@
 
     <test-code>
         <description>else-if increases nesting level</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 4.</message>
@@ -133,7 +128,6 @@
 
     <test-code>
         <description>else increases nesting level</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 4.</message>
@@ -159,7 +153,6 @@
 
     <test-code>
         <description>Non nested if statements don't incur a penalty</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 3.</message>
@@ -189,7 +182,6 @@
 
     <test-code>
         <description>Else-if blocks count as non-nested</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 3.</message>
@@ -213,7 +205,6 @@
 
     <test-code>
         <description>For loops increment nesting</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo()' has value 3.</message>
@@ -237,7 +228,6 @@
 
     <test-code>
         <description>Foreach loops increment nesting</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo()' has value 3.</message>
@@ -262,7 +252,6 @@
 
     <test-code>
         <description>Continue statements without label do not increase complexity</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo()' has value 3.</message>
@@ -287,7 +276,6 @@
 
     <test-code>
         <description>Break statements without label do not increase complexity</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo()' has value 3.</message>
@@ -312,7 +300,6 @@
 
     <test-code>
         <description>While statements increase nesting</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo()' has value 3.</message>
@@ -339,16 +326,16 @@
 
     <test-code>
         <description>Only the catch statement increases nesting</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo()' has value 4.</message>
         </expected-messages>
         <code>
             <![CDATA[
+            import java.util.ArrayList;
             public class Foo {
               public void foo() {
-                List<Integer> ints = new ArrayList<Integer>();
+                ArrayList<Integer> ints = new ArrayList<Integer>();
                 try {
                   Integer x = ints.get(10);
                   if (x > 0) {                           // +1
@@ -367,7 +354,6 @@
 
     <test-code>
         <description>Do-while loops cause nesting</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo()' has value 4.</message>
@@ -393,7 +379,6 @@
 
     <test-code>
         <description>Ternary operators cause nesting</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 3.</message>
@@ -413,7 +398,6 @@
 
     <test-code>
         <description>Boolean operators</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>6</expected-problems>
         <expected-messages>
             <message>'Foo#a(Integer)' has value 1.</message>
@@ -462,7 +446,6 @@
 
     <test-code>
         <description>Recursion bumps complexity value</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(Integer)' has value 3.</message>
@@ -484,10 +467,10 @@
 
     <test-code>
         <description>Recursion bumps complexity value even when called inside of nested method</description>
-        <rule-property name="reportLevel">1</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 2.</message>
+            <message>'Foo$1#run()' has value 1.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -510,10 +493,10 @@
 
     <test-code>
         <description>Recursion bumps complexity value after nested method has been called</description>
-        <rule-property name="reportLevel">1</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 2.</message>
+            <message>'Foo$1#run()' has value 0.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -534,11 +517,11 @@
     </test-code>
 
     <test-code>
-        <description>Call to overridden method is not counted as recursion</description>
-        <rule-property name="reportLevel">1</rule-property>
-        <expected-problems>1</expected-problems>
+        <description>Call to overloaded method is not counted as recursion</description>
+        <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 1.</message>
+            <message>'Foo#foo(int, int)' has value 0.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -583,7 +566,6 @@
 
     <test-code>
         <description>Switch statements only gain 1 complexity regardless of the number of cases</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 3.</message>
@@ -618,7 +600,6 @@
 
     <test-code>
         <description>Anonymous class increase nesting level without structural increment</description>
-        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 2.</message>
@@ -644,11 +625,9 @@
 
     <test-code>
         <description>Lambdas increase nesting level without structural increment</description>
-        <rule-property name="reportLevel">1</rule-property>
-        <expected-problems>2</expected-problems>
+        <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 2.</message>
-            <message>'Foo#lambda$foo$0' has value 2.</message>
         </expected-messages>
         <code>
             <![CDATA[

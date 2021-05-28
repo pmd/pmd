@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
  */
 public class CognitiveComplexityTestRule extends JavaIntMetricTestRule {
 
-    protected CognitiveComplexityTestRule() {
+    public CognitiveComplexityTestRule() {
         super(JavaMetrics.COGNITIVE_COMPLEXITY);
     }
 }

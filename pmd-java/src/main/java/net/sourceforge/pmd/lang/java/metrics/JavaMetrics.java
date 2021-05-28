@@ -462,7 +462,7 @@ public final class JavaMetrics {
     }
 
     private static int computeCognitive(JavaNode node, MetricOptions ignored) {
-        State state = new State();
+        State state = new State(node);
         node.acceptVisitor(CognitiveComplexityVisitor.INSTANCE, state);
         return state.getComplexity();
     }
