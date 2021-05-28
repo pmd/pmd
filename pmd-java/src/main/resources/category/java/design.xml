@@ -439,7 +439,7 @@ public class Foo {
         since="6.35.0"
         class="net.sourceforge.pmd.lang.java.rule.design.CognitiveComplexityRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#cognitivecomplexity">
-        <description>
+        <description><![CDATA[
             Methods that are highly complex are difficult to read and more costly to maintain. If you include too much decisional
             logic within a single method, you make its behavior hard to understand and more difficult to modify.
 
@@ -453,7 +453,7 @@ public class Foo {
 
             By default, this rule reports methods with a complexity of 15 or more. Reported methods should be broken down into less
             complex components.
-        </description>
+        ]]></description>
         <priority>3</priority>
         <example>
             <![CDATA[
