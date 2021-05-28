@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,21 +48,19 @@ public class PMDCoverageTest {
      * @param commandLine
      */
     private void runPmd(String commandLine) {
-        String[] args;
-        args = commandLine.split("\\s");
+        String[] args = commandLine.split("\\s");
 
         try {
             File f = folder.newFile();
-            int n = args.length;
-            String[] a = new String[n + 2 + 2];
-            System.arraycopy(args, 0, a, 0, n);
-            a[n] = "-reportfile";
-            a[n + 1] = f.getAbsolutePath();
-            a[n + 2] = "-threads";
-            a[n + 3] = String.valueOf(Runtime.getRuntime().availableProcessors());
-            args = a;
+            args = ArrayUtils.addAll(
+                args,
+                "-reportfile",
+                f.getAbsolutePath(),
+                "-threads",
+                String.valueOf(Runtime.getRuntime().availableProcessors())
+            );
 
-            PMD.run(args);
+            PMD.runPmd(args);
 
             assertEquals("Nothing should be output to stdout", 0, output.getLog().length());
 

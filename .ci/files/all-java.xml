@@ -31,6 +31,7 @@
     <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation"/>
     <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation"/>
     <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation"/>
+    <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" />
     <rule ref="category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage"/>
     <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts"/>
     <rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert"/>
@@ -40,7 +41,7 @@
     <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray"/>
     <rule ref="category/java/bestpractices.xml/MissingOverride"/>
     <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine"/>
-    <!-- <rule ref="category/java/bestpractices.xml/PreserveStackTrace"/> -->
+    <rule ref="category/java/bestpractices.xml/PreserveStackTrace"/>
     <rule ref="category/java/bestpractices.xml/ReplaceEnumerationWithIterator"/>
     <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap"/>
     <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList"/>
@@ -144,6 +145,7 @@
     <!-- <rule ref="category/java/design.xml/LawOfDemeter"/> -->
     <!-- <rule ref="category/java/design.xml/LogicInversion"/> -->
     <!-- <rule ref="category/java/design.xml/LoosePackageCoupling"/> -->
+    <rule ref="category/java/design.xml/MutableStaticState" />
     <rule ref="category/java/design.xml/NPathComplexity"/>
     <rule ref="category/java/design.xml/NcssCount"/>
     <!-- <rule ref="category/java/design.xml/SignatureDeclareThrowsException"/> -->
@@ -298,7 +300,7 @@
     <!-- <rule ref="category/java/performance.xml/InsufficientStringBufferDeclaration"/> -->
     <rule ref="category/java/performance.xml/IntegerInstantiation"/>
     <rule ref="category/java/performance.xml/LongInstantiation"/>
-    <!-- <rule ref="category/java/performance.xml/OptimizableToArrayCall"/> -->
+    <rule ref="category/java/performance.xml/OptimizableToArrayCall"/>
     <rule ref="category/java/performance.xml/RedundantFieldInitializer"/>
     <rule ref="category/java/performance.xml/ShortInstantiation"/>
     <rule ref="category/java/performance.xml/SimplifyStartsWith"/>

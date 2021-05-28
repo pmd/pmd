@@ -503,7 +503,7 @@ sb.append(System.getProperty("java.io.tmpdir"));
     <rule name="InsufficientStringBufferDeclaration"
           language="java"
           since="3.6"
-          message="StringBuffer constructor is initialized with size {0}, but has at least {1} characters appended."
+          message="{0} has been initialized with size {1}, but has at least {2} characters appended."
           class="net.sourceforge.pmd.lang.java.rule.performance.InsufficientStringBufferDeclarationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#insufficientstringbufferdeclaration">
         <description>
@@ -516,10 +516,10 @@ is assumed if the length of the constructor can not be determined.
         <priority>3</priority>
         <example>
 <![CDATA[
-StringBuffer bad = new StringBuffer();
+StringBuilder bad = new StringBuilder();
 bad.append("This is a long string that will exceed the default 16 characters");
 
-StringBuffer good = new StringBuffer(41);
+StringBuilder good = new StringBuilder(41);
 good.append("This is a long string, which is pre-sized");
 ]]>
         </example>
@@ -588,7 +588,7 @@ public class Foo {
     <rule name="OptimizableToArrayCall"
           language="java"
           since="1.8"
-	  minimumLanguageVersion="1.6"
+          minimumLanguageVersion="1.6"
           message="This call to Collection.toArray() may be optimizable"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#optimizabletoarraycall">
@@ -610,13 +610,8 @@ is faster, but returns only an array of type `Object[]`.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
-[PrimaryPrefix/Name[ends-with(@Image, 'toArray')]]
-[
-PrimarySuffix/Arguments/ArgumentList/Expression
- /PrimaryExpression/PrimaryPrefix/AllocationExpression
- /ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix[not(Literal[@Image='0'])]
-]
+//MethodCall[pmd-java:matchesSig("java.util.Collection#toArray(_)")]
+    [ArgumentList/ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr[not(NumericLiteral[@Image="0"])]]
 ]]>
                 </value>
             </property>

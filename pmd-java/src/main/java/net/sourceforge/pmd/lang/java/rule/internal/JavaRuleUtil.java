@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -70,6 +71,7 @@ import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
+import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -190,6 +192,13 @@ public final class JavaRuleUtil {
      */
     public static @Nullable ASTExpression getOtherOperandIfInInfixExpr(@Nullable JavaNode e) {
         if (e != null && e.getParent() instanceof ASTInfixExpression) {
+            return (ASTExpression) e.getParent().getChild(1 - e.getIndexInParent());
+        }
+        return null;
+    }
+
+    public static @Nullable ASTExpression getOtherOperandIfInAssignmentExpr(@Nullable JavaNode e) {
+        if (e != null && e.getParent() instanceof ASTAssignmentExpression) {
             return (ASTExpression) e.getParent().getChild(1 - e.getIndexInParent());
         }
         return null;
@@ -908,6 +917,28 @@ public final class JavaRuleUtil {
      */
     private static boolean isPure(ASTMethodCall call) {
         return isGetterCall(call) || KNOWN_PURE_METHODS.anyMatch(call);
+    }
+
+    /**
+     * Returns a node stream of enclosing expressions in the same call chain.
+     * For instance in {@code a.b().c().d()}, called on {@code a}, this will
+     * yield {@code a.b()}, and {@code a.b().c()}.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static NodeStream<QualifiableExpression> followingCallChain(ASTExpression expr) {
+        return (NodeStream) expr.ancestors().takeWhile(it -> it instanceof QualifiableExpression);
+    }
+
+    public static ASTExpression peelCasts(@Nullable ASTExpression expr) {
+        while (expr instanceof ASTCastExpression) {
+            expr = ((ASTCastExpression) expr).getOperand();
+        }
+        return expr;
+    }
+
+    public static @Nullable ASTVariableDeclaratorId getReferencedNode(ASTNamedReferenceExpr expr) {
+        JVariableSymbol referencedSym = expr.getReferencedSym();
+        return referencedSym == null ? null : referencedSym.tryGetNode();
     }
 
     /**

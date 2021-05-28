@@ -683,11 +683,6 @@
                 <version>10.2</version>
             </dependency>
             <dependency>
-                <groupId>org.mozilla</groupId>
-                <artifactId>rhino</artifactId>
-                <version>1.7.7.2</version>
-            </dependency>
-            <dependency>
                 <groupId>net.java.dev.javacc</groupId>
                 <artifactId>javacc</artifactId>
                 <version>${javacc.version}</version>

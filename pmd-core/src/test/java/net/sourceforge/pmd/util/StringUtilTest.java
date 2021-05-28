@@ -81,4 +81,12 @@ public class StringUtilTest {
         assertThat(StringUtil.removeSurrounding("qq", 'q'), equalTo(""));
         assertThat(StringUtil.removeSurrounding("qqq", 'q'), equalTo("q"));
     }
+
+    @Test
+    public void testElide() {
+        assertThat(StringUtil.elide("abc", 2, ""), equalTo("ab"));
+        assertThat(StringUtil.elide("abc", 2, "."), equalTo("a."));
+        assertThat(StringUtil.elide("abc", 2, ".."), equalTo(".."));
+        assertThat(StringUtil.elide("abc", 3, ".."), equalTo("abc"));
+    }
 }

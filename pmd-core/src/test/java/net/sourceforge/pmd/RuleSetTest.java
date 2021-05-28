@@ -6,6 +6,11 @@ package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -492,7 +497,7 @@ public class RuleSetTest {
                 .addRule(new MockRule() {
                     @Override
                     public void apply(Node nodes, RuleContext ctx) {
-                        throw new RuntimeException("Test exception while applying rule");
+                        throw new IllegalStateException("Test exception while applying rule");
                     }
                 })
                 .build();
@@ -504,10 +509,11 @@ public class RuleSetTest {
         ruleset.apply(makeCompilationUnits(), context);
 
         List<ProcessingError> errors = context.getReport().getProcessingErrors();
-        assertTrue("Report should have processing errors", !errors.isEmpty());
-        assertEquals("Errors expected", 1, errors.size());
-        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
-        assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
+        assertThat(errors, hasSize(1));
+        ProcessingError error = errors.get(0);
+        assertThat(error.getMsg(), containsString("java.lang.IllegalStateException: Test exception while applying rule\n"));
+        assertThat(error.getMsg(), containsString("Rule applied on node=Foo"));
+        assertThat(error.getError().getCause(), instanceOf(IllegalStateException.class));
     }
 
     @Test(expected = RuntimeException.class)
@@ -533,7 +539,7 @@ public class RuleSetTest {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
             @Override
             public void apply(Node target, RuleContext ctx) {
-                throw new RuntimeException("Test exception while applying rule");
+                throw new IllegalStateException("Test exception while applying rule");
             }
         }).addRule(new MockRule() {
             @Override
@@ -549,16 +555,14 @@ public class RuleSetTest {
         ruleset.apply(makeCompilationUnits(), context);
 
         List<ProcessingError> errors = context.getReport().getProcessingErrors();
-        assertFalse("Report should have processing errors", errors.isEmpty());
-        assertEquals("Errors expected", 1, errors.size());
-        ProcessingError processingError = errors.get(0);
-        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", processingError.getMsg());
-        assertTrue("Should be a RuntimeException", processingError.getError() instanceof RuntimeException);
-        assertEquals("Wrong filename in processing error",
-                "net.sourceforge.pmd.RuleSetTest/ruleExceptionShouldBeReported.java",
-                FilenameUtils.normalize(processingError.getFile(), true));
+        assertThat(errors, hasSize(1));
+        ProcessingError error = errors.get(0);
+        assertThat(error.getMsg(), containsString("java.lang.IllegalStateException: Test exception while applying rule\n"));
+        assertThat(error.getMsg(), containsString("Rule applied on node=Foo"));
+        assertThat(error.getError().getCause(), instanceOf(IllegalStateException.class));
+        assertThat(FilenameUtils.normalize(error.getFile(), true), equalTo("net.sourceforge.pmd.RuleSetTest/ruleExceptionShouldBeReported.java"));
 
-        assertEquals("There should be a violation", 1, context.getReport().getViolations().size());
+        assertThat(context.getReport().getViolations(), hasSize(1));
     }
 
     @Test
@@ -572,7 +576,7 @@ public class RuleSetTest {
 
             @Override
             public void apply(Node target, RuleContext ctx) {
-                throw new RuntimeException("Test exception while applying rule");
+                throw new UnsupportedOperationException("Test exception while applying rule");
             }
         }).addRule(new MockRule() {
 
@@ -595,11 +599,13 @@ public class RuleSetTest {
         rulesets.apply(makeCompilationUnits(), context);
 
         List<ProcessingError> errors = context.getReport().getProcessingErrors();
-        assertEquals("Errors expected", 1, errors.size());
-        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
-        assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
+        assertThat(errors, hasSize(1));
+        ProcessingError error = errors.get(0);
+        assertThat(error.getMsg(), containsString("java.lang.UnsupportedOperationException: Test exception while applying rule\n"));
+        assertThat(error.getMsg(), containsString("Rule applied on node=Foo"));
+        assertThat(error.getError().getCause(), instanceOf(UnsupportedOperationException.class));
 
-        assertEquals("There should be a violation", 1, context.getReport().getViolations().size());
+        assertThat(context.getReport().getViolations(), hasSize(1));
     }
 
 
