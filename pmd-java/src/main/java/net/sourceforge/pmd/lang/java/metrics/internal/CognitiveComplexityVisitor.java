@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
@@ -42,7 +43,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     /** Instance. */
     public static final CognitiveComplexityVisitor INSTANCE = new CognitiveComplexityVisitor();
 
-    public enum BooleanOp {AND, OR}
+    public enum BooleanOp { AND, OR }
 
     public static class State {
 
@@ -139,11 +140,9 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
 
         @Override
         public String toString() {
-            return "State{" +
-                "complexity=" + complexity +
-                ", nestingLevel=" + nestingLevel +
-                ", currentBooleanOperation=" + currentBooleanOperation +
-                '}';
+            return "State{complexity=" + complexity
+                + ", nestingLevel=" + nestingLevel
+                + ", currentBooleanOperation=" + currentBooleanOperation + '}';
         }
     }
 
@@ -197,13 +196,11 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
 
     @Override
     public Void visit(ASTInfixExpression node, State state) {
-        switch (node.getOperator()) {
-        case CONDITIONAL_AND:
+        BinaryOp op = node.getOperator();
+        if (op == BinaryOp.CONDITIONAL_AND) {
             state.booleanOperation(BooleanOp.AND);
-            break;
-        case CONDITIONAL_OR:
+        } else if (op == BinaryOp.CONDITIONAL_OR) {
             state.booleanOperation(BooleanOp.OR);
-            break;
         }
         return visitChildren(node, state);
     }
