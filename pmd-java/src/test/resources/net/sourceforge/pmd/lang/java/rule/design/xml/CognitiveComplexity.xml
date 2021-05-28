@@ -9,43 +9,58 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'overriddenSymbolFrom(ClassJavaType)' has a cognitive complexity of 19, current threshold is 1</message>
+            <message>The method 'overriddenSymbolFrom(JavaSymbol)' has a cognitive complexity of 19, current threshold is 1</message>
         </expected-messages>
-        <code>
-            <![CDATA[
-            public class Foo {
-              @Nullable
-              private MethodJavaSymbol overriddenSymbolFrom(ClassJavaType classType) {
-                if (classType.isUnknown()) { // +1
-                  return Symbols.unknownMethodSymbol;
-                }
-                boolean unknownFound = false;
-                List<JavaSymbol> symbols = classType.getSymbol().members().lookup(name);
-                for (JavaSymbol overrideSymbol : symbols) { // +1
-                  if (overrideSymbol.isKind(JavaSymbol.MTH) // +2 (nesting = 1)
-                      && !overrideSymbol.isStatic()) { // +1
-                    MethodJavaSymbol methodJavaSymbol = (MethodJavaSymbol)overrideSymbol;
-                    if (canOverride(methodJavaSymbol)) { // +3 (nesting = 2)
-                      Boolean overriding = checkOverridingParameters(methodJavaSymbol,
-                          classType);
-                      if (overriding == null) { // +4 (nesting = 3)
+        <code><![CDATA[import java.util.List;
+
+public class Foo {
+
+    private JavaSymbol overriddenSymbolFrom(JavaSymbol classType) {
+        if (classType.isUnknown()) { // +1
+            return null;
+        }
+        boolean unknownFound = false;
+        List<JavaSymbol> symbols = classType.members();
+        for (JavaSymbol overrideSymbol : symbols) { // +1
+            if (overrideSymbol.isMethod() // +2 (nesting = 1)
+                && !overrideSymbol.isStatic()) { // +1
+
+                if (canOverride(overrideSymbol)) { // +3 (nesting = 2)
+                    Boolean overriding = checkOverridingParameters(overrideSymbol, classType);
+                    if (overriding == null) { // +4 (nesting = 3)
                         if (!unknownFound) { // +5 (nesting = 4)
-                          unknownFound = true;
+                            unknownFound = true;
                         }
-                      } else if (overriding) { // +1
-                        return methodJavaSymbol;
-                      }
+                    } else if (overriding) { // +1
+                        return null;
                     }
-                  }
                 }
-                if (unknownFound) { // +1
-                  return Symbols.unknownMethodSymbol;
-                }
-                return null;
-              } // total complexity = 19
             }
-            ]]>
-        </code>
+        }
+        if (unknownFound) { // +1
+            return null;
+        }
+        return null;
+    } // total complexity = 19
+
+
+    boolean canOverride(JavaSymbol s) {}
+
+    Boolean checkOverridingParameters(JavaSymbol s, JavaSymbol s2) {}
+}
+
+class JavaSymbol {
+
+    boolean isUnknown() {}
+
+    boolean isMethod() {}
+
+    boolean isStatic() {}
+
+    List<JavaSymbol> members() {}
+}
+
+            ]]></code>
     </test-code>
 
     <test-code>
@@ -53,61 +68,63 @@
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'addVersion(Entry, Transaction)' has a cognitive complexity of 35, current threshold is 1</message>
+            <message>The method 'addVersion(Entry, Transaction, Entry)' has a cognitive complexity of 35, current threshold is 1</message>
         </expected-messages>
-        <code>
-            <![CDATA[
-            public class Foo {
-              private void addVersion(final Entry entry, final Transaction txn)
-                  throws PersistitInterruptedException, RollbackException {
-                final TransactionIndex ti = _persistit.getTransactionIndex();
-                while (true) { // +1
-                  try {
-                    synchronized (this) {
-                      if (frst != null) { // +2 (nesting = 1)
-                        if (frst.getVersion() > entry.getVersion()) { // +3 (nesting = 2)
-                          throw new RollbackException();
+        <code><![CDATA[
+public class Foo {
+
+    private void addVersion(final Entry entry, final Transaction txn, Entry frst) throws Exception {
+        final int ti = getTransactionIndex();
+        while (true) { // +1
+            try {
+                synchronized (this) {
+                    if (frst != null) { // +2 (nesting = 1)
+                        if (frst.hashCode() > entry.hashCode()) { // +3 (nesting = 2)
+                            throw new Exception();
                         }
                         if (txn.isActive()) { // +3 (nesting = 2)
-                          for // +4 (nesting = 3)
-                          (Entry e = frst; e != null; e = e.getPrevious()) {
-                            final long version = e.getVersion();
-                            final long depends = ti.wwDependency(version,
-                                txn.getTransactionStatus(), 0);
-                            if (depends == TIMED_OUT) { // +5 (nesting = 4)
-                              throw new WWRetryException(version);
+                            for // +4 (nesting = 3)
+                            (Entry e = frst; e != null; e = e.getPrevious()) {
+                                final long version = e.getVersion();
+                                final long depends = ti.wwDependency(version,
+                                                                     txn.getTransactionStatus(), 0);
+                                if (depends == 1) { // +5 (nesting = 4)
+                                    throw new Exception(""+version);
+                                }
+                                if (depends != 0 // +5 (nesting = 4)
+                                    && depends != 5) { // +1
+                                    throw new Exception();
+                                }
                             }
-                            if (depends != 0 // +5 (nesting = 4)
-                                && depends != ABORTED) { // +1
-                              throw new RollbackException();
-                            }
-                          }
                         }
-                      }
-                      entry.setPrevious(frst);
-                      frst = entry;
-                      break;
                     }
-                  } catch (final WWRetryException re) { // +2 (nesting = 1)
-                    try {
-                      final long depends = _persistit.getTransactionIndex()
-                          .wwDependency(re.getVersionHandle(),txn.getTransactionStatus(),
-                              SharedResource.DEFAULT_MAX_WAIT_TIME);
-                      if (depends != 0 // +3 (nesting = 2)
-                          && depends != ABORTED) { // +1
-                        throw new RollbackException();
-                      }
-                    } catch (final InterruptedException ie) { // +3 (nesting = 2)
-                      throw new PersistitInterruptedException(ie);
-                    }
-                  } catch (final InterruptedException ie) { // +2 (nesting = 1)
-                    throw new PersistitInterruptedException(ie);
-                  }
+                    entry.setPrevious(frst);
+                    frst = entry;
+                    break;
                 }
-              } // total complexity = 35
+            } catch (final Exception re) { // +2 (nesting = 1)
+                try {
+                    final long depends = getTransactionIndex()
+                                                   .wwDependency(re.getVersionHandle(), txn.getTransactionStatus(),
+                                                                 0);
+                    if (depends != 0 // +3 (nesting = 2)
+                        && depends != 5) { // +1
+                        throw new Exception();
+                    }
+                } catch (final InterruptedException ie) { // +3 (nesting = 2)
+                    throw new Exception(ie);
+                }
+            } catch (final InterruptedException ie) { // +2 (nesting = 1)
+                throw new Exception(ie);
             }
-            ]]>
-        </code>
+        }
+    } // total complexity = 35
+}
+
+class Entry { }
+interface Transaction {
+boolean isActive() ;
+}]]></code>
     </test-code>
 
     <test-code>
@@ -129,7 +146,7 @@
                     antPattern.startsWith("\\") ? 1 : 0; // +1
                 while (i < antPattern.length()) { // +1
                   final char ch = antPattern.charAt(i);
-                  if (SPECIAL_CHARS.indexOf(ch) != -1) { // +2 (nesting = 1)
+                  if ("SPECIAL_CHARS".indexOf(ch) != -1) { // +2 (nesting = 1)
                     sb.append('\\').append(ch);
                   } else if (ch == '*') { // +1
                     if (i + 1 < antPattern.length() // +3 (nesting = 2)
