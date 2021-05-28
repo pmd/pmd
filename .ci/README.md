@@ -7,7 +7,8 @@ It uses the common scripts from [build-tools](https://github.com/pmd/build-tools
 
 This files contains the following environment variables:
 
-*   DANGER_GITHUB_API_TOKEN: Token for danger to add comments to PRs as <https://github.com/pmd-test>
+*   DANGER_GITHUB_API_TOKEN: Token for danger to add comments to PRs as <https://github.com/pmd-test>.
+    The token needs the scope "public_repo".
 *   PMD_CI_CHUNK_TOKEN: Token for uploading reports to chunk.io
 
 The file is encrypted, so that the tokens are not automatically disabled when github detects them

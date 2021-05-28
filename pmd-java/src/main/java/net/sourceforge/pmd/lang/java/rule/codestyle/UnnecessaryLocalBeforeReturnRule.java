@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberSelector;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
@@ -32,18 +31,9 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
 
     private static final PropertyDescriptor<Boolean> STATEMENT_ORDER_MATTERS = booleanProperty("statementOrderMatters").defaultValue(true).desc("If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.").build();
 
-
     public UnnecessaryLocalBeforeReturnRule() {
         definePropertyDescriptor(STATEMENT_ORDER_MATTERS);
-    }
-
-    @Override
-    public Object visit(ASTMethodDeclaration meth, Object data) {
-        // skip void/abstract/native method
-        if (meth.isVoid() || meth.isAbstract() || meth.isNative()) {
-            return data;
-        }
-        return super.visit(meth, data);
+        addRuleChainVisit(ASTReturnStatement.class);
     }
 
     @Override

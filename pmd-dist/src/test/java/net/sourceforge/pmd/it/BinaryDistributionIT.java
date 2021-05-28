@@ -25,10 +25,10 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     private static final String SUPPORTED_LANGUAGES_PMD;
 
     static {
-        // note: apex, visualforce, and scala require java8
+        // note: apex, javascript, visualforce, and scala require java8
         if (PMDExecutor.isJava7Test()) {
-            SUPPORTED_LANGUAGES_CPD = "Supported languages: [cpp, cs, dart, ecmascript, fortran, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, swift, xml]";
-            SUPPORTED_LANGUAGES_PMD = "ecmascript, java, jsp, modelica, plsql, pom, vm, wsdl, xml, xsl";
+            SUPPORTED_LANGUAGES_CPD = "Supported languages: [cpp, cs, dart, fortran, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, swift, xml]";
+            SUPPORTED_LANGUAGES_PMD = "java, jsp, modelica, plsql, pom, vm, wsdl, xml, xsl";
         } else {
             SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, vf, xml]";
             SUPPORTED_LANGUAGES_PMD = "apex, ecmascript, java, jsp, modelica, plsql, pom, scala, vf, vm, wsdl, xml, xsl";
@@ -48,6 +48,7 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result.add(basedir + "bin/run.sh");
         result.add(basedir + "bin/pmd.bat");
         result.add(basedir + "bin/cpd.bat");
+        result.add(basedir + "bin/ast-dump.bat");
         result.add(basedir + "lib/pmd-core-" + PMDVersion.VERSION + ".jar");
         result.add(basedir + "lib/pmd-java-" + PMDVersion.VERSION + ".jar");
         return result;

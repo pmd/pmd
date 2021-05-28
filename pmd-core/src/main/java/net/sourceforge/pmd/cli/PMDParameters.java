@@ -23,7 +23,7 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.validators.PositiveInteger;
 
 /**
- * @deprecated Internal API. Use {@link PMD#run(String[])} or {@link PMD#main(String[])}
+ * @deprecated Internal API. Use {@link PMD#runPmd(String[])} or {@link PMD#main(String[])}
  */
 @Deprecated
 @InternalApi
@@ -89,7 +89,10 @@ public class PMDParameters {
             converter = PropertyConverter.class)
     private List<Properties> properties = new ArrayList<>();
 
-    @Parameter(names = { "-reportfile", "-r" }, description = "Sends report output to a file; default to System.out.")
+    @Parameter(names = { "-reportfile", "-r" },
+               description = "Path to a file to which report output is written. "
+                   + "The file is created if it does not exist. "
+                   + "If this option is not specified, the report is rendered to standard output.")
     private String reportfile = null;
 
     @Parameter(names = { "-version", "-v" }, description = "Specify version of a language PMD should use.")

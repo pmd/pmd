@@ -50,4 +50,9 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
     public double getApexVersion() {
         return node.getDefiningType().getCodeUnitDetails().getVersion().getExternal();
     }
+
+    @Override
+    public boolean isFindBoundary() {
+        return true;
+    }
 }

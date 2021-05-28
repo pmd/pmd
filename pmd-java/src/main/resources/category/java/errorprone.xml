@@ -398,7 +398,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingTypeNameRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidfieldnamematchingtypename">
         <description>
-It is somewhat confusing to have a field name matching the declaring class name.
+It is somewhat confusing to have a field name matching the declaring type name.
 This probably means that type and/or field names should be chosen more carefully.
         </description>
         <priority>3</priority>
@@ -406,6 +406,9 @@ This probably means that type and/or field names should be chosen more carefully
 <![CDATA[
 public class Foo extends Bar {
     int foo;    // There is probably a better name that can be used
+}
+public interface Operation {
+    int OPERATION = 1; // There is probably a better name that can be used
 }
 ]]>
         </example>
@@ -1003,6 +1006,7 @@ public class Foo implements Cloneable {
     </rule>
 
     <rule name="CloneThrowsCloneNotSupportedException"
+          deprecated="true"
           language="java"
           since="1.9"
           message="clone() method should throw CloneNotSupportedException"
@@ -1010,6 +1014,12 @@ public class Foo implements Cloneable {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception">
         <description>
 The method clone() should throw a CloneNotSupportedException.
+
+This rule is deprecated since PMD 6.35.0 without replacement. The rule has no real value as
+`CloneNotSupportedException` is a checked exception and therefore you need to deal with it while
+implementing the `clone()` method. You either need to declare the exception or catch it. If you catch it,
+then subclasses can't throw it themselves explicitly. However, `Object.clone()` will still throw this
+exception if the `Cloneable` interface is not implemented.
         </description>
         <priority>3</priority>
         <properties>
@@ -1100,24 +1110,38 @@ public class Bar {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#compareobjectswithequals">
         <description>
-Use equals() to compare object references; avoid comparing them with ==.
+Use `equals()` to compare object references; avoid comparing them with `==`.
+
+Since comparing objects with named constants is useful in some cases (eg, when
+defining constants for sentinel values), the rule ignores comparisons against
+fields with all-caps name (eg `this == SENTINEL`), which is a common naming
+convention for constant fields.
+
+You may allow some types to be compared by reference by listing the exceptions
+in the `typesThatCompareByReference` property.
         </description>
         <priority>3</priority>
         <properties>
             <property name="version" value="2.0"/>
+            <property name="typesThatCompareByReference" type="List[String]" delimiter="," description="List of canonical type names for which reference comparison is allowed.">
+                <value>java.lang.Enum,java.lang.Class</value>
+            </property>
             <property name="xpath">
                 <value>
 <![CDATA[
 //EqualityExpression
-    [count(PrimaryExpression
-        [pmd-java:typeIs('java.lang.Object')]
-        [not(pmd-java:typeIs('java.lang.Enum'))]
-        [not(pmd-java:typeIs('java.lang.Class'))]) = 2
+    [count(
+        PrimaryExpression[pmd-java:typeIs('java.lang.Object')]
+        [not(some $t in $typesThatCompareByReference satisfies pmd-java:typeIs($t))]
+       ) = 2
     ]
     [not(PrimaryExpression[PrimaryPrefix/@ThisModifier = true()]
                           [not(PrimarySuffix)]
                           [ancestor::MethodDeclaration[@Name = 'equals']])
     ]
+    (: Is not a field access with an all-caps identifier :)
+    [not(PrimaryExpression[not(PrimarySuffix) and PrimaryPrefix/Name[upper-case(@Image)=@Image]
+     or PrimaryExpression/PrimarySuffix[last()][upper-case(@Image)=@Image]])]
 ]]>
                 </value>
             </property>
@@ -2953,9 +2977,9 @@ public class Singleton {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.SingletonClassReturningNewInstanceRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#singletonclassreturningnewinstance">
         <description>
-Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
-is that the instance created using the overloaded method is not cached and so,
-for each call and new objects will be created for every invocation.
+            A singleton class should only ever have one instance. Failure to check
+            whether an instance has already been created may result in multiple
+            instances being created.
         </description>
         <priority>2</priority>
         <example>
@@ -2964,7 +2988,7 @@ class Singleton {
     private static Singleton instance = null;
     public static Singleton getInstance() {
         synchronized(Singleton.class) {
-            return new Singleton();
+            return new Singleton(); // this should be assigned to the field
         }
     }
 }

@@ -11,6 +11,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 //FUTURE This is not referenced by any RuleSet?
 public class StringConcatenationRule extends AbstractJavaRule {
 
+    public StringConcatenationRule() {
+        addRuleChainVisit(ASTForStatement.class);
+    }
+
     @Override
     public Object visit(ASTForStatement node, Object data) {
         Node forLoopStmt = null;

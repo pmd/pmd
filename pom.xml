@@ -688,11 +688,6 @@
                 <classifier>dom</classifier>
             </dependency>
             <dependency>
-                <groupId>org.mozilla</groupId>
-                <artifactId>rhino</artifactId>
-                <version>1.7.7.2</version>
-            </dependency>
-            <dependency>
                 <groupId>net.java.dev.javacc</groupId>
                 <artifactId>javacc</artifactId>
                 <version>${javacc.version}</version>
@@ -1066,7 +1061,6 @@
         <module>pmd-groovy</module>
         <module>pmd-lua</module>
         <module>pmd-java</module>
-        <module>pmd-javascript</module>
         <module>pmd-jsp</module>
         <module>pmd-kotlin</module>
         <module>pmd-matlab</module>
@@ -1086,6 +1080,7 @@
         <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
         <module>pmd-java8</module>
+        <module>pmd-javascript</module>
         <module>pmd-doc</module>
         <module>pmd-lang-test</module>
         <module>pmd-scala</module> <!-- deprecated -->

@@ -11,7 +11,13 @@ sidebar: pmd_sidebar
 
 ### Requirements
 
-*   [Java JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html) 1.7 or higher
+*   [Java JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html),
+    OpenJDK from [Azul](https://www.azul.com/downloads/zulu-community/)
+    or [AdoptOpenJDK](https://adoptopenjdk.net/) 1.7 or higher.
+    
+    **Note:** For analyzing Apex, JavaScript, Scala or VisualForce or running the [Designer](pmd_userdocs_extending_designer_reference.html)
+    at least Java 8 is required.
+    
 *   A zip archiver, e.g.:
     
     * For Windows: [Winzip](http://winzip.com) or the free [7-zip](http://www.7-zip.org/)
