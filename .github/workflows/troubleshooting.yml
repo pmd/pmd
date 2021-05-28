@@ -25,7 +25,7 @@ jobs:
           restore-keys: |
             v1-${{ runner.os }}-
       - name: Set up Ruby 2.7
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
       - name: Setup Environment
