@@ -23,14 +23,24 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
 
 #### New rules
 
-*   The new Java rule {% rule "java/bestpractices/JUnit5TestShouldBePackagePrivate" %}
+This release ships with 3 new Java rules.
+
+*   {% rule "java/bestpractices/JUnit5TestShouldBePackagePrivate" %}
     enforces the convention that JUnit 5 tests should have minimal visibility.
     You can try out this rule like so:
 ```xml
     <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" />
 ```
 
-*   The new Java rule {% rule "java/design/MutableStaticState" %} finds non-private static fields
+*   {% rule "java/design/CognitiveComplexity" %} uses the cognitive complexity
+    metric to find overly complex code. This metric improves on the similar cyclomatic complexity 
+    in several ways, for instance, it incentivizes using clearly readable shorthands and idioms.
+    See the rule documentation for more details. You can try out this rule like so:
+```xml
+    <rule ref="category/java/design.xml/CognitiveComplexity" />
+```
+
+*   {% rule "java/design/MutableStaticState" %} finds non-private static fields
     that are not final. These fields break encapsulation since these fields can be modified from anywhere
     within the program. You can try out this rule like so:
 ```xml
