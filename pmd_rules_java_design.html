@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that help you discover design issues.">
-<meta name="keywords" content=" Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, AvoidUncheckedExceptionsInSignatures, ClassWithOnlyPrivateConstructorsShouldBeFinal, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, DoNotExtendJavaLangError, ExceptionAsFlowControl, ExcessiveClassLength, ExcessiveImports, ExcessiveMethodLength, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, LawOfDemeter, LogicInversion, LoosePackageCoupling, ModifiedCyclomaticComplexity, NcssConstructorCount, NcssCount, NcssMethodCount, NcssTypeCount, NPathComplexity, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanAssertion, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, StdCyclomaticComplexity, SwitchDensity, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass, MutableStaticState">
+<meta name="keywords" content=" Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, AvoidUncheckedExceptionsInSignatures, ClassWithOnlyPrivateConstructorsShouldBeFinal, CollapsibleIfStatements, CouplingBetweenObjects, CognitiveComplexity, CyclomaticComplexity, DataClass, DoNotExtendJavaLangError, ExceptionAsFlowControl, ExcessiveClassLength, ExcessiveImports, ExcessiveMethodLength, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, LawOfDemeter, LogicInversion, LoosePackageCoupling, ModifiedCyclomaticComplexity, NcssConstructorCount, NcssCount, NcssMethodCount, NcssTypeCount, NPathComplexity, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanAssertion, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, StdCyclomaticComplexity, SwitchDensity, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass, MutableStaticState">
 <title>Design | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1757,6 +1757,98 @@ is invoked by a inner class.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="cognitivecomplexity">CognitiveComplexity</h2>
+
+<p><strong>Since:</strong> PMD 6.35.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Methods that are highly complex are difficult to read and more costly to maintain. If you include too much decisional
+logic within a single method, you make its behavior hard to understand and more difficult to modify.</p>
+
+<p>Cognitive complexity is a measure of how difficult it is for humans to read and understand a method. Code that contains
+a break in the control flow is more complex, whereas the use of language shorthands doesn’t increase the level of
+complexity. Nested control flows can make a method more difficult to understand, with each additional nesting of the
+control flow leading to an increase in cognitive complexity.</p>
+
+<p>Information about Cognitive complexity can be found in the original paper here:
+<a href="https://www.sonarsource.com/docs/CognitiveComplexity.pdf">https://www.sonarsource.com/docs/CognitiveComplexity.pdf</a></p>
+
+<p>By default, this rule reports methods with a complexity of 15 or more. Reported methods should be broken down into less
+complex components.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CognitiveComplexityRule.java">net.sourceforge.pmd.lang.java.rule.design.CognitiveComplexityRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+  <span class="c1">// Has a cognitive complexity of 0</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">createAccount</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">Account</span> <span class="n">account</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Account</span><span class="o">(</span><span class="s">"PMD"</span><span class="o">);</span>
+    <span class="c1">// save account</span>
+  <span class="o">}</span>
+
+  <span class="c1">// Has a cognitive complexity of 1</span>
+  <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">setPhoneNumberIfNotExisting</span><span class="o">(</span><span class="nc">Account</span> <span class="n">a</span><span class="o">,</span> <span class="nc">String</span> <span class="n">phone</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">phone</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>                          <span class="c1">// +1</span>
+      <span class="n">a</span><span class="o">.</span><span class="na">phone</span> <span class="o">=</span> <span class="n">phone</span><span class="o">;</span>
+      <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="c1">// Has a cognitive complexity of 5</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">updateContacts</span><span class="o">(</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Contact</span><span class="o">&gt;</span> <span class="n">contacts</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Contact</span><span class="o">&gt;</span> <span class="n">contactsToUpdate</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Contact</span><span class="o">&gt;();</span>
+
+    <span class="k">for</span> <span class="o">(</span><span class="nc">Contact</span> <span class="n">contact</span> <span class="o">:</span> <span class="n">contacts</span><span class="o">)</span> <span class="o">{</span>                           <span class="c1">// +1</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">contact</span><span class="o">.</span><span class="na">department</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Finance"</span><span class="o">))</span> <span class="o">{</span>                <span class="c1">// +2</span>
+        <span class="n">contact</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="s">"Finance Specialist"</span><span class="o">;</span>
+        <span class="n">contactsToUpdate</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">contact</span><span class="o">);</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">contact</span><span class="o">.</span><span class="na">department</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Sales"</span><span class="o">))</span> <span class="o">{</span>           <span class="c1">// +2</span>
+        <span class="n">contact</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="s">"Sales Specialist"</span><span class="o">;</span>
+        <span class="n">contactsToUpdate</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">contact</span><span class="o">);</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">// save contracts</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>reportLevel</td>
+      <td>15</td>
+      <td>Cognitive Complexity reporting threshold</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/CognitiveComplexity"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/CognitiveComplexity"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportLevel"</span> <span class="na">value=</span><span class="s">"15"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="collapsibleifstatements">CollapsibleIfStatements</h2>
@@ -4024,7 +4116,7 @@ remember to add a private constructor to prevent instantiation.
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 27, 2021 <br />
+ Site last generated: May 28, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

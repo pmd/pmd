@@ -1480,11 +1480,89 @@ Also primitives are not included into the count.</p>
   <li>Option <code class="language-plaintext highlighter-rouge">includeJavaLang</code>: Also include classes from the package <code class="language-plaintext highlighter-rouge">java.lang</code></li>
 </ul>
 
-<h2 id="cyclomatic-complexity-cyclo">Cyclomatic Complexity (CYCLO)</h2>
+<h2 id="cognitive-complexity-cognitive_complexity">Cognitive Complexity (COGNITIVE_COMPLEXITY)</h2>
 
 <p><em>Operation metric.</em> Can be calculated on any non-abstract operation.</p>
 
 <h3 id="description-2">Description</h3>
+
+<p>Cognitive complexity is a measure of how difficult it is for humans to read and understand a method. Code that contains
+a break in the control flow is more complex, whereas the use of language shorthands doesn’t increase the level of
+complexity. Nested control flows can make a method more difficult to understand, with each additional nesting of the
+control flow leading to an increase in cognitive complexity.</p>
+
+<p>Information about Cognitive complexity can be found in the original paper here:
+<a href="https://www.sonarsource.com/docs/CognitiveComplexity.pdf">CognitiveComplexity</a></p>
+
+<p>The rule <a href="pmd_rules_java_design.html#cognitivecomplexity"><code class="language-plaintext highlighter-rouge">CognitiveComplexity</code></a> by default reports methods with a complexity of 15 or more. 
+These reported methods should be broken down into less
+complex components.</p>
+
+<h3 id="basic-idea">Basic Idea</h3>
+
+<ol>
+  <li>Ignore structures that allow multiple statements to be readably shorthanded into one</li>
+  <li>Increment (add one) for each break in the linear flow of the code</li>
+  <li>Increment when flow-breaking structures are nested</li>
+</ol>
+
+<h3 id="increments">Increments</h3>
+<p>There is an increment for each of the following:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">if</code>, <code class="language-plaintext highlighter-rouge">else if</code>, <code class="language-plaintext highlighter-rouge">else</code>, ternary operator</li>
+  <li><code class="language-plaintext highlighter-rouge">switch</code></li>
+  <li><code class="language-plaintext highlighter-rouge">for</code>, <code class="language-plaintext highlighter-rouge">foreach</code></li>
+  <li><code class="language-plaintext highlighter-rouge">while</code>, <code class="language-plaintext highlighter-rouge">do while</code></li>
+  <li><code class="language-plaintext highlighter-rouge">catch</code></li>
+  <li><code class="language-plaintext highlighter-rouge">goto LABEL</code>, <code class="language-plaintext highlighter-rouge">break LABEL</code>, <code class="language-plaintext highlighter-rouge">continue LABEL</code></li>
+  <li>sequences of binary logical operators</li>
+  <li>each method in a recursion cycle</li>
+</ul>
+
+<h3 id="nesting-level">Nesting level</h3>
+<p>The following structures increment the nesting level:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">if</code>, <code class="language-plaintext highlighter-rouge">else if</code>, <code class="language-plaintext highlighter-rouge">else</code>, ternary operator</li>
+  <li><code class="language-plaintext highlighter-rouge">switch</code></li>
+  <li><code class="language-plaintext highlighter-rouge">for</code>, <code class="language-plaintext highlighter-rouge">foreach</code></li>
+  <li><code class="language-plaintext highlighter-rouge">while</code>, <code class="language-plaintext highlighter-rouge">do while</code></li>
+  <li><code class="language-plaintext highlighter-rouge">catch</code></li>
+  <li>nested methods and method-like structures such as lambdas</li>
+</ul>
+
+<h3 id="nesting-increments">Nesting increments</h3>
+<p>The following structures receive a nesting increment commensurate with their nested depth
+inside nested structures:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">if</code>, ternary operator</li>
+  <li><code class="language-plaintext highlighter-rouge">switch</code></li>
+  <li><code class="language-plaintext highlighter-rouge">for</code>, <code class="language-plaintext highlighter-rouge">foreach</code></li>
+  <li><code class="language-plaintext highlighter-rouge">while</code>, <code class="language-plaintext highlighter-rouge">do while</code></li>
+  <li><code class="language-plaintext highlighter-rouge">catch</code></li>
+</ul>
+
+<h3 id="code-example-1">Code example</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">myMethod</span> <span class="o">()</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">condition1</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// +1</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span> <span class="c1">// +2 (nesting=1)</span>
+          <span class="k">while</span> <span class="o">(</span><span class="n">condition2</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// +3 (nesting=2)</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">ExcepType1</span> <span class="o">|</span> <span class="nc">ExcepType2</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// +1</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">condition2</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// +2 (nesting=1)</span>
+    <span class="o">}</span>
+  <span class="o">}</span> <span class="c1">// Cognitive Complexity 9</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="cyclomatic-complexity-cyclo">Cyclomatic Complexity (CYCLO)</h2>
+
+<p><em>Operation metric.</em> Can be calculated on any non-abstract operation.</p>
+
+<h3 id="description-3">Description</h3>
 
 <p>Number of independent paths through a block of code [<a href="#Lanza05">Lanza05</a>]. 
 Formally, given that the control flow graph of the block has <code class="language-plaintext highlighter-rouge">n</code> vertices, <code class="language-plaintext highlighter-rouge">e</code> 
@@ -1552,7 +1630,7 @@ they were <code class="language-plaintext highlighter-rouge">if (..) throw new A
 
 <p><em>Operation metric, class metric.</em> Can be calculated on any of those nodes.</p>
 
-<h3 id="description-3">Description</h3>
+<h3 id="description-4">Description</h3>
 
 <p>Simply counts the number of lines of code the operation or class takes up in 
 the source. This metric doesn’t discount comments or blank lines. See also 
@@ -1562,7 +1640,7 @@ the source. This metric doesn’t discount comments or blank lines. See also
 
 <p><em>Operation metric, class metric.</em> Can be calculated on any of those nodes.</p>
 
-<h3 id="description-4">Description</h3>
+<h3 id="description-5">Description</h3>
 
 <p>Number of statements in a class or operation. That’s roughly equivalent to 
 counting the number of semicolons and opening braces in the program. Comments 
@@ -1589,7 +1667,7 @@ actually represent the size of the class and not of the file. If you don’t
 like that behaviour, use the <code class="language-plaintext highlighter-rouge">COUNT_IMPORTS</code> option.</li>
 </ul>
 
-<h3 id="code-example-1">Code example</h3>
+<h3 id="code-example-2">Code example</h3>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Collections</span><span class="o">;</span>       <span class="c1">// +0</span>
 <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>         <span class="c1">// +0</span>
 
@@ -1628,7 +1706,7 @@ as well. This version fully complies with JavaNCSS.</li>
 
 <p><em>Operation metric.</em> Can be computed on any non-abstract operation.</p>
 
-<h3 id="description-5">Description</h3>
+<h3 id="description-6">Description</h3>
 
 <p>Number of acyclic execution paths through a piece of code. This is related to 
 cyclomatic complexity, but the two metrics don’t count the same thing: NPath 
@@ -1669,7 +1747,7 @@ block, plus the complexity of each catch block.</li>
   </li>
 </ul>
 
-<h3 id="code-example-2">Code example</h3>
+<h3 id="code-example-3">Code example</h3>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">fun</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">a</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">b</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">c</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// NPath = 6</span>
     
@@ -1708,7 +1786,7 @@ choices, the second offers 3, so the cyclomatic complexity of this method is
 
 <p><em>Class metric.</em> Can be computed on classes and enums.</p>
 
-<h3 id="description-6">Description</h3>
+<h3 id="description-7">Description</h3>
 
 <p>The relative number of method pairs of a class that access in common at
 least one attribute of the measured class. TCC only counts
@@ -1726,7 +1804,7 @@ defines several unrelated services, which is undesirable.</p>
 
 <p><em>Class metric.</em> Can be computed on classes and enums.</p>
 
-<h3 id="description-7">Description</h3>
+<h3 id="description-8">Description</h3>
 
 <p>Sum of the statistical complexity of the operations in the class. We use 
 <a href="#cyclomatic-complexity-cyclo">CYCLO</a> to quantify the complexity of an operation 
@@ -1741,7 +1819,7 @@ computing it.</p>
 
 <p><em>Class metric.</em> Can be computed on classes.</p>
 
-<h3 id="description-8">Description</h3>
+<h3 id="description-9">Description</h3>
 
 <p>Number of “functional” public methods divided by the total number of
 public methods. Our definition of “functional method” excludes
@@ -1794,7 +1872,7 @@ In Proceedings ACM Symposium on Software Reusability, 1995.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> July 20, 2017<br/> Site last generated: May 27, 2021 <br />
+<span>Page last updated:</span> July 20, 2017<br/> Site last generated: May 28, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -2418,6 +2418,15 @@
 ,
 
 {
+"title": "CognitiveComplexity (Java, Design)",
+"tags": "",
+"keywords": "CognitiveComplexity",
+"url": "pmd_rules_java_design.html#cognitivecomplexity",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
 "title": "CyclomaticComplexity (Java, Design)",
 "tags": "",
 "keywords": "CyclomaticComplexity",
