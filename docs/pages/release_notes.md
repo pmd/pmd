@@ -23,14 +23,24 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
 
 #### New rules
 
-*   The new Java rule {% rule "java/bestpractices/JUnit5TestShouldBePackagePrivate" %}
+This release ships with 3 new Java rules.
+
+*   {% rule "java/bestpractices/JUnit5TestShouldBePackagePrivate" %}
     enforces the convention that JUnit 5 tests should have minimal visibility.
     You can try out this rule like so:
 ```xml
     <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" />
 ```
 
-*   The new Java rule {% rule "java/design/MutableStaticState" %} finds non-private static fields
+*   {% rule "java/design/CognitiveComplexity" %} uses the cognitive complexity
+    metric to find overly complex code. This metric improves on the similar cyclomatic complexity 
+    in several ways, for instance, it incentivizes using clearly readable shorthands and idioms.
+    See the rule documentation for more details. You can try out this rule like so:
+```xml
+    <rule ref="category/java/design.xml/CognitiveComplexity" />
+```
+
+*   {% rule "java/design/MutableStaticState" %} finds non-private static fields
     that are not final. These fields break encapsulation since these fields can be modified from anywhere
     within the program. You can try out this rule like so:
 ```xml
@@ -103,6 +113,7 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
 *   java-design
     *   [#2780](https://github.com/pmd/pmd/issues/2780): \[java] DataClass example from documentation results in false-negative
     *   [#2987](https://github.com/pmd/pmd/issues/2987): \[java] New Rule: Public and protected static fields must be final
+    *   [#2329](https://github.com/pmd/pmd/issues/2329): \[java] Cognitive complexity rule for Java
 *   java-errorprone
     *   [#3110](https://github.com/pmd/pmd/issues/3110): \[java] Enhance CompareObjectsWithEquals with list of exceptions
     *   [#3112](https://github.com/pmd/pmd/issues/3112): \[java] Deprecate rule CloneThrowsCloneNotSupportedException
@@ -133,6 +144,7 @@ to analyze JavaScript code. Note that PMD core still only requires Java 7.
 *   [#3272](https://github.com/pmd/pmd/pull/3272): \[apex] correction for ApexUnitTestMethodShouldHaveIsTestAnnotation false positives - [William Brockhus](https://github.com/YodaDaCoda)
 *   [#3246](https://github.com/pmd/pmd/pull/3246): \[java] New Rule: MutableStaticState - [Vsevolod Zholobov](https://github.com/vszholobov)
 *   [#3247](https://github.com/pmd/pmd/pull/3247): \[java] New rule: JUnit5TestShouldBePackagePrivate - [Arnaud Jeansen](https://github.com/ajeans)
+*   [#3293](https://github.com/pmd/pmd/pull/3293): \[java] Cognitive Complexity Metric - [Denis Borovikov](https://github.com/borovikovd)
 *   [pmd.github.io#12](https://github.com/pmd/pmd.github.io/pull/12): Update quickstart.html - [Igor Lyadov](https://github.com/devigo)
 
 {% endtocmaker %}
