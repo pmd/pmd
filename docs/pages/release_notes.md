@@ -147,4 +147,10 @@ This release ships with 3 new Java rules.
 *   [#3293](https://github.com/pmd/pmd/pull/3293): \[java] Cognitive Complexity Metric - [Denis Borovikov](https://github.com/borovikovd)
 *   [pmd.github.io#12](https://github.com/pmd/pmd.github.io/pull/12): Update quickstart.html - [Igor Lyadov](https://github.com/devigo)
 
+### Stats
+* 143 commits
+* 53 closed tickets & PRs
+* Days since last release: 34
+
 {% endtocmaker %}
+
