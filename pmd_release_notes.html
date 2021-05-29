@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.35.0</li>
+    <li class="sidebarTitle">PMD 6.36.0-SNAPSHOT</li>
     
     
     
@@ -1422,199 +1422,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="29-may-2021---6350">29-May-2021 - 6.35.0</h2>
+  <h2 id="-june-2021---6360-snapshot">??-June-2021 - 6.36.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.35.0.</p>
+<p>The PMD team is pleased to announce PMD 6.36.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="javascript-module-now-requires-at-least-java-8">Javascript module now requires at least Java 8</h4>
-
-<p>The latest version of <a href="https://github.com/mozilla/rhino">Rhino</a>, the implementation of JavaScript we use
-for parsing JavaScript code, requires at least Java 8. Therefore we decided to upgrade the pmd-javascript
-module to Java 8 as well. This means that from now on, a Java 8 or later runtime is required in order
-to analyze JavaScript code. Note that PMD core still only requires Java 7.</p>
-
-<h4 id="new-rules">New rules</h4>
-
-<p>This release ships with 3 new Java rules.</p>
-
-<ul>
-  <li><a href="pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate"><code class="language-plaintext highlighter-rouge">JUnit5TestShouldBePackagePrivate</code></a>
-enforces the convention that JUnit 5 tests should have minimal visibility.
-You can try out this rule like so:
-    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate"</span> <span class="nt">/&gt;</span>
-</code></pre></div>    </div>
-  </li>
-  <li><a href="pmd_rules_java_design.html#cognitivecomplexity"><code class="language-plaintext highlighter-rouge">CognitiveComplexity</code></a> uses the cognitive complexity
-metric to find overly complex code. This metric improves on the similar cyclomatic complexity 
-in several ways, for instance, it incentivizes using clearly readable shorthands and idioms.
-See the rule documentation for more details. You can try out this rule like so:
-    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/CognitiveComplexity"</span> <span class="nt">/&gt;</span>
-</code></pre></div>    </div>
-  </li>
-  <li><a href="pmd_rules_java_design.html#mutablestaticstate"><code class="language-plaintext highlighter-rouge">MutableStaticState</code></a> finds non-private static fields
-that are not final. These fields break encapsulation since these fields can be modified from anywhere
-within the program. You can try out this rule like so:
-    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/MutableStaticState"</span> <span class="nt">/&gt;</span>
-</code></pre></div>    </div>
-  </li>
-</ul>
-
-<h4 id="modified-rules">Modified rules</h4>
-
-<ul>
-  <li>The Java rule <a href="pmd_rules_java_errorprone.html#compareobjectswithequals"><code class="language-plaintext highlighter-rouge">CompareObjectsWithEquals</code></a> has now a new property
-<code class="language-plaintext highlighter-rouge">typesThatCompareByReference</code>. With that property, you can configure types, that should be whitelisted
-for comparison by reference. By default, <code class="language-plaintext highlighter-rouge">java.lang.Enum</code> and <code class="language-plaintext highlighter-rouge">java.lang.Class</code> are allowed, but
-you could add custom types here.
-Additionally comparisons against constants are allowed now. This makes the rule less noisy when two constants
-are compared. Constants are identified by looking for an all-caps identifier.</li>
-</ul>
-
-<h4 id="deprecated-rules">Deprecated rules</h4>
-
-<ul>
-  <li>
-    <p>The java rule <a href="pmd_rules_java_codestyle.html#defaultpackage"><code class="language-plaintext highlighter-rouge">DefaultPackage</code></a> has been deprecated in favor of
-<a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a>.</p>
-
-    <p>The rule “DefaultPackage” assumes that any usage of package-access is accidental,
-and by doing so, prohibits using a really fundamental and useful feature of the language.</p>
-
-    <p>To satisfy the rule, you have to make the member public even if it doesn’t need to, or make it protected,
-which muddies your intent even more if you don’t intend the class to be extended, and may be at odds with
-other rules like <a href="pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass"><code class="language-plaintext highlighter-rouge">AvoidProtectedFieldInFinalClass</code></a>.</p>
-
-    <p>The rule <a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a> should be used instead.
-It flags the same thing, but has an escape hatch.</p>
-  </li>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception"><code class="language-plaintext highlighter-rouge">CloneThrowsCloneNotSupportedException</code></a> has been deprecated without
-replacement.</p>
-
-    <p>The rule has no real value as <code class="language-plaintext highlighter-rouge">CloneNotSupportedException</code> is a
-checked exception and therefore you need to deal with it while implementing the <code class="language-plaintext highlighter-rouge">clone()</code> method. You either
-need to declare the exception or catch it. If you catch it, then subclasses can’t throw it themselves explicitly.
-However, <code class="language-plaintext highlighter-rouge">Object.clone()</code> will still throw this exception if the <code class="language-plaintext highlighter-rouge">Cloneable</code> interface is not implemented.</p>
-
-    <p>Note, this rule has also been removed from the Quickstart Ruleset (<code class="language-plaintext highlighter-rouge">rulesets/java/quickstart.xml</code>).</p>
-  </li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3183">#3183</a>: [apex] ApexUnitTestMethodShouldHaveIsTestAnnotation false positive with helper method</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3243">#3243</a>: [apex] Correct findBoundary when traversing AST</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2639">#2639</a>: [core] PMD CLI output file is not created if directory or directories in path don’t exist</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3196">#3196</a>: [core] Deprecate ThreadSafeReportListener</li>
-    </ul>
-  </li>
-  <li>doc
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3230">#3230</a>: [doc] Remove “Edit me” button for language index pages</li>
-    </ul>
-  </li>
-  <li>dist
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2466">#2466</a>: [dist] Distribution archive doesn’t include all batch scripts</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/3269">#3269</a>: [java] Fix NPE in MethodTypeResolution</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1175">#1175</a>: [java] UnusedPrivateMethod FP with Junit 5 @MethodSource</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2219">#2219</a>: [java] Document Reasons to Avoid Reassigning Parameters</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2737">#2737</a>: [java] Fix misleading rule message on rule SwitchStmtsShouldHaveDefault with non-exhaustive enum switch</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3236">#3236</a>: [java] LiteralsFirstInComparisons should consider constant fields (cont’d)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3239">#3239</a>: [java] PMD could enforce non-public methods for Junit5 / Jupiter test methods</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3254">#3254</a>: [java] AvoidReassigningParameters reports violations on wrong line numbers</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2655">#2655</a>: [java] UnnecessaryImport false positive for on-demand imports</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3206">#3206</a>: [java] Deprecate rule DefaultPackage</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3262">#3262</a>: [java] FieldDeclarationsShouldBeAtStartOfClass: false negative with anon classes</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3265">#3265</a>: [java] MethodArgumentCouldBeFinal: false negatives with interfaces and inner classes</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3266">#3266</a>: [java] LocalVariableCouldBeFinal: false negatives with interfaces, anon classes</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3274">#3274</a>: [java] OnlyOneReturn: false negative with anonymous class</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3275">#3275</a>: [java] UnnecessaryLocalBeforeReturn: false negatives with lambda and anon class</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2780">#2780</a>: [java] DataClass example from documentation results in false-negative</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2987">#2987</a>: [java] New Rule: Public and protected static fields must be final</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2329">#2329</a>: [java] Cognitive complexity rule for Java</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3110">#3110</a>: [java] Enhance CompareObjectsWithEquals with list of exceptions</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3112">#3112</a>: [java] Deprecate rule CloneThrowsCloneNotSupportedException</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3205">#3205</a>: [java] Make CompareObjectWithEquals allow comparing against constants</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3248">#3248</a>: [java] Documentation is wrong for SingletonClassReturningNewInstance rule</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3249">#3249</a>: [java] AvoidFieldNameMatchingTypeName: False negative with interfaces</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3268">#3268</a>: [java] ConstructorCallsOverridableMethod: IndexOutOfBoundsException with annotations</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1438">#1438</a>: [java] InsufficientStringBufferDeclaration false positive for initial calculated StringBuilder size</li>
-    </ul>
-  </li>
-  <li>javascript
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/699">#699</a>: [javascript] Update Rhino library to 1.7.13</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2081">#2081</a>: [javascript] Failing with OutOfMemoryError parsing a Javascript file</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<h4 id="deprecated-api">Deprecated API</h4>
-
-<ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/PMD.html#doPMD(net.sourceforge.pmd.PMDConfiguration)"><code>PMD#doPMD</code></a> is deprecated.
-Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/PMD.html#runPMD(net.sourceforge.pmd.PMDConfiguration)"><code>PMD#runPMD</code></a> instead.</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/PMD.html#run(java.lang.String[])"><code>PMD#run</code></a> is deprecated.
-Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/PMD.html#runPMD(java.lang.String...)"><code>PMD#runPMD</code></a> instead.</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/ThreadSafeReportListener.html#"><code>ThreadSafeReportListener</code></a> and the methods to use them in <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/Report.html#"><code>Report</code></a>
-(<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/Report.html#addListener(net.sourceforge.pmd.ThreadSafeReportListener)"><code>addListener</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/Report.html#getListeners()"><code>getListeners</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/Report.html#addListeners(java.util.List)"><code>addListeners</code></a>)
-are deprecated. This functionality will be replaced by another TBD mechanism in PMD 7.</li>
-</ul>
-
 <h3 id="external-contributions">External Contributions</h3>
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/3272">#3272</a>: [apex] correction for ApexUnitTestMethodShouldHaveIsTestAnnotation false positives - <a href="https://github.com/YodaDaCoda">William Brockhus</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3246">#3246</a>: [java] New Rule: MutableStaticState - <a href="https://github.com/vszholobov">Vsevolod Zholobov</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3247">#3247</a>: [java] New rule: JUnit5TestShouldBePackagePrivate - <a href="https://github.com/ajeans">Arnaud Jeansen</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3293">#3293</a>: [java] Cognitive Complexity Metric - <a href="https://github.com/borovikovd">Denis Borovikov</a></li>
-  <li><a href="https://github.com/pmd/pmd.github.io/pull/12">pmd.github.io#12</a>: Update quickstart.html - <a href="https://github.com/devigo">Igor Lyadov</a></li>
-</ul>
-
-<h3 id="stats">Stats</h3>
-<ul>
-  <li>143 commits</li>
-  <li>53 closed tickets &amp; PRs</li>
-  <li>Days since last release: 34</li>
-</ul>
 
 
 
