@@ -9,6 +9,39 @@
 Rules that flag suboptimal code.
     </description>
 
+    <rule name="AvoidDebugStatements"
+          language="apex"
+          since="6.36.0"
+          message="Avoid debug statements since they impact on performance"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoiddebugstatements">
+        <description>
+Debug statements contibute to longer transactions and consume
+Apex CPU time even when there&apos;s no active debug trace.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCallExpression[lower-case(@FullMethodName)='system.debug']
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    public void bar() {
+        List<Account> accs = [SELECT Name, Owner.Name FROM Account];
+        System.debug(accs);
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidDmlStatementsInLoops"
           language="apex"
           since="5.5.0"
