@@ -474,7 +474,7 @@ public class Foo {
     return false;
   }
 
-  // Has a cognitive complexity of 5
+  // Has a cognitive complexity of 4
   public void updateContacts(List<Contact> contacts) {
     List<Contact> contactsToUpdate = new ArrayList<Contact>();
 
@@ -482,7 +482,7 @@ public class Foo {
       if (contact.department.equals("Finance")) {                // +2
         contact.title = "Finance Specialist";
         contactsToUpdate.add(contact);
-      } else if (contact.department.equals("Sales")) {           // +2
+      } else if (contact.department.equals("Sales")) {           // +1
         contact.title = "Sales Specialist";
         contactsToUpdate.add(contact);
       }
