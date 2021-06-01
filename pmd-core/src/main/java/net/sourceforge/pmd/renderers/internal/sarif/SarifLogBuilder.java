@@ -176,6 +176,7 @@ public class SarifLogBuilder {
         return ReportingDescriptor.builder()
             .id(rv.getRule().getName())
             .shortDescription(new MultiformatMessage(rv.getDescription()))
+            .fullDescription(new MultiformatMessage(rv.getRule().getDescription()))
             .helpUri(rv.getRule().getExternalInfoUrl())
             .properties(getRuleProperties(rv))
             .build();
@@ -185,6 +186,7 @@ public class SarifLogBuilder {
         return PropertyBag.builder()
                 .ruleset(rv.getRule().getRuleSetName())
                 .priority(rv.getRule().getPriority().getPriority())
+                .tags(new String[] { rv.getRule().getRuleSetName() })
                 .build();
     }
 

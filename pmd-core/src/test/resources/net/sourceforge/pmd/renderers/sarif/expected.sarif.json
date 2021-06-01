@@ -14,9 +14,15 @@
               "shortDescription": {
                 "text": "blah"
               },
+              "fullDescription": {
+                "text": "desc"
+              },
               "properties": {
                 "ruleset": "RuleSet",
-                "priority": 5
+                "priority": 5,
+                "tags": [
+                  "RuleSet"
+                ]
               }
             }
           ]
