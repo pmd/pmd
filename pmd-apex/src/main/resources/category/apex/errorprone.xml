@@ -456,10 +456,10 @@ private class TestClass {
         </description>
         <priority>3</priority>
         <example>
-<![CDATA[// Violating
+<![CDATA[
 public class Foo {
     @AuraEnabled
-    public Integer counter { private get; set; }
+    public Integer counter { private get; set; } // Violating - Private getter is inaccessible to Lightning components
 
     @AuraEnabled
     public static Foo bar()
@@ -469,26 +469,13 @@ public class Foo {
         return foo;
     }
 }
-
+]]>
+        </example>
+        <example>
+<![CDATA[
 public class Foo {
     @AuraEnabled
-    public static Baz bar()
-    {
-    	Baz baz = new Baz();
-        baz.counter = 2; 
-        return baz;
-    }
-    
-    private class Baz {
-        @AuraEnabled
-        public Integer counter { protected get; set; }
-    }
-}
-
-// Compliant
-public class Foo {
-    @AuraEnabled
-    public Integer counter { get; set; }
+    public Integer counter { protected get; set; } // Violating - Protected getter is inaccessible to Lightning components
 
     @AuraEnabled
     public static Foo bar()
@@ -498,19 +485,20 @@ public class Foo {
         return foo;
     }
 }
-
+]]>
+        </example>
+        <example>
+<![CDATA[
 public class Foo {
     @AuraEnabled
-    public static Baz bar()
+    public Integer counter { get; set; } // Compliant - Public getter is accessible to Lightning components
+
+    @AuraEnabled
+    public static Foo bar()
     {
-    	Baz baz = new Baz();
-        baz.counter = 2; 
-        return baz;
-    }
-    
-    private class Baz {
-        @AuraEnabled
-        public Integer counter { get; set; }
+        Foo foo = new Foo();
+        foo.counter = 2; 
+        return foo;
     }
 }
 ]]>
