@@ -97,6 +97,7 @@ public class FileAnalysisCacheTest {
     @Test
     public void testStorePersistsFilesWithViolations() {
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
+        cache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class));
         cache.isUpToDate(sourceFile);
 
         final RuleViolation rv = mock(RuleViolation.class);
@@ -109,6 +110,7 @@ public class FileAnalysisCacheTest {
         cache.persist();
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
+        reloadedCache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class));
         assertTrue("Cache believes unmodified file with violations is not up to date",
                 reloadedCache.isUpToDate(sourceFile));
 
@@ -348,6 +350,7 @@ public class FileAnalysisCacheTest {
         setupCacheWithFiles(newCacheFile, mock(RuleSets.class), mock(ClassLoader.class), sourceFile);
 
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
+        cache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class));
         assertTrue("Cache believes a known, unchanged file is not up to date",
                 cache.isUpToDate(sourceFile));
     }
