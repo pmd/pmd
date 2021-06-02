@@ -215,7 +215,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
             throw new RuntimeException(e);
         }
 
-        return entries.toArray(new URL[entries.size()]);
+        return entries.toArray(new URL[0]);
     }
 
     @Override

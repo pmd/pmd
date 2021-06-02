@@ -2,10 +2,10 @@
 package net.sourceforge.pmd.cache.internal;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 import java.util.zip.ZipEntry;
@@ -22,20 +22,20 @@ public class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinte
         final File file = createValidNonEmptyFile();
         final long baselineFingerprint = getBaseLineFingerprint(file);
         final long originalFileSize = file.length();
-        
+
         // Change zip entry's metadata
         try (final ZipFile zip = new ZipFile(file)) {
             final ZipEntry zipEntry = zip.entries().nextElement();
             zipEntry.setComment("some comment");
             zipEntry.setTime(System.currentTimeMillis() + 1000);
-            
+
             overwriteZipFileContents(file, zipEntry);
         }
-        
+
         Assert.assertEquals(baselineFingerprint, updateFingerprint(file));
         Assert.assertNotEquals(originalFileSize, file.length());
     }
-    
+
     @Override
     protected ClasspathEntryFingerprinter newFingerPrinter() {
         return new ZipFileFingerprinter();
@@ -50,24 +50,24 @@ public class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinte
     protected String[] getInvalidFileExtensions() {
         return new String[] { "xml" };
     }
-    
+
     @Override
     protected File createValidNonEmptyFile() throws IOException {
         final File zipFile = tempFolder.newFile("foo.jar");
         overwriteZipFileContents(zipFile, new ZipEntry("lib/Foo.class"));
         return zipFile;
     }
-    
+
     private void overwriteZipFileContents(final File zipFile, final ZipEntry... zipEntries) throws IOException {
-        try (final ZipOutputStream zipOS = new ZipOutputStream(new FileOutputStream(zipFile))) {
+        try (ZipOutputStream zipOS = new ZipOutputStream(Files.newOutputStream(zipFile.toPath()))) {
             for (final ZipEntry zipEntry : zipEntries) {
                 zipOS.putNextEntry(zipEntry);
-                zipOS.write(("content of zip entry").getBytes(StandardCharsets.UTF_8));
+                zipOS.write("content of zip entry".getBytes(StandardCharsets.UTF_8));
                 zipOS.closeEntry();
             }
         }
     }
-    
+
     private long getBaseLineFingerprint(final File file) throws MalformedURLException, IOException {
         final Checksum checksum = new Adler32();
         fingerprinter.fingerprint(file.toURI().toURL(), checksum);

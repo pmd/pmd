@@ -13,7 +13,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -383,7 +382,7 @@ public class FileAnalysisCacheTest {
 
     private File createZipFile(String fileName, int numEntries) throws IOException {
         final File zipFile = tempFolder.newFile(fileName);
-        try (final ZipOutputStream zipOS = new ZipOutputStream(new FileOutputStream(zipFile))) {
+        try (ZipOutputStream zipOS = new ZipOutputStream(Files.newOutputStream(zipFile.toPath()))) {
             for (int i = 0; i < numEntries; i++) {
                 zipOS.putNextEntry(new ZipEntry("lib/foo" + i + ".class"));
                 zipOS.write(("content of " + fileName + " entry " + i).getBytes(StandardCharsets.UTF_8));
