@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.renderers.internal.sarif;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -552,10 +553,10 @@ public class SarifLog {
         /**
          * A set of distinct strings that provide additional information. This is SARIF 2.1.0 Schema.
          */
-        private String[] tags;
+        private Set<String> tags;
 
         @java.lang.SuppressWarnings("all")
-        PropertyBag(final String ruleset, final Integer priority, final String[] tags) {
+        PropertyBag(final String ruleset, final Integer priority, final Set<String> tags) {
             this.ruleset = ruleset;
             this.priority = priority;
             this.tags = tags;
@@ -569,7 +570,7 @@ public class SarifLog {
             @java.lang.SuppressWarnings("all")
             private Integer priority;
             @java.lang.SuppressWarnings("all")
-            private String[] tags;
+            private Set<String> tags;
 
             @java.lang.SuppressWarnings("all")
             PropertyBagBuilder() {
@@ -600,7 +601,7 @@ public class SarifLog {
              * @return {@code this}.
              */
             @java.lang.SuppressWarnings("all")
-            public SarifLog.PropertyBag.PropertyBagBuilder tags(final String[] tags) {
+            public SarifLog.PropertyBag.PropertyBagBuilder tags(final Set<String> tags) {
                 this.tags = tags;
                 return this;
             }
@@ -642,7 +643,7 @@ public class SarifLog {
          * A set of distinct strings that provide additional information. This is SARIF 2.1.0 Schema.
          */
         @java.lang.SuppressWarnings("all")
-        public String[] getTags() {
+        public Set<String> getTags() {
             return this.tags;
         }
 
@@ -671,7 +672,7 @@ public class SarifLog {
          * @return {@code this}.
          */
         @java.lang.SuppressWarnings("all")
-        public SarifLog.PropertyBag setTags(final String[] tags) {
+        public SarifLog.PropertyBag setTags(final Set<String> tags) {
             this.tags = tags;
             return this;
         }

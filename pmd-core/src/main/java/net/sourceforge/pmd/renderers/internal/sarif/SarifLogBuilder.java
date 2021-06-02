@@ -23,8 +23,10 @@ import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ToolConfigur
 import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ToolExecutionNotification;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -186,7 +188,7 @@ public class SarifLogBuilder {
         return PropertyBag.builder()
                 .ruleset(rv.getRule().getRuleSetName())
                 .priority(rv.getRule().getPriority().getPriority())
-                .tags(new String[] { rv.getRule().getRuleSetName() })
+                .tags(new HashSet<String>(Arrays.asList(rv.getRule().getRuleSetName())))
                 .build();
     }
 
