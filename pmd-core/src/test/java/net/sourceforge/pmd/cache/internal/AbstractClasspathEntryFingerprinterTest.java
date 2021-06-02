@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.cache.internal;
 
@@ -22,7 +25,7 @@ public abstract class AbstractClasspathEntryFingerprinterTest {
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
-    
+
     protected ClasspathEntryFingerprinter fingerprinter = newFingerPrinter();
     protected Checksum checksum = new Adler32();
 
@@ -32,12 +35,13 @@ public abstract class AbstractClasspathEntryFingerprinterTest {
     }
 
     protected abstract ClasspathEntryFingerprinter newFingerPrinter();
-    
+
     protected abstract String[] getValidFileExtensions();
+
     protected abstract String[] getInvalidFileExtensions();
-    
+
     protected abstract File createValidNonEmptyFile() throws IOException;
-    
+
     @Test
     public void appliesToNullIsSafe() {
         fingerprinter.appliesTo(null);
@@ -58,9 +62,9 @@ public abstract class AbstractClasspathEntryFingerprinterTest {
     @Test
     public void fingerprintNonExistingFile() throws MalformedURLException, IOException {
         final long prevValue = checksum.getValue();
-        
+
         fingerprinter.fingerprint(new File("non-existing").toURI().toURL(), checksum);
-        
+
         Assert.assertEquals(prevValue, checksum.getValue());
     }
 
@@ -68,10 +72,10 @@ public abstract class AbstractClasspathEntryFingerprinterTest {
     public void fingerprintExistingValidFile() throws IOException {
         final long prevValue = checksum.getValue();
         final File file = createValidNonEmptyFile();
-        
+
         Assert.assertNotEquals(prevValue, updateFingerprint(file));
     }
-    
+
     protected long updateFingerprint(final File file) throws MalformedURLException, IOException {
         fingerprinter.fingerprint(file.toURI().toURL(), checksum);
         return checksum.getValue();

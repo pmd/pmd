@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.cache.internal;
 
@@ -24,7 +27,7 @@ public class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinte
         final long originalFileSize = file.length();
 
         // Change zip entry's metadata
-        try (final ZipFile zip = new ZipFile(file)) {
+        try (ZipFile zip = new ZipFile(file)) {
             final ZipEntry zipEntry = zip.entries().nextElement();
             zipEntry.setComment("some comment");
             zipEntry.setTime(System.currentTimeMillis() + 1000);

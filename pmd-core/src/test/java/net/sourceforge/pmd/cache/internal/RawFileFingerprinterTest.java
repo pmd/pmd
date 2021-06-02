@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.cache.internal;
 
@@ -23,11 +26,11 @@ public class RawFileFingerprinterTest extends AbstractClasspathEntryFingerprinte
     protected String[] getInvalidFileExtensions() {
         return new String[] { "xml" };
     }
-    
+
     @Override
     protected File createValidNonEmptyFile() throws IOException {
         final File file = tempFolder.newFile("Foo.class");
-        
+
         Files.write("some content", file, StandardCharsets.UTF_8);
         return file;
     }
