@@ -17,6 +17,9 @@
               "fullDescription": {
                 "text": "desc"
               },
+              "help": {
+                "text": "desc"
+              },
               "properties": {
                 "ruleset": "RuleSet",
                 "priority": 5,

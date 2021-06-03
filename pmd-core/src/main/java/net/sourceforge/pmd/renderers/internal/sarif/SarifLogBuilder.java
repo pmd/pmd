@@ -180,6 +180,7 @@ public class SarifLogBuilder {
             .shortDescription(new MultiformatMessage(rv.getDescription()))
             .fullDescription(new MultiformatMessage(rv.getRule().getDescription()))
             .helpUri(rv.getRule().getExternalInfoUrl())
+            .help(new MultiformatMessage(rv.getRule().getDescription()))
             .properties(getRuleProperties(rv))
             .build();
     }
