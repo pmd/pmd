@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidNonExistentAnnotations, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses">
+<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidNonExistentAnnotations, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses, InaccessibleAuraEnabledGetter">
 <title>Error Prone | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -2002,6 +2002,99 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/EmptyWhileStmt"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="inaccessibleauraenabledgetter">InaccessibleAuraEnabledGetter</h2>
+
+<p><strong>Since:</strong> PMD 6.36.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>		In the Summer '21 release, a mandatory security update enforces access modifiers on Apex properties in Lightning component markup.
+		The update prevents access to private or protected Apex getters from Aura and Lightning Web Components.
+</code></pre></div></div>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/InaccessibleAuraEnabledGetterRule.java">net.sourceforge.pmd.lang.apex.rule.errorprone.InaccessibleAuraEnabledGetterRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="nd">@AuraEnabled</span>
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="n">counter</span> <span class="o">{</span> <span class="kd">private</span> <span class="n">get</span><span class="o">;</span> <span class="n">set</span><span class="o">;</span> <span class="o">}</span> <span class="c1">// Violating - Private getter is inaccessible to Lightning components</span>
+
+    <span class="nd">@AuraEnabled</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Foo</span> <span class="nf">bar</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">();</span>
+        <span class="n">foo</span><span class="o">.</span><span class="na">counter</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span> 
+        <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="nd">@AuraEnabled</span>
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="n">counter</span> <span class="o">{</span> <span class="kd">protected</span> <span class="n">get</span><span class="o">;</span> <span class="n">set</span><span class="o">;</span> <span class="o">}</span> <span class="c1">// Violating - Protected getter is inaccessible to Lightning components</span>
+
+    <span class="nd">@AuraEnabled</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Foo</span> <span class="nf">bar</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">();</span>
+        <span class="n">foo</span><span class="o">.</span><span class="na">counter</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span> 
+        <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="nd">@AuraEnabled</span>
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="n">counter</span> <span class="o">{</span> <span class="n">get</span><span class="o">;</span> <span class="n">set</span><span class="o">;</span> <span class="o">}</span> <span class="c1">// Compliant - Public getter is accessible to Lightning components</span>
+
+    <span class="nd">@AuraEnabled</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Foo</span> <span class="nf">bar</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nc">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">();</span>
+        <span class="n">foo</span><span class="o">.</span><span class="na">counter</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span> 
+        <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cc_categories</td>
+      <td>Style</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>cc_remediation_points_multiplier</td>
+      <td>1</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>cc_block_highlighting</td>
+      <td>false</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/InaccessibleAuraEnabledGetter"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="methodwithsamenameasenclosingclass">MethodWithSameNameAsEnclosingClass</h2>
 
 <p><strong>Since:</strong> PMD 5.5.0</p>
@@ -2240,7 +2333,7 @@ dealing with legacy code.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 1, 2021 <br />
+ Site last generated: Jun 8, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
