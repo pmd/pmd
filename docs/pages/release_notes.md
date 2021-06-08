@@ -16,9 +16,17 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+
+*   apex
+    *   [#3321](https://github.com/pmd/pmd/issues/3321): \[apex] New rule to detect inaccessible AuraEnabled getters (summer '21 security update)
+
+
 ### API Changes
 
 ### External Contributions
+
+*   [#3322](https://github.com/pmd/pmd/pull/3322): \[apex] added rule to detect inaccessible AuraEnabled getters - [Philippe Ozil](https://github.com/pozil)
+
 
 {% endtocmaker %}
 
