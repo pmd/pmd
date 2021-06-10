@@ -38,16 +38,15 @@ For other valid use cases that the statement is in fact valid make use of the `@
 public class Foo {
     public void bar() {
         Account acc = [SELECT Name, Owner.Name FROM Account LIMIT 1];
-        System.debug(accs);
+        System.debug(accs); // will get reported
     }
 
     @SuppressWarnings('PMD.AvoidDebugStatements')
     public void baz() {
-
         try {
             Account myAccount = bar();
         } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, e.getMessage());
+            System.debug(LoggingLevel.ERROR, e.getMessage()); // good to go
         }
     }
 }
