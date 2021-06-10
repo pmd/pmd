@@ -51,6 +51,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
      * {@value package.class#field}
      *
      * @throws package.class label
+     * @exception package.class label
      */
     private static final Pattern SEE_PATTERN = Pattern
         .compile("@see\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?");
@@ -62,7 +63,9 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     private static final Pattern THROWS_PATTERN = Pattern.compile("@throws\\s+(\\p{Alpha}\\w*)");
 
-    private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN };
+    private static final Pattern EXCEPTION_PATTERN = Pattern.compile("@exception\\s+(\\p{Alpha}\\w*)");
+
+    private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN, EXCEPTION_PATTERN };
 
     protected boolean justReportUnusedImports() {
         return false;

@@ -59,8 +59,8 @@ public class RuleDocGeneratorTest {
     public void testSingleRuleset() throws IOException {
         RuleDocGenerator generator = new RuleDocGenerator(writer, root);
 
-        RuleSetLoader rsf = new RuleSetLoader().includeDeprecatedRuleReferences(true);
-        RuleSet ruleset = rsf.loadFromResource("rulesets/ruledoctest/sample.xml");
+        RuleSetLoader rsl = new RuleSetLoader().includeDeprecatedRuleReferences(true);
+        RuleSet ruleset = rsl.loadFromResource("rulesets/ruledoctest/sample.xml");
 
         generator.generate(Arrays.asList(ruleset),
                 Arrays.asList(

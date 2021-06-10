@@ -2,11 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.errorprone;
+package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-@org.junit.Ignore("Rule has not been updated yet")
-public class BadComparisonTest extends PmdRuleTst {
+public class InaccessibleAuraEnabledGetterTest extends PmdRuleTst {
     // no additional unit tests
 }

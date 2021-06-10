@@ -196,7 +196,6 @@
     <!-- <rule ref="category/java/errorprone.xml/AvoidLosingExceptionInformation" /> -->
     <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators"/>
     <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/>
-    <rule ref="category/java/errorprone.xml/BadComparison"/>
     <!-- <rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize" /> -->
     <rule ref="category/java/errorprone.xml/BrokenNullCheck"/>
     <!-- <rule ref="category/java/errorprone.xml/CallSuperFirst" /> -->
@@ -209,6 +208,7 @@
     <!-- <rule ref="category/java/errorprone.xml/CloneThrowsCloneNotSupportedException"/> deprecated since 6.35.0 -->
     <rule ref="category/java/errorprone.xml/CloseResource"/>
     <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals"/>
+    <rule ref="category/java/errorprone.xml/ComparisonWithNaN"/>
     <!-- <rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod" /> -->
     <!-- <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis" /> -->
     <!-- <rule ref="category/java/errorprone.xml/DetachedTestCase" /> -->
