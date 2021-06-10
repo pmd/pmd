@@ -16,7 +16,7 @@ Rules that flag suboptimal code.
           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoiddebugstatements">
         <description>
-Debug statements contibute to longer transactions and consume
+Debug statements contribute to longer transactions and consume
 Apex CPU time even when there&apos;s no active debug trace.
         </description>
         <priority>3</priority>
