@@ -1800,20 +1800,20 @@ complex components.</p>
     <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
   <span class="o">}</span>
 
-  <span class="c1">// Has a cognitive complexity of 5</span>
+  <span class="c1">// Has a cognitive complexity of 4</span>
   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">updateContacts</span><span class="o">(</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Contact</span><span class="o">&gt;</span> <span class="n">contacts</span><span class="o">)</span> <span class="o">{</span>
     <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Contact</span><span class="o">&gt;</span> <span class="n">contactsToUpdate</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Contact</span><span class="o">&gt;();</span>
 
     <span class="k">for</span> <span class="o">(</span><span class="nc">Contact</span> <span class="n">contact</span> <span class="o">:</span> <span class="n">contacts</span><span class="o">)</span> <span class="o">{</span>                           <span class="c1">// +1</span>
-      <span class="k">if</span> <span class="o">(</span><span class="n">contact</span><span class="o">.</span><span class="na">department</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Finance"</span><span class="o">))</span> <span class="o">{</span>                <span class="c1">// +2</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">contact</span><span class="o">.</span><span class="na">department</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Finance"</span><span class="o">))</span> <span class="o">{</span>                <span class="c1">// +2 (nesting = 1)</span>
         <span class="n">contact</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="s">"Finance Specialist"</span><span class="o">;</span>
         <span class="n">contactsToUpdate</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">contact</span><span class="o">);</span>
-      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">contact</span><span class="o">.</span><span class="na">department</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Sales"</span><span class="o">))</span> <span class="o">{</span>           <span class="c1">// +2</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">contact</span><span class="o">.</span><span class="na">department</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Sales"</span><span class="o">))</span> <span class="o">{</span>           <span class="c1">// +1</span>
         <span class="n">contact</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="s">"Sales Specialist"</span><span class="o">;</span>
         <span class="n">contactsToUpdate</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">contact</span><span class="o">);</span>
       <span class="o">}</span>
     <span class="o">}</span>
-    <span class="c1">// save contracts</span>
+    <span class="c1">// save contacts</span>
   <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
