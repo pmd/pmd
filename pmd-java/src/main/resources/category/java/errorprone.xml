@@ -2629,13 +2629,30 @@ public class Foo {
           language="java"
           since="2.0"
           message="Class contains more than one logger."
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.MoreThanOneLoggerRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#morethanonelogger">
         <description>
 Normally only one logger is used in each class. This rule supports slf4j, log4j, Java Util Logging and
 log4j2 (since 6.19.0).
         </description>
         <priority>2</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value><![CDATA[
+//ClassOrInterfaceDeclaration[
+  count(
+    ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration//ClassOrInterfaceType[
+      pmd-java:typeIs("org.apache.log4j.Logger") or
+      pmd-java:typeIs("org.apache.logging.log4j.Logger") or
+      pmd-java:typeIs("java.util.logging.Logger") or
+      pmd-java:typeIs("org.slf4j.Logger")
+    ]
+  ) > 1
+]
+                ]]></value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class Foo {

@@ -67,7 +67,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         // <clinit> method doesn't contain location information, however the containing ASTBlockStatements do,
         // so we fetch them for that method only.
         return node.findChildrenOfType(ASTMethod.class).stream()
-            .flatMap(method -> method.getImage().equals(STATIC_INITIALIZER_METHOD_NAME)
+            .flatMap(method -> STATIC_INITIALIZER_METHOD_NAME.equals(method.getImage())
                 ? method.findChildrenOfType(ASTBlockStatement.class).stream() : Stream.of(method))
             .collect(Collectors.toList());
     }
