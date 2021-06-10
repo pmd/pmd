@@ -29,6 +29,7 @@ This is a {{ site.pmd.release_type }} release.
 
 *   apex
     *   [#3321](https://github.com/pmd/pmd/issues/3321): \[apex] New rule to detect inaccessible AuraEnabled getters (summer '21 security update)
+    *   [#3332](https://github.com/pmd/pmd/issues/3332): \[apex] CognitiveComplexity - incorrect increment for "else if"
 
 
 ### API Changes
