@@ -20,5 +20,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 
+*   [#3320](https://github.com/pmd/pmd/pull/3320): \[java] Fix incorrect increment for "else if" branch in Cognitive Complexity docs - [Denis Borovikov](https://github.com/borovikovd)
+
 {% endtocmaker %}
 
