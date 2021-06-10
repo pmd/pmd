@@ -14,6 +14,16 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New rules
+
+*   The new Apex rule {% rule "apex/errorprone/InaccessibleAuraEnabledGetter" %} checks that an `AuraEnabled`
+    getter is public or global. This is necessary if it is referenced in Lightning components.
+    You can try out this rule like so:
+
+```xml
+    <rule ref="category/apex/errorprone.xml/InaccessibleAuraEnabledGetter" />
+```
+
 ### Fixed Issues
 
 
