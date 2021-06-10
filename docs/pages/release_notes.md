@@ -26,7 +26,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Renamed rules
 
-*   The Java rule "BadComparison" (category error-prone) has been renamed to
+*   The Java rule {% rule "java/errorprone/BadComparison" %} has been renamed to
     {% rule "java/errorprone/ComparisonWithNaN" %} to better reflect what the rule actually detects.
     It now considers usages of `Double.NaN` or `Float.NaN` in more cases and fixes false negatives.
 
