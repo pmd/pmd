@@ -14,10 +14,19 @@
               "shortDescription": {
                 "text": "Apex classes should declare a sharing model if DML or SOQL/SOSL is used"
               },
+              "fullDescription": {
+                "text": "Detect classes declared without explicit sharing mode if DML methods are used. This forces the developer to take access restrictions into account before modifying objects."
+              },
               "helpUri": "https://pmd.github.io/pmd/pmd_rules_apex_security.html#apexsharingviolations",
+              "help": {
+                "text": "Detect classes declared without explicit sharing mode if DML methods are used. This forces the developer to take access restrictions into account before modifying objects."
+              },
               "properties": {
                 "ruleset": "Security",
-                "priority": 3
+                "priority": 3,
+                "tags":[
+                  "Security"
+                ]
               }
             },
             {
@@ -25,10 +34,19 @@
               "shortDescription": {
                 "text": "Missing ApexDoc comment"
               },
+              "fullDescription": {
+                "text": "This rule validates that: ApexDoc comments are present for classes, methods, and properties that are public or global, excluding overrides and test classes (as well as the contents of test classes)."
+              },
               "helpUri": "https://pmd.github.io/pmd/pmd_rules_apex_documentation.html#apexdoc",
+              "help": {
+                "text": "This rule validates that: ApexDoc comments are present for classes, methods, and properties that are public or global, excluding overrides and test classes (as well as the contents of test classes)."
+              },
               "properties": {
                 "ruleset": "Documentation",
-                "priority": 3
+                "priority": 3,
+                "tags": [
+                  "Documentation"
+                ]
               }
             }
           ]
