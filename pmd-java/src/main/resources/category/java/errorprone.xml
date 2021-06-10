@@ -638,37 +638,7 @@ k = i * j;      // set k with 80 not 120
         </example>
     </rule>
 
-    <rule name="BadComparison"
-          language="java"
-          since="1.8"
-          deprecated="true"
-          message="Avoid equality comparisons with Double.NaN"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#badcomparison">
-        <description>
-Avoid equality comparisons with Double.NaN.
-
-This rule is deprecated and will be removed in PMD 7. Use {% rule ComparisonWithNaN %} instead.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//EqualityExpression[@Image='==']
- /PrimaryExpression/PrimaryPrefix
- /Name[@Image='Double.NaN' or @Image='Float.NaN']
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-boolean x = (y == Double.NaN);
-]]>
-        </example>
-    </rule>
+    <rule name="BadComparison" ref="ComparisonWithNaN" deprecated="true" />
 
     <rule name="BeanMembersShouldSerialize"
           language="java"
@@ -1176,6 +1146,8 @@ class Foo {
             (or `Float.isNaN`). The `!=` operator should be treated similarly.
             Finally, comparisons like `someDouble <= Double.NaN` are nonsensical
             and will always evaluate to false.
+            
+            This rule has been renamed from "BadComparison" with PMD 6.36.0.
         ]]></description>
         <priority>3</priority>
         <properties>
