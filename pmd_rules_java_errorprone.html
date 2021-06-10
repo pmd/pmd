@@ -4243,7 +4243,18 @@ See the property <code class="language-plaintext highlighter-rouge">annotations<
 <p>Normally only one logger is used in each class. This rule supports slf4j, log4j, Java Util Logging and
 log4j2 (since 6.19.0).</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/MoreThanOneLoggerRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.MoreThanOneLoggerRule</a></p>
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="w">
+  </span><span class="nf">count</span><span class="p">(</span><span class="w">
+    </span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="w">
+      </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s2">"org.apache.log4j.Logger"</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
+      </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s2">"org.apache.logging.log4j.Logger"</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
+      </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s2">"java.util.logging.Logger"</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
+      </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s2">"org.slf4j.Logger"</span><span class="p">)</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
 
