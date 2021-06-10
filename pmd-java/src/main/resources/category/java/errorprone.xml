@@ -1135,7 +1135,7 @@ class Foo {
           since="6.36.0"
           message="Comparisons with NaN always return false"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#badcomparison">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#comparisonwithnan">
         <description><![CDATA[
             Reports comparisons with double and float `NaN` (Not-a-Number) values.
             These are [specified](https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.21.1)
