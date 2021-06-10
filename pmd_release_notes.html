@@ -1430,6 +1430,17 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="new-rules">New rules</h4>
+
+<ul>
+  <li>The new Apex rule <a href="pmd_rules_apex_errorprone.html#inaccessibleauraenabledgetter"><code class="language-plaintext highlighter-rouge">InaccessibleAuraEnabledGetter</code></a> checks that an <code class="language-plaintext highlighter-rouge">AuraEnabled</code>
+getter is public or global. This is necessary if it is referenced in Lightning components.
+You can try out this rule like so:</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/InaccessibleAuraEnabledGetter"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1464,7 +1475,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 8, 2021 <br />
+ Site last generated: Jun 10, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

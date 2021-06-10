@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidNonExistentAnnotations, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses, InaccessibleAuraEnabledGetter">
+<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidNonExistentAnnotations, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, InaccessibleAuraEnabledGetter, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses">
 <title>Error Prone | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -2008,9 +2008,9 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>		In the Summer '21 release, a mandatory security update enforces access modifiers on Apex properties in Lightning component markup.
-		The update prevents access to private or protected Apex getters from Aura and Lightning Web Components.
-</code></pre></div></div>
+<p>In the Summer ‘21 release, a mandatory security update enforces access modifiers on Apex properties in
+Lightning component markup. The update prevents access to private or protected Apex getters from Aura
+and Lightning Web Components.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/InaccessibleAuraEnabledGetterRule.java">net.sourceforge.pmd.lang.apex.rule.errorprone.InaccessibleAuraEnabledGetterRule</a></p>
 
@@ -2333,7 +2333,7 @@ dealing with legacy code.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 8, 2021 <br />
+ Site last generated: Jun 10, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
