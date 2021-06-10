@@ -187,7 +187,7 @@ boolean isActive() ;
         <expected-linenumbers>9,19</expected-linenumbers>
         <expected-messages>
             <message>The method 'setPhoneNumberIfNotExisting(Account, String)' has a cognitive complexity of 1, current threshold is 1</message>
-            <message>The method 'updateContacts(List)' has a cognitive complexity of 4, current threshold is 1</message>
+            <message>The method 'updateContacts(List&lt;Contact&gt;)' has a cognitive complexity of 4, current threshold is 1</message>
         </expected-messages>
         <code>
             <![CDATA[
