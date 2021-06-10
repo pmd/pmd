@@ -10,11 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
@@ -28,9 +33,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -72,7 +77,9 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
         constructorLength = getConstructorLength(node, constructorLength);
         anticipatedLength = getInitialLength(node);
-
+        if (anticipatedLength > 0) {
+            constructorLength = anticipatedLength + DEFAULT_BUFFER_SIZE;
+        }
         anticipatedLength += getConstructorAppendsLength(node);
 
         List<NameOccurrence> usage = node.getUsages();
@@ -83,45 +90,83 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             if (!InefficientStringBufferingRule.isInStringBufferOperationChain(n, "append")) {
 
                 if (!jno.isOnLeftHandSide()
-                        && !InefficientStringBufferingRule.isInStringBufferOperationChain(n, "setLength")) {
+                        && !(InefficientStringBufferingRule.isInStringBufferOperationChain(n, "setLength")
+                                || InefficientStringBufferingRule.isInStringBufferOperationChain(n, "ensureCapacity"))) {
                     continue;
                 }
+
+                if (n.getImage().endsWith("setLength")) {
+                    int newLength = getConstructorLength(n, 0);
+                    if (newLength > constructorLength) {
+                        constructorLength = newLength; // a bigger setLength increases capacity
+                        rootNode = n;
+                    }
+                    anticipatedLength = newLength; // setLength fills the string builder, any new append adds to this
+                } else if (n.getImage().endsWith("ensureCapacity")) {
+                    int newCapacity = getConstructorLength(n, 0);
+                    if (newCapacity > constructorLength) { // only a bigger new capacity changes the capacity
+                        constructorLength = newCapacity;
+                        rootNode = n;
+                    }
+                } else {
+                    // this is a constructor call. report possible violation for the old instance now
+                    if (constructorLength != -1 && anticipatedLength > constructorLength) {
+                        anticipatedLength += processBlocks(blocks);
+                        reportViolation(data, node, rootNode, constructorLength, anticipatedLength);
+                    }
+
+                    // new initial capacity
+                    constructorLength = getConstructorLength(n, DEFAULT_BUFFER_SIZE);
+                    rootNode = n;
+                    anticipatedLength = getInitialLength(n);
+                    if (anticipatedLength > 0) {
+                        constructorLength = anticipatedLength + DEFAULT_BUFFER_SIZE;
+                    }
+                    anticipatedLength += getConstructorAppendsLength(n);
+                }
+
                 if (constructorLength != -1 && anticipatedLength > constructorLength) {
                     anticipatedLength += processBlocks(blocks);
-                    String[] param = { String.valueOf(constructorLength), String.valueOf(anticipatedLength) };
-                    addViolation(data, rootNode, param);
+                    reportViolation(data, node, rootNode, constructorLength, anticipatedLength);
                 }
-                constructorLength = getConstructorLength(n, constructorLength);
-                rootNode = n;
-                anticipatedLength = getInitialLength(node);
-            }
-            ASTPrimaryExpression s = n.getFirstParentOfType(ASTPrimaryExpression.class);
-            int numChildren = s.getNumChildren();
-            for (int jx = 0; jx < numChildren; jx++) {
-                Node sn = s.getChild(jx);
-                if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
-                    continue;
-                }
-                int thisSize = 0;
-                Node block = getFirstParentBlock(sn);
-                if (isAdditive(sn)) {
-                    thisSize = processAdditive(sn);
-                } else {
-                    thisSize = processNode(sn);
-                }
-                if (block != null) {
-                    storeBlockStatistics(blocks, thisSize, block);
-                } else {
-                    anticipatedLength += thisSize;
+            } else {
+                ASTPrimaryExpression s = n.getFirstParentOfType(ASTPrimaryExpression.class);
+                int numChildren = s.getNumChildren();
+                for (int jx = 0; jx < numChildren; jx++) {
+                    Node sn = s.getChild(jx);
+                    if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
+                        continue;
+                    }
+                    int thisSize = 0;
+                    Node block = getFirstParentBlock(sn);
+                    if (isAdditive(sn)) {
+                        thisSize = processAdditive(sn);
+                    } else {
+                        thisSize = processNode(sn);
+                    }
+                    if (block != null) {
+                        storeBlockStatistics(blocks, thisSize, block);
+                    } else {
+                        anticipatedLength += thisSize;
+                    }
                 }
             }
         }
         anticipatedLength += processBlocks(blocks);
         if (constructorLength != -1 && anticipatedLength > constructorLength) {
-            String[] param = { String.valueOf(constructorLength), String.valueOf(anticipatedLength) };
-            addViolation(data, rootNode, param);
+            reportViolation(data, node, rootNode, constructorLength, anticipatedLength);
         }
         return data;
+    }
+
+    private void reportViolation(Object data, ASTVariableDeclaratorId instance, Node reportNode, int capacity,
+            int anticipatedLength) {
+        String typeName = "StringBuilder";
+        if (instance.getType() != null) {
+            typeName = instance.getType().getSimpleName();
+        }
+
+        addViolation(data, reportNode, new Object[] {typeName, capacity, anticipatedLength});
     }
 
     /**
@@ -219,6 +264,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                                 // base 10 integer string: 3735928559
                                 anticipatedLength += String.valueOf(literal.getValueAsLong()).length();
                             }
+                        } else if (literal.isLongLiteral()) {
+                            anticipatedLength += String.valueOf(literal.getValueAsLong()).length();
                         } else {
                             anticipatedLength += str.length();
                         }
@@ -245,48 +292,16 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             }
         }
 
-        // if there is any addition/subtraction going on then just use the
-        // default.
-        ASTAdditiveExpression exp = block.getFirstDescendantOfType(ASTAdditiveExpression.class);
-        if (exp != null) {
-            return DEFAULT_BUFFER_SIZE;
-        }
-        ASTMultiplicativeExpression mult = block.getFirstDescendantOfType(ASTMultiplicativeExpression.class);
-        if (mult != null) {
-            return DEFAULT_BUFFER_SIZE;
-        }
-
-        List<ASTLiteral> literals;
-        ASTAllocationExpression constructorCall = block.getFirstDescendantOfType(ASTAllocationExpression.class);
-        if (constructorCall != null) {
-            // if this is a constructor call, only consider the literals within
-            // it.
-            literals = constructorCall.findDescendantsOfType(ASTLiteral.class);
-        } else {
-            // otherwise it might be a setLength call...
-            literals = block.findDescendantsOfType(ASTLiteral.class);
-        }
-        if (literals.isEmpty()) {
-            List<ASTName> name = block.findDescendantsOfType(ASTName.class);
+        // argumentList can be from constructor call or setLength call
+        ASTArgumentList argumentList = block.getFirstDescendantOfType(ASTArgumentList.class);
+        if (argumentList != null) {
+            // if there are any method calls involved, we can't calculate the initial size
+            List<ASTName> name = argumentList.findDescendantsOfType(ASTName.class);
             if (!name.isEmpty()) {
                 iConstructorLength = -1;
+            } else {
+                iConstructorLength = calculateExpression(argumentList);
             }
-        } else if (literals.size() == 1) {
-            ASTLiteral literal = literals.get(0);
-            String str = literal.getImage();
-            if (str == null) {
-                iConstructorLength = 0;
-            } else if (isStringOrCharLiteral(literal)) {
-                // since it's not taken into account
-                // anywhere. only count the extra 16
-                // characters
-                // don't add the constructor's length
-                iConstructorLength = 14 + str.length();
-            } else if (literal.isIntLiteral()) {
-                iConstructorLength = literal.getValueAsInt();
-            }
-        } else {
-            iConstructorLength = -1;
         }
 
         if (iConstructorLength == 0) {
@@ -300,17 +315,74 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         return iConstructorLength;
     }
 
+    private int calculateExpression(ASTArgumentList argumentList) {
+        if (argumentList == null) {
+            return -1;
+        }
+
+        ASTExpression expr = argumentList.getFirstChildOfType(ASTExpression.class);
+        if (expr == null) {
+            return -1;
+        }
+
+        class ExpressionVisitor extends JavaParserVisitorAdapter {
+            @Override
+            public Object visit(ASTExpression node, Object data) {
+                node.getChild(0).jjtAccept(this, data);
+                return data;
+            }
+
+            @Override
+            public Object visit(ASTAdditiveExpression node, Object data) {
+                MutableInt partSum = new MutableInt(0);
+                for (JavaNode child : node.children()) {
+                    MutableInt part = new MutableInt();
+                    child.jjtAccept(this, part);
+                    partSum.add(part.getValue());
+                }
+                ((MutableInt) data).setValue(partSum.getValue());
+                return data;
+            }
+
+            @Override
+            public Object visit(ASTMultiplicativeExpression node, Object data) {
+                MutableInt partResult = new MutableInt(1);
+                for (JavaNode child : node.children()) {
+                    MutableInt part = new MutableInt(0);
+                    child.jjtAccept(this, part);
+                    partResult.setValue(partResult.getValue() * part.getValue());
+                }
+                ((MutableInt) data).setValue(partResult.getValue());
+                return data;
+            }
+
+            @Override
+            public Object visit(ASTLiteral node, Object data) {
+                ((MutableInt) data).setValue(node.getValueAsInt());
+                return data;
+            }
+        }
+
+        MutableInt result = new MutableInt(0);
+        expr.jjtAccept(new ExpressionVisitor(), result);
+        return result.getValue();
+    }
+
     private int getInitialLength(Node node) {
-
         Node block = node.getFirstParentOfType(ASTBlockStatement.class);
-
         if (block == null) {
             block = node.getFirstParentOfType(ASTFieldDeclaration.class);
             if (block == null) {
                 block = node.getFirstParentOfType(ASTFormalParameter.class);
             }
         }
-        List<ASTLiteral> literals = block.findDescendantsOfType(ASTLiteral.class);
+
+        ASTAllocationExpression allocation = block.getFirstDescendantOfType(ASTAllocationExpression.class);
+        if (allocation == null) {
+            return 0;
+        }
+
+        List<ASTLiteral> literals = allocation.findDescendantsOfType(ASTLiteral.class);
         if (literals.size() == 1) {
             ASTLiteral literal = literals.get(0);
             String str = literal.getImage();
@@ -323,22 +395,23 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     }
 
     private int getConstructorAppendsLength(final Node node) {
-        final Node parent = node.getFirstParentOfType(ASTVariableDeclarator.class);
-        int size = 0;
-        if (parent != null) {
-            final Node initializer = parent.getFirstChildOfType(ASTVariableInitializer.class);
-            if (initializer != null) {
-                final Node primExp = initializer.getFirstDescendantOfType(ASTPrimaryExpression.class);
-                if (primExp != null) {
-                    for (int i = 0; i < primExp.getNumChildren(); i++) {
-                        final Node sn = primExp.getChild(i);
-                        if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
-                            continue;
-                        }
-                        size += processNode(sn);
-                    }
-                }
+        Node block = node.getFirstParentOfType(ASTBlockStatement.class);
+        if (block == null) {
+            block = node.getFirstParentOfType(ASTFieldDeclaration.class);
+            if (block == null) {
+                block = node.getFirstParentOfType(ASTFormalParameter.class);
             }
+        }
+
+        int size = 0;
+        // these are constructor arguments and method arguments from all method calls
+        // but we want here only method calls, that are chained
+        List<ASTArguments> arguments = block.findDescendantsOfType(ASTArguments.class);
+        for (ASTArguments arg : arguments) {
+            if (arg.getParent() instanceof ASTAllocationExpression) {
+                continue;
+            }
+            size += processNode(arg);
         }
         return size;
     }

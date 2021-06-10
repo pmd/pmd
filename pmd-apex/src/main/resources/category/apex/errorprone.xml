@@ -319,6 +319,68 @@ public void bar(Integer a, Integer b) {
         </example>
     </rule>
 
+    <rule name="InaccessibleAuraEnabledGetter"
+          language="apex"
+          since="6.36.0"
+          message="AuraEnabled getter must be public or global if is referenced in Lightning components"
+          class="net.sourceforge.pmd.lang.apex.rule.errorprone.InaccessibleAuraEnabledGetterRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#inaccessibleauraenabledgetter">
+        <description>
+In the Summer '21 release, a mandatory security update enforces access modifiers on Apex properties in
+Lightning component markup. The update prevents access to private or protected Apex getters from Aura
+and Lightning Web Components.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    @AuraEnabled
+    public Integer counter { private get; set; } // Violating - Private getter is inaccessible to Lightning components
+
+    @AuraEnabled
+    public static Foo bar()
+    {
+        Foo foo = new Foo();
+        foo.counter = 2; 
+        return foo;
+    }
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+public class Foo {
+    @AuraEnabled
+    public Integer counter { protected get; set; } // Violating - Protected getter is inaccessible to Lightning components
+
+    @AuraEnabled
+    public static Foo bar()
+    {
+        Foo foo = new Foo();
+        foo.counter = 2; 
+        return foo;
+    }
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+public class Foo {
+    @AuraEnabled
+    public Integer counter { get; set; } // Compliant - Public getter is accessible to Lightning components
+
+    @AuraEnabled
+    public static Foo bar()
+    {
+        Foo foo = new Foo();
+        foo.counter = 2; 
+        return foo;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="MethodWithSameNameAsEnclosingClass"
           language="apex"
           since="5.5.0"

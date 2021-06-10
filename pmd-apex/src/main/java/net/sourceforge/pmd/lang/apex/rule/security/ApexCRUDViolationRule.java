@@ -443,7 +443,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private boolean isProperESAPICheckForDML(final String typeToCheck, final String dmlOperation) {
         final boolean hasMapping = checkedTypeToDMLOperationViaESAPI.containsKey(typeToCheck.toString());
         if (hasMapping) {
-            if (dmlOperation.equals(ANY)) {
+            if (ANY.equals(dmlOperation)) {
                 return true;
             }
 
@@ -491,7 +491,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                     properChecksHappened = true;
                     break;
                 }
-                if (crudMethod.equals(ANY)) {
+                if (ANY.equals(crudMethod)) {
                     properChecksHappened = true;
                     break;
                 }

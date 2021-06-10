@@ -127,6 +127,7 @@
     <!-- <rule ref="category/java/design.xml/AvoidThrowingRawExceptionTypes" /> -->
     <!-- <rule ref="category/java/design.xml/AvoidUncheckedExceptionsInSignatures" /> -->
     <rule ref="category/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
+    <!-- <rule ref="category/java/design.xml/CognitiveComplexity" /> -->
     <!-- <rule ref="category/java/design.xml/CollapsibleIfStatements"/>-->
     <!-- <rule ref="category/java/design.xml/CouplingBetweenObjects" /> -->
     <!-- <rule ref="category/java/design.xml/CyclomaticComplexity" /> -->
@@ -149,6 +150,7 @@
     <!--         <property name="classes" value="org.sample.SampleInterface,org.sample2.SampleInterface" /> -->
     <!--     </properties> -->
     <!-- </rule> -->
+    <!-- <rule ref="category/java/design.xml/MutableStaticState" /> -->
     <!-- <rule ref="category/java/design.xml/NcssCount" /> -->
     <!-- <rule ref="category/java/design.xml/NPathComplexity" /> -->
     <!-- <rule ref="category/java/design.xml/SignatureDeclareThrowsException" /> -->

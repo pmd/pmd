@@ -433,6 +433,67 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="CognitiveComplexity"
+        language="java"
+        message="The {0} ''{1}'' has a cognitive complexity of {2}, current threshold is {3}"
+        since="6.35.0"
+        class="net.sourceforge.pmd.lang.java.rule.design.CognitiveComplexityRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#cognitivecomplexity">
+        <description><![CDATA[
+            Methods that are highly complex are difficult to read and more costly to maintain. If you include too much decisional
+            logic within a single method, you make its behavior hard to understand and more difficult to modify.
+
+            Cognitive complexity is a measure of how difficult it is for humans to read and understand a method. Code that contains
+            a break in the control flow is more complex, whereas the use of language shorthands doesn't increase the level of
+            complexity. Nested control flows can make a method more difficult to understand, with each additional nesting of the
+            control flow leading to an increase in cognitive complexity.
+
+            Information about Cognitive complexity can be found in the original paper here:
+            <https://www.sonarsource.com/docs/CognitiveComplexity.pdf>
+
+            By default, this rule reports methods with a complexity of 15 or more. Reported methods should be broken down into less
+            complex components.
+        ]]></description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+  // Has a cognitive complexity of 0
+  public void createAccount() {
+    Account account = new Account("PMD");
+    // save account
+  }
+
+  // Has a cognitive complexity of 1
+  public Boolean setPhoneNumberIfNotExisting(Account a, String phone) {
+    if (a.phone == null) {                          // +1
+      a.phone = phone;
+      return true;
+    }
+
+    return false;
+  }
+
+  // Has a cognitive complexity of 4
+  public void updateContacts(List<Contact> contacts) {
+    List<Contact> contactsToUpdate = new ArrayList<Contact>();
+
+    for (Contact contact : contacts) {                           // +1
+      if (contact.department.equals("Finance")) {                // +2 (nesting = 1)
+        contact.title = "Finance Specialist";
+        contactsToUpdate.add(contact);
+      } else if (contact.department.equals("Sales")) {           // +1
+        contact.title = "Sales Specialist";
+        contactsToUpdate.add(contact);
+      }
+    }
+    // save contacts
+  }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="CyclomaticComplexity"
           language="java"
           message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."

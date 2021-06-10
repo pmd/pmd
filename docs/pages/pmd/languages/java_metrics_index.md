@@ -62,6 +62,77 @@ public class Foo { // total 8
 
 * Option `includeJavaLang`: Also include classes from the package `java.lang`
 
+## Cognitive Complexity (COGNITIVE_COMPLEXITY)
+
+*Operation metric.* Can be calculated on any non-abstract operation.
+
+### Description
+
+Cognitive complexity is a measure of how difficult it is for humans to read and understand a method. Code that contains
+a break in the control flow is more complex, whereas the use of language shorthands doesn't increase the level of
+complexity. Nested control flows can make a method more difficult to understand, with each additional nesting of the
+control flow leading to an increase in cognitive complexity.
+
+Information about Cognitive complexity can be found in the original paper here:
+[CognitiveComplexity](https://www.sonarsource.com/docs/CognitiveComplexity.pdf)
+
+The rule {% rule java/design/CognitiveComplexity %} by default reports methods with a complexity of 15 or more. 
+These reported methods should be broken down into less
+complex components.
+
+### Basic Idea
+
+1. Ignore structures that allow multiple statements to be readably shorthanded into one
+2. Increment (add one) for each break in the linear flow of the code
+3. Increment when flow-breaking structures are nested
+
+### Increments
+There is an increment for each of the following:
+* `if`, `else if`, `else`, ternary operator
+* `switch`
+* `for`, `foreach`
+* `while`, `do while`
+* `catch`
+* `goto LABEL`, `break LABEL`, `continue LABEL`
+* sequences of binary logical operators
+* each method in a recursion cycle
+
+### Nesting level
+The following structures increment the nesting level:
+* `if`, `else if`, `else`, ternary operator
+* `switch`
+* `for`, `foreach`
+* `while`, `do while`
+* `catch`
+* nested methods and method-like structures such as lambdas
+
+### Nesting increments
+The following structures receive a nesting increment commensurate with their nested depth
+inside nested structures:
+* `if`, ternary operator
+* `switch`
+* `for`, `foreach`
+* `while`, `do while`
+* `catch`
+
+### Code example
+
+```java
+class Foo {
+  void myMethod () {
+    try {
+      if (condition1) { // +1
+        for (int i = 0; i < 10; i++) { // +2 (nesting=1)
+          while (condition2) { } // +3 (nesting=2)
+        }
+      }
+    } catch (ExcepType1 | ExcepType2 e) { // +1
+      if (condition2) { } // +2 (nesting=1)
+    }
+  } // Cognitive Complexity 9
+}
+```
+
 ## Cyclomatic Complexity (CYCLO) 
 
 *Operation metric.* Can be calculated on any non-abstract operation.
