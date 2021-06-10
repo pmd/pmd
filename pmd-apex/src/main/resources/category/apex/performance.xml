@@ -16,8 +16,11 @@ Rules that flag suboptimal code.
           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoiddebugstatements">
         <description>
-Debug statements contribute to longer transactions and consume
-Apex CPU time even when there&apos;s no active debug trace.
+Debug statements contribute to longer transactions and consume Apex CPU time even when debug logs are not being captured.
+
+When possible make use of other debugging techniques such as the Apex Replay Debugger and Checkpoints that could cover *most* use cases.
+
+For other valid use cases that the statement is in fact valid make use of the `@SuppressWarnings` annotation or the `//NOPMD` comment.
         </description>
         <priority>3</priority>
         <properties>
@@ -34,8 +37,18 @@ Apex CPU time even when there&apos;s no active debug trace.
 <![CDATA[
 public class Foo {
     public void bar() {
-        List<Account> accs = [SELECT Name, Owner.Name FROM Account];
+        Account acc = [SELECT Name, Owner.Name FROM Account LIMIT 1];
         System.debug(accs);
+    }
+
+    @SuppressWarnings('PMD.AvoidDebugStatements')
+    public void baz() {
+
+        try {
+            Account myAccount = bar();
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, e.getMessage());
+        }
     }
 }
 ]]>
