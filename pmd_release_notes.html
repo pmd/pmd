@@ -1441,6 +1441,14 @@ You can try out this rule like so:</li>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/InaccessibleAuraEnabledGetter"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h3 id="renamed-rules">Renamed rules</h3>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_errorprone.html#badcomparison"><code class="language-plaintext highlighter-rouge">BadComparison</code></a> has been renamed to
+<a href="pmd_rules_java_errorprone.html#comparisonwithnan"><code class="language-plaintext highlighter-rouge">ComparisonWithNaN</code></a> to better reflect what the rule actually detects.
+It now considers usages of <code class="language-plaintext highlighter-rouge">Double.NaN</code> or <code class="language-plaintext highlighter-rouge">Float.NaN</code> in more cases and fixes false negatives.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1461,6 +1469,7 @@ You can try out this rule like so:</li>
   </li>
   <li>java-errorprone
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2895">#2895</a>: [java] Improve BadComparison and rename to ComparisonWithNaN</li>
       <li><a href="https://github.com/pmd/pmd/issues/3304">#3304</a>: [java] NPE in MoreThanOneLoggerRule on a java 16 record</li>
     </ul>
   </li>

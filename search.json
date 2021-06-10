@@ -3544,6 +3544,15 @@
 ,
 
 {
+"title": "ComparisonWithNaN (Java, Error Prone)",
+"tags": "",
+"keywords": "ComparisonWithNaN",
+"url": "pmd_rules_java_errorprone.html#comparisonwithnan",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
 "title": "ConstructorCallsOverridableMethod (Java, Error Prone)",
 "tags": "",
 "keywords": "ConstructorCallsOverridableMethod",
@@ -3575,6 +3584,15 @@
 "tags": "",
 "keywords": "DoNotCallGarbageCollectionExplicitly",
 "url": "pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "DoNotCallSystemExit (Java, Error Prone)",
+"tags": "",
+"keywords": "DoNotCallSystemExit",
+"url": "pmd_rules_java_errorprone.html#donotcallsystemexit",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
@@ -3800,6 +3818,15 @@
 "tags": "",
 "keywords": "InstantiationToGetClass",
 "url": "pmd_rules_java_errorprone.html#instantiationtogetclass",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "InvalidSlf4jMessageFormat (Java, Error Prone)",
+"tags": "",
+"keywords": "InvalidSlf4jMessageFormat",
+"url": "pmd_rules_java_errorprone.html#invalidslf4jmessageformat",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
