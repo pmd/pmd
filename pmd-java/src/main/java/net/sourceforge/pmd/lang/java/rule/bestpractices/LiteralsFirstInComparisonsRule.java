@@ -4,6 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
@@ -11,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
@@ -21,6 +32,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
@@ -51,10 +63,12 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
 
     private boolean isNullableComparisonWithStringLiteral(ASTPrimaryExpression expression) {
         String opName = getOperationName(expression);
+        ASTName opTarget = getOperationTarget(expression);
         ASTPrimarySuffix argsSuffix = getSuffixOfArguments(expression);
         return opName != null && argsSuffix != null
             && isStringLiteralComparison(opName, argsSuffix)
-            && isNotWithinNullComparison(expression);
+            && isNotWithinNullComparison(expression)
+            && !isConstantString(opTarget);
     }
 
     private String getOperationName(ASTPrimaryExpression primaryExpression) {
@@ -67,6 +81,12 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
         return primaryExpression.getNumChildren() > 2;
     }
 
+    private ASTName getOperationTarget(ASTPrimaryExpression primaryExpression) {
+        return isMethodsChain(primaryExpression)
+                ? getOperationTargetBySuffix(primaryExpression)
+                : getOperationTargetByPrefix(primaryExpression);
+    }
+
     private String getOperationNameBySuffix(ASTPrimaryExpression primaryExpression) {
         ASTPrimarySuffix opAsSuffix = getPrimarySuffixAtIndexFromEnd(primaryExpression, 1);
         if (opAsSuffix != null) {
@@ -76,11 +96,27 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
         return null;
     }
 
+    private ASTName getOperationTargetBySuffix(ASTPrimaryExpression primaryExpression) {
+        ASTPrimarySuffix opAsSuffix = getPrimarySuffixAtIndexFromEnd(primaryExpression, 1);
+        if (opAsSuffix != null) {
+            return opAsSuffix.getFirstChildOfType(ASTName.class);
+        }
+        return null;
+    }
+
     private String getOperationNameByPrefix(ASTPrimaryExpression primaryExpression) {
         ASTPrimaryPrefix opAsPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
         if (opAsPrefix != null) {
             ASTName opName = opAsPrefix.getFirstChildOfType(ASTName.class); // name of pattern "*.operation"
             return opName != null ? opName.getImage() : null;
+        }
+        return null;
+    }
+
+    private ASTName getOperationTargetByPrefix(ASTPrimaryExpression primaryExpression) {
+        ASTPrimaryPrefix opAsPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+        if (opAsPrefix != null) {
+            return opAsPrefix.getFirstChildOfType(ASTName.class); // name of pattern "*.operation"
         }
         return null;
     }
@@ -166,9 +202,60 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
                 return resolvedNode.isFinal()
                     && resolvedNode.isField()
                     && resolvedNode.getFirstParentOfType(ASTFieldDeclaration.class).isStatic();
+            } else if (resolved == null) {
+                // try to resolve a referenced static field
+                List<ASTImportDeclaration> imports = node.getRoot().findChildrenOfType(ASTImportDeclaration.class);
+                Field field = tryResolve(name.getImage(), node.getRoot().getClassTypeResolver(), imports);
+                if (field != null) {
+                    return Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers());
+                }
             }
         }
         return false;
+    }
+
+    private Field tryResolve(String fullPossibleClassName, ClassTypeResolver resolver, List<ASTImportDeclaration> imports) {
+        Map<String, Class<?>> importedTypes = new HashMap<>();
+        Set<String> onDemandImports = new HashSet<>();
+        for (ASTImportDeclaration importDecl : imports) {
+            if (importDecl.getType() != null) {
+                importedTypes.put(importDecl.getType().getSimpleName(), importDecl.getType());
+            } else if (importDecl.isImportOnDemand()) {
+                onDemandImports.add(importDecl.getImportedName());
+            }
+        }
+
+        String[] splitName = fullPossibleClassName.split("\\.");
+        for (int i = splitName.length; i > 0; i--) {
+            String possibleClassName = StringUtils.join(splitName, ".", 0, i);
+            if (importedTypes.containsKey(possibleClassName)) {
+                String possibleFieldName = splitName[i];
+                Class<?> type = importedTypes.get(possibleClassName);
+                try {
+                    return type.getDeclaredField(possibleFieldName);
+                } catch (ReflectiveOperationException ignored) {
+                    // skip, try next
+                }
+            }
+        }
+        // try on-demand
+        for (int i = splitName.length; i > 0; i--) {
+            String possibleClassName = StringUtils.join(splitName, ".", 0, i);
+            for (String prefix : onDemandImports) {
+                Class<?> type = resolver.loadClassOrNull(prefix + "." + possibleClassName);
+                if (type == null) {
+                    continue;
+                }
+                
+                String possibleFieldName = splitName[i];
+                try {
+                    return type.getDeclaredField(possibleFieldName);
+                } catch (ReflectiveOperationException ignored) {
+                    // skip, try next
+                }
+            }
+        }
+        return null;
     }
 
     private boolean isNotWithinNullComparison(ASTPrimaryExpression node) {
