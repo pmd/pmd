@@ -9,7 +9,6 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
     public void bar() {
         StringBuffer sb = new StringBuffer(15);
         sb.append("foo");
@@ -42,6 +41,7 @@ public class Foo {
     <test-code>
         <description>2, Back to back append, not ok</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,10</expected-linenumbers>
         <code-ref id="back-to-back-append"/>
     </test-code>
 
@@ -79,6 +79,7 @@ public class Foo {
     <test-code>
         <description>4, Appends with literal appends</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,9</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -97,6 +98,7 @@ public class Foo {
     <test-code>
         <description>5, Appends broken up by while loop</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,12</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -121,6 +123,7 @@ public class Foo {
     <test-code>
         <description>6, Appends, then a variable</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,14</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -199,6 +202,7 @@ public class Foo {
     <test-code>
         <description>9, Multiple appends in same while</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,16</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -227,6 +231,7 @@ public class Foo {
     <test-code>
         <description>10, Multiple appends in same while, with multiple outside that while</description>
         <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,7,15,18</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -257,6 +262,7 @@ public class Foo {
     <test-code>
         <description>11, Multiple appends in same while, none outside the loop</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,13</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -314,6 +320,8 @@ public class Foo {
         <description>13, A bunch of loops, but nothing concurrent</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Iterator;
+import java.util.List;
 public class Foo {
     public void bar(List l) {
         StringBuffer sb = new StringBuffer();
@@ -357,7 +365,10 @@ public class Foo {
     <test-code>
         <description>14, A bunch of loops, one concurrent</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>15,34</expected-linenumbers>
         <code><![CDATA[
+import java.util.Iterator;
+import java.util.List;
 public class Foo {
     public void bar(List l) {
         StringBuffer sb = new StringBuffer();
@@ -404,6 +415,8 @@ public class Foo {
         <description>15, A bunch of loops, none concurrent, separated by else</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Iterator;
+import java.util.List;
 public class Foo {
     public void bar(List l) {
         StringBuffer sb = new StringBuffer();
@@ -533,6 +546,7 @@ public class Foo {
     <test-code>
         <description>20, Suffix append follwed by real append</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,12</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -623,6 +637,7 @@ public class Foo {
     <test-code>
         <description>23, force 2 failures on 3 lines</description>
         <expected-problems>4</expected-problems>
+        <expected-linenumbers>5,6,14,15</expected-linenumbers>
         <code-ref id="three-appends-on-one-line"/>
     </test-code>
 
@@ -630,6 +645,7 @@ public class Foo {
         <description>23, re-running with threshold</description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,15</expected-linenumbers>
         <code-ref id="three-appends-on-one-line"/>
     </test-code>
 
@@ -756,6 +772,7 @@ public class Foo {
     <test-code>
         <description>27, Concurrent Appends from within switch statement</description>
         <expected-problems>4</expected-problems>
+        <expected-linenumbers>12,19,37,44</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public String foo(int in) {
@@ -882,6 +899,7 @@ public class Foo {
     <test-code>
         <description>31, Adding two strings together then another append</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,10</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -902,6 +920,7 @@ public class Foo {
     <test-code>
         <description>32, Including the constructor's string</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -920,6 +939,7 @@ public class Foo {
     <test-code>
         <description>33, Additive in the constructor</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -1002,20 +1022,20 @@ public class Foo {
 
     <test-code>
         <description>37, Intervening method call not related to append</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar() {
         StringBuffer sb = new StringBuffer();
         sb.append("World");
-        sb.toString();
-        sb.append("World");
+        System.out.println(sb.toString());
+        sb.append("World"); // merging this append in the previous would change the result of toString()
     }
 
     public void bar2() {
         StringBuilder sb = new StringBuilder();
         sb.append("World");
-        sb.toString();
+        System.out.println(sb.toString());
         sb.append("World");
     }
 }
@@ -1024,7 +1044,7 @@ public class Foo {
 
     <test-code>
         <description>38, Intervening method call not related to append</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -1130,7 +1150,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code>
         <description>43, Using variable char array</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1213,14 +1233,14 @@ public class StringBufferTest {
         // This lint is reported as ConsecutiveLiteralAppends, but says ".append is called **5** consecutive times"
         final StringBuffer stringBuffer = new StringBuffer().append("agrego ").append("un ");
         stringBuffer.append("string "); // and in this line says ".append is called **4** consecutive times"
-        Log.i(TAG, stringBuffer.toString());
+        System.out.println(stringBuffer.toString());
 
         final StringBuffer stringBuffer2 = new StringBuffer();
         // ConsecutiveLiteralAppends is not reported on any of these lines
         stringBuffer2.append("agrego ");
         stringBuffer2.append("un ");
         stringBuffer2.append("string ");
-        Log.i(TAG, stringBuffer2.toString());
+        System.out.println(stringBuffer2.toString());
     }
 }
         ]]></code>
@@ -1266,6 +1286,7 @@ public class Foo {
     <test-code>
         <description>Consecutive append of literals other than string: integer</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -1280,6 +1301,7 @@ public class Foo {
     <test-code>
         <description>Consecutive append of literals other than string: chars</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -1297,6 +1319,7 @@ public class Foo {
     <test-code>
         <description>Consecutive append of literals other than string: mix chars and strings</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -1312,7 +1335,12 @@ public class Foo {
         <description>#1325 [java] False positive in ConsecutiveLiteralAppends</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+import java.util.function.Function;
+
 public class ConsecutiveLiteralAppendsFP {
+    private Function<Object, String> valueToStringFunction = String::valueOf;
+    private List nodes;
     public String test() {
         StringBuilder builder = new StringBuilder("[");
         nodes.forEach((k, v) -> builder
@@ -1393,7 +1421,7 @@ public final class Test {
             sb.append("literal2");
         } catch (ArithmeticException e) {
             sb.append("literal3");
-        } catch (ArrayIndexOutOfBoundException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             sb.append("literal4");
         } catch (Exception e) {
             sb.append("literal5");
@@ -1413,8 +1441,10 @@ public final class Test {
     <test-code>
         <description>Consecutive literal append over try</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+import java.io.IOException;
+
 public final class Test {
     public String foo() {
         final StringBuilder sb = new StringBuilder();
@@ -1470,6 +1500,7 @@ public class Foo {
     <test-code>
         <description>[java] StringBuilder/Buffer false negatives with typeres #2881</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
             package net.sourceforge.pmd.lang.java.types.testdata;
 
@@ -1486,6 +1517,7 @@ public class Foo {
     <test-code>
         <description>[java] StringBuilder/Buffer false negatives with typeres #2881 (countertest, no classpath)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
             public class NoCompiledClass {
                 public String toString() {
