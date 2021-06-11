@@ -56,6 +56,8 @@ public class Foo {
         <description>3, Appends broken up by variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Date;
+
 public class Foo {
     public void bar() {
         StringBuffer sb = new StringBuffer();
@@ -70,6 +72,14 @@ public class Foo {
         String foo = "Hello";
         sb.append("Hello");
         sb.append(foo);
+        sb.append("World");
+    }
+
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        String foo = "Hello";
+        sb.append("Hello");
+        sb.append(new Date());
         sb.append("World");
     }
 }
@@ -285,7 +295,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>12, Two loops, not concurrent appends though</description>
+        <description>12, Two loops, not consecutive appends though</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -317,7 +327,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>13, A bunch of loops, but nothing concurrent</description>
+        <description>13, A bunch of loops, but nothing consecutive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Iterator;
@@ -363,7 +373,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>14, A bunch of loops, one concurrent</description>
+        <description>14, A bunch of loops, one consecutive</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>15,34</expected-linenumbers>
         <code><![CDATA[
@@ -412,7 +422,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>15, A bunch of loops, none concurrent, separated by else</description>
+        <description>15, A bunch of loops, none consecutive, separated by else</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Iterator;
@@ -478,7 +488,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>17, Additive Expression 2</description>
+        <description>17a, Additive Expression 2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -493,6 +503,29 @@ public class Foo {
         StringBuilder sb = new StringBuilder();
         String foo = "World";
         sb.append("Hello" + foo);
+        sb.append("World");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>17b, Additive Expression 3</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,12</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer();
+        String foo = "Hello";
+        sb.append(foo + " ");
+        sb.append("World");
+    }
+
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        String foo = "Hello";
+        sb.append(foo + " ");
         sb.append("World");
     }
 }
@@ -544,7 +577,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>20, Suffix append follwed by real append</description>
+        <description>20, Suffix append followed by real append</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>5,12</expected-linenumbers>
         <code><![CDATA[
@@ -919,8 +952,8 @@ public class Foo {
 
     <test-code>
         <description>32, Including the constructor's string</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,8,15,26</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -931,6 +964,26 @@ public class Foo {
     public void bar2() {
         StringBuilder sb = new StringBuilder("CCC");
         sb.append("CCC");
+    }
+
+    private String getName() { return "foo"; }
+    public void bar3() {
+        StringBuilder sb = new StringBuilder(getName());
+        sb.append("first");
+        sb.append("second");
+    }
+
+    private String field = "f";
+    public void bar4() {
+        StringBuilder sb = new StringBuilder("CCC").append(this.field);
+        sb.append("CCC");
+    }
+
+    public void bar5(String desc) {
+        StringBuilder sb = new StringBuilder(desc)
+            .append("\n")
+            .append("CCC")
+            .append("DDD");
     }
 }
         ]]></code>
@@ -1276,7 +1329,13 @@ public class Foo {
     public String foo(final String value)
     {
         StringBuilder s = new StringBuilder("start:").append(value).append(":end");
+        return s.toString();
+    }
 
+    public String foo2(final String value)
+    {
+        StringBuilder s = new StringBuilder("start:").append(value);
+        s.append(":end");
         return s.toString();
     }
 }
@@ -1300,8 +1359,8 @@ public class Foo {
 
     <test-code>
         <description>Consecutive append of literals other than string: chars</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,13</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -1311,6 +1370,15 @@ public class Foo {
         s.append('l');
         s.append('l');
         s.append('o');
+    }
+
+    public void bar2(int i, String[] arr) {
+        StringBuilder s = new StringBuilder();
+        s.append('\n')
+         .append("Some string")
+         .append(i + 1)
+         .append("another")
+         .append(arr[i]);
     }
 }
         ]]></code>
@@ -1586,6 +1654,22 @@ public class FalsePositive {
 
     private static int findHTMLReservedChar(String text) {
         return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For-each loop, not consecutive appends</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ConsecutiveLiteralAppendsForEach {
+    public void foo(String[] arr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("array:\n");
+        for (String s : arr) {
+            sb.append('\t').append(s).append('\n');
+        }
     }
 }
         ]]></code>
