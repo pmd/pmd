@@ -187,7 +187,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
             counter.reset();
         } else if (invocation.getArguments().getFirstChild() instanceof ASTStringLiteral
                 || invocation instanceof ASTMethodCall) {
-            counter.count(invocation);
+            counter.count(invocation.getArguments().getFirstChild());
         }
     }
 
@@ -198,9 +198,10 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
             checkForViolation(data);
 
             if (firstArg instanceof ASTInfixExpression) {
-                if (((ASTInfixExpression) firstArg).getRightOperand() instanceof ASTStringLiteral) {
+                ASTExpression rightOperand = ((ASTInfixExpression) firstArg).getRightOperand();
+                if (rightOperand instanceof ASTStringLiteral) {
                     // argument ends with ... + "some string"
-                    counter.count(invocation);
+                    counter.count(rightOperand);
                 }
             } else {
                 // continue with a fresh round
@@ -209,7 +210,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
         } else {
             // no variables appended, compiler will take care of merging all the
             // string concats, we really only have 1 then
-            counter.count(invocation);
+            counter.count(invocation.getArguments().getFirstChild());
         }
     }
 

@@ -953,7 +953,7 @@ public class Foo {
     <test-code>
         <description>32, Including the constructor's string</description>
         <expected-problems>4</expected-problems>
-        <expected-linenumbers>3,8,15,26</expected-linenumbers>
+        <expected-linenumbers>3,8,15,27</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -1671,6 +1671,34 @@ public class ConsecutiveLiteralAppendsForEach {
             sb.append('\t').append(s).append('\n');
         }
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Wrong count of appends - should be 3</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer (or StringBuilder).append is called 3 consecutive times with literals. Use a single append with a single combined String.</message>
+            <message>StringBuffer (or StringBuilder).append is called 2 consecutive times with literals. Use a single append with a single combined String.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class ConsecutiveLiteralAppends3 {
+    public String createMessage(String description) {
+        StringBuilder sb = new StringBuilder(description)
+                .append("\n")                       // <--- here
+                .append("Endpoint handler details:\n")
+                .append("Method [")
+                .append(this.getMethod())
+                .append("]\n")                      // <--- here
+                .append("Bean [")
+                .append(this.getBean())
+                .append("]\n");
+        return sb.toString();
+    }
+    public String getMethod() { return "method"; }
+    public String getBean() { return "bean"; }
 }
         ]]></code>
     </test-code>
