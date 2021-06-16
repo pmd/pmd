@@ -534,7 +534,7 @@ public class FooTest extends TestCase {
     </test-code>
 
     <test-code>
-        <description>AssertJ and JUnit5 ?</description>
+        <description>AssertJ and JUnit5</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.assertj.core.api.Assertions;
@@ -545,6 +545,23 @@ class JUnit5AssertJTest {
   @Test
   void check() {
     Assertions.assertThat("FOO").isNotNull();
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit5</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class JUnit5Test {
+
+  @Test
+  void check() {
+    Assertions.assertNotNull("FOO");
   }
 }
         ]]></code>
