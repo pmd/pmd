@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
+@org.junit.Ignore("Disabled for pmd regression tester test")
 public class AbstractClassWithoutAbstractMethodTest extends PmdRuleTst {
     // no additional unit tests
 }

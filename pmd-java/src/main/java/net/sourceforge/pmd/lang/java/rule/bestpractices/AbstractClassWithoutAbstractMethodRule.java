@@ -5,11 +5,15 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.util.Random;
+
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
 public class AbstractClassWithoutAbstractMethodRule extends AbstractJavaRulechainRule {
+
+    private Random random = new Random(1234567L);
 
     public AbstractClassWithoutAbstractMethodRule() {
         super(ASTClassOrInterfaceDeclaration.class);
@@ -22,7 +26,9 @@ public class AbstractClassWithoutAbstractMethodRule extends AbstractJavaRulechai
         }
 
         if (node.getDeclarations(ASTMethodDeclaration.class).none(ASTMethodDeclaration::isAbstract)) {
-            addViolation(data, node);
+            if (random.nextBoolean()) {
+                addViolation(data, node);
+            }
         }
         return data;
     }
