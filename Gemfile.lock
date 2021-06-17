@@ -1,3 +1,16 @@
+GIT
+  remote: https://github.com/adangel/pmd-regression-tester.git
+  revision: 03d76dabeee8454272657961b870f1c0c1aadb32
+  branch: filter-baseline
+  specs:
+    pmdtester (1.2.0.pre.SNAPSHOT)
+      differ (~> 0.1)
+      liquid (>= 4.0)
+      logger-colors (~> 1.0)
+      nokogiri (>= 1.11.0.rc4)
+      rufus-scheduler (~> 3.5)
+      slop (~> 4.6)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -9,7 +22,7 @@ GEM
       nap
       open4 (~> 1.3)
     colored2 (3.1.2)
-    concurrent-ruby (1.1.8)
+    concurrent-ruby (1.1.9)
     cork (0.3.0)
       colored2 (~> 3.1)
     danger (5.16.1)
@@ -31,7 +44,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday-http-cache (1.3.1)
       faraday (~> 0.8)
-    fugit (1.4.5)
+    fugit (1.5.0)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.4)
     git (1.8.1)
@@ -39,24 +52,17 @@ GEM
     kramdown (1.17.0)
     liquid (5.0.1)
     logger-colors (1.0.0)
-    mini_portile2 (2.5.1)
+    mini_portile2 (2.5.3)
     multipart-post (2.1.1)
     nap (1.1.0)
     no_proxy_fix (0.1.2)
-    nokogiri (1.11.5)
+    nokogiri (1.11.7)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     octokit (4.21.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     open4 (1.3.4)
-    pmdtester (1.1.2)
-      differ (~> 0.1)
-      liquid (>= 4.0)
-      logger-colors (~> 1.0)
-      nokogiri (>= 1.11.0.rc4)
-      rufus-scheduler (~> 3.5)
-      slop (~> 4.6)
     public_suffix (4.0.6)
     raabro (1.4.0)
     racc (1.5.2)
@@ -68,7 +74,7 @@ GEM
     sawyer (0.8.2)
       addressable (>= 2.3.5)
       faraday (> 0.8, < 2.0)
-    slop (4.9.0)
+    slop (4.9.1)
     terminal-table (1.8.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
     tzinfo (2.0.4)
@@ -81,7 +87,7 @@ PLATFORMS
 DEPENDENCIES
   danger (~> 5.6, >= 5.6)
   liquid (>= 4.0.0)
-  pmdtester (~> 1)
+  pmdtester!
   rouge (>= 1.7, < 4)
   safe_yaml (>= 1.0)
 

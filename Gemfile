@@ -2,8 +2,9 @@ source 'https://rubygems.org/'
 
 # bleeding edge from git
 #gem 'pmdtester', :git => 'https://github.com/pmd/pmd-regression-tester.git'
+gem 'pmdtester', :git => 'https://github.com/adangel/pmd-regression-tester.git', branch: 'filter-baseline'
 
-gem 'pmdtester', '~> 1'
+#gem 'pmdtester', '~> 1'
 gem 'danger', '~> 5.6', '>= 5.6'
 
 # This group is only needed for rendering release notes (docs/render_release_notes.rb)
