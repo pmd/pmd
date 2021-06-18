@@ -932,13 +932,14 @@ public class SimpleTest extends TestCase {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usearraysaslist">
         <description>
 <![CDATA[
-The java.util.Arrays class has a "asList" method that should be used when you want to create a new List from
+The `java.util.Arrays` class has a `asList()` method that should be used when you want to create a new List from
 an array of objects. It is faster than executing a loop to copy all the elements of the array one by one.
 
-Note that the result of Arrays.asList() is backed by the specified array,
+Note that the result of `Arrays.asList()` is backed by the specified array,
 changes in the returned list will result in the array to be modified.
-For that reason, it is not possible to add new elements to the returned list of Arrays.asList() (UnsupportedOperationException).
-You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you (e.g. because of concurrent access).
+For that reason, it is not possible to add new elements to the returned list of `Arrays.asList()`
+(UnsupportedOperationException).
+You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for you (e.g. because of concurrent access).
 ]]>
 	</description>
         <priority>3</priority>
@@ -947,35 +948,40 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
             <property name="xpath">
                 <value>
 <![CDATA[
-//Statement[
-    (ForStatement) and (ForStatement//VariableInitializer//Literal[@IntLiteral= true() and @Image='0']) and (not(.//IfStatement))
-   ]
-   //StatementExpression[
-    PrimaryExpression/PrimaryPrefix/Name[
-     substring-before(@Image,'.add') = ancestor::MethodDeclaration//LocalVariableDeclaration[
-      ./Type//ClassOrInterfaceType[
-       @Image = 'Collection' or
-       @Image = 'List' or @Image='ArrayList'
+//Statement/ForStatement
+    [not(.//IfStatement)]
+    [@Foreach = true() or ForInit//VariableInitializer//Literal[@IntLiteral= true() and @Image='0']]
+    //StatementExpression
+      [PrimaryExpression
+        [PrimaryPrefix/Name
+            (: method call foo.add(), where foo is initialized as a new ArrayList :)
+            [ends-with(@Image, '.add')]
+            [substring-before(@Image, '.add') = ancestor::MethodDeclaration[1]//VariableDeclarator
+                [VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression[pmd-java:typeIs('java.util.ArrayList')]]
+            /@Name]
+        ]
+        [PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression
+            (: checking arguments of method call foo.add() :)
+            [
+                (: foreach loop var :)
+                PrimaryPrefix/Name/@Image = ancestor::ForStatement[1][@Foreach = true()]/LocalVariableDeclaration/VariableDeclarator/@Name
+                and (
+                    (: foreach loop over local var which is an array :)
+                    ancestor::ForStatement[1][@Foreach = true()]/Expression/PrimaryExpression/PrimaryPrefix/Name/@Image = ancestor::MethodDeclaration[1]//LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId[@ArrayType=true()]/@Name
+                    (: foreach loop over method parameter which is an array :)
+                    or ancestor::ForStatement[1][@Foreach = true()]/Expression/PrimaryExpression/PrimaryPrefix/Name/@Image = ancestor::MethodDeclaration[1]//FormalParameter/VariableDeclaratorId[@ArrayType=true()]/@Name
+                )
+                or
+                (: local var which is an array :)
+                PrimaryPrefix/Name/@Image = ancestor::MethodDeclaration[1]//LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId[@ArrayType=true()]/@Name
+                and PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix/Name
+                or
+                (: method parameter which is an array :)
+                PrimaryPrefix/Name/@Image = ancestor::MethodDeclaration[1]//FormalParameter/VariableDeclaratorId[@ArrayType=true()]/@Name
+                and PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix/Name
+            ]
+        ]
       ]
-     ]
-     /VariableDeclarator/VariableDeclaratorId[
-      count(..//AllocationExpression/ClassOrInterfaceType[
-       @Image="ArrayList"
-      ]
-      )=1
-     ]/@Name
-    ]
-   and
-   PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
-   [
-     @Image = ancestor::MethodDeclaration[1]//LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId[@ArrayType=true()]/@Name
-     or
-     @Image = ancestor::MethodDeclaration[1]//FormalParameter/VariableDeclaratorId/@Name
-   ]
-   /../..[count(.//PrimarySuffix)
-   =1]/PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix
-   /Name
-   ]
 ]]>
                 </value>
             </property>

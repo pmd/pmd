@@ -41,6 +41,8 @@ This is a {{ site.pmd.release_type }} release.
 *   java-errorprone
     *   [#2895](https://github.com/pmd/pmd/issues/2895): \[java] Improve BadComparison and rename to ComparisonWithNaN
     *   [#3304](https://github.com/pmd/pmd/issues/3304): \[java] NPE in MoreThanOneLoggerRule on a java 16 record
+*   java-performance
+    *   [#3331](https://github.com/pmd/pmd/issues/3331): \[java] UseArraysAsList false negative with for-each loop
 
 ### API Changes
 
