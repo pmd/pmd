@@ -161,6 +161,7 @@
          <property name="cc_block_highlighting" value="false"/>
       </properties>
    </rule>
+<!--    <rule ref="category/apex/performance.xml/AvoidDebugStatements" /> -->
 
    <!-- NAMING -->
    <rule ref="category/apex/codestyle.xml/ClassNamingConventions" message="Class names should begin with an uppercase character">
