@@ -54,5 +54,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 
+*   [#3276](https://github.com/pmd/pmd/pull/3276): \[apex] Update ApexCRUDViolation and OperationWithLimitsInLoop docs - [Jonathan Wiesel](https://github.com/jonathanwiesel)
+
 {% endtocmaker %}
 
