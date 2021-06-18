@@ -129,7 +129,7 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
     }
 
     private boolean hasArgumentWithMethodCall(ASTPrimarySuffix node) {
-        if (!node.isArguments()) {
+        if (!node.isArguments() || node.getArgumentCount() <= 0) {
             return false;
         }
 

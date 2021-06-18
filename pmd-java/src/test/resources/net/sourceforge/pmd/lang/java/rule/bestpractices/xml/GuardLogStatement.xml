@@ -462,4 +462,18 @@ public class Logger {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>NullPointerException applying rule GuardLogStatement (#3340)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Logger {
+    private static final Logger LOGGER = new Logger();
+
+    public void bar() {
+        LOGGER.debug();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
