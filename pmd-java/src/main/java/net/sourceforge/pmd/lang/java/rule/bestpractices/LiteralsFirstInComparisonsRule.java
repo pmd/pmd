@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
@@ -161,8 +162,8 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
     }
 
     private boolean isStringLiteralFirstArgumentOfSuffix(ASTPrimarySuffix primarySuffix) {
-        JavaNode argumentPrimaryPrefix = getArgumentPrimaryPrefix(primarySuffix);
-        if (argumentPrimaryPrefix == null) {
+        ASTPrimaryPrefix argumentPrimaryPrefix = getArgumentPrimaryPrefix(primarySuffix);
+        if (argumentPrimaryPrefix == null || !TypeTestUtil.isA(String.class, argumentPrimaryPrefix)) {
             return false;
         }
         JavaNode firstLiteralArg = argumentPrimaryPrefix.getFirstChildOfType(ASTLiteral.class);
@@ -170,7 +171,7 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
         return isStringLiteral(firstLiteralArg) || isConstantString(firstNameArg);
     }
 
-    private JavaNode getArgumentPrimaryPrefix(ASTPrimarySuffix primarySuffix) {
+    private ASTPrimaryPrefix getArgumentPrimaryPrefix(ASTPrimarySuffix primarySuffix) {
         ASTExpression expression = primarySuffix.getFirstChildOfType(ASTArguments.class)
                                                 .getFirstChildOfType(ASTArgumentList.class)
                                                 .getFirstChildOfType(ASTExpression.class);
@@ -179,7 +180,7 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRule {
 
         ASTPrimaryExpression primaryExpression = expression.getFirstChildOfType(ASTPrimaryExpression.class);
         if (primaryExpression != null) {
-            return primaryExpression.getChild(0);
+            return (ASTPrimaryPrefix) primaryExpression.getChild(0);
         }
         return null;
     }

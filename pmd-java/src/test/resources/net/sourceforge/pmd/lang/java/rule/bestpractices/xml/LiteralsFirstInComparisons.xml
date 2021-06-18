@@ -441,4 +441,21 @@ public class LiteralsFirstInComparisonCase {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive with non-String constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.BigInteger;
+
+public class LiteralsFirstInComparisonBigInteger {
+    public void foo() {
+        BigInteger value = new BigInteger("1");
+        if (value.equals(BigInteger.ZERO)) {
+            System.out.println("1==0!!");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
