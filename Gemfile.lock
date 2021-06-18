@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/adangel/pmd-regression-tester.git
-  revision: 03d76dabeee8454272657961b870f1c0c1aadb32
-  branch: filter-baseline
+  revision: a9e950a26b576891f5f6e24277da3585bfe2f907
+  branch: test-merge
   specs:
     pmdtester (1.2.0.pre.SNAPSHOT)
       differ (~> 0.1)
