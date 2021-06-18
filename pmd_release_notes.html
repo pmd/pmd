@@ -1433,6 +1433,16 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h4 id="new-rules">New rules</h4>
 
 <ul>
+  <li>The new Apex rule <a href="pmd_rules_apex_performance.html#avoiddebugstatements"><code class="language-plaintext highlighter-rouge">AvoidDebugStatements</code></a> finds usages of <code class="language-plaintext highlighter-rouge">System.debug</code> calls.
+Debug statements contribute to longer transactions and consume Apex CPU time even when debug logs are not
+being captured.
+You can try out this rule like so:</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/performance.xml/AvoidDebugStatements"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<ul>
   <li>The new Apex rule <a href="pmd_rules_apex_errorprone.html#inaccessibleauraenabledgetter"><code class="language-plaintext highlighter-rouge">InaccessibleAuraEnabledGetter</code></a> checks that an <code class="language-plaintext highlighter-rouge">AuraEnabled</code>
 getter is public or global. This is necessary if it is referenced in Lightning components.
 You can try out this rule like so:</li>
@@ -1441,7 +1451,7 @@ You can try out this rule like so:</li>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/InaccessibleAuraEnabledGetter"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
-<h3 id="renamed-rules">Renamed rules</h3>
+<h4 id="renamed-rules">Renamed rules</h4>
 
 <ul>
   <li>The Java rule <a href="pmd_rules_java_errorprone.html#badcomparison"><code class="language-plaintext highlighter-rouge">BadComparison</code></a> has been renamed to
@@ -1452,8 +1462,9 @@ It now considers usages of <code class="language-plaintext highlighter-rouge">Do
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
-  <li>apex-errorprone
+  <li>apex
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3307">#3307</a>: [apex] Avoid debug statements since it impact performance</li>
       <li><a href="https://github.com/pmd/pmd/issues/3321">#3321</a>: [apex] New rule to detect inaccessible AuraEnabled getters (summer ‘21 security update)</li>
     </ul>
   </li>
@@ -1480,8 +1491,10 @@ It now considers usages of <code class="language-plaintext highlighter-rouge">Do
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/3276">#3276</a>: [apex] Update ApexCRUDViolation and OperationWithLimitsInLoop docs - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3306">#3306</a>: [java] More than one logger rule test null pointer exception - <a href="https://github.com/ajeans">Arnaud Jeansen</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3317">#3317</a>: [java] Update UnnecessaryImport to recognize usage of imported types in javadoc’s <code class="language-plaintext highlighter-rouge">@exception</code> tag - <a href="https://github.com/pzygielo">Piotrek Żygieło</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3319">#3319</a>: [apex] New AvoidDebugStatements rule to mitigate performance impact - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3320">#3320</a>: [java] Fix incorrect increment for “else if” branch in Cognitive Complexity docs - <a href="https://github.com/borovikovd">Denis Borovikov</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3322">#3322</a>: [apex] added rule to detect inaccessible AuraEnabled getters - <a href="https://github.com/pozil">Philippe Ozil</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3323">#3323</a>: [core] Adds fullDescription and tags in SARIF report - <a href="https://github.com/Clint-Chester">Clint Chester</a></li>
@@ -1503,7 +1516,7 @@ It now considers usages of <code class="language-plaintext highlighter-rouge">Do
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 11, 2021 <br />
+ Site last generated: Jun 18, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
