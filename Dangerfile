@@ -36,7 +36,7 @@ def upload_report
       return
     end
 
-    `tar -cf #{tar_filename} diff/`
+    `tar czf #{tar_filename} diff/`
     tar_size = (10 * File.size(tar_filename) / 1024 / 1024)/10.0
     @logger.info "Uploading file #{tar_filename} (#{tar_size}mb) now..."
     report_url = `curl -u #{ENV['PMD_CI_CHUNK_TOKEN']} -T #{tar_filename} https://chunk.io`
