@@ -20,8 +20,8 @@ fi
 
 set -e
 
-mvn test-compile
-mvn dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=classpath.txt
+mvn test-compile -B
+mvn dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=classpath.txt -B
 ]]></build-command>
     <auxclasspath-command>echo -n "$(pwd)/target/classes:$(pwd)/target/test-classes:"; cat classpath.txt</auxclasspath-command>
   </project>

@@ -83,6 +83,7 @@
    <rule ref="category/apex/errorprone.xml/AvoidHardcodingId" message="Avoid hardcoding ID's">
       <priority>3</priority>
    </rule>
+<!--    <rule ref="category/apex/performance.xml/AvoidDebugStatements" /> -->
 
    <!-- NAMING -->
    <rule ref="category/apex/codestyle.xml/ClassNamingConventions" message="Class names should begin with an uppercase character">
