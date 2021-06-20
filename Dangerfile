@@ -5,14 +5,14 @@ require 'fileutils'
 
 @logger = Logger.new(STDOUT)
 
-def get_args(base_branch)
+def get_args(base_branch, autogen = TRUE, patch_config = './pmd/.ci/files/all-java.xml')
   ['--local-git-repo', './pmd',
    '--list-of-project', './pmd/.ci/files/project-list.xml',
    '--base-branch', base_branch,
    '--patch-branch', 'HEAD',
-   '--patch-config', './pmd/.ci/files/all-java.xml',
+   '--patch-config', patch_config,
    '--mode', 'online',
-   '--auto-gen-config',
+   autogen ? '--auto-gen-config' : '--filter-with-patch-config',
    '--keep-reports',
    '--error-recovery',
    '--baseline-download-url', 'https://pmd-code.org/pmd-regression-tester/',
@@ -24,6 +24,7 @@ def run_pmdtester
   Dir.chdir('..') do
     begin
       @base_branch = ENV['PMD_CI_BRANCH']
+      @logger.info "\n\n--------------------------------------"
       @logger.info "Run against PR base #{@base_branch}"
       @summary = PmdTester::Runner.new(get_args(@base_branch)).run
 
@@ -39,8 +40,9 @@ def run_pmdtester
       # run against master branch (if the PR is not already against master)
       unless ENV['PMD_CI_BRANCH'] == 'master'
         @base_branch = 'master'
+        @logger.info "\n\n--------------------------------------"
         @logger.info "Run against #{@base_branch}"
-        @summary = PmdTester::Runner.new(get_args(@base_branch)).run
+        @summary = PmdTester::Runner.new(get_args(@base_branch, FALSE, 'target/diff1/patch_config.xml')).run
 
         # move the generated report out of the way
         FileUtils.mv 'target/reports/diff', 'target/diff2'
