@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
@@ -884,6 +885,15 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             removeCurrentEvalPackage();
             return o;
         }
+    }
+
+    @Override
+    public Object visit(ASTRecordDeclaration node, Object data) {
+        // records are final
+        putEvalPackage(NULL_EVAL_PACKAGE);
+        super.visit(node, data);
+        removeCurrentEvalPackage();
+        return null;
     }
 
     /**
