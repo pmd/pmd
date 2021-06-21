@@ -12,6 +12,8 @@ import java.util.Iterator;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.SourceCode;
+
 public class MatchTest {
 
     @Test

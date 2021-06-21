@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
+import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.TokenManager;

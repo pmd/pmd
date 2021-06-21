@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.SourceCode;
+
 public class MatchAlgorithm {
 
     private static final int MOD = 37;

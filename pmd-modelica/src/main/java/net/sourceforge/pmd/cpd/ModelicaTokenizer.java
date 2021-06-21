@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.StringReader;
 
+import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;

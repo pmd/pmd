@@ -6,6 +6,8 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
 
+import net.sourceforge.pmd.SourceCode;
+
 public interface Tokenizer {
     String IGNORE_LITERALS = "ignore_literals";
     String IGNORE_IDENTIFIERS = "ignore_identifiers";

@@ -21,6 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
 /**

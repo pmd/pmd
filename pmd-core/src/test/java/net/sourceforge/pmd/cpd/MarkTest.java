@@ -8,7 +8,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.cpd.SourceCode.StringCodeLoader;
+import net.sourceforge.pmd.SourceCode;
+import net.sourceforge.pmd.SourceCode.StringCodeLoader;
 
 public class MarkTest {
 

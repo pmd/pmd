@@ -7,6 +7,8 @@ package net.sourceforge.pmd.cpd;
 import java.util.List;
 import java.util.Locale;
 
+import net.sourceforge.pmd.SourceCode;
+
 /**
  *
  * @author Zev Blut zb@ubit.com

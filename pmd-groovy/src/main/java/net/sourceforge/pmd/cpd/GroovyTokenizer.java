@@ -9,6 +9,7 @@ import java.io.StringReader;
 import org.codehaus.groovy.antlr.SourceInfo;
 import org.codehaus.groovy.antlr.parser.GroovyLexer;
 
+import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 import groovyjarjarantlr.Token;

@@ -14,6 +14,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.SourceCode;
+
 public class MatchAlgorithmTest {
 
     private static final String LINE_1 = "public class Foo { ";

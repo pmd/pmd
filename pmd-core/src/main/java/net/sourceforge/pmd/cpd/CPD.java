@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
 
+import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;

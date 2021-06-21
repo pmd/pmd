@@ -14,6 +14,7 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
 public class CSVRendererTest {

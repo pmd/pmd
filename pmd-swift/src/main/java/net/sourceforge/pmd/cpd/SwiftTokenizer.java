@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import org.antlr.v4.runtime.CharStream;
 
+import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
 import net.sourceforge.pmd.lang.swift.antlr4.SwiftLexer;
 

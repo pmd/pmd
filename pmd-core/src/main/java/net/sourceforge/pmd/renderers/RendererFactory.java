@@ -51,6 +51,18 @@ public final class RendererFactory {
     private RendererFactory() { }
 
     /**
+     * Wrapper function with "UTF-8" default source code encoding
+     * @param reportFormat
+     *            The report format name.
+     * @param properties
+     *            Initialization properties for the corresponding Renderer.
+     * @return A Renderer instance.
+     */
+    public static Renderer createRenderer(String reportFormat, Properties properties) {
+        return createRenderer(reportFormat, properties, "UTF-8");
+    }
+
+    /**
      * Construct an instance of a Renderer based on report format name.
      *
      * @param reportFormat
@@ -59,7 +71,7 @@ public final class RendererFactory {
      *            Initialization properties for the corresponding Renderer.
      * @return A Renderer instance.
      */
-    public static Renderer createRenderer(String reportFormat, Properties properties) {
+    public static Renderer createRenderer(String reportFormat, Properties properties, String sourceEncoding) {
         Class<? extends Renderer> rendererClass = getRendererClass(reportFormat);
         Constructor<? extends Renderer> constructor = getRendererConstructor(rendererClass);
 
@@ -97,6 +109,7 @@ public final class RendererFactory {
                         + "'. Future versions of PMD will remove support for this deprecated Report format usage.");
             }
         }
+        renderer.setSourceEncoding(sourceEncoding);
         return renderer;
     }
 

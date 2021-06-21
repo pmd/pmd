@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
+import net.sourceforge.pmd.SourceCode;
+
 public class Mark implements Comparable<Mark> {
     private TokenEntry token;
     private TokenEntry endToken;

@@ -21,6 +21,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.pmd.AbstractConfiguration;
+import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.FileUtil;

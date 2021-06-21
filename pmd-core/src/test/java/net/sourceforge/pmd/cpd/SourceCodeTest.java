@@ -10,7 +10,8 @@ import java.io.File;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.cpd.SourceCode.FileCodeLoader;
+import net.sourceforge.pmd.SourceCode;
+import net.sourceforge.pmd.SourceCode.FileCodeLoader;
 
 public class SourceCodeTest {
     private static final String BASE_RESOURCE_PATH = "src/test/resources/net/sourceforge/pmd/cpd/files/";

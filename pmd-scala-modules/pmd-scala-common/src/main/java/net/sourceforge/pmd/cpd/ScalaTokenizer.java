@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
