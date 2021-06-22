@@ -119,7 +119,7 @@
 
     <!-- design.xml -->
 
-    <!-- <rule ref="category/java/design.xml/AbstractClassWithoutAnyMethod"/> -->
+    <rule ref="category/java/design.xml/AbstractClassWithoutAnyMethod"/>
     <!-- <rule ref="category/java/design.xml/AvoidCatchingGenericException"/> -->
     <!-- <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts"/> -->
     <rule ref="category/java/design.xml/AvoidRethrowingException"/>
@@ -128,17 +128,19 @@
     <!-- <rule ref="category/java/design.xml/AvoidThrowingRawExceptionTypes"/> -->
     <!-- <rule ref="category/java/design.xml/AvoidUncheckedExceptionsInSignatures"/> -->
     <!-- <rule ref="category/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal"/> -->
+    <rule ref="category/java/design.xml/CognitiveComplexity" />
     <!-- <rule ref="category/java/design.xml/CollapsibleIfStatements"/> -->
     <!-- <rule ref="category/java/design.xml/CouplingBetweenObjects"/> -->
+    <rule ref="category/java/design.xml/CognitiveComplexity"/>
     <rule ref="category/java/design.xml/CyclomaticComplexity"/>
     <rule ref="category/java/design.xml/DataClass"/>
-    <!-- <rule ref="category/java/design.xml/DoNotExtendJavaLangError"/> -->
-    <!-- <rule ref="category/java/design.xml/ExceptionAsFlowControl"/> -->
-    <!-- <rule ref="category/java/design.xml/ExcessiveClassLength"/> -->
-    <!-- <rule ref="category/java/design.xml/ExcessiveImports"/> -->
-    <!-- <rule ref="category/java/design.xml/ExcessiveMethodLength"/> -->
-    <!-- <rule ref="category/java/design.xml/ExcessiveParameterList"/> -->
-    <!-- <rule ref="category/java/design.xml/ExcessivePublicCount"/> -->
+    <rule ref="category/java/design.xml/DoNotExtendJavaLangError"/>
+    <rule ref="category/java/design.xml/ExceptionAsFlowControl"/>
+    <rule ref="category/java/design.xml/ExcessiveClassLength"/>
+    <rule ref="category/java/design.xml/ExcessiveImports"/>
+    <rule ref="category/java/design.xml/ExcessiveMethodLength"/>
+    <rule ref="category/java/design.xml/ExcessiveParameterList"/>
+    <rule ref="category/java/design.xml/ExcessivePublicCount"/>
     <!-- <rule ref="category/java/design.xml/FinalFieldCouldBeStatic"/> -->
     <rule ref="category/java/design.xml/GodClass"/>
     <rule ref="category/java/design.xml/ImmutableField"/>
@@ -189,7 +191,6 @@
     <!-- <rule ref="category/java/errorprone.xml/AvoidLosingExceptionInformation"/> -->
     <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/BadComparison"/> -->
     <!-- <rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize"/> -->
     <rule ref="category/java/errorprone.xml/BrokenNullCheck"/>
     <!-- <rule ref="category/java/errorprone.xml/CallSuperFirst"/> -->
@@ -202,6 +203,7 @@
     <!-- <rule ref="category/java/errorprone.xml/CloneThrowsCloneNotSupportedException"/> -->
     <!-- <rule ref="category/java/errorprone.xml/CloseResource"/> -->
     <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals"/>
+    <!-- <rule ref="category/java/errorprone.xml/ComparisonWithNaN"/> -->
     <!-- <rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DetachedTestCase"/> -->

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -41,8 +40,8 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRule {
 
         enclosingTries.flatMap(ASTTryStatement::getCatchClauses)
                       .map(ASTCatchClause::getParameter)
-                      .flatMap(ASTCatchParameter::getAllExceptionTypes)
-                      .filter(ex -> ex.getTypeMirror().isSubtypeOf(thrownType))
+                      .filter(exParam -> exParam.getAllExceptionTypes().any(type -> thrownType.isSubtypeOf(type.getTypeMirror())))
+                      .take(1)
                       .forEach(ex -> addViolation(data, ex));
         return data;
     }

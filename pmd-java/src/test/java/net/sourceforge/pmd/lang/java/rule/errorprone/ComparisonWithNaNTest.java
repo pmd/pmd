@@ -2,10 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.design;
+package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class DoNotExtendJavaLangErrorTest extends PmdRuleTst {
+@org.junit.Ignore("Rule has not been updated yet")
+public class ComparisonWithNaNTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -637,34 +637,7 @@ k = i * j;      // set k with 80 not 120
         </example>
     </rule>
 
-    <rule name="BadComparison"
-          language="java"
-          since="1.8"
-          message="Avoid equality comparisons with Double.NaN"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#badcomparison">
-        <description>
-Avoid equality comparisons with Double.NaN. Due to the implicit lack of representation
-precision when comparing floating point numbers these are likely to cause logic errors.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//EqualityExpression[@Image='==']
- /PrimaryExpression/PrimaryPrefix
- /Name[@Image='Double.NaN' or @Image='Float.NaN']
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-boolean x = (y == Double.NaN);
-]]>
-        </example>
-    </rule>
+    <rule name="BadComparison" ref="ComparisonWithNaN" deprecated="true" />
 
     <rule name="BeanMembersShouldSerialize"
           language="java"
@@ -1147,6 +1120,44 @@ class Foo {
 ]]>
         </example>
     </rule>
+
+    <rule name="ComparisonWithNaN"
+          language="java"
+          since="6.36.0"
+          message="Comparisons with NaN always return false"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#comparisonwithnan">
+        <description><![CDATA[
+            Reports comparisons with double and float `NaN` (Not-a-Number) values.
+            These are [specified](https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.21.1)
+            to have unintuitive behavior: NaN is considered unequal to itself.
+            This means a check like `someDouble == Double.NaN` will always return
+            false, even if `someDouble` is really the NaN value. To test whether a
+            value is the NaN value, one should instead use `Double.isNaN(someDouble)`
+            (or `Float.isNaN`). The `!=` operator should be treated similarly.
+            Finally, comparisons like `someDouble <= Double.NaN` are nonsensical
+            and will always evaluate to false.
+            
+            This rule has been renamed from "BadComparison" with PMD 6.36.0.
+        ]]></description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+(//EqualityExpression | //RelationalExpression)/PrimaryExpression/PrimaryPrefix/Name[@Image='Double.NaN' or @Image='Float.NaN']
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+boolean x = (y == Double.NaN);
+]]>
+        </example>
+    </rule>
+
 
     <rule name="ConstructorCallsOverridableMethod"
           language="java"
@@ -2422,13 +2433,30 @@ public class Foo {
           language="java"
           since="2.0"
           message="Class contains more than one logger."
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.MoreThanOneLoggerRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#morethanonelogger">
         <description>
 Normally only one logger is used in each class. This rule supports slf4j, log4j, Java Util Logging and
 log4j2 (since 6.19.0).
         </description>
         <priority>2</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value><![CDATA[
+//ClassOrInterfaceDeclaration[
+  count(
+    ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration//ClassOrInterfaceType[
+      pmd-java:typeIs("org.apache.log4j.Logger") or
+      pmd-java:typeIs("org.apache.logging.log4j.Logger") or
+      pmd-java:typeIs("java.util.logging.Logger") or
+      pmd-java:typeIs("org.slf4j.Logger")
+    ]
+  ) > 1
+]
+                ]]></value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class Foo {

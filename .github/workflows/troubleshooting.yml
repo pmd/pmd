@@ -25,7 +25,7 @@ jobs:
           restore-keys: |
             v1-${{ runner.os }}-
       - name: Set up Ruby 2.7
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
       - name: Setup Environment
@@ -33,7 +33,7 @@ jobs:
         run: |
           echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
           echo "MAVEN_OPTS=-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
-          echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/12/scripts" >> $GITHUB_ENV
+          echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/14/scripts" >> $GITHUB_ENV
       - name: Check Environment
         shell: bash
         run: |

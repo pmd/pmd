@@ -14,9 +14,18 @@
               "shortDescription": {
                 "text": "blah"
               },
+              "fullDescription": {
+                "text": "desc"
+              },
+              "help": {
+                "text": "desc"
+              },
               "properties": {
                 "ruleset": "RuleSet",
-                "priority": 1
+                "priority": 1,
+                "tags": [
+                  "RuleSet"
+                ]
               }
             },
             {
@@ -24,9 +33,18 @@
               "shortDescription": {
                 "text": "blah"
               },
+              "fullDescription": {
+                "text": "desc"
+              },
+              "help": {
+                "text": "desc"
+              },
               "properties": {
                 "ruleset": "RuleSet",
-                "priority": 5
+                "priority": 5,
+                "tags": [
+                  "RuleSet"
+                ]
               }
             }
           ]

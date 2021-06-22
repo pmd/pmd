@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.renderers.internal.sarif;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -549,11 +550,16 @@ public class SarifLog {
          * The pmd priority of the rule.
          */
         private Integer priority;
+        /**
+         * A set of distinct strings that provide additional information. This is SARIF 2.1.0 Schema.
+         */
+        private Set<String> tags;
 
         @java.lang.SuppressWarnings("all")
-        PropertyBag(final String ruleset, final Integer priority) {
+        PropertyBag(final String ruleset, final Integer priority, final Set<String> tags) {
             this.ruleset = ruleset;
             this.priority = priority;
+            this.tags = tags;
         }
 
 
@@ -563,6 +569,8 @@ public class SarifLog {
             private String ruleset;
             @java.lang.SuppressWarnings("all")
             private Integer priority;
+            @java.lang.SuppressWarnings("all")
+            private Set<String> tags;
 
             @java.lang.SuppressWarnings("all")
             PropertyBagBuilder() {
@@ -588,15 +596,25 @@ public class SarifLog {
                 return this;
             }
 
+            /**
+             * A set of distinct strings that provide additional information. This is SARIF 2.1.0 Schema.
+             * @return {@code this}.
+             */
+            @java.lang.SuppressWarnings("all")
+            public SarifLog.PropertyBag.PropertyBagBuilder tags(final Set<String> tags) {
+                this.tags = tags;
+                return this;
+            }
+
             @java.lang.SuppressWarnings("all")
             public SarifLog.PropertyBag build() {
-                return new SarifLog.PropertyBag(this.ruleset, this.priority);
+                return new SarifLog.PropertyBag(this.ruleset, this.priority, this.tags);
             }
 
             @java.lang.Override
             @java.lang.SuppressWarnings("all")
             public java.lang.String toString() {
-                return "SarifLog.PropertyBag.PropertyBagBuilder(ruleset=" + this.ruleset + ", priority=" + this.priority + ")";
+                return "SarifLog.PropertyBag.PropertyBagBuilder(ruleset=" + this.ruleset + ", priority=" + this.priority + ", tags=" + this.tags + ")";
             }
         }
 
@@ -622,6 +640,14 @@ public class SarifLog {
         }
 
         /**
+         * A set of distinct strings that provide additional information. This is SARIF 2.1.0 Schema.
+         */
+        @java.lang.SuppressWarnings("all")
+        public Set<String> getTags() {
+            return this.tags;
+        }
+
+        /**
          * The name of the rule set.
          * @return {@code this}.
          */
@@ -638,6 +664,16 @@ public class SarifLog {
         @java.lang.SuppressWarnings("all")
         public SarifLog.PropertyBag setPriority(final Integer priority) {
             this.priority = priority;
+            return this;
+        }
+
+        /**
+         * The set of distinct strings that provide additional information. This is SARIF 2.1.0 Schema.
+         * @return {@code this}.
+         */
+        @java.lang.SuppressWarnings("all")
+        public SarifLog.PropertyBag setTags(final Set<String> tags) {
+            this.tags = tags;
             return this;
         }
 
@@ -664,6 +700,11 @@ public class SarifLog {
             if (this$priority == null ? other$priority != null : !this$priority.equals(other$priority)) {
                 return false;
             }
+            final java.lang.Object this$tags = this.getTags();
+            final java.lang.Object other$tags = other.getTags();
+            if (this$tags == null ? other$tags != null : !this$tags.equals(other$tags)) {
+                return false;
+            }
             return true;
         }
 
@@ -681,13 +722,15 @@ public class SarifLog {
             result = result * PRIME + ($ruleset == null ? 43 : $ruleset.hashCode());
             final java.lang.Object $priority = this.getPriority();
             result = result * PRIME + ($priority == null ? 43 : $priority.hashCode());
+            final java.lang.Object $tags = this.getTags();
+            result = result * PRIME + ($tags == null ? 43 : $tags.hashCode());
             return result;
         }
 
         @java.lang.Override
         @java.lang.SuppressWarnings("all")
         public java.lang.String toString() {
-            return "SarifLog.PropertyBag(ruleset=" + this.getRuleset() + ", priority=" + this.getPriority() + ")";
+            return "SarifLog.PropertyBag(ruleset=" + this.getRuleset() + ", priority=" + this.getPriority() + ", tags=" + this.getTags() + ")";
         }
     }
 

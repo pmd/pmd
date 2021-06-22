@@ -2,10 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.design;
+package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class DoNotExtendJavaLangErrorTest extends PmdRuleTst {
+public class InaccessibleAuraEnabledGetterTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -37,7 +37,8 @@ public final class GenerateRuleDocsCmd {
         System.out.println("Generating docs into " + output);
 
         // important: use a RuleSetFactory that includes all rules, e.g. deprecated rule references
-        List<RuleSet> registeredRuleSets = new RuleSetLoader().getStandardRuleSets();
+        List<RuleSet> registeredRuleSets = new RuleSetLoader().includeDeprecatedRuleReferences(true)
+                .getStandardRuleSets();
         List<String> additionalRulesets = findAdditionalRulesets(output);
 
         RuleDocGenerator generator = new RuleDocGenerator(new DefaultFileWriter(), output);
