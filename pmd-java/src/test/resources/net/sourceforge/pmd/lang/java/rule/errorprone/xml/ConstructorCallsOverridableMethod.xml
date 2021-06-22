@@ -91,11 +91,12 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public Foo(String s) {
-        addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {bar();}
+        addRunnable(new Runnable() {
+            public void run() {bar();}
         });
     }
     public void bar() {}
+    final void addRunnable(Runnable r) {}
 }
         ]]></code>
     </test-code>
