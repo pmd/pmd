@@ -131,8 +131,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>ignore abstract methods</description>
-        <expected-problems>0</expected-problems>
+        <description>do not ignore abstract methods</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public Foo() {
