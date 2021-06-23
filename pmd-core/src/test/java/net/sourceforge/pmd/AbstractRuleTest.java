@@ -25,6 +25,8 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.renderers.EmptyRenderer;
+import net.sourceforge.pmd.renderers.Renderer;
 
 
 public class AbstractRuleTest {
@@ -50,6 +52,11 @@ public class AbstractRuleTest {
 
         @Override
         public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        }
+
+        @Override
+        public List<Renderer> getPostProcessors() {
+            return java.util.Collections.singletonList((Renderer)new EmptyRenderer());
         }
     }
 
@@ -232,5 +239,13 @@ public class AbstractRuleTest {
 
         assertEquals(r1.isPropertyOverridden(MyRule.FOO_DEFAULT_PROPERTY),
                 r2.isPropertyOverridden(MyRule.FOO_DEFAULT_PROPERTY));
+    }
+
+    @Test
+    public void testPostProcessors() {
+        MyRule myRule = new MyRule();
+        assertEquals("Didn't return post-processor!", 1, myRule.getPostProcessors().size());
+        MyOtherRule myOtherRule = new MyOtherRule();
+        assertEquals("Returned spurious post-processor!", 0, myOtherRule.getPostProcessors().size());
     }
 }
