@@ -51,8 +51,8 @@ public final class TypePrettyPrint {
         private boolean isVarargs = false;
 
         /** Create a new pretty printer with the default configuration. */
-        public TypePrettyPrinter() {
-
+        public TypePrettyPrinter() { // NOPMD
+            // default
         }
 
         StringBuilder append(char o) {
