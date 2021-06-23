@@ -46,6 +46,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3321](https://github.com/pmd/pmd/issues/3321): \[apex] New rule to detect inaccessible AuraEnabled getters (summer '21 security update)
 *   core
     *   [#3323](https://github.com/pmd/pmd/pull/3323): \[core] Adds fullDescription and tags in SARIF report
+*   java-bestpractices
+    *   [#3076](https://github.com/pmd/pmd/pull/3076): \[java] UnusedAssignment reports unused variable when used in increment expr
 *   java-codestyle
     *   [#3317](https://github.com/pmd/pmd/pull/3317): \[java] Update UnnecessaryImport to recognize usage of imported types in javadoc's `@exception` tag
 *   java-errorprone
