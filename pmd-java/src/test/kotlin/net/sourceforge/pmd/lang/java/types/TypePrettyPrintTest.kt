@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint.TypePrettyPrinter
 
 /**
  * @author Clément Fournier
@@ -39,7 +40,7 @@ class TypePrettyPrintTest : FunSpec({
 
     test("pretty print with simple names") {
 
-        fun JTypeMirror.pp() = TypePrettyPrint.prettyPrintWithSimpleNames(this)
+        fun JTypeMirror.pp() = TypePrettyPrint.prettyPrint(this, TypePrettyPrinter().useSimpleNames(true))
 
         with(TypeDslOf(ts)) {
             ts.OBJECT.pp() shouldBe "Object"
@@ -59,7 +60,7 @@ class TypePrettyPrintTest : FunSpec({
         )
 
 
-        fun JTypeVisitable.pp() = TypePrettyPrint.prettyPrintWithTvarQualifier(this)
+        fun JTypeVisitable.pp() = TypePrettyPrint.prettyPrint(this, TypePrettyPrinter().qualifyTvars(true))
 
         acu.declaredMethodSignatures()[0].pp() shouldBe "p.Foo<Foo#A, Foo#B>.<method#T> method(Foo#A, Foo#B) -> method#T"
 
@@ -76,7 +77,7 @@ class TypePrettyPrintTest : FunSpec({
         )
 
 
-        fun JMethodSig.pp() = TypePrettyPrint.prettyPrint(this, false)
+        fun JMethodSig.pp() = TypePrettyPrint.prettyPrint(this, TypePrettyPrinter().printMethodHeader(false))
 
         acu.declaredMethodSignatures()[0].pp() shouldBe "method(A, B) -> T"
 

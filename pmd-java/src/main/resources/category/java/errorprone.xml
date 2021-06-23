@@ -1174,6 +1174,7 @@ some fields that are still null may cause a NullPointerException or be stored so
 else to blow up later.
 
 To avoid this problem, only use methods that are static, private, or final in constructors.
+Note that those methods also must not call overridable methods transitively to be safe.
         </description>
         <priority>1</priority>
         <example>
