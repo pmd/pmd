@@ -196,4 +196,37 @@ public class ReportTest implements ThreadSafeReportListener {
         renderer.end();
         return writer.toString();
     }
+
+    public static class MyMergeableData implements MergeableData {
+        public int count = 0;
+
+        @Override
+        public MergeableData create() {
+            return new MyMergeableData();
+        }
+
+        @Override
+        public void merge(MergeableData other) {
+            this.count += ((MyMergeableData)other).count;
+        }
+    }
+
+    @Test
+    public void testCustomData() {
+        Report r = new Report();
+
+        MyMergeableData d0 = new MyMergeableData();
+        d0.count = 10;
+
+        MyMergeableData d1 = r.getCustomData(d0);
+        assertEquals(0, d1.count);
+        d1.count += 1;
+
+        MyMergeableData d2 = r.getCustomData(new MyMergeableData());
+        assertEquals(d1, d2); // same instance
+        assertEquals(1, d2.count);
+
+        d2.merge(d0);
+        assertEquals(11, d2.count);
+    }
 }
