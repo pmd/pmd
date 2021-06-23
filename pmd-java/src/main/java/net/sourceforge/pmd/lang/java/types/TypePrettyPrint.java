@@ -44,6 +44,7 @@ public final class TypePrettyPrint {
         private final StringBuilder sb = new StringBuilder();
 
         private boolean printMethodHeader = true;
+        private boolean printMethodReturnType = true;
         private OptionalBool printTypeVarBounds = UNKNOWN;
         private boolean qualifyTvars = false;
         private boolean qualifyNames = true;
@@ -68,6 +69,15 @@ public final class TypePrettyPrint {
          */
         public TypePrettyPrinter printMethodHeader(boolean printMethodHeader) {
             this.printMethodHeader = printMethodHeader;
+            return this;
+        }
+
+        /**
+         * Print the return type of methods (as postfix).
+         * Default: true.
+         */
+        public TypePrettyPrinter printMethodResult(boolean printMethodResult) {
+            this.printMethodReturnType = printMethodResult;
             return this;
         }
 
@@ -216,9 +226,12 @@ public final class TypePrettyPrint {
 
             sb.append(t.getName());
 
-            join(sb, t.getFormalParameters(), ", ", "(", ") -> ", t.isVarargs());
+            join(sb, t.getFormalParameters(), ", ", "(", ")", t.isVarargs());
 
-            t.getReturnType().acceptVisitor(this, sb);
+            if (sb.printMethodReturnType) {
+                sb.append(" -> ");
+                t.getReturnType().acceptVisitor(this, sb);
+            }
             return null;
         }
 

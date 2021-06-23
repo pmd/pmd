@@ -310,7 +310,7 @@ import java.lang.annotation.*;
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>This method may call an overridable method during object construction: Foo.bar(boolean) -> void</message>
+            <message>This method may call an overridable method during object construction: Foo.bar(boolean)</message>
         </expected-messages>
         <code><![CDATA[
             public class Foo {

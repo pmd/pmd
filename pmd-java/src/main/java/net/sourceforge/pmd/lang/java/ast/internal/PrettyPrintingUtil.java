@@ -210,6 +210,6 @@ public final class PrettyPrintingUtil {
     }
 
     private static TypePrettyPrinter overloadPrinter() {
-        return new TypePrettyPrinter().useSimpleNames(true);
+        return new TypePrettyPrinter().useSimpleNames(true).printMethodResult(false);
     }
 }
