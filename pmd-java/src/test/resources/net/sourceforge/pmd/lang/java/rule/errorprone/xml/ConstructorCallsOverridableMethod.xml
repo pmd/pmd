@@ -305,4 +305,22 @@ import java.lang.annotation.*;
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>transitive dependency</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                public Foo() {
+                    bar(true);
+                }
+                public final void bar(boolean b) {
+                    bar(""); // unsafe
+                }
+                public void bar(String o) {
+
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
