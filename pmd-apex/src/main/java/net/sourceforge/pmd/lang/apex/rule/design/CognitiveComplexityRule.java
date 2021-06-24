@@ -62,7 +62,8 @@ public class CognitiveComplexityRule extends AbstractApexRule {
         if (ApexMetrics.COGNITIVE_COMPLEXITY.supports(node)) {
             int classCognitive = MetricsUtil.computeMetric(ApexMetrics.COGNITIVE_COMPLEXITY, node);
 
-            if (classCognitive >= getProperty(CLASS_LEVEL_DESCRIPTOR)) {
+            Integer classLevelThreshold = getProperty(CLASS_LEVEL_DESCRIPTOR);
+            if (classCognitive >= classLevelThreshold) {
                 int classHighest = (int) MetricsUtil.computeStatistics(ApexMetrics.COGNITIVE_COMPLEXITY, node.getMethods()).getMax();
 
                 String[] messageParams = {
@@ -70,6 +71,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
                     node.getImage(),
                     " total",
                     classCognitive + " (highest " + classHighest + ")",
+                    String.valueOf(classLevelThreshold),
                 };
 
                 addViolation(data, node, messageParams);
@@ -84,7 +86,8 @@ public class CognitiveComplexityRule extends AbstractApexRule {
 
         if (ApexMetrics.COGNITIVE_COMPLEXITY.supports(node)) {
             int cognitive = MetricsUtil.computeMetric(ApexMetrics.COGNITIVE_COMPLEXITY, node);
-            if (cognitive >= getProperty(METHOD_LEVEL_DESCRIPTOR)) {
+            Integer methodLevelThreshold = getProperty(METHOD_LEVEL_DESCRIPTOR);
+            if (cognitive >= methodLevelThreshold) {
                 String opType = inTrigger ? "trigger"
                         : node.getImage().equals(classNames.peek()) ? "constructor"
                         : "method";
@@ -94,6 +97,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
                     node.getQualifiedName().getOperation(),
                     "",
                     "" + cognitive,
+                    String.valueOf(methodLevelThreshold),
                 });
             }
         }

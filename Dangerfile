@@ -84,7 +84,7 @@ end
 
 def upload_report
   Dir.chdir('target') do
-    tar_filename = "pr-#{ENV['PMD_CI_PULL_REQUEST_NUMBER']}-diff-report-#{Time.now.strftime("%Y-%m-%dT%H-%M-%SZ")}.tar"
+    tar_filename = "pr-#{ENV['PMD_CI_PULL_REQUEST_NUMBER']}-diff-report-#{Time.now.strftime("%Y-%m-%dT%H-%M-%SZ")}.tar.gz"
 
     `tar czf #{tar_filename} diff1/ diff2/`
     tar_size = (10 * File.size(tar_filename) / 1024 / 1024)/10.0

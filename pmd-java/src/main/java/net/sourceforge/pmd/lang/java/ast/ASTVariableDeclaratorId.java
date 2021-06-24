@@ -216,6 +216,15 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         return getNthParent(3) instanceof ASTForInit;
     }
 
+    /**
+     * Returns true if this node is a variable declared in a
+     * {@linkplain ASTForStatement#isForeach() foreach loop}.
+     */
+    public boolean isForeachVariable() {
+        // Foreach/LocalVarDecl/VarDeclarator/VarDeclId
+        return getNthParent(3) instanceof ASTForStatement;
+    }
+
 
     /**
      * Returns true if this node declares a formal parameter for

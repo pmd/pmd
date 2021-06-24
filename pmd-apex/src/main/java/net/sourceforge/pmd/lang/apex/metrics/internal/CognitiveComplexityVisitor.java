@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.apex.metrics.internal;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTCatchBlockStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
@@ -45,18 +43,25 @@ public class CognitiveComplexityVisitor extends ApexVisitorBase<State, Void> {
             return complexity;
         }
 
-        void structureComplexity() {
-            complexity += 1;
+        void hybridComplexity() {
+            complexity++;
+            nestingLevel++;
         }
 
-        void nestingComplexity() {
+        void structureComplexity() {
+            complexity++;
             complexity += nestingLevel;
+            nestingLevel++;
+        }
+
+        void fundamentalComplexity() {
+            complexity++;
         }
 
         void booleanOperation(BooleanOp op) {
             if (currentBooleanOperation != op) {
                 if (op != null) {
-                    structureComplexity();
+                    fundamentalComplexity();
                 }
 
                 currentBooleanOperation = op;
@@ -64,8 +69,6 @@ public class CognitiveComplexityVisitor extends ApexVisitorBase<State, Void> {
         }
 
         void increaseNestingLevel() {
-            structureComplexity();
-            nestingComplexity();
             nestingLevel++;
         }
 
@@ -94,7 +97,13 @@ public class CognitiveComplexityVisitor extends ApexVisitorBase<State, Void> {
                 break;
             }
 
-            state.increaseNestingLevel();
+            if (child.getIndexInParent() == 0) {
+                // the first IfBlock is the first "if"
+                state.structureComplexity();
+            } else {
+                // any other IfBlocks are "else if"
+                state.hybridComplexity();
+            }
             child.acceptVisitor(this, state);
             state.decreaseNestingLevel();
         }
@@ -105,7 +114,7 @@ public class CognitiveComplexityVisitor extends ApexVisitorBase<State, Void> {
     @Override
     public Void visit(ASTForLoopStatement node, State state) {
 
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, state);
         state.decreaseNestingLevel();
 
@@ -114,7 +123,7 @@ public class CognitiveComplexityVisitor extends ApexVisitorBase<State, Void> {
 
     @Override
     public Void visit(ASTForEachStatement node, State state) {
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, state);
         state.decreaseNestingLevel();
 
@@ -122,20 +131,8 @@ public class CognitiveComplexityVisitor extends ApexVisitorBase<State, Void> {
     }
 
     @Override
-    public Void visit(ASTContinueStatement node, State state) {
-        state.structureComplexity();
-        return super.visit(node, state);
-    }
-
-    @Override
-    public Void visit(ASTBreakStatement node, State state) {
-        state.structureComplexity();
-        return super.visit(node, state);
-    }
-
-    @Override
     public Void visit(ASTWhileLoopStatement node, State state) {
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, state);
         state.decreaseNestingLevel();
 
@@ -144,7 +141,7 @@ public class CognitiveComplexityVisitor extends ApexVisitorBase<State, Void> {
 
     @Override
     public Void visit(ASTCatchBlockStatement node, State state) {
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, state);
         state.decreaseNestingLevel();
 
@@ -154,7 +151,7 @@ public class CognitiveComplexityVisitor extends ApexVisitorBase<State, Void> {
     @Override
     public Void visit(ASTDoLoopStatement node, State state) {
 
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, state);
         state.decreaseNestingLevel();
 
@@ -164,7 +161,7 @@ public class CognitiveComplexityVisitor extends ApexVisitorBase<State, Void> {
     @Override
     public Void visit(ASTTernaryExpression node, State state) {
 
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, state);
         state.decreaseNestingLevel();
 
@@ -197,11 +194,10 @@ public class CognitiveComplexityVisitor extends ApexVisitorBase<State, Void> {
     public Void visit(ASTBlockStatement node, State state) {
 
         for (ApexNode<?> child : node.children()) {
-            child.acceptVisitor(this, state);
-
             // This needs to happen because the current 'run' of boolean operations is terminated
             // once we finish a statement.
             state.booleanOperation(null);
+            child.acceptVisitor(this, state);
         }
 
         return null;
@@ -221,7 +217,7 @@ public class CognitiveComplexityVisitor extends ApexVisitorBase<State, Void> {
 
     @Override
     public Void visit(ASTSwitchStatement node, State state) {
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, state);
         state.decreaseNestingLevel();
         return null;

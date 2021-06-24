@@ -136,7 +136,7 @@ public final class JavaMetrics {
      * <p>Information about Cognitive complexity can be found in the original paper here:
      * <a href='https://www.sonarsource.com/docs/CognitiveComplexity.pdf'>CognitiveComplexity</a>
      *
-     * <h3>Basic Idea</h3
+     * <h3>Basic Idea</h3>
      * <ol>
      * <li>Ignore structures that allow multiple statements to be readably shorthanded into one
      * <li>Increment (add one) for each break in the linear flow of the code
