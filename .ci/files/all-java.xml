@@ -204,7 +204,7 @@
     <!-- <rule ref="category/java/errorprone.xml/CloseResource"/> -->
     <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals"/>
     <!-- <rule ref="category/java/errorprone.xml/ComparisonWithNaN"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod"/> -->
+    <rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod"/>
     <!-- <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DetachedTestCase"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DoNotCallGarbageCollectionExplicitly"/> -->
