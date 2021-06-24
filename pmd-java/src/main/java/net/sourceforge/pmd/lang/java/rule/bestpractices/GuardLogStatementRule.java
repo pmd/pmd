@@ -16,15 +16,20 @@ import java.util.logging.Level;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -102,11 +107,69 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         ASTMethodCall methodCall = (ASTMethodCall) expr;
         String logLevel = getLogLevelName(methodCall);
         if (logLevel != null && guardStmtByLogLevel.containsKey(logLevel)) {
-            if (!hasGuard(methodCall, logLevel)) {
+            if (needsGuard(methodCall) && !hasGuard(methodCall, logLevel)) {
                 addViolation(data, node);
             }
         }
         return null;
+    }
+
+    private boolean needsGuard(ASTMethodCall node) {
+        if (node.getArguments().size() == 0) {
+            return false;
+        }
+
+        ASTArgumentList argumentList = node.getArguments();
+        for (ASTExpression child : argumentList) {
+            if (child.descendantsOrSelf()
+                    .filterIs(ASTInfixExpression.class)
+                    .filter(n -> n.getOperator() == BinaryOp.ADD)
+                    .nonEmpty()
+                && TypeTestUtil.isA(String.class, child)) {
+                // only consider the first String argument - which is the log message - and return here
+                return !isConstantStringExpression(child);
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isConstantStringExpression(ASTExpression expr) {
+        if (expr == null) {
+            return false;
+        }
+
+        if (expr instanceof ASTStringLiteral) {
+            return true;
+        }
+
+        if (expr instanceof ASTVariableAccess) {
+            ASTVariableAccess var = (ASTVariableAccess) expr;
+            if (var.isCompileTimeConstant()) {
+                return true;
+            }
+            JVariableSymbol symbol = var.getReferencedSym();
+            if (symbol == null) {
+                return false;
+            }
+            if (!var.getReferencedSym().isFinal()) {
+                return false;
+            }
+            @Nullable
+            ASTVariableDeclaratorId declaratorId = symbol.tryGetNode();
+            if (declaratorId != null) {
+                return isConstantStringExpression(declaratorId.getInitializer());
+            }
+        }
+
+        if (expr instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) expr;
+            if (isConstantStringExpression(infix.getLeftOperand())
+                    && isConstantStringExpression(infix.getRightOperand())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean hasGuard(ASTMethodCall node, String logLevel) {
