@@ -30,7 +30,7 @@ end
 
 def upload_report
   Dir.chdir('target/reports') do
-    tar_filename = "pr-#{ENV['PMD_CI_PULL_REQUEST_NUMBER']}-diff-report-#{Time.now.strftime("%Y-%m-%dT%H-%M-%SZ")}.tar"
+    tar_filename = "pr-#{ENV['PMD_CI_PULL_REQUEST_NUMBER']}-diff-report-#{Time.now.strftime("%Y-%m-%dT%H-%M-%SZ")}.tar.gz"
     unless Dir.exist?('diff/')
       message("No java rules are changed!", sticky: true)
       return
