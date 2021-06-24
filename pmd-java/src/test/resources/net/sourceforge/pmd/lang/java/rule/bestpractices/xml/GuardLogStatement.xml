@@ -16,7 +16,7 @@ public class Foo {
 
     private void foo() {
         if ( logger.isDebugEnabled() )
-            logger.debug("Debug statement");
+            logger.debug("Debug statement:" + this);
     }
 }
         ]]></code>
@@ -34,7 +34,7 @@ public class Test {
     public void test() {
         // good:
         if (__log.isDebugEnabled()) {
-        __log.debug("bla" + "",e );
+        __log.debug("bla" + this, e);
         }
     }
 }
@@ -51,7 +51,7 @@ public class Foo {
 
     private void foo(Logger logger) {
         if ( logger.isLoggable(Level.FINE) ) {
-            logger.fine("debug message" + "");
+            logger.fine("debug message: " + this);
         }
     }
 }
@@ -69,7 +69,7 @@ public class Foo {
     private static final Logger logger = LogManager.getLogger(Foo.class);
 
     private void foo() {
-        logger.debug("Debug statement" + "");
+        logger.debug("Debug statement: " + this);
     }
 }
         ]]></code>
@@ -88,11 +88,11 @@ public class Foo {
     private static final Logger logger = LogManager.getLogger(Foo.class);
 
     private void foo() {
-        logger.debug("Debug statement" + "");
+        logger.debug("Debug statement: " + this);
     }
 
     private void bar() {
-        logger.info("No guard, but'is OK with properties configuration" + "");
+        logger.info("No guard, but'is OK with properties configuration: " + this);
     }
 }
         ]]></code>
@@ -110,14 +110,14 @@ public class Test {
     public void test() {
 
         // bad:
-        __log.debug("log something" + " and " + "concat strings");
+        __log.debug("log something" + this + " and " + "concat strings");
 
         // bad:
-        __log.debug("log something" + " and " + "concat strings", e);
+        __log.debug("log something" + this + " and " + "concat strings", e);
 
         // good:
         if (__log.isDebugEnabled()) {
-        __log.debug("bla" + "",e );
+        __log.debug("bla" + this, e);
         }
     }
 }
@@ -136,7 +136,7 @@ public class Test {
     public void test() {
         if (true) {
             // bad:
-            __log.debug("log something" + " and " + "concat strings");
+            __log.debug("log something" + this + " and " + "concat strings");
             // this is useless:
             __log.isDebugEnabled();
         }
@@ -154,7 +154,7 @@ import java.util.logging.Logger;
 public class Foo {
 
     private void foo(Logger logger) {
-        logger.fine("debug message" + "");
+        logger.fine("debug message: " + this);
     }
 }
         ]]></code>
@@ -248,7 +248,7 @@ public class Test {
 
         // good:
         if (__log.isDebugEnabled()) {
-        __log.debug("bla" + "",e );
+        __log.debug("bla: " + this, e);
         }
     }
 }
@@ -285,7 +285,7 @@ public class Foo {
     Logger LOGGER;
 
     public void foo() {
-        LOGGER.severe("This is a severe message" + " and concat");
+        LOGGER.severe("This is a severe message" + this + " and concat");
     }
 }
         ]]></code>
@@ -303,9 +303,9 @@ public class Foo {
     Logger LOGGER;
 
     public void foo() {
-        LOGGER.log(Level.FINE, "This is a severe message" + " and concat"); // violation
+        LOGGER.log(Level.FINE, "This is a severe message" + this + " and concat"); // violation
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.log(Level.FINE, "This is a severe message" + " and concat"); // no violation
+            LOGGER.log(Level.FINE, "This is a severe message" + this + " and concat"); // no violation
         }
     }
 }
@@ -375,7 +375,7 @@ public class Foo {
 
     public void foo() {
         if (LOGGER.isLoggable(Level.INFO)) { // should have been level FINE
-            LOGGER.log(Level.FINE, "This is a severe message" + " and concat");
+            LOGGER.log(Level.FINE, "This is a severe message" + this + " and concat");
         }
     }
 }
@@ -390,7 +390,9 @@ public class Logger {
     private static final Logger LOGGER = new Logger();
 
     public void bar() {
-        LOGGER.info(() -> "Bla " + " bla"); // The lambda is free to do whatever it likes
+        String msg;
+        msg = "test";
+        LOGGER.info(() -> "Bla " + msg + " bla"); // The lambda is free to do whatever it likes
     }
 
     @Override
@@ -422,7 +424,7 @@ public class GuardLogStatement {
         <code><![CDATA[
 public class GuardLogStatement {
     public String foo() {
-        return ThisIsNotALogger.error("message " + "");
+        return ThisIsNotALogger.error("message " + this);
     }
 }
         ]]></code>
@@ -458,6 +460,83 @@ public class Logger {
 
     private String expensiveOperation() {
         return "...";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] GuardLogStatement: False positive with compile-time constant arguments #957</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Logger {
+    private static final Logger LOGGER = new Logger();
+    private static final String CONSTANT = "a constant";
+
+    public void case1() {
+        LOGGER.debug("log something" + " and " + "concat strings"); // the same as "log something and concat strings"
+    }
+
+    public void case2() {
+        final String constantPrefix = "log something";
+        final String constantSuffix = "concat strings";
+        LOGGER.debug(constantPrefix + " and " + constantSuffix ); // the same as "log something and concat strings"
+    }
+
+    public void case3() {
+        LOGGER.debug("Prefix " + CONSTANT);
+    }
+
+    public void case4() {
+        LOGGER.debug("Some long string that has been " + 
+            "separated into two constants. Contains value: {}", param);
+    }
+
+    private void log(int line, String key) {
+        System.out.println(line + ":" + key);
+    }
+
+    public void case5(int line, String key) {
+        log(line, key);
+        LOGGER.debug(key);
+    }
+
+    private interface TestLambda {
+        void apply(String arg1, String arg2);
+    }
+    private void runTestLambda(TestLambda test) {
+        test.apply("one", "two");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false negative inside lambdas</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>19,21</expected-linenumbers>
+        <code><![CDATA[
+public class Logger {
+    private static final Logger LOGGER = new Logger();
+
+    private interface TestLambda {
+        void apply(String arg1, String arg2);
+    }
+    private void runTestLambda(TestLambda test) {
+        test.apply("one", "two");
+    }
+
+    public void case1_no_violation() {
+        runTestLambda((String a, String b) -> {
+            LOGGER.debug(a);
+        });
+    }
+
+    public void case2_violation() {
+        runTestLambda((String a, String b) -> {
+            LOGGER.debug(a + b);
+        });
+        runTestLambda((s1, s2) -> {LOGGER.debug(s1 + s2);});
     }
 }
         ]]></code>
