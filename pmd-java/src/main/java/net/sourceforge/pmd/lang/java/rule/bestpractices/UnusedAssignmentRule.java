@@ -802,7 +802,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (rhs != null) {
                 rhs.acceptVisitor(this, data);
                 data.assign(var, rhs);
-            } else if (isAssignedImplicitly(var)) {
+            } else if (isAssignedImplicitly(node.getVarId())) {
                 data.declareBlank(node.getVarId());
             }
             return data;
