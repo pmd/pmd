@@ -68,6 +68,7 @@ PMD will now ignore:
     *   [#3114](https://github.com/pmd/pmd/issues/3114): \[java] UnusedAssignment false positive when reporting unused variables
     *   [#3315](https://github.com/pmd/pmd/issues/3315): \[java] LiteralsFirstInComparisons false positive with two constants
     *   [#3341](https://github.com/pmd/pmd/issues/3341): \[java] JUnitTestsShouldIncludeAssert should support Junit 5
+    *   [#3340](https://github.com/pmd/pmd/issues/3340): \[java] NullPointerException applying rule GuardLogStatement
 *   java-codestyle
     *   [#3317](https://github.com/pmd/pmd/pull/3317): \[java] Update UnnecessaryImport to recognize usage of imported types in javadoc's `@exception` tag
 *   java-errorprone
