@@ -19,24 +19,17 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -258,43 +251,30 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
         if (node.getFirstDescendantOfType(ASTLiteral.class) != null) {
             count = countPlaceholders(node);
         } else if (node.getFirstDescendantOfType(ASTName.class) != null) {
-            final String variableName = node.getFirstDescendantOfType(ASTName.class).getImage();
-            // look if the message is defined locally in a method/constructor, initializer block or lambda expression
-            final JavaNode parentBlock = node.getFirstParentOfAnyType(ASTMethodOrConstructorDeclaration.class, ASTInitializer.class, ASTLambdaExpression.class);
-            if (parentBlock != null) {
-                final List<ASTVariableDeclarator> localVariables = parentBlock.findDescendantsOfType(ASTVariableDeclarator.class);
-                count = getAmountOfExpectedArguments(variableName, localVariables);
-            }
-
-            if (count == -1) {
-                // look if the message is defined in a field
-                final List<ASTFieldDeclaration> fieldlist = node.getFirstParentOfAnyType(ASTClassOrInterfaceBody.class, ASTEnumBody.class)
-                        .findDescendantsOfType(ASTFieldDeclaration.class);
-                // only look for ASTVariableDeclarator that are Fields
-                final List<ASTVariableDeclarator> fields = new ArrayList<>(fieldlist.size());
-                for (final ASTFieldDeclaration astFieldDeclaration : fieldlist) {
-                    fields.add(astFieldDeclaration.getFirstChildOfType(ASTVariableDeclarator.class));
+            NameDeclaration nameDeclaration = node.getFirstDescendantOfType(ASTName.class).getNameDeclaration();
+            if (nameDeclaration instanceof VariableNameDeclaration) {
+                ASTVariableDeclarator varDecl = ((VariableNameDeclaration) nameDeclaration).getDeclaratorId()
+                    .getFirstParentOfType(ASTVariableDeclarator.class);
+                // ASTVariableDeclaratorId is also used in formal parameters, lambda parameters, exception vars
+                // in that case, there is no variable declaration
+                // for local vars and fields, there is a varDecl
+                if (varDecl != null) {
+                    count = getAmountOfExpectedArguments(varDecl);
                 }
-                count = getAmountOfExpectedArguments(variableName, fields);
             }
         }
         return count;
     }
 
-    private int getAmountOfExpectedArguments(final String variableName, final List<ASTVariableDeclarator> variables) {
-        for (final ASTVariableDeclarator astVariableDeclarator : variables) {
-            if (astVariableDeclarator.getFirstChildOfType(ASTVariableDeclaratorId.class).getImage()
-                    .equals(variableName)) {
-                ASTVariableInitializer variableInitializer = astVariableDeclarator
-                        .getFirstDescendantOfType(ASTVariableInitializer.class);
-                ASTExpression expression = null;
-                if (variableInitializer != null) {
-                    expression = variableInitializer.getFirstChildOfType(ASTExpression.class);
-                }
-                if (expression != null) {
-                    return countPlaceholders(expression);
-                }
-            }
+    private int getAmountOfExpectedArguments(ASTVariableDeclarator astVariableDeclarator) {
+        ASTVariableInitializer variableInitializer = astVariableDeclarator
+                .getFirstDescendantOfType(ASTVariableInitializer.class);
+        ASTExpression expression = null;
+        if (variableInitializer != null) {
+            expression = variableInitializer.getFirstChildOfType(ASTExpression.class);
+        }
+        if (expression != null) {
+            return countPlaceholders(expression);
         }
         return -1;
     }
