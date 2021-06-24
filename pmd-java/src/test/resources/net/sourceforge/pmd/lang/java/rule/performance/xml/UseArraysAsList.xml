@@ -7,8 +7,11 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Bar {
     void foo() {
         Integer[] ints = new Integer(10);
@@ -25,7 +28,9 @@ public class Bar {
         <description>adding first element repeatedly</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Bar {
     void foo() {
         Integer[] ints = new Integer(10);
@@ -42,7 +47,9 @@ public class Bar {
         <description>inside conditional</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Bar {
     void foo() {
         Integer[] ints = new Integer(10);
@@ -61,7 +68,9 @@ public class Bar {
         <description>adding new object</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Bar {
     void foo() {
         Integer[] ints = new Integer(10);
@@ -78,7 +87,9 @@ public class Bar {
         <description>calling method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Bar {
     void foo() {
         Integer[] ints = new Integer(10);
@@ -94,17 +105,20 @@ public class Bar {
     <test-code>
         <description>Integer array passed as argument</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
         List l = new ArrayList(10);
         for (int i = 0; i < 100; i++) {
-        l.add(ints[i]);
+            l.add(ints[i]);
         }
         for (int i = 0; i < 100; i++) {
-        l.add(a[i].toString()); // won't trigger the rule
+            l.add(a[i].toString()); // won't trigger the rule
         }
     }
 }
@@ -115,7 +129,9 @@ public class Test {
         <description>#1099 UseArraysAsList false positives</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Test {
     public void foo() {
         String [] result = new String[10000];
@@ -126,6 +142,26 @@ public class Test {
         for (int i = 1; i <= n; i++) {
             resultList.add(result[i]);
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseArraysAsList false negative with for-each loop #3331</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class UseArraysAsListFN {
+    public List<String> convert(String[] arr) {
+        List<String> result = new ArrayList<>();
+        for (String s : arr) {
+            result.add(s);  // violation expected
+        }
+        return result;
     }
 }
         ]]></code>

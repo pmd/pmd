@@ -143,9 +143,9 @@ public class Foo {
     <test-code>
         <description>String.trim().isEmpty() is called after a chain call, should have failed</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,7</expected-linenumbers>
         <code><![CDATA[
 import java.util.Arrays;
-
 public class Foo {
     void bar() {
         String foo = "foo";
@@ -160,6 +160,7 @@ public class Foo {
     <test-code>
         <description>String.trim().isEmpty() is called after a chain call, should have failed twice</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
         <code><![CDATA[
 import java.util.Arrays;
 public class Foo {
@@ -203,6 +204,7 @@ public class PatternMatchingInstanceof {
         ]]></code>
         <source-type>java 16</source-type>
     </test-code>
+
     <test-code>
         <description>[java] InefficientEmptyStringCheck false negative in anonymous class #1224</description>
         <expected-problems>1</expected-problems>
@@ -233,6 +235,89 @@ public class PatternMatchingInstanceof {
                     });
                 }
             }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String.trim.isEmpty is called on method result, should have failed</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>7,10,15,18</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.performance.inefficientemptystringcheck;
+public class StringTrimIsEmpty {
+    String get() {
+        return "foo";
+    }
+    void bar() {
+        if (get().trim().isEmpty()) {
+            // violation
+        }
+        if (this.get().trim().isEmpty()) {
+            // violation
+        }
+
+        String bar = get();
+        if (bar.trim().isEmpty()) {
+            // violation
+        }
+        if (bar.toString().trim().isEmpty()) {
+            // violation
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String.trim.length is called on method result, should have failed</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>7,10,15,18</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.performance.inefficientemptystringcheck;
+public class StringTrimLength {
+    String get() {
+        return "foo";
+    }
+    void bar() {
+        if (get().trim().length() == 0) {
+            // violation missing
+        }
+        if (this.get().trim().length() == 0) {
+            // violation missing
+        }
+
+        String bar = get();
+        if (bar.trim().length() == 0) {
+            // violation already detected
+        }
+        if (bar.toString().trim().length() == 0) {
+            // violation missing
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String.trim.isEmpty and length called in method argument</description>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>8,9,10,11,12,13</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.performance.inefficientemptystringcheck;
+public class StringTrimMethodArgument {
+    public String get() {
+        return "foo";
+    }
+    public void bar() {
+        String bar = "foo";
+        System.out.println(bar.trim().isEmpty()); // violation missing
+        System.out.println(bar.trim().length() == 0);
+        System.out.println(get().trim().isEmpty()); // violation missing
+        System.out.println(get().trim().length() == 0); // violation missing
+        System.out.println(this.get().trim().isEmpty()); // violation missing
+        System.out.println(this.get().trim().length() == 0); // violating missing
+    }
+}
         ]]></code>
     </test-code>
 </test-data>
