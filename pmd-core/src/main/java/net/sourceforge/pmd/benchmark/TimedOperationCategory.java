@@ -25,6 +25,7 @@ public enum TimedOperationCategory {
     MULTIFILE_ANALYSIS,
     REPORTING,
     FILE_PROCESSING,
+    ANALYSIS_CACHE,
     UNACCOUNTED;
 
     public String displayName() {
