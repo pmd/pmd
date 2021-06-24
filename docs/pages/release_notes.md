@@ -19,6 +19,21 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Improved Incremental Analysis
+
+[Incremental Analysis](https://pmd.github.io/pmd-6.36.0/pmd_userdocs_incremental_analysis.html) has long helped
+our users obtain faster analysis results, however, it's implementation tended to be too cautious in detecting
+changes to the runtime and type resolution classpaths, producing more cache invalidations than were necessary.
+We have now improved the heuristics to remove several bogus invalidations, and slightly sped up the cache
+usage along the way.
+
+PMD will now ignore:
+
+*   Non class files in classpath and jar / zip files being referenced.
+*   Changes to the order of file entries within a jar / zip
+*   Changes to file metadata within jar / zip (ie: creation and modification time,
+    significant in multi-module / composite build projects where lateral artifacts are frequently recreated)
+
 #### New rules
 
 *   The new Apex rule {% rule apex/performance/AvoidDebugStatements %} finds usages of `System.debug` calls.
@@ -58,12 +73,14 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3114](https://github.com/pmd/pmd/issues/3114): \[java] UnusedAssignment false positive when reporting unused variables
     *   [#3315](https://github.com/pmd/pmd/issues/3315): \[java] LiteralsFirstInComparisons false positive with two constants
     *   [#3341](https://github.com/pmd/pmd/issues/3341): \[java] JUnitTestsShouldIncludeAssert should support Junit 5
+    *   [#3340](https://github.com/pmd/pmd/issues/3340): \[java] NullPointerException applying rule GuardLogStatement
 *   java-codestyle
     *   [#3317](https://github.com/pmd/pmd/pull/3317): \[java] Update UnnecessaryImport to recognize usage of imported types in javadoc's `@exception` tag
 *   java-errorprone
     *   [#2895](https://github.com/pmd/pmd/issues/2895): \[java] Improve BadComparison and rename to ComparisonWithNaN
     *   [#3284](https://github.com/pmd/pmd/issues/3284): \[java] InvalidLogMessageFormat may examine the value of a different but identically named String variable
     *   [#3304](https://github.com/pmd/pmd/issues/3304): \[java] NPE in MoreThanOneLoggerRule on a java 16 record
+    *   [#3305](https://github.com/pmd/pmd/issues/3305): \[java] ConstructorCallsOverridableMethodRule IndexOutOfBoundsException on a java16 record
     *   [#3343](https://github.com/pmd/pmd/pull/3343): \[java] CloneMethodMustImplementCloneable: FN with local classes
 *   java-performance
     *   [#3331](https://github.com/pmd/pmd/issues/3331): \[java] UseArraysAsList false negative with for-each loop

@@ -304,4 +304,20 @@ import java.lang.annotation.*;
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Record creates an IndexOutOfBounds exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            record HelloMsg(String msg) {
+
+                    HelloMsg toTheWorld() {
+                       return new HelloMsg("World");
+                    }
+
+                    String hello() {
+                    return "Hello " + msg;
+                    }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
