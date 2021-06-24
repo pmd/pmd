@@ -71,7 +71,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 } else {
                     message = MESSAGE_TRANSITIVE;
                 }
-                addViolationWithMessage(data, call, message, new Object[] { PrettyPrintingUtil.prettyPrintOverload(call) });
+                addViolationWithMessage(data, call, message, new Object[] { PrettyPrintingUtil.prettyPrintOverload(unsafetyReason) });
             }
         }
         return null;

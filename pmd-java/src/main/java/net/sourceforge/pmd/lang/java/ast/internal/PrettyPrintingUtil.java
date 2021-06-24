@@ -36,6 +36,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint.TypePrettyPrinter;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -206,7 +208,15 @@ public final class PrettyPrintingUtil {
      * Pretty print the selected overload.
      */
     public static @NonNull String prettyPrintOverload(ASTMethodCall it) {
-        return TypePrettyPrint.prettyPrint(it.getOverloadSelectionInfo().getMethodType(), overloadPrinter());
+        return prettyPrintOverload(it.getOverloadSelectionInfo().getMethodType());
+    }
+
+    public static @NonNull String prettyPrintOverload(JMethodSymbol it) {
+        return prettyPrintOverload(it.getTypeSystem().sigOf(it));
+    }
+
+    public static @NonNull String prettyPrintOverload(JMethodSig it) {
+        return TypePrettyPrint.prettyPrint(it, overloadPrinter());
     }
 
     private static TypePrettyPrinter overloadPrinter() {
