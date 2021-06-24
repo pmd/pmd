@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -83,9 +82,10 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRule {
 
     @Override
     public Object visit(final ASTMethodDeclaration node, final Object data) {
+        super.visit(node, data);
+
         // Is this a clone method?
-        final ASTMethodDeclarator methodDeclarator = node.getFirstChildOfType(ASTMethodDeclarator.class);
-        if (!isCloneMethod(methodDeclarator)) {
+        if (!isCloneMethod(node)) {
             return data;
         }
 
@@ -159,10 +159,10 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRule {
         return classesNames;
     }
 
-    public boolean isCloneMethod(final ASTMethodDeclarator method) {
-        if (!"clone".equals(method.getImage())) {
+    public boolean isCloneMethod(final ASTMethodDeclaration method) {
+        if (!"clone".equals(method.getName())) {
             return false;
         }
-        return method.getParameterCount() == 0;
+        return method.getArity() == 0;
     }
 }
