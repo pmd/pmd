@@ -60,6 +60,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3284](https://github.com/pmd/pmd/issues/3284): \[java] InvalidLogMessageFormat may examine the value of a different but identically named String variable
     *   [#3304](https://github.com/pmd/pmd/issues/3304): \[java] NPE in MoreThanOneLoggerRule on a java 16 record
     *   [#3343](https://github.com/pmd/pmd/pull/3343): \[java] CloneMethodMustImplementCloneable: FN with local classes
+*   java-performance
+    *   [#3344](https://github.com/pmd/pmd/pull/3344): \[java] InefficientEmptyStringCheck FN with trim.length on method call
 
 ### API Changes
 
