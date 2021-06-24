@@ -159,7 +159,7 @@ public final class ApexQualifiedName implements QualifiedName {
             sb.append(paramTypes.get(0).getApexName());
 
             for (int i = 1; i < paramTypes.size(); i++) {
-                sb.append(",").append(paramTypes.get(i).getApexName());
+                sb.append(", ").append(paramTypes.get(i).getApexName());
             }
 
         }
