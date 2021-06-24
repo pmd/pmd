@@ -4,10 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
-import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * This rule finds code which inefficiently determines empty strings.
@@ -41,42 +45,45 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
  *
  * @author acaplan
  */
-public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroCheck {
+public class InefficientEmptyStringCheckRule extends AbstractJavaRule {
 
-    @Override
-    public boolean isTargetMethod(JavaNameOccurrence occ) {
-        if (occ.getNameForWhichThisIsAQualifier() != null
-                && occ.getNameForWhichThisIsAQualifier().getImage().contains("trim")) {
-            Node pExpression = occ.getLocation().getParent().getParent();
-            if (pExpression.getNumChildren() > 2 && "length".equals(pExpression.getChild(2).getImage())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean appliesToClassName(String name) {
-        return "String".equals(name) || "java.lang.String".equals(name);
+    public InefficientEmptyStringCheckRule() {
+        addRuleChainVisit(ASTPrimaryExpression.class);
     }
 
     @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
-
         if (node.getNumChildren() > 3) {
             // Check last suffix
-            if (!"isEmpty".equals(node.getChild(node.getNumChildren() - 2).getImage())) {
+            String lastSuffix = node.getChild(node.getNumChildren() - 2).getImage();
+            if (!("isEmpty".equals(lastSuffix) || "length".equals(lastSuffix) && isComparisonWithZero(node))) {
                 return data;
             }
 
-            Node prevCall = node.getChild(node.getNumChildren() - 4);
+            TypeNode prevCall = (TypeNode) node.getChild(node.getNumChildren() - 4);
             String target = prevCall.getNumChildren() > 0 ? prevCall.getChild(0).getImage() : prevCall.getImage();
-            if (target != null && ("trim".equals(target) || target.endsWith(".trim"))) {
+            if (target != null && ("trim".equals(target) || target.endsWith(".trim"))
+                    && TypeTestUtil.isA(String.class, prevCall)) {
                 addViolation(data, node);
             }
         }
         return data;
     }
 
+    private boolean isComparisonWithZero(ASTPrimaryExpression node) {
+        if (node.getParent() instanceof ASTEqualityExpression && "==".equals(node.getParent().getImage())) {
+            JavaNode other = node.getParent().getChild(1);
+            if (node.getIndexInParent() == 1) {
+                other = node.getParent().getChild(0);
+            }
+            if (other instanceof ASTPrimaryExpression && other.getNumChildren() == 1
+                    && other.getChild(0) instanceof ASTPrimaryPrefix
+                    && other.getChild(0).getNumChildren() == 1
+                    && other.getChild(0).getChild(0) instanceof ASTLiteral) {
+                ASTLiteral literal = (ASTLiteral) other.getChild(0).getChild(0);
+                return literal.isIntLiteral() && "0".equals(literal.getImage());
+            }
+        }
+        return false;
+    }
 }
-

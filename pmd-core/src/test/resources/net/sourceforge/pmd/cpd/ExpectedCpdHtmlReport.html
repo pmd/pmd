@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript">
+			function toggleCodeSection(btn, id)
+			{
+				area = document.getElementById(id);
+				if (area.style.display == 'none')
+					{
+					btn.innerHTML = '-';
+					area.style.display = 'inline';
+					}
+				else
+					{
+					btn.innerHTML = '+';
+					area.style.display = 'none';
+					}
+			}
+		</script>
+        <style>
+			.SummaryTitle  { }
+			.SummaryNumber { background-color:#DDDDDD; text-align: center; }
+			.ItemNumber    { background-color: #DDDDDD; }
+			.CodeFragment  { background-color: #BBBBBB; display:none; font:normal normal normal 9pt Courier; }
+			.ExpandButton  { background-color: #FFFFFF; font-size: 8pt; width: 20px; height: 20px; margin:0px; }
+		</style>
+    </head>
+    <body>
+        <h2>Summary of duplicated code</h2>
+            This page summarizes the code fragments that have been found to be replicated in the code.
+    Only those fragments longer than 30 lines of code are shown.
+    
+        <p></p>
+        <table border="1" class="summary" cellpadding="2">
+            <tr style="background-color:#CCCCCC;">
+                <th># duplications</th><th>Total lines</th><th>Total tokens</th><th>Approx # bytes</th>
+            </tr>
+            <tr>
+                <td class="SummaryNumber">1</td><td class="SummaryNumber">60</td><td class="SummaryNumber">75</td><td class="SummaryNumber">300</td>
+            </tr>
+        </table>
+        <p></p>
+            You expand and collapse the code fragments using the + buttons. You can also navigate to the source code by clicking
+    on the file names.
+    
+        <p></p>
+        <table>
+            <tr style="background-color: #444444; color: #DDDDDD;">
+                <td>ID</td><td>Files</td><td>Lines</td>
+            </tr>
+            <tr>
+                <td class="ItemNumber">1</td><td>
+                    <table>
+                        <tr>
+                            <td><a href="../src//var/Foo.java.html#1">/var/Foo.java</a></td><td> line 1</td>
+                        </tr>
+                        <tr>
+                            <td><a href="../src//var/Foo.java.html#73">/var/Foo.java</a></td><td> line 73</td>
+                        </tr>
+                    </table>
+                </td><td># lines : 60</td>
+            </tr>
+            <tr>
+                <td></td><td colspan="2" valign="top">
+                    <table>
+                        <tr>
+                            <td valign="top"><button class="ExpandButton" onclick="blur(); toggleCodeSection(this, 'frag_1')">+</button></td><td><textarea cols="100" rows="30" wrap="off" class="CodeFragment" style="display:none;" id="frag_1">code
+fragment</textarea></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <hr>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

@@ -409,4 +409,53 @@ public class Foo {
             }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] LiteralsFirstInComparisons with two constants #3315</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.PMDVersion;
+public class LiteralsFirstInComparisonCase {
+    private static final String S1 = "s1";
+    private static final String S2 = "s2";
+    public static boolean compare() {
+        return S1.equals(S2);
+    }
+    public static boolean isUnkown() {
+        return PMDVersion.VERSION.equals(S2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] LiteralsFirstInComparisons with two constants #3315 - with on demand import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.*;
+public class LiteralsFirstInComparisonCase {
+    private static final String S2 = "s2";
+    public static boolean isUnkown() {
+        return PMDVersion.VERSION.equals(S2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with non-String constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.BigInteger;
+
+public class LiteralsFirstInComparisonBigInteger {
+    public void foo() {
+        BigInteger value = new BigInteger("1");
+        if (value.equals(BigInteger.ZERO)) {
+            System.out.println("1==0!!");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
