@@ -2169,18 +2169,18 @@ with lambdas. The available alternatives depend on the actual logging framework.
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Add this for performance</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">log</span><span class="o">.</span><span class="na">isDebugEnabled</span><span class="o">())</span> <span class="o">{</span>
-        <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"log something"</span> <span class="o">+</span> <span class="s">" and "</span> <span class="o">+</span> <span class="s">"concat strings"</span><span class="o">);</span>
-    <span class="o">}</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">log</span><span class="o">.</span><span class="na">isDebugEnabled</span><span class="o">())</span> <span class="o">{</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"log something"</span> <span class="o">+</span> <span class="n">param1</span> <span class="o">+</span> <span class="s">" and "</span> <span class="o">+</span> <span class="n">param2</span> <span class="o">+</span> <span class="s">"concat strings"</span><span class="o">);</span>
+<span class="o">}</span>
 
-    <span class="c1">// Avoid the guarding if statement with substituting parameters</span>
-    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"log something {} and {}"</span><span class="o">,</span> <span class="n">param1</span><span class="o">,</span> <span class="n">param2</span><span class="o">);</span>
+<span class="c1">// Avoid the guarding if statement with substituting parameters</span>
+<span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"log something {} and {}"</span><span class="o">,</span> <span class="n">param1</span><span class="o">,</span> <span class="n">param2</span><span class="o">);</span>
 
-    <span class="c1">// Avoid the guarding if statement with formatters</span>
-    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"log something %s and %s"</span><span class="o">,</span> <span class="n">param1</span><span class="o">,</span> <span class="n">param2</span><span class="o">);</span>
+<span class="c1">// Avoid the guarding if statement with formatters</span>
+<span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"log something %s and %s"</span><span class="o">,</span> <span class="n">param1</span><span class="o">,</span> <span class="n">param2</span><span class="o">);</span>
 
-    <span class="c1">// Avoid the guarding if statement with lazy logging and lambdas</span>
-    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"log something expensive: {}"</span><span class="o">,</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="n">calculateExpensiveLoggingText</span><span class="o">());</span>
+<span class="c1">// Avoid the guarding if statement with lazy logging and lambdas</span>
+<span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"log something expensive: {}"</span><span class="o">,</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="n">calculateExpensiveLoggingText</span><span class="o">());</span>
 </code></pre></div></div>
 
 <p><strong>This rule has the following properties:</strong></p>
@@ -3872,7 +3872,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 23, 2021 <br />
+ Site last generated: Jun 24, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

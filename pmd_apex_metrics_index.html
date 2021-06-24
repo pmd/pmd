@@ -1426,11 +1426,25 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
   <h1 id="index-of-code-metrics">Index of code metrics</h1>
 
+<h2 id="cognitive-complexity-cognitive">Cognitive Complexity (COGNITIVE)</h2>
+
+<p><em>Operation metric.</em> Can be calculated on any non-abstract operation.</p>
+
+<p><em>Class metric.</em> Can be computed on classes and enums - it’s just the sum of all method’s cogntive complexities.</p>
+
+<h3 id="description">Description</h3>
+
+<p>See the corresponding Java metric <a href="pmd_java_metrics_index.html#cognitive-complexity-cognitive_complexity">Cognitive Complexity</a> for a general description.</p>
+
+<p>The rule <a href="pmd_rules_apex_design.html#cognitivecomplexity"><code class="language-plaintext highlighter-rouge">CognitiveComplexity</code></a> by default reports methods with a complexity of 15 or more
+and classes the have a total complexity (sum of all methods) of 50 or more.
+These reported methods should be broken down into less complex components.</p>
+
 <h2 id="cyclomatic-complexity-cyclo">Cyclomatic Complexity (CYCLO)</h2>
 
 <p><em>Operation metric.</em> Can be calculated on any non-abstract operation.</p>
 
-<h3 id="description">Description</h3>
+<h3 id="description-1">Description</h3>
 
 <p>Number of independent paths through a block of code [<a href="#Lanza05">Lanza05</a>]. 
 Formally, given that the control flow graph of the block has <code class="language-plaintext highlighter-rouge">n</code> vertices, <code class="language-plaintext highlighter-rouge">e</code> 
@@ -1515,7 +1529,7 @@ flow statement.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> July 20, 2017<br/> Site last generated: Jun 23, 2021 <br />
+<span>Page last updated:</span> July 20, 2017<br/> Site last generated: Jun 24, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

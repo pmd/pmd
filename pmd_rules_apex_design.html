@@ -1516,7 +1516,7 @@ complexity. Nested control flows can make a method more difficult to understand,
 control flow leading to an increase in cognitive complexity.</p>
 
 <p>Information about Cognitive complexity can be found in the original paper here:
-https://www.sonarsource.com/docs/CognitiveComplexity.pdf</p>
+<a href="https://www.sonarsource.com/docs/CognitiveComplexity.pdf">https://www.sonarsource.com/docs/CognitiveComplexity.pdf</a></p>
 
 <p>By default, this rule reports methods with a complexity of 15 or more. Reported methods should be broken down into less
 complex components.</p>
@@ -1543,15 +1543,15 @@ complex components.</p>
         <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
     <span class="o">}</span>
 
-    <span class="c1">// Has a cognitive complexity of 5</span>
+    <span class="c1">// Has a cognitive complexity of 4</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">updateContacts</span><span class="o">(</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Contact</span><span class="o">&gt;</span> <span class="n">contacts</span><span class="o">)</span> <span class="o">{</span>
         <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Contact</span><span class="o">&gt;</span> <span class="n">contactsToUpdate</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Contact</span><span class="o">&gt;();</span>
 
         <span class="k">for</span> <span class="o">(</span><span class="nc">Contact</span> <span class="n">contact</span> <span class="o">:</span> <span class="n">contacts</span><span class="o">)</span> <span class="o">{</span>                           <span class="c1">// +1</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">contact</span><span class="o">.</span><span class="na">Department</span> <span class="o">==</span> <span class="err">'</span><span class="nc">Finance</span><span class="err">'</span><span class="o">)</span> <span class="o">{</span>                   <span class="c1">// +2</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">contact</span><span class="o">.</span><span class="na">Department</span> <span class="o">==</span> <span class="err">'</span><span class="nc">Finance</span><span class="err">'</span><span class="o">)</span> <span class="o">{</span>                   <span class="c1">// +2 (nesting = 1)</span>
                 <span class="n">contact</span><span class="o">.</span><span class="na">Title</span> <span class="o">=</span> <span class="err">'</span><span class="nc">Finance</span> <span class="nc">Specialist</span><span class="err">'</span><span class="o">;</span>
                 <span class="n">contactsToUpdate</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">contact</span><span class="o">);</span>
-            <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">contact</span><span class="o">.</span><span class="na">Department</span> <span class="o">==</span> <span class="err">'</span><span class="nc">Sales</span><span class="err">'</span><span class="o">)</span> <span class="o">{</span>              <span class="c1">// +2</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">contact</span><span class="o">.</span><span class="na">Department</span> <span class="o">==</span> <span class="err">'</span><span class="nc">Sales</span><span class="err">'</span><span class="o">)</span> <span class="o">{</span>              <span class="c1">// +1</span>
                 <span class="n">contact</span><span class="o">.</span><span class="na">Title</span> <span class="o">=</span> <span class="err">'</span><span class="nc">Sales</span> <span class="nc">Specialist</span><span class="err">'</span><span class="o">;</span>
                 <span class="n">contactsToUpdate</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">contact</span><span class="o">);</span>
             <span class="o">}</span>
@@ -2483,7 +2483,7 @@ city/state/zip fields could park them within a single Address field.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 23, 2021 <br />
+ Site last generated: Jun 24, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
