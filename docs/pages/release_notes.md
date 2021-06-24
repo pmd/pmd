@@ -18,7 +18,7 @@ This is a {{ site.pmd.release_type }} release.
 
 [Incremental Analysis](https://pmd.github.io/pmd-6.36.0/pmd_userdocs_incremental_analysis.html) has long helped
 our users obtain faster analysis results, however, its implementation tended to be too cautious in detecting
-changes to the runtime and type resolution classpaths, producing more cache invalidations than were necessary.
+changes to the runtime and type resolution classpaths, producing more cache invalidations than necessary.
 We have now improved the heuristics to remove several bogus invalidations, and slightly sped up the cache
 usage along the way.
 
