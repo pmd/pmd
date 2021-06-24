@@ -1479,6 +1479,8 @@ It now considers usages of <code class="language-plaintext highlighter-rouge">Do
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/957">#957</a>: [java] GuardLogStatement: False positive with compile-time constant arguments</li>
       <li><a href="https://github.com/pmd/pmd/issues/3114">#3114</a>: [java] UnusedAssignment false positive when reporting unused variables</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3315">#3315</a>: [java] LiteralsFirstInComparisons false positive with two constants</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3341">#3341</a>: [java] JUnitTestsShouldIncludeAssert should support Junit 5</li>
     </ul>
   </li>
   <li>java-codestyle
@@ -1491,6 +1493,13 @@ It now considers usages of <code class="language-plaintext highlighter-rouge">Do
       <li><a href="https://github.com/pmd/pmd/issues/2895">#2895</a>: [java] Improve BadComparison and rename to ComparisonWithNaN</li>
       <li><a href="https://github.com/pmd/pmd/issues/3284">#3284</a>: [java] InvalidLogMessageFormat may examine the value of a different but identically named String variable</li>
       <li><a href="https://github.com/pmd/pmd/issues/3304">#3304</a>: [java] NPE in MoreThanOneLoggerRule on a java 16 record</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3343">#3343</a>: [java] CloneMethodMustImplementCloneable: FN with local classes</li>
+    </ul>
+  </li>
+  <li>java-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3331">#3331</a>: [java] UseArraysAsList false negative with for-each loop</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3344">#3344</a>: [java] InefficientEmptyStringCheck FN with trim.length on method call</li>
     </ul>
   </li>
 </ul>
@@ -1507,6 +1516,7 @@ It now considers usages of <code class="language-plaintext highlighter-rouge">Do
   <li><a href="https://github.com/pmd/pmd/pull/3320">#3320</a>: [java] Fix incorrect increment for “else if” branch in Cognitive Complexity docs - <a href="https://github.com/borovikovd">Denis Borovikov</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3322">#3322</a>: [apex] added rule to detect inaccessible AuraEnabled getters - <a href="https://github.com/pozil">Philippe Ozil</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3323">#3323</a>: [core] Adds fullDescription and tags in SARIF report - <a href="https://github.com/Clint-Chester">Clint Chester</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3339">#3339</a>: [java] JUnitTestsShouldIncludeAssert Tweak assertion definition to avoid false positive with modern JUnit5 - <a href="https://github.com/ajeans">Arnaud Jeansen</a></li>
 </ul>
 
 
