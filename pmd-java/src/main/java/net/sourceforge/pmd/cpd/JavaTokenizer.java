@@ -10,7 +10,6 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Properties;
 
-import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;

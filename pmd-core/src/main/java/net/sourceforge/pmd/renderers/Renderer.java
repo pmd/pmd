@@ -9,8 +9,6 @@ import java.io.Writer;
 import java.util.List;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
@@ -179,19 +177,4 @@ public interface Renderer extends PropertySource {
      */
     @Experimental
     void setReportFile(String reportFilename);
-
-
-    @Experimental
-    void setSourceEncoding(String sourceEncoding);
-
-    @Experimental
-    String getSourceEncoding();
-
-    /**
-     * Retrieve slice of source code from the information contained in
-     * {@link RuleViolation}
-     *
-     * <p>See {@link AbstractRenderer#getSourceCode(RuleViolation)} for default impl</p>
-     */
-    SourceCode getSourceCode(RuleViolation violation);
 }

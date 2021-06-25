@@ -7,7 +7,7 @@ package net.sourceforge.pmd.util.database;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.SourceCode;
+import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.Language;
 
 /**

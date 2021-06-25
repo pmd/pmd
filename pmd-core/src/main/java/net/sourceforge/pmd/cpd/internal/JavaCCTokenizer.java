@@ -6,7 +6,7 @@ package net.sourceforge.pmd.cpd.internal;
 
 import java.io.IOException;
 
-import net.sourceforge.pmd.SourceCode;
+import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;

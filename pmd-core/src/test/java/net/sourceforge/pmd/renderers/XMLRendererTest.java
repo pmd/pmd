@@ -103,7 +103,7 @@ public class XMLRendererTest extends AbstractRendererTest {
     }
 
     private void verifyXmlEscaping(Renderer renderer, String shouldContain, Charset charset) throws Exception {
-        renderer.setSourceEncoding(charset.name());
+        renderer.setProperty(XMLRenderer.ENCODING, charset.name());
         Report report = new Report();
         String surrogatePair = "\ud801\udc1c";
         String msg = "The String 'literal' \"TokénizĀr " + surrogatePair + "\" appears...";

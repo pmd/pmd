@@ -403,7 +403,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @return A Renderer instance.
      */
     public Renderer createRenderer(boolean withReportWriter) {
-        Renderer renderer = RendererFactory.createRenderer(reportFormat, reportProperties, getSourceEncoding().name());
+        Renderer renderer = RendererFactory.createRenderer(reportFormat, reportProperties);
         renderer.setShowSuppressedViolations(showSuppressedViolations);
         if (reportShortNames && inputPaths != null) {
             renderer.setUseShortNames(Arrays.asList(inputPaths.split(",")));

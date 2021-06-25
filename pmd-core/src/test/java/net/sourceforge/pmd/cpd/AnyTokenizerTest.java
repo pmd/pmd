@@ -12,8 +12,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.SourceCode;
-
 public class AnyTokenizerTest {
 
     @Test

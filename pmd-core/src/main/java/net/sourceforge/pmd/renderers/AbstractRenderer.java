@@ -4,25 +4,18 @@
 
 package net.sourceforge.pmd.renderers;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**
@@ -37,15 +30,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
     protected List<String> inputPathPrefixes = Collections.emptyList();
 
-    private static final PropertyDescriptor<String> SOURCE_ENCODING_PROPERTY =
-            PropertyFactory.stringProperty("sourceEncoding")
-                    .defaultValue("UTF-8")
-                    .desc("Source code encoding")
-                    .build();
-
     public AbstractRenderer(String name, String description) {
-        definePropertyDescriptor(SOURCE_ENCODING_PROPERTY);
-
         this.name = name;
         this.description = description;
     }
@@ -98,6 +83,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
      *
      * @param inputFileName
      * @return
+     *
      * @see PMDConfiguration#isReportShortNames()
      * @see PMDParameters#isShortnames()
      */
@@ -137,30 +123,4 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     public void setReportFile(String reportFilename) {
         this.setWriter(IOUtil.createWriter(reportFilename));
     }
-
-    @Experimental
-    @Override
-    public String getSourceEncoding() {
-        return getProperty(SOURCE_ENCODING_PROPERTY);
-    }
-
-    @Experimental
-    @Override
-    public void setSourceEncoding(String sourceEncoding) {
-        setProperty(SOURCE_ENCODING_PROPERTY, sourceEncoding);
-    }
-
-    @Experimental
-    @Override
-    public SourceCode getSourceCode(RuleViolation violation) {
-        if ("".equals(violation.getFilename())
-                || Files.notExists(Paths.get(violation.getFilename()))) {
-            return null;
-        }
-
-        return new SourceCode(new SourceCode.FileCodeLoader(
-                new File(violation.getFilename()), getSourceEncoding()));
-
-    }
-
 }

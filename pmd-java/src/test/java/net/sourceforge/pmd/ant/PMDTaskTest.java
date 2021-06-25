@@ -159,9 +159,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
 
         executeTarget("testFormatterEncodingWithXMLConsole");
         String report = convert(buildRule.getOutput());
-        String expectedStart = "\"<?xml version=\\\"1.0\\\" encoding=\\\"windows-1252\\\"?>\"";
-        //assertTrue(String.format("XML start is different: Expected: [%s], Actual:[%s]", expectedStart,
-        //   report.substring(0, expectedStart.length())), report.startsWith(expectedStart));
+        assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
         assertTrue(report.contains("someVariableWithÜmlaut"));
     }
 

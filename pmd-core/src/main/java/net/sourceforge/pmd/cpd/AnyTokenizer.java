@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**

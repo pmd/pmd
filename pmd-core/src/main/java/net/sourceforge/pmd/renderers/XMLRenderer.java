@@ -28,7 +28,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.SourceCode;
+import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -38,6 +38,9 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "xml";
 
+    // TODO 7.0.0 use PropertyDescriptor<String> or something more specialized
+    public static final StringProperty ENCODING = new StringProperty("encoding",
+            "XML encoding format, defaults to UTF-8.", "UTF-8", 0);
 
     private static final String PMD_REPORT_NS_URI = "http://pmd.sourceforge.net/report/2.0.0";
     private static final String PMD_REPORT_NS_LOCATION = "http://pmd.sourceforge.net/report_2_0_0.xsd";
@@ -49,11 +52,12 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     public XMLRenderer() {
         super(NAME, "XML format.");
+        definePropertyDescriptor(ENCODING);
     }
 
     public XMLRenderer(String encoding) {
         this();
-        setSourceEncoding(encoding);
+        setProperty(ENCODING, encoding);
     }
 
     @Override
@@ -63,7 +67,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void start() throws IOException {
-        String encoding = getSourceEncoding();
+        String encoding = getProperty(ENCODING);
         String unmarkedEncoding = toUnmarkedEncoding(encoding);
         lineSeparator = PMD.EOL.getBytes(unmarkedEncoding);
 
@@ -109,7 +113,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
      * Outputs a platform dependent line separator.
      *
      * @throws XMLStreamException if XMLStreamWriter couldn't be flushed.
-     * @throws IOException        if an I/O error occurs.
+     * @throws IOException if an I/O error occurs.
      */
     private void writeNewLine() throws XMLStreamException, IOException {
         /*
@@ -171,22 +175,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 xmlWriter.writeCharacters(StringUtil.removedInvalidXml10Characters(rv.getDescription()));
                 writeNewLine();
                 xmlWriter.writeEndElement();
-
                 writeNewLine();
-
-                try {
-                    SourceCode sourceCode = getSourceCode(rv);
-                    if (sourceCode != null) {
-                        xmlWriter.writeStartElement("codesnippet");
-                        writeNewLine();
-                        xmlWriter.writeCharacters(sourceCode.getSlice(rv.getBeginLine(), rv.getEndLine()));
-                        writeNewLine();
-                        xmlWriter.writeEndElement();
-                        writeNewLine();
-                    }
-                } catch (RuntimeException ex) {
-                    throw new IOException(ex);
-                }
             }
             if (filename != null) { // Not first file ?
                 xmlWriter.writeEndElement();
@@ -249,7 +238,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void setReportFile(String reportFilename) {
-        String encoding = getSourceEncoding();
+        String encoding = getProperty(ENCODING);
 
         try {
             this.stream = StringUtils.isBlank(reportFilename)
@@ -266,7 +255,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void setWriter(final Writer writer) {
-        String encoding = getSourceEncoding();
+        String encoding = getProperty(ENCODING);
         // for backwards compatibility, create a OutputStream that writes to the writer.
         this.stream = new WriterOutputStream(writer, encoding);
 

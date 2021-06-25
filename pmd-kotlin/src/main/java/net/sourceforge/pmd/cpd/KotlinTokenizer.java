@@ -6,7 +6,6 @@ package net.sourceforge.pmd.cpd;
 
 import org.antlr.v4.runtime.CharStream;
 
-import net.sourceforge.pmd.SourceCode;
 import net.sourceforge.pmd.cpd.token.AntlrToken;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
 import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;

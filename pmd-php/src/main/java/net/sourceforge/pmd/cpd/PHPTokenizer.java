@@ -6,8 +6,6 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.List;
 
-import net.sourceforge.pmd.SourceCode;
-
 /**
  * Simple tokenizer for PHP.
  */
