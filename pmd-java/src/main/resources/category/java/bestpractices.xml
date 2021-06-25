@@ -1290,9 +1290,8 @@ public class Foo {
             a new instance each time.
 
             Note that for `Boolean`, the named constants `Boolean.TRUE` and `Boolean.FALSE` may
-            also be used. Contrary to {% rule java/performance/BooleanInstantiation %}, this rule
-            does not look for instances of `Boolean.valueOf` that may be replaced by one of those
-            constants.
+            also be used. Use the rule {% rule java/performance/BooleanInstantiation %} to flag
+            replaceable instances of `Boolean.valueOf`.
         </description>
         <priority>3</priority>
         <properties>
@@ -1308,7 +1307,8 @@ public class Foo {
     or pmd-java:typeIs('java.lang.Short')
     or pmd-java:typeIs('java.lang.Byte')
     or pmd-java:typeIs('java.lang.Character')
-    or pmd-java:typeIs('java.lang.Boolean')
+(:    Ignored for now, left to BooleanInstantiation :)
+(:    or pmd-java:typeIs('java.lang.Boolean'):)
   ]
 ]]>
                 </value>
