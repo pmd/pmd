@@ -206,6 +206,14 @@ public final class TypeTestUtil {
         return isExactlyA(clazz, node.getTypeMirror().getSymbol());
     }
 
+    public static boolean isExactlyA(@NonNull Class<?> klass, @Nullable JTypeMirror type) {
+        AssertionUtil.requireParamNotNull("class", klass);
+        if (type == null) {
+            return false;
+        }
+        return isExactlyA(klass, type.getSymbol());
+    }
+
     public static boolean isExactlyA(@NonNull Class<?> klass, @Nullable JTypeDeclSymbol type) {
         AssertionUtil.requireParamNotNull("klass", klass);
         if (!(type instanceof JClassSymbol)) {

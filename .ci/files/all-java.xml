@@ -124,7 +124,7 @@
     <!-- <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts"/> -->
     <rule ref="category/java/design.xml/AvoidRethrowingException"/>
     <!-- <rule ref="category/java/design.xml/AvoidThrowingNewInstanceOfSameException"/> -->
-    <!-- <rule ref="category/java/design.xml/AvoidThrowingNullPointerException"/> -->
+    <rule ref="category/java/design.xml/AvoidThrowingNullPointerException"/>
     <!-- <rule ref="category/java/design.xml/AvoidThrowingRawExceptionTypes"/> -->
     <!-- <rule ref="category/java/design.xml/AvoidUncheckedExceptionsInSignatures"/> -->
     <!-- <rule ref="category/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal"/> -->
@@ -143,7 +143,7 @@
     <rule ref="category/java/design.xml/ExcessivePublicCount"/>
     <!-- <rule ref="category/java/design.xml/FinalFieldCouldBeStatic"/> -->
     <rule ref="category/java/design.xml/GodClass"/>
-    <!-- <rule ref="category/java/design.xml/ImmutableField"/> -->
+    <rule ref="category/java/design.xml/ImmutableField"/>
     <!-- <rule ref="category/java/design.xml/LawOfDemeter"/> -->
     <!-- <rule ref="category/java/design.xml/LogicInversion"/> -->
     <!-- <rule ref="category/java/design.xml/LoosePackageCoupling"/> -->
@@ -156,7 +156,7 @@
     <rule ref="category/java/design.xml/SimplifyBooleanExpressions"/>
     <rule ref="category/java/design.xml/SimplifyBooleanReturns"/>
     <!-- <rule ref="category/java/design.xml/SimplifyConditional"/> -->
-    <!-- <rule ref="category/java/design.xml/SingularField"/> -->
+    <rule ref="category/java/design.xml/SingularField"/>
     <!-- <rule ref="category/java/design.xml/SwitchDensity"/> -->
     <!-- <rule ref="category/java/design.xml/TooManyFields"/> -->
     <!-- <rule ref="category/java/design.xml/TooManyMethods"/> -->
@@ -238,7 +238,7 @@
     <!-- <rule ref="category/java/errorprone.xml/JumbledIncrementer"/> -->
     <!-- <rule ref="category/java/errorprone.xml/MethodWithSameNameAsEnclosingClass"/> -->
     <!-- <rule ref="category/java/errorprone.xml/MisplacedNullCheck"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/MissingBreakInSwitch"/> -->
+    <rule ref="category/java/errorprone.xml/MissingBreakInSwitch"/>
     <!-- <rule ref="category/java/errorprone.xml/MissingSerialVersionUID"/> -->
     <!-- <rule ref="category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass"/> -->
     <!-- <rule ref="category/java/errorprone.xml/MoreThanOneLogger"/> -->

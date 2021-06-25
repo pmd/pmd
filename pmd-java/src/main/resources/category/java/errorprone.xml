@@ -2289,31 +2289,18 @@ public class Foo {
     <rule name="MissingBreakInSwitch"
           language="java"
           since="3.0"
-          message="A switch statement does not contain a break"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          message="This switch case may be reached by fallthrough from the previous case"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.MissingBreakInSwitchRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingbreakinswitch">
         <description>
 Switch statements without break or return statements for each case option
-may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.
+may indicate problematic behaviour. Empty cases are ignored as these indicate
+an intentional fall-through.
+
+You can ignore a violation by commenting `// fallthrough` before the case label
+which is reached by fallthrough, or with `@SuppressWarnings("fallthrough")`.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//SwitchStatement
-[(count(.//BreakStatement)
- + count(BlockStatement//Statement/ReturnStatement)
- + count(BlockStatement//Statement/ContinueStatement)
- + count(BlockStatement//Statement/ThrowStatement)
- + count(BlockStatement//Statement/IfStatement[@Else= true() and Statement[2][ReturnStatement|ContinueStatement|ThrowStatement]]/Statement[1][ReturnStatement|ContinueStatement|ThrowStatement])
- + count(SwitchLabel[ following-sibling::node()[1][self::SwitchLabel] ])
- + count(SwitchLabel[count(following-sibling::node()) = 0])
-  < count (SwitchLabel))]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public void bar(int status) {
@@ -2321,12 +2308,9 @@ public void bar(int status) {
       case CANCELLED:
         doCancelled();
         // break; hm, should this be commented out?
-      case NEW:
-        doNew();
-        // is this really a fall-through?
       case REMOVED:
         doRemoved();
-        // what happens if you add another case after this one?
+        // fallthrough - this comment just clarifies that you want a fallthrough
       case OTHER: // empty case - this is interpreted as an intentional fall-through
       case ERROR:
         doErrorHandling();

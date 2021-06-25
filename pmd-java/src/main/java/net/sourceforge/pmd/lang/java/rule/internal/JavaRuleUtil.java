@@ -5,12 +5,14 @@
 package net.sourceforge.pmd.lang.java.rule.internal;
 
 import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.LONG;
+import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -64,6 +66,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -99,6 +102,19 @@ public final class JavaRuleUtil {
         "java.util.Map#get(_)",
         "java.lang.Iterable#iterator()",
         "java.lang.Comparable#compareTo(_)"
+    );
+
+    public static final Set<String> LOMBOK_ANNOTATIONS = immutableSetOf(
+        "lombok.Data",
+        "lombok.Getter",
+        "lombok.Setter",
+        "lombok.Value",
+        "lombok.RequiredArgsConstructor",
+        "lombok.AllArgsConstructor",
+        "lombok.NoArgsConstructor",
+        "lombok.Builder",
+        "lombok.EqualsAndHashCode",
+        "lombok.experimental.Delegate"
     );
 
     private JavaRuleUtil() {
@@ -191,6 +207,9 @@ public final class JavaRuleUtil {
     /**
      * Returns true if the expression is a stringbuilder (or stringbuffer)
      * append call, or a constructor call for one of these classes.
+     *
+     * <p>If it is a constructor call, returns false if this is a call to
+     * the constructor with a capacity parameter.
      */
     public static boolean isStringBuilderCtorOrAppend(@Nullable ASTExpression e) {
         if (e instanceof ASTMethodCall) {
@@ -652,6 +671,48 @@ public final class JavaRuleUtil {
                                                : null;
     }
 
+
+    /**
+     * Whether the expression is an access to a field of this instance,
+     * not inherited, qualified or not ({@code this.field} or just {@code field}).
+     */
+    public static boolean isThisFieldAccess(ASTExpression e) {
+        if (!(e instanceof ASTNamedReferenceExpr)) {
+            return false;
+        }
+        JVariableSymbol sym = ((ASTNamedReferenceExpr) e).getReferencedSym();
+        if (sym instanceof JFieldSymbol) {
+            return !((JFieldSymbol) sym).isStatic()
+                // not inherited
+                && ((JFieldSymbol) sym).getEnclosingClass().equals(e.getEnclosingType().getSymbol())
+                // correct syntactic form
+                && e instanceof ASTVariableAccess || isSyntacticThisFieldAccess(e);
+        }
+        return false;
+    }
+
+    /**
+     * Whether the expression is a {@code this.field}, with no outer
+     * instance qualifier ({@code Outer.this.field}). The field symbol
+     * is not checked to resolve to a field declared in this class (it
+     * may be inherited)
+     */
+    public static boolean isSyntacticThisFieldAccess(ASTExpression e) {
+        if (e instanceof ASTFieldAccess) {
+            ASTExpression qualifier = ((ASTFieldAccess) e).getQualifier();
+            if (qualifier instanceof ASTThisExpression) {
+                // unqualified this
+                return ((ASTThisExpression) qualifier).getQualifier() == null;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasAnyAnnotation(Annotatable node, Collection<String> qualifiedNames) {
+        return qualifiedNames.stream().anyMatch(node::isAnnotationPresent);
+    }
+
+
     /**
      * Returns true if the expression is the default field value for
      * the given type.
@@ -725,13 +786,6 @@ public final class JavaRuleUtil {
             return e1 instanceof ASTVariableAccess && e2 instanceof ASTVariableAccess;
         } else if (e1 instanceof ASTThisExpression || e2 instanceof ASTThisExpression) {
             return e1.getClass() == e2.getClass();
-        }
-        return false;
-    }
-
-    private static boolean isSyntacticThisFieldAccess(ASTExpression v1) {
-        if (v1 instanceof ASTFieldAccess) {
-            return ((ASTFieldAccess) v1).getQualifier() instanceof ASTThisExpression;
         }
         return false;
     }
@@ -885,5 +939,17 @@ public final class JavaRuleUtil {
     public static @Nullable ASTVariableDeclaratorId getReferencedNode(ASTNamedReferenceExpr expr) {
         JVariableSymbol referencedSym = expr.getReferencedSym();
         return referencedSym == null ? null : referencedSym.tryGetNode();
+    }
+
+    /**
+     * Checks whether the given node is annotated with any lombok annotation.
+     * The node should be annotateable.
+     *
+     * @param node
+     *            the Annotatable node to check
+     * @return <code>true</code> if a lombok annotation has been found
+     */
+    public static boolean hasLombokAnnotation(Annotatable node) {
+        return LOMBOK_ANNOTATIONS.stream().anyMatch(node::isAnnotationPresent);
     }
 }
