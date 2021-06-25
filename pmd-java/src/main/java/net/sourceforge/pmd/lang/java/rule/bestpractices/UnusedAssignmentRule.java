@@ -870,6 +870,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         private SpanInfo checkIncOrDecrement(JavaNode unary, SpanInfo data) {
+            super.visit(unary, data);
             ASTVariableDeclaratorId var = getVarFromExpression(unary.getChild(0), true, data);
             if (var != null) {
                 data.use(var);

@@ -65,6 +65,7 @@ PMD will now ignore:
     *   [#3323](https://github.com/pmd/pmd/pull/3323): \[core] Adds fullDescription and tags in SARIF report
 *   java-bestpractices
     *   [#957](https://github.com/pmd/pmd/issues/957): \[java] GuardLogStatement: False positive with compile-time constant arguments
+    *   [#3076](https://github.com/pmd/pmd/pull/3076): \[java] UnusedAssignment reports unused variable when used in increment expr
     *   [#3114](https://github.com/pmd/pmd/issues/3114): \[java] UnusedAssignment false positive when reporting unused variables
     *   [#3315](https://github.com/pmd/pmd/issues/3315): \[java] LiteralsFirstInComparisons false positive with two constants
     *   [#3341](https://github.com/pmd/pmd/issues/3341): \[java] JUnitTestsShouldIncludeAssert should support Junit 5
