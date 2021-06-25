@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.bestpractices;
+package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
@@ -131,9 +131,9 @@ public class UnnecessaryConversionRule extends AbstractJavaRulechainRule {
                 boolean simpleConv = isReferenceSubtype(sourceType, conversionInput);
 
                 final String reason;
-                if (simpleConv && conversionInput.unbox() == conversionOutput) {
+                if (simpleConv && conversionInput.unbox().equals(conversionOutput)) {
                     reason = "explicit unboxing";
-                } else if (simpleConv && conversionInput.box() == conversionOutput) {
+                } else if (simpleConv && conversionInput.box().equals(conversionOutput)) {
                     reason = "explicit boxing";
                 } else if (sourceType.equals(conversionOutput)) {
                     reason = "boxing of boxed value";

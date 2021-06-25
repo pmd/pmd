@@ -144,7 +144,10 @@ public class Foo {
     <test-code>
         <!-- Casts are left to UnnecessaryCast -->
         <description>Unnecessary (primitive -> primitive) casts</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary explicit boxing</message>
+        </expected-messages>
         <code><![CDATA[
             class Scratch {
                 public static void main(String[] args) {
