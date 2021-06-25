@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 
 /**
  *
@@ -117,19 +118,19 @@ public class UnnecessaryConversionRule extends AbstractJavaRulechainRule {
 
         JTypeMirror sourceType = convertedExpr.getTypeMirror();
         JTypeMirror conversionOutput = conversionExpr.getTypeMirror();
-        JTypeMirror ctxType = conversionExpr.getConversionContextType();
+        ExprContext ctx = conversionExpr.getConversionContext();
+        JTypeMirror ctxType = ctx.getTargetType();
         if (ctxType == null && conversionExpr instanceof InvocationNode) {
             ctxType = conversionOutput;
         }
 
         if (ctxType != null) {
 
-            final String reason;
             if (isImplicitlyConvertible(conversionInput, conversionOutput)) {
 
-                boolean simpleConv =
-                    isReferenceSubtype(sourceType, conversionInput);
+                boolean simpleConv = isReferenceSubtype(sourceType, conversionInput);
 
+                final String reason;
                 if (simpleConv && conversionInput.unbox() == conversionOutput) {
                     reason = "explicit unboxing";
                 } else if (simpleConv && conversionInput.box() == conversionOutput) {
