@@ -11,4 +11,7 @@ This ruleset contains links to rules that are new in PMD v6.36.0
     <rule ref="category/apex/performance.xml/AvoidDebugStatements" />
     <rule ref="category/apex/errorprone.xml/InaccessibleAuraEnabledGetter" />
 
+    <!-- BadComparison was renamed to ComparisonWithNaN  -->
+    <rule ref="category/java/errorprone.xml/ComparisonWithNaN" />
+
 </ruleset>

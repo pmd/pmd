@@ -797,10 +797,21 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (rhs != null) {
                 rhs.jjtAccept(this, data);
                 ((SpanInfo) data).assign(var, rhs);
-            } else {
+            } else if (isAssignedImplicitly(var)) {
                 ((SpanInfo) data).assign(var, node.getVariableId());
             }
             return data;
+        }
+
+        /**
+         * Whether the variable has an implicit initializer, that is not
+         * an expression. For instance, formal parameters have a value
+         * within the method, same for exception parameters, foreach variables,
+         * fields (default value), etc. Only blank local variables have
+         * no initial value.
+         */
+        private boolean isAssignedImplicitly(ASTVariableDeclaratorId var) {
+            return !var.isLocalVariable() || var.isForeachVariable();
         }
 
 

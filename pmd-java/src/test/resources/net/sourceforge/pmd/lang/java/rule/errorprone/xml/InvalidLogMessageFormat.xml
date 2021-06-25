@@ -998,4 +998,27 @@ class TestInvalidLogMessageFormat {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat may examine the value of a different but identically named String variable #3284</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+public class Foo {
+    public void aTest() {
+        Logger logger = null;
+
+        if (true) {
+            final String logMessage = "A message formatted with three parameters: {}, {}, {}";
+        }
+
+        if (true) {
+            final String logMessage = "A message formatted with only one parameter: {}";
+            final Object param = null;
+            logger.trace(logMessage, param);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

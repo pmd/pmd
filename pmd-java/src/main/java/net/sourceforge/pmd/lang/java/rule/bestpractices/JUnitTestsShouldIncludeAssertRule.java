@@ -162,7 +162,8 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
     private boolean isAssertOrFailStatement(ASTStatementExpression expression) {
         String img = getMethodCallNameOrNull(expression);
         return img != null && (img.startsWith("assert") || img.startsWith("fail")
-                || img.startsWith("Assert.assert") || img.startsWith("Assert.fail"));
+                || img.startsWith("Assert.assert") || img.startsWith("Assert.fail")
+                || img.startsWith("Assertions.assert") || img.startsWith("Assertions.fail"));
     }
 
     /**

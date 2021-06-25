@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.apex.metrics.impl.visitors;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTCatchBlockStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
@@ -40,18 +38,25 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
             return complexity;
         }
 
-        void structureComplexity() {
-            complexity += 1;
+        void hybridComplexity() {
+            complexity++;
+            nestingLevel++;
         }
 
-        void nestingComplexity() {
+        void structureComplexity() {
+            complexity++;
             complexity += nestingLevel;
+            nestingLevel++;
+        }
+
+        void fundamentalComplexity() {
+            complexity++;
         }
 
         void booleanOperation(BooleanOp op) {
             if (currentBooleanOperation != op) {
                 if (op != null) {
-                    structureComplexity();
+                    fundamentalComplexity();
                 }
 
                 currentBooleanOperation = op;
@@ -59,8 +64,6 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
         }
 
         void increaseNestingLevel() {
-            structureComplexity();
-            nestingComplexity();
             nestingLevel++;
         }
 
@@ -90,7 +93,13 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
                 break;
             }
 
-            state.increaseNestingLevel();
+            if (child.getIndexInParent() == 0) {
+                // the first IfBlock is the first "if"
+                state.structureComplexity();
+            } else {
+                // any other IfBlocks are "else if"
+                state.hybridComplexity();
+            }
             super.visit(child, data);
             state.decreaseNestingLevel();
         }
@@ -102,7 +111,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public Object visit(ASTForLoopStatement node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -113,7 +122,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public Object visit(ASTForEachStatement node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -121,26 +130,10 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTContinueStatement node, Object data) {
-        State state = (State) data;
-
-        state.structureComplexity();
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTBreakStatement node, Object data) {
-        State state = (State) data;
-
-        state.structureComplexity();
-        return super.visit(node, data);
-    }
-
-    @Override
     public Object visit(ASTWhileLoopStatement node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -151,7 +144,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public Object visit(ASTCatchBlockStatement node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -162,7 +155,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public Object visit(ASTDoLoopStatement node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -173,7 +166,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public Object visit(ASTTernaryExpression node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
@@ -209,11 +202,11 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
         State state = (State) data;
 
         for (ApexNode<?> child : node.children()) {
-            child.jjtAccept(this, data);
-
             // This needs to happen because the current 'run' of boolean operations is terminated
             // once we finish a statement.
             state.booleanOperation(null);
+
+            child.jjtAccept(this, data);
         }
 
         return data;
@@ -237,7 +230,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public Object visit(ASTSwitchStatement node, Object data) {
         State state = (State) data;
 
-        state.increaseNestingLevel();
+        state.structureComplexity();
         super.visit(node, data);
         state.decreaseNestingLevel();
 
