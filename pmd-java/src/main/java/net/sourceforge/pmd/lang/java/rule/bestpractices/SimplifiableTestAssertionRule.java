@@ -212,20 +212,6 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRule {
         return node != null && node.getOperator().equals("==");
     }
 
-    private static boolean isNegatedExpr(JavaNode node) {
-        // /Expression/UnaryExpressionNotPlusMinus[@Image='!']
-        //        /PrimaryExpression/PrimaryPrefix
-        if (node instanceof ASTExpression) {
-            if (node.getNumChildren() == 1) {
-                node = node.getChild(0);
-            } else {
-                return false;
-            }
-        }
-        return node instanceof ASTUnaryExpressionNotPlusMinus
-            && ((ASTUnaryExpressionNotPlusMinus) node).getOperator().equals("!");
-    }
-
     private static JavaNode getNegatedExprOperand(JavaNode node) {
         // /Expression/UnaryExpressionNotPlusMinus[@Image='!']
         //        /PrimaryExpression/PrimaryPrefix
@@ -237,7 +223,7 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRule {
             }
         }
         if (node instanceof ASTUnaryExpressionNotPlusMinus
-            && ((ASTUnaryExpressionNotPlusMinus) node).getOperator().equals("!")) {
+            && "!".equals(((ASTUnaryExpressionNotPlusMinus) node).getOperator())) {
             return node.getChild(0);
         }
         return null;
