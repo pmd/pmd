@@ -751,12 +751,22 @@ public final class DataflowPass {
             if (rhs != null) {
                 rhs.acceptVisitor(this, data);
                 data.assign(var, rhs);
-            } else {
+            } else if (isAssignedImplicitly(node.getVarId())) {
                 data.declareBlank(node.getVarId());
             }
             return data;
         }
 
+        /**
+         * Whether the variable has an implicit initializer, that is not
+         * an expression. For instance, formal parameters have a value
+         * within the method, same for exception parameters, foreach variables,
+         * fields (default value), etc. Only blank local variables have
+         * no initial value.
+         */
+        private boolean isAssignedImplicitly(ASTVariableDeclaratorId var) {
+            return !var.isLocalVariable() || var.isForeachVariable();
+        }
 
         @Override
         public SpanInfo visit(ASTUnaryExpression node, SpanInfo data) {
