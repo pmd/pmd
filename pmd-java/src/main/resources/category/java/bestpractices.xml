@@ -1709,9 +1709,12 @@ public class Something {
           message="Use assertEquals(x, y) instead of assertTrue(x.equals(y))"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue">
         <description>
 This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.
+
+Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1759,10 +1762,13 @@ public class FooTest extends TestCase {
           message="Use assertNull(x) instead of assertTrue(x==null), or assertNotNull(x) vs assertFalse(x==null)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue">
         <description>
 This rule detects JUnit assertions in object references equality. These assertions should be made by
 more specific methods, like assertNull, assertNotNull.
+
+Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1813,10 +1819,13 @@ public class FooTest extends TestCase {
           message="Use assertSame(x, y) instead of assertTrue(x==y), or assertNotSame(x,y) vs assertFalse(x==y)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue">
         <description>
 This rule detects JUnit assertions in object references equality. These assertions should be made
 by more specific methods, like assertSame, assertNotSame.
+
+Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1864,9 +1873,12 @@ public class FooTest extends TestCase {
           since="5.0"
           message="Use assertTrue(x)/assertFalse(x) instead of assertEquals(true, x)/assertEquals(false, x) or assertEquals(Boolean.TRUE, x)/assertEquals(Boolean.FALSE, x)."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useasserttrueinsteadofassertequals">
         <description>
 When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.
+
+Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
