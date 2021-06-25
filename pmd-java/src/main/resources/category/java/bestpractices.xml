@@ -1275,6 +1275,58 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="PrimitiveWrapperInstantiation"
+          language="java"
+          since="6.37.0"
+          message="Do not use `new {0}(...)`, prefer {0}.valueOf(...)"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#primitivewrapperinstantiation">
+        <description>
+            Reports usages of primitive wrapper constructors. They are deprecated
+            since Java 9 and should not be used. Even before Java 9, they can
+            be replaced with usage of the corresponding static `valueOf` factory method
+            (which may be automatically inserted by the compiler since Java 1.5).
+            This has the advantage that it may reuse common instances instead of creating
+            a new instance each time.
+
+            Note that for `Boolean`, the named constants `Boolean.TRUE` and `Boolean.FALSE` may
+            also be used. Contrary to {% rule java/performance/BooleanInstantiation %}, this rule
+            does not look for instances of `Boolean.valueOf` that may be replaced by one of those
+            constants.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//AllocationExpression[not(ArrayDimsAndInits)]/ClassOrInterfaceType[
+       pmd-java:typeIs('java.lang.Double')
+    or pmd-java:typeIs('java.lang.Float')
+    or pmd-java:typeIs('java.lang.Long')
+    or pmd-java:typeIs('java.lang.Integer')
+    or pmd-java:typeIs('java.lang.Short')
+    or pmd-java:typeIs('java.lang.Byte')
+    or pmd-java:typeIs('java.lang.Character')
+    or pmd-java:typeIs('java.lang.Boolean')
+  ]
+]]>
+                </value>
+
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+            public class Foo {
+                private Integer ZERO = new Integer(0);      // violation
+                private Integer ZERO1 = Integer.valueOf(0); // better
+                private Integer ZERO1 = 0;                  // even better
+            }
+            ]]>
+        </example>
+    </rule>
+
+
     <rule name="ReplaceEnumerationWithIterator"
           language="java"
           since="3.4"
