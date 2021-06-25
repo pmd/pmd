@@ -28,7 +28,6 @@ final class ResolutionFailedException extends RuntimeException {
 
     private static final ThreadLocal<ResolutionFailedException> SHARED = ThreadLocal.withInitial(ResolutionFailedException::new);
     private static final boolean SHARE_EXCEPTION = true;
-    private static final TypePrettyPrinter PRETTY_PRINTER_CONFIG = new TypePrettyPrinter().qualifyTvars(true);
 
     private ResolutionFailure failure;
 
@@ -100,6 +99,7 @@ final class ResolutionFailedException extends RuntimeException {
             // to see
             // Better would be to pretty print in a location-aware way:
             // hidden/out of scope tvars would be qualified
+            final TypePrettyPrinter PRETTY_PRINTER_CONFIG = new TypePrettyPrinter().qualifyTvars(true);
             fs = TypePrettyPrint.prettyPrint(found, PRETTY_PRINTER_CONFIG);
             rs = TypePrettyPrint.prettyPrint(required, PRETTY_PRINTER_CONFIG);
         }
