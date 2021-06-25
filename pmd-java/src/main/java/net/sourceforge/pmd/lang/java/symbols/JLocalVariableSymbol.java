@@ -9,8 +9,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 
 
 /**
- * Represents all use cases of {@link ASTVariableDeclaratorId} except field declarations
- * and method parameters.
+ * Represents all use cases of {@link ASTVariableDeclaratorId} except field declarations.
+ * Method formal parameter symbols extend this interface.
  *
  * @since 7.0.0
  */

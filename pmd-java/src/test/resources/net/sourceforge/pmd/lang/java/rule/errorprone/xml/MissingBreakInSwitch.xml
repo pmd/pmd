@@ -220,4 +220,155 @@ public class DemoMissingBreakContinue {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Possible fallthrough</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+public class DemoMissingBreakContinue {
+
+    private void method() {
+        for (int i = 0; i < 10; i = i + 1) {
+            switch (i) {
+            case 1: break;
+            case 2: if (i != 4) continue;
+            default: break;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Possible fallthrough, commented so ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class DemoMissingBreakContinue {
+
+    private void method() {
+        for (int i = 0; i < 10; i = i + 1) {
+            switch (i) {
+            case 1: break;
+            case 2: if (i != 4) continue;
+            // fallthrough
+            default: break;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] Recognize @SuppressWanings("fallthrough") for MissingBreakInSwitch #1899</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class DemoMissingBreakContinue {
+
+    @SuppressWarnings("fallthrough")
+    private void method() {
+        for (int i = 0; i < 10; i = i + 1) {
+            switch (i) {
+            case 1: break;
+            case 2: if (i != 4) continue;
+            default: break;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] MissingBreakInSwitch detects the lack of break in the last case #2579</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class DemoMissingBreak {
+    private double a, b, c, d, e, tmin, tmax;
+
+    public void foo(int paramInt, double paramDouble) {
+        switch (paramInt) {
+            case 0:
+              this.a = paramDouble; break;
+            case 1:
+              this.b = paramDouble; break;
+            case 2:
+              this.c = paramDouble; break;
+            case 3:
+              this.d = paramDouble; break;
+            case 4:
+              this.e = paramDouble; break;
+            case 5:
+              this.tmin = paramDouble; break;
+            case 6:
+              this.tmax = paramDouble;
+        }
+    }
+
+    public void bar(int type) {
+        switch (type) {
+            case 1:
+                System.out.println("one");
+                break;
+            default:
+                System.out.println("def");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] MissingBreakInSwitch - last default case does not contain a break #659</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.MathContext;
+public class DemoMissingBreak {
+    public MathContext foo(int precission) {
+        MathContext mc = null;
+        switch (precission) {
+            case 32:
+                mc = MathContext.DECIMAL32;
+                break;
+            case 64: 
+                mc = MathContext.DECIMAL64;
+                break;
+            case 128:
+                mc = MathContext.DECIMAL128;
+                break;
+            default:
+                mc = new MathContext(precission);
+        }
+        return mc;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] MissingBreakInSwitch - last default case does not contain a break #659</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
+        <code><![CDATA[
+import java.math.MathContext;
+public class DemoMissingBreak {
+    public MathContext foo(int precission) {
+        MathContext mc = null;
+        switch (precission) {
+            case 32:
+                mc = MathContext.DECIMAL32;
+                break;
+            case 64:
+                mc = MathContext.DECIMAL64;
+                break;
+            default:
+                mc = new MathContext(precission);
+            case 128: // violation!!
+                mc = MathContext.DECIMAL128;
+                break;
+        }
+        return mc;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

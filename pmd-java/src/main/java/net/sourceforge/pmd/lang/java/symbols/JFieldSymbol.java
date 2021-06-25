@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @since 7.0.0
  */
-public interface JFieldSymbol extends JAccessibleElementSymbol, JVariableSymbol {
+public interface JFieldSymbol extends JVariableSymbol, JAccessibleElementSymbol {
 
     @Override
     default boolean isField() {

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * A branch of a {@link ASTSwitchLike SwitchLike}.
  *
@@ -26,6 +28,17 @@ public interface ASTSwitchBranch extends JavaNode {
     /** Return true if this is the default branch. */
     default boolean isDefault() {
         return getLabel().isDefault();
+    }
+
+    /** Returns the next branch, if it exists. */
+    default @Nullable ASTSwitchBranch getNextBranch() {
+        return (ASTSwitchBranch) getNextSibling();
+    }
+
+    /** Returns the previous branch, if it exists. */
+    default @Nullable ASTSwitchBranch getPreviousBranch() {
+        JavaNode prev = getPreviousSibling();
+        return prev instanceof ASTSwitchBranch ? (ASTSwitchBranch) prev : null;
     }
 
 }

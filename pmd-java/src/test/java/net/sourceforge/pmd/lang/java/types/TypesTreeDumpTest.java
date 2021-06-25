@@ -63,7 +63,7 @@ public class TypesTreeDumpTest extends BaseTreeDumpTest {
                 result.add(new AttributeInfo("VarargsCall", invoc.getOverloadSelectionInfo().isVarargsCall()));
                 result.add(new AttributeInfo("Unchecked", invoc.getOverloadSelectionInfo().needsUncheckedConversion()));
                 result.add(new AttributeInfo("Failed", invoc.getOverloadSelectionInfo().isFailed()));
-                result.add(new AttributeInfo("Function", TypePrettyPrint.prettyPrint(invoc.getMethodType(), true)));
+                result.add(new AttributeInfo("Function", TypePrettyPrint.prettyPrint(invoc.getMethodType())));
             }
             if (node instanceof ASTNamedReferenceExpr) {
                 result.add(new AttributeInfo("Name", ((ASTNamedReferenceExpr) node).getName()));
