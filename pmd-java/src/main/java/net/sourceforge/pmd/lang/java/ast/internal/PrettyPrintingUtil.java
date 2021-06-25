@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast.internal;
 
 import static net.sourceforge.pmd.internal.util.AssertionUtil.shouldNotReachHere;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -20,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
@@ -33,6 +36,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint.TypePrettyPrinter;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -197,4 +204,22 @@ public final class PrettyPrintingUtil {
         return name;
     }
 
+    /**
+     * Pretty print the selected overload.
+     */
+    public static @NonNull String prettyPrintOverload(ASTMethodCall it) {
+        return prettyPrintOverload(it.getOverloadSelectionInfo().getMethodType());
+    }
+
+    public static @NonNull String prettyPrintOverload(JMethodSymbol it) {
+        return prettyPrintOverload(it.getTypeSystem().sigOf(it));
+    }
+
+    public static @NonNull String prettyPrintOverload(JMethodSig it) {
+        return TypePrettyPrint.prettyPrint(it, overloadPrinter());
+    }
+
+    private static TypePrettyPrinter overloadPrinter() {
+        return new TypePrettyPrinter().useSimpleNames(true).printMethodResult(false);
+    }
 }

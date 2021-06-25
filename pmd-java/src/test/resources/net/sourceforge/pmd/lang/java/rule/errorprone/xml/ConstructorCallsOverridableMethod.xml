@@ -91,11 +91,12 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public Foo(String s) {
-        addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {bar();}
+        addRunnable(new Runnable() {
+            public void run() {bar();}
         });
     }
     public void bar() {}
+    final void addRunnable(Runnable r) {}
 }
         ]]></code>
     </test-code>
@@ -130,8 +131,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>ignore abstract methods</description>
-        <expected-problems>0</expected-problems>
+        <description>do not ignore abstract methods</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public Foo() {
@@ -304,6 +305,7 @@ import java.lang.annotation.*;
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Record creates an IndexOutOfBounds exception</description>
         <expected-problems>0</expected-problems>
@@ -317,6 +319,28 @@ import java.lang.annotation.*;
                     String hello() {
                     return "Hello " + msg;
                     }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>transitive dependency</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>This method may call an overridable method during object construction: Foo.bar(String)</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public Foo() {
+                    bar(true);
+                }
+                public final void bar(boolean b) {
+                    bar(""); // unsafe
+                }
+                public void bar(String o) {
+
+                }
             }
             ]]></code>
     </test-code>

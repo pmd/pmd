@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint.TypePrettyPrinter;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
@@ -98,8 +99,9 @@ final class ResolutionFailedException extends RuntimeException {
             // to see
             // Better would be to pretty print in a location-aware way:
             // hidden/out of scope tvars would be qualified
-            fs = TypePrettyPrint.prettyPrintWithTvarQualifier(found);
-            rs = TypePrettyPrint.prettyPrintWithTvarQualifier(required);
+            final TypePrettyPrinter PRETTY_PRINTER_CONFIG = new TypePrettyPrinter().qualifyTvars(true);
+            fs = TypePrettyPrint.prettyPrint(found, PRETTY_PRINTER_CONFIG);
+            rs = TypePrettyPrint.prettyPrint(required, PRETTY_PRINTER_CONFIG);
         }
         return fs + " is not convertible to " + rs;
     }
