@@ -1477,6 +1477,37 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UnnecessaryBoxing"
+          language="java"
+          since="7.0.0"
+          minimumLanguageVersion="1.5"
+          message="Unnecessary {0}"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryBoxingRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unnecessaryboxing">
+        <description>
+            Reports explicit conversions that may safely be removed, either because
+            they would implicitly take place (eg widening a `byte` to an `int`), or
+            because they're semantically a noop (eg unboxing a value to rebox it immediately).
+
+            This handles widening conversion between primitives, boxing and unboxing
+            conversions (which since Java 5 are inserted by the compiler implicitly).
+            Unnecessary casts that command a conversion are reported by {% rule UnnecessaryCast %}
+            instead.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+            {
+                    // Instead of
+                    Integer integer = Integer.valueOf(2);
+                    // you may just write
+                    Integer integer = 2;
+
+                    int i = integer.intValue(); // similarly for unboxing
+                    }
+            ]]>
+        </example>
+    </rule>
+
     <!-- This is only restricted to java 5+ because the rule doesn't support
          the type system pre-java5, where there were no autoboxing conversions. -->
     <rule name="UnnecessaryCast"
@@ -1569,36 +1600,6 @@ public class Foo {
   public Foo() {}
 }
 ]]>
-        </example>
-    </rule>
-
-    <rule name="UnnecessaryConversion"
-          language="java"
-          since="7.0.0"
-          message="Unnecessary {0}"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryConversionRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unnecessaryboxing">
-        <description>
-            Reports explicit conversions that may safely be removed, either because
-            they would implicitly take place (eg widening a `byte` to an `int`), or
-            because they're semantically a noop (eg unboxing a value to rebox it immediately).
-
-            This handles widening conversion between primitives, boxing and unboxing
-            conversions (which since Java 5 are inserted by the compiler implicitly).
-            Unnecessary casts that command a conversion are reported by {% rule UnnecessaryCast %}
-            instead.
-        </description>
-        <priority>3</priority>
-        <example><![CDATA[
-            {
-                    // Instead of
-                    Integer integer = Integer.valueOf(2);
-                    // you may just write
-                    Integer integer = 2;
-
-                    int i = integer.intValue(); // similarly for unboxing
-            }
-            ]]>
         </example>
     </rule>
 

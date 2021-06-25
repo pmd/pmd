@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 /**
  *
  */
-public class UnnecessaryConversionRule extends AbstractJavaRulechainRule {
+public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
 
     private static final Set<String> INTERESTING_NAMES = setOf(
         "valueOf",
@@ -38,7 +38,7 @@ public class UnnecessaryConversionRule extends AbstractJavaRulechainRule {
         "doubleValue"
     );
 
-    public UnnecessaryConversionRule() {
+    public UnnecessaryBoxingRule() {
         super(ASTMethodCall.class, ASTConstructorCall.class);
     }
 
