@@ -66,7 +66,7 @@ public class UnnecessaryConversionRule extends AbstractJavaRulechainRule {
                 return null;
             }
             JMethodSig m = overload.getMethodType();
-            boolean isValueOf = node.getMethodName().equals("valueOf");
+            boolean isValueOf = "valueOf".equals(node.getMethodName());
             ASTExpression qualifier = node.getQualifier();
 
             if (isValueOf && isWrapperValueOf(m)) {
@@ -89,7 +89,7 @@ public class UnnecessaryConversionRule extends AbstractJavaRulechainRule {
             && m.getFormalParameters().get(0).isPrimitive();
     }
 
-    private boolean checkBox(
+    private void checkBox(
         RuleContext rctx,
         String opKind,
         ASTExpression conversionExpr,
@@ -138,7 +138,7 @@ public class UnnecessaryConversionRule extends AbstractJavaRulechainRule {
                 } else if (sourceType.equals(conversionOutput)) {
                     reason = "boxing of boxed value";
                 } else {
-                    if (sourceType == ctxType) {
+                    if (sourceType.equals(ctxType)) {
                         reason = opKind;
                     } else {
                         reason = "explicit conversion from " + TypePrettyPrint.prettyPrintWithSimpleNames(sourceType) + " to " + TypePrettyPrint.prettyPrintWithSimpleNames(ctxType);
@@ -146,10 +146,8 @@ public class UnnecessaryConversionRule extends AbstractJavaRulechainRule {
                 }
 
                 addViolation(rctx, conversionExpr, reason);
-                return true;
             }
         }
-        return false;
     }
 
     private boolean isImplicitlyConvertible(JTypeMirror i, JTypeMirror o) {
@@ -163,7 +161,7 @@ public class UnnecessaryConversionRule extends AbstractJavaRulechainRule {
      * {@code int.isSubtypeOf(double)}.
      */
     private static boolean isReferenceSubtype(JTypeMirror s, JTypeMirror t) {
-        return s.isPrimitive() ? t == s
+        return s.isPrimitive() ? t.equals(s)
                                : s.isSubtypeOf(t);
     }
 
