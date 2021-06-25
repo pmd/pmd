@@ -1370,7 +1370,7 @@ public class Foo {
           message="Assertion may be simplified using {0}"
           typeResolution="true"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.SimplifiableTestAssertionRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#simplifiabletestassertion">
         <description>
             Reports test assertions that may be simplified using a more specific
             assertion method. This enables better error messages, and makes the
