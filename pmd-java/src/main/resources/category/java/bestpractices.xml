@@ -1364,6 +1364,25 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="SimplifiableTestAssertion"
+          language="java"
+          since="6.37.0"
+          message="Assertion may be simplified using {0}"
+          typeResolution="true"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.SimplifiableTestAssertionRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
+        <description>
+            Switch statements should be exhaustive, to make their control flow
+            easier to follow. This can be achieved by adding a `default` case, or,
+            if the switch is on an enum type, by ensuring there is one switch branch
+            for each enum constant.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[TODO]]>
+        </example>
+    </rule>
+
     <rule name="SwitchStmtsShouldHaveDefault"
           language="java"
           since="1.0"

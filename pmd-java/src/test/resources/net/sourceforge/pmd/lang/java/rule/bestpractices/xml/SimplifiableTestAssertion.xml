@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>UseAssertNullInsteadOfAssertTrue: assertTrue with null</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using assertNull</message>
+        </expected-messages>
+        <code><![CDATA[
+import junit.framework.TestCase;
+
+public class Foo extends TestCase {
+
+    public void test1() {
+        assertTrue(a == null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertNullInsteadOfAssertTrue: assertFalse with != null</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using assertNull</message>
+        </expected-messages>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertFalse(a != null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertNullInsteadOfAssertTrue: assertTrue with x == y</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using assertSame</message>
+        </expected-messages>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertTrue(a == b);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertNullInsteadOfAssertTrue: Not a JUnit test - assertTrue with null</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        assertTrue(a==null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertNullInsteadOfAssertTrue: JUnit 4 - assertTrue with null</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+public class Foo {
+    @Test
+    public void test1() {
+        assertTrue(a==null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertNullInsteadOfAssertTrue: JUnit 5 - assertTrue with null - @Test</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+public class Foo {
+    @Test
+    public void test1() {
+        assertTrue(a==null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertNullInsteadOfAssertTrue: JUnit 5 - Assertions.assertTrue</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+public class Foo {
+    @Test
+    public void test1() {
+        Assertions.assertTrue(a==null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+
+    <test-code>
+        <description>UseAssertSameInsteadOfAssertTrue: assert true a == b</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                public void test1() {
+                    assertTrue(a==b);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertSameInsteadOfAssertTrue: assert true a != b</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                public void test1() {
+                    assertTrue(a!=b);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertSameInsteadOfAssertTrue: assert false a == b</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                public void test1() {
+                    assertFalse(a==b);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertSameInsteadOfAssertTrue: assert false a != b</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                public void test1() {
+                    assertFalse(a!=b);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertSameInsteadOfAssertTrue: bug 1626715, the null check in the rule shouldn't match the null outside the assert method</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using assertNotSame</message>
+        </expected-messages>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                public void test1() {
+                    assertFalse(a==b);
+                    null;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertSameInsteadOfAssertTrue: assert true a == b BUT not a Junit test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void test1() {
+                    assertTrue(a==b);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertSameInsteadOfAssertTrue: JUnit 4 - assert true a == b</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import org.junit.Test;
+            public class Foo {
+                @Test
+                public void test1() {
+                    assertTrue(a==b);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UseAssertSameInsteadOfAssertTrue: JUnit 5 - assert true a == b - @Test</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import org.junit.jupiter.api.Test;
+            import static org.junit.jupiter.api.Assertions.assertTrue;
+            public class Foo {
+                @Test
+                public void test1() {
+                    assertTrue(a==b);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>UseAssertSameInsteadOfAssertTrue: JUnit 5 - assert true a == b - with qualifier</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import org.junit.jupiter.api.Test;
+            import org.junit.jupiter.api.Assertions;
+            public class Foo {
+                @Test
+                public void test1() {
+                    Assertions.assertTrue(a==b);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+
+    <test-code>
+        <description>assertFalse(!)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                void testBar() {
+                    boolean bar;
+                    assertFalse(!bar);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertTrue(!)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                void testBar() {
+                    boolean bar;
+                    assertTrue(!bar);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                void testBar() {
+                    boolean bar;
+                    assertTrue(bar);
+                    assertFalse(bar);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>not a JUnit test - assertFalse(!)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void testBar() {
+                    boolean bar;
+                    assertFalse(!bar);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 4 - assertFalse(!)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import org.junit.Test;
+            public class Foo {
+                @Test
+                void testBar() {
+                    boolean bar;
+                    assertFalse(!bar);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 5 - assertFalse(!)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import org.junit.jupiter.api.Test;
+            import static org.junit.jupiter.api.Assertions.assertFalse;
+            public class Foo {
+                @Test
+                void testBar() {
+                    boolean bar;
+                    assertFalse(!bar);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use assert equals: positive test 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using assertEquals</message>
+        </expected-messages>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                Object a,b;
+                public void test1() {
+                    assertTrue(a.equals(b));
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use assert equals: positive test 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using assertNotEquals</message>
+        </expected-messages>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                Object a,b;
+                public void test1() {
+                    assertFalse(a.equals(b));
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use assert equals: positive test 3</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using assertEquals</message>
+        </expected-messages>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                Object a,b;
+                public void test1() {
+                    assertFalse(!a.equals(b));
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Use assert equals: positive test 4</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using assertNotEquals</message>
+        </expected-messages>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                Object a,b;
+                public void test1() {
+                    assertTrue(!a.equals(b));
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use assert equals: negative test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import junit.framework.TestCase;
+            public class Foo extends TestCase {
+                Object a,b;
+                public void test1() {
+                    assertTrue(a.mySpecialequals(b));
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use assert equals: Not a JUnit test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                Object a,b;
+                public void test1() {
+                    assertTrue(a.equals(b));
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use assert equals: JUnit4</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import org.junit.Test;
+            public class Foo {
+                Object a,b;
+                @Test
+                public void test1() {
+                    assertTrue(a.equals(b));
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use assert equals: JUnit5 - @Test</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using assertEquals</message>
+        </expected-messages>
+        <code><![CDATA[
+            import org.junit.jupiter.api.Test;
+
+            import static org.junit.jupiter.api.Assertions.assertTrue;
+
+            public class Foo {
+
+                Object a, b;
+
+                @Test
+                public void test1() {
+                    assertTrue(a.equals(b));
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>JUnit Test contains assertEquals on other than boolean literal</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class MyTestCase extends TestCase {
+
+                public void testMyCase() {
+                    String myVar = "test";
+                    String myVar2 = "test";
+                    assertEquals(myVar, myVar2);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit Test contains assertEquals on boolean literal</description>
+        <expected-problems>5</expected-problems>
+        <code><![CDATA[
+            import org.junit.Test;
+
+            import junit.framework.TestCase;
+
+            import static org.junit.Assert.assertEquals;
+
+            public class MyTestCase extends TestCase {
+
+                public void testMyCaseWithAssertEqualsOnBoolean() {
+                    boolean myVar = true;
+                    assertEquals("myVar is true", true, myVar);
+                    assertEquals("myVar is true", myVar, true);
+                    assertEquals("myVar is true", false, myVar);
+                    assertEquals("myVar is true", myVar, false);
+                    assertEquals(true, myVar);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>JUnit Test contains assertEquals on boolean with other thing not bool</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.junit.Test;
+
+            import junit.framework.TestCase;
+
+            import static org.junit.Assert.assertEquals;
+
+            public class MyTestCase extends TestCase {
+
+                public void testMyCaseWithAssertEqualsOnBoolean() {
+                    Object myVar = true;
+                    assertEquals(true, myVar);
+                    assertNotEquals(true, myVar);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1323 False positive case of UseAssertTrueInsteadOfAssertEquals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package com.groupon.mostest.refractor;
+
+            import static org.testng.Assert.assertEquals;
+
+            import org.testng.annotations.Test;
+
+            public class TestWithAssertEquals {
+
+                @Test
+                public void testMethodWithBooleanParam() {
+                    assertEquals(methodWithBooleanParam(true), "a String value", "they should be equal!");
+                }
+
+                public String methodWithBooleanParam(boolean param) {
+                    return "a String value";
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit Test contains assertEquals with Boxed booleans</description>
+        <expected-problems>0</expected-problems>
+        <!-- Ignore them -->
+        <code><![CDATA[
+            import org.junit.Test;
+
+            import static org.junit.Assert.assertEquals;
+
+            public class Foo {
+
+                @Test
+                public void test() {
+                    final boolean myVar = true;
+                    assertEquals("myVar is true", Boolean.TRUE, myVar);
+                    assertEquals("myVar is true", myVar, Boolean.TRUE);
+                    assertEquals(Boolean.TRUE, myVar);
+                    assertEquals(myVar, Boolean.TRUE);
+                    assertEquals("myVar is false", Boolean.FALSE, myVar);
+                    assertEquals("myVar is false", myVar, Boolean.FALSE);
+                    assertEquals(myVar, Boolean.FALSE);
+                    assertEquals(Boolean.FALSE, myVar);
+                    assertTrue(myVar);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit Test contains assertEquals with Boxed booleans as param</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.junit.Test;
+
+            import static org.junit.Assert.assertEquals;
+
+            public class Foo {
+
+                @Test
+                public void test() {
+                    assertEquals(methodWithBooleanParam(Boolean.TRUE), "a String value", "they should be equal!");
+                }
+
+                public String methodWithBooleanParam(Boolean param) {
+                    return "a String value";
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+</test-data>
