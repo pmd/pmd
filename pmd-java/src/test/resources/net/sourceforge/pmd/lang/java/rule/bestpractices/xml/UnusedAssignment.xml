@@ -3329,7 +3329,6 @@ public class UnusedAssignmentNative {
                 int[] a;
 
                 void countSort(int exp) {
-                    int[] output = new int[a.length];
                     int[] count = new int[TEN];
                     fill(count, 0);
                     for (int val : a) // error flagged here
