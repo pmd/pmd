@@ -1485,14 +1485,13 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryBoxingRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unnecessaryboxing">
         <description>
-            Reports explicit conversions that may safely be removed, either because
-            they would implicitly take place (eg widening a `byte` to an `int`), or
-            because they're semantically a noop (eg unboxing a value to rebox it immediately).
+            Reports explicit boxing and unboxing conversions that may safely be removed,
+            either because they would be inserted by the compiler automatically,
+            or because they're semantically a noop (eg unboxing a value to rebox it immediately).
 
-            This handles widening conversion between primitives, boxing and unboxing
-            conversions (which since Java 5 are inserted by the compiler implicitly).
-            Unnecessary casts that command a conversion are reported by {% rule UnnecessaryCast %}
-            instead.
+            Note that this only handles boxing and unboxing conversions occurring through
+            calls to `valueOf` or one of the `intValue`, `byteValue`, etc. methods. Casts
+            that command a conversion are reported by {% rule UnnecessaryCast %} instead.
         </description>
         <priority>3</priority>
         <example><![CDATA[
@@ -1503,7 +1502,7 @@ public class Foo {
                     Integer integer = 2;
 
                     int i = integer.intValue(); // similarly for unboxing
-                    }
+            }
             ]]>
         </example>
     </rule>
