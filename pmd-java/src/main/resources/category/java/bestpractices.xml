@@ -1372,14 +1372,39 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.SimplifiableTestAssertionRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
         <description>
-            Switch statements should be exhaustive, to make their control flow
-            easier to follow. This can be achieved by adding a `default` case, or,
-            if the switch is on an enum type, by ensuring there is one switch branch
-            for each enum constant.
+            Reports test assertions that may be simplified using a more specific
+            assertion method. This enables better error messages, and makes the
+            assertions more readable.
+
+            The rule only applies within test classes for the moment. It replaces
+            the deprecated rules {% rule UseAssertEqualsInsteadOfAssertTrue %},
+            {% rule UseAssertNullInsteadOfAssertTrue %}, {% rule UseAssertSameInsteadOfAssertTrue %},
+            {% rule UseAssertTrueInsteadOfAssertEquals %}, and {% rule java/design.xml/SimplifyBooleanAssertion %}.
         </description>
         <priority>3</priority>
         <example>
-<![CDATA[TODO]]>
+<![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+class SomeTestClass {
+    Object a,b;
+    @Test
+    void testMethod() {
+        assertTrue(a.equals(b)); // could be assertEquals(a, b);
+        assertTrue(!a.equals(b)); // could be assertNotEquals(a, b);
+
+        assertTrue(!something); // could be assertFalse(something);
+        assertFalse(!something); // could be assertTrue(something);
+
+        assertTrue(a == b); // could be assertSame(a, b);
+        assertTrue(a != b); // could be assertNotSame(a, b);
+
+        assertTrue(a == null); // could be assertNull(a);
+        assertTrue(a != null); // could be assertNotNull(a);
+    }
+}
+            ]]>
         </example>
     </rule>
 

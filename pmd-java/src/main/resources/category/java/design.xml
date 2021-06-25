@@ -1340,7 +1340,7 @@ as:
 
     assertFalse(expr);
 
-Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
