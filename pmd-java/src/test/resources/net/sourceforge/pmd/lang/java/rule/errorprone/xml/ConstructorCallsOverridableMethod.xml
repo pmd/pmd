@@ -131,14 +131,14 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>do not ignore abstract methods</description>
+        <description>do not ignore abstract methods [java] ConstructorCallsOverridableMethod ignores abstract methods #3351</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public Foo() {
         bar();
     }
-    abstract void bar() {}
+    abstract void bar();
 }
         ]]></code>
     </test-code>
