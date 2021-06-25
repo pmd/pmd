@@ -61,24 +61,6 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRule {
         return false;
     }
 
-    /*
-
-
-    bestpractices.xml
-        UseAssertEqualsInsteadOfAssertTrue
-        UseAssertNullInsteadOfAssertTrue
-        UseAssertSameInsteadOfAssertTrue
-        UseAssertTrueInsteadOfAssertEquals
-    design.xml/SimplifyBooleanAssertion
-
-//PrimaryExpression[
-    PrimaryPrefix/Name[@Image = 'assertTrue']
-][
-    PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
-        [ends-with(@Image, '.equals')]
-]
-
-     */
 
     @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
