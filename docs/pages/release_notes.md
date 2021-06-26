@@ -84,6 +84,8 @@ PMD will now ignore:
 
 ### API Changes
 
+No changes.
+
 ### External Contributions
 
 *   [#3276](https://github.com/pmd/pmd/pull/3276): \[apex] Update ApexCRUDViolation and OperationWithLimitsInLoop docs - [Jonathan Wiesel](https://github.com/jonathanwiesel)
@@ -94,6 +96,11 @@ PMD will now ignore:
 *   [#3322](https://github.com/pmd/pmd/pull/3322): \[apex] added rule to detect inaccessible AuraEnabled getters - [Philippe Ozil](https://github.com/pozil)
 *   [#3323](https://github.com/pmd/pmd/pull/3323): \[core] Adds fullDescription and tags in SARIF report - [Clint Chester](https://github.com/Clint-Chester)
 *   [#3339](https://github.com/pmd/pmd/pull/3339): \[java] JUnitTestsShouldIncludeAssert Tweak assertion definition to avoid false positive with modern JUnit5 - [Arnaud Jeansen](https://github.com/ajeans)
+
+### Stats
+* 81 commits
+* 36 closed tickets & PRs
+* Days since last release: 28
 
 {% endtocmaker %}
 
