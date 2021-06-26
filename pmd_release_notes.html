@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.36.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.37.0-SNAPSHOT</li>
     
     
     
@@ -1422,122 +1422,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="-june-2021---6360-snapshot">??-June-2021 - 6.36.0-SNAPSHOT</h2>
+  <h2 id="31-july-2021---6370-snapshot">31-July-2021 - 6.37.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.36.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 6.37.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="improved-incremental-analysis">Improved Incremental Analysis</h4>
-
-<p><a href="https://pmd.github.io/pmd-6.36.0/pmd_userdocs_incremental_analysis.html">Incremental Analysis</a> has long helped
-our users obtain faster analysis results, however, its implementation tended to be too cautious in detecting
-changes to the runtime and type resolution classpaths, producing more cache invalidations than necessary.
-We have now improved the heuristics to remove several bogus invalidations, and slightly sped up the cache
-usage along the way.</p>
-
-<p>PMD will now ignore:</p>
-
-<ul>
-  <li>Non class files in classpath and jar / zip files being referenced.</li>
-  <li>Changes to the order of file entries within a jar / zip</li>
-  <li>Changes to file metadata within jar / zip (ie: creation and modification time,
-significant in multi-module / composite build projects where lateral artifacts are frequently recreated)</li>
-</ul>
-
-<h4 id="new-rules">New rules</h4>
-
-<ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_performance.html#avoiddebugstatements"><code class="language-plaintext highlighter-rouge">AvoidDebugStatements</code></a> finds usages of <code class="language-plaintext highlighter-rouge">System.debug</code> calls.
-Debug statements contribute to longer transactions and consume Apex CPU time even when debug logs are not
-being captured.
-You can try out this rule like so:</li>
-</ul>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/performance.xml/AvoidDebugStatements"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_errorprone.html#inaccessibleauraenabledgetter"><code class="language-plaintext highlighter-rouge">InaccessibleAuraEnabledGetter</code></a> checks that an <code class="language-plaintext highlighter-rouge">AuraEnabled</code>
-getter is public or global. This is necessary if it is referenced in Lightning components.
-You can try out this rule like so:</li>
-</ul>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/InaccessibleAuraEnabledGetter"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<h4 id="renamed-rules">Renamed rules</h4>
-
-<ul>
-  <li>The Java rule <a href="pmd_rules_java_errorprone.html#badcomparison"><code class="language-plaintext highlighter-rouge">BadComparison</code></a> has been renamed to
-<a href="pmd_rules_java_errorprone.html#comparisonwithnan"><code class="language-plaintext highlighter-rouge">ComparisonWithNaN</code></a> to better reflect what the rule actually detects.
-It now considers usages of <code class="language-plaintext highlighter-rouge">Double.NaN</code> or <code class="language-plaintext highlighter-rouge">Float.NaN</code> in more cases and fixes false negatives.</li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3307">#3307</a>: [apex] Avoid debug statements since it impact performance</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3321">#3321</a>: [apex] New rule to detect inaccessible AuraEnabled getters (summer ‘21 security update)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3332">#3332</a>: [apex] CognitiveComplexity - incorrect increment for “else if”</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2637">#2637</a>: [cpd] Error Loading stylesheet cpdhtml.xslt</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3323">#3323</a>: [core] Adds fullDescription and tags in SARIF report</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/957">#957</a>: [java] GuardLogStatement: False positive with compile-time constant arguments</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3076">#3076</a>: [java] UnusedAssignment reports unused variable when used in increment expr</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3114">#3114</a>: [java] UnusedAssignment false positive when reporting unused variables</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3315">#3315</a>: [java] LiteralsFirstInComparisons false positive with two constants</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3341">#3341</a>: [java] JUnitTestsShouldIncludeAssert should support Junit 5</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3340">#3340</a>: [java] NullPointerException applying rule GuardLogStatement</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/3317">#3317</a>: [java] Update UnnecessaryImport to recognize usage of imported types in javadoc’s <code class="language-plaintext highlighter-rouge">@exception</code> tag</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2895">#2895</a>: [java] Improve BadComparison and rename to ComparisonWithNaN</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3284">#3284</a>: [java] InvalidLogMessageFormat may examine the value of a different but identically named String variable</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3304">#3304</a>: [java] NPE in MoreThanOneLoggerRule on a java 16 record</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3305">#3305</a>: [java] ConstructorCallsOverridableMethodRule IndexOutOfBoundsException on a java16 record</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3343">#3343</a>: [java] CloneMethodMustImplementCloneable: FN with local classes</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3331">#3331</a>: [java] UseArraysAsList false negative with for-each loop</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3344">#3344</a>: [java] InefficientEmptyStringCheck FN with trim.length on method call</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/3276">#3276</a>: [apex] Update ApexCRUDViolation and OperationWithLimitsInLoop docs - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3306">#3306</a>: [java] More than one logger rule test null pointer exception - <a href="https://github.com/ajeans">Arnaud Jeansen</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3317">#3317</a>: [java] Update UnnecessaryImport to recognize usage of imported types in javadoc’s <code class="language-plaintext highlighter-rouge">@exception</code> tag - <a href="https://github.com/pzygielo">Piotrek Żygieło</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3319">#3319</a>: [apex] New AvoidDebugStatements rule to mitigate performance impact - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3320">#3320</a>: [java] Fix incorrect increment for “else if” branch in Cognitive Complexity docs - <a href="https://github.com/borovikovd">Denis Borovikov</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3322">#3322</a>: [apex] added rule to detect inaccessible AuraEnabled getters - <a href="https://github.com/pozil">Philippe Ozil</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3323">#3323</a>: [core] Adds fullDescription and tags in SARIF report - <a href="https://github.com/Clint-Chester">Clint Chester</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3339">#3339</a>: [java] JUnitTestsShouldIncludeAssert Tweak assertion definition to avoid false positive with modern JUnit5 - <a href="https://github.com/ajeans">Arnaud Jeansen</a></li>
-</ul>
 
 
 
@@ -1555,7 +1452,7 @@ It now considers usages of <code class="language-plaintext highlighter-rouge">Do
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 25, 2021 <br />
+ Site last generated: Jun 26, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

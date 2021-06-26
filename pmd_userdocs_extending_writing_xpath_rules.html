@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.36.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.37.0-SNAPSHOT</li>
     
     
     
@@ -1456,7 +1456,7 @@ defined on. Concretely, this means:</p>
 <ul>
   <li>Every AST node is viewed as an XML element
     <ul>
-      <li>The element has for local name the value of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.36.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getXPathNodeName()"><code>getXPathNodeName</code></a>
+      <li>The element has for local name the value of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.37.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getXPathNodeName()"><code>getXPathNodeName</code></a>
 for the given node</li>
     </ul>
   </li>
@@ -1464,7 +1464,7 @@ for the given node</li>
     <ul>
       <li>This means, that documentation for attributes can be found in our Javadocs. For
 example, the attribute <code class="language-plaintext highlighter-rouge">@SimpleName</code> of the Java node <code class="language-plaintext highlighter-rouge">EnumDeclaration</code> is backed
-by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.36.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getSimpleName()"><code>getSimpleName</code></a>.</li>
+by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getSimpleName()"><code>getSimpleName</code></a>.</li>
     </ul>
   </li>
 </ul>
@@ -1659,7 +1659,7 @@ information from the AST.</p>
                             <dl>
                                 <dd>Returns true if the context node's static Java type is a subtype of the given type. This tests for the resolved type of the Java construct, not the type of the AST node. For example, the AST node for a literal (e.g. <code>5d</code>) has type ASTLiteral, however this function will compare the type of the literal (eg here, <code>double</code>) against the argument.</dd>
                                 <dt>Remarks</dt>
-                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.36.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
+                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
 
                                 
 
@@ -1733,7 +1733,7 @@ information from the AST.</p>
                             <dl>
                                 <dd>Returns true if the context node's static type is exactly the given type. In particular, returns false if the context node's type is a subtype of the given type.</dd>
                                 <dt>Remarks</dt>
-                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.36.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
+                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
 
                                 
 
@@ -1804,7 +1804,7 @@ information from the AST.</p>
                             <dl>
                                 <dd>Returns the value of the metric as evaluated on the context node</dd>
                                 <dt>Remarks</dt>
-                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.36.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#"><code>ASTAnyTypeDeclaration</code></a> or a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.36.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code>MethodLikeNode</code></a></dd>
+                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#"><code>ASTAnyTypeDeclaration</code></a> or a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code>MethodLikeNode</code></a></dd>
 
                                 
 
@@ -1817,7 +1817,7 @@ information from the AST.</p>
                                             <span class="param-name">metricKey</span>
                                             <span class="param-type"> as xs:string</span>
                                         </dt>
-                                        <dd>The name of an enum constant in <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.36.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/api/JavaOperationMetricKey.html#"><code>JavaOperationMetricKey</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.36.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/api/JavaClassMetricKey.html#"><code>JavaClassMetricKey</code></a></dd>
+                                        <dd>The name of an enum constant in <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/api/JavaOperationMetricKey.html#"><code>JavaOperationMetricKey</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/api/JavaClassMetricKey.html#"><code>JavaClassMetricKey</code></a></dd>
                                         
                                     </dl>
                                 </dd>
@@ -1871,7 +1871,7 @@ deprecated and whose usages should be replaced with uses of <code class="languag
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Jun 25, 2021 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Jun 26, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
