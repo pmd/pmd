@@ -770,6 +770,7 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTUnaryExpression node, SpanInfo data) {
+            super.visit(node, data);
             data = acceptOpt(node.getOperand(), data);
 
             if (node.getOperator().isPure()) {

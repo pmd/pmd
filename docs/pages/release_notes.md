@@ -22,8 +22,8 @@ This is a {{ site.pmd.release_type }} release.
 #### Improved Incremental Analysis
 
 [Incremental Analysis](https://pmd.github.io/pmd-6.36.0/pmd_userdocs_incremental_analysis.html) has long helped
-our users obtain faster analysis results, however, it's implementation tended to be too cautious in detecting
-changes to the runtime and type resolution classpaths, producing more cache invalidations than were necessary.
+our users obtain faster analysis results, however, its implementation tended to be too cautious in detecting
+changes to the runtime and type resolution classpaths, producing more cache invalidations than necessary.
 We have now improved the heuristics to remove several bogus invalidations, and slightly sped up the cache
 usage along the way.
 
@@ -70,6 +70,7 @@ PMD will now ignore:
     *   [#3323](https://github.com/pmd/pmd/pull/3323): \[core] Adds fullDescription and tags in SARIF report
 *   java-bestpractices
     *   [#957](https://github.com/pmd/pmd/issues/957): \[java] GuardLogStatement: False positive with compile-time constant arguments
+    *   [#3076](https://github.com/pmd/pmd/pull/3076): \[java] UnusedAssignment reports unused variable when used in increment expr
     *   [#3114](https://github.com/pmd/pmd/issues/3114): \[java] UnusedAssignment false positive when reporting unused variables
     *   [#3315](https://github.com/pmd/pmd/issues/3315): \[java] LiteralsFirstInComparisons false positive with two constants
     *   [#3341](https://github.com/pmd/pmd/issues/3341): \[java] JUnitTestsShouldIncludeAssert should support Junit 5
