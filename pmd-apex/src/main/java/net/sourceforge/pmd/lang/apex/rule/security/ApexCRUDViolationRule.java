@@ -214,7 +214,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     public Object visit(final ASTForEachStatement node, Object data) {
         final ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
         if (soql != null) {
-            System.out.println("found");
             checkForAccessibility(soql, data);
         }
 
