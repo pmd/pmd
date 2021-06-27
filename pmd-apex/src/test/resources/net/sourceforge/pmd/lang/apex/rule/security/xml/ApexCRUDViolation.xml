@@ -916,4 +916,48 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>No CRUD check in SOQL for-loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        for (Account a : [SELECT Id FROM Account]) {
+
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check in SOQL for-loop with security enforced</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        for (Account a : [SELECT Id FROM Account WITH SECURITY_ENFORCED]) {
+            
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check in SOQL for-loop with explicit check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if (Account.sObjectType.getDescribe().isAccessible()) {
+            for (Account a : [SELECT Id FROM Account]) {
+                
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
