@@ -591,5 +591,28 @@ public class Foo {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>AssertEquals with call chain and not operator</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using assertNotEquals</message>
+            <message>Assertion may be simplified using assertEquals</message>
+        </expected-messages>
+        <code><![CDATA[
+            import org.junit.Test;
+
+            import static org.junit.Assert.assertTrue;
+
+            public class Foo {
+
+                @Test
+                public void test() {
+                    assertTrue(!Thread.currentThread().getName().equals(event.content));
+                    assertTrue(Thread.currentThread().getName().equals(event.content));
+                }
+            }
+            ]]></code>
+    </test-code>
+
 
 </test-data>

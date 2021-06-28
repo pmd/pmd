@@ -139,11 +139,15 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRule {
      * Returns a child with an offset from the end. Eg {@code getChildRev(list, -1)}
      * returns the last child.
      */
-    private static JavaNode getChildRev(ASTArgumentList list, int i) {
+    private static JavaNode getChildRev(JavaNode list, int i) {
         assert i < 0 : "Expecting negative offset";
         return list == null ? null : list.getChild(list.getNumChildren() + i);
     }
 
+    /**
+     * Checks if the node is a call to a method which has the given name.
+     * The receiver expression may be arbitrarily complicated.
+     */
     private static boolean isCall(JavaNode node, String methodName) {
         if (node instanceof ASTExpression) {
             if (node.getNumChildren() == 1) {
@@ -152,21 +156,35 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRule {
                 return false;
             }
         }
-        if (!(node instanceof ASTPrimaryExpression)) {
+        if (!(node instanceof ASTPrimaryExpression) || node.getNumChildren() < 2) {
             return false;
         }
-        JavaNode c0 = node.getChild(0);
-        if (c0 instanceof ASTPrimaryPrefix) {
-            if (c0.getNumChildren() > 0 && c0.getChild(0) instanceof ASTName) {
-                String image = c0.getChild(0).getImage();
-                return methodName.equals(image)
-                    || image.length() > methodName.length()
-                    && image.endsWith(methodName)
-                    && image.charAt(image.length() - methodName.length() - 1) == '.';
-            }
+
+
+        JavaNode prefix = getChildRev(node, -2);
+        JavaNode suffix = getChildRev(node, -1);
+        if (!(suffix instanceof ASTPrimarySuffix) || !((ASTPrimarySuffix) suffix).isArguments()) {
+            return false;
+        }
+        // we know it's a method call
+        if (prefix instanceof ASTPrimaryPrefix
+            && prefix.getNumChildren() > 0
+            && prefix.getChild(0) instanceof ASTName) {
+            String image = prefix.getChild(0).getImage();
+            return isPossiblyQualifiedMethodName(methodName, image);
+        } else if (prefix instanceof ASTPrimarySuffix) {
+            // call chain
+            return methodName.equals(prefix.getImage());
         }
 
         return false;
+    }
+
+    private static boolean isPossiblyQualifiedMethodName(String methodName, String possiblyQualifiedName) {
+        return methodName.equals(possiblyQualifiedName)
+            || possiblyQualifiedName.length() > methodName.length()
+            && possiblyQualifiedName.endsWith(methodName)
+            && possiblyQualifiedName.charAt(possiblyQualifiedName.length() - methodName.length() - 1) == '.';
     }
 
 
