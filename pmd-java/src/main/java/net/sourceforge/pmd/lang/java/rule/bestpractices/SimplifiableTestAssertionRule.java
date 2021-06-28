@@ -67,23 +67,26 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRule {
         if (!inTestClass) {
             return super.visit(node, data);
         }
-        boolean isAssertTrue = isCall(node, "assertTrue");
-        boolean isAssertFalse = isCall(node, "assertFalse");
+        final boolean isAssertTrue = isCall(node, "assertTrue");
+        final boolean isAssertFalse = isCall(node, "assertFalse");
 
         if (isAssertTrue || isAssertFalse) {
             ASTArgumentList args = getNonEmptyArgList(node);
             JavaNode lastArg = getChildRev(args, -1);
             ASTEqualityExpression eq = asEqualityExpr(lastArg);
             if (eq != null) {
-                boolean isPositive = isPositiveEqualityExpr(eq);
-                String suggestion;
+                boolean isPositive = isPositiveEqualityExpr(eq) == isAssertTrue;
+                final String suggestion;
                 if (isNullLiteral(eq.getChild(0))
                     || isNullLiteral(eq.getChild(1))) {
                     // use assertNull/assertNonNull
-                    suggestion = isPositive == isAssertTrue ? "assertNull" : "assertNonNull";
+                    suggestion = isPositive ? "assertNull" : "assertNonNull";
                 } else {
-                    // use assertSame/assertNotSame
-                    suggestion = isPositive == isAssertTrue ? "assertSame" : "assertNotSame";
+                    if (isPrimitive(eq.getChild(0)) || isPrimitive(eq.getChild(1))) {
+                        suggestion = isPositive ? "assertEquals" : "assertNotEquals";
+                    } else {
+                        suggestion = isPositive ? "assertSame" : "assertNotSame";
+                    }
                 }
                 addViolation(data, node, suggestion);
 
@@ -133,6 +136,14 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRule {
         }
 
         return super.visit(node, data);
+    }
+
+    private boolean isPrimitive(JavaNode node) {
+        if (node instanceof TypeNode) {
+            Class<?> t0 = ((TypeNode) node).getType();
+            return t0 != null && t0.isPrimitive();
+        }
+        return false;
     }
 
     /**

@@ -613,6 +613,28 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>assertSame is not applicable on primitives</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using assertNotSame</message>
+            <message>Assertion may be simplified using assertNotEquals</message>
+        </expected-messages>
+        <code><![CDATA[
+            import org.junit.Test;
+
+            import static org.junit.Assert.assertFalse;
+
+            public class Foo {
+                Object pc1, pc2;
+                @Test
+                public void test() {
+                    assertFalse(pc1 == pc2);
+                    assertFalse(pc1.hashCode() == pc2.hashCode());
+                }
+            }
+            ]]></code>
+    </test-code>
 
 
 </test-data>
