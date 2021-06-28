@@ -3316,6 +3316,28 @@ public class UnusedAssignmentNative {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] UnusedAssignment false positive in for-each assignment #3076</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import static java.lang.System.arraycopy;
+            import static java.util.Arrays.fill;
+
+            public class RadixSort {
+                private static final int TEN = 10;
+                int[] a;
+
+                void countSort(int exp) {
+                    int[] count = new int[TEN];
+                    fill(count, 0);
+                    for (int val : a) // error flagged here
+                        count[(val / exp) % TEN]++;
+
+                }
+            }
+            ]]></code>
+    </test-code>
 
     <test-code>
         <description>[java] UnusedAssignment false positive when reporting unused variables #3114</description>
