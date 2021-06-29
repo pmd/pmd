@@ -114,7 +114,33 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethodCallExpression node, Object data) {
-        collectCRUDMethodLevelChecks(node);
+        if (Helper.isAnyDatabaseMethodCall(node)) {
+
+            switch (node.getMethodName().toLowerCase(Locale.ROOT)) {
+            case "insert":
+                checkForCRUD(node, data, IS_CREATEABLE);
+                break;
+            case "update":
+                checkForCRUD(node, data, IS_UPDATEABLE);
+                break;
+            case "delete":
+                checkForCRUD(node, data, IS_DELETABLE);
+                break;
+            case "upsert":
+                checkForCRUD(node, data, IS_CREATEABLE);
+                checkForCRUD(node, data, IS_UPDATEABLE);
+                break;
+            case "merge":
+                checkForCRUD(node, data, IS_MERGEABLE);
+                break;
+            default:
+                break;
+            }
+             
+        } else {
+            collectCRUDMethodLevelChecks(node);
+        }
+        
         return data;
     }
 
