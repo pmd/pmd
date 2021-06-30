@@ -1042,7 +1042,7 @@ public class Foo {
 public class Foo {
     void bar() {
         for (Account a : [SELECT Id FROM Account]) {
-
+        
         }
     }
 }
@@ -1073,6 +1073,84 @@ public class Foo {
             for (Account a : [SELECT Id FROM Account]) {
                 
             }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for inline no-args object</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        insert new Account();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for inline no-args object</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if(Account.sObjectType.getDescribe().isCreateable()) {
+            insert new Account();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for inline literal list</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        insert new Account[]{new Account(Name = 'X')};
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for inline literal list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if(Account.sObjectType.getDescribe().isCreateable()) {
+            insert new Account[]{new Account(Name = 'X')};
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for inline initialized list</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        insert new List<Account>(new Account(Name = 'X'));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for inline initialized list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if(Account.sObjectType.getDescribe().isCreateable()) {
+            insert new List<Account>(new Account(Name = 'X'));
         }
     }
 }

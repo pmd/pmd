@@ -33,6 +33,9 @@ import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewKeyValueObjectExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTNewListInitExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTNewListLiteralExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTNewObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
@@ -379,11 +382,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             return;
         }
 
-        final ASTNewKeyValueObjectExpression newObj = node.getFirstChildOfType(ASTNewKeyValueObjectExpression.class);
-        if (newObj != null) {
-            final String type = Helper.getFQVariableName(newObj);
-            validateCRUDCheckPresent(node, data, crudMethod, type);
-        }
+        checkInlineObject(node, data, crudMethod);
+        checkInlineNonArgsObject(node, data, crudMethod);
 
         final ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
         if (variable != null) {
@@ -394,6 +394,36 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
                 validateCRUDCheckPresent(node, data, crudMethod, typeCheck.toString());
             }
+        }
+
+        final ASTNewListLiteralExpression inlineListLiteral = node.getFirstChildOfType(ASTNewListLiteralExpression.class);
+        if (inlineListLiteral != null) {
+            checkInlineObject(inlineListLiteral, data, crudMethod);
+            checkInlineNonArgsObject(inlineListLiteral, data, crudMethod);
+        }
+
+        final ASTNewListInitExpression inlineListInit = node.getFirstChildOfType(ASTNewListInitExpression.class);
+        if (inlineListInit != null) {
+            checkInlineObject(inlineListInit, data, crudMethod);
+            checkInlineNonArgsObject(inlineListInit, data, crudMethod);
+        }
+    }
+
+    private void checkInlineObject(final ApexNode<?> node, final Object data, final String crudMethod) {
+
+        final ASTNewKeyValueObjectExpression newObj = node.getFirstChildOfType(ASTNewKeyValueObjectExpression.class);
+        if (newObj != null) {
+            final String type = Helper.getFQVariableName(newObj);
+            validateCRUDCheckPresent(node, data, crudMethod, type);
+        }
+    }
+
+    private void checkInlineNonArgsObject(final ApexNode<?> node, final Object data, final String crudMethod) {
+        
+        final ASTNewObjectExpression newEmptyObj = node.getFirstChildOfType(ASTNewObjectExpression.class);
+        if (newEmptyObj != null) {
+            final String type = Helper.getFQVariableName(newEmptyObj);
+            validateCRUDCheckPresent(node, data, crudMethod, type);
         }
     }
 
