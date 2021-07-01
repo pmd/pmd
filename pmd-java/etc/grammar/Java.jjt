@@ -1,5 +1,6 @@
 /**
  * Promote "JEP 409: Sealed Classes" as permanent language feature with Java 17.
+ * Support "JEP 406: Pattern Matching for switch (Preview)" for Java 17 Preview.
  * Andreas Dangel 07/2021
  *====================================================================
  * Fix #3117 - infinite loop when parsing invalid code nested in lambdas
@@ -524,6 +525,28 @@ public class JavaParser {
      if (!isSealedClassSupported()) {
         throwParseException("Sealed Classes are only supported with JDK 15 Preview, JDK 16 Preview and JDK >= 17.");
      }
+  }
+
+  private boolean isJEP406Supported() {
+    return jdkVersion == 17 && preview;
+  }
+
+  private void checkForPatternMatchingInSwitch() {
+    if (!isJEP406Supported()) {
+        throwParseException("Pattern Matching in Switch is only supported with JDK 17 Preview.");
+    }
+  }
+
+  private void checkForNullCaseLabel() {
+    if (!isJEP406Supported()) {
+        throwParseException("Null case labels in switch are only supported with JDK 17 Preview.");
+    }
+  }
+
+  private void checkForDefaultCaseLabel() {
+    if (!isJEP406Supported()) {
+        throwParseException("Default case labels in switch are only supported with JDK 17 Preview.");
+    }
   }
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
@@ -2208,11 +2231,23 @@ void SwitchLabel() :
 {
 { inSwitchLabel = true; }
 (
-  "case" ( ConditionalExpression() #Expression ) ({checkForMultipleCaseLabels();} "," ( ConditionalExpression() #Expression ) )*
+  "case" CaseLabelElement() ( {checkForMultipleCaseLabels();} "," CaseLabelElement() )*
 |
   "default" {jjtThis.setDefault();}
 )
 { inSwitchLabel = false; }
+}
+
+void CaseLabelElement() #void:
+{}
+{
+    NullLiteral() {checkForNullCaseLabel();}
+    |
+    "default" {checkForDefaultCaseLabel();}
+    |
+    LOOKAHEAD(Type() <IDENTIFIER>) Type() VariableDeclaratorId() #TypePattern(2) {checkForPatternMatchingInSwitch();}
+    |
+    ConditionalExpression() #Expression
 }
 
 void YieldStatement() :
