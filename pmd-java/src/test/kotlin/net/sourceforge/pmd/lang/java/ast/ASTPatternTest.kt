@@ -12,8 +12,8 @@ import java.io.IOException
 
 class ASTPatternTest : ParserTestSpec({
 
-    parserTest("Test patterns only available on JDK 15 (preview) and JDK16 and JDK16 (preview)",
-        javaVersions = JavaVersion.values().asList().minus(J15__PREVIEW).minus(J16).minus(J16__PREVIEW)) {
+    parserTest("Test patterns only available on JDK 15 (preview) and JDK16 and JDK16 (preview) and JDK17 and JDK 17 (preview)",
+        javaVersions = JavaVersion.values().asList().minus(J15__PREVIEW).minus(J16).minus(J16__PREVIEW).minus(J17).minus(J17__PREVIEW)) {
 
         expectParseException("Pattern Matching for instanceof is only supported with Java 15 Preview and Java >= 16") {
             parseAstExpression("obj instanceof Class c")
@@ -21,7 +21,7 @@ class ASTPatternTest : ParserTestSpec({
 
     }
 
-    parserTest("Test simple patterns", javaVersions = listOf(J15__PREVIEW, J16)) {
+    parserTest("Test simple patterns", javaVersions = listOf(J15__PREVIEW, J16, J17)) {
 
         importedTypes += IOException::class.java
 

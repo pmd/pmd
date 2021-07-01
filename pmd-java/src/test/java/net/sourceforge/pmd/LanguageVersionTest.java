@@ -60,6 +60,10 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
                     LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("16"), },
             { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "16-preview",
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("16-preview"), },
+            { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "17",
+                    LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("17"), },
+            { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "17-preview",
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("17-preview"), },
 
             // this one won't be found: case sensitive!
             { "JAVA", "JAVA", "1.7", null, },
