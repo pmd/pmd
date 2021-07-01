@@ -1787,7 +1787,9 @@ void InstanceOfExpression() #InstanceOfExpression(>1):
   RelationalExpression()
   [ "instanceof"
       (
-        LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} TypePattern()
+        LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} PrimaryPattern()
+      |
+        LOOKAHEAD("(") Pattern() {checkforBadInstanceOfPattern();}
       |
         Type()
         [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypePattern(2) ]

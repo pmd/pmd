@@ -57,6 +57,11 @@ public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
         doTest("DealingWithNull");
     }
 
+    @Test(expected = ParseException.class)
+    public void guardedAndParenthesizedPatternsBeforeJava17Preview() {
+        java17.parseResource("GuardedAndParenthesizedPatterns.java");
+    }
+
     @Test
     public void guardedAndParenthesizedPatterns() {
         doTest("GuardedAndParenthesizedPatterns");

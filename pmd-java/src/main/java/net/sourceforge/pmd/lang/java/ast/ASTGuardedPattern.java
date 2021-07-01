@@ -35,4 +35,11 @@ public final class ASTGuardedPattern extends AbstractJavaNode implements ASTPatt
         return visitor.visit(this, data);
     }
 
+    public ASTPattern getPattern() {
+        return (ASTPattern) getChild(0);
+    }
+
+    public JavaNode getGuard() {
+        return getChild(1);
+    }
 }
