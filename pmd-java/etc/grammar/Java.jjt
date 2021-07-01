@@ -1,4 +1,7 @@
 /**
+ * Promote "JEP 409: Sealed Classes" as permanent language feature with Java 17.
+ * Andreas Dangel 07/2021
+ *====================================================================
  * Fix #3117 - infinite loop when parsing invalid code nested in lambdas
  * Andreas Dangel 03/2021
  *====================================================================
@@ -446,11 +449,11 @@ public class JavaParser {
     if ((jdkVersion == 15 && preview || jdkVersion >= 16) && "record".equals(image)) {
       throwParseException("With JDK 15 Preview and Java >= 16, 'record' is a contextual keyword and cannot be used for type declarations!");
     }
-    if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview) && "sealed".equals(image)) {
-      throwParseException("With JDK 15 Preview and JDK 16 Preview, 'sealed' is a contextual keyword and cannot be used for type declarations!");
+    if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview || jdkVersion >= 17) && "sealed".equals(image)) {
+      throwParseException("With JDK 15 Preview and JDK 16 Preview and JDK >= 17, 'sealed' is a contextual keyword and cannot be used for type declarations!");
     }
-    if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview) && "permits".equals(image)) {
-      throwParseException("With JDK 15 Preview and JDK 16 Preview, 'permits' is a contextual keyword and cannot be used for type declarations!");
+    if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview || jdkVersion >= 17) && "permits".equals(image)) {
+      throwParseException("With JDK 15 Preview and JDK 16 Preview and JDK >= 17, 'permits' is a contextual keyword and cannot be used for type declarations!");
     }
   }
   private void checkForMultipleCaseLabels() {
@@ -514,12 +517,12 @@ public class JavaParser {
   }
 
   private boolean isSealedClassSupported() {
-      return jdkVersion == 15 && preview || jdkVersion == 16 && preview;
+      return jdkVersion == 15 && preview || jdkVersion == 16 && preview || jdkVersion >= 17;
   }
 
   private void checkForSealedClassUsage() {
      if (!isSealedClassSupported()) {
-        throwParseException("Sealed Classes are only supported with Java 15 Preview");
+        throwParseException("Sealed Classes are only supported with JDK 15 Preview, JDK 16 Preview and JDK >= 17.");
      }
   }
 
