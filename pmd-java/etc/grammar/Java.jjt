@@ -2259,21 +2259,20 @@ void SwitchLabel() :
 {
 { inSwitchLabel = true; }
 (
-  "case" CaseLabelElement() ( {checkForMultipleCaseLabels();} "," CaseLabelElement() )*
+  "case" CaseLabelElement(jjtThis) ( {checkForMultipleCaseLabels();} "," CaseLabelElement(jjtThis) )*
 |
   "default" {jjtThis.setDefault();}
 )
 { inSwitchLabel = false; }
 }
 
-void CaseLabelElement() #void:
+void CaseLabelElement(ASTSwitchLabel label) #void:
 {}
 {
     LOOKAHEAD(1) NullLiteral() {checkForNullCaseLabel();}
     |
-    "default" {checkForDefaultCaseLabel();}
+    "default" {label.setDefault(); checkForDefaultCaseLabel();}
     |
-    // LOOKAHEAD(Type() <IDENTIFIER>) Type() VariableDeclaratorId() #TypePattern(2) {checkForPatternMatchingInSwitch();}
     LOOKAHEAD(Pattern()) Pattern() {checkForPatternMatchingInSwitch();}
     |
     ConditionalExpression() #Expression

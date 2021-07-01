@@ -275,7 +275,7 @@
             |                 |     +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
             |                 |        +- Name[@Image = "o"]
             |                 +- SwitchLabeledExpression[]
-            |                    +- SwitchLabel[@Default = false]
+            |                    +- SwitchLabel[@Default = true]
             |                    |  +- NullLiteral[]
             |                    +- Expression[@StandAlonePrimitive = false]
             |                       +- PrimaryExpression[]

@@ -32,11 +32,6 @@ public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
         java17.parseResource("PatternsInSwitchLabels.java");
     }
 
-    @Test(expected = ParseException.class)
-    public void dealingWithNullBeforeJava17Preview() {
-        java17.parseResource("DealingWithNull.java");
-    }
-
     @Test
     public void patternMatchingForSwitch() {
         doTest("PatternsInSwitchLabels");
@@ -50,6 +45,11 @@ public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
     @Test
     public void scopeOfPatternVariableDeclarations() {
         doTest("ScopeOfPatternVariableDeclarations");
+    }
+
+    @Test(expected = ParseException.class)
+    public void dealingWithNullBeforeJava17Preview() {
+        java17.parseResource("DealingWithNull.java");
     }
 
     @Test
