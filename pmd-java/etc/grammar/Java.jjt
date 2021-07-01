@@ -1,6 +1,7 @@
 /**
  * Promote "JEP 409: Sealed Classes" as permanent language feature with Java 17.
  * Support "JEP 406: Pattern Matching for switch (Preview)" for Java 17 Preview.
+ * Remove support for Java 15 preview language features
  * Andreas Dangel 07/2021
  *====================================================================
  * Fix #3117 - infinite loop when parsing invalid code nested in lambdas
@@ -398,12 +399,6 @@ public class JavaParser {
     }
   }
 
-  private void checkforBadInstanceOfPattern() {
-    if (!(jdkVersion == 15 && preview || jdkVersion >= 16)) {
-      throwParseException("Pattern Matching for instanceof is only supported with Java 15 Preview and Java >= 16");
-    }
-  }
-
   private void checkForBadAnonymousDiamondUsage() {
     if (jdkVersion < 9) {
       ASTAllocationExpression node = (ASTAllocationExpression)jjtree.peekNode();
@@ -447,14 +442,14 @@ public class JavaParser {
     if (jdkVersion >= 14 && "yield".equals(image)) {
       throwParseException("With JDK 14, 'yield' is a contextual keyword and cannot be used for type declarations!");
     }
-    if ((jdkVersion == 15 && preview || jdkVersion >= 16) && "record".equals(image)) {
-      throwParseException("With JDK 15 Preview and Java >= 16, 'record' is a contextual keyword and cannot be used for type declarations!");
+    if (jdkVersion >= 16 && "record".equals(image)) {
+      throwParseException("With JDK >= 16, 'record' is a contextual keyword and cannot be used for type declarations!");
     }
-    if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview || jdkVersion >= 17) && "sealed".equals(image)) {
-      throwParseException("With JDK 15 Preview and JDK 16 Preview and JDK >= 17, 'sealed' is a contextual keyword and cannot be used for type declarations!");
+    if ((jdkVersion == 16 && preview || jdkVersion >= 17) && "sealed".equals(image)) {
+      throwParseException("With JDK 16 Preview and JDK >= 17, 'sealed' is a contextual keyword and cannot be used for type declarations!");
     }
-    if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview || jdkVersion >= 17) && "permits".equals(image)) {
-      throwParseException("With JDK 15 Preview and JDK 16 Preview and JDK >= 17, 'permits' is a contextual keyword and cannot be used for type declarations!");
+    if ((jdkVersion == 16 && preview || jdkVersion >= 17) && "permits".equals(image)) {
+      throwParseException("With JDK 16 Preview and JDK >= 17, 'permits' is a contextual keyword and cannot be used for type declarations!");
     }
   }
   private void checkForMultipleCaseLabels() {
@@ -501,29 +496,35 @@ public class JavaParser {
     }
   }
 
+  private void checkforBadInstanceOfPattern() {
+    if (jdkVersion < 16) {
+      throwParseException("Pattern Matching for instanceof is only supported with JDK >= 16");
+    }
+  }
+
+  private boolean isRecordTypeSupported() {
+    return jdkVersion >= 16;
+  }
+
   private void checkForRecordType() {
     if (!isRecordTypeSupported()) {
-      throwParseException("Records are only supported with Java 15 Preview and Java >= 16");
+      throwParseException("Records are only supported with JDK >= 16");
     }
   }
 
   private void checkForLocalInterfaceOrEnumType() {
       if (!isRecordTypeSupported()) {
-          throwParseException("Local interfaces and enums are only supported with Java 15 Preview and Java >= 16");
+          throwParseException("Local interfaces and enums are only supported with JDK >= 16");
       }
   }
 
-  private boolean isRecordTypeSupported() {
-    return jdkVersion == 15 && preview || jdkVersion >= 16;
-  }
-
   private boolean isSealedClassSupported() {
-      return jdkVersion == 15 && preview || jdkVersion == 16 && preview || jdkVersion >= 17;
+      return jdkVersion == 16 && preview || jdkVersion >= 17;
   }
 
   private void checkForSealedClassUsage() {
      if (!isSealedClassSupported()) {
-        throwParseException("Sealed Classes are only supported with JDK 15 Preview, JDK 16 Preview and JDK >= 17.");
+        throwParseException("Sealed Classes are only supported with JDK 16 Preview and JDK >= 17.");
      }
   }
 

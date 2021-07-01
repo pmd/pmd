@@ -1,8 +1,0 @@
-+- CompilationUnit[@PackageName = "com.example.geometry", @declarationsAreInDefaultPackage = false]
-   +- PackageDeclaration[@Name = "com.example.geometry", @PackageNameImage = "com.example.geometry"]
-   |  +- Name[@Image = "com.example.geometry"]
-   +- TypeDeclaration[]
-      +- ClassOrInterfaceDeclaration[@Abstract = false, @BinaryName = "com.example.geometry.Square", @Default = false, @Final = false, @Image = "Square", @Interface = false, @Local = false, @Modifiers = 32769, @Native = false, @Nested = false, @NonSealed = true, @PackagePrivate = false, @Private = false, @Protected = false, @Public = true, @Sealed = false, @SimpleName = "Square", @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeKind = TypeKind.CLASS, @Volatile = false]
-         +- ExtendsList[]
-         |  +- ClassOrInterfaceType[@AnonymousClass = false, @Array = false, @ArrayDepth = 0, @Image = "Shape", @ReferenceToClassSameCompilationUnit = false]
-         +- ClassOrInterfaceBody[@AnonymousInnerClass = false, @EnumChild = false]
