@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     @Override
@@ -659,7 +657,6 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
     @Override
-    @Experimental
     public Object visit(ASTPermitsList node, Object data) {
         return visit((JavaNode) node, data);
     }

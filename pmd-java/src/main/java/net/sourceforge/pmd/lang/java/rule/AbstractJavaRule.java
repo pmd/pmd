@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
@@ -868,7 +867,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     }
 
     @Override
-    @Experimental
     public Object visit(ASTPermitsList node, Object data) {
         return visit((JavaNode) node, data);
     }

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
@@ -791,7 +790,6 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
     }
 
     @Override
-    @Experimental
     public Object visit(ASTPermitsList node, Object data) {
         return visitor.visit(node, data);
     }
