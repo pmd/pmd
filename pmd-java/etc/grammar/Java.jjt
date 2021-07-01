@@ -550,6 +550,12 @@ public class JavaParser {
     }
   }
 
+  private void checkForGuardedPatterns() {
+    if (!isJEP406Supported()) {
+        throwParseException("Guarded patterns are only supported with JDK 17 Preview.");
+    }
+  }
+
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
   // since "assert" isn't a string literal token
@@ -1748,6 +1754,25 @@ void EqualityExpression() #EqualityExpression(>1):
   InstanceOfExpression()  ( LOOKAHEAD(2) ( "==" {jjtThis.setImage("==");} | "!=" {jjtThis.setImage("!=");} ) InstanceOfExpression()  )*
 }
 
+void Pattern() #void:
+{}
+{
+    PrimaryPattern() [ GuardedPatternCondition() #GuardedPattern(2) {checkForGuardedPatterns();} ]
+}
+
+void GuardedPatternCondition() #void:
+{}
+{
+    "&&" ConditionalAndExpression()
+}
+
+void PrimaryPattern() #void:
+{}
+{
+    TypePattern()
+    | "(" Pattern() ")"
+}
+
 void TypePattern():
 {}
 {
@@ -2242,11 +2267,12 @@ void SwitchLabel() :
 void CaseLabelElement() #void:
 {}
 {
-    NullLiteral() {checkForNullCaseLabel();}
+    LOOKAHEAD(1) NullLiteral() {checkForNullCaseLabel();}
     |
     "default" {checkForDefaultCaseLabel();}
     |
-    LOOKAHEAD(Type() <IDENTIFIER>) Type() VariableDeclaratorId() #TypePattern(2) {checkForPatternMatchingInSwitch();}
+    // LOOKAHEAD(Type() <IDENTIFIER>) Type() VariableDeclaratorId() #TypePattern(2) {checkForPatternMatchingInSwitch();}
+    LOOKAHEAD(Pattern()) Pattern() {checkForPatternMatchingInSwitch();}
     |
     ConditionalExpression() #Expression
 }

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -59,7 +58,6 @@ public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    @Ignore("not finished yet")
     public void guardedAndParenthesizedPatterns() {
         doTest("GuardedAndParenthesizedPatterns");
     }
