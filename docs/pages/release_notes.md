@@ -16,9 +16,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   apex
+    *   [#3329](https://github.com/pmd/pmd/issues/3329): \[apex] ApexCRUDViolation doesn't report SOQL for loops
+
 ### API Changes
 
 ### External Contributions
+
+*   [#3367](https://github.com/pmd/pmd/pull/3367): \[apex] Check SOQL CRUD on for loops - [Jonathan Wiesel](https://github.com/jonathanwiesel)
 
 {% endtocmaker %}
 
