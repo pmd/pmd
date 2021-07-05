@@ -2523,7 +2523,7 @@ confusing.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Initializer[@Static=false()][not(ancestor::*[3][self::AllocationExpression or self::EnumConstant])]
+//Initializer[@Static=false()][not(ancestor::*[3][self::ConstructorCall or self::EnumConstant])]
 ]]>
                 </value>
             </property>
