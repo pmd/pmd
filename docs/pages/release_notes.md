@@ -14,6 +14,23 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New rules
+
+This release ships with 1 new Java rule.
+
+*   {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} suggests returning empty collections / arrays instead of null.
+```xml
+    <rule ref="category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
+
+#### Deprecated rules
+
+The following Java rules are deprecated and removed from the quickstart ruleset,
+ as the new rule {% rule java/errorprone.xml/ReturnEmptyCollectionRatherThanNull %} supersedes it:
+* {% rule java/errorprone.xml/ReturnEmptyArrayRatherThanNull %}
+
 ### Fixed Issues
 
 *   apex
