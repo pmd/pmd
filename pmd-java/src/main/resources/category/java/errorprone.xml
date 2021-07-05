@@ -2740,7 +2740,7 @@ Avoid returning from a finally block, this can discard exceptions.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//FinallyStatement//ReturnStatement except //FinallyStatement//(MethodDeclaration|LambdaExpression)//ReturnStatement</value>
+                <value>//FinallyClause//ReturnStatement except //FinallyClause//(MethodDeclaration|LambdaExpression)//ReturnStatement</value>
             </property>
         </properties>
         <example>
