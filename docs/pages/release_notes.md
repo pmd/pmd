@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   apex
     *   [#3329](https://github.com/pmd/pmd/issues/3329): \[apex] ApexCRUDViolation doesn't report SOQL for loops
+*   core
+    *   [#3377](https://github.com/pmd/pmd/issues/3377): \[core] NPE when specifying report file in current directory in PMD CLI
 
 ### API Changes
 
