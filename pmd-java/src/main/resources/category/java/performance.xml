@@ -313,7 +313,7 @@ public class UsingShort {
     <rule name="BigIntegerInstantiation"
           language="java"
           since="3.9"
-          message="Don't create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
+          message="Don''t create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
           class="net.sourceforge.pmd.lang.java.rule.performance.BigIntegerInstantiationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#bigintegerinstantiation">
         <description>
@@ -323,11 +323,14 @@ for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal
         <priority>3</priority>
         <example>
 <![CDATA[
-BigInteger bi = new BigInteger(1);       // reference BigInteger.ONE instead
+BigInteger bi1 = new BigInteger("1");    // reference BigInteger.ONE instead
 BigInteger bi2 = new BigInteger("0");    // reference BigInteger.ZERO instead
-BigInteger bi3 = new BigInteger(0.0);    // reference BigInteger.ZERO instead
-BigInteger bi4;
-bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
+BigInteger bi3;
+bi3 = new BigInteger("0");               // reference BigInteger.ZERO instead
+
+BigDecimal bd1 = new BigDecimal(0);      // reference BigDecimal.ZERO instead
+BigDecimal bd2 = new BigDecimal("0.") ;  // reference BigDecimal.ZERO instead
+BigDecimal bd3 = new BigDecimal(10);     // reference BigDecimal.TEN instead
 ]]>
         </example>
     </rule>

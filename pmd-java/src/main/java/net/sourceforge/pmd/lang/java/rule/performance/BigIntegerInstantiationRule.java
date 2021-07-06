@@ -6,57 +6,60 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTArguments;
-import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * Rule that marks instantiations of new {@link BigInteger} or
- * {@link BigDecimal} objects, when there is a well-known constant available,
- * such as {@link BigInteger#ZERO}.
+ * Rule that marks instantiations of new {@link BigInteger} or {@link BigDecimal} objects, when there is a well-known
+ * constant available, such as {@link BigInteger#ZERO}.
  */
-public class BigIntegerInstantiationRule extends AbstractJavaRule {
+public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
 
-    @Override
-    public Object visit(ASTAllocationExpression node, Object data) {
-        Node type = node.getChild(0);
 
-        if (!(type instanceof ASTClassOrInterfaceType)) {
-            return super.visit(node, data);
-        }
+    private static final Set<String> CONSTANTS = CollectionUtil.setOf("0", "0.", "1");
 
-        boolean jdk15 = node.getAstInfo().getLanguageVersion().compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
-        if ((TypeTestUtil.isA(BigInteger.class, (ASTClassOrInterfaceType) type)
-                || jdk15 && TypeTestUtil.isA(BigDecimal.class, (ASTClassOrInterfaceType) type))
-                && !node.hasDescendantOfType(ASTArrayDimsAndInits.class)) {
-            ASTArguments args = node.getFirstChildOfType(ASTArguments.class);
-            if (args.size() == 1) {
-                ASTLiteral literal = node.getFirstDescendantOfType(ASTLiteral.class);
-                if (literal == null
-                        || literal.getParent().getParent().getParent().getParent().getParent() != args) {
-                    return super.visit(node, data);
-                }
-
-                String img = literal.getImage();
-                if (literal.isStringLiteral()) {
-                    img = img.substring(1, img.length() - 1);
-                }
-
-                if ("0".equals(img) || "1".equals(img) || jdk15 && "10".equals(img)) {
-                    addViolation(data, node);
-                    return data;
-                }
-            }
-        }
-        return super.visit(node, data);
+    public BigIntegerInstantiationRule() {
+        super(ASTConstructorCall.class);
     }
 
+
+    @Override
+    public Object visit(ASTConstructorCall node, Object data) {
+        boolean jdk15 = node.getAstInfo().getLanguageVersion()
+                .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
+
+        if (TypeTestUtil.isA(BigInteger.class, node) || jdk15 && TypeTestUtil.isA(BigDecimal.class, node)) {
+
+            @NonNull
+            ASTArgumentList arguments = node.getArguments();
+            if (arguments.size() == 1) {
+                ASTExpression firstArg = arguments.get(0);
+                if (firstArg instanceof ASTStringLiteral) {
+                    String img = ((ASTStringLiteral) firstArg).getConstValue();
+                    if (CONSTANTS.contains(img) || jdk15 && "10".equals(img)) {
+                        addViolation(data, node);
+                    }
+                } else if (firstArg instanceof ASTNumericLiteral) {
+                    Number val = ((ASTNumericLiteral) firstArg).getConstValue();
+                    if (val.equals(0) || val.equals(1) || jdk15 && val.equals(10)) {
+                        addViolation(data, node);
+                    }
+                }
+
+            }
+        }
+        return data;
+    }
 }
