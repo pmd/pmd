@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
+import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
@@ -201,6 +202,16 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     @Override
     public Object visit(final ASTReturnStatement node, Object data) {
+        final ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
+        if (soql != null) {
+            checkForAccessibility(soql, data);
+        }
+
+        return data;
+    }
+
+    @Override
+    public Object visit(final ASTForEachStatement node, Object data) {
         final ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
         if (soql != null) {
             checkForAccessibility(soql, data);
@@ -565,6 +576,27 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         if (returnStatement != null) {
             if (typesFromSOQL.isEmpty()) {
                 validateCRUDCheckPresent(node, data, ANY, returnType);
+            } else {
+                for (String typeFromSOQL : typesFromSOQL) {
+                    validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
+                }
+            }
+        }
+
+        final ASTForEachStatement forEachStatement = node.getFirstParentOfType(ASTForEachStatement.class);
+        if (forEachStatement != null) {
+            if (typesFromSOQL.isEmpty()) {
+
+                final ASTVariableDeclaration variableDeclFor = forEachStatement.getFirstParentOfType(ASTVariableDeclaration.class);
+                if (variableDeclFor != null) {
+                    String type = variableDeclFor.getType();
+                    type = getSimpleType(type);
+                    StringBuilder typeCheck = new StringBuilder().append(variableDeclFor.getDefiningType())
+                            .append(":").append(type);
+
+                    validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
+                }
+                
             } else {
                 for (String typeFromSOQL : typesFromSOQL) {
                     validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
