@@ -147,13 +147,12 @@ public class CPD {
     }
 
     private void addAndSkipLexicalErrors(SourceCode sourceCode) throws IOException {
-        TokenEntry.State savedTokenEntry = new TokenEntry.State(tokens.getTokens());
+        TokenEntry.State savedTokenEntry = new TokenEntry.State();
         try {
             addAndThrowLexicalError(sourceCode);
         } catch (TokenMgrError e) {
             System.err.println("Skipping " + sourceCode.getFileName() + ". Reason: " + e.getMessage());
-            tokens.getTokens().clear();
-            tokens.getTokens().addAll(savedTokenEntry.restore());
+            savedTokenEntry.restore(tokens.getTokens());
         }
     }
 
