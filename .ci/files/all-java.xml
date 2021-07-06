@@ -225,7 +225,7 @@
     <rule ref="category/java/errorprone.xml/EmptyTryBlock"/>
     <rule ref="category/java/errorprone.xml/EmptyWhileStmt"/>
     <rule ref="category/java/errorprone.xml/EqualsNull"/>
-    <!-- <rule ref="category/java/errorprone.xml/FinalizeDoesNotCallSuperFinalize"/> -->
+    <rule ref="category/java/errorprone.xml/FinalizeDoesNotCallSuperFinalize"/>
     <rule ref="category/java/errorprone.xml/FinalizeOnlyCallsSuperFinalize"/>
     <rule ref="category/java/errorprone.xml/FinalizeOverloaded"/>
     <rule ref="category/java/errorprone.xml/FinalizeShouldBeProtected"/>
