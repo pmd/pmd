@@ -1905,20 +1905,11 @@ If the finalize() is implemented, its last action should be to call super.finali
 <!-- in English: a method declaration of finalize(), with no arguments, containing
 a block whose last statement is NOT a call to super.finalize -->
 <![CDATA[
-//MethodDeclaration[@Name='finalize'][@Arity = 0]
-   /Block
-      /BlockStatement[last()]
-      [not(Statement/StatementExpression/PrimaryExpression
-            [./PrimaryPrefix[@SuperModifier= true()]]
-            [./PrimarySuffix[@Image='finalize']]
-          )
-      ]
-      [not(Statement/TryStatement/FinallyStatement
-       /Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
-            [./PrimaryPrefix[@SuperModifier= true()]]
-            [./PrimarySuffix[@Image='finalize']]
-          )
-      ]
+//MethodDeclaration[@Name = "finalize"][@Arity = 0]
+   /Block/*[last()]
+      [not(MethodCall[@MethodName = "finalize"]/SuperExpression)]
+      [not(FinallyClause/Block/ExpressionStatement/
+          MethodCall[@MethodName = "finalize"]/SuperExpression)]
 ]]>
                 </value>
             </property>
