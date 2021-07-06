@@ -142,4 +142,18 @@ public class Foo {
         ]]></code>
         <source-type>java 1.5</source-type>
     </test-code>
+
+    <test-code>
+        <description>Fail, BigInteger(2) with Java9</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.math.BigInteger;
+
+public class Foo {
+    BigInteger b = new BigInteger("2"); // Use BigInteger.TWO instead
+}
+        ]]></code>
+        <source-type>java 9</source-type>
+    </test-code>
 </test-data>

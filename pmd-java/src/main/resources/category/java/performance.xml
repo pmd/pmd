@@ -317,8 +317,9 @@ public class UsingShort {
           class="net.sourceforge.pmd.lang.java.rule.performance.BigIntegerInstantiationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#bigintegerinstantiation">
         <description>
-Don't create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and
-for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN)
+Don't create instances of already existing BigInteger (`BigInteger.ZERO`, `BigInteger.ONE`),
+for Java 1.5 onwards, BigInteger.TEN and BigDecimal (`BigDecimal.ZERO`, `BigDecimal.ONE`, `BigDecimal.TEN`) and
+for Java 9 onwards `BigInteger.TWO`.
         </description>
         <priority>3</priority>
         <example>

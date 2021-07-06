@@ -11,6 +11,7 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -37,8 +38,11 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
-        boolean jdk15 = node.getAstInfo().getLanguageVersion()
+        LanguageVersion languageVersion = node.getAstInfo().getLanguageVersion();
+        boolean jdk15 = languageVersion
                 .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
+        boolean jdk9 = languageVersion
+                .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("9")) >= 0;
 
         if (TypeTestUtil.isA(BigInteger.class, node) || jdk15 && TypeTestUtil.isA(BigDecimal.class, node)) {
 
@@ -48,7 +52,8 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
                 ASTExpression firstArg = arguments.get(0);
                 if (firstArg instanceof ASTStringLiteral) {
                     String img = ((ASTStringLiteral) firstArg).getConstValue();
-                    if (CONSTANTS.contains(img) || jdk15 && "10".equals(img)) {
+                    if (CONSTANTS.contains(img) || jdk15 && "10".equals(img)
+                            || jdk9 && "2".equals(img)) {
                         addViolation(data, node);
                     }
                 } else if (firstArg instanceof ASTNumericLiteral) {
