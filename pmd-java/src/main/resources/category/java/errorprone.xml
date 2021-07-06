@@ -2341,8 +2341,7 @@ chain needs an own serialVersionUID field. See also [Should an abstract class ha
 <![CDATA[
 //ClassOrInterfaceDeclaration
     [@Interface = false()]
-    [count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-        /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Name='serialVersionUID']) = 0]
+    [count(ClassOrInterfaceBody/FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Name='serialVersionUID']) = 0]
     [(ImplementsList | ExtendsList)/ClassOrInterfaceType[pmd-java:typeIs('java.io.Serializable')]]
 ]]>
                 </value>
