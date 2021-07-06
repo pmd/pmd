@@ -2017,7 +2017,7 @@ Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Protected=false()][@Name='finalize'][@Arity = 0]
+//MethodDeclaration[@Visibility != "protected"][@Name='finalize'][@Arity = 0]
 ]]>
                 </value>
             </property>
