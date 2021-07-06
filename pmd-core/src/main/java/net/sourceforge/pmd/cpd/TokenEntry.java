@@ -94,17 +94,17 @@ public class TokenEntry implements Comparable<TokenEntry> {
      * entries.
      */
     public static class State {
-        private int tokenCount;
-        private int tokensMapSize;
+        private final int tokenCount;
+        private final int tokensMapSize;
 
         public State() {
             this.tokenCount = TokenEntry.TOKEN_COUNT.get().intValue();
             this.tokensMapSize = TokenEntry.TOKENS.get().size();
         }
 
-        public void restore(List<TokenEntry> entries) {
+        public void restore(final List<TokenEntry> entries) {
             TokenEntry.TOKEN_COUNT.get().set(tokenCount);
-            Iterator<Map.Entry<String, Integer>> it = TOKENS.get().entrySet().iterator();
+            final Iterator<Map.Entry<String, Integer>> it = TOKENS.get().entrySet().iterator();
             while (it.hasNext()) {
                 if (it.next().getValue() > tokensMapSize) {
                     it.remove();
