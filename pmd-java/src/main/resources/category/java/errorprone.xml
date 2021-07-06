@@ -1948,12 +1948,7 @@ If the finalize() is implemented, it should do something besides just calling su
                 <value>
 <![CDATA[
 //MethodDeclaration[@Name='finalize'][@Arity = 0]
-   /Block[count(BlockStatement)=1]
-     /BlockStatement[
-       Statement/StatementExpression/PrimaryExpression
-       [./PrimaryPrefix[@SuperModifier= true()]]
-       [./PrimarySuffix[@Image='finalize']]
-     ]
+   [Block[@Size=1]/ExpressionStatement/MethodCall[@MethodName = "finalize"][SuperExpression]]
 ]]>
                 </value>
             </property>
