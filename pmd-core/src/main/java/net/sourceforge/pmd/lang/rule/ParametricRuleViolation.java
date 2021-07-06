@@ -11,6 +11,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.StringUtil;
@@ -24,6 +25,8 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
 
     protected final Rule rule;
     protected final String description;
+
+    protected String rawCodeSnippet;
     protected boolean suppressed;
     protected String filename;
 
@@ -37,6 +40,11 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     protected String className = "";
     protected String methodName = "";
     protected String variableName = "";
+
+    public ParametricRuleViolation(Rule theRule, RuleContext ctx, T node, String message, String snippet) {
+        this(theRule, ctx, node, message);
+        rawCodeSnippet = snippet;
+    }
 
     // FUTURE Fix to understand when a violation _must_ have a Node, and when it
     // must not (to prevent erroneous Rules silently logging w/o a Node). Modify
@@ -183,9 +191,22 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
         return variableName;
     }
 
+    @Override
+    public SourceCode getSourceCode(String encoding) {
+        return new SourceCode(new SourceCode.StringCodeLoader(rawCodeSnippet));
+    }
+
     public void setLines(int theBeginLine, int theEndLine) {
         beginLine = theBeginLine;
         endLine = theEndLine;
+    }
+
+    public String getRawCodeSnippet() {
+        return this.rawCodeSnippet;
+    }
+
+    public void setRawCodeSnippet(String codeSnippet) {
+        this.rawCodeSnippet = codeSnippet;
     }
 
     @Override

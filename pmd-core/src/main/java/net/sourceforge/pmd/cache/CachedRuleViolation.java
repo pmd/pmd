@@ -6,11 +6,15 @@ package net.sourceforge.pmd.cache;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.cpd.SourceCode;
 
 /**
  * A {@link RuleViolation} implementation that is immutable, and therefore cache friendly
@@ -117,6 +121,17 @@ public final class CachedRuleViolation implements RuleViolation {
     @Override
     public String getVariableName() {
         return variableName;
+    }
+
+    @Override
+    public SourceCode getSourceCode(String encoding) {
+        if ("".equals(getFilename())
+            || Files.notExists(Paths.get(getFilename()))) {
+            return null;
+        }
+
+        return new SourceCode(new SourceCode.FileCodeLoader(
+            new File(getFilename()), encoding));
     }
 
     /**

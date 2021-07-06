@@ -15,6 +15,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
@@ -79,11 +80,16 @@ public abstract class AbstractRendererTest {
         return report;
     }
 
+
     protected RuleViolation newRuleViolation(int endColumn) {
+        return newRuleViolation(new FooRule(), endColumn);
+    }
+
+    protected RuleViolation newRuleViolation(Rule theRule, int endColumn) {
         DummyNode node = createNode(endColumn);
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
-        return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah");
+        return new ParametricRuleViolation<Node>(theRule, ctx, node, "blah");
     }
 
     protected static DummyNode createNode(int endColumn) {
@@ -97,14 +103,11 @@ public abstract class AbstractRendererTest {
 
     @Test
     public void testRuleWithProperties() throws Exception {
-        DummyNode node = createNode(1);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
         Report report = new Report();
         RuleWithProperties theRule = new RuleWithProperties();
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
                 "the string value\nsecond line with \"quotes\"");
-        report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, ctx, node, "blah"));
+        report.addRuleViolation(newRuleViolation(theRule, 1));
         String rendered = ReportTest.render(getRenderer(), report);
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));
     }

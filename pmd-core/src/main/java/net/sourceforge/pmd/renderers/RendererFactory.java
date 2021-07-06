@@ -31,6 +31,7 @@ public final class RendererFactory {
         Map<String, Class<? extends Renderer>> map = new TreeMap<>();
         map.put(CodeClimateRenderer.NAME, CodeClimateRenderer.class);
         map.put(XMLRenderer.NAME, XMLRenderer.class);
+        map.put(XMLVerboseRenderer.NAME, XMLVerboseRenderer.class);
         map.put(IDEAJRenderer.NAME, IDEAJRenderer.class);
         map.put(TextColorRenderer.NAME, TextColorRenderer.class);
         map.put(TextRenderer.NAME, TextRenderer.class);

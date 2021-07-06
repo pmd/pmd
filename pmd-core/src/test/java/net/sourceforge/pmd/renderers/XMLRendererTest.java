@@ -91,7 +91,7 @@ public class XMLRendererTest extends AbstractRendererTest {
         return result;
     }
 
-    private RuleViolation createRuleViolation(String description) {
+    protected RuleViolation createRuleViolation(String description) {
         DummyNode node = new DummyNode(1);
         node.testingOnlySetBeginLine(1);
         node.testingOnlySetBeginColumn(1);
