@@ -229,7 +229,7 @@
     <!-- <rule ref="category/java/errorprone.xml/FinalizeOnlyCallsSuperFinalize"/> -->
     <!-- <rule ref="category/java/errorprone.xml/FinalizeOverloaded"/> -->
     <!-- <rule ref="category/java/errorprone.xml/FinalizeShouldBeProtected"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/IdempotentOperations"/> -->
+    <rule ref="category/java/errorprone.xml/IdempotentOperations"/>
     <!-- <rule ref="category/java/errorprone.xml/InstantiationToGetClass"/> -->
     <!-- <rule ref="category/java/errorprone.xml/InvalidLogMessageFormat"/> -->
     <rule ref="category/java/errorprone.xml/JUnitSpelling"/>
