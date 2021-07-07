@@ -3015,12 +3015,26 @@ public class Foo {
           language="java"
           since="1.5"
           message="The method name and return type are suspiciously close to hashCode()"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.SuspiciousHashcodeMethodNameRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#suspicioushashcodemethodname">
         <description>
 The method name and return type are suspiciously close to hashCode(), which may denote an intention
 to override the hashCode() method.
         </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration[
+        lower-case(@Name) = 'hashcode'
+    and @Name != 'hashCode'
+    and @Arity = 0
+    and PrimitiveType[@Kind = 'int']
+]
+]]>
+                </value>
+            </property>
+        </properties>
         <priority>3</priority>
         <example>
 <![CDATA[

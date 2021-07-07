@@ -57,7 +57,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
@@ -174,16 +173,6 @@ public final class JavaRuleUtil {
     public static boolean isLiteralInt(JavaNode e, int value) {
         if (e instanceof ASTNumericLiteral) {
             return ((ASTNumericLiteral) e).isIntegral() && ((ASTNumericLiteral) e).getValueAsInt() == value;
-        }
-        return false;
-    }
-
-    /**
-     * Returns true if this is a primitive type node with the given kind.
-     */
-    public static boolean isPrimitiveType(JavaNode node, PrimitiveTypeKind kind) {
-        if (node instanceof ASTPrimitiveType) {
-            return ((ASTPrimitiveType) node).getKind() == kind;
         }
         return false;
     }
