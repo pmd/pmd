@@ -1445,12 +1445,27 @@ public class Foo {
           language="java"
           since="1.5"
           message="Avoid importing anything from the 'sun.*' packages"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.DontImportSunRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#dontimportsun">
         <description>
-Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
+Avoid importing anything from the 'sun.*' packages. These packages are not portable
+and are likely to change.
+
+If you find yourself having to depend on Sun APIs, confine this dependency to as
+small a scope as possible, for instance by writing a stable wrapper class around
+the unstable API. You can then suppress this rule in the implementation of the wrapper.
         </description>
         <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ImportDeclaration[starts-with(@ImportedName, 'sun.')]
+]]>
+                </value>
+            </property>
+
+        </properties>
         <example>
 <![CDATA[
 import sun.misc.foo;
