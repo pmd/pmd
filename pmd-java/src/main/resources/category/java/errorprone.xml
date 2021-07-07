@@ -2975,24 +2975,20 @@ Item 10: Obey the general contract when overriding equals.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Name = 'equals']
-[
+//MethodDeclaration[@Name = 'equals'][
     (@Arity = 1
-    and not (MethodDeclarator/FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
-        [@Image = 'Object' or @Image = 'java.lang.Object'])
-    or not (ResultType/Type/PrimitiveType[@Image = 'boolean'])
-    )  or  (
-    @Arity = 2
-    and ResultType/Type/PrimitiveType[@Image = 'boolean']
-    and MethodDeclarator/FormalParameters//ClassOrInterfaceType[@Image = 'Object' or @Image = 'java.lang.Object']
-    and not(../Annotation/MarkerAnnotation/Name[@Image='Override'])
+     and not(FormalParameters/FormalParameter[pmd-java:typeIsExactly('java.lang.Object')])
+     or not(PrimitiveType[@Kind = 'boolean'])
+    ) or (
+     @Arity = 2
+     and PrimitiveType[@Kind = 'boolean']
+     and FormalParameters/FormalParameter[pmd-java:typeIsExactly('java.lang.Object')]
+     and not(pmd-java:hasAnnotation('java.lang.Override'))
     )
 ]
-| //MethodDeclaration[@Name = 'equal']
-[
+| //MethodDeclaration[@Name = 'equal'][
     @Arity = 1
-    and MethodDeclarator/FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
-        [@Image = 'Object' or @Image = 'java.lang.Object']
+    and FormalParameters/FormalParameter[pmd-java:typeIsExactly('java.lang.Object')]
 ]
 ]]>
                 </value>
