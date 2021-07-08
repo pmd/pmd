@@ -219,7 +219,7 @@ public final class SymbolTableResolver {
             int pushed = pushOnStack(f.selfType(top(), node.getTypeMirror()));
             pushed += pushOnStack(f.typeHeader(top(), node.getSymbol()));
 
-            NodeStream<? extends JavaNode> notBody = node.children().drop(1).take(node.getNumChildren() - 2);
+            NodeStream<? extends JavaNode> notBody = node.children().drop(1).dropLast(1);
             for (JavaNode it : notBody) {
                 setTopSymbolTable(it);
             }

@@ -50,6 +50,10 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     private final Set<String> safeVariables = new HashSet<>();
     private final Map<String, Boolean> selectContainingVariables = new HashMap<>();
 
+    public ApexSOQLInjectionRule() {
+        addRuleChainVisit(ASTUserClass.class);
+    }
+
     @Override
     public Object visit(ASTUserClass node, Object data) {
 

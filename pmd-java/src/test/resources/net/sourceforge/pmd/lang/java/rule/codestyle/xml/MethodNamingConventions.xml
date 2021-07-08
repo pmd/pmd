@@ -41,7 +41,7 @@ public class Foo {
         <description>#1343 MethodNamingConventions for overridden methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class MethodNamingConventions implements SomeInterface {
+public class MethodNamingConventions implements SomeUnknownInterface {
     @Override
     public void _foo() {
     }
@@ -99,7 +99,7 @@ class Foo {
         <description>JUnit 3 test detection</description>
         <rule-property name="junit3TestPattern">test_[a-z][A-Za-z]*</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
             <message>The JUnit 3 test method name 'testGetBestTeam' doesn't match 'test_[a-z][A-Za-z]*'</message>
         </expected-messages>
@@ -108,7 +108,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class TournamentTest extends TestCase {
-    Tournament tournament;
 
     public void testGetBestTeam() {
     }
@@ -124,7 +123,7 @@ public class TournamentTest extends TestCase {
         <description>JUnit 4 test detection</description>
         <rule-property name="junit4TestPattern">[a-z][A-Za-z]*Test</rule-property>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>8,12</expected-linenumbers>
+        <expected-linenumbers>7,11</expected-linenumbers>
         <expected-messages>
             <message>The JUnit 4 test method name 'testGetBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
             <message>The JUnit 4 test method name 'getBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
@@ -134,7 +133,6 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 public class TournamentTest extends TestCase {
-    Tournament tournament;
 
     @Test // note that this is also a junit 3 test, but the junit4 rule applies
     public void testGetBestTeam() {
@@ -155,7 +153,7 @@ public class TournamentTest extends TestCase {
     <test-code useAuxClasspath="false">
         <description>JUnit 4 test detection without proper auxclasspath</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <expected-messages>
             <message>The JUnit 4 test method name 'get_best_team' doesn't match '[a-z][a-zA-Z0-9]*'</message>
         </expected-messages>
@@ -163,7 +161,6 @@ public class TournamentTest extends TestCase {
 import org.junit.Test; // note: test case uses "useAuxClasspath=false"!!
 
 public class TournamentTest {
-    Tournament tournament;
 
     // wrong test name pattern
     @Test
@@ -251,6 +248,8 @@ public class Foo {
     public void moo_str2(final String value) {
         assertNotNull(Gender.fromValue(value));
     }
+
+    enum Gender { }
 }
         ]]></code>
     </test-code>

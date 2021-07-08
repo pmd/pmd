@@ -10,12 +10,8 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class AvoidFieldNameMatchingTypeNameRule extends AbstractJavaRule {
 
-    @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
-            return data;
-        }
-        return super.visit(node, data);
+    public AvoidFieldNameMatchingTypeNameRule() {
+        addRuleChainVisit(ASTFieldDeclaration.class);
     }
 
     @Override

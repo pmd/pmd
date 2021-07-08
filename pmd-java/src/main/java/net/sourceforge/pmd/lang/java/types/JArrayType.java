@@ -28,9 +28,14 @@ public final class JArrayType implements JTypeMirror {
     private JClassSymbol symbol;
 
     JArrayType(TypeSystem ts, JTypeMirror component) {
+        this(ts, component, null);
+    }
+
+    JArrayType(TypeSystem ts, JTypeMirror component, JClassSymbol arraySymbol) {
         assert component != null : "Expected non-null component";
         this.component = component;
         this.ts = ts;
+        this.symbol = arraySymbol;
     }
 
     @Override

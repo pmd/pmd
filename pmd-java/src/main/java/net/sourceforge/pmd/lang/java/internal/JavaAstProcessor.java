@@ -86,6 +86,7 @@ public final class JavaAstProcessor {
         return unresolvedTypes;
     }
 
+    @SuppressWarnings("PMD.LiteralsFirstInComparisons") // see #3315
     static TypeInferenceLogger defaultTypeInfLogger() {
         if (Level.FINEST.equals(INFERENCE_LOG_LEVEL)) {
             return new VerboseLogger(System.err);
@@ -175,7 +176,7 @@ public final class JavaAstProcessor {
                                           SemanticErrorReporter logger,
                                           TypeInferenceLogger typeInfLogger) {
 
-        TypeSystem typeSystem = TYPE_SYSTEMS.computeIfAbsent(classLoader, TypeSystem::new);
+        TypeSystem typeSystem = TYPE_SYSTEMS.computeIfAbsent(classLoader, TypeSystem::usingClassLoaderClasspath);
         return new JavaAstProcessor(
             typeSystem,
             typeSystem.bootstrapResolver(),

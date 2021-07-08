@@ -1,0 +1,63 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - pmd/7.0.x
+    tags:
+      - '**'
+  pull_request:
+  schedule:
+    # build it monthly: At 04:00 on day-of-month 1.
+    - cron:  '0 4 1 * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: false
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.m2/repository
+          ~/.gradle/caches
+          ~/.cache
+          ~/work/pmd/target/repositories
+          vendor/bundle
+        key: v1-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          v1-${{ runner.os }}-
+    - name: Set up Ruby 2.7
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7
+    - name: Setup Environment
+      shell: bash
+      run: |
+        echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
+        echo "MAVEN_OPTS=-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -DautoReleaseAfterClose=true -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
+        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/14/scripts" >> $GITHUB_ENV
+    - name: Check Environment
+      shell: bash
+      run: |
+        f=check-environment.sh; \
+        mkdir -p .ci && \
+        ( [ -e .ci/$f ] || curl -sSL "${PMD_CI_SCRIPTS_URL}/$f" > ".ci/$f" ) && \
+        chmod 755 .ci/$f && \
+        .ci/$f
+    - name: Build
+      run: .ci/build.sh
+      shell: bash
+      env:
+        PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

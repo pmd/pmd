@@ -23,16 +23,11 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  * A {@link SymbolResolver} that reads class files to produce symbols.
  */
 public class AsmSymbolResolver implements SymbolResolver {
-    /*
-        TODO
-         - expose enum constant names
-             - eg used in ASTSwitchLike::isExhaustiveEnumSwitch
-     */
 
     static final int ASM_API_V = Opcodes.ASM9;
 
     private final TypeSystem ts;
-    private final ClassLoader classLoader;
+    private final Classpath classLoader;
     private final SignatureParser typeLoader;
 
     private final ConcurrentHashMap<String, SoftClassReference> knownStubs = new ConcurrentHashMap<>();
@@ -43,7 +38,7 @@ public class AsmSymbolResolver implements SymbolResolver {
      */
     private final SoftClassReference failed;
 
-    public AsmSymbolResolver(TypeSystem ts, ClassLoader classLoader) {
+    public AsmSymbolResolver(TypeSystem ts, Classpath classLoader) {
         this.ts = ts;
         this.classLoader = classLoader;
         this.typeLoader = new SignatureParser(this);
@@ -109,7 +104,7 @@ public class AsmSymbolResolver implements SymbolResolver {
 
     @Nullable
     URL getUrlOfInternalName(String internalName) {
-        return classLoader.getResource(internalName + ".class");
+        return classLoader.findResource(internalName + ".class");
     }
 
     /*

@@ -6,14 +6,25 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
+import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.Compilation;
 
 @InternalApi
 public final class ApexParser implements Parser {
+
+    @InternalApi // todo change that to optional<file> when properties are updated
+    public static final PropertyDescriptor<String> MULTIFILE_DIRECTORY =
+        PropertyFactory.stringProperty("rootDirectory")
+                       .desc("The root directory of the Salesforce metadata, where `sfdx-project.json` resides. "
+                                 + "Set environment variable PMD_APEX_ROOTDIRECTORY to use this.")
+                       .defaultValue("") // is this ok?
+                       .build();
 
     public ApexParser() {
         ApexJorjeLogging.disableLogging();
@@ -28,9 +39,12 @@ public final class ApexParser implements Parser {
 
             assert astRoot != null : "Normally replaced by Compilation.INVALID";
 
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task.getTextDocument(), task.getCommentMarker());
-            AbstractApexNode<Compilation> treeRoot = treeBuilder.build(astRoot);
-            return new ASTApexFile(task, treeRoot, treeBuilder.getSuppressMap());
+            String property = task.getProperties().getProperty(MULTIFILE_DIRECTORY);
+            ApexMultifileAnalysis analysisHandler = ApexMultifileAnalysis.getAnalysisInstance(property);
+
+
+            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task);
+            return treeBuilder.buildTree(astRoot, analysisHandler);
         } catch (apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e).setFileName(task.getFileDisplayName());
         }

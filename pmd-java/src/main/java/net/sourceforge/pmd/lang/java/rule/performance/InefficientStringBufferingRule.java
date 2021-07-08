@@ -53,8 +53,9 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
         }
     }
 
-    public static boolean isInStringBufferOperationChain(Node node, String append) {
-        // todo this was replaced by something that doesn't really work
+    static boolean isInStringBufferOperationChain(Node node, String append) {
+        // TODO this was replaced by something that doesn't really work
+        // this was/is used by ConsecutiveLiteralAppendsRule
         if (!(node instanceof ASTExpression)) {
             return false;
         }

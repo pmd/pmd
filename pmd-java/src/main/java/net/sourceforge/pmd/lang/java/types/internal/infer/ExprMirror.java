@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
 
 /**
  * Adapter class to manipulate expressions. The framework
@@ -31,6 +32,10 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  */
 public interface ExprMirror {
 
+    /**
+     * Returns a node which is used as a location to report messages.
+     * Do not use this any other way.
+     */
     JavaNode getLocation();
 
 
@@ -45,6 +50,37 @@ public interface ExprMirror {
      */
     @Nullable JTypeMirror getStandaloneType();
 
+    /**
+     * For a standalone expr, finish type inference by computing properties
+     * that are guarded by the type res lock. For instance for a standalone
+     * ctor call, the standalone type is trivially known (it's the type node).
+     * But we still need to do overload resolution.
+     */
+    default void finishStandaloneInference(@NonNull JTypeMirror standaloneType) {
+        // do nothing
+    }
+
+
+    /**
+     * Set the type of the underlying ast node. Used when we need
+     * to find out the type of a poly to infer the type of another,
+     * that way, we don't repeat computation.
+     */
+    void setInferredType(JTypeMirror mirror);
+
+    /** Return the value set in the last call to {@link #setInferredType(JTypeMirror)}. */
+    @Nullable JTypeMirror getInferredType();
+
+    /**
+     * Returns typing information for the lambdas parameters in scope
+     * in this expression and its subexpressions. When overload resolution
+     * involves lambdas, we might have to try several target types for each
+     * lambda. Each of those may give a different type to the lambda parameters,
+     * and hence, to every expression in the lambda body. These "tentative"
+     * typing are kept in the {@link TypingContext} object and only
+     * committed to the AST for the overload that is selected in the end.
+     */
+    TypingContext getTypingContext();
 
     /**
      * Returns the species that this expression produces. The species
@@ -62,10 +98,31 @@ public interface ExprMirror {
      * types (REFERENCE for Supplier, VOID for Runnable), and determines that
      * the supplier is more appropriate.
      */
-    default TypeSpecies getStandaloneSpecies() {
+    default @NonNull TypeSpecies getStandaloneSpecies() {
         JTypeMirror std = getStandaloneType();
         return std == null ? UNKNOWN : getSpecies(std);
     }
+
+
+    /**
+     * Returns true if this mirror and its subexpressions are equivalent
+     * to the underlying AST node. This is only relevant when making mirrors
+     * that are not exactly equal to the AST node (eg, omitting explicit type arguments),
+     * in order to check if the transformation does not change the meaning of the program.
+     * It verifies that method and constructor calls are overload-selected
+     * to the same compile-time declaration, and that nested lambdas
+     * have the same type as in the AST.
+     *
+     * <p>This mirror's state, as filled-in during type resolution by
+     * {@link Infer} using the various setters of {@link ExprMirror}
+     * interfaces, is compared to the AST's corresponding state. Consequently,
+     * if this state is missing (meaning, that no overload resolution
+     * has been run using this mirror), the analysis cannot be performed
+     * and an exception is thrown.
+     *
+     * @throws IllegalStateException If this mirror has not been used for overload resolution
+     */
+    boolean isEquivalentToUnderlyingAst();
 
     /** A general category of types. */
     enum TypeSpecies {
@@ -86,14 +143,6 @@ public interface ExprMirror {
             return REFERENCE;
         }
     }
-
-
-    /**
-     * Set the type of the underlying ast node. Used when we need
-     * to find out the type of a poly to infer the type of another,
-     * that way, we don't repeat computation.
-     */
-    void setInferredType(JTypeMirror mirror);
 
 
     interface PolyExprMirror extends ExprMirror {
@@ -125,7 +174,6 @@ public interface ExprMirror {
     }
 
 
-
     /** Mirrors a conditional or switch expression. */
     interface BranchingMirror extends PolyExprMirror {
 
@@ -135,13 +183,29 @@ public interface ExprMirror {
          */
         boolean branchesMatch(Predicate<? super ExprMirror> condition);
 
+        /**
+         * Record on the AST node that is is a standalone expression.
+         * This accounts for special cases in the spec which are made
+         * for numeric and boolean conditional expressions. For those
+         * types of standalone exprs, the branches may have an additional
+         * implicit unboxing/widening conversion, that does not depend
+         * on the usual target type (the context of the ternary itself),
+         * but just on the other branch.
+         */
+        default void setStandalone() {
+            // do nothing by default
+        }
+
+
+        @Override
+        default boolean isEquivalentToUnderlyingAst() {
+            return branchesMatch(ExprMirror::isEquivalentToUnderlyingAst);
+        }
     }
 
     /**
      * Mirror of some expression that targets a functional interface type:
      * lambda or method reference.
-     *
-     * todo possibly, introduce the same kind of interface in the AST
      */
     interface FunctionalExprMirror extends PolyExprMirror {
 
@@ -159,7 +223,8 @@ public interface ExprMirror {
         /**
          * This is the method that is overridden in getInferredType.
          * E.g. in {@code stringStream.map(String::isEmpty)}, this is
-         * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>.apply(java.lang.String) -> java.lang.Boolean}
+         * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>.apply(java.lang.String) ->
+         * java.lang.Boolean}
          *
          * <p>May be null if we're resetting some partial data.
          */
@@ -280,6 +345,8 @@ public interface ExprMirror {
          * </blockquote>
          */
         boolean isVoidCompatible();
+
+        void updateTypingContext(JMethodSig groundFun);
     }
 
     /**
@@ -343,16 +410,15 @@ public interface ExprMirror {
         int getArgumentCount();
 
 
-        void setMethodType(MethodCtDecl methodType);
+        void setCtDecl(MethodCtDecl methodType);
 
 
         /**
-         * Returns the method type set with {@link #setMethodType(MethodCtDecl)}
+         * Returns the method type set with {@link #setCtDecl(MethodCtDecl)}
          * or null if that method was never called. This is used to perform
          * overload resolution exactly once per call site.
          */
-        @Nullable
-        MethodCtDecl getMethodType();
+        @Nullable MethodCtDecl getCtDecl();
 
 
         /**
@@ -494,9 +560,24 @@ public interface ExprMirror {
          * <p>Returns the constructor of the {@link #getNewType()}. If
          * this is an anonymous class declaration implementing an interface,
          * then returns the constructors of class {@link Object}.
+         *
+         * <p>This default implementation uses {@link #getAccessibleCandidates(JTypeMirror)},
+         * which should be implemented instead.
          */
         @Override
-        Iterable<JMethodSig> getAccessibleCandidates();
+        default Iterable<JMethodSig> getAccessibleCandidates() {
+            return getAccessibleCandidates(getNewType());
+        }
+
+        /**
+         * Returns the accessible candidates for this node, as if {@link #getNewType()}
+         * returned the type passed as parameter. Since candidates depend on the
+         * new type, this allows us to write simple "spy" wrappers to redo an invocation
+         * in different conditions (ie, pretending the newtype is the parameter)
+         *
+         * @param newType Assumed value of {@link #getNewType()}
+         */
+        Iterable<JMethodSig> getAccessibleCandidates(JTypeMirror newType);
 
 
         /** Must return {@link JConstructorSymbol#CTOR_NAME}. */

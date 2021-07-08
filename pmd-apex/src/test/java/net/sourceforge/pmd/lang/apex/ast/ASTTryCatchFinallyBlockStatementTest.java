@@ -7,13 +7,11 @@ package net.sourceforge.pmd.lang.apex.ast;
 import org.junit.Assert;
 import org.junit.Test;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
 public class ASTTryCatchFinallyBlockStatementTest extends ApexParserTestBase {
 
     @Test
     public void testTryFinally() {
-        ApexNode<Compilation> node = parse("class Foo { void bar() { try { methodCall(); } finally { methodCall(); } } }");
+        ApexNode<?> node = parse("class Foo { void bar() { try { methodCall(); } finally { methodCall(); } } }");
         ASTTryCatchFinallyBlockStatement statement = node.getFirstDescendantOfType(ASTTryCatchFinallyBlockStatement.class);
         Assert.assertNotNull(statement.getTryBlock());
         Assert.assertEquals(0, statement.getTryBlock().getIndexInParent());
@@ -24,7 +22,7 @@ public class ASTTryCatchFinallyBlockStatementTest extends ApexParserTestBase {
 
     @Test
     public void testTryCatch() {
-        ApexNode<Compilation> node = parse("class Foo { void bar() { try { methodCall(); } catch (Exception e) { methodCall(); } } }");
+        ApexNode<?> node = parse("class Foo { void bar() { try { methodCall(); } catch (Exception e) { methodCall(); } } }");
         ASTTryCatchFinallyBlockStatement statement = node.getFirstDescendantOfType(ASTTryCatchFinallyBlockStatement.class);
         Assert.assertNotNull(statement.getTryBlock());
         Assert.assertEquals(0, statement.getTryBlock().getIndexInParent());
@@ -36,7 +34,7 @@ public class ASTTryCatchFinallyBlockStatementTest extends ApexParserTestBase {
 
     @Test
     public void testTryCatchFinally() {
-        ApexNode<Compilation> node = parse("class Foo { void bar() { try { methodCall(); } catch (Exception e) { methodCall(); } finally { } } }");
+        ApexNode<?> node = parse("class Foo { void bar() { try { methodCall(); } catch (Exception e) { methodCall(); } finally { } } }");
         ASTTryCatchFinallyBlockStatement statement = node.getFirstDescendantOfType(ASTTryCatchFinallyBlockStatement.class);
         Assert.assertNotNull(statement.getTryBlock());
         Assert.assertEquals(0, statement.getTryBlock().getIndexInParent());

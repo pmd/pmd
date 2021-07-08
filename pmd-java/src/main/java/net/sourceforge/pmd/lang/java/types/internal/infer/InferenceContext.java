@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.types.SubstVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.CheckBound;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.PropagateAllBounds;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.PropagateBounds;
@@ -55,10 +56,12 @@ final class InferenceContext {
     private final Set<InferenceVar> inferenceVars = new LinkedHashSet<>();
     private final Deque<IncorporationAction> incorporationActions = new ArrayDeque<>();
     final TypeSystem ts;
+    private final SupertypeCheckCache supertypeCheckCache;
     final TypeInferenceLogger logger;
 
     private Substitution mapping = Substitution.EMPTY;
     private @Nullable InferenceContext parent;
+    private boolean needsUncheckedConversion;
     private final int id;
 
     /**
@@ -68,9 +71,18 @@ final class InferenceContext {
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-18.html#jls-18.1.3
      *
      * under the purple rectangle.
+     *
+     * @param ts                  The global type system
+     * @param supertypeCheckCache Super type check cache, shared by all
+     *                            inference runs in the same compilation unit
+     *                            (stored in {@link Infer}).
+     * @param tvars               Initial tvars which will be turned
+     *                            into ivars
+     * @param logger              Logger for events related to ivar bounds
      */
-    InferenceContext(TypeSystem ts, List<JTypeVar> tvars, TypeInferenceLogger logger) {
+    InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger) {
         this.ts = ts;
+        this.supertypeCheckCache = supertypeCheckCache;
         this.logger = logger;
         this.id = ctxId++;
 
@@ -89,7 +101,7 @@ final class InferenceContext {
 
     private void addPrimaryBound(InferenceVar ivar) {
         for (JTypeMirror ui : asList(ivar.getBaseVar().getUpperBound())) {
-            ivar.addBound(BoundKind.UPPER, mapToIVars(ui));
+            ivar.addPrimaryBound(BoundKind.UPPER, mapToIVars(ui));
         }
     }
 
@@ -184,6 +196,23 @@ final class InferenceContext {
         return t.subst(InferenceContext::groundSubst);
     }
 
+    void setNeedsUncheckedConversion() {
+        this.needsUncheckedConversion = true;
+    }
+
+    /**
+     * Whether incorporation/solving required an unchecked conversion.
+     * This means the invocation type of the overload must be erased.
+     *
+     * @see MethodCtDecl#needsUncheckedConversion()
+     */
+    boolean needsUncheckedConversion() {
+        return this.needsUncheckedConversion;
+    }
+
+    SupertypeCheckCache getSupertypeCheckCache() {
+        return supertypeCheckCache;
+    }
 
     private static JTypeMirror groundSubst(SubstVar var) {
         if (var instanceof InferenceVar) {
@@ -295,16 +324,16 @@ final class InferenceContext {
     }
 
 
-    void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
+    void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isPrimary) {
         // guard against α <: Object
         // all variables have it, it's useless to propagate it
         if (kind != BoundKind.UPPER || bound != ts.OBJECT) { // NOPMD CompareObjectsWithEquals
             if (parent != null) {
-                parent.onBoundAdded(ivar, kind, bound, isSubstitution);
+                parent.onBoundAdded(ivar, kind, bound, isPrimary);
                 return;
             }
 
-            logger.boundAdded(this, ivar, kind, bound, isSubstitution);
+            logger.boundAdded(this, ivar, kind, bound, isPrimary);
 
             incorporationActions.add(new CheckBound(ivar, kind, bound));
             incorporationActions.add(new PropagateBounds(ivar, kind, bound));
@@ -348,7 +377,11 @@ final class InferenceContext {
      * @throws ResolutionFailedException Because it calls {@link #incorporate()}
      */
     void solve() {
-        solve(new GraphWalk(this));
+        solve(false);
+    }
+
+    boolean solve(boolean onlyBoundedVars) {
+        return solve(new GraphWalk(this, onlyBoundedVars));
     }
 
     /**
@@ -359,7 +392,7 @@ final class InferenceContext {
         solve(new GraphWalk(var));
     }
 
-    private void solve(VarWalkStrategy walker) {
+    private boolean solve(VarWalkStrategy walker) {
         incorporate();
 
         while (walker.hasNext()) {
@@ -381,6 +414,7 @@ final class InferenceContext {
                 }
             }
         }
+        return freeVars.isEmpty();
     }
 
     /**

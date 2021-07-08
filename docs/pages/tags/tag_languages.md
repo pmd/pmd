@@ -1,5 +1,5 @@
 ---
-title: "Supported Lanugages"
+title: "Supported Languages"
 tagName: languages
 search: exclude
 permalink: tag_languages.html

@@ -26,8 +26,8 @@ public final class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
     }
 
     @Override
-    void closeNode(TextDocument positioner) {
-        super.closeNode(positioner);
+    void closeNode(TextDocument document) {
+        super.closeNode(document);
         if (!hasRealLoc()) {
             return;
         }
@@ -35,7 +35,7 @@ public final class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
         // check, whether the this block statement really begins with a curly brace
         // unfortunately, for-loop and if-statements always contain a block statement,
         // regardless whether curly braces where present or not.
-        curlyBrace = positioner.getText().startsWith('{', node.getLoc().getStartIndex());
+        curlyBrace = document.getText().startsWith('{', node.getLoc().getStartIndex());
     }
 
     @Override

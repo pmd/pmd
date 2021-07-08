@@ -10,6 +10,7 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.util.OptionalBool
+import org.intellij.lang.annotations.Language
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -21,8 +22,7 @@ class OverridingTest : ProcessorTestSpec({
     fun overridingSetup(name: String, mod: String) {
 
         parserTest(name) {
-            val acu = parser.parse(
-                    """
+            val acu = parser.parse("""
 class Scratch {
    $mod void m(Throwable t) { }
 }
@@ -85,8 +85,7 @@ class Other extends Scratch {
 
 
     parserTest("Both inherited and visible from outer class") {
-        val acu = parser.parse(
-                """
+        val acu = parser.parse("""
 class Scratch {
    static void m(Throwable t) { }
    
@@ -94,7 +93,7 @@ class Scratch {
       static void m(Throwable t) { } 
    }
 }
-                """.trimIndent()
+    """.trimIndent()
         )
 
         val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
@@ -118,8 +117,7 @@ class Scratch {
 
 
     parserTest("Primitive signatures do not merge") {
-        val acu = parser.parse(
-                """
+        val acu = parser.parse("""
 class Scratch {
    void m(long t) { }
 
@@ -127,7 +125,7 @@ class Scratch {
       void m(int t) { }
    }
 }
-                """.trimIndent()
+    """.trimIndent()
         )
 
         val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
@@ -139,8 +137,7 @@ class Scratch {
     }
 
     parserTest("Primitive signatures do not merge 2") {
-        val acu = parser.parse(
-                """
+        val acu = parser.parse("""
 class Scratch {
    void m(int t) { }
 
@@ -148,7 +145,7 @@ class Scratch {
       void m(long t) { }
    }
 }
-                """.trimIndent()
+    """.trimIndent()
         )
 
         val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
@@ -162,8 +159,7 @@ class Scratch {
 
     parserTest("Static generic method") {
 
-        val acu = parser.parse(
-                """
+        val acu = parser.parse("""
 class Sup { 
     static <E> E m(F<? extends E> e) { return null; }
 }
@@ -177,7 +173,7 @@ class F<G> {
         Sub.m(); // should be Sub::m, no ambiguity
     }
 }
-   """.trimIndent()
+    """.trimIndent()
         )
 
         val (supE, subE) = acu.declaredMethodSignatures()
@@ -190,15 +186,14 @@ class F<G> {
 
    parserTest("Static method with different bound") {
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+import java.util.List;
 class Sup { 
-    static <E> E m(F<? extends E> e) { return null; }
+    static <E, _X> E m(F<? extends E> e) { return null; }
 }
 
 class Sub extends Sup { 
-    static <S extends List<S>> F<S> m(F<? extends S> e) { return null; }
+    static <S extends List<TP>, TP> F<S> m(F<? extends S> e) { return null; }
 }
 
 class F<G> {
@@ -209,7 +204,7 @@ class F<G> {
         Sub.m(new F<List<G>>()); 
     }
 }
-   """.trimIndent()
+    """.trimIndent()
         )
 
         val (supE, subE) = acu.declaredMethodSignatures()
@@ -218,7 +213,7 @@ class F<G> {
         // their type parameters have a different bound
         // technically this is a compile-time error:
         // both methods have the same erasure but neither hides the other
-        assertFalse("Methods are override-equivalent") {
+        assertFalse("Methods should not override each other\n\t$subE\n\t$supE") {
             TypeOps.overrides(subE, supE, subE.declaringType)
         }
 
@@ -230,11 +225,9 @@ class F<G> {
 
 
 
-   parserTest("Static method of interface is not inherited!") {
+    parserTest("Static method of interface is not inherited!") {
 
-       val (acu, spy) = parser.parseWithTypeInferenceSpy(
-
-                """
+       val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 interface List<T> {}
 
 interface Sup {
@@ -252,7 +245,7 @@ class F<G> implements List<F<G>> {
         Sub.m(new F<F<List<G>>>());
     }
 }
-   """.trimIndent()
+    """.trimIndent()
         )
 
         val (supE, subE) = acu.declaredMethodSignatures()
@@ -270,11 +263,9 @@ class F<G> implements List<F<G>> {
 
 
 
-   parserTest("Static method of interface is not inherited in subinterfaces either") {
+    parserTest("Static method of interface is not inherited in subinterfaces either") {
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 interface List<T> {}
 
 interface Sup {
@@ -292,7 +283,7 @@ class F<G> implements List<F<G>> {
         Sub.m(new F<F<List<G>>>());
     }
 }
-   """.trimIndent()
+    """.trimIndent()
         )
 
         val (supE, subE) = acu.declaredMethodSignatures()
@@ -311,8 +302,7 @@ class F<G> implements List<F<G>> {
 
 
     parserTest("Private method shadowed in inner class") {
-        val acu = parser.parse(
-                """
+        val acu = parser.parse("""
 class Scratch {
    private void m(Throwable t) { } // private methods are not overridden
 
@@ -320,7 +310,7 @@ class Scratch {
       private void m(Throwable t) { }
    }
 }
-                """.trimIndent()
+    """.trimIndent()
         )
 
         val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
@@ -345,8 +335,7 @@ class Scratch {
     }
 
     parserTest("Merged abstract signature in class") {
-        val acu = parser.parse(
-                """
+        val acu = parser.parse("""
 class Scratch {
    static void m(Throwable t) { }
    
@@ -354,7 +343,7 @@ class Scratch {
       static void m(Throwable t) { } 
    }
 }
-                """.trimIndent()
+    """.trimIndent()
         )
 
         val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }

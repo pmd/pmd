@@ -71,8 +71,8 @@ public class Foo {
         <description>case where concatenation is not a child of a BlockStatement, but instead is a child of an ExplicitConstructorInvocation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    public Foo() {
+public class Foo extends Exception {
+    public Foo(Exception ex) {
         super("CauseMsg:" + ex.getMessage(), ex);
     }
 }
@@ -162,6 +162,7 @@ public class Foo {
         <description>concatenating method + int</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Date;
 public class Foo {
     public void bar(Date a) {
         StringBuffer buf = new StringBuffer();
@@ -175,6 +176,7 @@ public class Foo {
         <description>JTextArea.append</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import javax.swing.JTextArea;
 public class Foo {
     public void bar(JTextArea jta) {
         jta.append(f + "hi");
@@ -316,10 +318,12 @@ public class Foo {
         <description>3109408, false + with adding two integers in constructor</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class Test {
-    public void method() {
+    List m_profileItems;
+    public void method(boolean s_profiling_details_enabled, Test profilingContext) {
         int initialSizeGlobal = (int) (profilingContext.m_profileItems.size() * (150.0 * 0.30));
-        int initialSizeDetail = s_profiling_details_enabled ? profilingContext.m_overallProfileItems.size() * 150 : 0;
+        int initialSizeDetail = s_profiling_details_enabled ? profilingContext.m_profileItems.size() * 150 : 0;
         StringBuilder sb = new StringBuilder(initialSizeGlobal + initialSizeDetail);
     }
 }

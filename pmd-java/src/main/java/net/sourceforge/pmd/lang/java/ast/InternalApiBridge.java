@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -25,6 +27,11 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
+import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
+import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -148,12 +155,14 @@ public final class InternalApiBridge {
         node.setTypedSym(sig);
     }
 
-    public static void setFunctionalMethod(ASTMethodReference methodReference, JMethodSig methodType) {
-        methodReference.setFunctionalMethod(methodType);
-    }
-
-    public static void setFunctionalMethod(ASTLambdaExpression lambda, @Nullable JMethodSig methodType) {
-        lambda.setFunctionalMethod(methodType);
+    public static void setFunctionalMethod(FunctionalExpression node, JMethodSig methodType) {
+        if (node instanceof ASTMethodReference) {
+            ((ASTMethodReference) node).setFunctionalMethod(methodType);
+        } else if (node instanceof ASTLambdaExpression) {
+            ((ASTLambdaExpression) node).setFunctionalMethod(methodType);
+        } else {
+            throw AssertionUtil.shouldNotReachHere("" + node);
+        }
     }
 
     public static void setCompileTimeDecl(ASTMethodReference methodReference, JMethodSig methodType) {
@@ -180,6 +189,18 @@ public final class InternalApiBridge {
         return n.getRoot().getLazyTypeResolver().getProcessor();
     }
 
+    public static Infer getInferenceEntryPoint(JavaNode n) {
+        return n.getRoot().getLazyTypeResolver().getInfer();
+    }
+
+    public static @NonNull LazyTypeResolver getLazyTypeResolver(JavaNode n) {
+        return n.getRoot().getLazyTypeResolver();
+    }
+
+    public static @NonNull ExprContext getTopLevelExprContext(TypeNode n) {
+        return n.getRoot().getLazyTypeResolver().getTopLevelContextIncludingInvocation(n);
+    }
+
     public static void setSymbolTable(JavaNode node, JSymbolTable table) {
         ((AbstractJavaNode) node).setSymbolTable(table);
     }
@@ -198,5 +219,25 @@ public final class InternalApiBridge {
 
     public static JavaccTokenDocument.TokenDocumentBehavior javaTokenDoc() {
         return JavaTokenDocument.INSTANCE;
+    }
+
+    public static void setStandaloneTernary(ASTConditionalExpression node) {
+        node.setStandaloneTernary();
+    }
+
+    public static boolean isStandaloneInternal(ASTConditionalExpression node) {
+        return node.isStandalone();
+    }
+
+    public static JTypeMirror buildTypeFromAstInternal(TypeSystem ts, Substitution lexicalSubst, ASTType node) {
+        return TypesFromAst.fromAst(ts, lexicalSubst, node);
+    }
+
+    public static void setTypedSym(ASTFieldAccess expr, JVariableSig.FieldSig sym) {
+        expr.setTypedSym(sym);
+    }
+
+    public static void setTypedSym(ASTVariableAccess expr, JVariableSig sym) {
+        expr.setTypedSym(sym);
     }
 }

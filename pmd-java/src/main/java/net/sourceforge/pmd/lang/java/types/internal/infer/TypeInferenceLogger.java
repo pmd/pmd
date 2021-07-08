@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint.TypePrettyPrinter;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
@@ -290,7 +291,7 @@ public interface TypeInferenceLogger {
         }
 
         protected @NonNull String ppMethod(JMethodSig sig) {
-            return TypePrettyPrint.prettyPrint(sig, false);
+            return TypePrettyPrint.prettyPrint(sig, new TypePrettyPrinter().printMethodHeader(false));
         }
 
         protected @NonNull String ppHighlight(JMethodSig sig) {

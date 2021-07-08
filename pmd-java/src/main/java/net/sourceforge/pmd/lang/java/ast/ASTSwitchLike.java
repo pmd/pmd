@@ -4,15 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -75,12 +73,9 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
             return false;
         }
 
-        if (((JClassSymbol) type).isEnum() && !type.isUnresolved()) {
-            Set<String> enumConstantNames = ((JClassSymbol) type).getDeclaredFields()
-                                                                 .stream()
-                                                                 .filter(JFieldSymbol::isEnumConstant)
-                                                                 .map(JElementSymbol::getSimpleName)
-                                                                 .collect(CollectionUtil.toMutableSet());
+        Set<String> enumConstantNames = ((JClassSymbol) type).getEnumConstantNames();
+        if (enumConstantNames != null) { // ie, it's an enum
+            enumConstantNames = new HashSet<>(enumConstantNames); // make modifiable
 
             for (ASTSwitchBranch branch : this) {
                 // since this is an enum switch, the labels are necessarily
