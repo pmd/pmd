@@ -6,8 +6,6 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.regex.Pattern;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
@@ -15,7 +13,6 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.python.ast.PythonTokenKinds;
-import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * The Python tokenizer.

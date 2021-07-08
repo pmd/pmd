@@ -24,7 +24,7 @@ class CppBlockSkipper extends EscapeTranslator {
         return Pattern.compile("^(?i)" + Pattern.quote(marker), Pattern.MULTILINE);
     }
 
-    public CppBlockSkipper(TextDocument original, Pattern skipStartMarker, Pattern skipEndMarker) {
+    CppBlockSkipper(TextDocument original, Pattern skipStartMarker, Pattern skipEndMarker) {
         super(original);
         skipStart = skipStartMarker;
         skipEnd = skipEndMarker;
