@@ -79,10 +79,12 @@ public class JsonRendererTest extends AbstractRendererTest {
 
     @Test
     public void suppressedViolations() throws IOException {
-        Report rep = new Report();
-        SuppressedViolation suppressed = new SuppressedViolation(newRuleViolation(1),
-                ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR, "test");
-        rep.addSuppressedViolation(suppressed);
+        SuppressedViolation suppressed = new SuppressedViolation(
+            newRuleViolation(1),
+            ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
+            "test"
+        );
+        Report rep = Report.buildReport(it -> it.onSuppressedRuleViolation(suppressed));
         String actual = ReportTest.render(getRenderer(), rep);
         String expected = readFile("expected-suppressed.json");
         Assert.assertEquals(filter(expected), filter(actual));

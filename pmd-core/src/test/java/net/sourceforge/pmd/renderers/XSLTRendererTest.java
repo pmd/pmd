@@ -21,11 +21,10 @@ public class XSLTRendererTest {
     @Test
     public void testDefaultStylesheet() throws Exception {
         XSLTRenderer renderer = new XSLTRenderer();
-        Report report = new Report();
         DummyNode node = new DummyRoot().withFileName("file");
         node.setCoords(1, 1, 1, 2);
         RuleViolation rv = new ParametricRuleViolation<Node>(new FooRule(), node, "violation message");
-        report.addRuleViolation(rv);
+        Report report = Report.buildReport(it -> it.onRuleViolation(rv));
         String result = ReportTest.render(renderer, report);
         Assert.assertTrue(result.contains("violation message"));
     }

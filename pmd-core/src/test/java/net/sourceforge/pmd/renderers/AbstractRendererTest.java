@@ -16,6 +16,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
+import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RulePriority;
@@ -25,6 +26,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 
 public abstract class AbstractRendererTest {
 
@@ -66,20 +68,18 @@ public abstract class AbstractRendererTest {
     }
 
     protected Report reportOneViolation() {
-        Report report = new Report();
-        report.addRuleViolation(newRuleViolation(1));
-        return report;
+        return Report.buildReport(it -> it.onRuleViolation(newRuleViolation(1)));
     }
 
     private Report reportTwoViolations() {
-        Report report = new Report();
-        RuleViolation informationalRuleViolation = newRuleViolation(1);
-        informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
-        report.addRuleViolation(informationalRuleViolation);
-        RuleViolation severeRuleViolation = newRuleViolation(2);
-        severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
-        report.addRuleViolation(severeRuleViolation);
-        return report;
+        return Report.buildReport(it -> {
+            RuleViolation informationalRuleViolation = newRuleViolation(1);
+            informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
+            it.onRuleViolation(informationalRuleViolation);
+            RuleViolation severeRuleViolation = newRuleViolation(2);
+            severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
+            it.onRuleViolation(severeRuleViolation);
+        });
     }
 
     protected RuleViolation newRuleViolation(int endColumn) {
@@ -113,11 +113,10 @@ public abstract class AbstractRendererTest {
     @Test
     public void testRuleWithProperties() throws Exception {
         DummyNode node = createNode(1);
-        Report report = new Report();
         RuleWithProperties theRule = new RuleWithProperties();
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
                 "the string value\nsecond line with \"quotes\"");
-        report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, node, "blah"));
+        Report report = Report.buildReport(it -> it.onRuleViolation(new ParametricRuleViolation<Node>(theRule, node, "blah")));
         String rendered = ReportTest.render(getRenderer(), report);
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));
     }
@@ -131,7 +130,7 @@ public abstract class AbstractRendererTest {
 
     @Test
     public void testRendererEmpty() throws Exception {
-        Report rep = new Report();
+        Report rep = Report.buildReport(it -> {});
         String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(filter(getExpectedEmpty()), filter(actual));
     }
@@ -145,27 +144,24 @@ public abstract class AbstractRendererTest {
 
     @Test
     public void testError() throws Exception {
-        Report rep = new Report();
         Report.ProcessingError err = new Report.ProcessingError(new RuntimeException("Error"), "file");
-        rep.addError(err);
+        Report rep = Report.buildReport(it -> it.onError(err));
         String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }
 
     @Test
     public void testErrorWithoutMessage() throws Exception {
-        Report rep = new Report();
         Report.ProcessingError err = new Report.ProcessingError(new NullPointerException(), "file");
-        rep.addError(err);
+        Report rep = Report.buildReport(it -> it.onError(err));
         String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(filter(getExpectedErrorWithoutMessage(err)), filter(actual));
     }
 
     @Test
     public void testConfigError() throws Exception {
-        Report rep = new Report();
         Report.ConfigurationError err = new Report.ConfigurationError(new FooRule(), "a configuration error");
-        rep.addConfigError(err);
+        Report rep = BaseResultProducingCloseable.using(new GlobalReportBuilderListener(), it -> it.onConfigError(err));
         String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }

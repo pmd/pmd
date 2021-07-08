@@ -89,14 +89,13 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
     @Test
     public void testXPathRule() throws Exception {
         DummyNode node = createNode(1);
-        Report report = new Report();
         XPathRule theRule = new XPathRule(XPathVersion.XPATH_3_1, "//dummyNode");
 
         // Setup as FooRule
         theRule.setDescription("desc");
         theRule.setName("Foo");
 
-        report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, node, "blah"));
+        Report report = Report.buildReport(it -> it.onRuleViolation(new ParametricRuleViolation<Node>(theRule, node, "blah")));
         String rendered = ReportTest.render(getRenderer(), report);
 
         // Output should be the exact same as for non xpath rules

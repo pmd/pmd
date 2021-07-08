@@ -25,41 +25,42 @@ public class ReportTest {
     // Files are grouped together now.
     @Test
     public void testSortedReportFile() throws IOException {
-        Report r = new Report();
-        Node s = getNode(10, 5).withFileName("foo");
-        Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule1, s, rule1.getMessage()));
-        Node s1 = getNode(10, 5).withFileName("bar");
-        Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule2, s1, rule2.getMessage()));
         Renderer rend = new XMLRenderer();
-        String result = render(rend, r);
+        String result = render(rend, Report.buildReport(r -> {
+            Node s = getNode(10, 5).withFileName("foo");
+            Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
+            r.onRuleViolation(new ParametricRuleViolation<>(rule1, s, rule1.getMessage()));
+            Node s1 = getNode(10, 5).withFileName("bar");
+            Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
+            r.onRuleViolation(new ParametricRuleViolation<>(rule2, s1, rule2.getMessage()));
+        }));
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
     }
 
     @Test
     public void testSortedReportLine() throws IOException {
-        Report r = new Report();
-        Node node1 = getNode(20, 5).withFileName("foo1"); // line 20: after rule2 violation
-        Rule rule1 = new MockRule("rule1", "rule1", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule1, node1, rule1.getMessage()));
-
-        Node node2 = getNode(10, 5).withFileName("foo1"); // line 10: before rule1 violation
-        Rule rule2 = new MockRule("rule2", "rule2", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule2, node2, rule2.getMessage())); // same file!!
         Renderer rend = new XMLRenderer();
-        String result = render(rend, r);
+        String result = render(rend, Report.buildReport(r -> {
+            Node node1 = getNode(20, 5).withFileName("foo1"); // line 20: after rule2 violation
+            Rule rule1 = new MockRule("rule1", "rule1", "msg", "rulesetname");
+            r.onRuleViolation(new ParametricRuleViolation<>(rule1, node1, rule1.getMessage()));
+
+            Node node2 = getNode(10, 5).withFileName("foo1"); // line 10: before rule1 violation
+            Rule rule2 = new MockRule("rule2", "rule2", "msg", "rulesetname");
+            r.onRuleViolation(new ParametricRuleViolation<>(rule2, node2, rule2.getMessage())); // same file!!
+        }));
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
     }
 
     @Test
     public void testIterator() {
-        Report r = new Report();
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Node node1 = getNode(5, 5, true);
-        r.addRuleViolation(new ParametricRuleViolation<>(rule, node1, rule.getMessage()));
         Node node2 = getNode(5, 6, true);
-        r.addRuleViolation(new ParametricRuleViolation<>(rule, node2, rule.getMessage()));
+        Report r = Report.buildReport(it -> {
+            it.onRuleViolation(new ParametricRuleViolation<>(rule, node1, rule.getMessage()));
+            it.onRuleViolation(new ParametricRuleViolation<>(rule, node2, rule.getMessage()));
+        });
 
         assertEquals(2, r.getViolations().size());
     }
@@ -74,7 +75,7 @@ public class ReportTest {
     }
 
     private static Node getNode(int line, int column, boolean nextLine) {
-        DummyNode s = (DummyNode) getNode(line, column);
+        DummyNode s = getNode(line, column);
         if (nextLine) {
             s.setCoords(line + 1, column + 4, line + 4, 1);
         }

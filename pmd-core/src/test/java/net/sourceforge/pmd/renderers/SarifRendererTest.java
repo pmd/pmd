@@ -84,14 +84,14 @@ public class SarifRendererTest extends AbstractRendererTest {
     }
 
     private Report reportTwoViolations() {
-        Report report = new Report();
-        RuleViolation informationalRuleViolation = newRuleViolation(1, "Foo");
-        informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
-        report.addRuleViolation(informationalRuleViolation);
-        RuleViolation severeRuleViolation = newRuleViolation(2, "Boo");
-        severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
-        report.addRuleViolation(severeRuleViolation);
-        return report;
+        return Report.buildReport(reportBuilder -> {
+            RuleViolation informationalRuleViolation = newRuleViolation(1, "Foo");
+            informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
+            reportBuilder.onRuleViolation(informationalRuleViolation);
+            RuleViolation severeRuleViolation = newRuleViolation(2, "Boo");
+            severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
+            reportBuilder.onRuleViolation(severeRuleViolation);
+        });
     }
 
     protected String readFile(String relativePath) {

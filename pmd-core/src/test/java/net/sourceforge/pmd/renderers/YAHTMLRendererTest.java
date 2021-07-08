@@ -60,10 +60,12 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
 
     @Test
     public void testReportMultipleViolations() throws Exception {
-        Report report = new Report();
-        report.addRuleViolation(newRuleViolation(1, "net.sf.pmd.test", "YAHTMLSampleClass1"));
-        report.addRuleViolation(newRuleViolation(2, "net.sf.pmd.test", "YAHTMLSampleClass1"));
-        report.addRuleViolation(newRuleViolation(1, "net.sf.pmd.other", "YAHTMLSampleClass2"));
+        Report report = Report.buildReport(it -> {
+            it.onRuleViolation(newRuleViolation(1, "net.sf.pmd.test", "YAHTMLSampleClass1"));
+            it.onRuleViolation(newRuleViolation(2, "net.sf.pmd.test", "YAHTMLSampleClass1"));
+            it.onRuleViolation(newRuleViolation(1, "net.sf.pmd.other", "YAHTMLSampleClass2"));
+        });
+
         String actual = ReportTest.render(getRenderer(), report);
         assertEquals(filter(getExpected()), filter(actual));
 
