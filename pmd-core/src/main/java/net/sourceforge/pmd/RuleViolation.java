@@ -125,7 +125,7 @@ public interface RuleViolation {
      * Retrieve source code snippet associated with violation.
      *
      * @param encoding - source code file encoding
-     * @return {@link SourceCode} - code snippet
+     * @return code snippet
      */
     @Experimental
     String getSourceCode(String encoding);
