@@ -27,8 +27,12 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
 
     @Override
     public FileLocation getReportLocation() {
-        return isAnonymous() ? super.getReportLocation()
-                             : getModifiers().getLastToken().getNext().getReportLocation();
+        if (isAnonymous()) {
+            return super.getReportLocation();
+        } else {
+            // report on the identifier, not the entire class.
+            return getModifiers().getLastToken().getNext().getReportLocation();
+        }
     }
 
     /**

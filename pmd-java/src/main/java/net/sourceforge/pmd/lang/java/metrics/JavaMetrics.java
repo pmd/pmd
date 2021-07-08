@@ -42,6 +42,7 @@ import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * Built-in Java metrics. See {@link Metric} and {@link MetricsUtil}
@@ -447,7 +448,10 @@ public final class JavaMetrics {
     }
 
     private static int computeLoc(JavaNode node, MetricOptions ignored) {
-        return 1 + node.getEndLine() - node.getBeginLine();
+        // the report location is now not necessarily the entire node.
+        FileLocation loc = node.getTextDocument().toLocation(node.getTextRegion());
+
+        return 1 + loc.getEndLine() - loc.getBeginLine();
     }
 
 
