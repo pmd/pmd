@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cpd.SourceCode;
 
@@ -123,15 +124,21 @@ public final class CachedRuleViolation implements RuleViolation {
         return variableName;
     }
 
+    @Experimental
     @Override
-    public SourceCode getSourceCode(String encoding) {
+    public String getSourceCode(String encoding) {
         if ("".equals(getFilename())
             || Files.notExists(Paths.get(getFilename()))) {
             return null;
         }
+        try {
+            SourceCode sourceCode = new SourceCode(new SourceCode.FileCodeLoader(
+                new File(getFilename()), encoding));
+            return sourceCode.getSlice(getBeginLine(), getEndLine());
 
-        return new SourceCode(new SourceCode.FileCodeLoader(
-            new File(getFilename()), encoding));
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     /**

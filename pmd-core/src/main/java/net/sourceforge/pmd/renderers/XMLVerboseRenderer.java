@@ -9,7 +9,6 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.cpd.SourceCode;
 
 public class XMLVerboseRenderer extends XMLRenderer {
     public static final String NAME = "xml-verbose";
@@ -26,11 +25,11 @@ public class XMLVerboseRenderer extends XMLRenderer {
     protected void renderFileViolationsBody(RuleViolation rv) throws XMLStreamException, IOException {
         super.renderFileViolationsBody(rv);
         try {
-            SourceCode sourceCode = rv.getSourceCode(getProperty(ENCODING));
+            String sourceCode = rv.getSourceCode(getProperty(ENCODING));
             if (sourceCode != null) {
                 getXmlWriter().writeStartElement("codesnippet");
                 writeNewLine();
-                getXmlWriter().writeCharacters(sourceCode.getSlice(rv.getBeginLine(), rv.getEndLine()));
+                getXmlWriter().writeCharacters(sourceCode);
                 writeNewLine();
                 getXmlWriter().writeEndElement();
                 writeNewLine();

@@ -6,6 +6,7 @@ package net.sourceforge.pmd;
 
 import java.util.Comparator;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cpd.SourceCode;
 
 /**
@@ -126,5 +127,6 @@ public interface RuleViolation {
      * @param encoding - source code file encoding
      * @return {@link SourceCode} - code snippet
      */
-    SourceCode getSourceCode(String encoding);
+    @Experimental
+    String getSourceCode(String encoding);
 }

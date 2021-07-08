@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -191,9 +192,16 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
         return variableName;
     }
 
+    @Experimental
     @Override
-    public SourceCode getSourceCode(String encoding) {
-        return new SourceCode(new SourceCode.StringCodeLoader(rawCodeSnippet));
+    public String getSourceCode(String encoding) {
+        try {
+            SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(rawCodeSnippet));
+            return sourceCode.getSlice(getBeginLine(), getEndLine());
+
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     public void setLines(int theBeginLine, int theEndLine) {
