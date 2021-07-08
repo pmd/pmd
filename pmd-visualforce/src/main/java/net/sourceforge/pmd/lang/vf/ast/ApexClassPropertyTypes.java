@@ -48,7 +48,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
             for (Path apexDirectory : apexDirectories) {
                 Path apexFilePath = apexDirectory.resolve(className + APEX_CLASS_FILE_SUFFIX);
                 if (Files.exists(apexFilePath) && Files.isRegularFile(apexFilePath)) {
-                    Node node = parse(expression, apexFilePath);
+                    Node node = parseApex(expression, apexFilePath);
                     ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
                     node.acceptVisitor(visitor, null);
 
@@ -65,14 +65,12 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
         }
     }
 
-    private Node parse(String expression, Path apexFilePath) {
+    static Node parseApex(Path apexFilePath) {
         String fileText;
         try (BufferedReader reader = Files.newBufferedReader(apexFilePath, StandardCharsets.UTF_8)) {
             fileText = IOUtils.toString(reader);
         } catch (IOException e) {
-            throw new ContextedRuntimeException(e)
-                .addContextValue("expression", expression)
-                .addContextValue("apexFilePath", apexFilePath);
+            throw new ContextedRuntimeException(e).addContextValue("apexFilePath", apexFilePath);
         }
 
         LanguageVersion languageVersion = LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
@@ -85,7 +83,17 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
             SemanticErrorReporter.noop()
         );
 
+        languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
+
         return parser.parse(task);
+    }
+
+    static Node parseApex(String contextExpr, Path apexFilePath) {
+        try {
+            return parseApex(apexFilePath);
+        } catch (ContextedRuntimeException e) {
+            throw e.addContextValue("expression", contextExpr);
+        }
     }
 
     @Override

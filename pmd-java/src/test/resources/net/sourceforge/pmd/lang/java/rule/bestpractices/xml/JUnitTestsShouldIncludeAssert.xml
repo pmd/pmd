@@ -124,11 +124,9 @@ public class FooTest extends TestCase {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
-public abstract class AbstractAggregateCreatorTest extends TestCase{
+public abstract class AbstractAggregateCreatorTest extends TestCase {
     public abstract int getType();
-    public abstract ProfileAggregate create(DatabaseTransaction db,
-        DailyProfileList profiles, ProfileType type, ProfileStatus status)
-        throws VixenException;
+    public abstract String create(int status) throws Exception;
 }
         ]]></code>
     </test-code>
@@ -254,6 +252,7 @@ public class Foo_Test
         new Foo().doSomething(-1);
         // Note - no assert is needed as we expect an exception (which is basically an assert).
     }
+    class Foo {}
 }
         ]]></code>
     </test-code>
@@ -278,8 +277,9 @@ public class SimpleExpectedExceptionTest {
     public void throwsIllegalArgumentExceptionIfIconIsNull() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Icon is null, not a file, or doesn't exist.");
-        new DigitalAssetManager(null, null);
+        new Foo();
     }
+    class Foo {}
 }
         ]]></code>
     </test-code>
@@ -308,7 +308,8 @@ public class SimpleExpectedExceptionTest {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.junit.*;
-import javafx.embed.swing.JFXPanel;
+import my.JFXPanel;
+import my.UART;
 
 public class BaseConsoleTest extends UART {
     @Test
@@ -358,6 +359,8 @@ public class FooTest {
 
         verify(bar, times(1)).actuallyDoTask();
     }
+    class Foo {}
+    class Bar {}
 }
         ]]></code>
     </test-code>
@@ -385,6 +388,8 @@ public class FooTest {
 
         Mockito.verify(bar, Mockito.times(1)).actuallyDoTask();
     }
+    class Foo {}
+    class Bar {}
 }
         ]]></code>
     </test-code>
@@ -407,6 +412,7 @@ public class FooTest {
         assertEquals("doesn't matter", "doesn't matter");
     }
 }
+class Foo {}
         ]]></code>
     </test-code>
 
@@ -483,6 +489,7 @@ class FooTest {
         <code><![CDATA[
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Test;
+import org.junit.Rule;
 
 public class FooTest {
 
@@ -511,9 +518,10 @@ public class DigitalAssetManagerTest {
     public void throwsIllegalArgumentExceptionIfIconIsNull() {
         this.exception.expect(IllegalArgumentException.class);
         this.exception.expectMessage("Icon is null, not a file, or doesn't exist.");
-        new DigitalAssetManager(null, null);
+        new Foo();
     }
 }
+class Foo {}
         ]]></code>
     </test-code>
 
@@ -535,12 +543,14 @@ public class FooTest extends TestCase {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>[java] JUnitTestsShouldIncludeAssert - false positives with lambdas and static methods #2147</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Test;
 import static org.hamcrest.MatcherAssert.*;
 import junit.framework.TestCase;
 import static org.junit.Assert.assertEquals;
@@ -639,6 +649,40 @@ public class FooTest extends TestCase {
                     }
                 }
             }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>AssertJ and JUnit5</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class JUnit5AssertJTest {
+
+  @Test
+  void check() {
+    Assertions.assertThat("FOO").isNotNull();
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit5</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class JUnit5Test {
+
+  @Test
+  void check() {
+    Assertions.assertNotNull("FOO");
+  }
+}
         ]]></code>
     </test-code>
 </test-data>

@@ -72,17 +72,26 @@ The language module registers only one version (as before), now correctly with v
 Since there is only one version available for JavaScript there is actually no need to selected a specific version.
 The default version is always ES6.
 
+#### New Rules
+
+*   The Apex rule {% rule "apex/design/UnusedMethod" %} finds unused methods in your code.
+
 #### Changed Rules
 
 ##### Java
 
-*   {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %} has two new properties, to selectively disable reporting on
-    static field and method qualifiers. The rule also has been improved to be more precise.
-*   The rule {% rule "java/codestyle/UselessParentheses" %} has two new properties which control how strict
-    the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
-    not necessary are allowed, if they separate expressions of different precedence.
-    The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
-    reading and understanding the expressions.
+* {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %}: the rule has two new properties,
+  to selectively disable reporting on static field and method qualifiers. The rule also has been improved to be more precise.
+* {% rule "java/codestyle/UselessParentheses" %}: the rule has two new properties which control how strict
+  the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
+  not necessary are allowed, if they separate expressions of different precedence.
+  The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
+  reading and understanding the expressions.
+* {% rule "java/bestpractices/LooseCoupling" %}: the rule has a new property to allow some types to be coupled to (`allowedTypes`).
+* {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+* {% rule "java/codestyle/UseDiamondOperator" %}: the property `java7Compatibility` is removed. The rule now handles Java 7
+  properly without a property.
+* {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed. The rule is now more precise and will check these cases properly.
 
 #### Removed Rules
 
@@ -107,15 +116,10 @@ The following previously deprecated rules have been finally removed:
 *   VariableNamingConventions (java-codestyle)
 *   WhileLoopsMustUseBraces (java-codestyle)
 
-#### Changed rules
-
-##### Java
-
-* {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
-
-
 ### Fixed Issues
 
+*   apex-design
+    *   [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
 *   core
     *   [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
 
@@ -129,28 +133,49 @@ The following previously deprecated rules have been finally removed:
     * [#1212](https://github.com/pmd/pmd/issues/1212): \[java] Don't raise JUnitTestContainsTooManyAsserts on JUnit 5's assertAll
     * [#1422](https://github.com/pmd/pmd/issues/1422): \[java] JUnitTestsShouldIncludeAssert false positive with inherited @Rule field
     * [#1565](https://github.com/pmd/pmd/issues/1565): \[java] JUnitAssertionsShouldIncludeMessage false positive with AssertJ
+    * [#1747](https://github.com/pmd/pmd/issues/1747): \[java] PreserveStackTrace false-positive
     * [#1969](https://github.com/pmd/pmd/issues/1969): \[java] MissingOverride false-positive triggered by package-private method overwritten in another package by extending class
     * [#1998](https://github.com/pmd/pmd/issues/1998): \[java] AccessorClassGeneration false-negative: subclass calls private constructor
     * [#2130](https://github.com/pmd/pmd/issues/2130): \[java] UnusedLocalVariable: false-negative with array
     * [#2147](https://github.com/pmd/pmd/issues/2147): \[java] JUnitTestsShouldIncludeAssert - false positives with lambdas and static methods
+    * [#2464](https://github.com/pmd/pmd/issues/2464): \[java] LooseCoupling must ignore class literals: ArrayList.class
     * [#2542](https://github.com/pmd/pmd/issues/2542): \[java] UseCollectionIsEmpty can not detect the case `foo.bar().size()`
+    * [#2650](https://github.com/pmd/pmd/issues/2650): \[java] UseTryWithResources false positive when AutoCloseable helper used
     * [#2796](https://github.com/pmd/pmd/issue/2796): \[java] UnusedAssignment false positive with call chains
     * [#2797](https://github.com/pmd/pmd/issues/2797): \[java] MissingOverride long-standing issues
     * [#2806](https://github.com/pmd/pmd/issues/2806): \[java] SwitchStmtsShouldHaveDefault false-positive with Java 14 switch non-fallthrough branches
+    * [#2822](https://github.com/pmd/pmd/issues/2822): \[java] LooseCoupling rule: Extend to cover user defined implementations and interfaces
+    * [#2882](https://github.com/pmd/pmd/issues/2882): \[java] UseTryWithResources - false negative for explicit close
     * [#2883](https://github.com/pmd/pmd/issues/2883): \[java] JUnitAssertionsShouldIncludeMessage false positive with method call
     * [#2890](https://github.com/pmd/pmd/issues/2890): \[java] UnusedPrivateMethod false positive with generics
 * java-codestyle
+    * [#1208](https://github.com/pmd/pmd/issues/1208): \[java] PrematureDeclaration rule false-positive on variable declared to measure time
+    * [#1429](https://github.com/pmd/pmd/issues/1429): \[java] PrematureDeclaration as result of method call (false positive)
     * [#1673](https://github.com/pmd/pmd/issues/1673): \[java] UselessParentheses false positive with conditional operator
     * [#1790](https://github.com/pmd/pmd/issues/1790): \[java] UnnecessaryFullyQualifiedName false positive with enum constant
     * [#1918](https://github.com/pmd/pmd/issues/1918): \[java] UselessParentheses false positive with boolean operators
+    * [#2134](https://github.com/pmd/pmd/issues/2134): \[java] PreserveStackTrace not handling `Throwable.addSuppressed(...)`
     * [#2299](https://github.com/pmd/pmd/issues/2299): \[java] UnnecessaryFullyQualifiedName false positive with similar package name
+    * [#2528](https://github.com/pmd/pmd/issues/2528): \[java] MethodNamingConventions - JUnit 5 method naming not support `@ParameterizedTest`
+    * [#2391](https://github.com/pmd/pmd/issues/2391): \[java] UseDiamondOperator FP when expected type and constructed type have a different parameterization
     * [#2528](https://github.com/pmd/pmd/issues/2528): \[java] MethodNamingConventions - JUnit 5 method naming not support ParameterizedTest
     * [#2739](https://github.com/pmd/pmd/issues/2739): \[java] UselessParentheses false positive for string concatenation
+    * [#2748](https://github.com/pmd/pmd/issues/2748): \[java] UnnecessaryCast false positive with unchecked cast
+    * [#3195](https://github.com/pmd/pmd/pull/3195): \[java] Improve rule UnnecessaryReturn to detect more cases
+    * [#3218](https://github.com/pmd/pmd/pull/3218): \[java] Generalize UnnecessaryCast to flag all unnecessary casts
+    * [#3221](https://github.com/pmd/pmd/issues/3221): \[java] PrematureDeclaration false positive for unused variables
+    * [#3238](https://github.com/pmd/pmd/issues/3238): \[java] Improve ExprContext, fix FNs of UnnecessaryCast
 * java-errorprone
+    * [#659](https://github.com/pmd/pmd/issues/659): \[java] MissingBreakInSwitch - last default case does not contain a break
     * [#1005](https://github.com/pmd/pmd/issues/1005): \[java] CloneMethodMustImplementCloneable triggers for interfaces
-    * [#2532](https://github.com/pmd/pmd/issues/2532): \[java] AvoidDecimalLiteralsInBigDecimalConstructor can not detect the case new BigDecimal(Expression)
+    * [#1899](https://github.com/pmd/pmd/issues/1899): \[java] Recognize @SuppressWanings("fallthrough") for MissingBreakInSwitch
+    * [#2532](https://github.com/pmd/pmd/issues/2532): \[java] AvoidDecimalLiteralsInBigDecimalConstructor can not detect the case `new BigDecimal(Expression)`
+    * [#2579](https://github.com/pmd/pmd/issues/2579): \[java] MissingBreakInSwitch detects the lack of break in the last case
     * [#2716](https://github.com/pmd/pmd/issues/2716): \[java] CompareObjectsWithEqualsRule: False positive with Enums
     * [#2880](https://github.com/pmd/pmd/issues/2880): \[java] CompareObjectsWithEquals - false negative with type res
+    * [#2894](https://github.com/pmd/pmd/issues/2894): \[java] Improve MissingBreakInSwitch
+    * [#3071](https://github.com/pmd/pmd/issues/3071): \[java] BrokenNullCheck FP with PMD 6.30.0
+    * [#3351](https://github.com/pmd/pmd/issues/3351): \[java] ConstructorCallsOverridableMethod ignores abstract methods
 * java-multithreading
     * [#2537](https://github.com/pmd/pmd/issues/2537): \[java] DontCallThreadRun can't detect the case that call run() in `this.run()`
     * [#2538](https://github.com/pmd/pmd/issues/2538): \[java] DontCallThreadRun can't detect the case that call run() in `foo.bar.run()`
@@ -202,6 +227,7 @@ The metrics framework has been made simpler and more general.
 *   [#1774](https://github.com/pmd/pmd/pull/1774): \[core] Antlr visitor rules - [Lucas Soncini](https://github.com/lsoncini)
 *   [#1877](https://github.com/pmd/pmd/pull/1877): \[swift] Feature/swift rules - [Matias Fraga](https://github.com/matifraga)
 *   [#1882](https://github.com/pmd/pmd/pull/1882): \[swift] UnavailableFunction Swift rule - [Tomás de Lucca](https://github.com/tomidelucca)
+*   [#2830](https://github.com/pmd/pmd/pull/2830): \[apex] Apexlink POC - [Kevin Jones](https://github.com/nawforce)
 
 {% endtocmaker %}
 

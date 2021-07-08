@@ -4,6 +4,12 @@
 
 package net.sourceforge.pmd.processor;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,11 +19,13 @@ import org.junit.rules.TestRule;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.internal.SystemProps;
+import net.sourceforge.pmd.internal.util.ContextedAssertionError;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -73,8 +81,9 @@ public class PmdRunnableTest {
         pmdRunnable.run();
         reportBuilder.close();
         Report report = reportBuilder.getResult();
-        Assert.assertEquals(1, report.getProcessingErrors().size());
-        Assert.assertSame(AssertionError.class, report.getProcessingErrors().get(0).getError().getClass());
+        List<ProcessingError> errors = report.getProcessingErrors();
+        assertThat(errors, hasSize(1));
+        assertThat(errors.get(0).getError(), instanceOf(ContextedAssertionError.class));
     }
 
     @Test

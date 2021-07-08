@@ -9,12 +9,14 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AssertionUtil {
 
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("[\\w$]+(\\.[\\w$]+)*|");
     private static final Pattern BINARY_NAME_PATTERN = Pattern.compile("[\\w$]+(?:\\.[\\w$]+)*(?:\\[])*");
+    private static final Pattern BINARY_NAME_NO_ARRAY = Pattern.compile("[\\w$]++(?:\\.[\\w$]++)*");
 
     private AssertionUtil() {
         // utility class
@@ -51,6 +53,15 @@ public final class AssertionUtil {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException if the name is not a binary name
+     */
+    public static void assertValidJavaBinaryNameNoArray(CharSequence name) {
+        if (!BINARY_NAME_NO_ARRAY.matcher(name).matches()) {
+            throw new IllegalArgumentException("Not a Java binary name '" + name + "'");
+        }
+    }
+
     public static boolean isJavaBinaryName(CharSequence name) {
         return name.length() > 0 && BINARY_NAME_PATTERN.matcher(name).matches();
     }
@@ -62,6 +73,14 @@ public final class AssertionUtil {
     private static String invalidRangeMessage(int startInclusive, int endExclusive, int minIndex, int maxIndex) {
         return "Invalid range [" + startInclusive + "," + endExclusive + "[ in [" + minIndex + "," + maxIndex + "[";
     }
+
+
+    public static void validateState(boolean condition, String failed) {
+        if (!condition) {
+            throw new IllegalStateException(failed);
+        }
+    }
+
 
     /**
      * @throws IllegalArgumentException if [startInclusive,endExclusive[ is
@@ -137,4 +156,18 @@ public final class AssertionUtil {
                                                : prefix + ": " + message;
         return new AssertionError(message);
     }
+
+    public static @NonNull ContextedAssertionError contexted(AssertionError e) {
+        return ContextedAssertionError.wrap(e);
+    }
+
+    public static @NonNull ContextedStackOverflowError contexted(StackOverflowError e) {
+        return ContextedStackOverflowError.wrap(e);
+    }
+
+    public static @NonNull ContextedRuntimeException contexted(RuntimeException e) {
+        return e instanceof ContextedRuntimeException ? (ContextedRuntimeException) e
+                                                      : new ContextedRuntimeException(e);
+    }
+
 }

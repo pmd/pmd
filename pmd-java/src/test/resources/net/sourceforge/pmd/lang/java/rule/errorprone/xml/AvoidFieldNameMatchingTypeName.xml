@@ -57,4 +57,21 @@ public interface Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>false negative with fields in interfaces and nested classes</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <code><![CDATA[
+interface Operation {
+    Object apply();
+
+    final Operation OPERATION = () -> { return null; };
+
+    class Inner {
+        int inner;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

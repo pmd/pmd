@@ -44,6 +44,9 @@ public class Foo implements Toggleable {
         return true;
     }
 }
+interface Toggleable {
+    boolean getEnabled(); // NOPMD
+}
         ]]></code>
     </test-code>
 

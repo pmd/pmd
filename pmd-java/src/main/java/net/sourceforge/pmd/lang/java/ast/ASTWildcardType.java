@@ -24,14 +24,6 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
         super(id);
     }
 
-
-    @Override
-    @Deprecated
-    public String getTypeImage() {
-        return "?"; // TODO?
-    }
-
-
     void setUpperBound(boolean upperBound) {
         isUpperBound = upperBound;
     }

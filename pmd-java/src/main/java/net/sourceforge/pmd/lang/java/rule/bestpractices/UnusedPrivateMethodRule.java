@@ -14,16 +14,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.MethodUsage;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -42,11 +46,21 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTCompilationUnit file, Object param) {
-        // We do just two traversals:
+        // We do three traversals:
+        // - one to find methods referenced by Junit5 MethodSource annotations
         // - one to find the "interesting methods", ie those that may be violations
         // - another to find the possible usages. We only try to resolve
         //   method calls/method refs that may refer to a method in the
         //   first set, ie, not every call in the file.
+
+        Set<String> methodsUsedByAnnotations = file.descendants(ASTMethodDeclaration.class)
+            .children(ASTModifierList.class)
+            .children(ASTAnnotation.class)
+            .filter(t -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", t))
+            .descendants(ASTStringLiteral.class)
+            .toStream()
+            .map(ASTStringLiteral::getConstValue)
+            .collect(Collectors.toSet());
 
         Map<String, Set<ASTMethodDeclaration>> consideredNames =
             file.descendants(ASTMethodDeclaration.class)
@@ -54,10 +68,12 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                 // get methods whose usages are all in this file
                 // TODO we could use getEffectiveVisibility here, but we need to consider overrides then.
                 .filter(it -> it.getVisibility() == Visibility.V_PRIVATE)
-                .filter(it -> !hasIgnoredAnnotation(it) && !hasExcludedName(it) && !it.isAnnotationPresent(Override.class))
+                .filter(it -> !hasIgnoredAnnotation(it)
+                        && !hasExcludedName(it) 
+                        && !it.isAnnotationPresent(Override.class)
+                        && !(it.getArity() == 0 && methodsUsedByAnnotations.contains(it.getName())))
                 .toStream()
                 .collect(Collectors.groupingBy(ASTMethodDeclaration::getName, HashMap::new, CollectionUtil.toMutableSet()));
-
 
         file.descendants()
             .crossFindBoundaries()

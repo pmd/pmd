@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
@@ -145,4 +146,14 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return children(ASTArrayDimensions.class).first();
     }
 
+    /**
+     * Returns whether this is a main method declaration.
+     */
+    public boolean isMainMethod() {
+        return this.hasModifiers(JModifier.PUBLIC, JModifier.STATIC)
+            && "main".equals(this.getName())
+            && this.isVoid()
+            && this.getArity() == 1
+            && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0));
+    }
 }

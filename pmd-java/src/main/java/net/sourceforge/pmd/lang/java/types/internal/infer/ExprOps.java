@@ -11,6 +11,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -27,6 +28,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
@@ -255,7 +257,9 @@ final class ExprOps {
                 }
             }
 
-            return adaptGetClass(candidate, mref.getTypeToSearch().getErasure());
+            // For exact method references, the return type is Class<? extends T> (no erasure).
+            // So it's mref::getTypeToSearch and not mref.getTypeToSearch()::getErasure
+            return adaptGetClass(candidate, mref::getTypeToSearch);
         } else {
             return null;
         }
@@ -326,6 +330,11 @@ final class ExprOps {
                 }
 
                 @Override
+                public @Nullable JTypeMirror getInferredType() {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Override
                 public JavaNode getLocation() {
                     return mref.getLocation();
                 }
@@ -338,6 +347,16 @@ final class ExprOps {
                 @Override
                 public String toString() {
                     return "formal : " + fi;
+                }
+
+                @Override
+                public TypingContext getTypingContext() {
+                    return mref.getTypingContext();
+                }
+
+                @Override
+                public boolean isEquivalentToUnderlyingAst() {
+                    throw new UnsupportedOperationException("Cannot invoque isSemanticallyEquivalent on this mirror, it doesn't have a backing AST node: " + this);
                 }
             }
         );
@@ -393,18 +412,26 @@ final class ExprOps {
             }
 
             @Override
-            public void setMethodType(MethodCtDecl methodType) {
+            public void setCtDecl(MethodCtDecl methodType) {
                 this.mt = methodType;
             }
 
             @Override
-            public @Nullable MethodCtDecl getMethodType() {
+            public @Nullable MethodCtDecl getCtDecl() {
                 return mt;
             }
+
+            JTypeMirror inferred;
 
             @Override
             public void setInferredType(JTypeMirror mirror) {
                 // todo is this useful for method refs?
+                inferred = mirror;
+            }
+
+            @Override
+            public JTypeMirror getInferredType() {
+                return inferred;
             }
 
             @Override
@@ -415,6 +442,16 @@ final class ExprOps {
             @Override
             public String toString() {
                 return "Method ref adapter (for " + mref + ")";
+            }
+
+            @Override
+            public TypingContext getTypingContext() {
+                return mref.getTypingContext();
+            }
+
+            @Override
+            public boolean isEquivalentToUnderlyingAst() {
+                throw new UnsupportedOperationException("Cannot invoque isSemanticallyEquivalent on this mirror, it doesn't have a backing AST node: " + this);
             }
         };
     }
@@ -467,7 +504,8 @@ final class ExprOps {
             boolean acceptsInstanceMethods = canUseInstanceMethods(actualTypeToSearch, targetType, mref);
 
             Predicate<JMethodSymbol> prefilter = TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol())
-                                                        .and(m -> Modifier.isStatic(m.getModifiers()) || acceptsInstanceMethods);
+                                                        .and(m -> Modifier.isStatic(m.getModifiers())
+                                                            || acceptsInstanceMethods);
             return actualTypeToSearch.streamMethods(prefilter).collect(Collectors.toList());
         }
     }
@@ -488,12 +526,22 @@ final class ExprOps {
     }
 
 
-    static JMethodSig adaptGetClass(JMethodSig sig, JTypeMirror erasedReceiverType) {
+    /**
+     * Calls to {@link Object#getClass()} on a type {@code T} have type
+     * {@code Class<? extends |T|>}. If the selected method is that method, then
+     * we need to replace its return type (the symbol has return type {@link Object}).
+     *
+     * <p>For exact method reference expressions, the type is {@code <? extends T>} (no erasure).
+     *
+     * @param sig                   Selected signature
+     * @param replacementReturnType Lazily created, because in many cases it's not necessary
+     *
+     * @return Signature, adapted if it is {@link Object#getClass()}
+     */
+    static JMethodSig adaptGetClass(JMethodSig sig, Supplier<JTypeMirror> replacementReturnType) {
         TypeSystem ts = sig.getTypeSystem();
         if ("getClass".equals(sig.getName()) && sig.getDeclaringType().equals(ts.OBJECT)) {
-            if (erasedReceiverType != null) {
-                return sig.internalApi().withReturnType(getClassReturn(erasedReceiverType, ts)).internalApi().markAsAdapted();
-            }
+            return sig.internalApi().withReturnType(getClassReturn(replacementReturnType.get(), ts)).internalApi().markAsAdapted();
         }
         return sig;
     }

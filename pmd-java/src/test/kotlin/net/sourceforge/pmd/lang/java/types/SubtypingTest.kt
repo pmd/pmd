@@ -15,7 +15,9 @@ import io.kotest.property.exhaustive.ints
 import io.kotest.property.forAll
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 import net.sourceforge.pmd.lang.java.types.TypeConversion.*
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility.*
 import net.sourceforge.pmd.lang.java.types.testdata.ComparableList
@@ -114,7 +116,7 @@ class SubtypingTest : FunSpec({
 
                 val someEnum = SomeEnum::class.decl
 
-                val sup = ts.parameterise(ts.getClassSymbol(java.lang.Enum::class.java), listOf(someEnum))
+                val sup = ts.parameterise(ts.getClassSymbol(java.lang.Enum::class.java)!!, listOf(someEnum))
 
                 someEnum.isRaw shouldBe false
                 someEnum shouldBeSubtypeOf sup
@@ -139,7 +141,7 @@ class SubtypingTest : FunSpec({
 
             test("Test capture variable subtyping") {
 
-                val (k, f, c) = ParserTestCtx().makeDummyTVars("K", "F", "C")
+                val (k, f) = ParserTestCtx().makeDummyTVars("K", "F")
 
                 val wild = `?` `super` k
                 val superList = capture(List::class[wild])
@@ -209,7 +211,7 @@ class SubtypingTest : FunSpec({
 
             test("Test wildcard subtyping (property-based)") {
 
-                checkAll(ts.subtypesArb(false)) { (t, s) ->
+                checkAll(ts.subtypesArb()) { (t, s) ->
                     t_List[t] shouldBeSubtypeOf t_List[`?` extends s]
                     t_List[s] shouldBeSubtypeOf t_List[`?` `super` t]
                 }
@@ -260,7 +262,7 @@ class SubtypingTest : FunSpec({
 
             test("Unresolved symbol is compatible with any class/interface") {
                 val t = ts.declaration(UnresolvedClassStore(ts).makeUnresolvedReference("obj.foo", 0))
-                        .shouldBeUnresolvedClass("obj.foo")
+                    .shouldBeUnresolvedClass("obj.foo")
 
                 checkAll(ts.primitiveGen) { s ->
                     t shouldNotBeSubtypeOf s
@@ -294,7 +296,7 @@ class SubtypingTest : FunSpec({
 
             test("Captured subtyping wild vs wild") {
 
-                checkAll(ts.subtypesArb(unchecked = false)) { (t, s) ->
+                checkAll(ts.subtypesArb()) { (t, s) ->
                     // println("$t <: $s")
 
                     capture(t_List[`?` extends t]) shouldSubtypeNoCapture t_List[`?` extends s]
@@ -314,6 +316,13 @@ class SubtypingTest : FunSpec({
                     // not a subtype
                     t_List[`?` extends t] shouldNotSubtypeNoCapture t_List[`?` extends someCapture]
                 }
+            }
+
+            test("Test non well-formed types") {
+                val sym = ts.createUnresolvedAsmSymbol("does.not.Exist") as JClassSymbol
+                sym[t_String, t_String] shouldBeUnrelatedTo sym[t_String]
+                sym[t_String] shouldBeSubtypeOf sym[t_String]
+                sym[t_String] shouldBeSubtypeOf sym[`?` extends t_String] // containment
             }
         }
     }

@@ -95,7 +95,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    @org.junit.jupiter.api.ParameterizedTest
+    @org.junit.jupiter.params.ParameterizedTest
     void bar() {
     }
 }

@@ -79,6 +79,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         return getTypeNode() instanceof ASTReferenceType;
     }
 
+    public boolean isRecordComponent() {
+        return node.getParent() instanceof ASTRecordComponent;
+    }
 
     public AccessNode getAccessNodeParent() {
         if (node.getParent() instanceof ASTFormalParameter) {

@@ -222,20 +222,20 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      */
     @JvmOverloads
     fun executeRule(rule: Rule, code: String, filename: String = "testfile.${language.extensions[0]}"): Report {
-        val configuration = PMDConfiguration()
-        configuration.setDefaultLanguageVersion(defaultVersion)
-        configuration.suppressMarker = this.params.suppressMarker
-
+        val config = PMDConfiguration().apply {
+            suppressMarker = params.suppressMarker
+            setDefaultLanguageVersion(defaultVersion)
+        }
 
         val reportBuilder = Report.GlobalReportBuilderListener()
         val fullListener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder))
 
 
         AbstractPMDProcessor.runSingleFile(
-                listOf(RuleSet.forSingleRule(rule)),
-                DataSource.forString(code, filename),
-                fullListener,
-                configuration
+            listOf(RuleSet.forSingleRule(rule)),
+            DataSource.forString(code, filename),
+            fullListener,
+            config
         )
 
         fullListener.close()

@@ -17,4 +17,8 @@ import java.lang.annotation.Documented;
  */
 @Documented
 public @interface Experimental {
+
+    /** A reason given for the experimental status. */
+    String value() default "";
+
 }

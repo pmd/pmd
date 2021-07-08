@@ -64,8 +64,8 @@ public class Foo implements InvocationHandler {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar(File file, byte[] data) { }
-    public void bar2(File file, byte data[]) { }
+    public void bar(Foo file, byte[] data) { }
+    public void bar2(Foo file, byte data[]) { }
 }
         ]]></code>
     </test-code>
@@ -75,8 +75,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar(File file, Byte[] data) { }
-    public void bar2(File file, Byte data[]) { }
+    public void bar(Foo file, Byte[] data) { }
+    public void bar2(Foo file, Byte data[]) { }
 }
         ]]></code>
     </test-code>
@@ -108,6 +108,19 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public static void main(int i, String[] args) { }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>C-style array decl</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void a(int args[]) { }
+    public void a(String args[]) { }
+    public void a(byte args[]) { }
+    public void a(Byte args[]) { }
 }
         ]]></code>
     </test-code>

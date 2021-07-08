@@ -89,7 +89,8 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
     static class LazyClassSignature extends GenericSigBase<ClassStub> {
 
-        private static final String OBJECT_SIG = "Ljava/lang/Object;";
+        private static final String OBJECT_INTERNAL_NAME = "java/lang/Object";
+        private static final String OBJECT_SIG = "L" + OBJECT_INTERNAL_NAME + ";";
         private static final String OBJECT_BOUND = ":" + OBJECT_SIG;
 
         private final @Nullable String signature;
@@ -102,19 +103,19 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
         LazyClassSignature(ClassStub ctx,
                            @Nullable String signature, // null if doesn't use generics in header
-                           @Nullable String superName, // null if this is the Object class
+                           @Nullable String superInternalName, // null if this is the Object class
                            String[] interfaces) {
             super(ctx);
             this.signature = signature;
 
             this.rawItfs = CollectionUtil.map(interfaces, ctx.getResolver()::resolveFromInternalNameCannotFail);
-            this.rawSuper = ctx.getResolver().resolveFromInternalNameCannotFail(superName);
+            this.rawSuper = ctx.getResolver().resolveFromInternalNameCannotFail(superInternalName);
         }
 
         static LazyClassSignature defaultWhenUnresolved(ClassStub ctx, int observedArity) {
             String sig = sigWithNTypeParams(observedArity);
 
-            return new LazyClassSignature(ctx, sig, OBJECT_SIG, null);
+            return new LazyClassSignature(ctx, sig, OBJECT_INTERNAL_NAME, null);
         }
 
         private static @NonNull String sigWithNTypeParams(int observedArity) {

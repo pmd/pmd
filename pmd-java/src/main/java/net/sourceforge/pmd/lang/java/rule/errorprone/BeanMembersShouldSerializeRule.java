@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -72,7 +73,7 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
             return data;
         }
 
-        if (hasLombokAnnotation(node)) {
+        if (JavaRuleUtil.hasLombokAnnotation(node)) {
             return super.visit(node, data);
         }
 

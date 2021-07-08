@@ -8,3 +8,8 @@ summary: "Apex-specific features and guidance"
 ---
 
 {% include warning.html content="Todo for pmd 7" %}
+
+### Metrics framework
+
+In order to use code metrics in Java, use the metrics constants in {% jdoc apex::lang.apex.metrics.ApexMetrics %},
+together with {% jdoc core::lang.metrics.MetricsUtil %}.
