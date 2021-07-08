@@ -14,6 +14,8 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.TextRegion;
@@ -22,6 +24,7 @@ import apex.jorje.data.Location;
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.AnonymousClass;
+import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.ast.compilation.ConstructorPreamble;
 import apex.jorje.semantic.ast.compilation.InvalidDependentCompilation;
 import apex.jorje.semantic.ast.compilation.UserClass;
@@ -247,13 +250,15 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private final AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
 
     private final TextDocument sourceCode;
+    private final ParserTask task;
     private final List<ApexDocTokenLocation> apexDocTokenLocations;
     private final Map<Integer, String> suppressMap;
 
-    ApexTreeBuilder(TextDocument textDocument, String suppressMarker) {
-        this.sourceCode = textDocument;
+    ApexTreeBuilder(ParserTask task) {
+        this.sourceCode = task.getTextDocument();
+        this.task = task;
 
-        CommentInformation commentInformation = extractInformationFromComments(sourceCode, suppressMarker);
+        CommentInformation commentInformation = extractInformationFromComments(sourceCode, task.getCommentMarker());
         apexDocTokenLocations = commentInformation.docTokenLocations;
         suppressMap = commentInformation.suppressMap;
     }
@@ -267,7 +272,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
                     .get(node.getClass());
             if (constructor == null) {
                 throw new IllegalArgumentException(
-                        "There is no Node adapter class registered for the Node class: " + node.getClass());
+                    "There is no Node adapter class registered for the Node class: " + node.getClass());
             }
             return constructor.newInstance(node);
         } catch (InstantiationException | IllegalAccessException e) {
@@ -277,15 +282,29 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
-    <T extends AstNode> AbstractApexNode<T> build(T astNode) {
+    ASTApexFile buildTree(Compilation astNode, ApexMultifileAnalysis analysisHandler) {
+        assert nodes.isEmpty() : "stack should be empty";
+        ASTApexFile root = new ASTApexFile(task, astNode, suppressMap, analysisHandler);
+        nodes.push(root);
+        parents.push(astNode);
+
+        build(astNode);
+
+        nodes.pop();
+        parents.pop();
+
+        addFormalComments();
+        closeTree(root);
+        return root;
+    }
+
+    private <T extends AstNode> void build(T astNode) {
         // Create a Node
         AbstractApexNode<T> node = createNodeAdapter(astNode);
 
         // Append to parent
-        AbstractApexNode<?> parent = nodes.isEmpty() ? null : nodes.peek();
-        if (parent != null) {
-            parent.addChild(node, parent.getNumChildren());
-        }
+        AbstractApexNode<?> parent = nodes.peek();
+        parent.addChild(node, parent.getNumChildren());
 
         // Build the children...
         nodes.push(node);
@@ -293,14 +312,6 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         astNode.traverse(this, scope);
         nodes.pop();
         parents.pop();
-
-        if (nodes.isEmpty()) {
-            // add the comments only at the end of the processing as the last step
-            addFormalComments();
-            closeTree(node);
-        }
-
-        return node;
     }
 
     private void closeTree(AbstractApexNode<?> node) {

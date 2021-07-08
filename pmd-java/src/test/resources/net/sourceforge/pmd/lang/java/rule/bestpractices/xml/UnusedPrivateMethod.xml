@@ -221,7 +221,7 @@ public class Foo {
         foo("hi");
     }
     private void foo(String y) {}
-    public void foo(List y) {}
+    public void foo(Integer y) {}
 }
         ]]></code>
     </test-code>
@@ -231,7 +231,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <expected-messages>
-            <message>Avoid unused private methods such as 'foo(List)'.</message>
+            <message>Avoid unused private methods such as 'foo(Integer)'.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -240,7 +240,7 @@ public class Foo {
     }
     String getBuz() {return "";}
     private void foo(String y) {}
-    private void foo(List y) {}
+    private void foo(Integer y) {}
 }
         ]]></code>
     </test-code>
@@ -351,12 +351,12 @@ public class PMDFalsePositiveTest {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private void endTest(final SourceLocation sourceLocation, final String message, final Object... params) {
+    private void endTest(final String message, final Object... params) {
     }
     public static void main(String[] args) {
         Foo f = new Foo();
-        f.endTest(sourceLocation, "", (Object[]) null);
-        f.endTest(sourceLocation, format, params);
+        f.endTest("", (Object[]) null);
+        f.endTest(format, params);
     }
 }
         ]]></code>
@@ -422,8 +422,9 @@ public class Foo {
         <description>#1228 UnusedPrivateMethod returns false positives (1)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    public ModelAndView viewEntry(Model model, HttpServletRequest request) {
+import my.Model;
+public class ModelAndView {
+    public ModelAndView viewEntry(Model model) {
         //call private method.  Flagged Method
         return view(model, VIEW);
     }
@@ -433,7 +434,7 @@ public class Foo {
         //add values to the model
 
         //return the correct view
-        return new ModelAndView(view, MVC_CONSTANTS.MODEL_KEY, model.asMap());
+        return new ModelAndView(view, "MVC_CONSTANTS.MODEL_KEY", model.asMap());
     }
 }
         ]]></code>
@@ -443,10 +444,13 @@ public class Foo {
         <description>#1228 UnusedPrivateMethod returns false positives (2)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import my.HttpServletRequest;
+import my.HttpServletResponse;
+import my.ServletException;
+public class ModelAndView {
     public ModelAndView showLineGraph(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         //call private method  USAGE #1.  Method not flagged
-        MyObject filter = getGraphInnateFilter(request);
+        Object filter = getGraphInnateFilter(request);
 
         //LINE GRAPHIC LOGIC
 
@@ -455,7 +459,7 @@ public class Foo {
 
     public ModelAndView showPieChart(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         //call private method  USAGE #2.  Method not flagg
-        MyObject filter = getGraphInnateFilter(request);
+        Object filter = getGraphInnateFilter(request);
 
         //PIE CHART LOGIC
 
@@ -463,8 +467,8 @@ public class Foo {
     }
 
     /** This method is NOT flagged as unused **/
-    private MyObject getGraphInnateFilter(HttpServletRequest request) {
-        MyObject filter = new MyObject();
+    private Object getGraphInnateFilter(HttpServletRequest request) {
+        Object filter = new Object();
 
         //call private method.  Flagged method
         setInnateFilterFields(filter, request);
@@ -475,7 +479,7 @@ public class Foo {
     }
 
     /** THIS IS FLAGGED AS UNUSED **/
-    private void setInnateFilterFields(MyObject filter, HttpServletRequest request) {
+    private void setInnateFilterFields(Object filter, HttpServletRequest request) {
         //add values to filter object
     }
 }
@@ -486,20 +490,18 @@ public class Foo {
         <description>#1228 UnusedPrivateMethod returns false positives (3)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import my.HttpServletRequest;
+import my.Model;
+public class ModelAndView {
     String VIEW = "foo";
 
-    @RequestMapping(method = RequestMethod.GET, value = URL_MAPPINGS.BULK_ACTION_URL)
-    public ModelAndView viewEntry(Model model, HttpServletRequest request, @RequestParam(value = "fiscalYear", required = true) int fy) {
+    public ModelAndView viewEntry(Model model, HttpServletRequest request, int fy) {
         return view(model, VIEW, fy);
     }
 
     private ModelAndView view(Model model, String view, int fy) {
-        //add values to the model
-        model.addAttribute(FIELDS.FISCAL_YEAR, fy);
-
         //return the correct view
-        return new ModelAndView(view, MVC_CONSTANTS.MODEL_KEY, model.asMap());
+        return new ModelAndView(view, "MVC_CONSTANTS.MODEL_KEY", model.asMap());
     }
 }
         ]]></code>
@@ -509,36 +511,14 @@ public class Foo {
         <description>#1228 UnusedPrivateMethod returns false positives (4)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.awt.*;
-import javax.swing.*;
-
 public class Foo {
-    public JComponent makeUI() {
-        Box box = Box.createVerticalBox();
-        JTextField field = new JTextField();
-        box.add(makePanel("aaa", field));
+    public Foo makeUI() {
+        Foo box = new Foo();
+        box.add(makePanel("aaa", box));
         return box;
     }
-    private static JPanel makePanel(String title, JComponent c) { // this is wrongly triggered
-        JPanel p = new JPanel(new BorderLayout());
-        p.setBorder(BorderFactory.createTitledBorder(title));
-        p.add(c);
-        return p;
-    }
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            @Override public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
-    public static void createAndShowGUI() {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        f.getContentPane().add(new Foo().makeUI());
-        f.setSize(320, 240);
-        f.setLocationRelativeTo(null);
-        f.setVisible(true);
+    private static Foo makePanel(String title, Foo c) { // this is wrongly triggered
+        return c;
     }
 }
         ]]></code>
@@ -548,9 +528,10 @@ public class Foo {
         <description>#1228 UnusedPrivateMethod returns false positives (5a)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo extends MultiActionController {
+import javax.servlet.http.HttpServletRequest;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.DashboardGraphInnateFilter;
 
-    private static final Logger logger = Logger.getLogger(Foo.class);
+public class Foo {
 
     public DashboardGraphInnateFilter getGraphInnateFilter(HttpServletRequest request) {
         setInnateFilterFields();
@@ -558,7 +539,6 @@ public class Foo extends MultiActionController {
     }
 
     private void setInnateFilterFields() { //Not flagged
-        logger.info("here");
     }
 }
         ]]></code>
@@ -568,10 +548,11 @@ public class Foo extends MultiActionController {
         <description>#1228 UnusedPrivateMethod returns false positives (5b)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.*;
+import javax.servlet.http.HttpServletRequest;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.DashboardGraphInnateFilter;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.DashboardInnateFilter;
 
-public class Foo extends MultiActionController {
-    private static final Logger logger = Logger.getLogger(Foo.class);
+public class Foo {
 
     public DashboardGraphInnateFilter getGraphInnateFilter(HttpServletRequest request) {
         DashboardGraphInnateFilter filter = new DashboardGraphInnateFilter();
@@ -580,7 +561,6 @@ public class Foo extends MultiActionController {
     }
 
     private void setInnateFilterFields(DashboardInnateFilter filter, HttpServletRequest request) { //incorrectly flagged
-        logger.info("here");
     }
 }
         ]]></code>
@@ -865,66 +845,27 @@ public class Foo {
         <description>#1228 UnusedPrivateMethod returns false positives (7)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.tree.*;
+class JTree {
+    JTree getRoot() {return this;}
+}
+class TreeNode extends JTree {}
 
-public class Bar {
+public class Box {
+    interface Action { void perform(); }
+
+    void add(Action a) {}
+
     private final JTree tree = new JTree();
-    public JComponent makeUI() {
-        Box box = Box.createVerticalBox();
-        box.add(new JButton(new AbstractAction("expand  ") {
-            @Override public void actionPerformed(ActionEvent e) {
-                TreeNode root = (TreeNode) tree.getModel().getRoot();
-                visitAll(tree, new TreePath(root), true); // line 14
-            }
-        }));
-        box.add(new JButton(new AbstractAction("collapse") {
-            @Override public void actionPerformed(ActionEvent e) {
-                TreeNode root = (TreeNode) tree.getModel().getRoot();
-                visitAll(tree, new TreePath(root), false); // line 20
-            }
-        }));
-        box.add(Box.createVerticalGlue());
-
-        JPanel p = new JPanel(new BorderLayout());
-        p.add(box, BorderLayout.EAST);
-        p.add(new JScrollPane(tree));
-        return p;
-    }
-    private static void visitAll(JTree tree, TreePath parent, boolean expand) {
-        TreeNode node = (TreeNode) parent.getLastPathComponent();
-        if (!node.isLeaf() && node.getChildCount() >= 0) {
-            Enumeration e = node.children();
-            while (e.hasMoreElements()) {
-                TreeNode n = (TreeNode) e.nextElement();
-                TreePath path = parent.pathByAddingChild(n);
-                visitAll(tree, path, expand); // line 37
-            }
-        }
-        if (expand) {
-            tree.expandPath(parent);
-        } else {
-            tree.collapsePath(parent);
-        }
-    }
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            @Override public void run() {
-                createAndShowGUI();
+    public void makeUI() {
+        Box box = new Box();
+        box.add(new Action() {
+            @Override public void perform() {
+                TreeNode root = (TreeNode) tree.getRoot();
+                visitAll(tree, true); // line 14
             }
         });
     }
-    public static void createAndShowGUI() {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        f.getContentPane().add(new Bar().makeUI());
-        f.setSize(320, 240);
-        f.setLocationRelativeTo(null);
-        f.setVisible(true);
-    }
+    private static void visitAll(JTree tree, boolean expand) { }
 }
         ]]></code>
     </test-code>
@@ -933,16 +874,16 @@ public class Bar {
         <description>#1234 Unused private methods still giving false positives in 5.1.3 snapshot</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+import java.util.Map;
 public class Foo {
+    interface IListObject {}
+    Map<Integer, List<IListObject>> bliCodeCache;
     public List<IListObject> getBliCodeByFiscalYear(int fiscalYear) {
        List<IListObject> records = bliCodeCache.get(fiscalYear);
         if (records == null) {
-            logger.info("No BLI Code records cached for year : " + fiscalYear + ". Caching now.");
             records = this.selectBLICodeByFiscalYear(fiscalYear);
             bliCodeCache.put(fiscalYear, records);
-        }
-        if (records == null) {
-            logger.error("Could not load BLI Code DATA.  No records retrieved.");
         }
         return records;
     }
@@ -953,14 +894,7 @@ public class Foo {
      * @return an List of BLI Codes
      */
     private List<IListObject> selectBLICodeByFiscalYear(int fy) {
-
-        List<IListObject> result = new ArrayList<IListObject>();
-        try {
-            result = spiStripFieldService.getBliCodeList(fy);
-        } catch (ServiceException se) {
-                logger.error("Error getting BLI Code DATA: " + se.getMessage(), se);
-        }
-        return result;
+        return null;
     }
 }
         ]]></code>
@@ -1226,22 +1160,19 @@ public class TestPrivate {
         <description>#1261 False positive "Avoid unused private methods" with Generics 4</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.AbstractMap;
 import java.util.Map;
 
 public class TestPrivate {
-    public <T extends Map<?,?>, X extends Map<?,?>>  void createLedgerAndChangeHistory(T oldObject, X updatedObject, boolean isChildLedgerEntry) throws ServiceException {
-        Map.Entry entry = new Map.Entry();
+    public <T extends Map<?,?>, X extends Map<?,?>>  void createLedgerAndChangeHistory(T oldObject, X updatedObject, boolean isChildLedgerEntry) {
 
-        try {
-            if (oldObject instanceof BudgetPackage || oldObject instanceof SpiEntity) {
-                setTotals(oldObject);
-            }
-        // do other stuff
-        } catch (ServiceException e) {
+        if (oldObject instanceof TestPrivate) {
+            setTotals(oldObject);
         }
+        // do other stuff
     }
 
-    private <X extends Map> void setTotals(X ledgerable) throws ServiceException {
+    private <X extends Map> void setTotals(X ledgerable) {
         // do stuff
     }
 }
@@ -1404,17 +1335,17 @@ public class UnusedPrivateMethodWithEnum {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class UnusedPrivateMethod {
-    public void deleteAllAssetsWithExceptionsNoPurge(int galleryId, Integer... exceptionList) throws MediaServiceException
+    public void deleteAllAssetsWithExceptionsNoPurge(int galleryId, Integer... exceptionList)
     {
         deleteAllAssetsWithExceptions(galleryId, false, exceptionList);
     }
 
-    public void deleteAllAssetsWithExceptions(int galleryId, Integer... exceptionList) throws MediaServiceException
+    public void deleteAllAssetsWithExceptions(int galleryId, Integer... exceptionList)
     {
         deleteAllAssetsWithExceptions(galleryId, true, exceptionList);
     }
 
-    private void deleteAllAssetsWithExceptions(int galleryId, boolean purge, Integer... exceptionList) throws MediaServiceException
+    private void deleteAllAssetsWithExceptions(int galleryId, boolean purge, Integer... exceptionList)
     {
     }
 }
@@ -1459,6 +1390,7 @@ public class FooTest {
         <description>#1395 UnusedPrivateMethod false positive for array element method call</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.File;
 public class UnusedPrivateMethod {
     public void doSomething() {
         File[] files = getFiles();
@@ -1481,18 +1413,35 @@ public class UnusedPrivateMethod {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.function.Function;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class Something {
-    @Test public void mapMergeShouldReturnTheUnionWhenGivenDifferentSetsWithSomeCommonValues() {
-        final Map<String, Purse> actual
-            = Combiners.mapMerge(mapOf(annPurse5, bobPurse7), mapOf(bobPurse9, calPurse10), ADDITION);
-        assertEquals(mapOf(annPurse5, bobPurse16, calPurse10), actual);
+import my.Combiners;
+
+public class Purse {
+
+    Purse annPurse5, bobPurse7, bobPurse9, calPurse10, bobPurse16;
+
+    public void mapMergeShouldReturnTheUnionWhenGivenDifferentSetsWithSomeCommonValues() {
+        Combiners.mapMerge(mapOf(annPurse5, bobPurse7), mapOf(bobPurse9, calPurse10));
     }
+
     private static Map<String, Purse> mapOf(final Purse... values) {
         return mapOf2(Purse::getOwner, values);
     }
+
     private static <K, V> Map<K, V> mapOf2(final Function<V, K> keyMapper, final V... values) {
         return Stream.of(values).collect(Collectors.toMap(keyMapper, Function.identity()));
+    }
+
+    String getOwner() { return "me"; }
+
+    static class Combiners {
+
+        static <K, V> Map<K, V> mapMerge(Map<K, V> m1, Map<K, V> m2) {
+            return m2;
+        }
     }
 }
         ]]></code>
@@ -1501,51 +1450,29 @@ public class Something {
     <test-code useAuxClasspath="false">
         <description>#1405 UnusedPrivateMethod false positive?</description>
         <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class blabla implements blabla2 {
-    @Override
-    public List<String> getProductImageUrls(final ApparelStyleVariantProductModel product, final String format) {
+        <code><![CDATA[import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedMap;
+
+class Sup {}
+
+public class Blabla extends Sup {
+    public List<String> getProductImageUrls(final Blabla product, final String format) {
         return getImageUrlsListForVariant(product, format);
     }
-    private List<String> getImageUrlsListForVariant(final VariantProductModel variant, final String format) {
-        final SortedMap<Integer, String> imageUrls = getImageUrlsMapForVariant(variant, format);
-        return new ArrayList<String>(imageUrls.values());
+    private List<String> getImageUrlsListForVariant(final Sup variant, final String format) {
     }
 }
         ]]></code>
     </test-code>
 
-    <test-code>
-        <description>#1412 UnusedPrivateMethod false positive: Issue #1403 not completely solved</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Something {
-    private Purse annPurse5;
-    private Purse bobPurse7;
-    @Before public void setUp() {
-        modifiableEmptyMap = new HashMap<>();
-        annPurse5 = new Purse(ANN, 5);
-        bobPurse7 = new Purse(BOB, 7);
-    }
-    @Test public void mapMergeShouldReturnTheUnionWhenGivenDifferentSetsWithSomeCommonValues() {
-        final Map<String, Purse> actual
-            = Combiners.mapMerge(mapOf(annPurse5, bobPurse7), mapOf(bobPurse9, calPurse10), ADDITION);
-        assertEquals(mapOf(annPurse5, bobPurse16, calPurse10), actual);
-    }
-    private static Map<String, Purse> mapOf(final Purse... values) {
-        return mapOf(Purse::getOwner, values);
-    }
-    private static <K, V> Map<K, V> mapOf(final Function<V, K> keyMapper, final V... values) {
-        return Stream.of(values).collect(Collectors.toMap(keyMapper, Function.identity()));
-    }
-}
-        ]]></code>
-    </test-code>
 
     <test-code>
         <description>#521 UnusedPrivateMethod returns false positives with primitive data type in map argument</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Map;
+import java.util.LinkedHashMap;
 public class Foo {
     public Foo() {
         Map<String, double[]> map = new LinkedHashMap<>();
@@ -1580,8 +1507,9 @@ class Foo {
         test();
     }
 
-    private void test(@AnnotatedUsage Foo this) {
+    private void test(@Annotated Foo this) {
     }
+    @interface Annotated {}
 }
         ]]></code>
     </test-code>
@@ -1658,6 +1586,7 @@ public class UnusedPrivateMethodFP {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class OOO {
+    OOO server = this;
     @Deprecated
     private void shutdown() {
         server.shutdown();
@@ -1669,27 +1598,16 @@ public class OOO {
         <description>UnusedPrivateMethod false positive #2890</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class UnusedPrivateMethodFP {
+import java.util.Map;
+import java.util.Collections;
+import java.util.List;
+public class Client {
 
-    public void swap(ArrayListMultimap<String, Integer> optionIndexes, MenuEntry[] entries, int index1, int index2) {
-        MenuEntry entry1 = entries[index1],
-                entry2 = entries[index2];
 
-        entries[index1] = entry2;
-        entries[index2] = entry1;
+    public void swap(Map<String, List<Integer>> optionIndexes, Object[] entries, int index1, int index2) {
 
-        client.setMenuEntries(entries);
-
-        // Update optionIndexes
-        String option1 = Text.removeTags(entry1.getOption()).toLowerCase(),
-                option2 = Text.removeTags(entry2.getOption()).toLowerCase();
-
-        List<Integer> list1 = optionIndexes.get(option1),
-                list2 = optionIndexes.get(option2);
-
-        // call remove(Object) instead of remove(int)
-        list1.remove((Integer) index1);
-        list2.remove((Integer) index2);
+        List<Integer> list1 = optionIndexes.get("option1"),
+                list2 = optionIndexes.get("option2");
 
         sortedInsert(list1, index2);
         sortedInsert(list2, index1);
@@ -1753,11 +1671,6 @@ public class UnusedPrivateMethodFP {
                 }
 
                 private static void testNoChangeOnFlip(CharSequence chars) {
-                    for (int index = 0; index < chars.length(); index++) {
-                        char expected = chars.charAt(index);
-                        char actual = CharacterUtils.flipCase(expected);
-                        assertEquals("Unexpected flipped value", expected, actual);
-                    }
                 }
             }
         ]]></code>
@@ -1801,6 +1714,33 @@ public class Outer {
         Inner inner = new Inner();
         inner.innerUsedByOuterMethod();
     }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1175 False positive with Junit 5 MethodSource</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+
+public class Outer {
+    private static Stream<Arguments> basenameKeyArguments() {
+        return Stream.of(
+                Arguments.of("simple", "simple"),
+                Arguments.of("simple", "one/two/many/simple"),
+                Arguments.of("simple", "//////an/////awful/key////simple")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("basenameKeyArguments")
+    void basenameKeyTest(final String expected, final String testString) {
+        assertEquals(expected, NetworkTable.basenameKey(testString));
+    }
+
 }
         ]]></code>
     </test-code>

@@ -48,14 +48,17 @@ public interface Parser {
         private final TextDocument textDoc;
         private final SemanticErrorReporter reporter;
 
-        private final PropertySource propertySource;
+        private final ParserTaskProperties propertySource;
 
         public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter) {
+            this(textDoc, reporter, new ParserTaskProperties());
+        }
+
+        private ParserTask(TextDocument textDoc, SemanticErrorReporter reporter, ParserTaskProperties source) {
             this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
             this.reporter = Objects.requireNonNull(reporter, "reporter was null");
 
-            this.propertySource = new ParserTaskProperties();
-            propertySource.definePropertyDescriptor(COMMENT_MARKER);
+            this.propertySource = new ParserTaskProperties(source);
         }
 
         public static final PropertyDescriptor<String> COMMENT_MARKER =
@@ -114,11 +117,28 @@ public interface Parser {
          * Replace the text document with another.
          */
         public ParserTask withTextDocument(TextDocument doc) {
-            return new ParserTask(doc, this.reporter);
+            return new ParserTask(doc, this.reporter, this.propertySource);
         }
 
 
         private static final class ParserTaskProperties extends AbstractPropertySource {
+
+            ParserTaskProperties() {
+                definePropertyDescriptor(COMMENT_MARKER);
+            }
+
+            ParserTaskProperties(ParserTaskProperties toCopy) {
+                for (PropertyDescriptor<?> prop : toCopy.getPropertyDescriptors()) {
+                    definePropertyDescriptor(prop);
+                }
+                toCopy.getOverriddenPropertyDescriptors().forEach(
+                    prop -> copyProperty(prop, toCopy, this)
+                );
+            }
+
+            static <T> void copyProperty(PropertyDescriptor<T> prop, PropertySource source, PropertySource target) {
+                target.setProperty(prop, source.getProperty(prop));
+            }
 
             @Override
             protected String getPropertySourceType() {

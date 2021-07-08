@@ -178,7 +178,7 @@ public class Foo {
         <description>Unneeded 'public static final' in interface field inside another interface</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>Unnecessary modifier 'public' on interface 'Bar': members of interface types are implicitly public</message>
+            <message>Unnecessary modifier 'public' on interface 'Bar': the interface is declared in an interface type</message>
             <message>Unnecessary modifiers 'public static final' on field 'X': the field is declared in an interface type</message>
         </expected-messages>
         <code><![CDATA[
@@ -194,7 +194,7 @@ public interface Foo {
         <description>Unneeded 'public static final' in annotation field inside another interface</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>Unnecessary modifier 'public' on annotation 'Bar': members of interface types are implicitly public</message>
+            <message>Unnecessary modifier 'public' on annotation 'Bar': the annotation is declared in an interface type</message>
             <message>Unnecessary modifiers 'public static final' on field 'X': the field is declared in an annotation type</message>
         </expected-messages>
         <code><![CDATA[
@@ -247,6 +247,7 @@ interface Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 interface Foo {
+    interface Test { int size(); }
     Test DFLT_IMPL = new Test() {
         public int size() { return 0;}
     };
@@ -562,13 +563,13 @@ public final class Foo {
 public final class InboxContents<T> {
     @SafeVarargs
     public final InboxContents<T> conflateWith(T... values) { // false positive
-        return conflateWith(ImmutableList.copyOf(values));
+        return null;
     }
 }
 public final class InboxContents2 {
     @java.lang.SafeVarargs
     public final InboxContents conflateWith(String... values) {
-        return conflateWith(ImmutableList.copyOf(values));
+        return null;
     }
 }
         ]]></code>
@@ -610,8 +611,12 @@ public enum Foo {
     <test-code>
         <description>Unnecessary final of anonymous class method</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'final' on method 'onEvent': an anonymous class cannot be extended</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
+    interface Listener { void onEvent(); }
     public void stuff() {
         Listener list = new Listener() {
             @Override
@@ -629,6 +634,8 @@ public class Foo {
             <message>Unnecessary modifier 'final' on resource specification 'fw': resource specifications are implicitly final</message>
         </expected-messages>
         <code><![CDATA[
+import java.io.File;
+import java.io.FileWriter;
 public class Foo {
     public void stuff() {
         try (final FileWriter fw = new FileWriter(new File("something.txt"))) {
@@ -647,6 +654,7 @@ class Foo {
     @Bar
     final void method() { }
 }
+@interface Bar {}
         ]]></code>
     </test-code>
 
@@ -670,7 +678,7 @@ enum Foo {
     </test-code>
 
     <test-code>
-        <description>Static Modifier on interface</description>
+        <description>Static Modifier on interface in class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>Unnecessary modifier 'static' on interface 'Bar': member interfaces are implicitly static</message>
@@ -685,10 +693,10 @@ class Foo{
     </test-code>
 
     <test-code>
-        <description>Static Modifier on interface</description>
+        <description>Static Modifier on class in interface</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary modifier 'static' on class 'Foo': types nested within an interface type are implicitly static</message>
+            <message>Unnecessary modifier 'static' on class 'Foo': the class is declared in an interface type</message>
         </expected-messages>
         <code><![CDATA[
 public interface Bar {

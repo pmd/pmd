@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
+
 
 /**
  * Represents an <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-4.html#jls-4.9">intersection type</a>.
@@ -33,12 +35,9 @@ public final class ASTIntersectionType extends AbstractJavaTypeNode
         super(id);
     }
 
-
-    @Override
-    @Deprecated
-    public String getTypeImage() {
-        return iterator().next().getTypeImage(); //TODO
-
+    /** Returns a stream of component types. */
+    public NodeStream<ASTClassOrInterfaceType> getComponents() {
+        return children(ASTClassOrInterfaceType.class);
     }
 
 

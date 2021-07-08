@@ -225,7 +225,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
             case ITEM_ESCAPED:
                 final ASTText text = attr.getFirstDescendantOfType(ASTText.class);
                 if (text != null) {
-                    if (text.getImage().equalsIgnoreCase(FALSE)) {
+                    if (FALSE.equalsIgnoreCase(text.getImage())) {
                         isUnescaped = true;
                     }
                 }
@@ -297,7 +297,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         if (content != null) {
             final List<ASTElement> innerElements = content.findChildrenOfType(ASTElement.class);
             for (final ASTElement element : innerElements) {
-                if (element.getName().equalsIgnoreCase(APEX_PARAM)) {
+                if (APEX_PARAM.equalsIgnoreCase(element.getName())) {
                     final List<ASTAttribute> innerAttributes = element.findChildrenOfType(ASTAttribute.class);
                     for (ASTAttribute attrib : innerAttributes) {
                         final List<ASTElExpression> elsInVal = attrib.findDescendantsOfType(ASTElExpression.class);

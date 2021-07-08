@@ -5,6 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="argoUML-dataclass"><![CDATA[
+import java.util.*;
 public class Property implements Comparable { // Woc = 10%, Noam = 6, Nopa = 0, Wmc = 10
 
     private String      _name;
@@ -60,13 +61,16 @@ public class Property implements Comparable { // Woc = 10%, Noam = 6, Nopa = 0, 
         <description>ArgoUML data class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The class 'Property' is suspected to be a Data Class (WOC=11.111%, NOPA=0, NOAM=6, WMC=9)</message>
+            <message>The class 'Property' is suspected to be a Data Class (WOC=14.286%, NOPA=0, NOAM=6, WMC=9)</message>
         </expected-messages>
         <code-ref id="argoUML-dataclass"/>
     </test-code>
 
 
     <code-fragment id="testDescriptor"><![CDATA[
+import java.util.*;
+import my.Rule;
+import my.LanguageVersion;
 public class TestDescriptor {
     private Rule rule;
     private Properties properties;
@@ -205,7 +209,7 @@ public class TestDescriptor {
         <description>PMD data class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The class 'TestDescriptor' is suspected to be a Data Class (WOC=13.043%, NOPA=0, NOAM=17, WMC=25)</message>
+            <message>The class 'TestDescriptor' is suspected to be a Data Class (WOC=15.000%, NOPA=0, NOAM=17, WMC=25)</message>
         </expected-messages>
         <code-ref id="testDescriptor"/>
     </test-code>
@@ -218,6 +222,30 @@ public class TestDescriptor {
 public class Foo {
     ;;
 }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Example from the documentation</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The class 'DataClass' is suspected to be a Data Class (WOC=0.000%, NOPA=3, NOAM=1, WMC=1)</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class DataClass {
+
+                // class exposes public attributes
+                public String name = "";
+                public int bar = 0;
+                public int na = 0;
+
+                private int bee = 0;
+
+                // and private ones through getters
+                public void setBee(int n) {
+                    bee = n;
+                }
+            }
         ]]></code>
     </test-code>
 </test-data>

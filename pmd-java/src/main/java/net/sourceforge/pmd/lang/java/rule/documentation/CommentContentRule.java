@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.regexProperty;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
             }
         }
 
-        return super.visit(cUnit, data);
+        return null;
     }
 
     private List<Integer> illegalTermsIn(Comment comment, Pattern violationRegex) {

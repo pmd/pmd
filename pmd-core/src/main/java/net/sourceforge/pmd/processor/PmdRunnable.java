@@ -123,6 +123,7 @@ abstract class PmdRunnable implements Runnable {
 
         handler.declareParserTaskProperties(task.getProperties());
         task.getProperties().setProperty(ParserTask.COMMENT_MARKER, configuration.getSuppressMarker());
+        assert task.getCommentMarker().equals(configuration.getSuppressMarker());
 
         Parser parser = handler.getParser();
 

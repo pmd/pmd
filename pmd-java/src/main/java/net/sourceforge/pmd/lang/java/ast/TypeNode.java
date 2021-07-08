@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
 
 /**
  * A node that has a statically known type. This includes e.g.
@@ -34,10 +35,14 @@ public interface TypeNode extends JavaNode {
      * API will be added to expose this information.
      *
      * @return The type mirror. Never returns null; if the type is unresolved, returns
-     *         {@link TypeSystem#UNKNOWN}.
+     *     {@link TypeSystem#UNKNOWN}.
      */
     @NonNull
-    JTypeMirror getTypeMirror();
+    default JTypeMirror getTypeMirror() {
+        return getTypeMirror(TypingContext.DEFAULT);
+    }
+
+    JTypeMirror getTypeMirror(TypingContext typing);
 
 
     /**

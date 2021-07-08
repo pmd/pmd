@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -65,7 +66,7 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNode<Abstract
             if (!hasRealLoc()) {
                 AbstractApexNode<?> parent = (AbstractApexNode<?>) getParent();
                 if (parent == null) {
-                    throw new RuntimeException("Unable to determine location of " + this);
+                    throw new FileAnalysisException("Unable to determine location of " + this);
                 }
                 region = parent.getRegion();
             } else {

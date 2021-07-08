@@ -73,6 +73,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    Object foo;
     void foo (int x) {
         foo.notify(x);
     }
@@ -97,9 +98,12 @@ public class FlasePositive {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class FalsePositive {
-    public static void main(Injector injector) {
+    void notify(String s, String x) {
+
+    }
+    public static void main(FalsePositive injector) {
         // unresolved method
-        injector.notify(getCanonicalName(), e.getMessage(), e);
+        injector.notify("", "e.getMessage()");
     }
 }
         ]]></code>

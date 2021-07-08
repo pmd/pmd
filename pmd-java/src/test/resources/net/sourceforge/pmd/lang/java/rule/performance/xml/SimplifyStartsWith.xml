@@ -21,7 +21,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public boolean bar(Fiddle x) {
+    public boolean bar(String x) {
         return x.startsWith("abc");
     }
 }
@@ -33,7 +33,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public boolean bar(Fiddle x) {
+    boolean startsWith(int n) { return false; }
+    public boolean bar(Foo x) {
         return x.startsWith(123);
     }
 }
@@ -55,14 +56,13 @@ public class Foo {
     <test-code>
         <description>#1392 SimplifyStartsWith false-negative</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
+import my.JavadocUtils;
 public class SimplifyStartsWith {
     private static boolean isImmediatelyFollowedByText(DetailNode tag) {
         final DetailNode nextSibling = JavadocUtils.getNextSibling(tag);
-        return nextSibling.getType() == JavadocTokenTypes.NEWLINE
-                || nextSibling.getType() == JavadocTokenTypes.EOF
-                || nextSibling.getText().startsWith(" ");
+        return nextSibling.getText().startsWith(" ");
     }
 
     static class DetailNode {

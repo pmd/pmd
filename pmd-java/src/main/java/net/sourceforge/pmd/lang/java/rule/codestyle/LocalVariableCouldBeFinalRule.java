@@ -20,6 +20,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
     public LocalVariableCouldBeFinalRule() {
         super(ASTLocalVariableDeclaration.class);
         definePropertyDescriptor(IGNORE_FOR_EACH);
+        addRuleChainVisit(ASTLocalVariableDeclaration.class);
     }
 
     @Override

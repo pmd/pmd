@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.java.types.typeDsl
 
 class LocalTypeScopesTest : ParserTestSpec({
@@ -184,10 +185,10 @@ class LocalTypeScopesTest : ParserTestSpec({
 
         // setup
         n2.typeMirror.symbol shouldBe cN2.symbol
-        mapEntry.typeMirror shouldBe with(acu.typeDsl) { java.util.Map.Entry::class.raw }
-        kkEntry.typeMirror shouldBe cKkEntry
+        mapEntry shouldHaveType with(acu.typeDsl) { java.util.Map.Entry::class.raw }
+        kkEntry shouldHaveType cKkEntry
         (kkEntry.typeMirror as JClassType).enclosingType shouldBe cKK // not cN2! this calls getAsSuper
-        n2i2.typeMirror shouldBe cN2i2
+        n2i2 shouldHaveType cN2i2
         i4.typeMirror.symbol?.isUnresolved shouldBe true
     }
 

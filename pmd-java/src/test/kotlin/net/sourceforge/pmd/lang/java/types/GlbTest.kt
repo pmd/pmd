@@ -10,8 +10,8 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
-import io.kotest.property.forAll
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 
 /**
  * Tests "the greatest lower bound" (glb).
@@ -26,8 +26,8 @@ class GlbTest : FunSpec({
 
             test("Test intersection minimization") {
 
-                forAll(ts.subtypesArb()) { (t, s) ->
-                    glb(t, s) == t
+                checkAll(ts.subtypesArb()) { (t, s) ->
+                    glb(t, s) shouldBe t
                 }
 
                 // in particular
@@ -110,6 +110,20 @@ class GlbTest : FunSpec({
                 glb(`t_List{? extends Number}`, `t_Collection{Integer}`, `t_ArrayList{Integer}`) shouldBe `t_ArrayList{Integer}`
                 glb(`t_List{? extends Number}`, `t_List{String}`, `t_Enum{JPrimitiveType}`).shouldBeA<JIntersectionType> {
                     it.components.shouldContainExactly(`t_Enum{JPrimitiveType}`, `t_List{String}`, `t_List{? extends Number}`)
+                }
+            }
+
+            test("Test GLB with unresolved things") {
+                val tA = ts.declaration(ts.createUnresolvedAsmSymbol("a.A"))
+                val tB = ts.declaration(ts.createUnresolvedAsmSymbol("a.B"))
+
+                tA shouldBeSubtypeOf tB
+                tB shouldBeSubtypeOf tA
+
+                TypeOps.mostSpecific(setOf(tA, tB)) shouldBe setOf(tA, tB)
+
+                glb(tA, tB).shouldBeA<JIntersectionType> {
+                    it.components.shouldContainExactly(tA, tB)
                 }
             }
         }

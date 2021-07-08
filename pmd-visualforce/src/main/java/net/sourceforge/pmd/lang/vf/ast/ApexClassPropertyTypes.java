@@ -48,34 +48,43 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
             for (Path apexDirectory : apexDirectories) {
                 Path apexFilePath = apexDirectory.resolve(className + APEX_CLASS_FILE_SUFFIX);
                 if (Files.exists(apexFilePath) && Files.isRegularFile(apexFilePath)) {
-                    LanguageVersion languageVersion = LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
-                    Parser parser = languageVersion.getLanguageVersionHandler().getParser();
+                    Node node = parseApex(expression, apexFilePath);
+                    ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
+                    node.acceptVisitor(visitor, null);
 
-                    try (TextDocument textDocument = TextDocument.create(TextFile.forPath(apexFilePath, StandardCharsets.UTF_8, languageVersion))) {
-                        ParserTask task = new ParserTask(
-                            textDocument,
-                            SemanticErrorReporter.noop()
-                        );
+                    for (Pair<String, BasicType> variable : visitor.getVariables()) {
+                        putDataType(variable.getKey(), DataType.fromBasicType(variable.getValue()));
+                    }
 
-                        Node node = parser.parse(task);
-                        ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
-                        node.acceptVisitor(visitor, null);
-
-                        for (Pair<String, BasicType> variable : visitor.getVariables()) {
-                            putDataType(variable.getKey(), DataType.fromBasicType(variable.getValue()));
-                        }
-
-                        if (containsExpression(expression)) {
-                            // Break out of the loop if a variable was found
-                            break;
-                        }
-                    } catch (IOException e) {
-                        throw new ContextedRuntimeException(e)
-                            .addContextValue("expression", expression)
-                            .addContextValue("apexFilePath", apexFilePath);
+                    if (containsExpression(expression)) {
+                        // Break out of the loop if a variable was found
+                        break;
                     }
                 }
             }
+        }
+    }
+
+    static Node parseApex(Path apexFilePath) {
+        LanguageVersion languageVersion = LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
+        try (TextFile file = TextFile.forPath(apexFilePath, StandardCharsets.UTF_8, languageVersion);
+             TextDocument textDocument = TextDocument.create(file)) {
+
+            Parser parser = languageVersion.getLanguageVersionHandler().getParser();
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop());
+            languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
+
+            return parser.parse(task);
+        } catch (IOException e) {
+            throw new ContextedRuntimeException(e).addContextValue("apexFilePath", apexFilePath);
+        }
+    }
+
+    static Node parseApex(String contextExpr, Path apexFilePath) {
+        try {
+            return parseApex(apexFilePath);
+        } catch (ContextedRuntimeException e) {
+            throw e.addContextValue("expression", contextExpr);
         }
     }
 

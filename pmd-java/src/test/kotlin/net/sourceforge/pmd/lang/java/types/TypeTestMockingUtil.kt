@@ -4,11 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.types
 
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.NodeStream
 import net.sourceforge.pmd.lang.ast.NodeStream.*
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.types.internal.infer.ResolutionFailure
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger
+import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.*
 import org.mockito.Mockito
 
@@ -54,8 +57,18 @@ data class TypeInferenceSpy(private val spy: TypeInferenceLogger, val ts: TypeSy
         verify(spy, times(1)).noApplicableCandidates(any())
     }
 
+    fun shouldTriggerNoLambdaCtx(block: TypeDslMixin.() -> Unit) {
+        this.shouldHaveNoErrors()
+        TypeDslOf(ts).block()
+        val captor = ArgumentCaptor.forClass(ResolutionFailure::class.java)
+        verify(spy, times(1)).logResolutionFail(captor.capture())
+        val failure: ResolutionFailure = captor.value
+        failure.reason shouldBe "Missing target type for functional expression"
+    }
+
     fun resetInteractions() {
         reset(spy)
+        `when`(spy.isNoop).thenReturn(false) // enable log for exceptions though
     }
 
     fun shouldBeAmbiguous(block: TypeDslMixin.() -> Unit) {

@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
@@ -65,16 +66,23 @@ public final class IOUtil {
 
     /**
      * Creates a writer that writes to the given file or to stdout.
+     * The file is created if it does not exist.
      *
      * <p>Warning: This writer always uses the system default charset.
      *
      * @param reportFile the file name (optional)
-     * @return the writer, never <code>null</code>
+     *
+     * @return the writer, never null
      */
     public static Writer createWriter(String reportFile) {
         try {
-            return StringUtils.isBlank(reportFile) ? createWriter()
-                    : Files.newBufferedWriter(new File(reportFile).toPath(), getDefaultCharset());
+            if (StringUtils.isBlank(reportFile)) {
+                return createWriter();
+            }
+            Path path = new File(reportFile).toPath();
+            Files.createDirectories(path.getParent()); // ensure parent dir exists
+            // this will create the file if it doesn't exist
+            return Files.newBufferedWriter(path, getDefaultCharset());
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

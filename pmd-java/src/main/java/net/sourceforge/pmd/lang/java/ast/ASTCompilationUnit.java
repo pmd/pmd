@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
 public final class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode, GenericNode<JavaNode>, RootNode {
@@ -42,7 +43,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
         return astInfo;
     }
 
-     void setComments(List<Comment> comments) {
+    void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 

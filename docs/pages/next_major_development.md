@@ -246,6 +246,27 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.36.0
+
+No changes.
+
+#### 6.35.0
+
+##### Deprecated API
+
+*   {% jdoc !!core::PMD#doPMD(net.sourceforge.pmd.PMDConfiguration) %} is deprecated.
+    Use {% jdoc !!core::PMD#runPMD(net.sourceforge.pmd.PMDConfiguration) %} instead.
+*   {% jdoc !!core::PMD#run(java.lang.String[]) %} is deprecated.
+    Use {% jdoc !!core::PMD#runPMD(java.lang.String...) %} instead.
+*   {% jdoc core::ThreadSafeReportListener %} and the methods to use them in {% jdoc core::Report %}
+    ({% jdoc core::Report#addListener(net.sourceforge.pmd.ThreadSafeReportListener) %},
+    {% jdoc core::Report#getListeners() %}, {% jdoc core::Report#addListeners(java.util.List) %})
+    are deprecated. This functionality will be replaced by another TBD mechanism in PMD 7.
+
+#### 6.34.0
+
+No changes.
+
 #### 6.33.0
 
 No changes.
@@ -1302,3 +1323,10 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
 *   The Java rule [`DataflowAnomalyAnalysis`](https://pmd.github.io/pmd-6.27.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis) (`java-errorprone`)
     is deprecated in favour of {% rule "java/bestpractices/UnusedAssignment" %} (`java-bestpractices`),
     which was introduced in PMD 6.26.0.
+
+*   The java rule {% rule "java/codestyle/DefaultPackage" %} has been deprecated in favor of
+    {% rule "java/codestyle/CommentDefaultAccessModifier" %}.
+
+*   The Java rule {% rule "java/errorprone/CloneThrowsCloneNotSupportedException" %} has been deprecated without
+    replacement.
+

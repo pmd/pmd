@@ -169,17 +169,4 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
         return PmdDocumentSorter.INSTANCE;
     }
 
-    /**
-     * Split union expressions into their components.
-     */
-    public static Iterable<Expression> splitUnions(Expression expr) {
-        SplitUnions unions = new SplitUnions();
-        unions.visit(expr);
-        if (unions.getExpressions().isEmpty()) {
-            return Collections.singletonList(expr);
-        } else {
-            return unions.getExpressions();
-        }
-    }
-
 }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util;
 
+import java.util.function.Consumer;
+
 /**
  * Base class for an autocloseable that produce a result once it has
  * been closed.
@@ -42,5 +44,15 @@ public abstract class BaseResultProducingCloseable<T> implements AutoCloseable {
     @Override
     public void close() {
         closed = true;
+    }
+
+
+    public static <U, C extends BaseResultProducingCloseable<U>> U using(C closeable, Consumer<? super C> it) {
+        try {
+            it.accept(closeable);
+        } finally {
+            closeable.close();
+        }
+        return closeable.getResult();
     }
 }

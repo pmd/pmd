@@ -12,16 +12,18 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
-public class UnusedFormalParameterRule extends AbstractJavaRule {
+public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> CHECKALL_DESCRIPTOR = booleanProperty("checkAll").desc("Check all methods, including non-private ones").defaultValue(false).build();
 
     public UnusedFormalParameterRule() {
+        super(ASTConstructorDeclaration.class, ASTMethodDeclaration.class);
         definePropertyDescriptor(CHECKALL_DESCRIPTOR);
     }
 
@@ -36,19 +38,20 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
         if (node.getVisibility() != Visibility.V_PRIVATE && !getProperty(CHECKALL_DESCRIPTOR)) {
             return data;
         }
-        if (node.getBody() != null && !JavaRuleUtil.isSerializationReadObject(node) && !node.isOverridden()) {
+        if (node.getBody() != null
+            && !node.hasModifiers(JModifier.DEFAULT)
+            && !JavaRuleUtil.isSerializationReadObject(node)
+            && !node.isOverridden()) {
             check(node, data);
         }
         return data;
     }
 
     private void check(ASTMethodOrConstructorDeclaration node, Object data) {
-        if (!node.getEnclosingType().isInterface()) {
-            for (ASTFormalParameter formal : node.getFormalParameters()) {
-                ASTVariableDeclaratorId varId = formal.getVarId();
-                if (JavaRuleUtil.isNeverUsed(varId) && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
-                    addViolation(data, varId, new Object[] {node instanceof ASTMethodDeclaration ? "method" : "constructor", varId.getName(), });
-                }
+        for (ASTFormalParameter formal : node.getFormalParameters()) {
+            ASTVariableDeclaratorId varId = formal.getVarId();
+            if (JavaRuleUtil.isNeverUsed(varId) && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
+                addViolation(data, varId, new Object[] { node instanceof ASTMethodDeclaration ? "method" : "constructor", varId.getName(), });
             }
         }
     }

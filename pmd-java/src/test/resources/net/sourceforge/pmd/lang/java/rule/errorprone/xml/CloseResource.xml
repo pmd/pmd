@@ -1659,4 +1659,25 @@ public class FalsePositive {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2757 support @lombok.Cleanup annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.errorprone.closeresource;
+            import lombok.Cleanup;
+            import lombok.val;
+
+            public class Mwe2757 {
+                private static SomeClass getCreator() {
+                    @Cleanup val context = new FakeContext(); // FakeContext is is the package
+                    return context.getBean(SomeClass.class);
+                }
+
+                public Mwe2757() {
+
+                }
+                static class SomeClass {}
+            }
+            ]]></code>
+    </test-code>
 </test-data>

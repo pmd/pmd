@@ -20,9 +20,10 @@ import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -110,6 +111,7 @@ public class FileAnalysisCacheTest {
     @Test
     public void testStorePersistsFilesWithViolations() {
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
+        cache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class));
         cache.isUpToDate(sourceFile);
 
         final RuleViolation rv = mock(RuleViolation.class);
@@ -123,6 +125,7 @@ public class FileAnalysisCacheTest {
         cache.persist();
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
+        reloadedCache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class));
         assertTrue("Cache believes unmodified file with violations is not up to date",
                 reloadedCache.isUpToDate(sourceFile));
 
@@ -136,6 +139,23 @@ public class FileAnalysisCacheTest {
         final ClassLoader cl = mock(ClassLoader.class);
 
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
+
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
+        reloadedCache.checkValidity(rs, cl);
+        assertTrue("Cache believes unmodified file is not up to date without ruleset / classpath changes",
+                reloadedCache.isUpToDate(sourceFile));
+    }
+
+    @Test
+    public void testCacheValidityWithIrrelevantChanges() throws IOException {
+        final RuleSets rs = mock(RuleSets.class);
+        final URLClassLoader cl = mock(URLClassLoader.class);
+        when(cl.getURLs()).thenReturn(new URL[] {});
+
+        setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
+
+        final File classpathFile = tempFolder.newFile("foo.xml");
+        when(cl.getURLs()).thenReturn(new URL[] { classpathFile.toURI().toURL(), });
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
         reloadedCache.checkValidity(rs, cl);
@@ -196,11 +216,11 @@ public class FileAnalysisCacheTest {
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
-        final File classpathFile = tempFolder.newFile();
+        final File classpathFile = tempFolder.newFile("foo.class");
         when(cl.getURLs()).thenReturn(new URL[] { classpathFile.toURI().toURL(), });
 
         // Make sure the auxclasspath file is not empty
-        Files.write(Paths.get(classpathFile.getAbsolutePath()), "some text".getBytes());
+        Files.write(classpathFile.toPath(), "some text".getBytes());
 
         final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
         when(r.getLanguage()).thenReturn(mock(Language.class));
@@ -215,7 +235,7 @@ public class FileAnalysisCacheTest {
         final RuleSets rs = mock(RuleSets.class);
         final URLClassLoader cl = mock(URLClassLoader.class);
 
-        final File classpathFile = tempFolder.newFile();
+        final File classpathFile = tempFolder.newFile("foo.class");
         when(cl.getURLs()).thenReturn(new URL[] { classpathFile.toURI().toURL(), });
 
         final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
@@ -225,7 +245,7 @@ public class FileAnalysisCacheTest {
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
 
         // Edit the auxclasspath referenced file
-        Files.write(Paths.get(classpathFile.getAbsolutePath()), "some text".getBytes());
+        Files.write(classpathFile.toPath(), "some text".getBytes());
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
         reloadedCache.checkValidity(rs, cl);
@@ -254,12 +274,12 @@ public class FileAnalysisCacheTest {
         final RuleSets rs = mock(RuleSets.class);
         final ClassLoader cl = mock(ClassLoader.class);
 
-        final File classpathFile = tempFolder.newFile();
+        final File classpathFile = tempFolder.newFile("foo.class");
 
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
 
         // Edit the classpath referenced file
-        Files.write(Paths.get(classpathFile.getAbsolutePath()), "some text".getBytes());
+        Files.write(classpathFile.toPath(), "some text".getBytes());
         System.setProperty("java.class.path", System.getProperty("java.class.path") + File.pathSeparator + classpathFile.getAbsolutePath());
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
@@ -273,16 +293,16 @@ public class FileAnalysisCacheTest {
         final RuleSets rs = mock(RuleSets.class);
         final ClassLoader cl = mock(ClassLoader.class);
 
-        final File classpathFile = tempFolder.newFile();
+        final File classpathFile = tempFolder.newFile("foo.class");
 
         // Add a file to classpath
-        Files.write(Paths.get(classpathFile.getAbsolutePath()), "some text".getBytes());
+        Files.write(classpathFile.toPath(), "some text".getBytes());
         System.setProperty("java.class.path", System.getProperty("java.class.path") + File.pathSeparator + classpathFile.getAbsolutePath());
 
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
 
         // Change the file's contents
-        Files.write(Paths.get(classpathFile.getAbsolutePath()), "some other text".getBytes());
+        Files.write(classpathFile.toPath(), "some other text".getBytes());
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
         reloadedCache.checkValidity(rs, cl);
@@ -296,11 +316,9 @@ public class FileAnalysisCacheTest {
         final ClassLoader cl = mock(ClassLoader.class);
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
 
-        // Prepare two jar files
-        final File classpathJar1 = tempFolder.newFile("mylib1.jar");
-        Files.write(classpathJar1.toPath(), "content of mylib1.jar".getBytes(StandardCharsets.UTF_8));
-        final File classpathJar2 = tempFolder.newFile("mylib2.jar");
-        Files.write(classpathJar2.toPath(), "content of mylib2.jar".getBytes(StandardCharsets.UTF_8));
+        // Prepare two class files
+        createZipFile("mylib1.jar");
+        createZipFile("mylib2.jar");
 
         System.setProperty("java.class.path", System.getProperty("java.class.path") + File.pathSeparator + tempFolder.getRoot().getAbsolutePath() + "/*");
 
@@ -316,17 +334,16 @@ public class FileAnalysisCacheTest {
         final ClassLoader cl = mock(ClassLoader.class);
 
         // Prepare two jar files
-        final File classpathJar1 = tempFolder.newFile("mylib1.jar");
-        Files.write(classpathJar1.toPath(), "content of mylib1.jar".getBytes(StandardCharsets.UTF_8));
-        final File classpathJar2 = tempFolder.newFile("mylib2.jar");
-        Files.write(classpathJar2.toPath(), "content of mylib2.jar".getBytes(StandardCharsets.UTF_8));
+        final File classpathJar1 = createZipFile("mylib1.jar");
+        createZipFile("mylib2.jar");
 
         System.setProperty("java.class.path", System.getProperty("java.class.path") + File.pathSeparator + tempFolder.getRoot().getAbsolutePath() + "/*");
 
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
 
-        // Change one file's contents
-        Files.write(Paths.get(classpathJar2.getAbsolutePath()), "some other text".getBytes(StandardCharsets.UTF_8));
+        // Change one file's contents (ie: adding more entries)
+        classpathJar1.delete();
+        createZipFile(classpathJar1.getName(), 2);
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
         reloadedCache.checkValidity(rs, cl);
@@ -346,6 +363,7 @@ public class FileAnalysisCacheTest {
         setupCacheWithFiles(newCacheFile, mock(RuleSets.class), mock(ClassLoader.class), sourceFile);
 
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
+        cache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class));
         assertTrue("Cache believes a known, unchanged file is not up to date",
                 cache.isUpToDate(sourceFile));
     }
@@ -355,7 +373,6 @@ public class FileAnalysisCacheTest {
         setupCacheWithFiles(newCacheFile, mock(RuleSets.class), mock(ClassLoader.class), sourceFile);
 
         // Edit the file
-
         TextFileContent text = TextFileContent.fromCharSeq("some text");
         assertEquals(System.lineSeparator(), text.getLineTerminator());
         sourceFileBackend.writeContents(text);
@@ -377,5 +394,21 @@ public class FileAnalysisCacheTest {
             cache.isUpToDate(f);
         }
         cache.persist();
+    }
+
+    private File createZipFile(String fileName) throws IOException {
+        return createZipFile(fileName, 1);
+    }
+
+    private File createZipFile(String fileName, int numEntries) throws IOException {
+        final File zipFile = tempFolder.newFile(fileName);
+        try (ZipOutputStream zipOS = new ZipOutputStream(Files.newOutputStream(zipFile.toPath()))) {
+            for (int i = 0; i < numEntries; i++) {
+                zipOS.putNextEntry(new ZipEntry("lib/foo" + i + ".class"));
+                zipOS.write(("content of " + fileName + " entry " + i).getBytes(StandardCharsets.UTF_8));
+                zipOS.closeEntry();
+            }
+        }
+        return zipFile;
     }
 }

@@ -5,6 +5,355 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
+## 26-June-2021 - 6.36.0
+
+The PMD team is pleased to announce PMD 6.36.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [Improved Incremental Analysis](#improved-incremental-analysis)
+    * [New rules](#new-rules)
+    * [Renamed rules](#renamed-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### Improved Incremental Analysis
+
+[Incremental Analysis](https://pmd.github.io/pmd-6.36.0/pmd_userdocs_incremental_analysis.html) has long helped
+our users obtain faster analysis results, however, its implementation tended to be too cautious in detecting
+changes to the runtime and type resolution classpaths, producing more cache invalidations than necessary.
+We have now improved the heuristics to remove several bogus invalidations, and slightly sped up the cache
+usage along the way.
+
+PMD will now ignore:
+
+*   Non class files in classpath and jar / zip files being referenced.
+*   Changes to the order of file entries within a jar / zip
+*   Changes to file metadata within jar / zip (ie: creation and modification time,
+    significant in multi-module / composite build projects where lateral artifacts are frequently recreated)
+
+#### New rules
+
+*   The new Apex rule [`AvoidDebugStatements`](https://pmd.github.io/pmd-6.36.0/pmd_rules_apex_performance.html#avoiddebugstatements) finds usages of `System.debug` calls.
+    Debug statements contribute to longer transactions and consume Apex CPU time even when debug logs are not
+    being captured.
+    You can try out this rule like so:
+
+```xml
+    <rule ref="category/apex/performance.xml/AvoidDebugStatements" />
+```
+
+*   The new Apex rule [`InaccessibleAuraEnabledGetter`](https://pmd.github.io/pmd-6.36.0/pmd_rules_apex_errorprone.html#inaccessibleauraenabledgetter) checks that an `AuraEnabled`
+    getter is public or global. This is necessary if it is referenced in Lightning components.
+    You can try out this rule like so:
+
+```xml
+    <rule ref="category/apex/errorprone.xml/InaccessibleAuraEnabledGetter" />
+```
+
+#### Renamed rules
+
+*   The Java rule [`BadComparison`](https://pmd.github.io/pmd-6.36.0/pmd_rules_java_errorprone.html#badcomparison) has been renamed to
+    [`ComparisonWithNaN`](https://pmd.github.io/pmd-6.36.0/pmd_rules_java_errorprone.html#comparisonwithnan) to better reflect what the rule actually detects.
+    It now considers usages of `Double.NaN` or `Float.NaN` in more cases and fixes false negatives.
+
+### Fixed Issues
+
+*   apex
+    *   [#3307](https://github.com/pmd/pmd/issues/3307): \[apex] Avoid debug statements since it impact performance
+    *   [#3321](https://github.com/pmd/pmd/issues/3321): \[apex] New rule to detect inaccessible AuraEnabled getters (summer '21 security update)
+    *   [#3332](https://github.com/pmd/pmd/issues/3332): \[apex] CognitiveComplexity - incorrect increment for "else if"
+*   core
+    *   [#2637](https://github.com/pmd/pmd/issues/2637): \[cpd] Error Loading stylesheet cpdhtml.xslt
+    *   [#3323](https://github.com/pmd/pmd/pull/3323): \[core] Adds fullDescription and tags in SARIF report
+*   java-bestpractices
+    *   [#957](https://github.com/pmd/pmd/issues/957): \[java] GuardLogStatement: False positive with compile-time constant arguments
+    *   [#3076](https://github.com/pmd/pmd/pull/3076): \[java] UnusedAssignment reports unused variable when used in increment expr
+    *   [#3114](https://github.com/pmd/pmd/issues/3114): \[java] UnusedAssignment false positive when reporting unused variables
+    *   [#3315](https://github.com/pmd/pmd/issues/3315): \[java] LiteralsFirstInComparisons false positive with two constants
+    *   [#3341](https://github.com/pmd/pmd/issues/3341): \[java] JUnitTestsShouldIncludeAssert should support Junit 5
+    *   [#3340](https://github.com/pmd/pmd/issues/3340): \[java] NullPointerException applying rule GuardLogStatement
+*   java-codestyle
+    *   [#3317](https://github.com/pmd/pmd/pull/3317): \[java] Update UnnecessaryImport to recognize usage of imported types in javadoc's `@exception` tag
+*   java-errorprone
+    *   [#2895](https://github.com/pmd/pmd/issues/2895): \[java] Improve BadComparison and rename to ComparisonWithNaN
+    *   [#3284](https://github.com/pmd/pmd/issues/3284): \[java] InvalidLogMessageFormat may examine the value of a different but identically named String variable
+    *   [#3304](https://github.com/pmd/pmd/issues/3304): \[java] NPE in MoreThanOneLoggerRule on a java 16 record
+    *   [#3305](https://github.com/pmd/pmd/issues/3305): \[java] ConstructorCallsOverridableMethodRule IndexOutOfBoundsException on a java16 record
+    *   [#3343](https://github.com/pmd/pmd/pull/3343): \[java] CloneMethodMustImplementCloneable: FN with local classes
+*   java-performance
+    *   [#3331](https://github.com/pmd/pmd/issues/3331): \[java] UseArraysAsList false negative with for-each loop
+    *   [#3344](https://github.com/pmd/pmd/pull/3344): \[java] InefficientEmptyStringCheck FN with trim.length on method call
+
+### API Changes
+
+No changes.
+
+### External Contributions
+
+*   [#3276](https://github.com/pmd/pmd/pull/3276): \[apex] Update ApexCRUDViolation and OperationWithLimitsInLoop docs - [Jonathan Wiesel](https://github.com/jonathanwiesel)
+*   [#3306](https://github.com/pmd/pmd/pull/3306): \[java] More than one logger rule test null pointer exception - [Arnaud Jeansen](https://github.com/ajeans)
+*   [#3317](https://github.com/pmd/pmd/pull/3317): \[java] Update UnnecessaryImport to recognize usage of imported types in javadoc's `@exception` tag - [Piotrek Żygieło](https://github.com/pzygielo)
+*   [#3319](https://github.com/pmd/pmd/pull/3319): \[apex] New AvoidDebugStatements rule to mitigate performance impact - [Jonathan Wiesel](https://github.com/jonathanwiesel)
+*   [#3320](https://github.com/pmd/pmd/pull/3320): \[java] Fix incorrect increment for "else if" branch in Cognitive Complexity docs - [Denis Borovikov](https://github.com/borovikovd)
+*   [#3322](https://github.com/pmd/pmd/pull/3322): \[apex] added rule to detect inaccessible AuraEnabled getters - [Philippe Ozil](https://github.com/pozil)
+*   [#3323](https://github.com/pmd/pmd/pull/3323): \[core] Adds fullDescription and tags in SARIF report - [Clint Chester](https://github.com/Clint-Chester)
+*   [#3339](https://github.com/pmd/pmd/pull/3339): \[java] JUnitTestsShouldIncludeAssert Tweak assertion definition to avoid false positive with modern JUnit5 - [Arnaud Jeansen](https://github.com/ajeans)
+
+### Stats
+* 81 commits
+* 36 closed tickets & PRs
+* Days since last release: 28
+
+## 29-May-2021 - 6.35.0
+
+The PMD team is pleased to announce PMD 6.35.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [Javascript module now requires at least Java 8](#javascript-module-now-requires-at-least-java-8)
+    * [New rules](#new-rules)
+    * [Modified rules](#modified-rules)
+    * [Deprecated rules](#deprecated-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [Deprecated API](#deprecated-api)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### Javascript module now requires at least Java 8
+
+The latest version of [Rhino](https://github.com/mozilla/rhino), the implementation of JavaScript we use
+for parsing JavaScript code, requires at least Java 8. Therefore we decided to upgrade the pmd-javascript
+module to Java 8 as well. This means that from now on, a Java 8 or later runtime is required in order
+to analyze JavaScript code. Note that PMD core still only requires Java 7.
+
+#### New rules
+
+This release ships with 3 new Java rules.
+
+*   [`JUnit5TestShouldBePackagePrivate`](https://pmd.github.io/pmd-6.35.0/pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate)
+    enforces the convention that JUnit 5 tests should have minimal visibility.
+    You can try out this rule like so:
+```xml
+    <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" />
+```
+
+*   [`CognitiveComplexity`](https://pmd.github.io/pmd-6.35.0/pmd_rules_java_design.html#cognitivecomplexity) uses the cognitive complexity
+    metric to find overly complex code. This metric improves on the similar cyclomatic complexity 
+    in several ways, for instance, it incentivizes using clearly readable shorthands and idioms.
+    See the rule documentation for more details. You can try out this rule like so:
+```xml
+    <rule ref="category/java/design.xml/CognitiveComplexity" />
+```
+
+*   [`MutableStaticState`](https://pmd.github.io/pmd-6.35.0/pmd_rules_java_design.html#mutablestaticstate) finds non-private static fields
+    that are not final. These fields break encapsulation since these fields can be modified from anywhere
+    within the program. You can try out this rule like so:
+```xml
+    <rule ref="category/java/design.xml/MutableStaticState" />
+```
+
+#### Modified rules
+
+*   The Java rule [`CompareObjectsWithEquals`](https://pmd.github.io/pmd-6.35.0/pmd_rules_java_errorprone.html#compareobjectswithequals) has now a new property
+    `typesThatCompareByReference`. With that property, you can configure types, that should be whitelisted
+    for comparison by reference. By default, `java.lang.Enum` and `java.lang.Class` are allowed, but
+    you could add custom types here.
+    Additionally comparisons against constants are allowed now. This makes the rule less noisy when two constants
+    are compared. Constants are identified by looking for an all-caps identifier.
+
+#### Deprecated rules
+
+*   The java rule [`DefaultPackage`](https://pmd.github.io/pmd-6.35.0/pmd_rules_java_codestyle.html#defaultpackage) has been deprecated in favor of
+    [`CommentDefaultAccessModifier`](https://pmd.github.io/pmd-6.35.0/pmd_rules_java_codestyle.html#commentdefaultaccessmodifier).
+
+    The rule "DefaultPackage" assumes that any usage of package-access is accidental,
+    and by doing so, prohibits using a really fundamental and useful feature of the language.
+
+    To satisfy the rule, you have to make the member public even if it doesn't need to, or make it protected,
+    which muddies your intent even more if you don't intend the class to be extended, and may be at odds with
+    other rules like [`AvoidProtectedFieldInFinalClass`](https://pmd.github.io/pmd-6.35.0/pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass).
+
+    The rule [`CommentDefaultAccessModifier`](https://pmd.github.io/pmd-6.35.0/pmd_rules_java_codestyle.html#commentdefaultaccessmodifier) should be used instead.
+    It flags the same thing, but has an escape hatch.
+
+*   The Java rule [`CloneThrowsCloneNotSupportedException`](https://pmd.github.io/pmd-6.35.0/pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception) has been deprecated without
+    replacement.
+
+    The rule has no real value as `CloneNotSupportedException` is a
+    checked exception and therefore you need to deal with it while implementing the `clone()` method. You either
+    need to declare the exception or catch it. If you catch it, then subclasses can't throw it themselves explicitly.
+    However, `Object.clone()` will still throw this exception if the `Cloneable` interface is not implemented.
+
+    Note, this rule has also been removed from the Quickstart Ruleset (`rulesets/java/quickstart.xml`).
+
+### Fixed Issues
+
+*   apex
+    *   [#3183](https://github.com/pmd/pmd/issues/3183): \[apex] ApexUnitTestMethodShouldHaveIsTestAnnotation false positive with helper method
+    *   [#3243](https://github.com/pmd/pmd/pull/3243): \[apex] Correct findBoundary when traversing AST
+*   core
+    *   [#2639](https://github.com/pmd/pmd/issues/2639): \[core] PMD CLI output file is not created if directory or directories in path don't exist
+    *   [#3196](https://github.com/pmd/pmd/issues/3196): \[core] Deprecate ThreadSafeReportListener
+*   doc
+    *   [#3230](https://github.com/pmd/pmd/issues/3230): \[doc] Remove "Edit me" button for language index pages
+*   dist
+    *   [#2466](https://github.com/pmd/pmd/issues/2466): \[dist] Distribution archive doesn't include all batch scripts
+*   java
+    *   [#3269](https://github.com/pmd/pmd/pull/3269): \[java] Fix NPE in MethodTypeResolution
+*   java-bestpractices
+    *   [#1175](https://github.com/pmd/pmd/issues/1175): \[java] UnusedPrivateMethod FP with Junit 5 @MethodSource
+    *   [#2219](https://github.com/pmd/pmd/issues/2219): \[java] Document Reasons to Avoid Reassigning Parameters
+    *   [#2737](https://github.com/pmd/pmd/issues/2737): \[java] Fix misleading rule message on rule SwitchStmtsShouldHaveDefault with non-exhaustive enum switch
+    *   [#3236](https://github.com/pmd/pmd/issues/3236): \[java] LiteralsFirstInComparisons should consider constant fields (cont'd)
+    *   [#3239](https://github.com/pmd/pmd/issues/3239): \[java] PMD could enforce non-public methods for Junit5 / Jupiter test methods
+    *   [#3254](https://github.com/pmd/pmd/issues/3254): \[java] AvoidReassigningParameters reports violations on wrong line numbers
+*   java-codestyle
+    *   [#2655](https://github.com/pmd/pmd/issues/2655): \[java] UnnecessaryImport false positive for on-demand imports
+    *   [#3206](https://github.com/pmd/pmd/issues/3206): \[java] Deprecate rule DefaultPackage
+    *   [#3262](https://github.com/pmd/pmd/pull/3262): \[java] FieldDeclarationsShouldBeAtStartOfClass: false negative with anon classes
+    *   [#3265](https://github.com/pmd/pmd/pull/3265): \[java] MethodArgumentCouldBeFinal: false negatives with interfaces and inner classes
+    *   [#3266](https://github.com/pmd/pmd/pull/3266): \[java] LocalVariableCouldBeFinal: false negatives with interfaces, anon classes
+    *   [#3274](https://github.com/pmd/pmd/pull/3274): \[java] OnlyOneReturn: false negative with anonymous class
+    *   [#3275](https://github.com/pmd/pmd/pull/3275): \[java] UnnecessaryLocalBeforeReturn: false negatives with lambda and anon class
+*   java-design
+    *   [#2780](https://github.com/pmd/pmd/issues/2780): \[java] DataClass example from documentation results in false-negative
+    *   [#2987](https://github.com/pmd/pmd/issues/2987): \[java] New Rule: Public and protected static fields must be final
+    *   [#2329](https://github.com/pmd/pmd/issues/2329): \[java] Cognitive complexity rule for Java
+*   java-errorprone
+    *   [#3110](https://github.com/pmd/pmd/issues/3110): \[java] Enhance CompareObjectsWithEquals with list of exceptions
+    *   [#3112](https://github.com/pmd/pmd/issues/3112): \[java] Deprecate rule CloneThrowsCloneNotSupportedException
+    *   [#3205](https://github.com/pmd/pmd/issues/3205): \[java] Make CompareObjectWithEquals allow comparing against constants
+    *   [#3248](https://github.com/pmd/pmd/issues/3248): \[java] Documentation is wrong for SingletonClassReturningNewInstance rule
+    *   [#3249](https://github.com/pmd/pmd/pull/3249): \[java] AvoidFieldNameMatchingTypeName: False negative with interfaces
+    *   [#3268](https://github.com/pmd/pmd/pull/3268): \[java] ConstructorCallsOverridableMethod: IndexOutOfBoundsException with annotations
+*   java-performance
+    *   [#1438](https://github.com/pmd/pmd/issues/1438): \[java] InsufficientStringBufferDeclaration false positive for initial calculated StringBuilder size
+*   javascript
+    *   [#699](https://github.com/pmd/pmd/issues/699): \[javascript] Update Rhino library to 1.7.13
+    *   [#2081](https://github.com/pmd/pmd/issues/2081): \[javascript] Failing with OutOfMemoryError parsing a Javascript file
+
+### API Changes
+
+#### Deprecated API
+
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/PMD.html#doPMD(net.sourceforge.pmd.PMDConfiguration)"><code>PMD#doPMD</code></a> is deprecated.
+    Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/PMD.html#runPMD(net.sourceforge.pmd.PMDConfiguration)"><code>PMD#runPMD</code></a> instead.
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/PMD.html#run(java.lang.String[])"><code>PMD#run</code></a> is deprecated.
+    Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/PMD.html#runPMD(java.lang.String...)"><code>PMD#runPMD</code></a> instead.
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/ThreadSafeReportListener.html#"><code>ThreadSafeReportListener</code></a> and the methods to use them in <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/Report.html#"><code>Report</code></a>
+    (<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/Report.html#addListener(net.sourceforge.pmd.ThreadSafeReportListener)"><code>addListener</code></a>,
+    <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/Report.html#getListeners()"><code>getListeners</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.35.0/net/sourceforge/pmd/Report.html#addListeners(java.util.List)"><code>addListeners</code></a>)
+    are deprecated. This functionality will be replaced by another TBD mechanism in PMD 7.
+
+### External Contributions
+*   [#3272](https://github.com/pmd/pmd/pull/3272): \[apex] correction for ApexUnitTestMethodShouldHaveIsTestAnnotation false positives - [William Brockhus](https://github.com/YodaDaCoda)
+*   [#3246](https://github.com/pmd/pmd/pull/3246): \[java] New Rule: MutableStaticState - [Vsevolod Zholobov](https://github.com/vszholobov)
+*   [#3247](https://github.com/pmd/pmd/pull/3247): \[java] New rule: JUnit5TestShouldBePackagePrivate - [Arnaud Jeansen](https://github.com/ajeans)
+*   [#3293](https://github.com/pmd/pmd/pull/3293): \[java] Cognitive Complexity Metric - [Denis Borovikov](https://github.com/borovikovd)
+*   [pmd.github.io#12](https://github.com/pmd/pmd.github.io/pull/12): Update quickstart.html - [Igor Lyadov](https://github.com/devigo)
+
+### Stats
+* 143 commits
+* 53 closed tickets & PRs
+* Days since last release: 34
+
+## 24-April-2021 - 6.34.0
+
+The PMD team is pleased to announce PMD 6.34.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [New rules](#new-rules)
+    * [Modified rules](#modified-rules)
+    * [Deprecated rules](#deprecated-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### New rules
+
+*   The new Java rule [`UseStandardCharsets`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_bestpractices.html#usestandardcharsets) finds usages of `Charset.forName`,
+    where `StandardCharsets` can be used instead.
+
+    This rule is also part of the Quickstart Ruleset (`rulesets/java/quickstart.xml`) for Java.
+
+*   The new Java rule [`UnnecessaryImport`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_codestyle.html#unnecessaryimport) replaces the rules
+    [`UnusedImports`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_bestpractices.html#unusedimports), [`DuplicateImports`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_codestyle.html#duplicateimports),
+    [`ImportFromSamePackage`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_errorprone.html#importfromsamepackage), and [`DontImportJavaLang`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_codestyle.html#dontimportjavalang).
+
+    This rule is also part of the Quickstart Ruleset (`rulesets/java/quickstart.xml`) for Java.
+
+#### Modified rules
+
+*   The Apex rule [`ApexCRUDViolation`](https://pmd.github.io/pmd-6.34.0/pmd_rules_apex_security.html#apexcrudviolation) does not ignore getters anymore and also flags
+    SOQL/SOSL/DML operations without access permission checks in getters. This will produce false positives now for
+    VF getter methods, but we can't reliably detect, whether a getter is a VF getter or not. In such cases,
+    the violation should be [suppressed](pmd_userdocs_suppressing_warnings.html).
+
+#### Deprecated rules
+
+*   java-bestpractices
+    *   [`UnusedImports`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_bestpractices.html#unusedimports): use the rule [`UnnecessaryImport`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_codestyle.html#unnecessaryimport) instead
+
+*   java-codestyle
+    *   [`DuplicateImports`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_codestyle.html#duplicateimports): use the rule [`UnnecessaryImport`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_codestyle.html#unnecessaryimport) instead
+    *   [`DontImportJavaLang`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_codestyle.html#dontimportjavalang): use the rule [`UnnecessaryImport`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_codestyle.html#unnecessaryimport) instead
+
+*   java-errorprone
+    *   [`ImportFromSamePackage`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_errorprone.html#importfromsamepackage): use the rule [`UnnecessaryImport`](https://pmd.github.io/pmd-6.34.0/pmd_rules_java_codestyle.html#unnecessaryimport) instead
+
+### Fixed Issues
+
+*   apex-performance
+    *   [#3198](https://github.com/pmd/pmd/pull/3198): \[apex] OperationWithLimitsInLoopRule: Support more limit consuming static method invocations
+*   apex-security
+    *   [#3202](https://github.com/pmd/pmd/issues/3202): \[apex] ApexCRUDViolationRule fails to report CRUD violation on COUNT() queries
+    *   [#3210](https://github.com/pmd/pmd/issues/3210): \[apex] ApexCRUDViolationRule false-negative on non-VF getter
+*   java-bestpractices
+    *   [#3190](https://github.com/pmd/pmd/issues/3190): \[java] Use StandardCharsets instead of Charset.forName
+    *   [#3224](https://github.com/pmd/pmd/issues/3224): \[java] UnusedAssignment crashes with nested records
+*   java-codestyle
+    *   [#3128](https://github.com/pmd/pmd/issues/3128): \[java] New rule UnnecessaryImport, deprecate DuplicateImports, ImportFromSamePackage, UnusedImports
+*   java-errorprone
+    *   [#2757](https://github.com/pmd/pmd/issues/2757): \[java] CloseResource: support Lombok's @Cleanup annotation
+    *   [#3169](https://github.com/pmd/pmd/issues/3169): \[java] CheckSkipResult: NPE when using pattern bindings
+
+### API Changes
+
+No changes.
+
+### External Contributions
+
+*   [#3193](https://github.com/pmd/pmd/pull/3193): \[java] New rule: UseStandardCharsets - [Andrea Aime](https://github.com/aaime)
+*   [#3198](https://github.com/pmd/pmd/pull/3198): \[apex] OperationWithLimitsInLoopRule: Support more limit consuming static method invocations - [Jonathan Wiesel](https://github.com/jonathanwiesel)
+*   [#3211](https://github.com/pmd/pmd/pull/3211): \[apex] ApexCRUDViolationRule: Do not assume method is VF getter to avoid CRUD checks - [Jonathan Wiesel](https://github.com/jonathanwiesel)
+*   [#3234](https://github.com/pmd/pmd/pull/3234): \[apex] ApexCRUDViolation: COUNT is indeed CRUD checkable since it exposes data (false-negative) - [Jonathan Wiesel](https://github.com/jonathanwiesel)
+
+### Stats
+* 74 commits
+* 18 closed tickets & PRs
+* Days since last release: 27
+
 ## 27-March-2021 - 6.33.0
 
 The PMD team is pleased to announce PMD 6.33.0.
@@ -1913,7 +2262,7 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 #### Java Metrics
 
 *   The new metric "Class Fan Out Complexity" has been added. See
-    [Java Metrics Documentation](pmd_java_metrics_index.html#class-fan-out-complexity-class_fan_out) for details.
+    [Java Metrics Documentation](https://pmd.github.io/pmd-6.19.0/pmd_java_metrics_index.html#class-fan-out-complexity-class_fan_out) for details.
 
 
 #### Modified Rules

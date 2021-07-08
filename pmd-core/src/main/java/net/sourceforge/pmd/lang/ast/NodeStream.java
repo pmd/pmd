@@ -58,7 +58,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *               {@linkplain #followingSiblings() .followingSiblings}()                    <i>// the stream here contains only the siblings, not the original node</i>
  *               {@linkplain #take(int) .take}(1)                                <i>// the stream here contains only the first sibling, if it exists</i>
  *               {@linkplain #filterIs(Class) .filterIs}(ASTNumericLiteral.class)
- *               {@linkplain #filter(Predicate) .filter}(it -> !it.isFloatingPoint() && it.getValueAsInt() == 0)
+ *               {@linkplain #filter(Predicate) .filter}(it -&gt; !it.isFloatingPoint() &amp;&amp; it.getValueAsInt() == 0)
  *               {@linkplain #nonEmpty() .nonEmpty}(); <i>// If the stream is non empty here, then all the pipeline matched</i>
  * </pre>
  *
@@ -285,8 +285,24 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * @throws IllegalArgumentException if n is negative
      * @see Stream#skip(long)
      * @see #take(int)
+     * @see #dropLast(int)
      */
     NodeStream<T> drop(int n);
+
+    /**
+     * Returns a stream consisting of the elements of this stream except
+     * the n tail elements. If n is greater than the number of elements
+     * of this stream, returns an empty stream. This requires a lookahead
+     * buffer in general.
+     *
+     * @param n the number of trailing elements to skip
+     *
+     * @return A new node stream
+     *
+     * @throws IllegalArgumentException if n is negative
+     * @see #drop(int)
+     */
+    NodeStream<T> dropLast(int n);
 
 
     /**
@@ -1079,7 +1095,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      *
      * @param c1   First type to test
      * @param rest Other types to test
-     * @param <I>  Input type (this method does not care about it)
      * @param <O>  Output type
      *
      * @see #firstNonNull(Function)

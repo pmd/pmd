@@ -147,16 +147,11 @@ public class Foo {
         <description>#933 UnnecessaryLocalBeforeReturn false positive for SuppressWarnings annotation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class UnnecessaryLocalBeforeReturnCase {
-    private <T extends UserVisibleEventTypeValue<?>> T findEventTypeValueByName(Class<T> entityClass, String eventTypeName, String eventTypeValueName) {
-        Criteria criteria = this.session.createCriteria(entityClass)
-            .add(Restrictions.eq(UserVisibleEventTypeValue_.internalName, eventTypeValueName))
-            .createCriteria(UserVisibleEventTypeValue_.type)
-                .add(Restrictions.eq(UserVisibleEventType_.name, eventTypeName))
-                .setCacheable(true);
-
+public class TestCase<T> {
+    T getSomeT() { return null; }
+    private static <T> T findEventTypeValueByName(TestCase<?> unchecked) {
         @SuppressWarnings("unchecked")
-        T result = (T) criteria.uniqueResult();
+        T result = (T) unchecked.getSomeT();
         return result;
     }
 }
@@ -167,6 +162,9 @@ public class UnnecessaryLocalBeforeReturnCase {
         <description>#282 UnnecessaryLocalBeforeReturn false positive when cloning Maps</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.HashMap;
 public class CustomerErrorCollector {
 
     private final ConcurrentHashMap<String, String> customerErrors = new ConcurrentHashMap<>();
@@ -188,7 +186,7 @@ public class CustomerErrorCollector {
         <description>#310 UnnecessaryLocalBeforeReturn enhancement is overly restrictive -- method order matters</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class UnnecessaryLocalBeforeReturnFP {
+public class Mutable {
     public int example1() {
         int i = compute(); // might throw
         markComputationDone();
@@ -201,6 +199,10 @@ public class UnnecessaryLocalBeforeReturnFP {
         sideEffect(m);
         return i;
     }
+    static void sideEffect(Mutable m) {}
+    static int sideEffect(Mutable m) {}
+    static int compute() {}
+    static int markComputationDone() {}
 }
         ]]></code>
     </test-code>
@@ -211,7 +213,7 @@ public class UnnecessaryLocalBeforeReturnFP {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,10</expected-linenumbers>
         <code><![CDATA[
-public class UnnecessaryLocalBeforeReturnFP {
+public class Mutable {
     public int example1() {
         int i = compute(); // might throw
         markComputationDone();
@@ -224,6 +226,10 @@ public class UnnecessaryLocalBeforeReturnFP {
         sideEffect(m);
         return i;
     }
+    static void sideEffect(Mutable m) {}
+    static int sideEffect(Mutable m) {}
+    static int compute() {}
+    static int markComputationDone() {}
 }
         ]]></code>
     </test-code>
@@ -264,10 +270,46 @@ public class ObjectCreator {
         <description>FP with captured method reference</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.function.Supplier;
 public class ObjectCreator {
     public Supplier<String> create() {
         final Object o = new Object(); // captured by the method ref
         return o::toString;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with lambdas #3275</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class UnnecessaryLocal {
+    void foo() {
+        Callable<String> c = () -> { String s = "1"; return s; };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with anonymous classes #3275</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class UnnecessaryLocal {
+    void foo() {
+        Callable<String> c = new Callable<>() {
+            public String call() {
+                String s = "1";
+                return s;
+            }
+        };
     }
 }
         ]]></code>

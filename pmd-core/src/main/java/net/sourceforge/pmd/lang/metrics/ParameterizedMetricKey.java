@@ -18,40 +18,40 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * @author Clément Fournier
  * @since 5.8.0
  */
-final class ParameterizedMetricKey<N extends Node> implements DataKey<ParameterizedMetricKey<N>, Double> {
+final class ParameterizedMetricKey<N extends Node, R extends Number> implements DataKey<ParameterizedMetricKey<N, R>, R> {
 
-    private static final ConcurrentMap<ParameterizedMetricKey<?>, ParameterizedMetricKey<?>> POOL = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<ParameterizedMetricKey<?, ?>, ParameterizedMetricKey<?, ?>> POOL = new ConcurrentHashMap<>();
 
     /** The metric key. */
-    public final MetricKey<N> key;
+    public final Metric<N, R> metric;
     /** The options of the metric. */
     public final MetricOptions options;
 
 
     /** Used internally by the pooler. */
-    private ParameterizedMetricKey(MetricKey<N> key, MetricOptions options) {
-        this.key = key;
+    private ParameterizedMetricKey(Metric<N, R> metric, MetricOptions options) {
+        this.metric = metric;
         this.options = options;
     }
 
 
     @Override
     public String toString() {
-        return "ParameterizedMetricKey{key=" + key.name() + ", options=" + options + '}';
+        return "ParameterizedMetricKey{key=" + metric.displayName() + ", options=" + options + '}';
     }
 
 
     @Override
     public boolean equals(Object o) {
         return o instanceof ParameterizedMetricKey
-            && ((ParameterizedMetricKey) o).key.equals(key)
-            && ((ParameterizedMetricKey) o).options.equals(options);
+            && ((ParameterizedMetricKey<?, ?>) o).metric.equals(metric)
+            && ((ParameterizedMetricKey<?, ?>) o).options.equals(options);
     }
 
 
     @Override
     public int hashCode() {
-        return 31 * key.hashCode() + options.hashCode();
+        return 31 * metric.hashCode() + options.hashCode();
     }
 
 
@@ -65,13 +65,13 @@ final class ParameterizedMetricKey<N extends Node> implements DataKey<Parameteri
      * @return An instance of parameterized metric key corresponding to the parameters
      */
     @SuppressWarnings("PMD.SingletonClassReturningNewInstance")
-    public static <N extends Node> ParameterizedMetricKey<N> getInstance(MetricKey<N> key, MetricOptions options) {
+    public static <N extends Node, R extends Number> ParameterizedMetricKey<N, R> getInstance(Metric<N, R> key, MetricOptions options) {
         // sharing instances allows using DataMap, which uses reference identity
-        ParameterizedMetricKey<N> tmp = new ParameterizedMetricKey<>(key, options);
+        ParameterizedMetricKey<N, R> tmp = new ParameterizedMetricKey<>(key, options);
         POOL.putIfAbsent(tmp, tmp);
 
         @SuppressWarnings("unchecked")
-        ParameterizedMetricKey<N> result = (ParameterizedMetricKey<N>) POOL.get(tmp);
+        ParameterizedMetricKey<N, R> result = (ParameterizedMetricKey<N, R>) POOL.get(tmp);
         return result;
     }
 }

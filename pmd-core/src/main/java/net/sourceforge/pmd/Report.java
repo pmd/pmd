@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -23,14 +24,22 @@ import net.sourceforge.pmd.util.document.TextFile;
  * A {@link Report} collects all informations during a PMD execution. This
  * includes violations, suppressed violations, metrics, error during processing
  * and configuration errors.
+ *
+ * <p>A report may be created by a {@link GlobalReportBuilderListener} that you
+ * use as the {@link GlobalAnalysisListener} in {@linkplain PMD#processFiles(PMDConfiguration, List, List, GlobalAnalysisListener) PMD's entry point}.
+ * You can also create one manually with {@link #buildReport(Consumer)}.
  */
-public class Report {
+public final class Report {
     // todo move to package reporting
 
     private final List<RuleViolation> violations = synchronizedList(new ArrayList<>());
     private final List<SuppressedViolation> suppressedRuleViolations = synchronizedList(new ArrayList<>());
     private final List<ProcessingError> errors = synchronizedList(new ArrayList<>());
     private final List<ConfigurationError> configErrors = synchronizedList(new ArrayList<>());
+
+    Report() {
+        // package-private, you have to use a listener to build a report.
+    }
 
     /**
      * Represents a configuration error.
@@ -157,7 +166,7 @@ public class Report {
      *
      * @param violation the violation to add
      */
-    public void addRuleViolation(RuleViolation violation) {
+    private void addRuleViolation(RuleViolation violation) {
         synchronized (violations) {
             int index = Collections.binarySearch(violations, violation, RuleViolation.DEFAULT_COMPARATOR);
             violations.add(index < 0 ? -index - 1 : index, violation);
@@ -167,7 +176,7 @@ public class Report {
     /**
      * Adds a new suppressed violation.
      */
-    public void addSuppressedViolation(SuppressedViolation sv) {
+    private void addSuppressedViolation(SuppressedViolation sv) {
         suppressedRuleViolations.add(sv);
     }
 
@@ -176,7 +185,7 @@ public class Report {
      *
      * @param error the error to add
      */
-    public void addConfigError(ConfigurationError error) {
+    private void addConfigError(ConfigurationError error) {
         configErrors.add(error);
     }
 
@@ -186,7 +195,7 @@ public class Report {
      * @param error
      *            the error to add
      */
-    public void addError(ProcessingError error) {
+    private void addError(ProcessingError error) {
         errors.add(error);
     }
 
@@ -201,7 +210,10 @@ public class Report {
      * @param r the report to be merged into this.
      *
      * @see AbstractAccumulatingRenderer
+     *
+     * @deprecated Convert Renderer to use the reports.
      */
+    @Deprecated
     public void merge(Report r) {
         errors.addAll(r.errors);
         configErrors.addAll(r.configErrors);
@@ -216,7 +228,7 @@ public class Report {
     /**
      * Returns an unmodifiable list of violations that were suppressed.
      */
-    public final List<SuppressedViolation> getSuppressedViolations() {
+    public List<SuppressedViolation> getSuppressedViolations() {
         return Collections.unmodifiableList(suppressedRuleViolations);
     }
 
@@ -226,7 +238,7 @@ public class Report {
      *
      * <p>The violations list is sorted with {@link RuleViolation#DEFAULT_COMPARATOR}.
      */
-    public final List<RuleViolation> getViolations() {
+    public List<RuleViolation> getViolations() {
         return Collections.unmodifiableList(violations);
     }
 
@@ -235,7 +247,7 @@ public class Report {
      * Returns an unmodifiable list of processing errors that have been
      * recorded until now.
      */
-    public final List<ProcessingError> getProcessingErrors() {
+    public List<ProcessingError> getProcessingErrors() {
         return Collections.unmodifiableList(errors);
     }
 
@@ -244,10 +256,17 @@ public class Report {
      * Returns an unmodifiable list of configuration errors that have
      * been recorded until now.
      */
-    public final List<ConfigurationError> getConfigurationErrors() {
+    public List<ConfigurationError> getConfigurationErrors() {
         return Collections.unmodifiableList(configErrors);
     }
 
+    /**
+     * Create a report by making side effects on a {@link FileAnalysisListener}.
+     * This wraps a {@link ReportBuilderListener}.
+     */
+    public static Report buildReport(Consumer<? super FileAnalysisListener> lambda) {
+        return BaseResultProducingCloseable.using(new ReportBuilderListener(), lambda);
+    }
 
     /**
      * A {@link FileAnalysisListener} that accumulates events into a

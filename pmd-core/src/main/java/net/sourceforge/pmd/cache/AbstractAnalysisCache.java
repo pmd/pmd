@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.cache;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -23,16 +22,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedInputStream;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.cache.internal.ClasspathFingerprinter;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.TextFile;
@@ -47,6 +47,7 @@ import net.sourceforge.pmd.util.document.TextFile;
 public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     protected static final Logger LOG = Logger.getLogger(AbstractAnalysisCache.class.getName());
+    protected static final ClasspathFingerprinter FINGERPRINTER = new ClasspathFingerprinter();
     protected final String pmdVersion;
     protected final ConcurrentMap<String, AnalysisResult> fileResultsCache;
     protected final ConcurrentMap<String, AnalysisResult> updatedResultsCache;
@@ -66,26 +67,29 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public boolean isUpToDate(final TextDocument document) {
-        // There is a new file being analyzed, prepare entry in updated cache
-        final AnalysisResult updatedResult = new AnalysisResult(document.getChecksum(), new ArrayList<>());
-        updatedResultsCache.put(document.getPathId(), updatedResult);
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "up-to-date check")) {
+            // There is a new file being analyzed, prepare entry in updated cache
+            final AnalysisResult updatedResult = new AnalysisResult(document.getChecksum(), new ArrayList<>());
+            updatedResultsCache.put(document.getPathId(), updatedResult);
 
-        // Now check the old cache
-        final AnalysisResult analysisResult = fileResultsCache.get(document.getPathId());
+            // Now check the old cache
+            final AnalysisResult analysisResult = fileResultsCache.get(document.getPathId());
 
-        // is this a known file? has it changed?
-        final boolean result = analysisResult != null
+            // is this a known file? has it changed?
+            final boolean result = analysisResult != null
                 && analysisResult.getFileChecksum() == updatedResult.getFileChecksum();
 
-        if (LOG.isLoggable(Level.FINE)) {
-            if (result) {
-                LOG.fine("Incremental Analysis cache HIT");
-            } else {
-                LOG.fine("Incremental Analysis cache MISS - " + (analysisResult != null ? "file changed" : "no previous result found"));
+            if (LOG.isLoggable(Level.FINE)) {
+                if (result) {
+                    LOG.fine("Incremental Analysis cache HIT");
+                } else {
+                    LOG.fine("Incremental Analysis cache MISS - " + (analysisResult != null ? "file changed"
+                                                                                            : "no previous result found"));
+                }
             }
-        }
 
-        return result;
+            return result;
+        }
     }
 
     @Override
@@ -115,45 +119,46 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public void checkValidity(final RuleSets ruleSets, final ClassLoader auxclassPathClassLoader) {
-        boolean cacheIsValid = cacheExists();
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
+            boolean cacheIsValid = cacheExists();
 
-        if (cacheIsValid && ruleSets.getChecksum() != rulesetChecksum) {
-            LOG.info("Analysis cache invalidated, rulesets changed.");
-            cacheIsValid = false;
-        }
-
-        final long currentAuxClassPathChecksum;
-        if (auxclassPathClassLoader instanceof URLClassLoader) {
-            // we don't want to close our aux classpath loader - we still need it...
-            @SuppressWarnings("PMD.CloseResource")
-            final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
-            currentAuxClassPathChecksum = computeClassPathHash(urlClassLoader.getURLs());
-
-            if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
-                // TODO some rules don't need that (in fact, some languages)
-                LOG.info("Analysis cache invalidated, auxclasspath changed.");
+            if (cacheIsValid && ruleSets.getChecksum() != rulesetChecksum) {
+                LOG.info("Analysis cache invalidated, rulesets changed.");
                 cacheIsValid = false;
             }
-        } else {
-            currentAuxClassPathChecksum = 0;
-        }
 
-        final long currentExecutionClassPathChecksum = computeClassPathHash(getClassPathEntries());
-        if (cacheIsValid && currentExecutionClassPathChecksum != executionClassPathChecksum) {
-            LOG.info("Analysis cache invalidated, execution classpath changed.");
-            cacheIsValid = false;
-        }
+            final long currentAuxClassPathChecksum;
+            if (auxclassPathClassLoader instanceof URLClassLoader) {
+                // we don't want to close our aux classpath loader - we still need it...
+                @SuppressWarnings("PMD.CloseResource") final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
+                currentAuxClassPathChecksum = FINGERPRINTER.fingerprint(urlClassLoader.getURLs());
 
-        if (!cacheIsValid) {
-            // Clear the cache
-            fileResultsCache.clear();
-        }
+                if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
+                    // TODO some rules don't need that (in fact, some languages)
+                    LOG.info("Analysis cache invalidated, auxclasspath changed.");
+                    cacheIsValid = false;
+                }
+            } else {
+                currentAuxClassPathChecksum = 0;
+            }
 
-        // Update the local checksums
-        rulesetChecksum = ruleSets.getChecksum();
-        auxClassPathChecksum = currentAuxClassPathChecksum;
-        executionClassPathChecksum = currentExecutionClassPathChecksum;
-        ruleMapper.initialize(ruleSets);
+            final long currentExecutionClassPathChecksum = FINGERPRINTER.fingerprint(getClassPathEntries());
+            if (cacheIsValid && currentExecutionClassPathChecksum != executionClassPathChecksum) {
+                LOG.info("Analysis cache invalidated, execution classpath changed.");
+                cacheIsValid = false;
+            }
+
+            if (!cacheIsValid) {
+                // Clear the cache
+                fileResultsCache.clear();
+            }
+
+            // Update the local checksums
+            rulesetChecksum = ruleSets.getChecksum();
+            auxClassPathChecksum = currentAuxClassPathChecksum;
+            executionClassPathChecksum = currentExecutionClassPathChecksum;
+            ruleMapper.initialize(ruleSets);
+        }
     }
 
     private static boolean isClassPathWildcard(String entry) {
@@ -168,7 +173,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         final SimpleFileVisitor<Path> fileVisitor = new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(final Path file,
-                    final BasicFileAttributes attrs) throws IOException {
+                                             final BasicFileAttributes attrs) throws IOException {
                 if (!attrs.isSymbolicLink()) { // Broken link that can't be followed
                     entries.add(file.toUri().toURL());
                 }
@@ -178,7 +183,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         final SimpleFileVisitor<Path> jarFileVisitor = new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(final Path file,
-                    final BasicFileAttributes attrs) throws IOException {
+                                             final BasicFileAttributes attrs) throws IOException {
                 String extension = FilenameUtils.getExtension(file.toString());
                 if ("jar".equalsIgnoreCase(extension)) {
                     fileVisitor.visitFile(file, attrs);
@@ -192,12 +197,12 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
                 final File f = new File(entry);
                 if (isClassPathWildcard(entry)) {
                     Files.walkFileTree(new File(entry.substring(0, entry.length() - 1)).toPath(),
-                            EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, jarFileVisitor);
+                                       EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, jarFileVisitor);
                 } else if (f.isFile()) {
                     entries.add(f.toURI().toURL());
                 } else if (f.exists()) { // ignore non-existing directories
                     Files.walkFileTree(f.toPath(), EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
-                            fileVisitor);
+                                       fileVisitor);
                 }
             }
         } catch (final IOException e) {
@@ -206,25 +211,6 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         }
 
         return entries.toArray(new URL[0]);
-    }
-
-    private long computeClassPathHash(final URL... classpathEntry) {
-        final Adler32 adler32 = new Adler32();
-        for (final URL url : classpathEntry) {
-            try (CheckedInputStream inputStream = new CheckedInputStream(url.openStream(), adler32)) {
-                // Just read it, the CheckedInputStream will update the checksum on it's own
-                while (IOUtils.skip(inputStream, Long.MAX_VALUE) == Long.MAX_VALUE) {
-                    // just loop
-                }
-            } catch (final FileNotFoundException ignored) {
-                LOG.warning("Auxclasspath entry " + url.toString() + " doesn't exist, ignoring it");
-            } catch (final IOException e) {
-                // Can this even happen?
-                LOG.log(Level.SEVERE, "Incremental analysis can't check auxclasspath contents", e);
-                throw new RuntimeException(e);
-            }
-        }
-        return adler32.getValue();
     }
 
     @Override

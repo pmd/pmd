@@ -71,7 +71,7 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
             }
         }
 
-        return super.visit(cUnit, data);
+        return null;
     }
 
     private static boolean hasRealText(Chars line) {

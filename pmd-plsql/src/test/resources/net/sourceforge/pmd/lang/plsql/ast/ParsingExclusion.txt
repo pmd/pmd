@@ -1,4 +1,4 @@
-+- Input[@CanonicalImage = null, @ExcludedLinesCount = "6", @ExcludedRangesCount = "2", @Sourcecode = "begin\n  do_something();\n  -- pmd-exclude-begin: PMD does not like dbms_lob.trim (clash with TrimExpression)\n  dbms_lob.trim(the_blob, 1000);\n  -- pmd-exclude-end\n  do_something_else(x);\nend;\n/\n\nselect dummy from dual a\nwhere 1=1\n  -- pmd-exclude-begin: PMD does not like scalar subqueries in WHERE conditions\n  and \'J\' = (select max(\'J\') from dual b)\n  -- pmd-exclude-end\n;\n"]
++- Input[@CanonicalImage = null, @ExcludedLinesCount = "6", @ExcludedRangesCount = "2"]
    +- Global[@CanonicalImage = null]
    |  +- Block[@CanonicalImage = null]
    |     +- Statement[@CanonicalImage = null]

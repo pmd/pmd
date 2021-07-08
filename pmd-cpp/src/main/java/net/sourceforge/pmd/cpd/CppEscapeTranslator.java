@@ -24,7 +24,8 @@ public class CppEscapeTranslator extends BackslashEscapeTranslator {
         if (input.charAt(off) == NEWLINE) {
             return recordEscape(backSlashOff, off + 1, Chars.EMPTY);
         } else if (input.charAt(off) == CARRIAGE_RETURN) {
-            if (input.charAt(++off) == NEWLINE) {
+            off++;
+            if (input.charAt(off) == NEWLINE) {
                 return recordEscape(backSlashOff, off + 1, Chars.EMPTY);
             }
         }

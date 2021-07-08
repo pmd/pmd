@@ -387,11 +387,15 @@ public final class TypeOps {
         } else if (isSpecialUnresolved(t)) {
             // error type or unresolved type
             return Convertibility.SUBTYPING;
-        } else if (hasUnresolvedSymbol(t)) {
+        } else if (hasUnresolvedSymbol(t) && t instanceof JClassType) {
             // This also considers types with an unresolved symbol
             // subtypes of (nearly) anything. This allows them to
             // pass bound checks on type variables.
-            return Convertibility.subtypeIf(s instanceof JClassType); // excludes array or so
+            if (Objects.equals(t.getSymbol(), s.getSymbol())) {
+                return typeArgsAreContained((JClassType) t, (JClassType) s);
+            } else {
+                return Convertibility.subtypeIf(s instanceof JClassType); // excludes array or so
+            }
         } else if (s instanceof JIntersectionType) { // TODO test intersection with tvars & arrays
             // If S is an intersection, then T must conform to *all* bounds of S
             // Symmetrically, if T is an intersection, T <: S requires only that
@@ -692,6 +696,11 @@ public final class TypeOps {
                                                        : Convertibility.UNCHECKED_WARNING;
         }
 
+        if (targs.size() != sargs.size()) {
+            // types are not well-formed
+            return Convertibility.NEVER;
+        }
+
         Convertibility result = Convertibility.SUBTYPING;
         for (int i = 0; i < targs.size(); i++) {
             Convertibility sub = typeArgContains(sargs.get(i), targs.get(i));
@@ -825,6 +834,10 @@ public final class TypeOps {
             }
             return Convertibility.NEVER;
         }
+    }
+
+    public static boolean isStrictSubtype(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
+        return !t.equals(s) && t.isSubtypeOf(s);
     }
 
     // </editor-fold>
@@ -1356,8 +1369,8 @@ public final class TypeOps {
      * this does not check the static modifier, and tests for hiding
      * if the method is static.
      *
-     * @param m         Method to test
-     * @param origin    Site of the potential override
+     * @param m      Method to test
+     * @param origin Site of the potential override
      */
     public static boolean isOverridableIn(JExecutableSymbol m, JTypeDeclSymbol origin) {
         if (m instanceof JConstructorSymbol) {
@@ -1552,7 +1565,7 @@ public final class TypeOps {
     /**
      * @see JTypeMirror#getAsSuper(JClassSymbol)
      */
-    public static @Nullable JTypeMirror asSuper(JTypeMirror t, JClassSymbol s) {
+    public static @Nullable JTypeMirror asSuper(@NonNull JTypeMirror t, @NonNull JClassSymbol s) {
 
         if (!t.isPrimitive() && s.equals(t.getTypeSystem().OBJECT.getSymbol())) {
             // interface types need to have OBJECT somewhere up their hierarchy
@@ -1660,11 +1673,12 @@ public final class TypeOps {
 
         // Notice that this loop needs a well-behaved subtyping relation,
         // i.e. antisymmetric: A <: B && A != B implies not(B <: A)
-        // This is not the case if we include unchecked conversion in there.
+        // This is not the case if we include unchecked conversion in there,
+        // or special provisions for unresolved types.
         vLoop:
         for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {
-                if (!w.equals(v) && isSubtypePure(w, v).bySubtyping()) {
+                if (!w.equals(v) && !hasUnresolvedSymbol(w) && isSubtypePure(w, v).bySubtyping()) {
                     continue vLoop;
                 }
             }
@@ -1932,15 +1946,25 @@ public final class TypeOps {
         return t == ts.UNKNOWN || t == ts.ERROR;
     }
 
+    /**
+     * Return true if the argument is a {@link JClassType} with
+     * {@linkplain JClassSymbol#isUnresolved() an unresolved symbol} or
+     * a {@link JArrayType} whose element type matches the first criterion.
+     */
     public static boolean hasUnresolvedSymbol(@Nullable JTypeMirror t) {
         if (!(t instanceof JClassType)) {
-            return false;
+            return t instanceof JArrayType && hasUnresolvedSymbol(((JArrayType) t).getElementType());
         }
         return t.getSymbol() != null && t.getSymbol().isUnresolved();
     }
 
     public static boolean isUnresolvedOrNull(@Nullable JTypeMirror t) {
         return t == null || isUnresolved(t);
+    }
+
+
+    public static @Nullable JTypeMirror getArrayComponent(@Nullable JTypeMirror t) {
+        return t instanceof JArrayType ? ((JArrayType) t).getComponentType() : null;
     }
 
     // </editor-fold>

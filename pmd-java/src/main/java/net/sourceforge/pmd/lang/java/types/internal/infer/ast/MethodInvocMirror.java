@@ -14,24 +14,24 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
-import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 
 class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements InvocationMirror {
 
 
-    MethodInvocMirror(JavaExprMirrors mirrors, ASTMethodCall call) {
-        super(mirrors, call);
+    MethodInvocMirror(JavaExprMirrors mirrors, ASTMethodCall call, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
+        super(mirrors, call, parent, subexprMaker);
     }
 
     @Override
     public @Nullable JTypeMirror getStandaloneType() {
-        JMethodSig ctdecl = getCtdecl();
+        JMethodSig ctdecl = getStandaloneCtdecl().getMethodType();
         return isContextDependent(ctdecl) ? null : ctdecl.getReturnType();
     }
 
@@ -40,20 +40,14 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
         return m.isGeneric() && TypeOps.mentionsAny(m.getReturnType(), m.getTypeParameters());
     }
 
-    private JMethodSig getCtdecl() {
-        MethodCallSite site = factory.infer.newCallSite(this, null);
-        // this is cached for later anyway
-        return factory.infer.getCompileTimeDecl(site).getMethodType();
-    }
-
     @Override
-    public TypeSpecies getStandaloneSpecies() {
-        return TypeSpecies.getSpecies(getCtdecl().getReturnType());
+    public @NonNull TypeSpecies getStandaloneSpecies() {
+        return TypeSpecies.getSpecies(getStandaloneCtdecl().getMethodType().getReturnType());
     }
 
     @Override
     public List<JMethodSig> getAccessibleCandidates() {
-        TypeNode lhs = myNode.getQualifier();
+        ASTExpression lhs = myNode.getQualifier();
         if (lhs == null) {
             // already filters accessibility
             return myNode.getSymbolTable().methods().resolve(getName());
@@ -63,9 +57,10 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
                 ASTConstructorCall ctor = (ASTConstructorCall) lhs;
                 ASTAnonymousClassDeclaration anon = ctor.getAnonymousClassDeclaration();
                 // put methods declared in the anonymous class in scope
-                lhsType = anon != null ? anon.getTypeMirror() : ctor.getTypeMirror();
+                lhsType = anon != null ? anon.getTypeMirror(getTypingContext())
+                                       : ctor.getTypeMirror(getTypingContext()); // may resolve diamonds
             } else {
-                lhsType = lhs.getTypeMirror();
+                lhsType = lhs.getTypeMirror(getTypingContext());
             }
             lhsType = TypeConversion.capture(lhsType);
             boolean staticOnly = lhs instanceof ASTTypeExpression;
@@ -84,7 +79,7 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
     public @NonNull JTypeMirror getReceiverType() {
         ASTExpression qualifier = myNode.getQualifier();
         if (qualifier != null) {
-            return qualifier.getTypeMirror();
+            return qualifier.getTypeMirror(getTypingContext());
         } else {
             return myNode.getEnclosingType().getTypeMirror();
         }

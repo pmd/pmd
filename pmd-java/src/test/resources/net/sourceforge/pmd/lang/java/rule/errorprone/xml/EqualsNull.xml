@@ -9,7 +9,7 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    void bar(Object foo) {
         if (foo.equals(null)) {}
     }
 }
@@ -21,7 +21,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    void bar(Object foo) {
         if (foo == null) {}
     }
 }
@@ -33,7 +33,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    void bar(Object foo) {
         if (foo.bar().equals(null)) {}
     }
 }
@@ -45,7 +45,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    void bar(Object foo) {
         if (foo.equals(null, other)) {}
     }
 }
@@ -57,8 +57,9 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() {
-        if (container.getLabel(null).equals(grandChild.getCollectionName())) {
+    String getLabel(String s) { return null; }
+    void bar(Foo container, Foo grandChild) {
+        if (container.getLabel(null).equals(grandChild.toString())) {
         }
     }
 }

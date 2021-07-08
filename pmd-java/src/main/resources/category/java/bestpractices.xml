@@ -294,14 +294,29 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningParametersRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidreassigningparameters">
         <description>
-Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
+Reassigning values to incoming parameters of a method or constructor is not recommended, as this can
+make the code more difficult to understand. The code is often read with the assumption that parameter values
+don't change and an assignment violates therefore the principle of least astonishment. This is especially a
+problem if the parameter is documented e.g. in the method's javadoc and the new content differs from the original
+documented content.
+
+Use temporary local variables instead. This allows you to assign a new name, which makes the code better
+understandable.
+
+Note that this rule considers both methods and constructors. If there are multiple assignments for a formal
+parameter, then only the first assignment is reported.
         </description>
         <priority>2</priority>
         <example>
 <![CDATA[
-public class Foo {
-  private void foo(String bar) {
-    bar = "something else";
+public class Hello {
+  private void greet(String name) {
+    name = name.trim();
+    System.out.println("Hello " + name);
+
+    // preferred
+    String trimmedName = name.trim();
+    System.out.println("Hello " + trimmedName);
   }
 }
 ]]>
@@ -588,19 +603,19 @@ with lambdas. The available alternatives depend on the actual logging framework.
         <priority>2</priority>
         <example>
 <![CDATA[
-    // Add this for performance
-    if (log.isDebugEnabled()) {
-        log.debug("log something" + " and " + "concat strings");
-    }
+// Add this for performance
+if (log.isDebugEnabled()) {
+    log.debug("log something" + param1 + " and " + param2 + "concat strings");
+}
 
-    // Avoid the guarding if statement with substituting parameters
-    log.debug("log something {} and {}", param1, param2);
+// Avoid the guarding if statement with substituting parameters
+log.debug("log something {} and {}", param1, param2);
 
-    // Avoid the guarding if statement with formatters
-    log.debug("log something %s and %s", param1, param2);
+// Avoid the guarding if statement with formatters
+log.debug("log something %s and %s", param1, param2);
 
-    // Avoid the guarding if statement with lazy logging and lambdas
-    log.debug("log something expensive: {}", () -> calculateExpensiveLoggingText());
+// Avoid the guarding if statement with lazy logging and lambdas
+log.debug("log something expensive: {}", () -> calculateExpensiveLoggingText());
 ]]>
         </example>
     </rule>
@@ -620,9 +635,8 @@ through the @RunWith(Suite.class) annotation.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration
-[MethodDeclaration[@Name='suite']/ResultType/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
-[not(MethodDeclaration/Block/BlockStatement/Statement/ReturnStatement//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
+//MethodDeclaration[@Name='suite' and ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
+                   [not(.//ReturnStatement/*[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
 ]]>
                 </value>
             </property>
@@ -660,13 +674,14 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration
-    [MethodDeclaration[@Name='tearDown']]
-    [not(Annotation/*/Name[
+//MethodDeclaration[@Name='tearDown' and @Arity=0]
+    [not(ModifierList/Annotation[
            pmd-java:typeIs('org.junit.After')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
         or pmd-java:typeIs('org.testng.annotations.AfterMethod')])]
+    (: Make sure this is a junit 4 class :)
+    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
 ]]>
                 </value>
             </property>
@@ -703,13 +718,15 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration
-    [MethodDeclaration[@Name='setUp']]
-    [not(Annotation/*/Name[
+//MethodDeclaration[@Name='setUp' and @Arity=0]
+    [not(ModifierList/Annotation[
            pmd-java:typeIs('org.junit.Before')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
         or pmd-java:typeIs('org.testng.annotations.BeforeMethod')])]
+    (: Make sure this is a junit 4 class :)
+    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
+
 ]]>
                 </value>
             </property>
@@ -746,17 +763,19 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[
-       matches(@SimpleName, $testClassPattern)
-        or ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]]
-
-    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true() and starts-with(@Name, 'test')]]
-    [not(Annotation//Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-    ])]
+//ClassOrInterfaceDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
+    (: a junit 3 method :)
+    /ClassOrInterfaceBody/MethodDeclaration[
+        @Visibility="public"
+        and starts-with(@Name, 'test')
+        and not(ModifierList/Annotation[
+          pmd-java:typeIs('org.junit.Test')
+          or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+          or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+          or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+          ]
+        )
+    ]
 ]]>
                 </value>
             </property>
@@ -773,6 +792,74 @@ public class MyTest {
     public void testGood() {
         doSomething();
     }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="JUnit5TestShouldBePackagePrivate"
+          language="java"
+          since="6.35.0"
+          message="JUnit 5 tests should be package-private."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate">
+        <description><![CDATA[
+Reports JUnit 5 test classes and methods that are not package-private.
+Contrary to JUnit 4 tests, which required public visibility to be run by the engine,
+JUnit 5 tests can also be run if they're package-private. Marking them as such
+is a good practice to limit their visibility.
+
+Test methods are identified as those which use `@Test`, `@RepeatedTest`,
+`@TestFactory`, `@TestTemplate` or `@ParameterizedTest`.
+            ]]></description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration[
+    (: a Junit 5 test class, ie, it has methods with the annotation :)
+    @Interface = false() and
+    ClassOrInterfaceBody/MethodDeclaration
+    [ModifierList/Annotation[
+               pmd-java:typeIs('org.junit.jupiter.api.Test')
+            or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+            or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ]]
+]/(
+       self::*[@Abstract = false() and @Visibility = ("public", "protected")]
+|      ClassOrInterfaceBody/MethodDeclaration
+       [@Visibility = ("public", "protected")]
+       [ModifierList/Annotation[
+               pmd-java:typeIs('org.junit.jupiter.api.Test')
+            or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+            or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+       ]]
+)
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+class MyTest { // not public, that's fine
+    @Test
+    public void testBad() { } // should not have a public modifier
+
+    @Test
+    protected void testAlsoBad() { } // should not have a protected modifier
+
+    @Test
+    private void testNoRun() { } // should not have a private modifier
+
+    @Test
+    void testGood() { } // package private as expected
 }
 ]]>
         </example>
@@ -935,9 +1022,12 @@ class Foo {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.LooseCouplingRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#loosecoupling">
         <description>
-The use of implementation types (i.e., HashSet) as object references limits your ability to use alternate
-implementations in the future as requirements change. Whenever available, referencing objects
-by their interface types (i.e, Set) provides much more flexibility.
+Excessive coupling to implementation types (e.g., `HashSet`) limits your ability to use alternate
+implementations in the future as requirements change. Whenever available, declare variables
+and parameters using a more general type (e.g, `Set`).
+
+This rule reports uses of concrete collection types. User-defined types that should be treated
+the same as interfaces can be configured with the property `allowedTypes`.
         </description>
         <priority>3</priority>
         <example>
@@ -1020,8 +1110,8 @@ public class SecureSystem {
           message="Use one line for each declaration, it enhances code readability."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#onedeclarationperline">
         <description>
-Java allows the use of several variables declaration of the same type on one line. However, it
-can lead to quite messy code. This rule looks for several declarations on the same line.
+Java allows the use of several variables declaration of the same type on one line.
+However, it can lead to quite messy code. This rule looks for several declarations on the same line.
         </description>
         <priority>4</priority>
         <properties>
@@ -1059,13 +1149,24 @@ String name,
     <rule name="PreserveStackTrace"
           language="java"
           since="3.7"
-          message="New exception is thrown in catch block, original stack trace may be lost"
+          message="Thrown exception does not preserve the stack trace of exception ''{0}'' on all code paths"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.PreserveStackTraceRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#preservestacktrace">
         <description>
-Throwing a new exception from a catch block without passing the original exception into the
-new exception will cause the original stack trace to be lost making it difficult to debug
-effectively.
+Reports exceptions that are thrown from within a catch block, yet don't refer to the
+exception parameter declared by that catch block. The stack trace of the original
+exception could be lost, which makes the thrown exception less informative.
+
+To preserve the stack trace, the original exception may be used as the cause of
+the new exception, using `Throwable#initCause`, or passed as a constructor argument
+to the new exception. It may also be preserved using `Throwable#addSuppressed`.
+The rule actually assumes that any method or constructor that takes the original
+exception as argument preserves the original stack trace.
+
+The rule allows `InvocationTargetException` and `PrivilegedActionException` to be
+replaced by their cause exception. The discarded part of the stack trace is in those
+cases only JDK-internal code, which is not very useful. The rule also ignores exceptions
+whose name starts with `ignored`.
         </description>
         <priority>3</priority>
         <example>
@@ -1075,7 +1176,7 @@ public class Foo {
         try{
             Integer.parseInt("a");
         } catch (Exception e) {
-            throw new Exception(e); // first possibility to create exception chain
+            throw new Exception(e); // Ok, this initializes the cause of the new exception
         }
         try {
             Integer.parseInt("a");
@@ -1083,10 +1184,11 @@ public class Foo {
             throw (IllegalStateException)new IllegalStateException().initCause(e); // second possibility to create exception chain.
         }
     }
-    void bad() {
+    void wrong() {
         try{
             Integer.parseInt("a");
         } catch (Exception e) {
+            // Violation: this only preserves the message and not the stack trace
             throw new Exception(e.getMessage());
         }
     }
@@ -1109,7 +1211,7 @@ Consider replacing Enumeration usages with the newer java.util.Iterator
             <property name="xpath">
                 <value>
 <![CDATA[
-//ImplementsList/ClassOrInterfaceType[@Image='Enumeration']
+//ImplementsList/ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Enumeration')]
 ]]>
                 </value>
             </property>
@@ -1141,7 +1243,9 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']</value>
+                <value><![CDATA[
+                //ClassOrInterfaceType[pmd-java:typeIs('java.util.Hashtable')]
+                ]]></value>
             </property>
         </properties>
         <example>
@@ -1167,7 +1271,9 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']</value>
+                <value><![CDATA[
+                //ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]
+                ]]></value>
             </property>
         </properties>
         <example>
@@ -1184,11 +1290,14 @@ public class Foo {
     <rule name="SwitchStmtsShouldHaveDefault"
           language="java"
           since="1.0"
-          message="Switch statements should have a default label"
+          message="Switch statements should be exhaustive, add a default case (or missing enum branches)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
         <description>
-All switch statements should include a default option to catch any unspecified values.
+            Switch statements should be exhaustive, to make their control flow
+            easier to follow. This can be achieved by adding a `default` case, or,
+            if the switch is on an enum type, by ensuring there is one switch branch
+            for each enum constant.
         </description>
         <priority>3</priority>
         <properties>
@@ -1200,14 +1309,14 @@ All switch statements should include a default option to catch any unspecified v
         </properties>
         <example>
 <![CDATA[
-public void bar() {
+class Foo {{
     int x = 2;
     switch (x) {
       case 1: int j = 6;
       case 2: int j = 8;
-          // missing default: here
+      // missing default: here
     }
-}
+}}
 ]]>
         </example>
     </rule>
@@ -1397,27 +1506,6 @@ public class Foo {
         // howdy is not used
     }
 }
-]]>
-        </example>
-    </rule>
-
-    <rule name="UnusedImports"
-          language="java"
-          since="1.0"
-          message="Avoid unused imports such as ''{0}''"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedImportsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedimports">
-        <description>
-Avoid unused import statements to prevent unwanted dependencies.
-This rule will also find unused on demand imports, i.e. import com.foo.*.
-        </description>
-        <priority>4</priority>
-        <example>
-<![CDATA[
-import java.io.File;  // not referenced or required
-import java.util.*;   // not referenced or required
-
-public class Foo {}
 ]]>
         </example>
     </rule>
@@ -1677,6 +1765,52 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UseStandardCharsets"
+          language="java"
+          since="6.34.0"
+          minimumLanguageVersion="1.7"
+          message="Please use StandardCharsets constants"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usestandardcharsets">
+        <description>
+Starting with Java 7, StandardCharsets provides constants for common Charset objects, such as UTF-8.
+Using the constants is less error prone, and can provide a small performance advantage compared to `Charset.forName(...)`
+since no scan across the internal `Charset` caches is needed.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[@MethodName = 'forName'][pmd-java:typeIs('java.nio.charset.Charset')]
+    [
+        ArgumentList/StringLiteral
+            [@Image = ('"US-ASCII"', '"ISO-8859-1"', '"UTF-8"', '"UTF-16BE"', '"UTF-16LE"', '"UTF-16"')]
+    ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class UseStandardCharsets {
+    public void run() {
+
+        // looking up the charset dynamically
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, Charset.forName("UTF-8"))) {
+            osw.write("test");
+        }
+
+        // best to use StandardCharsets
+        try (OutputStreamWriter osw = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
+            osw.write("test");
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UseTryWithResources"
           language="java"
           minimumLanguageVersion="1.7"
@@ -1694,16 +1828,14 @@ preserved.
         <priority>3</priority>
         <properties>
             <property name="closeMethods" type="List[String]" delimiter="," description="Method names in finally block, which trigger this rule" value="close,closeQuietly"/>
-            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
 <![CDATA[
-//TryStatement[FinallyStatement//Name[
-    tokenize(@Image, '\.')[last()] = $closeMethods
-][
-    pmd-java:typeIs('java.lang.AutoCloseable')
+//TryStatement[FinallyClause//ExpressionStatement/MethodCall[@MethodName = $closeMethods][
+    (:   vvvvvvvvvvvvvvvvvvvvvvvvv This is to rule out static method call :)
+    *[1][not(self::TypeExpression) and pmd-java:typeIs('java.lang.AutoCloseable')]
     or
-    ../../PrimarySuffix/Arguments[@ArgumentCount = 1]//PrimaryPrefix[pmd-java:typeIs('java.lang.AutoCloseable')]
+    ArgumentList/*[pmd-java:typeIs('java.lang.AutoCloseable')]
 ]]
 ]]>
                 </value>
@@ -1745,35 +1877,22 @@ public class TryWithResources {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usevarargs">
         <description>
-Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic
+Java 5 introduced the varargs parameter declaration for methods and constructors. This syntactic
 sugar provides flexibility for users of these methods and constructors, allowing them to avoid
 having to deal with the creation of an array.
+
+Byte arrays in any method and String arrays in `public static void main(String[])` methods are ignored.
         </description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
 <![CDATA[
-//FormalParameters/FormalParameter
-    [position()=last()]
-    [VariableDeclaratorId/@ArrayType=true()]
-    [@Varargs=false()]
-    [not (./Type[@ArrayType=true()]/ReferenceType[PrimitiveType[@Image='byte']])]
-    [not (./Type/ReferenceType[ClassOrInterfaceType[@Image='Byte']])]
-    [not (./Type/PrimitiveType[@Image='byte'])]
-    [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
-    [not(
-         ancestor::MethodDeclaration
-            [    @Public=true()
-             and @Static=true()
-             and child::ResultType[@Void=true()]
-             and @Name = 'main'
-             and @Arity = 1
-            ]
-         (: Type of the formal parameter here. :)
-         and pmd-java:typeIs('java.lang.String[]')
-    )]
+//FormalParameters[not(parent::MethodDeclaration[@Overridden=true() or @MainMethod=true()])]
+  /FormalParameter[position()=last()]
+   [@Varargs=false()]
+   [ArrayType[not(PrimitiveType[@Kind = "byte"] or ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')])]
+    or VariableDeclaratorId[ArrayDimensions] and (PrimitiveType[not(@Kind="byte")] or ClassOrInterfaceType[not(pmd-java:typeIs('java.lang.Byte'))])]
 ]]>
                 </value>
             </property>

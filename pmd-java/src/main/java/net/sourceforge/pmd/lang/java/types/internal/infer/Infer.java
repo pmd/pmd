@@ -16,7 +16,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -52,13 +51,15 @@ public final class Infer {
 
     public final TypeInferenceLogger LOG; // SUPPRESS CHECKSTYLE just easier to read I think
 
-    private final boolean isJava8; // NOPMD this is unused but may be used later
+    private final boolean isPreJava8;
     private final TypeSystem ts;
 
     final MethodCtDecl NO_CTDECL; // SUPPRESS CHECKSTYLE same
 
     /** This is a sentinel for when the CTDecl was resolved, but invocation failed. */
     final MethodCtDecl FAILED_INVOCATION; // SUPPRESS CHECKSTYLE same
+
+    private final SupertypeCheckCache supertypeCheckCache = new SupertypeCheckCache();
 
     /**
      * Creates a new instance.
@@ -70,13 +71,17 @@ public final class Infer {
      */
     public Infer(TypeSystem ts, int jdkVersion, TypeInferenceLogger logger) {
         this.ts = ts;
-        this.isJava8 = jdkVersion >= 8;
+        this.isPreJava8 = jdkVersion < 8;
         this.LOG = logger;
 
         this.NO_CTDECL = MethodCtDecl.unresolved(ts);
         this.FAILED_INVOCATION = MethodCtDecl.unresolved(ts);
 
         this.exprOps = new ExprOps(this);
+    }
+
+    public boolean isPreJava8() {
+        return isPreJava8;
     }
 
     public TypeSystem getTypeSystem() {
@@ -106,7 +111,7 @@ public final class Infer {
     }
 
     InferenceContext emptyContext() {
-        return new InferenceContext(ts, Collections.emptyList(), LOG);
+        return newContextFor(Collections.emptyList());
     }
 
     @NonNull
@@ -115,7 +120,7 @@ public final class Infer {
     }
 
     InferenceContext newContextFor(List<JTypeVar> tvars) {
-        return new InferenceContext(ts, tvars, LOG);
+        return new InferenceContext(ts, supertypeCheckCache, tvars, LOG);
     }
 
     /**
@@ -123,11 +128,13 @@ public final class Infer {
      * and some assignment contexts (not inferred, not return from lambda).
      */
     public void inferFunctionalExprInUnambiguousContext(PolySite<FunctionalExprMirror> site) {
-        Objects.requireNonNull(site);
-        Objects.requireNonNull(site.getExpectedType(), "Cannot proceed without a target type");
         FunctionalExprMirror expr = site.getExpr();
         try {
-            addBoundOrDefer(null, emptyContext(), INVOC_LOOSE, expr, site.getExpectedType());
+            JTypeMirror expected = site.getExpectedType();
+            if (expected == null) {
+                throw ResolutionFailedException.missingTargetTypeForFunctionalExpr(LOG, expr);
+            }
+            addBoundOrDefer(null, emptyContext(), INVOC_LOOSE, expr, expected);
         } catch (ResolutionFailedException rfe) {
             rfe.getFailure().addContext(null, site, null);
             LOG.logResolutionFail(rfe.getFailure());
@@ -162,7 +169,7 @@ public final class Infer {
     public void inferInvocationRecursively(MethodCallSite site) {
         MethodCtDecl ctdecl = goToInvocationWithFallback(site);
         InvocationMirror expr = site.getExpr();
-        expr.setMethodType(ctdecl);
+        expr.setCtDecl(ctdecl);
         if (ctdecl == NO_CTDECL) {
             expr.setInferredType(fallbackType(expr));
         } else {
@@ -237,11 +244,11 @@ public final class Infer {
 
 
     public @NonNull MethodCtDecl getCompileTimeDecl(MethodCallSite site) {
-        if (site.getExpr().getMethodType() == null) {
+        if (site.getExpr().getCtDecl() == null) {
             MethodCtDecl ctdecl = computeCompileTimeDecl(site);
-            site.getExpr().setMethodType(ctdecl); // cache it for later
+            site.getExpr().setCtDecl(ctdecl); // cache it for later
         }
-        return site.getExpr().getMethodType();
+        return site.getExpr().getCtDecl();
     }
 
     /**
@@ -286,7 +293,7 @@ public final class Infer {
             if (applicable.nonEmpty()) {
                 MethodCtDecl bestApplicable = applicable.getMostSpecificOrLogAmbiguity(LOG);
                 JMethodSig adapted = ExprOps.adaptGetClass(bestApplicable.getMethodType(),
-                                                           site.getExpr().getErasedReceiverType());
+                                                           site.getExpr()::getErasedReceiverType);
                 return bestApplicable.withMethod(adapted);
             }
         }
@@ -545,13 +552,8 @@ public final class Infer {
 
         try {
 
-            if (phase.isInvocation()) {
-                LOG.startReturnChecks();
-                // Add return constraints before argument constraints -> this pushes the target type down
-                JTypeMirror actualResType = addReturnConstraints(infCtx, m, site); // b3
-                LOG.endReturnChecks();
-
-                m = m.internalApi().withReturnType(actualResType);
+            if (phase.isInvocation() && !isPreJava8) {
+                m = doReturnChecksAndChangeReturnType(m, site, infCtx);
             }
 
             addArgsConstraints(infCtx, m, site, phase); // c
@@ -572,7 +574,25 @@ public final class Infer {
                 }
             }
 
-            infCtx.solve(); // this may throw for incompatible bounds
+            // this may throw for incompatible bounds
+            boolean isDone = infCtx.solve(/*onlyBoundedVars:*/isPreJava8());
+
+            if (isPreJava8() && !isDone) {
+                // this means we're not in an invocation context,
+                // if we are, we must ignore it in java 7
+                if (site.getOuterCtx().isEmpty()) {
+                    // Then add the return contraints late
+                    // Java 7 only uses the context type if the arguments are not enough
+                    // https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.8
+                    m = doReturnChecksAndChangeReturnType(m, site, infCtx);
+                }
+                // otherwise force solving remaining vars
+                infCtx.solve();
+            }
+
+            if (infCtx.needsUncheckedConversion()) {
+                site.setNeedsUncheckedConversion();
+            }
 
             // instantiate vars and return
             return InferenceContext.finalGround(infCtx.mapToIVars(m));
@@ -585,10 +605,18 @@ public final class Infer {
         }
     }
 
+    private JMethodSig doReturnChecksAndChangeReturnType(JMethodSig m, MethodCallSite site, InferenceContext infCtx) {
+        LOG.startReturnChecks();
+        JTypeMirror actualResType = addReturnConstraints(infCtx, m, site); // b3
+        LOG.endReturnChecks();
+        m = m.internalApi().withReturnType(actualResType);
+        return m;
+    }
+
 
     private boolean shouldPropagateOutwards(JTypeMirror resultType, MethodCallSite target, InferenceContext inferenceContext) {
-
-        return !target.getOuterCtx().isEmpty()  //enclosing context is a generic method
+        return !isPreJava8
+            && !target.getOuterCtx().isEmpty()  //enclosing context is a generic method
             && !inferenceContext.isGround(resultType)   //return type contains inference vars
             && !(resultType instanceof InferenceVar    //no eager instantiation is required (as per 18.5.2)
             && needsEagerInstantiation((InferenceVar) resultType, target.getExpectedType(), inferenceContext));
@@ -847,7 +875,7 @@ public final class Infer {
      *
      * See {@link ExprCheckHelper#isCompatible(JTypeMirror, ExprMirror)}.
      */
-    private void addBoundOrDefer(@Nullable MethodCallSite site, InferenceContext infCtx, MethodResolutionPhase phase, ExprMirror arg, JTypeMirror formalType) {
+    private void addBoundOrDefer(@Nullable MethodCallSite site, InferenceContext infCtx, MethodResolutionPhase phase, @NonNull ExprMirror arg, @NonNull JTypeMirror formalType) {
         ExprChecker exprChecker =
             (ctx, exprType, formalType1) -> checkConvertibleOrDefer(ctx, exprType, formalType1, arg, phase, site);
 
