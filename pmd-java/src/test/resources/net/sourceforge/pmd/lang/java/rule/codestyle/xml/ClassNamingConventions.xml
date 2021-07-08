@@ -37,7 +37,6 @@ public class FooBar {
             <message>The class name 'foo' doesn't match '[A-Z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
-@covfefe
 public class foo {
 
     @interface covfefe {
@@ -192,7 +191,7 @@ public class Md5Checksum {
         <description>Class extending another class should not be utility class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class StringList extends ArrayList<String> {
+public class StringList extends java.util.ArrayList<String> {
     static StringList emptyList() {
         return new StringList();
     }

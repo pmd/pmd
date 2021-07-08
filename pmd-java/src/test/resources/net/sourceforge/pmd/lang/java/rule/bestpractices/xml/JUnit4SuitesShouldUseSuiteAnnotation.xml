@@ -37,7 +37,7 @@ public class Foo extends TestCase{
         return new JUnit4TestAdapter(Foo.class);
     }
 
-    @Test
+    @org.junit.Test
     public void foo() {
     }
 }

@@ -179,8 +179,10 @@ public class Foo {
 public class Foo {
     private int x = 0;
 
+    Foo(int y) {}
+
     public void bar() {
-        Object y = new Bar(x++);
+        Object y = new Foo(x++);
     }
 }
         ]]></code>
@@ -195,7 +197,9 @@ public class Foo {
 
     public Foo() {
         try {
+            mayThrow();
             x = 2;
+            mayThrow();
         } catch (Exception e) {
         }
     }
@@ -242,15 +246,19 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     private int x = 2;
+    MouseAdapter mouseListener;
 
     public Foo() {
         mouseListener = new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                x = e.getSource();
-                super.mouseClicked(e);
+            public void mouseClicked(Object e) {
+                x = e.hashCode();
             }
         };
     }
+}
+
+interface MouseAdapter {
+    void mouseClicked(Object e);
 }
         ]]></code>
     </test-code>
@@ -308,7 +316,7 @@ public class MyClass {
 
     <test-code>
         <description>Bug 1740480, assignment in single constructor based on constructor argument check</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class MyClass {
     private int positive;
@@ -353,7 +361,7 @@ public class pmd_inc {
 public class MyClass {
     private long counter = 0;
 
-    public <E> void run(final E entity, final Class<? extends TemplatedClass<E>> m) throws MyException {
+    public <E> void run(final E entity, final Class<?> m) throws Exception {
         this.counter += 1;
     }
 }
@@ -386,6 +394,7 @@ public class Foo {
         <description>#1448 [java] ImmutableField: Private field in inner class gives false positive with lambdas</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.function.BinaryOperator;
 public class CombinersTest {
 
     private static final BinaryOperator<Purse> ADDITION = (p1, p2) -> {
@@ -517,12 +526,30 @@ public class Stack {
     }
 
     private class Node {
+        final Node next;
+        final int x;
+        private Node(Node next, int x) {
+            this.next = next;
+            this.x = x;
+            n++;  // inner class updates instance variable in outer class
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Non-private field of private class</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Stack {
+
+    private class Node {
         Node next;
         int x;
         private Node(Node next, int x) {
             this.next = next;
             this.x = x;
-            n++;  // inner class updates instance variable in outer class
         }
     }
 }
@@ -550,5 +577,63 @@ public class TestFinal {
   }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Blank field should not be considered final, it's most probably not used that way.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+private static class Person {
+
+    @Autowired @Qualifier("special")
+    private Person larry;
+
+    public Person getLarry() {
+        return larry;
+    }
+}
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Multiple ctors writing a subset of fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Field 'beanName' may be declared final</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Collection;
+            class GroovyBeanDefinitionWrapper {
+
+                private String beanName;
+                private Class<?> clazz;
+                private Collection<?> constructorArgs;
+                private Object definition;
+
+
+                public GroovyBeanDefinitionWrapper(String beanName) {
+                    this.beanName = beanName;
+                }
+
+                public GroovyBeanDefinitionWrapper(String beanName, Class<?> clazz) {
+                    this.beanName = beanName;
+                    this.clazz = clazz;
+                }
+
+                public GroovyBeanDefinitionWrapper(String beanName, Class<?> clazz, Collection<?> constructorArgs) {
+                    this.beanName = beanName;
+                    this.clazz = clazz;
+                    this.constructorArgs = constructorArgs;
+                }
+
+                public Collection<?> getConstructorArgs() {return constructorArgs;}
+                public String getBeanName() {return beanName;}
+                public Object getDefinition() {return definition;}
+                public Class<?> getClazz() {return clazz;}
+            }
+            ]]></code>
     </test-code>
 </test-data>

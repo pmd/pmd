@@ -28,49 +28,90 @@ public final class TypePrettyPrint {
     }
 
     public static @NonNull String prettyPrint(@NonNull JTypeVisitable t) {
-        TypePrettyPrinter sb = new TypePrettyPrinter();
-        t.acceptVisitor(PrettyPrintVisitor.INSTANCE, sb);
-        return sb.getResult();
+        return prettyPrint(t, new TypePrettyPrinter());
     }
 
-    public static @NonNull String prettyPrint(@NonNull JMethodSig sig, boolean printHeader) {
-        TypePrettyPrinter sb = new TypePrettyPrinter();
-        sb.printMethodHeader = printHeader;
-        sig.acceptVisitor(PrettyPrintVisitor.INSTANCE, sb);
-        return sb.getResult();
+    public static String prettyPrint(@NonNull JTypeVisitable t, TypePrettyPrinter prettyPrinter) {
+        t.acceptVisitor(PrettyPrintVisitor.INSTANCE, prettyPrinter);
+        return prettyPrinter.consumeResult();
     }
 
-    public static @NonNull String prettyPrintWithTvarBounds(@NonNull JTypeMirror sig) {
-        TypePrettyPrinter sb = new TypePrettyPrinter();
-        sb.printTypeVarBounds = YES;
-        sig.acceptVisitor(PrettyPrintVisitor.INSTANCE, sb);
-        return sb.getResult();
-    }
-
-    public static String prettyPrintWithTvarQualifier(@NonNull JTypeMirror t) {
-        TypePrettyPrinter sb = new TypePrettyPrinter();
-        sb.qualifyTvars = true;
-        t.acceptVisitor(PrettyPrintVisitor.INSTANCE, sb);
-        return sb.getResult();
-    }
-
-    private static class TypePrettyPrinter {
+    /**
+     * Options to pretty print a type. Cannot be used concurrently.
+     */
+    public static class TypePrettyPrinter {
 
         private final StringBuilder sb = new StringBuilder();
 
         private boolean printMethodHeader = true;
+        private boolean printMethodReturnType = true;
         private OptionalBool printTypeVarBounds = UNKNOWN;
         private boolean qualifyTvars = false;
+        private boolean qualifyNames = true;
         private boolean isVarargs = false;
 
+        /** Create a new pretty printer with the default configuration. */
+        public TypePrettyPrinter() { // NOPMD
+            // default
+        }
 
-        StringBuilder append(Object o) {
+        StringBuilder append(char o) {
             return sb.append(o);
         }
 
+        StringBuilder append(String o) {
+            return sb.append(o);
+        }
 
-        public String getResult() {
-            return sb.toString();
+        /**
+         * Print the declaring type of the method and its type parameters.
+         * Default: true.
+         */
+        public TypePrettyPrinter printMethodHeader(boolean printMethodHeader) {
+            this.printMethodHeader = printMethodHeader;
+            return this;
+        }
+
+        /**
+         * Print the return type of methods (as postfix).
+         * Default: true.
+         */
+        public TypePrettyPrinter printMethodResult(boolean printMethodResult) {
+            this.printMethodReturnType = printMethodResult;
+            return this;
+        }
+
+        /**
+         * Print the bounds of type variables.
+         * Default: false.
+         */
+        public void printTypeVarBounds(OptionalBool printTypeVarBounds) {
+            this.printTypeVarBounds = printTypeVarBounds;
+        }
+
+        /**
+         * Qualify type variables with the name of the declaring symbol.
+         * Eg {@code Foo#T} for {@code class Foo<T>}}.
+         * Default: false.
+         */
+        public TypePrettyPrinter qualifyTvars(boolean qualifyTvars) {
+            this.qualifyTvars = qualifyTvars;
+            return this;
+        }
+
+        /**
+         * Use simple names for class types instead of binary names.
+         * Default: false.
+         */
+        public TypePrettyPrinter useSimpleNames(boolean useSimpleNames) {
+            this.qualifyNames = !useSimpleNames;
+            return this;
+        }
+
+        String consumeResult() {
+            String result = sb.toString();
+            this.sb.setLength(0);
+            return result;
         }
     }
 
@@ -102,7 +143,7 @@ public final class TypePrettyPrint {
                 sb.append('*'); // a small marker to spot them
             }
 
-            if (enclosing != null && !isAnon) {
+            if (enclosing != null && !isAnon || !sb.qualifyNames) {
                 sb.append(t.getSymbol().getSimpleName());
             } else {
                 sb.append(t.getSymbol().getBinaryName());
@@ -185,9 +226,12 @@ public final class TypePrettyPrint {
 
             sb.append(t.getName());
 
-            join(sb, t.getFormalParameters(), ", ", "(", ") -> ", t.isVarargs());
+            join(sb, t.getFormalParameters(), ", ", "(", ")", t.isVarargs());
 
-            t.getReturnType().acceptVisitor(this, sb);
+            if (sb.printMethodReturnType) {
+                sb.append(" -> ");
+                t.getReturnType().acceptVisitor(this, sb);
+            }
             return null;
         }
 

@@ -225,6 +225,7 @@ public class Foo {
         <description>don't count Serialization fields as being unused</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.*;
 public class Foo {
     private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("foo", String.class)};
 }
@@ -524,6 +525,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javafx.fxml.FXML;
+import javafx.scene.control.TabPane;
 
 public class NodeInfoPanelController {
     @FXML
@@ -559,6 +561,8 @@ public class Foo {
         <description>#1428 False positive in UnusedPrivateField when local variable hides member variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
+import org.junit.BeforeClass;
 public class IssueUnusedPrivateField {
 
     private static Object helper;   // PMD warns unused

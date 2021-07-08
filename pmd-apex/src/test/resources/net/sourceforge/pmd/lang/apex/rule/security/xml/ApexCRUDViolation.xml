@@ -135,8 +135,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>VF built-in CRUD checks via getter</description>
-        <expected-problems>0</expected-problems>
+        <description>VF built-in CRUD checks via getter, but cannot determine if is really VF</description>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
     public Contact getFoo() {
@@ -148,35 +148,6 @@ public class Foo {
     public Contact getBaz() {
         String tempID = 'someID';
          return  [SELECT Name FROM Contact WHERE Id=:tempID];
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Bypassing VF built-in CRUD checks via getter method
-        </description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    public String getUserName() {
-        String tempID = 'someID';
-         Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-         return c.Name;
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>No VF provided CRUD checks via getter method
-        </description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    public Contact justGiveMeFoo() {
-        String tempID = 'someID';
-         return [SELECT Name FROM Contact WHERE Id=:tempID];
     }
 }
         ]]></code>
@@ -885,8 +856,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Count does not expose data and CRUD checks are unnecessary</description>
-        <expected-problems>0</expected-problems>
+        <description>Count does expose data and CRUD checks are necessary</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public Integer getBaz() {
@@ -897,9 +868,9 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Count does not leak data and CRUD checks are unnecessary
+        <description>Count does leak data and CRUD checks are necessary
         </description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void getBaz() {

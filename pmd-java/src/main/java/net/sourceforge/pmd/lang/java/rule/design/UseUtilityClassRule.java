@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.Arrays;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.util.Collection;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -24,7 +25,7 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        return Arrays.asList("lombok.experimental.UtilityClass");
+        return setOf("lombok.experimental.UtilityClass");
     }
 
     @Override

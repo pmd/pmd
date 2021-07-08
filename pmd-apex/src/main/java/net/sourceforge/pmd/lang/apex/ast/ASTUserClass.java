@@ -11,9 +11,8 @@ import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.semantic.ast.compilation.UserClass;
 
-public final class ASTUserClass extends AbstractApexNode<UserClass> implements ASTUserClassOrInterface<UserClass> {
+public final class ASTUserClass extends BaseApexClass<UserClass> implements ASTUserClassOrInterface<UserClass> {
 
-    private ApexQualifiedName qname;
 
     ASTUserClass(UserClass userClass) {
         super(userClass);
@@ -24,41 +23,6 @@ public final class ASTUserClass extends AbstractApexNode<UserClass> implements A
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
-
-    @Override
-    public String getImage() {
-        String apexName = getDefiningType();
-        return apexName.substring(apexName.lastIndexOf('.') + 1);
-    }
-
-    @Override
-    public ApexQualifiedName getQualifiedName() {
-        if (qname == null) {
-
-            ASTUserClass parent = this.getFirstParentOfType(ASTUserClass.class);
-
-            if (parent != null) {
-                qname = ApexQualifiedName.ofNestedClass(parent.getQualifiedName(), this);
-            } else {
-                qname = ApexQualifiedName.ofOuterClass(this);
-            }
-        }
-
-        return qname;
-    }
-
-
-    @Override
-    public TypeKind getTypeKind() {
-        return TypeKind.CLASS;
-    }
-
-
-    public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
-    }
-
 
     public String getSuperClassName() {
         return node.getDefiningType().getCodeUnitDetails().getSuperTypeRef().map(TypeRef::getNames)

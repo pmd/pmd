@@ -26,6 +26,7 @@ public enum TimedOperationCategory {
     RULE_AST_INDEXATION,
     REPORTING,
     FILE_PROCESSING,
+    ANALYSIS_CACHE,
     UNACCOUNTED;
 
     public String displayName() {

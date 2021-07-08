@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -88,7 +89,7 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     }
 
     @Override
-    public void end() throws IOException {
+    public void outputReport(Report report) throws IOException {
         String outputDir = getProperty(OUTPUT_DIR);
 
         for (RuleViolation ruleViolation : report.getViolations()) {

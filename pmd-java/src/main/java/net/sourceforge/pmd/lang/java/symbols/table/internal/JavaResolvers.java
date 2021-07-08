@@ -167,6 +167,55 @@ public final class JavaResolvers {
         };
     }
 
+    /** Static fields with a given name. */
+    static NameResolver<FieldSig> staticImportFieldResolver(JClassType containerType, @NonNull String accessPackageName, String importedSimpleName) {
+        return new NameResolver<FieldSig>() {
+            List<FieldSig> result;
+
+            @Override
+            public @NonNull List<FieldSig> resolveHere(String simpleName) {
+                if (!simpleName.equals(importedSimpleName)) {
+                    return Collections.emptyList();
+                }
+                if (result == null) {
+                    result = JavaResolvers.getMemberFieldResolver(containerType, accessPackageName, null, simpleName)
+                                          .resolveHere(simpleName);
+                }
+                return result;
+            }
+
+            @Override
+            public String toString() {
+                return "static methods w/ name " + importedSimpleName + " of " + containerType;
+            }
+        };
+    }
+
+    /** Static classes with a given name. */
+    static NameResolver<JClassType> staticImportClassResolver(JClassType containerType, @NonNull String accessPackageName, String importedSimpleName) {
+        return new NameResolver<JClassType>() {
+            List<JClassType> result;
+
+            @Override
+            public @NonNull List<JClassType> resolveHere(String simpleName) {
+                if (!simpleName.equals(importedSimpleName)) {
+                    return Collections.emptyList();
+                }
+
+                if (result == null) {
+                    result = JavaResolvers.getMemberClassResolver(containerType, accessPackageName, null, simpleName)
+                                          .resolveHere(simpleName);
+                }
+                return result;
+            }
+
+            @Override
+            public String toString() {
+                return "static classes w/ name " + importedSimpleName + " of " + containerType;
+            }
+        };
+    }
+
     static NameResolver<JMethodSig> staticImportOnDemandMethodResolver(JClassType container, @NonNull String accessPackageName) {
         assert accessPackageName != null;
         return new NameResolver<JMethodSig>() {
@@ -269,16 +318,16 @@ public final class JavaResolvers {
     }
 
     static Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder,
-                ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> importOnDemandMembersResolvers(JClassType t, @NonNull String accessPackageName) {
+        ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> importOnDemandMembersResolvers(JClassType t, @NonNull String accessPackageName) {
         return hidingWalkResolvers(t, null, accessPackageName, false, /* onlyStatic: */ true, JUST_SELF /* include self members */);
     }
 
     private static Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder, ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> hidingWalkResolvers(JClassType t,
-                                                                                                   @Nullable JClassType accessType,
-                                                                                                   @NonNull String accessPackageName,
-                                                                                                   boolean accessIsSubtypeOfOwner,
-                                                                                                   boolean onlyStatic,
-                                                                                                   SuperTypesEnumerator enumerator) {
+                                                                                                                                                     @Nullable JClassType accessType,
+                                                                                                                                                     @NonNull String accessPackageName,
+                                                                                                                                                     boolean accessIsSubtypeOfOwner,
+                                                                                                                                                     boolean onlyStatic,
+                                                                                                                                                     SuperTypesEnumerator enumerator) {
         JClassSymbol nestRoot = accessType == null ? null : accessType.getSymbol().getNestRoot();
 
         ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder fields = SymTableFactory.VARS.new ResolverBuilder();

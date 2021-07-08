@@ -39,9 +39,9 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
     }
 
     @Override
-    public void end() throws IOException {
+    public void outputReport(Report report) throws IOException {
         writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
-        renderSummary();
+        renderSummary(report);
         writer.write("<center><h2>Detail</h2></center>");
         writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL);
 
@@ -57,10 +57,8 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
 
     /**
      * Write a Summary HTML table.
-     *
-     * @throws IOException
      */
-    public void renderSummary() throws IOException {
+    private void renderSummary(Report report) throws IOException {
         writer.write("<center><h2>Summary</h2></center>" + PMD.EOL);
         writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL);
         writer.write("<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL);

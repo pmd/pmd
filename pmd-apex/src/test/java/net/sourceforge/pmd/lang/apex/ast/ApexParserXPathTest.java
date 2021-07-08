@@ -13,15 +13,13 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
 public class ApexParserXPathTest extends ApexParserTestBase {
 
     @Test
     public void testBooleanExpressions() throws Exception {
-        ApexNode<Compilation> node = parse(IOUtils.toString(ApexParserXPathTest.class.getResourceAsStream("BooleanExpressions.cls"),
+        ApexNode<?> node = parse(IOUtils.toString(ApexParserXPathTest.class.getResourceAsStream("BooleanExpressions.cls"),
                 StandardCharsets.UTF_8));
-        List<ASTBooleanExpression> booleanExpressions = node.findDescendantsOfType(ASTBooleanExpression.class);
+        List<ASTBooleanExpression> booleanExpressions = node.descendants(ASTBooleanExpression.class).toList();
         Assert.assertEquals(2, booleanExpressions.size());
         Assert.assertEquals("&&", booleanExpressions.get(0).getOperator().toString());
         Assert.assertEquals("!=", booleanExpressions.get(1).getOperator().toString());

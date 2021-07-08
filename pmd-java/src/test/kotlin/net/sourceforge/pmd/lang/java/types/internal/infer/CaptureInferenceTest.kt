@@ -107,7 +107,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
 
                             val captureOfString = captureMatcher(`?` extends gen.t_String)
 
-                            it.typeMirror shouldBe gen.t_Comparator[captureOfString]
+                            it shouldHaveType gen.t_Comparator[captureOfString]
 
                             it.methodType.shouldMatchMethod(
                                     named = "comparingInt",
@@ -123,7 +123,7 @@ class CaptureInferenceTest : ProcessorTestSpec({
                                     unspecifiedChild()
 
                                     it.referencedMethod shouldBe ts.OBJECT.getMethodsByName("hashCode").single()
-                                    it.typeMirror shouldBe ToIntFunction::class[captureOfString]
+                                    it shouldHaveType ToIntFunction::class[captureOfString]
                                 }
                             }
                         }

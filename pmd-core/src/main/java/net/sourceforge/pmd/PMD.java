@@ -30,7 +30,7 @@ import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
-import net.sourceforge.pmd.cli.PMDParameters;
+import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -73,8 +73,12 @@ public final class PMD {
      * This method is the main entry point for command line usage.
      *
      * @param configuration the configuration to use
+     *
      * @return number of violations found.
+     *
+     * @deprecated Use {@link #runPmd(PMDConfiguration)}.
      */
+    @Deprecated
     public static int doPMD(final PMDConfiguration configuration) {
 
         // Load the RuleSets
@@ -357,59 +361,100 @@ public final class PMD {
     }
 
     /**
-     * Entry to invoke PMD as command line tool. Note that this will invoke {@link System#exit(int)}.
+     * Entry to invoke PMD as command line tool. Note that this will
+     * invoke {@link System#exit(int)}.
      *
-     * @param args
-     *            command line arguments
+     * @param args command line arguments
      */
     public static void main(String[] args) {
-        PMDCommandLineInterface.run(args);
+        StatusCode exitCode = runPmd(args);
+        PMDCommandLineInterface.setStatusCodeOrExit(exitCode.toInt());
     }
 
     /**
      * Parses the command line arguments and executes PMD. Returns the
      * exit code without exiting the VM.
      *
-     * @param args
-     *            command line arguments
+     * @param args command line arguments
+     *
      * @return the exit code, where <code>0</code> means successful execution,
-     *         <code>1</code> means error, <code>4</code> means there have been
-     *         violations found.
+     *     <code>1</code> means error, <code>4</code> means there have been
+     *     violations found.
+     *
+     * @deprecated Use {@link #runPmd(String...)}.
      */
+    @Deprecated
     public static int run(final String[] args) {
-        final PMDParameters params = PMDCommandLineInterface.extractParameters(new PMDParameters(), args, "pmd");
+        return runPmd(args).toInt();
+    }
 
-        if (params.isBenchmark()) {
+    /**
+     * Parses the command line arguments and executes PMD. Returns the
+     * status code without exiting the VM. Note that the arguments parsing
+     * may itself fail and produce a {@link StatusCode#ERROR}. This will
+     * print the error message to standard error.
+     *
+     * @param args command line arguments
+     *
+     * @return the status code. Note that {@link PMDConfiguration#isFailOnViolation()}
+     *     (flag {@code --failOnViolation}) may turn an {@link StatusCode#OK} into a {@link
+     *     StatusCode#VIOLATIONS_FOUND}.
+     */
+    public static StatusCode runPmd(String... args) {
+        PmdParametersParseResult parseResult = PmdParametersParseResult.extractParameters(args);
+        if (parseResult.isHelp()) {
+            PMDCommandLineInterface.printJcommanderUsageOnConsole();
+            System.out.println(PMDCommandLineInterface.buildUsageText());
+            return StatusCode.OK;
+        } else if (parseResult.isError()) {
+            System.out.println(PMDCommandLineInterface.buildUsageText());
+            System.err.println(parseResult.getError().getMessage());
+            return StatusCode.ERROR;
+        }
+        return runPmd(parseResult.toConfiguration());
+    }
+
+    /**
+     * Execute PMD from a configuration. Returns the status code without
+     * exiting the VM. This is the main entry point to run a full PMD run
+     * with a manually created configuration.
+     *
+     * @param configuration Configuration to run
+     *
+     * @return the status code. Note that {@link PMDConfiguration#isFailOnViolation()}
+     *     (flag {@code --failOnViolation}) may turn an {@link StatusCode#OK} into a {@link
+     *     StatusCode#VIOLATIONS_FOUND}.
+     */
+    public static StatusCode runPmd(PMDConfiguration configuration) {
+        if (configuration.isBenchmark()) {
             TimeTracker.startGlobalTracking();
         }
 
-        int status = PMDCommandLineInterface.NO_ERRORS_STATUS;
-        final PMDConfiguration configuration = params.toConfiguration();
-
-        final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
+        final Level logLevel = configuration.isDebug() ? Level.FINER : Level.INFO;
         final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, new ConsoleHandler());
         final Level oldLogLevel = LOG.getLevel();
         // Need to do this, since the static logger has already been initialized
         // at this point
         LOG.setLevel(logLevel);
 
+        StatusCode status;
         try {
             int violations = PMD.doPMD(configuration);
             if (violations > 0 && configuration.isFailOnViolation()) {
-                status = PMDCommandLineInterface.VIOLATIONS_FOUND;
+                status = StatusCode.VIOLATIONS_FOUND;
             } else {
-                status = PMDCommandLineInterface.NO_ERRORS_STATUS;
+                status = StatusCode.OK;
             }
         } catch (Exception e) {
             System.out.println(PMDCommandLineInterface.buildUsageText());
             System.out.println();
             System.err.println(e.getMessage());
-            status = PMDCommandLineInterface.ERROR_STATUS;
+            status = StatusCode.ERROR;
         } finally {
             logHandlerManager.close();
             LOG.setLevel(oldLogLevel);
 
-            if (params.isBenchmark()) {
+            if (configuration.isBenchmark()) {
                 final TimingReport timingReport = TimeTracker.stopGlobalTracking();
 
                 // TODO get specified report format from config
@@ -425,5 +470,38 @@ public final class PMD {
             }
         }
         return status;
+    }
+
+    /**
+     * Represents status codes that are used as exit codes during CLI runs.
+     *
+     * @see #runPmd(String[])
+     */
+    public enum StatusCode {
+        /** No errors, no violations. This is exit code {@code 0}. */
+        OK(0),
+        /**
+         * Errors were detected, PMD may have not run to the end.
+         * This is exit code {@code 1}.
+         */
+        ERROR(1),
+        /**
+         * No errors, but PMD found violations. This is exit code {@code 4}.
+         * This is only returned if {@link PMDConfiguration#isFailOnViolation()}
+         * is set (CLI flag {@code --failOnViolation}).
+         */
+        VIOLATIONS_FOUND(4);
+
+        private final int code;
+
+        StatusCode(int code) {
+            this.code = code;
+        }
+
+        /** Returns the exit code as used in CLI. */
+        public int toInt() {
+            return this.code;
+        }
+
     }
 }

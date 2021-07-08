@@ -16,21 +16,40 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: |
-            ~/.m2/repository
-            ~/.cache
-            vendor/bundle
-          key: push-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+              ~/.m2/repository
+              ~/.gradle/caches
+              ~/.cache
+              ~/work/pmd/target/repositories
+              vendor/bundle
+          key: v1-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            push-${{ runner.os }}-
+            v1-${{ runner.os }}-
       - name: Set up Ruby 2.7
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-      - name: Install OpenJDK 11
+      - name: Setup Environment
+        shell: bash
         run: |
-          source .ci/inc/logger.inc
-          source .ci/inc/install-openjdk.inc
-          install_openjdk 11
+          echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
+          echo "MAVEN_OPTS=-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
+          echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/14/scripts" >> $GITHUB_ENV
+      - name: Check Environment
+        shell: bash
+        run: |
+          f=check-environment.sh; \
+          mkdir -p .ci && \
+          ( [ -e .ci/$f ] || curl -sSL "${PMD_CI_SCRIPTS_URL}/$f" > ".ci/$f" ) && \
+          chmod 755 .ci/$f && \
+          .ci/$f
+      - name: Build
+        run: |
+          f=openjdk.bash; \
+          mkdir -p .ci/inc && \
+          ( [ -e .ci/inc/$f ] || curl -sSL "${PMD_CI_SCRIPTS_URL}/inc/$f" > ".ci/inc/$f" ) && \
+          source .ci/inc/$f ; \
+          pmd_ci_openjdk_install_adoptopenjdk 11 ; \
+          pmd_ci_openjdk_setdefault 11
         shell: bash
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3

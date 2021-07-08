@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
@@ -12,6 +15,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 public class SarifRendererTest extends AbstractRendererTest {
     @Override
@@ -67,25 +71,27 @@ public class SarifRendererTest extends AbstractRendererTest {
     @Override
     @Test
     public void testRendererMultiple() throws Exception {
-        // Setup
-        Report rep = reportTwoViolations();
-
         // Exercise
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = ReportTest.render(getRenderer(), reportTwoViolations());
 
-        // Verify
-        assertEquals(filter(getExpectedMultiple()), filter(actual));
+        // Verify that both rules are and rule ids are linked in the results 
+        // Initially was comparing whole files but order of rules rendered can't be guaranteed when the report is being rendered
+        // Refer to pmd-core/src/test/resources/net/sourceforge/pmd/renderers/sarif/expected-multiple.sarif.json to see an example data structure
+        assertThat(filter(actual), containsString("\"ruleId\": \"Foo\""));
+        assertThat(filter(actual), containsString("\"ruleId\": \"Boo\""));
+        assertThat(filter(actual), containsString("\"id\": \"Foo\""));
+        assertThat(filter(actual), containsString("\"id\": \"Boo\""));
     }
 
-    private Report reportTwoViolations() {
-        Report report = new Report();
-        RuleViolation informationalRuleViolation = newRuleViolation(1, "Foo");
-        informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
-        report.addRuleViolation(informationalRuleViolation);
-        RuleViolation severeRuleViolation = newRuleViolation(2, "Boo");
-        severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
-        report.addRuleViolation(severeRuleViolation);
-        return report;
+    private Consumer<FileAnalysisListener> reportTwoViolations() {
+        return reportBuilder -> {
+            RuleViolation informationalRuleViolation = newRuleViolation(1, "Foo");
+            informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
+            reportBuilder.onRuleViolation(informationalRuleViolation);
+            RuleViolation severeRuleViolation = newRuleViolation(2, "Boo");
+            severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
+            reportBuilder.onRuleViolation(severeRuleViolation);
+        };
     }
 
     protected String readFile(String relativePath) {

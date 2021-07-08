@@ -7,13 +7,16 @@
 
     <code-fragment id="full-example"><![CDATA[
 package com
-           .company
-                   .money;
+        .company
+        .money;
 
 import com
-           .company
-                   .money.Bar;
+        .company
+        .money.Bar;
 import com.company.Carrot;
+import com.company.ScaryException;
+import com.company.ThemAll;
+import java.util.Random;
 
 public class Foo extends Bar {
     int y, z, t;
@@ -23,12 +26,12 @@ public class Foo extends Bar {
         bar();
         int x;
         switch
-            (x) {
-            case 1: foo(); break;
-            case 2:
-            case 3: bar();
-                    break;
-            default: break;
+        (x) {
+        case 1: foo(); break;
+        case 2:
+        case 3: bar();
+            break;
+        default: break;
         }
     }
 
@@ -43,8 +46,8 @@ public class Foo extends Bar {
             theNonsense: for (int k = -20; k < 20; k += j) {
                 if (r.nextInt() == 42) {
                     System
-                        .out
-                        .println("Bye");
+                            .out
+                            .println("Bye");
                     break label;
                 } else if (k > 12) {
                     continue theNonsense;
@@ -52,7 +55,7 @@ public class Foo extends Bar {
             }
         }
 
-        supexx(z);
+        super.f(z);
     }
 
     public void foo() {
@@ -75,8 +78,9 @@ public class Foo extends Bar {
         } while (x != 2);
     }
 
-    public static void main(String args[]) throws RadioactiveException {
+    public static void main(String args[]) throws ScaryException {
         String k, l, m;
+        int x;
 
         bar();
 
@@ -97,7 +101,7 @@ public class Foo extends Bar {
         }
 
         int p =
-            2 + 4 + 5;
+                2 + 4 + 5;
 
         try {
             x++;
@@ -105,7 +109,6 @@ public class Foo extends Bar {
             e.printStackTrace();
         } catch (ThemAll pokemon) {
             pokemon.train();
-            assert pokemon.level > 12;
         } finally {
             // Do nothing
         }
@@ -130,7 +133,7 @@ public class Foo extends Bar {
             <message>'com.company.money.Foo#Foo()' has value 2.</message>
             <message>'com.company.money.Foo#Foo(int)' has value 13.</message>
             <message>'com.company.money.Foo#foo()' has value 14.</message>
-            <message>'com.company.money.Foo#main(String)' has value 21.</message>
+            <message>'com.company.money.Foo#main(String[])' has value 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -141,11 +144,11 @@ public class Foo extends Bar {
         <rule-property name="metricOptions">countImports</rule-property>
         <expected-problems>5</expected-problems>
         <expected-messages>
-            <message>'com.company.money.Foo' has value 69.</message>
+            <message>'com.company.money.Foo' has value 72.</message>
             <message>'com.company.money.Foo#Foo()' has value 2.</message>
             <message>'com.company.money.Foo#Foo(int)' has value 13.</message>
             <message>'com.company.money.Foo#foo()' has value 14.</message>
-            <message>'com.company.money.Foo#main(String)' has value 21.</message>
+            <message>'com.company.money.Foo#main(String[])' has value 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -225,7 +228,7 @@ public class Foo {
 public class Foo {
     void foo() {
         try {
-        } catch (IOException e) {
+        } catch (java.io.IOException e) {
         } catch (Exception e) {
         }
     }
@@ -367,9 +370,10 @@ public abstract class Koo {
             <message>'Koo#bar()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
+import java.util.function.Consumer;
 public abstract class Koo {
     void bar() {
-        Consumer<Int> i = i -> {
+        Consumer<Integer> i = i -> {
 
         };
     }
@@ -384,9 +388,10 @@ public abstract class Koo {
             <message>'Koo#bar()' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
+import java.util.function.Consumer;
 public abstract class Koo {
     void bar() {
-        Consumer<Int> i = i -> {
+        Consumer<Integer> i = i -> {
             int j = 0;
             j = i;
         };

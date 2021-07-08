@@ -124,8 +124,8 @@ public abstract class BaseLanguageModule implements Language {
     }
 
     @Override
-    public boolean hasExtension(String extension) {
-        return extensions != null && extensions.contains(extension);
+    public boolean hasExtension(String extensionWithoutDot) {
+        return extensions != null && extensions.contains(extensionWithoutDot);
     }
 
     @Override

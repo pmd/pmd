@@ -59,7 +59,9 @@ public class Foo {
         <code><![CDATA[
 import org.junit.Before;
 import org.junit.Test;
+import my.EsSetup;
 public class Foo {
+    EsSetup esSetup;
     @Before("@ResetEsSetup")
     public void setUp() {
         esSetup.execute(EsSetup.deleteAll());
@@ -75,6 +77,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import java.lang.reflect.Method;
 
 public class Foo {
     @BeforeMethod
@@ -91,7 +95,7 @@ public class Foo {
         <description>#940 False positive with JUnit4TestShouldUseBeforeAnnotation when JUnit5's 'BeforeEach' is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 
 public class Foo {
     @BeforeEach
@@ -108,7 +112,7 @@ public class Foo {
         <description>#940 False positive with JUnit4TestShouldUseBeforeAnnotation when JUnit5's 'BeforeAll' is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.*;
 
 public class Foo {
     @BeforeAll

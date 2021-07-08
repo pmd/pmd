@@ -72,9 +72,9 @@ class Foo {
     {
         try {
             // do something
-        } catch (FieldNotFound e) {
+        } catch (NoSuchFieldException e) {
             throw new IllegalStateException("field not found", e);
-        } catch (FieldException | FieldConvertError e) {
+        } catch (NoSuchFieldException | NoSuchFieldError e) {
             throw new IllegalArgumentException("field exception ", e);
         }
     }
@@ -90,10 +90,10 @@ class Foo {
     {
         try {
             // do something
-        } catch (Exception1 exception) {
-            throw new Exception3("Error message 1", exception);
-        } catch (Exception2 exception) {
-            throw new Exception3("Error message 2", exception);
+        } catch (IllegalArgumentException exception) {
+            throw new RuntimeException("Error message 1", exception);
+        } catch (IllegalStateException exception) {
+            throw new RuntimeException("Error message 2", exception);
         }
     }
 }
@@ -108,20 +108,20 @@ class Foo {
     static {
         try {
             // do something
-        } catch (Exception1 exception) {
+        } catch (RuntimeException exception) {
             exception(exception);
-        } catch (Exception2 exception2) {
+        } catch (IllegalStateException exception2) {
             exception2(exception2);
         }
     }
 
     private static void exception(Exception exception) {
-        throw new Exception3("Error message 1", exception);
+        throw new RuntimeException("Error message 1", exception);
     }
 
 
     private static exception2(Exception exception) {
-        throw new Exception3("Error message 2", exception);
+        throw new RuntimeException("Error message 2", exception);
     }
 }
         ]]></code>

@@ -86,7 +86,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar(final List batch) {
+    public void bar(final Foo batch) {
         try {} catch (Exception e) {}
         try {} catch (Exception ee) {}
     }
@@ -158,6 +158,42 @@ public class Foo {
     int field;
     public Foo(int a) {
         this.field = a;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3265 False negative with default methods in interface</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,7</expected-linenumbers>
+        <code><![CDATA[
+public interface DefaultMethodInInterface {
+    default String toString(Object one) {
+        return toString(one, one);
+    }
+    String toString(Object one, Object two);
+
+    default Object justReturn(Object o) {
+        return o;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3265 False negative with classes in interfaces</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,6</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithClass {
+    class Inner {
+        public Inner(Object o) {
+            Object a = o;
+        }
+        public Object justReturn(Object o) {
+            return o;
+        }
     }
 }
         ]]></code>

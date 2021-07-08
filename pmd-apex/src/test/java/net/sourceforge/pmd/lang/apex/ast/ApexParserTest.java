@@ -24,8 +24,6 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.document.FileLocation;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
 public class ApexParserTest extends ApexParserTestBase {
 
     @Test
@@ -40,7 +38,7 @@ public class ApexParserTest extends ApexParserTestBase {
             + "}";
 
         // Exercise
-        ApexNode<Compilation> rootNode = parse(code);
+        ASTUserClassOrInterface<?> rootNode = parse(code);
 
         // Verify
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
@@ -57,18 +55,18 @@ public class ApexParserTest extends ApexParserTestBase {
 
     @Test
     public void verifyLineColumnNumbers() {
-        ApexNode<Compilation> rootNode = parse(testCodeForLineNumbers);
+        ASTUserClassOrInterface<?> rootNode = parse(testCodeForLineNumbers);
         assertLineNumbersForTestCode(rootNode);
     }
 
     @Test
     public void verifyLineColumnNumbersWithWindowsLineEndings() {
         String windowsLineEndings = testCodeForLineNumbers.replaceAll(" \n", "\r\n");
-        ApexNode<Compilation> rootNode = parse(windowsLineEndings);
+        ASTUserClassOrInterface<?> rootNode = parse(windowsLineEndings);
         assertLineNumbersForTestCode(rootNode);
     }
 
-    private void assertLineNumbersForTestCode(ApexNode<Compilation> rootNode) {
+    private void assertLineNumbersForTestCode(ASTUserClassOrInterface<?> rootNode) {
         // whole source code, well from the beginning of the class
         // name Modifier of the class - doesn't work. This node just
         // sees the identifier ("SimpleClass")
@@ -105,7 +103,7 @@ public class ApexParserTest extends ApexParserTestBase {
                 + "    }\n" // line 5
                 + "}\n"; // line 6
 
-        ApexNode<Compilation> rootNode = parse(code);
+        ASTUserClassOrInterface<?> rootNode = parse(code);
 
         Node method1 = rootNode.getChild(1);
         assertPosition(method1, 2, 17, 2, 24);
@@ -125,7 +123,7 @@ public class ApexParserTest extends ApexParserTestBase {
             + "    }\n" // line 5
             + "}\n"; // line 6
 
-        ApexNode<Compilation> root = parse(code);
+        ASTUserClassOrInterface<?> root = parse(code);
 
         assertThat(root, instanceOf(ASTUserClass.class));
         ApexNode<?> comment = root.getChild(0);
@@ -150,8 +148,7 @@ public class ApexParserTest extends ApexParserTestBase {
         for (File file : fList) {
             if (file.isFile() && file.getName().endsWith(".cls")) {
                 String sourceCode = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-                ApexNode<Compilation> rootNode = parse(sourceCode);
-                Assert.assertNotNull(rootNode);
+                Assert.assertNotNull(parse(sourceCode));
             }
         }
     }
@@ -164,8 +161,7 @@ public class ApexParserTest extends ApexParserTestBase {
     public void parseInheritedSharingClass() throws IOException {
         String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("InheritedSharing.cls"),
                 StandardCharsets.UTF_8);
-        ApexNode<Compilation> rootNode = parse(source);
-        Assert.assertNotNull(rootNode);
+        parse(source);
     }
 
     /**
@@ -177,8 +173,7 @@ public class ApexParserTest extends ApexParserTestBase {
     public void stackOverflowDuringClassParsing() throws Exception {
         String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"),
                 StandardCharsets.UTF_8);
-        ApexNode<Compilation> rootNode = parse(source);
-        Assert.assertNotNull(rootNode);
+        ASTUserClassOrInterface<?> rootNode = parse(source);
 
         int count = visitPosition(rootNode, 0);
         Assert.assertEquals(487, count);
@@ -192,16 +187,15 @@ public class ApexParserTest extends ApexParserTestBase {
 
         visitPosition(rootNode, 0);
 
-        ApexNode<Compilation> rootClass = rootNode.getMainNode();
-        Assert.assertEquals("InnerClassLocations", rootClass.getImage());
+        Assert.assertEquals("InnerClassLocations", rootNode.getSimpleName());
         // Note: Apex parser doesn't provide positions for "public class" keywords. The
         // position of the UserClass node is just the identifier. So, the node starts
         // with the identifier and not with the first keyword in the file...
-        assertPosition(rootClass, 1, 14, 16, 3);
+        assertPosition(rootNode, 1, 14, 16, 2);
 
-        List<ASTUserClass> classes = rootClass.descendants(ASTUserClass.class).toList();
+        List<ASTUserClass> classes = rootNode.descendants(ASTUserClass.class).toList();
         Assert.assertEquals(2, classes.size());
-        Assert.assertEquals("bar1", classes.get(0).getImage());
+        Assert.assertEquals("bar1", classes.get(0).getSimpleName());
         List<ASTMethod> methods = classes.get(0).children(ASTMethod.class).toList();
         Assert.assertEquals(2, methods.size()); // m() and synthetic clone()
         Assert.assertEquals("m", methods.get(0).getImage());

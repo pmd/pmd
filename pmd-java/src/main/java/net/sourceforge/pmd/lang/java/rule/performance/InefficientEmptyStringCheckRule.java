@@ -82,6 +82,4 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
         }
         return false;
     }
-
 }
-

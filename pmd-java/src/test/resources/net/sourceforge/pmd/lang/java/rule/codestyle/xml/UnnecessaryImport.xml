@@ -1,0 +1,919 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>simple unused single type import</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+public class Foo {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>one used single type import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+public class Foo {
+    private File file;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>2 unused single-type imports</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+import java.util.List;
+public class Foo {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1 used single type import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.security.AccessController;
+public class Foo {
+    public void foo() {
+        AccessController.doPrivileged(null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1 import stmt, used only in throws clause</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.rmi.RemoteException;
+public class Foo {
+    public void foo() throws RemoteException {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>for loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+public class Foo {
+    public void foo(ArrayList list) {
+        for (String s : list) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Generics</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import foo.TestInterfaceTwo;
+public class Foo {
+    private List<TestInterfaceTwo> x = new ArrayList<TestInterfaceTwo>();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Generics 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Collection;
+import java.util.List;
+import java.util.ArrayList;
+public class Foo {
+    private List<Collection> x = new ArrayList<Collection>();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import foo.annotation.Retention;
+import foo.annotation.RetentionPolicy;
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Foo {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Annotations 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import foo.FooAnnotation1;
+import foo.FooAnnotation2;
+@FooAnnotation1
+@FooAnnotation2
+public class Foo {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import from default package</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary import from the current package 'Bar'</message>
+        </expected-messages>
+        <code><![CDATA[
+import Bar;
+public class Foo {
+    public Bar foo() {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>import from default package from somewhere else</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package somewhere;
+import Bar;
+public class Foo {
+    public Bar foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import from default package</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package somewhere;
+import Bar;
+public class Foo {
+    public void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Used static import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static com.foo.MyClass.staticMethod;
+public class Foo {
+    public Foo(){
+        staticMethod("This is OK");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unused static import</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import static com.foo.MyClass.staticMethod;
+public class Foo {
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>On demand import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    List list = new ArrayList();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>imports used in javadoc comment, see also bug #254</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.File;
+import java.util.NoSuchElementException;
+import java.io.IOException;
+
+public class Foo {
+    /**
+     * {@linkplain  List list}
+     * {@link  ArrayList  arraylist}
+     * {@link  LinkedList}
+     * {@value  Calendar#DATE}
+     * @see File
+     * @throws NoSuchElementException no such element
+     * @exception IOException IO operation exception
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1280 False Positive in UnusedImports when import used in javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import some.pack.SomeUtility;
+
+public class Foo {
+    /**
+     * The {@link SomeUtility#someHelperMethod(String, SomeObject)} method does something.
+     */
+    public void someMethod() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1720 False Positive in UnusedImports for Javadoc link with array type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import some.pack.SomeUtility;
+
+public class Foo {
+    /**
+     * The {@link SomeUtility#someHelperMethod(String, SomeObjectArray[])} method does something.
+     */
+    public void someMethod() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bug 2606609 : False "UnusedImports" positive in package-info.java</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@DefaultAnnotation(NonNull.class)
+package net.sourceforge.pmd.test;
+
+import edu.umd.cs.findbugs.annotations.DefaultAnnotation;
+import edu.umd.cs.findbugs.annotations.NonNull;
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bug #254 False+ : UnusedImport with Javadoc @link</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.NoSuchElementException;
+
+public class Test {
+    /**
+     * {@link ArrayList#add(Object)}
+     * @see Collections
+     * @throws NoSuchElementException no such element
+     */
+    String[] getList() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1181 unused import false positive if used as parameter in javadoc only.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Vector;
+
+public class Foo {
+    /**
+     * See here: {@link Collections#reverse(List, Collection)}
+     * @see Collections#reverse(ArrayList, Vector)
+     */
+    public Object bar() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1280 False Positive in UnusedImports when import used in javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import some.pack.SomeUtility;
+
+public class Foo {
+    /**
+     * The {@link SomeUtility#someHelperMethod(String, test.SomeObject)} method does something.
+     */
+    public void someMethod() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#914 False +ve from UnusedImports with wildcard static imports</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.junit.Assert.*;
+import org.junit.Test;
+import static java.lang.Math.*;
+
+public class FooTest {
+    @Test
+    public void testStuff() {
+        assertEquals( "a", "a" );
+        assertFalse( false );
+        assertTrue( true );
+        assertNull( null );
+    }
+    public static void main(String[] args) {
+        System.out.println(PI);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1465 False Positve UnusedImports with javadoc @link</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import a.b.c.d.AgentState;
+import a.b.c.d.OtherState;
+
+public interface Foo {
+    /**
+     * Gets all active AgentHandles.
+     * <p/>
+     * An agent is active if it has not posted a {@link AgentStateChangeEvent} containing {@link AgentState#TERMINATED}.
+     *
+     * @return agent handles.
+     * @see OtherState#TERMINATED
+     */
+    Iterable<AgentHandle> getAgentHandles();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1547 False Positve UnusedImports with javadoc for identifiers with underscores</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.net.HttpURLConnection;
+
+import foo.bar.Some_Thing;
+import foo.bar.Under_Score_Exception;
+import foo.bar.Fixed_Values;
+
+/**
+ * {@link HttpURLConnection#HTTP_NOT_ACCEPTABLE}
+ *
+ * {@value Fixed_Values#FOO_BAR}
+ *
+ * @see Some_Thing#SOMETHING_ELSE
+ */
+public interface Interface {
+
+    /**
+     * @throws Under_Score_Exception
+     */
+    void doSomething();
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#348 False Positive UnusedImports with javadoc for public static inner classes of imports</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.swing.GroupLayout;
+
+public class Foo {
+
+    /**
+     * {@link Bar#doSomething(GroupLayout.Group)}
+     */
+    void doSomething();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#925 [java] UnusedImports false positive for static import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ClassWithConstants.*;
+
+            public class ClassWithImport {
+
+                public static void main(String[] args) {
+                    System.out.println("List 1: " + LIST1);
+                    System.out.println("List 2: " + LIST2);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1404 [java] UnusedImports false positive for static import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ClassWithStringConstants.*;
+
+            public class ClassWithImport {
+
+                public static void main(String[] args) {
+                    if (CONST1.equals("a")) {
+                        System.out.println("CONST1 is a");
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1209 [java] UnusedImports false positive for static import with package-private method usage</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+
+            import static net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports.PackagePrivateUtils.*;
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.PublicUtils.*;
+
+            public class Imports {
+
+                int importtest() {
+                    int i = 0;
+                    i = f1(i);
+                    i = g1(i);
+                    i = f2(i);
+                    i = g2(i);
+                    i = f3(i);
+                    i = g3(i);
+                    return i;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1625 [java] UnusedImports false positive for method parameter type in @see Javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+
+import java.io.File;
+import java.io.FileInputStream;
+
+public class Derived extends FileInputStream {
+    /** @see #FileInputStream(File) */
+    void main() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1720 False Positive in UnusedImports for Javadoc @see with array type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+
+import java.io.File;
+import java.io.FileInputStream;
+
+public class Derived extends FileInputStream {
+    /** @see #FileInputStream(File, File[]) */
+    void main() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2025 False Positive in UnusedImports for params when using @see with FQCN</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import spark.Response; // flaged, should not
+
+/**
+ * @see foo.bar.MyController#startTransaction(Response)
+ */
+public class VendingV2PaymentRequest {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2025 False Positive in UnusedImports for params when using @link with FQCN</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import spark.Request; // flaged, should not
+
+/**
+ * {@link foo.bar.MyController#startTransaction(Request)}
+ */
+public class VendingV2PaymentRequest {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2016 [java] UnusedImports: False positive if wildcard is used and only static methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+
+// star import is important here for the test case!!
+import java.util.*;
+
+/**
+ * Note: In order for this test case to work, the class "Issue2016" must also be compiled and available
+ * on the auxclasspath.
+ */
+public class Issue2016 {
+    public void testFunction() {
+        Objects.toString(null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>resolve ambiguous static on-demand imports (#2277)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.lang.Integer.*;
+import static java.lang.Long.valueOf;
+import static java.lang.Long.*;
+
+public class Foo {
+    public void foo() {
+        // the "valueOf" method is both in Integer.* and Long.*
+        // we need an explicit static import to specify one of them, e.g. Long.valueOf
+        valueOf("123", 10);
+
+        // covered by Integer.*
+        int i = parseInt("123");
+
+        // covered by Long.*
+        long l = parseLong("123");
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedImports with static imports on subclasses #3132</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+
+import static net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports.HelloMore.*; // flagged as unused
+
+public class Test {
+    public static void main(String... args) {
+        sayHello();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE with static import on interface</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import static javax.swing.WindowConstants.*; //warn
+
+class NPEImport {}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for duplicate imports -->
+
+    <test-code>
+        <description>duplicate single type imports</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <expected-messages>
+            <message>Unused import 'java.util.*'</message>
+            <message>Duplicate import 'java.io.File'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.io.File;
+            import java.util.*;
+            import java.io.File;
+            public class Foo {
+                File f;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>duplicate wildcard imports</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Duplicate import 'java.io.*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.io.*;
+            import java.io.*;
+            public class Foo {
+                File f;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>single type import after wildcard import</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>Unused import 'java.io.*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.io.*;
+            import java.io.File;
+            public class Foo {
+                File f;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>subpackage import, ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+            import java.util.logging.*;
+            public class Foo {
+                List c; Logger f;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>674394, disambiguation import should be allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.awt.*;
+            import java.util.*;
+            import java.util.List; //False positive
+
+            class Foo{
+                Color color;
+                List list;
+                Set set;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>674394, disambiguation import because of conflict with java.lang</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+            import foo.*;
+            import foo.System;  //False positive
+
+            class Foo {
+                System system;  //No, I do not mean java.lang.System
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1306 False positive on duplicate when using static imports</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import static org.junit.Assert.*;
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryImportTest.*;
+            import static org.junit.Assert.assertTrue;
+            // this import is needed for disambiguation - as DuplicateImportsTest
+            // defines assertTrue with the same signature, too.
+
+            public class DuplicateImports {
+                static {
+                    assertTrue("", true); // the one from the disambiguation import
+                    assertSomething("", true); // from UnnecessaryImportTest.*
+                    assertFalse("", true); // from Assert.*
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static on-demand import is used</description>
+        <expected-problems>0</expected-problems>
+        <!-- Technically we could report assertTrue, but for now we don't. -->
+        <code><![CDATA[
+            import static org.junit.Assert.*;
+            import static org.junit.Assert.assertTrue;
+
+            public class DuplicateImports {
+                static {
+                    assertTrue("", true);
+                    assertFalse("", true);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] DuplicateImports reported for the same import... and import static... #2546</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+            import java.util.Collections.*;
+            import static java.util.Collections.*;
+
+            public class DuplicateImports {
+                static {
+                    emptyList();
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>ImportFromSamePackage: simple failure</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            package foo;
+            import foo.Bar;
+            public class Baz {
+                Bar bar;
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ImportFromSamePackage: class in default package importing from sub package</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package foo;
+            import foo.buz.Bar;
+            public class Baz{
+                Bar b;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ImportFromSamePackage: importing all from same package</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary import from the current package 'foo.bar.*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            package foo.bar;
+            import foo.bar.*;
+            public class Baz{}
+            ]]></code>
+    </test-code>
+
+    <!-- From DontImportJavaLang   -->
+
+    <test-code>
+        <description>import java.lang.String (used)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary import from the java.lang package 'java.lang.String'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.lang.String;
+            public class Foo {
+                String foo;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import java.lang.String (unused)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unused import 'java.lang.String'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.lang.String;
+            public class Foo { }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import java.lang.*</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.lang.*;
+            public class Foo {}
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import java.lang.ref/reflect/annotation/instrument/management</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.ref.*;
+            import java.lang.reflect.*;
+            import java.lang.annotation.*;
+            import java.lang.management.*;
+            public class Foo {
+                Annotation a; Method m; WeakReference r;
+                RuntimeMXBean x;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static Java imports are OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import static java.lang.String.*;
+            public class Foo {
+                static {
+                    valueOf(1);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Importing java.lang.Thread.UncaughtExceptionHandler, unused</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unused import 'java.lang.Thread.UncaughtExceptionHandler'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.lang.Thread.UncaughtExceptionHandler;
+            public class Foo {
+                Thread.UncaughtExceptionHandler unused;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Importing java.lang.Thread.UncaughtExceptionHandler</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.Thread.UncaughtExceptionHandler;
+            public class Foo {
+                UncaughtExceptionHandler used;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import java.lang.ProcessBuilder.Redirect: #1031 false DontImportJavaLang</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.ProcessBuilder.Redirect;
+
+            public class Foo {
+                Redirect r;
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import java.lang.invoke.MethodHandles: #339 false DontImportJavaLang</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.invoke.MethodHandles;
+
+            public class Foo {
+                static {
+                    MethodHandles.argumentsWithCombiner();// use it
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryImport false positive for on-demand imports #2655</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.package1;
+
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.package2.*; // SUPPRESS CHECKSTYLE needed for test case
+
+public class U {
+    private void g() {
+        String k = C.V;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

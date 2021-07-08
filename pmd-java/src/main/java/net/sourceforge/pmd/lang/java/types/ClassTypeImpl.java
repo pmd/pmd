@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.types;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
 
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -134,8 +133,12 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    public JClassType selectInner(JClassSymbol symbol, List<JTypeMirror> targs) {
-        return new ClassTypeImpl(ts, this, symbol, targs, this.isDecl);
+    public JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs) {
+        return new ClassTypeImpl(ts,
+                                 this,
+                                 symbol,
+                                 CollectionUtil.defensiveUnmodifiableCopy(targs),
+                                 this.isDecl);
     }
 
     @Override
@@ -165,7 +168,7 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JTypeMirror> getTypeArgs() {
         return isGenericTypeDeclaration() ? (List) getFormalTypeParams() : typeArgs;
     }
@@ -192,16 +195,14 @@ class ClassTypeImpl implements JClassType {
     @Override
     public JClassType withTypeArguments(List<? extends JTypeMirror> typeArgs) {
         if (enclosingType != null) {
-            return enclosingType.selectInner(symbol, new ArrayList<>(typeArgs));
+            return enclosingType.selectInner(symbol, typeArgs);
         }
 
         int expected = symbol.getTypeParameterCount();
-        if (typeArgs.size() != expected && !typeArgs.isEmpty()) {
-            throw invalidTypeArgs(symbol, typeArgs);
-        } else if (expected == 0) {
+        if (expected == 0 && typeArgs.isEmpty() && this.typeArgs.isEmpty()) {
             return this; // non-generic
         }
-        return new ClassTypeImpl(ts, symbol, new ArrayList<>(typeArgs), false);
+        return new ClassTypeImpl(ts, symbol, CollectionUtil.defensiveUnmodifiableCopy(typeArgs), false);
     }
 
     @Override

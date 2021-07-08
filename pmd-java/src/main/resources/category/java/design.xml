@@ -26,10 +26,9 @@ protected constructor in order to prevent instantiation than make the class misl
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration
-    [@Abstract = true()]
-    [not(./ClassOrInterfaceBody/*/ConstructorDeclaration)]
-    [not(./ClassOrInterfaceBody/*/MethodDeclaration)]
-    [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('com.google.auto.value.AutoValue')])]
+    [@Abstract = true() and @Interface = false()]
+    [ClassOrInterfaceBody[not(ConstructorDeclaration | MethodDeclaration)]]
+    [not(pmd-java:hasAnnotation('com.google.auto.value.AutoValue'))]
 ]]>
                 </value>
             </property>
@@ -129,10 +128,9 @@ Catch blocks that merely rethrow a caught exception only add to code size and ru
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement[FormalParameter
- /VariableDeclaratorId/@Name = Block/BlockStatement/Statement
- /ThrowStatement/Expression/PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix/Name/@Image
- and count(Block/BlockStatement/Statement) =1]
+//CatchClause[
+  CatchParameter/VariableDeclaratorId/@Name
+= Block[@Size = 1]/ThrowStatement/VariableAccess/@Name]
 ]]>
                 </value>
             </property>
@@ -422,6 +420,67 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="CognitiveComplexity"
+        language="java"
+        message="The {0} ''{1}'' has a cognitive complexity of {2}, current threshold is {3}"
+        since="6.35.0"
+        class="net.sourceforge.pmd.lang.java.rule.design.CognitiveComplexityRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#cognitivecomplexity">
+        <description><![CDATA[
+            Methods that are highly complex are difficult to read and more costly to maintain. If you include too much decisional
+            logic within a single method, you make its behavior hard to understand and more difficult to modify.
+
+            Cognitive complexity is a measure of how difficult it is for humans to read and understand a method. Code that contains
+            a break in the control flow is more complex, whereas the use of language shorthands doesn't increase the level of
+            complexity. Nested control flows can make a method more difficult to understand, with each additional nesting of the
+            control flow leading to an increase in cognitive complexity.
+
+            Information about Cognitive complexity can be found in the original paper here:
+            <https://www.sonarsource.com/docs/CognitiveComplexity.pdf>
+
+            By default, this rule reports methods with a complexity of 15 or more. Reported methods should be broken down into less
+            complex components.
+        ]]></description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+  // Has a cognitive complexity of 0
+  public void createAccount() {
+    Account account = new Account("PMD");
+    // save account
+  }
+
+  // Has a cognitive complexity of 1
+  public Boolean setPhoneNumberIfNotExisting(Account a, String phone) {
+    if (a.phone == null) {                          // +1
+      a.phone = phone;
+      return true;
+    }
+
+    return false;
+  }
+
+  // Has a cognitive complexity of 4
+  public void updateContacts(List<Contact> contacts) {
+    List<Contact> contactsToUpdate = new ArrayList<Contact>();
+
+    for (Contact contact : contacts) {                           // +1
+      if (contact.department.equals("Finance")) {                // +2 (nesting = 1)
+        contact.title = "Finance Specialist";
+        contactsToUpdate.add(contact);
+      } else if (contact.department.equals("Sales")) {           // +1
+        contact.title = "Sales Specialist";
+        contactsToUpdate.add(contact);
+      }
+    }
+    // save contacts
+  }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="CyclomaticComplexity"
           language="java"
           message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
@@ -513,10 +572,14 @@ The rule identifies a god class by looking for classes which have all of the fol
 <![CDATA[
 public class DataClass {
 
+  // class exposes public attributes
+  public String name = "";
   public int bar = 0;
   public int na = 0;
+
   private int bee = 0;
 
+  // and private ones through getters
   public void setBee(int n) {
     bee = n;
   }
@@ -788,15 +851,19 @@ of Object-Oriented Systems.* Springer, Berlin, 1 edition, October 2006. Page 80.
     <rule name="ImmutableField"
           language="java"
           since="2.0"
-          message="Private field ''{0}'' could be made final; it is only initialized in the declaration or constructor."
+          message="Field ''{0}'' may be declared final"
           class="net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#immutablefield">
         <description>
-Identifies private fields whose values never change once object initialization ends either in the declaration
-of the field or by a constructor. This helps in converting existing classes to becoming immutable ones.
-Note that this rule does not enforce referenced object to be immutable itself. A class can still be mutable, even
-if all its member fields are declared final. This is referred to as shallow immutability. For more information on
-mutability, see Effective Java, 3rd Edition, Item 17: Minimize mutability.
+Reports non-final fields whose value never changes once object initialization ends,
+and hence may be marked final.
+
+Note that this rule does not enforce that the field value be deeply immutable itself.
+An object can still have mutable state, even if all its member fields are declared final.
+This is referred to as shallow immutability. For more information on mutability,
+see *Effective Java, 3rd Edition, Item 17: Minimize mutability*.
+
+Limitations: We can only check private fields for now.
         </description>
         <priority>3</priority>
         <example>
@@ -1275,18 +1342,27 @@ class Foo {
           class="net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#singularfield">
         <description>
-Fields whose scopes are limited to just single methods do not rely on the containing
-object to provide them to other methods. They may be better implemented as local variables
-within those methods.
+Reports fields which may be converted to a local variable. This is so because
+in every method where the field is used, it is assigned before it is first read.
+Hence, the value that the field had before the method call may not be observed,
+so it might as well not be stored in the enclosing object.
+
+Limitations: We can only check private fields for now.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
 public class Foo {
-    private int x;  // no reason to exist at the Foo instance level
+    private int x; // this will be reported
+
     public void foo(int y) {
-     x = y + 5;
-     return x;
+       x = y + 5; // assigned before any read
+       return x;
+    }
+
+    public void fooOk(int y) {
+       int z = y + 5; // might as well be a local like here
+       return z;
     }
 }
 ]]>
@@ -1501,6 +1577,44 @@ public class MaybeAUtility {
   public static void foo() {}
   public static void bar() {}
 }
+]]>
+        </example>
+    </rule>
+
+    <rule name="MutableStaticState"
+          language="java"
+          since="6.35.0"
+          message="Do not use non-final non-private static fields"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#mutablestaticstate">
+        <description>
+Non-private static fields should be made constants (or immutable references) by
+declaring them final.
+
+Non-private non-final static fields break encapsulation and can lead to hard to find
+bugs, since these fields can be modified from anywhere within the program.
+Callers can trivially access and modify non-private non-final static fields. Neither
+accesses nor modifications can be guarded against, and newly set values cannot
+be validated.
+
+If you are using this rule, then you don't need this
+rule {% rule java/errorprone/AssignmentToNonFinalStatic %}.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//FieldDeclaration[pmd-java:modifiers() = "static"][not(pmd-java:modifiers() = ("private", "final"))]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class Greeter { public static Foo foo = new Foo(); ... }       // avoid this
+public class Greeter { public static final Foo FOO = new Foo(); ... } // use this instead
 ]]>
         </example>
     </rule>

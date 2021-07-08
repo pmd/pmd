@@ -172,10 +172,11 @@ public class Foo {
        <description>Verify another case for Bug #1047 False Positive in 'for' loops for LocalVariableCouldBeFinal in 5.0.1</description>
        <expected-problems>0</expected-problems>
        <code><![CDATA[
+import org.junit.Assert;
 public class Test {
-    public void bar() {
-        for (final List<Integer> list : result) {
-            Assert.assertEquals( array.size() - 1, list.size() );
+    public void bar(java.util.List<java.util.List<Integer>> result) {
+        for (final java.util.List<Integer> list : result) {
+            Assert.assertEquals( list.size() - 1, list.size() );
         }
     }
 }
@@ -221,6 +222,75 @@ public class Foo {
         for (int i = 0; i < 10; i++ ) {
             System.out.println(i);
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3266 False negative with default methods in interfaces</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithDefaultMethod {
+    default void bar() {
+        String a = "a";
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3266 False negative with class inside interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithClass {
+    class Inner {
+        void bar() {
+            String a = "a";
+            System.out.println(a);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3266 False negative with anonymous classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithAnon {
+    void method() {
+        final ClassWithAnon anon = new ClassWithAnon() {
+            void method() {
+                String a = "a";
+                System.out.println(a);
+            }
+        };
+        final Runnable runnable = new Runnable() {
+            public void run() {
+                int a = 0; //unused so no warning
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3266 False negative with lambdas</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithLambda {
+    void method() {
+        final Runnable runnable = () -> {
+            int a = 0;
+            System.out.println(a);
+        };
     }
 }
         ]]></code>
