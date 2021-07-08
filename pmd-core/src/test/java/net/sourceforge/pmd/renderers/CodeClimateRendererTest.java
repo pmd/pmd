@@ -9,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -95,8 +94,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
         theRule.setDescription("desc");
         theRule.setName("Foo");
 
-        Report report = Report.buildReport(it -> it.onRuleViolation(new ParametricRuleViolation<Node>(theRule, node, "blah")));
-        String rendered = ReportTest.render(getRenderer(), report);
+        String rendered = ReportTest.render(getRenderer(), it -> it.onRuleViolation(new ParametricRuleViolation<Node>(theRule, node, "blah")));
 
         // Output should be the exact same as for non xpath rules
         assertEquals(filter(getExpected()), filter(rendered));

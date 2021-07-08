@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
@@ -19,6 +20,9 @@ import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class ReportTest {
 
@@ -26,21 +30,21 @@ public class ReportTest {
     @Test
     public void testSortedReportFile() throws IOException {
         Renderer rend = new XMLRenderer();
-        String result = render(rend, Report.buildReport(r -> {
+        String result = render(rend, r -> {
             Node s = getNode(10, 5).withFileName("foo");
             Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
             r.onRuleViolation(new ParametricRuleViolation<>(rule1, s, rule1.getMessage()));
             Node s1 = getNode(10, 5).withFileName("bar");
             Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
             r.onRuleViolation(new ParametricRuleViolation<>(rule2, s1, rule2.getMessage()));
-        }));
+        });
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
     }
 
     @Test
     public void testSortedReportLine() throws IOException {
         Renderer rend = new XMLRenderer();
-        String result = render(rend, Report.buildReport(r -> {
+        String result = render(rend, r -> {
             Node node1 = getNode(20, 5).withFileName("foo1"); // line 20: after rule2 violation
             Rule rule1 = new MockRule("rule1", "rule1", "msg", "rulesetname");
             r.onRuleViolation(new ParametricRuleViolation<>(rule1, node1, rule1.getMessage()));
@@ -48,7 +52,7 @@ public class ReportTest {
             Node node2 = getNode(10, 5).withFileName("foo1"); // line 10: before rule1 violation
             Rule rule2 = new MockRule("rule2", "rule2", "msg", "rulesetname");
             r.onRuleViolation(new ParametricRuleViolation<>(rule2, node2, rule2.getMessage())); // same file!!
-        }));
+        });
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
     }
 
@@ -80,6 +84,30 @@ public class ReportTest {
             s.setCoords(line + 1, column + 4, line + 4, 1);
         }
         return s;
+    }
+
+    public static String render(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects) throws IOException {
+        return renderGlobal(renderer, globalListener -> {
+            DataSource dummyFile = DataSource.forString("dummyText", "file");
+            try (FileAnalysisListener fal = globalListener.startFileAnalysis(dummyFile)) {
+                listenerEffects.accept(fal);
+            } catch (Exception e) {
+                throw new AssertionError(e);
+            }
+        });
+    }
+
+    public static String renderGlobal(Renderer renderer, Consumer<? super GlobalAnalysisListener> listenerEffects) throws IOException {
+        StringWriter writer = new StringWriter();
+        renderer.setWriter(writer);
+
+        try (GlobalAnalysisListener listener = renderer.newListener()) {
+            listenerEffects.accept(listener);
+        } catch (Exception e) {
+            throw new AssertionError(e);
+        }
+
+        return writer.toString();
     }
 
     public static String render(Renderer renderer, Report report) throws IOException {

@@ -10,7 +10,6 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.SuppressedViolation;
@@ -84,8 +83,7 @@ public class JsonRendererTest extends AbstractRendererTest {
             ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
             "test"
         );
-        Report rep = Report.buildReport(it -> it.onSuppressedRuleViolation(suppressed));
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = ReportTest.render(getRenderer(), it -> it.onSuppressedRuleViolation(suppressed));
         String expected = readFile("expected-suppressed.json");
         Assert.assertEquals(filter(expected), filter(actual));
     }

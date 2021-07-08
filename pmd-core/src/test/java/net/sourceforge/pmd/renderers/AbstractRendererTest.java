@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -16,7 +17,6 @@ import org.junit.Test;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
-import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RulePriority;
@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.util.BaseResultProducingCloseable;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 public abstract class AbstractRendererTest {
 
@@ -67,19 +67,19 @@ public abstract class AbstractRendererTest {
         getRenderer().renderFileReport(null);
     }
 
-    protected Report reportOneViolation() {
-        return Report.buildReport(it -> it.onRuleViolation(newRuleViolation(1)));
+    protected Consumer<FileAnalysisListener> reportOneViolation() {
+        return it -> it.onRuleViolation(newRuleViolation(1));
     }
 
-    private Report reportTwoViolations() {
-        return Report.buildReport(it -> {
+    private Consumer<FileAnalysisListener> reportTwoViolations() {
+        return it -> {
             RuleViolation informationalRuleViolation = newRuleViolation(1);
             informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
             it.onRuleViolation(informationalRuleViolation);
             RuleViolation severeRuleViolation = newRuleViolation(2);
             severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
             it.onRuleViolation(severeRuleViolation);
-        });
+        };
     }
 
     protected RuleViolation newRuleViolation(int endColumn) {
@@ -116,53 +116,50 @@ public abstract class AbstractRendererTest {
         RuleWithProperties theRule = new RuleWithProperties();
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
                 "the string value\nsecond line with \"quotes\"");
-        Report report = Report.buildReport(it -> it.onRuleViolation(new ParametricRuleViolation<Node>(theRule, node, "blah")));
-        String rendered = ReportTest.render(getRenderer(), report);
+        String rendered = ReportTest.render(getRenderer(), it -> it.onRuleViolation(new ParametricRuleViolation<Node>(theRule, node, "blah")));
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));
     }
 
     @Test
     public void testRenderer() throws Exception {
-        Report rep = reportOneViolation();
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = render(reportOneViolation());
         assertEquals(filter(getExpected()), filter(actual));
     }
 
     @Test
     public void testRendererEmpty() throws Exception {
-        Report rep = Report.buildReport(it -> {});
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = render(it -> {});
         assertEquals(filter(getExpectedEmpty()), filter(actual));
     }
 
     @Test
     public void testRendererMultiple() throws Exception {
-        Report rep = reportTwoViolations();
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = render(reportTwoViolations());
         assertEquals(filter(getExpectedMultiple()), filter(actual));
     }
 
     @Test
     public void testError() throws Exception {
         Report.ProcessingError err = new Report.ProcessingError(new RuntimeException("Error"), "file");
-        Report rep = Report.buildReport(it -> it.onError(err));
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = render(it -> it.onError(err));
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }
 
     @Test
     public void testErrorWithoutMessage() throws Exception {
         Report.ProcessingError err = new Report.ProcessingError(new NullPointerException(), "file");
-        Report rep = Report.buildReport(it -> it.onError(err));
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = render(it -> it.onError(err));
         assertEquals(filter(getExpectedErrorWithoutMessage(err)), filter(actual));
+    }
+
+    private String render(Consumer<FileAnalysisListener> listenerEffects) throws IOException {
+        return ReportTest.render(getRenderer(), listenerEffects);
     }
 
     @Test
     public void testConfigError() throws Exception {
         Report.ConfigurationError err = new Report.ConfigurationError(new FooRule(), "a configuration error");
-        Report rep = BaseResultProducingCloseable.using(new GlobalReportBuilderListener(), it -> it.onConfigError(err));
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = ReportTest.renderGlobal(getRenderer(), it -> it.onConfigError(err));
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }
 }

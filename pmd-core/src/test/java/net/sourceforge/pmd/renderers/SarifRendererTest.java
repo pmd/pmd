@@ -7,12 +7,15 @@ package net.sourceforge.pmd.renderers;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.function.Consumer;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 public class SarifRendererTest extends AbstractRendererTest {
     @Override
@@ -68,11 +71,8 @@ public class SarifRendererTest extends AbstractRendererTest {
     @Override
     @Test
     public void testRendererMultiple() throws Exception {
-        // Setup
-        Report rep = reportTwoViolations();
-
         // Exercise
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = ReportTest.render(getRenderer(), reportTwoViolations());
 
         // Verify that both rules are and rule ids are linked in the results 
         // Initially was comparing whole files but order of rules rendered can't be guaranteed when the report is being rendered
@@ -83,15 +83,15 @@ public class SarifRendererTest extends AbstractRendererTest {
         assertThat(filter(actual), containsString("\"id\": \"Boo\""));
     }
 
-    private Report reportTwoViolations() {
-        return Report.buildReport(reportBuilder -> {
+    private Consumer<FileAnalysisListener> reportTwoViolations() {
+        return reportBuilder -> {
             RuleViolation informationalRuleViolation = newRuleViolation(1, "Foo");
             informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
             reportBuilder.onRuleViolation(informationalRuleViolation);
             RuleViolation severeRuleViolation = newRuleViolation(2, "Boo");
             severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
             reportBuilder.onRuleViolation(severeRuleViolation);
-        });
+        };
     }
 
     protected String readFile(String relativePath) {

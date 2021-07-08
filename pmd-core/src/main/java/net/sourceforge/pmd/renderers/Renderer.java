@@ -9,6 +9,8 @@ import java.io.Writer;
 import java.util.List;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ConfigurationError;
+import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.Report.SuppressedViolation;
@@ -167,8 +169,6 @@ public interface Renderer extends PropertySource {
     /**
      * This method is at the very end of the Rendering process, after
      * {@link Renderer#renderFileReport(Report)}.
-     *
-     * @throws IOException
      */
     void end() throws IOException;
 
@@ -206,6 +206,13 @@ public interface Renderer extends PropertySource {
 
             // guard for the close routine
             final Object reportMergeLock = new Object();
+
+            final GlobalReportBuilderListener configErrorReport = new GlobalReportBuilderListener();
+
+            @Override
+            public void onConfigError(ConfigurationError error) {
+                configErrorReport.onConfigError(error);
+            }
 
             @Override
             public FileAnalysisListener startFileAnalysis(DataSource file) {
@@ -250,6 +257,8 @@ public interface Renderer extends PropertySource {
 
             @Override
             public void close() throws Exception {
+                configErrorReport.close();
+                Renderer.this.renderFileReport(configErrorReport.getResult());
                 try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                     end();
                     flush();
