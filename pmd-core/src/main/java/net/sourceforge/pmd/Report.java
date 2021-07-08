@@ -24,13 +24,18 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * includes violations, suppressed violations, metrics, error during processing
  * and configuration errors.
  */
-public class Report {
+public final class Report {
     // todo move to package reporting
 
     private final List<RuleViolation> violations = synchronizedList(new ArrayList<>());
     private final List<SuppressedViolation> suppressedRuleViolations = synchronizedList(new ArrayList<>());
     private final List<ProcessingError> errors = synchronizedList(new ArrayList<>());
     private final List<ConfigurationError> configErrors = synchronizedList(new ArrayList<>());
+
+    /** Package-private, now you must use a listener to build a report. */
+    Report() {
+
+    }
 
     /**
      * Represents a configuration error.
