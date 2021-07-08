@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -243,7 +243,6 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     // The nodes having children built.
     private final Stack<AbstractApexNode<?>> nodes = new Stack<>();
-    private ASTApexFile root;
 
     // The Apex nodes with children to build.
     private final Stack<AstNode> parents = new Stack<>();
@@ -283,9 +282,20 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
-    ASTApexFile buildTree(Compilation astNode) {
+    ASTApexFile buildTree(Compilation astNode, ApexMultifileAnalysis analysisHandler) {
+        assert nodes.isEmpty() : "stack should be empty";
+        ASTApexFile root = new ASTApexFile(task, astNode, suppressMap, analysisHandler);
+        nodes.push(root);
+        parents.push(astNode);
+
         build(astNode);
-        return Objects.requireNonNull(root);
+
+        nodes.pop();
+        parents.pop();
+
+        addFormalComments();
+        closeTree(root);
+        return root;
     }
 
     private <T extends AstNode> void build(T astNode) {
@@ -293,12 +303,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         AbstractApexNode<T> node = createNodeAdapter(astNode);
 
         // Append to parent
-        AbstractApexNode<?> parent;
-        if (nodes.isEmpty()) {
-            parent = root = new ASTApexFile(task, (AbstractApexNode) node, suppressMap);
-        } else {
-            parent = nodes.peek();
-        }
+        AbstractApexNode<?> parent = nodes.peek();
         parent.addChild(node, parent.getNumChildren());
 
         // Build the children...
@@ -307,13 +312,6 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         astNode.traverse(this, scope);
         nodes.pop();
         parents.pop();
-
-        if (nodes.isEmpty()) {
-            // add the comments only at the end of the processing as the last step
-            addFormalComments();
-            closeTree(node);
-        }
-
     }
 
     private void closeTree(AbstractApexNode<?> node) {

@@ -9,7 +9,6 @@ import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -42,8 +41,12 @@ public final class ApexParser implements Parser {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
+            String property = task.getProperties().getProperty(MULTIFILE_DIRECTORY);
+            ApexMultifileAnalysis analysisHandler = ApexMultifileAnalysis.getAnalysisInstance(property);
+
+
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task);
-            return treeBuilder.buildTree(astRoot);
+            return treeBuilder.buildTree(astRoot, analysisHandler);
         } catch (apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);
         }

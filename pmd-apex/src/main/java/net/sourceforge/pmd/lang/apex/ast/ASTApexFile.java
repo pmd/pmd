@@ -25,10 +25,10 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     private final @NonNull ApexMultifileAnalysis multifileAnalysis;
 
     ASTApexFile(ParserTask task,
-                AbstractApexNode<? extends Compilation> child, // this is not entirely initialized when we get here
+                Compilation jorjeNode,
                 Map<Integer, String> suppressMap,
                 @NonNull ApexMultifileAnalysis multifileAnalysis) {
-        super(child.getNode());
+        super(jorjeNode);
         this.astInfo = new AstInfo<>(task, this, suppressMap);
         this.multifileAnalysis = multifileAnalysis;
         this.setRegion(TextRegion.fromOffsetLength(0, task.getTextDocument().getLength()));
@@ -60,6 +60,6 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     }
 
     public List<Issue> getGlobalIssues() {
-        return multifileAnalysis.getFileIssues(getAstInfo().getFileName());
+        return multifileAnalysis.getFileIssues(getAstInfo().getTextDocument().getPathId());
     }
 }

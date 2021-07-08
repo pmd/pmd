@@ -85,7 +85,7 @@ public class ApexParserTest extends ApexParserTestBase {
 
         // BlockStatement - the whole method body
         Node blockStatement = method1.getChild(1);
-        assertTrue(((ASTBlockStatement) blockStatement).hasCurlyBrace());
+        assertTrue("should detect curly brace", ((ASTBlockStatement) blockStatement).hasCurlyBrace());
         assertPosition(blockStatement, 2, 27, 5, 6);
 
         // the expression ("System.out...")
@@ -187,7 +187,7 @@ public class ApexParserTest extends ApexParserTestBase {
 
         visitPosition(rootNode, 0);
 
-        Assert.assertEquals("InnerClassLocations", rootNode.getSimpleName());
+        Assert.assertEquals("InnerClassLocations", rootNode.getMainNode().getSimpleName());
         // Note: Apex parser doesn't provide positions for "public class" keywords. The
         // position of the UserClass node is just the identifier. So, the node starts
         // with the identifier and not with the first keyword in the file...
