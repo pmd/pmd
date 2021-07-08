@@ -160,6 +160,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.plsql.ast.internal.ParsingExclusion;
+import net.sourceforge.pmd.util.document.Chars;
 
 public class PLSQLParserImpl {
 
@@ -3472,7 +3473,7 @@ ASTPrimarySuffix PrimarySuffix() :
          )
   )
   |
-  ( arguments = Arguments() ) {sb.append(arguments) ; }
+  ( arguments = Arguments() ) {sb.append("Arguments") ; } // was broken before...
   )
  {
  jjtThis.setImage(sb.toString()); return jjtThis;

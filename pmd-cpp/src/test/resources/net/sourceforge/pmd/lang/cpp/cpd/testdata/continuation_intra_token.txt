@@ -1,8 +1,8 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
-    [void]                                  1         1
+    [void]                                  1         4
 L5
-    [main]                                  2         1
+    [main]                                  2         4
 L10
     [(]                                     1         2
     [)]                                     2         2
