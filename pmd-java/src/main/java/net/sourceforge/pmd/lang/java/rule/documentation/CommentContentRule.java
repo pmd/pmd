@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
-import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.regexProperty;
 
 import java.util.ArrayList;
@@ -19,8 +18,6 @@ import net.sourceforge.pmd.util.document.Chars;
 
 /**
  * A rule that checks for illegal words in the comment text.
- *
- * TODO implement regex option
  *
  * @author Brian Remedios
  */
@@ -50,8 +47,14 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
 
             int offset = comment.getBeginLine();
             for (int lineNum : lineNumbers) {
-                lineNum += offset;
-                addViolationWithMessage(data, cUnit, "Line matches forbidden content regex (" + pattern.pattern() + ")", lineNum, lineNum);
+                int lineNumWithOff = lineNum + offset;
+                addViolationWithMessage(
+                    data,
+                    cUnit,
+                    "Line matches forbidden content regex (" + pattern.pattern() + ")",
+                    lineNumWithOff,
+                    lineNumWithOff
+                );
             }
         }
 

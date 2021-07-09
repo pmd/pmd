@@ -55,8 +55,8 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
 
         for (Comment comment : cUnit.getComments()) {
             if (hasTooManyLines(comment)) {
-                addViolationWithMessage(data, cUnit, this.getMessage() + ": Too many lines", comment.getBeginLine(),
-                                        comment.getEndLine());
+                addViolationWithMessage(data, cUnit, this.getMessage()
+                    + ": Too many lines", comment.getBeginLine(), comment.getEndLine());
             }
 
             List<Integer> lineNumbers = overLengthLineIndicesIn(comment);
@@ -66,8 +66,14 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
 
             int offset = comment.getBeginLine();
             for (int lineNum : lineNumbers) {
-                lineNum += offset;
-                addViolationWithMessage(data, cUnit, this.getMessage() + ": Line too long", lineNum, lineNum);
+                int lineNumWithOff = lineNum + offset;
+                addViolationWithMessage(
+                    data,
+                    cUnit,
+                    this.getMessage() + ": Line too long",
+                    lineNumWithOff,
+                    lineNum
+                );
             }
         }
 
@@ -86,8 +92,9 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
     private boolean hasTooManyLines(Comment comment) {
 
         int firstLineWithText = -1;
-        int lastLineWithText = 0;
+        int lastLineWithText;
         int i = 0;
+        int maxLines = getProperty(MAX_LINES);
         for (Chars line : comment.getText().lines()) {
             boolean real = hasRealText(line);
             if (real) {
@@ -95,13 +102,13 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
                 if (firstLineWithText == -1) {
                     firstLineWithText = i;
                 }
+                if (lastLineWithText - firstLineWithText + 1 > maxLines) {
+                    return true;
+                }
             }
             i++;
         }
-
-        int lineCount = lastLineWithText - firstLineWithText + 1;
-
-        return lineCount > getProperty(MAX_LINES);
+        return false;
     }
 
     private List<Integer> overLengthLineIndicesIn(Comment comment) {
