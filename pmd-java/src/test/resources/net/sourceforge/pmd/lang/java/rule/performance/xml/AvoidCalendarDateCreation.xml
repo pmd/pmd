@@ -135,6 +135,7 @@ public class Foo {
         <code><![CDATA[
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class Foo {
     public Date onlySet(Date date) {

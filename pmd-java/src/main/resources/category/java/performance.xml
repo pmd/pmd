@@ -129,26 +129,16 @@ Solution: Use `new Date()`, Java 8+ `java.time.LocalDateTime.now()` or `ZonedDat
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-//PrimaryPrefix[Name[ends-with(@Image, 'Calendar.getInstance')]] [count(../PrimarySuffix) > 2 and ../PrimarySuffix[last()-1][@Image = 'getTime' or @Image='getTimeInMillis']]
+//MethodCall[pmd-java:matchesSig("java.util.Calendar#getTime()") or pmd-java:matchesSig("java.util.Calendar#getTimeInMillis()")]
+  [not(VariableAccess/@Name = ancestor::MethodDeclaration/FormalParameters/FormalParameter/VariableDeclaratorId/@Name)]
+  (: ignore if .set* or .add or .clear or .roll is called on the variable :)
+  [not(VariableAccess/@Name = ancestor::Block//MethodCall[starts-with(@MethodName, "set") or @MethodName = ("add", "clear", "roll")]/VariableAccess/@Name)]
 |
-//MethodDeclaration[not(MethodDeclarator/FormalParameters//ClassOrInterfaceType[pmd-java:typeIs('java.util.Calendar')])]
-  /Block/BlockStatement//PrimaryExpression
-  /PrimaryPrefix/Name
-    [pmd-java:typeIs('java.util.Calendar')]
-    [every $var in @Image satisfies (
-       (ends-with($var, '.getTime') or ends-with($var, '.getTimeInMillis'))
-       and
-       (: ignore if .set* or .add* or .clear is called on the variable :)
-       not(ancestor::Block/BlockStatement//Name[
-          starts-with(@Image, concat((tokenize($var, '\.'), $var)[1], '.set'))
-          or
-          starts-with(@Image, concat((tokenize($var, '\.'), $var)[1], '.add'))
-          or
-          starts-with(@Image, concat((tokenize($var, '\.'), $var)[1], '.clear'))
-       ])
-    )]
-|
-//ClassOrInterfaceType[pmd-java:typeIs('org.joda.time.DateTime') or pmd-java:typeIs('org.joda.time.LocalDateTime')][../Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name[ends-with(@Image, 'Calendar.getInstance')]]
+//ConstructorCall[pmd-java:typeIs("org.joda.time.DateTime") or pmd-java:typeIs("org.joda.time.LocalDateTime")]
+  [ArgumentList[MethodCall
+       [pmd-java:matchesSig("java.util.Calendar#getInstance()")
+     or pmd-java:matchesSig("java.util.GregorianCalendar#getInstance()")]]
+  ]
                 ]]></value>
             </property>
         </properties>
