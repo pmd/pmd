@@ -1146,7 +1146,7 @@ class Foo {
             <property name="xpath">
                 <value>
                     <![CDATA[
-(//EqualityExpression | //RelationalExpression)/PrimaryExpression/PrimaryPrefix/Name[@Image='Double.NaN' or @Image='Float.NaN']
+//InfixExpression[@Operator = ("==", "!=", "<=", ">=", "<", ">")]/FieldAccess[@Name='NaN' and (pmd-java:typeIs('double') or pmd-java:typeIs('float'))]
 ]]>
                 </value>
             </property>
