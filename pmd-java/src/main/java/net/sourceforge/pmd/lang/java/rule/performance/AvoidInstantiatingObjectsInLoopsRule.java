@@ -7,30 +7,27 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 import java.util.Collection;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
-import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
-public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRule {
+public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainRule {
 
     public AvoidInstantiatingObjectsInLoopsRule() {
-        addRuleChainVisit(ASTAllocationExpression.class);
+        super(ASTConstructorCall.class);
     }
 
     /**
@@ -41,63 +38,46 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRule {
      * @return Object This returns the data passed in. If violation happens, violation is added to data.
      */
     @Override
-    public Object visit(ASTAllocationExpression node, Object data) {
+    public Object visit(ASTConstructorCall node, Object data) {
         if (notInsideLoop(node)) {
             return data;
         }
 
-        if (fourthParentNotThrow(node)
-                && fourthParentNotReturn(node)
+        if (notAThrowStatement(node)
+                && notAReturnStatement(node)
+                && notBreakFollowing(node)
                 && notArrayAssignment(node)
-                && notCollectionAccess(node)
-                && notBreakFollowing(node)) {
+                && notCollectionAccess(node)) {
             addViolation(data, node);
         }
         return data;
     }
 
-    private boolean notArrayAssignment(ASTAllocationExpression node) {
-        if (node.getNthParent(4) instanceof ASTStatementExpression) {
-            ASTPrimaryExpression assignee = node.getNthParent(4).getFirstChildOfType(ASTPrimaryExpression.class);
-            ASTPrimarySuffix suffix = assignee.getFirstChildOfType(ASTPrimarySuffix.class);
-            return suffix == null || !suffix.isArrayDereference();
-        }
-        return true;
-    }
-
-    private boolean notCollectionAccess(ASTAllocationExpression node) {
-        if (node.getNthParent(4) instanceof ASTArgumentList && node.getNthParent(8) instanceof ASTStatementExpression) {
-            ASTStatementExpression statement = (ASTStatementExpression) node.getNthParent(8);
-            return !isCallOnReceiverOfType(Collection.class, statement);
-        }
-        return true;
-    }
-
-    private static boolean isCallOnReceiverOfType(Class<?> receiverType, JavaNode expression) {
-        if ((expression instanceof ASTExpression || expression instanceof ASTStatementExpression)
-            && expression.getNumChildren() == 1) {
-            expression = expression.getChild(0);
-        }
-        int numChildren = expression.getNumChildren();
-        if (expression instanceof ASTPrimaryExpression && numChildren >= 2) {
-            JavaNode lastChild = expression.getChild(numChildren - 1);
-            if (lastChild instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) lastChild).isArguments()) {
-                JavaNode receiverExpr = expression.getChild(numChildren - 2);
-                return receiverExpr instanceof TypeNode && TypeTestUtil.isA(receiverType, (TypeNode) receiverExpr);
+    private boolean notArrayAssignment(ASTConstructorCall node) {
+        if (node.getParent() instanceof ASTAssignmentExpression) {
+            if (node.getIndexInParent() == 1) {
+                Node assignee = node.getParent().getFirstChild();
+                return !(assignee instanceof ASTArrayAccess);
             }
         }
-        return false;
+        return true;
     }
 
-    private boolean notBreakFollowing(ASTAllocationExpression node) {
-        ASTStatement statement = node.getFirstParentOfType(ASTStatement.class);
+    private boolean notCollectionAccess(ASTConstructorCall node) {
+        if (node.getParent() instanceof ASTArgumentList && node.getNthParent(2) instanceof ASTMethodCall) {
+            ASTMethodCall methodCall = (ASTMethodCall) node.getNthParent(2);
+            return !TypeTestUtil.isA(Collection.class, methodCall.getQualifier());
+        }
+        return true;
+    }
+
+    private boolean notBreakFollowing(ASTConstructorCall node) {
+        JavaNode statement = node.ancestors().filter(n -> n.getParent() instanceof ASTBlock).first();
         if (statement != null) {
-            ASTBlock block = statement.getFirstParentOfType(ASTBlock.class);
+            ASTBlock block = (ASTBlock) statement.getParent();
             if (block.getNumChildren() > statement.getIndexInParent() + 1) {
                 ASTStatement next = block.getChild(statement.getIndexInParent() + 1);
-                if (next.getNumChildren() == 1 && next.getChild(0).getNumChildren() == 1) {
-                    return !(next.getChild(0).getChild(0) instanceof ASTBreakStatement);
-                }
+                return !(next instanceof ASTBreakStatement);
             }
         }
         return true;
@@ -106,19 +86,19 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRule {
     /**
      * This method is used to check whether this expression is a throw statement.
      * @param node This is the expression of part of java code to be checked.
-     * @return boolean This returns Whether the fourth parent of node is an instance of throw statement.
+     * @return boolean This returns whether the given constructor call is part of a throw statement
      */
-    private boolean fourthParentNotThrow(ASTAllocationExpression node) {
-        return !(node.getNthParent(4) instanceof ASTThrowStatement);
+    private boolean notAThrowStatement(ASTConstructorCall node) {
+        return !(node.getParent() instanceof ASTThrowStatement);
     }
 
     /**
      * This method is used to check whether this expression is a return statement.
      * @param node This is the expression of part of java code to be checked.
-     * @return boolean This returns Whether the fourth parent of node is an instance of return statement.
+     * @return boolean This returns whether the given constructor call is part of a return statement
      */
-    private boolean fourthParentNotReturn(ASTAllocationExpression node) {
-        return !(node.getNthParent(4) instanceof ASTReturnStatement);
+    private boolean notAReturnStatement(ASTConstructorCall node) {
+        return !(node.getParent() instanceof ASTReturnStatement);
     }
 
     /**
@@ -126,10 +106,10 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRule {
      * @param node This is the expression of part of java code to be checked.
      * @return boolean <code>false</code> if the given node is inside a loop, <code>true</code> otherwise
      */
-    private boolean notInsideLoop(ASTAllocationExpression node) {
-        Node n = node.getParent();
+    private boolean notInsideLoop(ASTConstructorCall node) {
+        Node n = node;
         while (n != null) {
-            if (n instanceof ASTDoStatement || n instanceof ASTWhileStatement || n instanceof ASTForStatement) {
+            if (n instanceof ASTLoopStatement) {
                 return false;
             } else if (n instanceof ASTForInit) {
                 /*
@@ -137,10 +117,9 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRule {
                  * ASTForStatement but continue higher up to detect nested loops
                  */
                 n = n.getParent();
-            } else if (n.getParent() instanceof ASTForStatement && n.getParent().getNumChildren() > 1
+            } else if (n.getParent() instanceof ASTForeachStatement && n.getParent().getNumChildren() > 1
                     && n == n.getParent().getChild(1)) {
-                // it is the second child of a ForStatement - which means
-                // we are dealing with a for-each construct
+                // it is the second child of a ForeachStatement.
                 // In that case, we can ignore this allocation expression, as
                 // the second child
                 // is the expression, over which to iterate.
