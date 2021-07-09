@@ -7,7 +7,6 @@ package net.sourceforge.pmd;
 import java.util.Comparator;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.cpd.SourceCode;
 
 /**
  * A RuleViolation is created by a Rule when it identifies a violation of the
@@ -125,7 +124,7 @@ public interface RuleViolation {
      * Retrieve source code snippet associated with violation.
      *
      * @param encoding - source code file encoding
-     * @return code snippet
+     * @return code snippet captured in a RuleViolation
      */
     @Experimental
     String getSourceCode(String encoding);
