@@ -129,7 +129,7 @@
     <!-- <rule ref="category/java/design.xml/AvoidUncheckedExceptionsInSignatures"/> -->
     <!-- <rule ref="category/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal"/> -->
     <rule ref="category/java/design.xml/CognitiveComplexity" />
-    <!-- <rule ref="category/java/design.xml/CollapsibleIfStatements"/> -->
+    <rule ref="category/java/design.xml/CollapsibleIfStatements"/>
     <!-- <rule ref="category/java/design.xml/CouplingBetweenObjects"/> -->
     <rule ref="category/java/design.xml/CyclomaticComplexity"/>
     <rule ref="category/java/design.xml/DataClass"/>

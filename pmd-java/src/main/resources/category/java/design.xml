@@ -347,40 +347,41 @@ public class Foo {  //Should be final
     <rule name="CollapsibleIfStatements"
           language="java"
           since="3.1"
-          message="These nested if statements could be combined"
+          message="This if statement could be combined with its parent"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#collapsibleifstatements">
-        <description>
-Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
-        </description>
+        <description><![CDATA[
+Reports nested 'if' statements that can be merged together by joining their
+conditions with a boolean `&&` operator in between.
+        ]]></description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement[@Else= false()]/Statement
- /IfStatement[@Else= false()]
- |
-//IfStatement[@Else= false()]/Statement
- /Block[count(BlockStatement)=1]/BlockStatement
-  /Statement/IfStatement[@Else= false()]
+//IfStatement[@Else = false()]/IfStatement[@Else = false()]
+|
+//IfStatement[@Else = false()]/Block[count(*) = 1]/IfStatement[@Else = false()]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
 <![CDATA[
-void bar() {
-    if (x) {            // original implementation
-        if (y) {
-            // do stuff
+class Foo {
+
+    void bar() {
+        if (x) {            // original implementation
+            if (y) {
+                // do stuff
+            }
         }
     }
-}
 
-void bar() {
-    if (x && y) {        // optimized implementation
-        // do stuff
+    void bar() {
+        if (x && y) {        // clearer implementation
+            // do stuff
+        }
     }
 }
 ]]>
