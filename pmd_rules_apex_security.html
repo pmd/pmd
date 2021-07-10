@@ -1509,7 +1509,7 @@ should be <a href="pmd_userdocs_suppressing_warnings.html">suppressed</a>.</p>
         <span class="nc">Contact</span> <span class="n">c</span> <span class="o">=</span> <span class="o">[</span><span class="no">SELECT</span> <span class="n">Status__c</span> <span class="no">FROM</span> <span class="nc">Contact</span> <span class="no">WHERE</span> <span class="nc">Id</span><span class="o">=:</span><span class="no">ID</span> <span class="no">WITH</span> <span class="no">SECURITY_ENFORCED</span><span class="o">];</span>
 
         <span class="c1">// Make sure we can update the database before even trying</span>
-        <span class="k">if</span> <span class="o">(!</span><span class="nc">Schema</span><span class="o">.</span><span class="na">sObjectType</span><span class="o">.</span><span class="na">Contact</span><span class="o">.</span><span class="na">fields</span><span class="o">.</span><span class="na">Name</span><span class="o">.</span><span class="na">isUpdateable</span><span class="o">())</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="nc">Schema</span><span class="o">.</span><span class="na">sObjectType</span><span class="o">.</span><span class="na">Contact</span><span class="o">.</span><span class="na">fields</span><span class="o">.</span><span class="na">Status__c</span><span class="o">.</span><span class="na">isUpdateable</span><span class="o">())</span> <span class="o">{</span>
             <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
         <span class="o">}</span>
 
@@ -2131,7 +2131,7 @@ to avoid XSS attacks.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 8, 2021 <br />
+ Site last generated: Jul 10, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
