@@ -2862,6 +2862,8 @@ public class Foo {
 For any method that returns an collection (such as an array, Collection or Map), it is a better to return an empty one rather than a
 null reference. This removes the need for null checking all results and avoids inadvertent
 NullPointerExceptions.
+
+See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays instead of null
         </description>
         <priority>1</priority>
         <properties>
