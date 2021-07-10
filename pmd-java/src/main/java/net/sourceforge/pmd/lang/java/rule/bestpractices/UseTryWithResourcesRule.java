@@ -14,6 +14,8 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -105,10 +107,15 @@ public final class UseTryWithResourcesRule extends AbstractJavaRule {
             if (lastDot > -1) {
                 image = image.substring(lastDot + 1);
             }
-            if (getProperty(CLOSE_METHODS).contains(image)) {
+            if (getProperty(CLOSE_METHODS).contains(image) && isMethodCall(name)) {
                 potentialCloses.add(name);
             }
         }
         return potentialCloses;
+    }
+
+    private boolean isMethodCall(ASTName potentialMethodCall) {
+        return potentialMethodCall.getNthParent(2) instanceof ASTPrimaryExpression
+                && !potentialMethodCall.getNthParent(2).findChildrenOfType(ASTPrimarySuffix.class).isEmpty();
     }
 }

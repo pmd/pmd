@@ -308,4 +308,25 @@ class Holder implements AutoCloseable {
         <code-ref id="issue-3235-with-local-var"/>
     </test-code>
 
+    <test-code>
+        <description>NPE when determining closeTarget</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.InputStream;
+import java.io.IOException;
+
+public class UseTryWithResources {
+    public void read(InputStream is, boolean close) throws IOException {
+        try {
+            is.read();
+        } finally {
+            if (close) {
+                is.close();
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
