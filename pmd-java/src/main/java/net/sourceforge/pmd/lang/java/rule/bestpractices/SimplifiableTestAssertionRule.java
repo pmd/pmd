@@ -4,13 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
+import java.util.HashSet;
+import java.util.Set;
+
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
@@ -28,47 +31,34 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  */
 public class SimplifiableTestAssertionRule extends AbstractJavaRule {
 
-    private boolean inTestClass;
+    private final Set<String> importedMethodsHere = new HashSet<>();
+    private boolean allAssertionsOn;
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        boolean oldTestClass = inTestClass;
-        inTestClass = isTestClass(node);
-        super.visit(node, data);
-        inTestClass = oldTestClass;
-        return null;
-    }
-
-    private static boolean isTestClass(ASTClassOrInterfaceDeclaration p) {
-        if (TypeTestUtil.isA("junit.framework.TestCase", p)) {
-            return true;
-        }
-
-        for (ASTAnyTypeBodyDeclaration decl : p.getDeclarations()) {
-            for (ASTAnnotation annot : decl.findChildrenOfType(ASTAnnotation.class)) {
-                if (TypeTestUtil.isA("org.junit.Test", annot)
-                    || TypeTestUtil.isA("org.junit.jupiter.api.Test", annot)
-                    || TypeTestUtil.isA("org.junit.jupiter.api.RepeatedTest", annot)
-                    || TypeTestUtil.isA("org.junit.jupiter.api.TestFactory", annot)
-                    || TypeTestUtil.isA("org.junit.jupiter.api.TestTemplate", annot)
-                    || TypeTestUtil.isA("org.junit.jupiter.params.ParameterizedTest", annot)
-                ) {
-                    return true;
+    public Object visit(ASTCompilationUnit node, Object data) {
+        importedMethodsHere.clear();
+        allAssertionsOn = false;
+        for (ASTImportDeclaration importDecl : node.findChildrenOfType(ASTImportDeclaration.class)) {
+            if (importDecl.isStatic()) {
+                if (importDecl.isImportOnDemand()) {
+                    if (isAssertionContainer(importDecl.getImportedName())) {
+                        // import static org.junit.Assert.*
+                        allAssertionsOn = true;
+                    }
+                } else {
+                    checkImportedAssertion(importDecl.getImportedName());
                 }
             }
         }
 
-        return false;
+        super.visit(node, data);
+        return null;
     }
-
 
     @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
-        if (!inTestClass) {
-            return super.visit(node, data);
-        }
-        final boolean isAssertTrue = isCall(node, "assertTrue");
-        final boolean isAssertFalse = isCall(node, "assertFalse");
+        final boolean isAssertTrue = isAssertionCall(node, "assertTrue");
+        final boolean isAssertFalse = isAssertionCall(node, "assertFalse");
 
         if (isAssertTrue || isAssertFalse) {
             ASTArgumentList args = getNonEmptyArgList(node);
@@ -111,8 +101,8 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRule {
             }
         }
 
-        boolean isAssertEquals = isCall(node, "assertEquals");
-        boolean isAssertNotEquals = isCall(node, "assertNotEquals");
+        boolean isAssertEquals = isAssertionCall(node, "assertEquals");
+        boolean isAssertNotEquals = isAssertionCall(node, "assertNotEquals");
 
         if (isAssertEquals || isAssertNotEquals) {
             ASTArgumentList argList = getNonEmptyArgList(node);
@@ -191,11 +181,43 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRule {
         return false;
     }
 
+    private boolean isAssertionCall(JavaNode node, String methodName) {
+        if (node instanceof ASTExpression) {
+            if (node.getNumChildren() == 1) {
+                node = node.getChild(0);
+            } else {
+                return false;
+            }
+        }
+        if (node.getNumChildren() != 2 || !isCall(node, methodName)) {
+            return false; // not a call chain
+        }
+
+        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) getChildRev(node, -2);
+        return isAssertionMethodName(methodName, (ASTName) prefix.getChild(0));
+    }
+
     private static boolean isPossiblyQualifiedMethodName(String methodName, String possiblyQualifiedName) {
         return methodName.equals(possiblyQualifiedName)
             || possiblyQualifiedName.length() > methodName.length()
             && possiblyQualifiedName.endsWith(methodName)
             && possiblyQualifiedName.charAt(possiblyQualifiedName.length() - methodName.length() - 1) == '.';
+    }
+
+    private boolean isAssertionMethodName(String methodName, ASTName location) {
+        String possiblyQualifiedName = location.getImage();
+        if (methodName.equals(possiblyQualifiedName)) {
+            return allAssertionsOn
+                || importedMethodsHere.contains(methodName)
+                || TypeTestUtil.isA("junit.framework.TestCase", location.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class));
+        }
+        if (possiblyQualifiedName.length() > methodName.length()
+            && possiblyQualifiedName.endsWith(methodName)
+            && possiblyQualifiedName.charAt(possiblyQualifiedName.length() - methodName.length() - 1) == '.') {
+            return TypeTestUtil.isA("org.junit.jupiter.api.Assertions", location)
+                || TypeTestUtil.isA("org.junit.Assert", location);
+        }
+        return false;
     }
 
 
@@ -281,4 +303,25 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRule {
     }
 
 
+    private boolean isAssertionContainer(String importedName) {
+        return "org.junit.jupiter.api.Assertions".equals(importedName)
+            || "org.junit.Assert".equals(importedName);
+    }
+
+    private void checkImportedAssertion(String importedName) {
+        String stripped = removePrefixOrNull(importedName, "org.junit.jupiter.api.Assertions.");
+        if (stripped == null) {
+            stripped = removePrefixOrNull(importedName, "org.junit.Assert.");
+        }
+        if (stripped != null && stripped.indexOf('.') == -1) {
+            importedMethodsHere.add(stripped);
+        }
+    }
+
+    private static String removePrefixOrNull(String str, String prefix) {
+        if (str.startsWith(prefix)) {
+            return str.substring(prefix.length());
+        }
+        return null;
+    }
 }

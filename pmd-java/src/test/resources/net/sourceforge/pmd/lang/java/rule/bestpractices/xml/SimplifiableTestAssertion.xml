@@ -71,6 +71,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.junit.Test;
+import static org.junit.Assert.*;
 public class Foo {
     @Test
     public void test1() {
@@ -100,7 +101,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Assertions;
 public class Foo {
     @Test
     public void test1() {
@@ -118,6 +119,7 @@ public class Foo {
         <code><![CDATA[
             import junit.framework.TestCase;
             public class Foo extends TestCase {
+                Object a,b;
                 public void test1() {
                     assertTrue(a==b);
                 }
@@ -198,10 +200,28 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
             import org.junit.Test;
+            import static org.junit.Assert.*;
             public class Foo {
+                Object a,b;
                 @Test
                 public void test1() {
                     assertTrue(a==b);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Do not FP if we don't know where the method is coming from</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.junit.Test;
+            public class Foo {
+                Object a,b;
+                @Test
+                public void test1() {
+                    // unresolved methods
+                    assertTrue(a==b);
+                    assertEquals(a, null);
                 }
             }
             ]]></code>
@@ -299,6 +319,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
             import org.junit.Test;
+            import static org.junit.Assert.assertFalse;
             public class Foo {
                 @Test
                 void testBar() {
@@ -424,11 +445,12 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
             import org.junit.Test;
+            import org.junit.Assert;
             public class Foo {
                 Object a,b;
                 @Test
                 public void test1() {
-                    assertTrue(a.equals(b));
+                    Assert.assertTrue(a.equals(b));
                 }
             }
             ]]></code>
