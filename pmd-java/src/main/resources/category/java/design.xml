@@ -314,27 +314,15 @@ public void foo() throws RuntimeException {
     <rule name="ClassWithOnlyPrivateConstructorsShouldBeFinal"
           language="java"
           since="4.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          message="A class which only has private constructors should be final"
+          class="net.sourceforge.pmd.lang.java.rule.design.ClassWithOnlyPrivateConstructorsShouldBeFinalRule"
+          message="This class has only private constructors and may be final"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal">
         <description>
-A class with only private constructors should be final, unless the private constructor
-is invoked by a inner class.
+Reports classes that may be made final because they cannot be extended from outside
+their compilation unit anyway. This is because all their constructors are private,
+so a subclass could not call the super constructor.
         </description>
         <priority>1</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//TypeDeclaration[count(../TypeDeclaration) = 1]/ClassOrInterfaceDeclaration
-[@Final = false()]
-[ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private = true()]]
-[not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[(@Public = true()) or (@Protected = true()) or (@PackagePrivate = true())])]
-[not(.//ClassOrInterfaceDeclaration)]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public class Foo {  //Should be final
