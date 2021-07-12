@@ -135,4 +135,15 @@ class ClassWithOnlyPrivateConstructorsShouldBeFinal {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2536 [java] ClassWithOnlyPrivateConstructorsShouldBeFinal can't detect inner class with only private constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Main209 {
+                private static class InputBits {
+                    private InputBits(int number) { }
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
