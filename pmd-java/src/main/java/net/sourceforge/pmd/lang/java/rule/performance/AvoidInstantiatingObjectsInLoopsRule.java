@@ -9,6 +9,7 @@ import java.util.Collection;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
@@ -27,7 +28,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainRule {
 
     public AvoidInstantiatingObjectsInLoopsRule() {
-        super(ASTConstructorCall.class);
+        super(ASTConstructorCall.class, ASTArrayAllocation.class);
     }
 
     /**
@@ -53,22 +54,37 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
         return data;
     }
 
+    @Override
+    public Object visit(ASTArrayAllocation node, Object data) {
+        if (notInsideLoop(node)) {
+            return data;
+        }
+
+        if (notCollectionAccess(node)) {
+            addViolation(data, node);
+        }
+
+        return data;
+    }
+
     private boolean notArrayAssignment(ASTConstructorCall node) {
-        if (node.getParent() instanceof ASTAssignmentExpression) {
-            if (node.getIndexInParent() == 1) {
-                Node assignee = node.getParent().getFirstChild();
-                return !(assignee instanceof ASTArrayAccess);
-            }
+        JavaNode childOfAssignment = node.ancestorsOrSelf()
+                .filter(n -> n.getParent() instanceof ASTAssignmentExpression).first();
+
+        if (childOfAssignment != null && childOfAssignment.getIndexInParent() == 1) {
+            Node assignee = childOfAssignment.getParent().getFirstChild();
+            return !(assignee instanceof ASTArrayAccess);
         }
         return true;
     }
 
-    private boolean notCollectionAccess(ASTConstructorCall node) {
-        if (node.getParent() instanceof ASTArgumentList && node.getNthParent(2) instanceof ASTMethodCall) {
-            ASTMethodCall methodCall = (ASTMethodCall) node.getNthParent(2);
-            return !TypeTestUtil.isA(Collection.class, methodCall.getQualifier());
-        }
-        return true;
+    private boolean notCollectionAccess(JavaNode node) {
+        // checks whether the given ConstructorCall/ArrayAllocation is
+        // part of a MethodCall on a Collection.
+        return node.ancestors(ASTArgumentList.class)
+            .filter(n -> n.getParent() instanceof ASTMethodCall)
+            .filter(n -> TypeTestUtil.isA(Collection.class, ((ASTMethodCall) n.getParent()).getQualifier()))
+            .isEmpty();
     }
 
     private boolean notBreakFollowing(ASTConstructorCall node) {
@@ -106,7 +122,7 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
      * @param node This is the expression of part of java code to be checked.
      * @return boolean <code>false</code> if the given node is inside a loop, <code>true</code> otherwise
      */
-    private boolean notInsideLoop(ASTConstructorCall node) {
+    private boolean notInsideLoop(Node node) {
         Node n = node;
         while (n != null) {
             if (n instanceof ASTLoopStatement) {

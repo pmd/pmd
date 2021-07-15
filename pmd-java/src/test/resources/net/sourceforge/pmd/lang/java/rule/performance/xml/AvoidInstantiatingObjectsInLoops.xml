@@ -290,4 +290,92 @@ public class Sample {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negative with array allocations within loops</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class AvoidInstantiatingArraysInLoops {
+    public static void main(String[] args) {
+        for (String arg : args) {
+            String[] copy = new String[] { arg };
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with for-each loop over new array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidInstantiatingArrayInLoops {
+    public static void main(String[] args) {
+        for (String configName : new String[] {"config", "test"}) {
+            System.out.println(configName);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with adding to a collection/array field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class AvoidInstantiatingObjectsInLoops {
+    private List<String> field = new ArrayList<>();
+    private String[] arrayField = new String[10];
+
+    public static void main(String[] args) {
+        for (String arg : args) {
+            this.field.add(new String(arg));
+        }
+        for (int i = 0; i < args.length; i++) {
+            this.arrayField[i] = new String(args[i]);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with adding wrapped new arrays to collection</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+public class AvoidInstantiatingObjectsInLoops {
+    public void testBytes(String s) {
+        byte[] bytes = s.getBytes(StandardCharsets.UTF_8);
+        List<ByteBuffer> buffers = new ArrayList<>();
+        for (byte b : bytes) {
+            buffers.add(ByteBuffer.wrap(new byte[]{b}));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with temporary object assigned to an array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidInstantiatingObjectsInLoops {
+    public static void main(String[] args) {
+        String[] data = new String[10];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = new StringBuilder().append("foo").toString();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
