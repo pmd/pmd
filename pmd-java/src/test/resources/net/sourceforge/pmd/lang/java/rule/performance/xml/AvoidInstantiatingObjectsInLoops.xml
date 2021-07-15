@@ -7,6 +7,7 @@
     <test-code>
         <description>TEST1</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
@@ -21,6 +22,7 @@ public class Foo {
     <test-code>
         <description>TEST2</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
@@ -35,6 +37,7 @@ public class Foo {
     <test-code>
         <description>TEST3</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
@@ -49,6 +52,7 @@ public class Foo {
     <test-code>
         <description>TEST4</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
@@ -148,7 +152,8 @@ public class PMDDemo {
         <description>False positive when assigning to a list/array (see #2207 and #1043)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.util.*;
+import java.util.Collection;
+import java.util.ArrayList;
 
 public class PMDDemo {
     public void checkArray() {
@@ -163,6 +168,8 @@ public class PMDDemo {
            cars.add(new Car());
         }
     }
+
+    private static class Car {}
 }
         ]]></code>
     </test-code>
@@ -170,16 +177,23 @@ public class PMDDemo {
     <test-code>
         <description>False negative with break in other for-loop</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>14</expected-linenumbers>
         <code><![CDATA[
-public class Foo {
-    private SortedSet<LocalizedMessage> getFilteredMessages(
-            String fileName, FileContents fileContents, DetailAST rootAST) {
-        final SortedSet<LocalizedMessage> result = new TreeSet<>(messages);
-        for (LocalizedMessage element : messages) {
-            final TreeWalkerAuditEvent event =
-                    new TreeWalkerAuditEvent(fileContents, fileName, element, rootAST);
-            for (TreeWalkerFilter filter : filters) {
+import java.util.Function;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+public class Message {
+    private List<Function<Message, Boolean>> filters;
+
+    public Message(Message message) {}
+
+    private SortedSet<Message> getFilteredMessages() {
+        final SortedSet<Message> result = new TreeSet<>(messages);
+        for (Message element : messages) {
+            Message event = new Message(element);
+            for (Function<Message, Boolean> filter : filters) {
                 if (!filter.accept(event)) {
                     result.remove(element);
                     break;
@@ -256,6 +270,7 @@ public class Sample {
     <test-code>
         <description>Collections with unresolved type</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
 // Types are unresolved
 //import java.util.Collection;
