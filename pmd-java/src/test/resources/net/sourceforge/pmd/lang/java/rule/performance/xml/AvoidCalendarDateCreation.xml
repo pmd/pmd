@@ -231,4 +231,46 @@ public class AvoidCalendarDateCreation {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive with calendar not created by getInstance</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Calendar;
+import java.util.Date;
+
+public class AvoidCalendarDateCreation {
+    private Calendar calendar;
+
+    public void test() {
+        Date date = calendar.getTime();
+    }
+
+    public void test(Object in) {
+        if (in instanceof Calendar) {
+            Calendar cal = (Calendar) in;
+            Date date = cal.getTime();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>New GregorianCalendar default constructor</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+public class AvoidCalendarDateCreation {
+    public void test() {
+        Calendar cal = new GregorianCalendar();
+        System.out.println(cal.getTime());
+        System.out.println(new GregorianCalendar().getTime());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
