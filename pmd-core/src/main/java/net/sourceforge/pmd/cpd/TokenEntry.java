@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -94,21 +94,23 @@ public class TokenEntry implements Comparable<TokenEntry> {
      * entries.
      */
     public static class State {
-        private int tokenCount;
-        private Map<String, Integer> tokens;
-        private List<TokenEntry> entries;
+        private final int tokenCount;
+        private final int tokensMapSize;
 
-        public State(List<TokenEntry> entries) {
+        public State() {
             this.tokenCount = TokenEntry.TOKEN_COUNT.get().intValue();
-            this.tokens = new HashMap<>(TokenEntry.TOKENS.get());
-            this.entries = new ArrayList<>(entries);
+            this.tokensMapSize = TokenEntry.TOKENS.get().size();
         }
 
-        public List<TokenEntry> restore() {
+        public void restore(final List<TokenEntry> entries) {
             TokenEntry.TOKEN_COUNT.get().set(tokenCount);
-            TOKENS.get().clear();
-            TOKENS.get().putAll(tokens);
-            return entries;
+            final Iterator<Map.Entry<String, Integer>> it = TOKENS.get().entrySet().iterator();
+            while (it.hasNext()) {
+                if (it.next().getValue() > tokensMapSize) {
+                    it.remove();
+                }
+            }
+            entries.subList(tokenCount, entries.size()).clear();
         }
     }
 
