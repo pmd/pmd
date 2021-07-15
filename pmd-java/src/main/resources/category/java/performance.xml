@@ -116,12 +116,13 @@ public class Test {
     <rule name="AvoidCalendarDateCreation"
           since="6.25.0"
           language="java"
-          message="A Calendar is used to create a Date or DateTime, this is expensive."
+          message="A Calendar is used to get the current time, this is expensive."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidcalendardatecreation">
         <description>
-Problem: A Calendar is a heavyweight object and expensive to create.
+Problem: `java.util.Calendar` is a heavyweight object and expensive to create. It should only be used, if
+calendar calculations are needed.
 
 Solution: Use `new Date()`, Java 8+ `java.time.LocalDateTime.now()` or `ZonedDateTime.now()`.
         </description>
