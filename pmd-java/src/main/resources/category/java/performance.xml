@@ -130,9 +130,16 @@ Solution: Use `new Date()`, Java 8+ `java.time.LocalDateTime.now()` or `ZonedDat
             <property name="xpath">
                 <value><![CDATA[
 //MethodCall[pmd-java:matchesSig("java.util.Calendar#getTime()") or pmd-java:matchesSig("java.util.Calendar#getTimeInMillis()")]
+  [*[1][local-name() = 'VariableAccess'] or *[1][local-name() = 'MethodCall']
+                               [pmd-java:matchesSig("java.util.Calendar#getInstance()")
+                             or pmd-java:matchesSig("java.util.GregorianCalendar#getInstance()")]]
   [not(VariableAccess/@Name = ancestor::MethodDeclaration/FormalParameters/FormalParameter/VariableDeclaratorId/@Name)]
   (: ignore if .set* or .add or .clear or .roll is called on the variable :)
   [not(VariableAccess/@Name = ancestor::Block//MethodCall[starts-with(@MethodName, "set") or @MethodName = ("add", "clear", "roll")]/VariableAccess/@Name)]
+  (: ignore if calendar is created with builder :)
+  [not(VariableAccess/@Name = ancestor::Block//AssignmentExpression
+                      [*[2][local-name() = 'MethodCall']]
+                      [MethodCall[pmd-java:matchesSig("java.util.Calendar.Builder#build()")]]/VariableAccess/@Name)]
 |
 //ConstructorCall[pmd-java:typeIs("org.joda.time.DateTime") or pmd-java:typeIs("org.joda.time.LocalDateTime")]
   [ArgumentList[MethodCall

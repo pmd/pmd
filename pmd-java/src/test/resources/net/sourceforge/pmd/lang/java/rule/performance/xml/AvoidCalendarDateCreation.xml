@@ -162,4 +162,73 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive with Calendar not created here</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Calendar;
+import java.util.Date;
+
+public class AvoidCalenderDateCreationFalsePositive {
+    public static void main(String[] args) {
+        AvoidCalenderDateCreationFalsePositive fp = new AvoidCalenderDateCreationFalsePositive();
+        Date parsedDate = fp.create().getTime();
+    }
+
+    public Calendar create() {
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when this is a Calendar</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+public class MyCalendar extends GregorianCalendar {
+    public Date getTime2() {
+        return new Date(getTimeInMillis());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with calendar builder</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+public class AvoidCalendarDateCreationBuilder {
+    public void AvoidCalendarDateCreationBuilder(int year, int month, int day) {
+        Calendar c;
+        c = new Calendar.Builder().setTimeZone(TimeZone.getTimeZone("GMT"))
+                    .setDate(year, month - 1, day).build();
+        Date date = c.getTime();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with specific date</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+public class AvoidCalendarDateCreation {
+    public static void main(String[] args) {
+        Date date = new GregorianCalendar(2004, 1, 1).getTime();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
