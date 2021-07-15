@@ -186,7 +186,7 @@ public class ParserCornersTest {
     public void testGitHubBug2767() {
         // PMD fails to parse an initializer block.
         // PMD 6.26.0 parses this code just fine.
-        java.withDefaultVersion("15-preview")
+        java.withDefaultVersion("16")
             .parse("class Foo {\n"
                        + "    {final int I;}\n"
                        + "}\n");
