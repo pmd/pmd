@@ -31,17 +31,21 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
         super(ASTConstructorCall.class, ASTArrayAllocation.class);
     }
 
-    /**
-     * This method is used to check whether user instantiates variables
-     * which are not assigned to arrays/lists in loops.
-     * @param node This is the expression of part of java code to be checked.
-     * @param data This is the data to return.
-     * @return Object This returns the data passed in. If violation happens, violation is added to data.
-     */
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
+        checkNode(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTArrayAllocation node, Object data) {
+        checkNode(node, data);
+        return data;
+    }
+
+    private void checkNode(JavaNode node, Object data) {
         if (notInsideLoop(node)) {
-            return data;
+            return;
         }
 
         if (notAThrowStatement(node)
@@ -51,23 +55,9 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
                 && notCollectionAccess(node)) {
             addViolation(data, node);
         }
-        return data;
     }
 
-    @Override
-    public Object visit(ASTArrayAllocation node, Object data) {
-        if (notInsideLoop(node)) {
-            return data;
-        }
-
-        if (notCollectionAccess(node)) {
-            addViolation(data, node);
-        }
-
-        return data;
-    }
-
-    private boolean notArrayAssignment(ASTConstructorCall node) {
+    private boolean notArrayAssignment(JavaNode node) {
         JavaNode childOfAssignment = node.ancestorsOrSelf()
                 .filter(n -> n.getParent() instanceof ASTAssignmentExpression).first();
 
@@ -87,7 +77,7 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
             .isEmpty();
     }
 
-    private boolean notBreakFollowing(ASTConstructorCall node) {
+    private boolean notBreakFollowing(JavaNode node) {
         JavaNode statement = node.ancestors().filter(n -> n.getParent() instanceof ASTBlock).first();
         if (statement != null) {
             ASTBlock block = (ASTBlock) statement.getParent();
@@ -104,7 +94,7 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
      * @param node This is the expression of part of java code to be checked.
      * @return boolean This returns whether the given constructor call is part of a throw statement
      */
-    private boolean notAThrowStatement(ASTConstructorCall node) {
+    private boolean notAThrowStatement(JavaNode node) {
         return !(node.getParent() instanceof ASTThrowStatement);
     }
 
@@ -113,7 +103,7 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
      * @param node This is the expression of part of java code to be checked.
      * @return boolean This returns whether the given constructor call is part of a return statement
      */
-    private boolean notAReturnStatement(ASTConstructorCall node) {
+    private boolean notAReturnStatement(JavaNode node) {
         return !(node.getParent() instanceof ASTReturnStatement);
     }
 

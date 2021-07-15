@@ -378,4 +378,59 @@ public class AvoidInstantiatingObjectsInLoops {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive with array allocation and assignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidInstantiatingArraysInLoops {
+    public static void main(String[] args) {
+        int[][] arr = new int[10];
+        for (int i = 0; i < 10; i++) {
+            arr[i] = new int[] { i };
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when array is returned</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidInstantiatingArraysInLoops {
+    public int[] test() {
+        for (int i = 0; i < 10; i++) {
+            return new int[] { i };
+        }
+
+        for (int i = 0; i < 10; i++) {
+            int[] a = new int[] { i };
+            break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when converting collection to array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class AvoidInsantiatingArraysInLoops {
+    public void test() {
+        List<String> data = new ArrayList<>();
+
+        for (String arg : args) {
+            this.consume(data.toArray(new String[0]));
+        }
+    }
+
+    private void consume(String[] array) { }
+}
+        ]]></code>
+    </test-code>
 </test-data>
