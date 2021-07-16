@@ -3939,6 +3939,15 @@
 ,
 
 {
+"title": "ImplicitSwitchFallThrough (Java, Error Prone)",
+"tags": "",
+"keywords": "ImplicitSwitchFallThrough",
+"url": "pmd_rules_java_errorprone.html#implicitswitchfallthrough",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
 "title": "ImportFromSamePackage (Java, Error Prone)",
 "tags": "",
 "keywords": "ImportFromSamePackage",

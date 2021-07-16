@@ -1444,6 +1444,17 @@ instead of null.</li>
 
 <p>The rule is part of the quickstart.xml ruleset.</p>
 
+<h4 id="renamed-rules">Renamed rules</h4>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_errorprone.html#missingbreakinswitch"><code class="language-plaintext highlighter-rouge">MissingBreakInSwitch</code></a> has been renamed to
+<a href="pmd_rules_java_errorprone.html#implicitswitchfallthrough"><code class="language-plaintext highlighter-rouge">ImplicitSwitchFallThrough</code></a> (category error prone) to better reflect the rule’s
+purpose: The rule finds implicit fall-through cases in switch statements, which are most
+likely unexpected. The old rule name described only one way how to avoid a fall-through,
+namely using <code class="language-plaintext highlighter-rouge">break</code> but <code class="language-plaintext highlighter-rouge">continue</code>, <code class="language-plaintext highlighter-rouge">throw</code> and <code class="language-plaintext highlighter-rouge">return</code> avoid a fall-through
+as well. This enables us to improve this rule in the future.</li>
+</ul>
+
 <h4 id="deprecated-rules">Deprecated rules</h4>
 
 <p>The rule <a href="pmd_rules_java_errorprone.html#returnemptyarrayratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyArrayRatherThanNull</code></a> is deprecated and removed from
@@ -1467,6 +1478,7 @@ supersedes it.</p>
   </li>
   <li>java-errorprone
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3361">#3361</a>: [java] Rename rule MissingBreakInSwitch to ImplicitSwitchFallThrough</li>
       <li><a href="https://github.com/pmd/pmd/pull/3382">#3382</a>: [java] New rule ReturnEmptyCollectionRatherThanNull</li>
     </ul>
   </li>

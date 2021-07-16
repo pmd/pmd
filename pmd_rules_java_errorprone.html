@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BadComparison, BeanMembersShouldSerialize, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloneThrowsCloneNotSupportedException, CloseResource, CompareObjectsWithEquals, ComparisonWithNaN, ConstructorCallsOverridableMethod, DataflowAnomalyAnalysis, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotCallSystemExit, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, EmptyStatementNotInLoop, EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, EmptyWhileStmt, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImportFromSamePackage, InstantiationToGetClass, InvalidSlf4jMessageFormat, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, LoggerIsNotStaticFinal, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingBreakInSwitch, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReturnEmptyArrayRatherThanNull, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader">
+<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BadComparison, BeanMembersShouldSerialize, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloneThrowsCloneNotSupportedException, CloseResource, CompareObjectsWithEquals, ComparisonWithNaN, ConstructorCallsOverridableMethod, DataflowAnomalyAnalysis, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotCallSystemExit, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, EmptyStatementNotInLoop, EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, EmptyWhileStmt, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImplicitSwitchFallThrough, ImportFromSamePackage, InstantiationToGetClass, InvalidSlf4jMessageFormat, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, LoggerIsNotStaticFinal, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingBreakInSwitch, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReturnEmptyArrayRatherThanNull, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader">
 <title>Error Prone | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -3863,6 +3863,54 @@ other classes may invoke it at inappropriate times.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/IdempotentOperations"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="implicitswitchfallthrough">ImplicitSwitchFallThrough</h2>
+
+<p><strong>Since:</strong> PMD 3.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Switch statements without break or return statements for each case option
+may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.</p>
+
+<p>This rule has been renamed from "MissingBreakInSwitch" with PMD 6.37.0.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="w">
+</span><span class="p">[(</span><span class="nf">count</span><span class="p">(.</span><span class="o">//</span><span class="nt">BreakStatement</span><span class="p">)</span><span class="w">
+ </span><span class="o">+</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">BlockStatement</span><span class="o">//</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">ReturnStatement</span><span class="p">)</span><span class="w">
+ </span><span class="o">+</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">BlockStatement</span><span class="o">//</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">ContinueStatement</span><span class="p">)</span><span class="w">
+ </span><span class="o">+</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">BlockStatement</span><span class="o">//</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">ThrowStatement</span><span class="p">)</span><span class="w">
+ </span><span class="o">+</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">BlockStatement</span><span class="o">//</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">IfStatement</span><span class="p">[</span><span class="na">@Else</span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nt">Statement</span><span class="p">[</span><span class="m">2</span><span class="p">][</span><span class="nt">ReturnStatement</span><span class="p">|</span><span class="nt">ContinueStatement</span><span class="p">|</span><span class="nt">ThrowStatement</span><span class="p">]]</span><span class="o">/</span><span class="nt">Statement</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="nt">ReturnStatement</span><span class="p">|</span><span class="nt">ContinueStatement</span><span class="p">|</span><span class="nt">ThrowStatement</span><span class="p">])</span><span class="w">
+ </span><span class="o">+</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">SwitchLabel</span><span class="p">[</span><span class="w"> </span><span class="kn">following-sibling::</span><span class="kr">node()</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="kn">self::</span><span class="nt">SwitchLabel</span><span class="p">]</span><span class="w"> </span><span class="p">])</span><span class="w">
+ </span><span class="o">+</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">SwitchLabel</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="kn">following-sibling::</span><span class="kr">node()</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">])</span><span class="w">
+  </span><span class="o">&lt;</span><span class="w"> </span><span class="nf">count</span><span class="w"> </span><span class="p">(</span><span class="nt">SwitchLabel</span><span class="p">))]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="kt">int</span> <span class="n">status</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">switch</span><span class="o">(</span><span class="n">status</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="nl">CANCELLED:</span>
+        <span class="n">doCancelled</span><span class="o">();</span>
+        <span class="c1">// break; hm, should this be commented out?</span>
+      <span class="k">case</span> <span class="nl">NEW:</span>
+        <span class="n">doNew</span><span class="o">();</span>
+        <span class="c1">// is this really a fall-through?</span>
+      <span class="k">case</span> <span class="nl">REMOVED:</span>
+        <span class="n">doRemoved</span><span class="o">();</span>
+        <span class="c1">// what happens if you add another case after this one?</span>
+      <span class="k">case</span> <span class="nl">OTHER:</span> <span class="c1">// empty case - this is interpreted as an intentional fall-through</span>
+      <span class="k">case</span> <span class="nl">ERROR:</span>
+        <span class="n">doErrorHandling</span><span class="o">();</span>
+        <span class="k">break</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/ImplicitSwitchFallThrough"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="importfromsamepackage">ImportFromSamePackage</h2>
 
 <p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
@@ -4182,12 +4230,20 @@ Either the check is useless (the variable will never be "null") or it is incorre
 
 <h2 id="missingbreakinswitch">MissingBreakInSwitch</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#implicitswitchfallthrough">ImplicitSwitchFallThrough</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Switch statements without break or return statements for each case option
 may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.</p>
+
+<p>This rule has been renamed from "MissingBreakInSwitch" with PMD 6.37.0.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="w">
