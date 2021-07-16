@@ -85,6 +85,18 @@ function build() {
     pmd_ci_log_group_end
 
     if pmd_ci_maven_isSnapshotBuild; then
+    pmd_ci_log_group_start "Executing PMD dogfood test"
+        ./mvnw versions:set -DnewVersion=${PMD_CI_MAVEN_PROJECT_VERSION}-dogfood -DgenerateBackupPoms=false
+        ./mvnw verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}" \
+            -DskipTests \
+            -Dmaven.javadoc.skip=true \
+            -Dmaven.source.skip=true \
+            -Dcheckstyle.skip=true \
+            -Ppmd-dogfood \
+            -Dpmd.dogfood.version=${PMD_CI_MAVEN_PROJECT_VERSION}
+        ./mvnw versions:set -DnewVersion=${PMD_CI_MAVEN_PROJECT_VERSION} -DgenerateBackupPoms=false
+    pmd_ci_log_group_end
+
     pmd_ci_log_group_start "Executing build with sonar"
         # Note: Sonar also needs GITHUB_TOKEN (!)
         ./mvnw \
