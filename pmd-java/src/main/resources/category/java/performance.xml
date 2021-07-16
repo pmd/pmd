@@ -73,9 +73,20 @@ methods instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//(ForStatement | WhileStatement)
+//(ForStatement[ForUpdate//(UnaryExpression[@Operator='++'] | AssignmentExpression[@Operator = '+='][NumericLiteral[@Image = '1']])]
+ | WhileStatement)
+    [not(.//ContinueStatement)]
+    [not(.//BreakStatement)]
+    [not(.//ThrowStatement)]
+    [not(.//ReturnStatement)]
     [count(Block//AssignmentExpression[@Operator='=']
-                                      [count(ArrayAccess[not(.//ArrayAccess)])=2]
+                                      (: no nested arrays or method calls as array index :)
+                                      [count(ArrayAccess[not(.//ArrayAccess)]
+                                                        [not(.//MethodCall)])=2]
+                                      (: array names must be different :)
+                                      [count(distinct-values(ArrayAccess/VariableAccess[1]/@Name)) = 2]
+                                      (: array index must be same :)
+                                      [count(distinct-values(ArrayAccess/VariableAccess[2]/@Name)) = 1]
      )=1]
 ]]>
                 </value>

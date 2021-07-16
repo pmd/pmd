@@ -156,4 +156,105 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive with calculated array index</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidArrayLoops {
+    public void test() {
+        String[] table = new String[10];
+        String[] labels = new String[10];
+        for (int i = 0; i < 10; i++) {
+            table[i] = labels[getIndex()];
+        }
+    }
+
+    private int getIndex() { return 0; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with same array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidArrayLoops {
+    public void test() {
+        String[] array = new String[10];
+        for (int i = 0, j = 1; i < 9; i++, j++) {
+            array[i] = array[j];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Correct example - System.arraycopy can be used</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class AvoidArrayLoops {
+    public void test(byte[] time) {
+        byte[] blob = new byte[time.length + 8];
+        for (int i=0; i<time.length; i++) {
+            blob[8+time.length-i-1] = time[i];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with break/continue in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidArrayLoops {
+    public void test(String[] in) {
+        String[] array = new String[10];
+        for (int i = 0; i < in.length; i++) {
+            if (i % 2) {
+                continue;
+            }
+            array[i] = in[i];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with linked list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidArrayLoops {
+    public void test(int[] uValues) {
+        int[] a = new int[10];
+        int headp = 0;
+        for (int i = 0; i < uValues.length; i++) {
+            int nextp = a[headp];
+            a[headp] = uValues[i];
+            headp = nextp;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with increment by 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidArrayLoops {
+    public void test(int[] value) {
+        int[] dst = new int[10];
+        int dstBegin = 0;
+        for (int i = 0; i < value.length; i += 2) {
+            dst[dstBegin++] = value[i];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
