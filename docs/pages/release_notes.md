@@ -14,6 +14,25 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New rules
+
+This release ships with 1 new Java rule.
+
+*   {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} suggests returning empty collections / arrays
+    instead of null.
+
+```xml
+    <rule ref="category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
+
+#### Deprecated rules
+
+The rule {% rule java/errorprone.xml/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
+the quickstart ruleset, as the new rule {% rule java/errorprone.xml/ReturnEmptyCollectionRatherThanNull %}
+supersedes it.
+
 ### Fixed Issues
 
 *   apex
@@ -22,6 +41,8 @@ This is a {{ site.pmd.release_type }} release.
 *   core
     *   [#3377](https://github.com/pmd/pmd/issues/3377): \[core] NPE when specifying report file in current directory in PMD CLI
     *   [#3387](https://github.com/pmd/pmd/issues/3387): \[core] CPD should avoid unnecessary copies when running with --skip-lexical-errors
+*   java-errorprone
+    *   [#3382](https://github.com/pmd/pmd/pull/3382): \[java] New rule ReturnEmptyCollectionRatherThanNull
 
 ### API Changes
 
