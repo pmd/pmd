@@ -18,7 +18,9 @@ This is a {{ site.pmd.release_type }} release.
 
 This release ships with 1 new Java rule.
 
-*   {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} suggests returning empty collections / arrays instead of null.
+*   {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} suggests returning empty collections / arrays
+    instead of null.
+
 ```xml
     <rule ref="category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull" />
 ```
@@ -27,14 +29,16 @@ This release ships with 1 new Java rule.
 
 #### Deprecated rules
 
-The following Java rules are deprecated and removed from the quickstart ruleset,
- as the new rule {% rule java/errorprone.xml/ReturnEmptyCollectionRatherThanNull %} supersedes it:
-* {% rule java/errorprone.xml/ReturnEmptyArrayRatherThanNull %}
+The rule {% rule java/errorprone.xml/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
+the quickstart ruleset, as the new rule {% rule java/errorprone.xml/ReturnEmptyCollectionRatherThanNull %}
+supersedes it.
 
 ### Fixed Issues
 
 *   apex
     *   [#3329](https://github.com/pmd/pmd/issues/3329): \[apex] ApexCRUDViolation doesn't report SOQL for loops
+*   java-errorprone
+    *   [#3382](https://github.com/pmd/pmd/pull/3382): \[java] New rule ReturnEmptyCollectionRatherThanNull
 
 ### API Changes
 

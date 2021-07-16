@@ -2852,18 +2852,19 @@ public class Foo {
         </example>
     </rule>
 
-	<rule name="ReturnEmptyCollectionRatherThanNull"
+    <rule name="ReturnEmptyArrayRatherThanNull"
           language="java"
-          since="6.37.0"
+          since="4.2"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          message="Return an empty collection rather than 'null'."
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#returnemptycollectionratherthannull">
+          deprecated="true"
+          message="Return an empty array rather than 'null'."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#returnemptyarrayratherthannull">
         <description>
-For any method that returns an collection (such as an array, Collection or Map), it is a better to return an empty one rather than a
+For any method that returns an array, it is a better to return an empty array rather than a
 null reference. This removes the need for null checking all results and avoids inadvertent
 NullPointerExceptions.
 
-See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays instead of null
+Deprecated since PMD 6.37.0, use {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} instead.
         </description>
         <priority>1</priority>
         <properties>
@@ -2873,7 +2874,7 @@ See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays ins
 <![CDATA[
 //MethodDeclaration
 [
-(./ResultType/Type[pmd-java:typeIs('java.util.Collection') or pmd-java:typeIs('java.util.Map') or @ArrayType=true()])
+(./ResultType/Type[@ArrayType= true()])
 and
 (./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
 ]
@@ -2899,20 +2900,19 @@ public class Example {
 ]]>
         </example>
     </rule>
-    
-    <rule name="ReturnEmptyArrayRatherThanNull"
-          language="java"
-          since="4.2"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          deprecated="true"
-          message="Return an empty array rather than 'null'."
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#returnemptyarrayratherthannull">
-        <description>
-For any method that returns an array, it is a better to return an empty array rather than a
-null reference. This removes the need for null checking all results and avoids inadvertent
-NullPointerExceptions.
 
-Deprecated since PMD 6.37.0, use {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} instead.
+    <rule name="ReturnEmptyCollectionRatherThanNull"
+          language="java"
+          since="6.37.0"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          message="Return an empty collection rather than 'null'."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#returnemptycollectionratherthannull">
+        <description>
+For any method that returns an collection (such as an array, Collection or Map), it is better to return
+an empty one rather than a null reference. This removes the need for null checking all results and avoids
+inadvertent NullPointerExceptions.
+
+See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays instead of null
         </description>
         <priority>1</priority>
         <properties>
@@ -2922,7 +2922,7 @@ Deprecated since PMD 6.37.0, use {% rule java/errorprone/ReturnEmptyCollectionRa
 <![CDATA[
 //MethodDeclaration
 [
-(./ResultType/Type[@ArrayType= true()])
+(./ResultType/Type[pmd-java:typeIs('java.util.Collection') or pmd-java:typeIs('java.util.Map') or @ArrayType=true()])
 and
 (./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
 ]
