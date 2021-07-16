@@ -245,7 +245,7 @@
     <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode"/>
     <rule ref="category/java/errorprone.xml/ProperCloneImplementation"/>
     <rule ref="category/java/errorprone.xml/ProperLogger"/>
-    <rule ref="category/java/errorprone.xml/ReturnEmptyArrayRatherThanNull"/>
+    <rule ref="category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull"/>
     <rule ref="category/java/errorprone.xml/ReturnFromFinallyBlock"/>
     <!-- <rule ref="category/java/errorprone.xml/SimpleDateFormatNeedsLocale" /> -->
     <rule ref="category/java/errorprone.xml/SingleMethodSingleton"/>

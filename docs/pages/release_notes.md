@@ -14,6 +14,19 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New rules
+
+This release ships with 1 new Java rule.
+
+*   {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} suggests returning empty collections / arrays
+    instead of null.
+
+```xml
+    <rule ref="category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
+
 #### Renamed rules
 
 *   The Java rule {% rule java/errorprone/MissingBreakInSwitch %} has been renamed to
@@ -22,6 +35,12 @@ This is a {{ site.pmd.release_type }} release.
     likely unexpected. The old rule name described only one way how to avoid a fall-through,
     namely using `break` but `continue`, `throw` and `return` avoid a fall-through
     as well. This enables us to improve this rule in the future.
+
+#### Deprecated rules
+
+The rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
+the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
+supersedes it.
 
 ### Fixed Issues
 
@@ -33,6 +52,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3387](https://github.com/pmd/pmd/issues/3387): \[core] CPD should avoid unnecessary copies when running with --skip-lexical-errors
 *   java-errorprone
     *   [#3361](https://github.com/pmd/pmd/issues/3361): \[java] Rename rule MissingBreakInSwitch to ImplicitSwitchFallThrough
+    *   [#3382](https://github.com/pmd/pmd/pull/3382): \[java] New rule ReturnEmptyCollectionRatherThanNull
 
 ### API Changes
 
