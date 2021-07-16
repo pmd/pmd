@@ -61,33 +61,33 @@ sb.append('a');     // use this instead
     <rule name="AvoidArrayLoops"
           language="java"
           since="3.5"
-          message="System.arraycopy is more efficient"
+          message="Arrays.copyOf or System.arraycopy are more efficient"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidarrayloops">
         <description>
-Instead of manually copying data between two arrays, use the efficient Arrays.copyOf or System.arraycopy method instead.
+Instead of manually copying data between two arrays, use the more efficient `Arrays.copyOf` or `System.arraycopy`
+methods instead.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Statement[(ForStatement or WhileStatement) and
-count(*//AssignmentOperator[@Image = '='])=1
-and
-*/Statement
-[
-./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
-/PrimaryPrefix/Name/../../PrimarySuffix/Expression
-[(PrimaryExpression or AdditiveExpression) and count
-(.//PrimaryPrefix/Name)=1]//PrimaryPrefix/Name/@Image
-and
-./Block/BlockStatement/Statement/StatementExpression/Expression/PrimaryExpression
-/PrimaryPrefix/Name/../../PrimarySuffix[count
-(..//PrimarySuffix)=1]/Expression[(PrimaryExpression
-or AdditiveExpression) and count(.//PrimaryPrefix/Name)=1]
-//PrimaryPrefix/Name/@Image
-]]
+//(ForStatement[ForUpdate//(UnaryExpression[@Operator='++'] | AssignmentExpression[@Operator = '+='][NumericLiteral[@Image = '1']])]
+ | WhileStatement)
+    [not(.//ContinueStatement)]
+    [not(.//BreakStatement)]
+    [not(.//ThrowStatement)]
+    [not(.//ReturnStatement)]
+    [count(Block//AssignmentExpression[@Operator='=']
+                                      (: no nested arrays or method calls as array index :)
+                                      [count(ArrayAccess[not(.//ArrayAccess)]
+                                                        [not(.//MethodCall)])=2]
+                                      (: array names must be different :)
+                                      [count(distinct-values(ArrayAccess/VariableAccess[1]/@Name)) = 2]
+                                      (: array index must be same :)
+                                      [count(distinct-values(ArrayAccess/VariableAccess[2]/@Name)) = 1]
+     )=1]
 ]]>
                 </value>
             </property>
@@ -98,12 +98,15 @@ public class Test {
     public void bar() {
         int[] a = new int[10];
         int[] b = new int[10];
+
+        // instead of this loop
         for (int i=0;i<10;i++) {
             b[i]=a[i];
         }
+        // use: System.arraycopy(a, 0, b, 0, 10);
 
         int[] c = new int[10];
-        // this will trigger the rule
+        // this won't trigger the rule
         for (int i=0;i<10;i++) {
             b[i]=a[c[i]];
         }
