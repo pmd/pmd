@@ -1430,6 +1430,26 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="new-rules">New rules</h4>
+
+<p>This release ships with 1 new Java rule.</p>
+
+<ul>
+  <li><a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a> suggests returning empty collections / arrays
+instead of null.</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p>The rule is part of the quickstart.xml ruleset.</p>
+
+<h4 id="deprecated-rules">Deprecated rules</h4>
+
+<p>The rule <a href="pmd_rules_java_errorprone.html#returnemptyarrayratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyArrayRatherThanNull</code></a> is deprecated and removed from
+the quickstart ruleset, as the new rule <a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a>
+supersedes it.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1443,6 +1463,11 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3377">#3377</a>: [core] NPE when specifying report file in current directory in PMD CLI</li>
       <li><a href="https://github.com/pmd/pmd/issues/3387">#3387</a>: [core] CPD should avoid unnecessary copies when running with –skip-lexical-errors</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/3382">#3382</a>: [java] New rule ReturnEmptyCollectionRatherThanNull</li>
     </ul>
   </li>
 </ul>

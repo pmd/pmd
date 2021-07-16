@@ -4128,6 +4128,15 @@
 ,
 
 {
+"title": "ReturnEmptyCollectionRatherThanNull (Java, Error Prone)",
+"tags": "",
+"keywords": "ReturnEmptyCollectionRatherThanNull",
+"url": "pmd_rules_java_errorprone.html#returnemptycollectionratherthannull",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
 "title": "ReturnFromFinallyBlock (Java, Error Prone)",
 "tags": "",
 "keywords": "ReturnFromFinallyBlock",
