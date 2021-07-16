@@ -29,8 +29,8 @@ This release ships with 1 new Java rule.
 
 #### Deprecated rules
 
-The rule {% rule java/errorprone.xml/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
-the quickstart ruleset, as the new rule {% rule java/errorprone.xml/ReturnEmptyCollectionRatherThanNull %}
+The rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
+the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
 supersedes it.
 
 ### Fixed Issues
