@@ -22,6 +22,8 @@ This is a {{ site.pmd.release_type }} release.
 *   core
     *   [#3377](https://github.com/pmd/pmd/issues/3377): \[core] NPE when specifying report file in current directory in PMD CLI
     *   [#3387](https://github.com/pmd/pmd/issues/3387): \[core] CPD should avoid unnecessary copies when running with --skip-lexical-errors
+*   java-bestpractices
+    *   [#3235](https://github.com/pmd/pmd/issues/3235): \[java] UseTryWithResources false positive when closeable is provided as a method argument or class field
 
 ### API Changes
 
