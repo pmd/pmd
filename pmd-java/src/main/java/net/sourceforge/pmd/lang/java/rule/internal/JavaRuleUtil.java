@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -82,6 +81,7 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Utilities shared between rules.
@@ -770,8 +770,7 @@ public final class JavaRuleUtil {
      */
     public static boolean isReferenceToSameVar(ASTExpression e1, ASTExpression e2) {
         if (e1 instanceof ASTNamedReferenceExpr && e2 instanceof ASTNamedReferenceExpr) {
-            if (!Objects.equals(((ASTNamedReferenceExpr) e2).getReferencedSym(),
-                                ((ASTNamedReferenceExpr) e1).getReferencedSym())) {
+            if (OptionalBool.YES != referenceSameSymbol((ASTNamedReferenceExpr) e1, (ASTNamedReferenceExpr) e2)) {
                 return false;
             }
 
@@ -788,6 +787,18 @@ public final class JavaRuleUtil {
             return e1.getClass() == e2.getClass();
         }
         return false;
+    }
+
+    private static OptionalBool referenceSameSymbol(ASTNamedReferenceExpr e1, ASTNamedReferenceExpr e2) {
+        if (!e1.getName().equals(e2.getName())) {
+            return OptionalBool.NO;
+        }
+        JVariableSymbol ref1 = e1.getReferencedSym();
+        JVariableSymbol ref2 = e2.getReferencedSym();
+        if (ref1 == null || ref2 == null) {
+            return OptionalBool.UNKNOWN;
+        }
+        return OptionalBool.definitely(ref1.equals(ref2));
     }
 
     /**
