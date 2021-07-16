@@ -156,4 +156,22 @@ public class Foo {
         ]]></code>
         <source-type>java 9</source-type>
     </test-code>
+
+    <test-code>
+        <description>False negative with indirect const string</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.math.BigInteger;
+
+class Foo {
+    static final String Z = "0";
+    static { new BigInteger(Z); }
+
+    public void test(String a) {
+        new BigInteger(a); // not a const value
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

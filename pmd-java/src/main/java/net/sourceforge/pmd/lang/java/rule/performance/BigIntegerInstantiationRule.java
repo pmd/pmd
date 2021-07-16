@@ -14,8 +14,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -46,19 +44,16 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
             ASTArgumentList arguments = node.getArguments();
             if (arguments.size() == 1) {
                 ASTExpression firstArg = arguments.get(0);
-                if (firstArg instanceof ASTStringLiteral) {
-                    String img = ((ASTStringLiteral) firstArg).getConstValue();
-                    if (CONSTANTS.contains(img) || jdk15 && "10".equals(img)
-                            || jdk9 && "2".equals(img)) {
-                        addViolation(data, node);
-                    }
-                } else if (firstArg instanceof ASTNumericLiteral) {
-                    Number val = ((ASTNumericLiteral) firstArg).getConstValue();
-                    if (val.equals(0) || val.equals(1) || jdk15 && val.equals(10)) {
-                        addViolation(data, node);
-                    }
-                }
 
+                Object constValue = firstArg.getConstValue();
+                if (CONSTANTS.contains(constValue)
+                        || jdk15 && "10".equals(constValue)
+                        || jdk9 && "2".equals(constValue)
+                        || Integer.valueOf(0).equals(constValue)
+                        || Integer.valueOf(1).equals(constValue)
+                        || jdk15 && Integer.valueOf(10).equals(constValue)) {
+                    addViolation(data, node);
+                }
             }
         }
         return data;
