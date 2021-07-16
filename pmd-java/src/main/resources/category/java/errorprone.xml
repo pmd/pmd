@@ -2990,24 +2990,20 @@ Item 10: Obey the general contract when overriding equals.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Name = 'equals']
-[
+//MethodDeclaration[@Name = 'equals'][
     (@Arity = 1
-    and not (MethodDeclarator/FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
-        [@Image = 'Object' or @Image = 'java.lang.Object'])
-    or not (ResultType/Type/PrimitiveType[@Image = 'boolean'])
-    )  or  (
-    @Arity = 2
-    and ResultType/Type/PrimitiveType[@Image = 'boolean']
-    and MethodDeclarator/FormalParameters//ClassOrInterfaceType[@Image = 'Object' or @Image = 'java.lang.Object']
-    and not(../Annotation/MarkerAnnotation/Name[@Image='Override'])
+     and not(FormalParameters/FormalParameter[pmd-java:typeIsExactly('java.lang.Object')])
+     or not(PrimitiveType[@Kind = 'boolean'])
+    ) or (
+     @Arity = 2
+     and PrimitiveType[@Kind = 'boolean']
+     and FormalParameters/FormalParameter[pmd-java:typeIsExactly('java.lang.Object')]
+     and not(pmd-java:hasAnnotation('java.lang.Override'))
     )
 ]
-| //MethodDeclaration[@Name = 'equal']
-[
+| //MethodDeclaration[@Name = 'equal'][
     @Arity = 1
-    and MethodDeclarator/FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
-        [@Image = 'Object' or @Image = 'java.lang.Object']
+    and FormalParameters/FormalParameter[pmd-java:typeIsExactly('java.lang.Object')]
 ]
 ]]>
                 </value>
@@ -3034,12 +3030,26 @@ public class Foo {
           language="java"
           since="1.5"
           message="The method name and return type are suspiciously close to hashCode()"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.SuspiciousHashcodeMethodNameRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#suspicioushashcodemethodname">
         <description>
 The method name and return type are suspiciously close to hashCode(), which may denote an intention
 to override the hashCode() method.
         </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration[
+        lower-case(@Name) = 'hashcode'
+    and @Name != 'hashCode'
+    and @Arity = 0
+    and PrimitiveType[@Kind = 'int']
+]
+]]>
+                </value>
+            </property>
+        </properties>
         <priority>3</priority>
         <example>
 <![CDATA[
