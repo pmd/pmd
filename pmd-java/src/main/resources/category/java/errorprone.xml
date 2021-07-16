@@ -2130,6 +2130,60 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="ImplicitSwitchFallThrough"
+          language="java"
+          since="3.0"
+          message="A switch statement does not contain a break"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#implicitswitchfallthrough">
+        <description>
+Switch statements without break or return statements for each case option
+may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.
+
+This rule has been renamed from "MissingBreakInSwitch" with PMD 6.37.0.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//SwitchStatement
+[(count(.//BreakStatement)
+ + count(BlockStatement//Statement/ReturnStatement)
+ + count(BlockStatement//Statement/ContinueStatement)
+ + count(BlockStatement//Statement/ThrowStatement)
+ + count(BlockStatement//Statement/IfStatement[@Else= true() and Statement[2][ReturnStatement|ContinueStatement|ThrowStatement]]/Statement[1][ReturnStatement|ContinueStatement|ThrowStatement])
+ + count(SwitchLabel[ following-sibling::node()[1][self::SwitchLabel] ])
+ + count(SwitchLabel[count(following-sibling::node()) = 0])
+  < count (SwitchLabel))]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public void bar(int status) {
+    switch(status) {
+      case CANCELLED:
+        doCancelled();
+        // break; hm, should this be commented out?
+      case NEW:
+        doNew();
+        // is this really a fall-through?
+      case REMOVED:
+        doRemoved();
+        // what happens if you add another case after this one?
+      case OTHER: // empty case - this is interpreted as an intentional fall-through
+      case ERROR:
+        doErrorHandling();
+        break;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="ImportFromSamePackage"
           language="java"
           since="1.02"
@@ -2434,57 +2488,7 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="MissingBreakInSwitch"
-          language="java"
-          since="3.0"
-          message="A switch statement does not contain a break"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingbreakinswitch">
-        <description>
-Switch statements without break or return statements for each case option
-may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//SwitchStatement
-[(count(.//BreakStatement)
- + count(BlockStatement//Statement/ReturnStatement)
- + count(BlockStatement//Statement/ContinueStatement)
- + count(BlockStatement//Statement/ThrowStatement)
- + count(BlockStatement//Statement/IfStatement[@Else= true() and Statement[2][ReturnStatement|ContinueStatement|ThrowStatement]]/Statement[1][ReturnStatement|ContinueStatement|ThrowStatement])
- + count(SwitchLabel[ following-sibling::node()[1][self::SwitchLabel] ])
- + count(SwitchLabel[count(following-sibling::node()) = 0])
-  < count (SwitchLabel))]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public void bar(int status) {
-    switch(status) {
-      case CANCELLED:
-        doCancelled();
-        // break; hm, should this be commented out?
-      case NEW:
-        doNew();
-        // is this really a fall-through?
-      case REMOVED:
-        doRemoved();
-        // what happens if you add another case after this one?
-      case OTHER: // empty case - this is interpreted as an intentional fall-through
-      case ERROR:
-        doErrorHandling();
-        break;
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="MissingBreakInSwitch" ref="ImplicitSwitchFallThrough" deprecated="true"/>
 
     <rule name="MissingSerialVersionUID"
           language="java"

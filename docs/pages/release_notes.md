@@ -14,6 +14,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Renamed rules
+
+*   The Java rule {% rule java/errorprone/MissingBreakInSwitch %} has been renamed to
+    {% rule java/errorprone/ImplicitSwitchFallThrough %} (category error prone) to better reflect the rule's
+    purpose: The rule finds implicit fall-through cases in switch statements, which are most
+    likely unexpected. The old rule name described only one way how to avoid a fall-through,
+    namely using `break` but `continue`, `throw` and `return` avoid a fall-through
+    as well. This enables us to improve this rule in the future.
+
 ### Fixed Issues
 
 *   apex
@@ -22,6 +31,8 @@ This is a {{ site.pmd.release_type }} release.
 *   core
     *   [#3377](https://github.com/pmd/pmd/issues/3377): \[core] NPE when specifying report file in current directory in PMD CLI
     *   [#3387](https://github.com/pmd/pmd/issues/3387): \[core] CPD should avoid unnecessary copies when running with --skip-lexical-errors
+*   java-errorprone
+    *   [#3361](https://github.com/pmd/pmd/issues/3361): \[java] Rename rule MissingBreakInSwitch to ImplicitSwitchFallThrough
 
 ### API Changes
 
