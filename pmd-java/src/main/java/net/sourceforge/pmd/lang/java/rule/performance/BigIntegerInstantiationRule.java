@@ -10,9 +10,7 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -39,10 +37,8 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
         LanguageVersion languageVersion = node.getAstInfo().getLanguageVersion();
-        boolean jdk15 = languageVersion
-                .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
-        boolean jdk9 = languageVersion
-                .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("9")) >= 0;
+        boolean jdk15 = languageVersion.compareToVersion("1.5") >= 0;
+        boolean jdk9 = languageVersion.compareToVersion("9") >= 0;
 
         if (TypeTestUtil.isA(BigInteger.class, node) || jdk15 && TypeTestUtil.isA(BigDecimal.class, node)) {
 
