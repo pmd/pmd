@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.renderers.Renderer;
 
 /**
  * This is the basic Rule interface for PMD rules.
@@ -437,4 +438,12 @@ public interface Rule extends PropertySource {
      * @return A new exact copy of this rule
      */
     Rule deepCopy();
+
+    /**
+     * Return any (additional) post-processing tasks to enable with this rule.
+     * These will run before the configured Renderer.
+     *
+     * @return A list of renderers
+     */
+    List<Renderer> getPostProcessors();
 }

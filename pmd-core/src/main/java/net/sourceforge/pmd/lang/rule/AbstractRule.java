@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.renderers.Renderer;
 
 /**
  * Basic abstract implementation of all parser-independent methods of the Rule
@@ -475,5 +477,10 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
             }
         }
         return rule;
+    }
+
+    @Override
+    public List<Renderer> getPostProcessors() {
+        return java.util.Collections.emptyList();
     }
 }

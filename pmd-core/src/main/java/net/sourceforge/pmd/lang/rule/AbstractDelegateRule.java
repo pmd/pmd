@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.renderers.Renderer;
 
 /**
  * Base class for Rule implementations which delegate to another Rule instance.
@@ -347,5 +348,10 @@ public abstract class AbstractDelegateRule implements Rule {
     @Override
     public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
         return rule.hasDescriptor(descriptor);
+    }
+
+    @Override
+    public List<Renderer> getPostProcessors() {
+        return java.util.Collections.emptyList();
     }
 }

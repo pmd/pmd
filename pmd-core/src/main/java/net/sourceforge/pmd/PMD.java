@@ -233,12 +233,19 @@ public class PMD {
 
         try {
             Renderer renderer;
-            List<Renderer> renderers;
+            List<Renderer> renderers = new ArrayList<>();
             try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                 renderer = configuration.createRenderer();
-                renderers = Collections.singletonList(renderer);
                 renderer.setReportFile(configuration.getReportFile());
-                renderer.start();
+
+                for (Rule rule : ruleSets.getAllRules()) {
+                    renderers.addAll(rule.getPostProcessors());
+                }
+                renderers.add(renderer);
+
+                for (Renderer r : renderers) {
+                    r.start();
+                }
             }
 
             Report report;
@@ -247,8 +254,10 @@ public class PMD {
             }
 
             try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
-                renderer.end();
-                renderer.flush();
+                for (Renderer r : renderers) {
+                    r.end();
+                    r.flush();
+                }
                 return report.getViolations().size();
             }
         } catch (Exception e) {
