@@ -7,6 +7,7 @@
     <test-code>
         <description>TEST1</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
@@ -21,6 +22,7 @@ public class Foo {
     <test-code>
         <description>TEST2</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
@@ -35,6 +37,7 @@ public class Foo {
     <test-code>
         <description>TEST3</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
@@ -49,6 +52,7 @@ public class Foo {
     <test-code>
         <description>TEST4</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
@@ -148,7 +152,8 @@ public class PMDDemo {
         <description>False positive when assigning to a list/array (see #2207 and #1043)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.util.*;
+import java.util.Collection;
+import java.util.ArrayList;
 
 public class PMDDemo {
     public void checkArray() {
@@ -163,6 +168,8 @@ public class PMDDemo {
            cars.add(new Car());
         }
     }
+
+    private static class Car {}
 }
         ]]></code>
     </test-code>
@@ -170,16 +177,23 @@ public class PMDDemo {
     <test-code>
         <description>False negative with break in other for-loop</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>14</expected-linenumbers>
         <code><![CDATA[
-public class Foo {
-    private SortedSet<LocalizedMessage> getFilteredMessages(
-            String fileName, FileContents fileContents, DetailAST rootAST) {
-        final SortedSet<LocalizedMessage> result = new TreeSet<>(messages);
-        for (LocalizedMessage element : messages) {
-            final TreeWalkerAuditEvent event =
-                    new TreeWalkerAuditEvent(fileContents, fileName, element, rootAST);
-            for (TreeWalkerFilter filter : filters) {
+import java.util.Function;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+public class Message {
+    private List<Function<Message, Boolean>> filters;
+
+    public Message(Message message) {}
+
+    private SortedSet<Message> getFilteredMessages() {
+        final SortedSet<Message> result = new TreeSet<>(messages);
+        for (Message element : messages) {
+            Message event = new Message(element);
+            for (Function<Message, Boolean> filter : filters) {
                 if (!filter.accept(event)) {
                     result.remove(element);
                     break;
@@ -256,6 +270,7 @@ public class Sample {
     <test-code>
         <description>Collections with unresolved type</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
 // Types are unresolved
 //import java.util.Collection;
@@ -272,6 +287,149 @@ public class Sample {
 
     private static class Car {
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with array allocations within loops</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class AvoidInstantiatingArraysInLoops {
+    public static void main(String[] args) {
+        for (String arg : args) {
+            String[] copy = new String[] { arg };
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with for-each loop over new array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidInstantiatingArrayInLoops {
+    public static void main(String[] args) {
+        for (String configName : new String[] {"config", "test"}) {
+            System.out.println(configName);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with adding to a collection/array field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class AvoidInstantiatingObjectsInLoops {
+    private List<String> field = new ArrayList<>();
+    private String[] arrayField = new String[10];
+
+    public static void main(String[] args) {
+        for (String arg : args) {
+            this.field.add(new String(arg));
+        }
+        for (int i = 0; i < args.length; i++) {
+            this.arrayField[i] = new String(args[i]);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with adding wrapped new arrays to collection</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+public class AvoidInstantiatingObjectsInLoops {
+    public void testBytes(String s) {
+        byte[] bytes = s.getBytes(StandardCharsets.UTF_8);
+        List<ByteBuffer> buffers = new ArrayList<>();
+        for (byte b : bytes) {
+            buffers.add(ByteBuffer.wrap(new byte[]{b}));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with temporary object assigned to an array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidInstantiatingObjectsInLoops {
+    public static void main(String[] args) {
+        String[] data = new String[10];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = new StringBuilder().append("foo").toString();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with array allocation and assignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidInstantiatingArraysInLoops {
+    public static void main(String[] args) {
+        int[][] arr = new int[10];
+        for (int i = 0; i < 10; i++) {
+            arr[i] = new int[] { i };
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when array is returned</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidInstantiatingArraysInLoops {
+    public int[] test() {
+        for (int i = 0; i < 10; i++) {
+            return new int[] { i };
+        }
+
+        for (int i = 0; i < 10; i++) {
+            int[] a = new int[] { i };
+            break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when converting collection to array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class AvoidInsantiatingArraysInLoops {
+    public void test() {
+        List<String> data = new ArrayList<>();
+
+        for (String arg : args) {
+            this.consume(data.toArray(new String[0]));
+        }
+    }
+
+    private void consume(String[] array) { }
 }
         ]]></code>
     </test-code>
