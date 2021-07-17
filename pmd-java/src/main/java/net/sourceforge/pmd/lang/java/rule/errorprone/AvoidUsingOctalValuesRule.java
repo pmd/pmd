@@ -6,39 +6,36 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
-import java.util.regex.Pattern;
-
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
-public class AvoidUsingOctalValuesRule extends AbstractJavaRule {
+public class AvoidUsingOctalValuesRule extends AbstractJavaRulechainRule {
 
-    public static final Pattern OCTAL_PATTERN = Pattern.compile("0[0-7]{2,}[lL]?");
-
-    public static final Pattern STRICT_OCTAL_PATTERN = Pattern.compile("0[0-7]+[lL]?");
-
-    private static final PropertyDescriptor<Boolean> STRICT_METHODS_DESCRIPTOR = booleanProperty("strict")
-                                                                                    .desc("Detect violations between 00 and 07")
-                                                                                    .defaultValue(false)
-                                                                                    .build();
-
+    private static final PropertyDescriptor<Boolean> STRICT_METHODS_DESCRIPTOR =
+        booleanProperty("strict")
+            .desc("Detect violations between 00 and 07")
+            .defaultValue(false)
+            .build();
 
     public AvoidUsingOctalValuesRule() {
+        super(ASTNumericLiteral.class);
         definePropertyDescriptor(STRICT_METHODS_DESCRIPTOR);
     }
 
     @Override
-    public Object visit(ASTLiteral node, Object data) {
-        boolean strict = getProperty(STRICT_METHODS_DESCRIPTOR);
-        Pattern p = strict ? STRICT_OCTAL_PATTERN : OCTAL_PATTERN;
-
-        String img = node.getImage();
-        if (img != null && p.matcher(img).matches()) {
-            addViolation(data, node);
+    public Object visit(ASTNumericLiteral node, Object data) {
+        if (node.getBase() == 8) {
+            if (getProperty(STRICT_METHODS_DESCRIPTOR) || !isBetweenZeroAnd7(node)) {
+                addViolation(data, node);
+            }
         }
+        return null;
+    }
 
-        return data;
+    private boolean isBetweenZeroAnd7(ASTNumericLiteral node) {
+        long value = node.getConstValue().longValue();
+        return 0 <= value && value <= 7;
     }
 }
