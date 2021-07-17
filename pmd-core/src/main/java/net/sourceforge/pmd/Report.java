@@ -53,6 +53,9 @@ public class Report implements Iterable<RuleViolation> {
     private long end;
     private final List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
 
+    // Additional collected data, indexed by runtime class of value
+    private final Map<Class<? extends MergeableData>, MergeableData> customData = new HashMap<>();
+
     /**
      * Creates a new, initialized, empty report for the given file name.
      *
@@ -415,6 +418,10 @@ public class Report implements Iterable<RuleViolation> {
                 violations.add(index < 0 ? -index - 1 : index, violation);
                 violationTree.addRuleViolation(violation);
             }
+
+            for (MergeableData v : r.customData.values()) {
+                getCustomData(v).merge(v);
+            }
         }
     }
 
@@ -649,5 +656,22 @@ public class Report implements Iterable<RuleViolation> {
     @Deprecated
     public void addListeners(List<ThreadSafeReportListener> allListeners) {
         listeners.addAll(allListeners);
+    }
+
+    /**
+     * Gets the stored custom data object of the provided type or creates and returns one.
+     *
+     * @param template
+     *            an example of the data type to get or create
+     * @return the stored object for this data type
+     */
+    public <T extends MergeableData> T getCustomData(T template) {
+        Class<? extends MergeableData> cls = template.getClass();
+        MergeableData data = customData.get(cls);
+        if (data == null) {
+            data = template.create();
+            customData.put(cls, data);
+        }
+        return (T) data;
     }
 }
