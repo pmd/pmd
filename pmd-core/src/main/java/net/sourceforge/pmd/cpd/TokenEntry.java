@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class TokenEntry implements Comparable<TokenEntry> {
 
     public static final TokenEntry EOF = new TokenEntry();
@@ -92,7 +94,11 @@ public class TokenEntry implements Comparable<TokenEntry> {
     /**
      * Helper class to preserve and restore the current state of the token
      * entries.
+     * 
+     * @deprecated This is internal API.
      */
+    @InternalApi
+    @Deprecated
     public static class State {
         private final int tokenCount;
         private final int tokensMapSize;
@@ -102,7 +108,8 @@ public class TokenEntry implements Comparable<TokenEntry> {
             this.tokensMapSize = TokenEntry.TOKENS.get().size();
         }
 
-        public void restore(final List<TokenEntry> entries) {
+        public void restore(Tokens tokens) {
+            final List<TokenEntry> entries = tokens.getTokens();
             TokenEntry.TOKEN_COUNT.get().set(tokenCount);
             final Iterator<Map.Entry<String, Integer>> it = TOKENS.get().entrySet().iterator();
             while (it.hasNext()) {

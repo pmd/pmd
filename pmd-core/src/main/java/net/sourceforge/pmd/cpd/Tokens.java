@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.cpd.TokenEntry.State;
-
 public class Tokens {
 
     private List<TokenEntry> tokens = new ArrayList<>();
@@ -45,13 +43,4 @@ public class Tokens {
     public List<TokenEntry> getTokens() {
         return tokens;
     }
-
-    public State snapshot() {
-        return new State();
-    }
-
-    public void restore(final State savedState) {
-        savedState.restore(tokens);
-    }
-
 }
