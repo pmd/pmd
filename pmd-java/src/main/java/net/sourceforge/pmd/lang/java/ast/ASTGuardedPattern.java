@@ -12,7 +12,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * GuardedPattern ::= {@linkplain ASTPattern} "&&" {@linkplain ASTConditionalAndExpression}
+ * GuardedPattern ::= {@linkplain ASTPattern Pattern} "&amp;&amp;" {@linkplain ASTConditionalAndExpression ConditionalAndExpression}
  *
  * </pre>
  *
