@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
-import net.sourceforge.pmd.lang.java.rule.errorprone.MissingBreakInSwitchRule;
+import net.sourceforge.pmd.lang.java.rule.errorprone.ImplicitSwitchFallThroughRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -120,7 +120,7 @@ final class AnnotationSuppressionUtil {
                         || "all".equals(stringVal)
                         || "serial".equals(stringVal) && SERIAL_RULES.contains(rule.getName())
                         || "unused".equals(stringVal) && UNUSED_RULES.contains(rule.getName())
-                        || "fallthrough".equals(stringVal) && rule instanceof MissingBreakInSwitchRule
+                        || "fallthrough".equals(stringVal) && rule instanceof ImplicitSwitchFallThroughRule
                     ) {
                         return true;
                     }

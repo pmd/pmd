@@ -18,15 +18,14 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.util.OptionalBool;
 
-public class MissingBreakInSwitchRule extends AbstractJavaRulechainRule {
+public class ImplicitSwitchFallThroughRule extends AbstractJavaRulechainRule {
 
     //todo should consider switch exprs
-    // todo rename to ImplicitSwitchFallThrough
 
     private static final Pattern IGNORED_COMMENT = Pattern.compile("/[/*].*\\bfalls?[ -]?thr(ough|u)\\b.*",
                                                                    Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
-    public MissingBreakInSwitchRule() {
+    public ImplicitSwitchFallThroughRule() {
         super(ASTSwitchStatement.class);
     }
 
