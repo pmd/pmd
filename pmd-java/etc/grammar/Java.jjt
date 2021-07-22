@@ -302,6 +302,10 @@ class JavaParserImpl {
     return isRecordTypeSupported();
   }
 
+  private boolean isSealedClassSupported() {
+      return jdkVersion == 16 && preview || jdkVersion >= 17;
+  }
+
   /**
    * Keeps track during tree construction, whether we are currently building a switch label.
    * A switch label must not contain a LambdaExpression.
@@ -2446,16 +2450,11 @@ void SwitchLabel() :
 void CaseLabelElement(ASTSwitchLabel label) #void:
 {}
 {
-    "default" {label.setDefault(); checkForDefaultCaseLabel();}
+    "default" {label.setDefault();}
     |
-    LOOKAHEAD(Pattern()) Pattern() {checkForPatternMatchingInSwitch();}
+    LOOKAHEAD(Pattern()) Pattern()
     |
-    ConditionalExpression() #Expression
-        {
-            if ("null".equals(((ASTExpression) jjtree.peekNode()).jjtGetFirstToken().getImage())) {
-                checkForNullCaseLabel();
-            }
-        }
+    ConditionalExpression()
 }
 
 void YieldStatement() :

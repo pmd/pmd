@@ -29,7 +29,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
@@ -541,6 +543,15 @@ public class LanguageLevelChecker<T> {
         public Void visit(ASTSwitchLabel node, T data) {
             if (IteratorUtil.count(node.iterator()) > 1) {
                 check(node, RegularLanguageFeature.COMPOSITE_CASE_LABEL, data);
+            }
+            if (node.isDefault() && "case".equals(node.getFirstToken().getImage())) {
+                check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
+            }
+            if (node.getFirstChild() instanceof ASTPattern) {
+                check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
+            }
+            if (node.getFirstChild() instanceof ASTNullLiteral) {
+                check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
             }
             return null;
         }
