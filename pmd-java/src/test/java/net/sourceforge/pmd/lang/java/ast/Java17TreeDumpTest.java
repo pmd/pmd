@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
@@ -28,9 +30,16 @@ public class Java17TreeDumpTest extends BaseTreeDumpTest {
         return java17;
     }
 
-    @Test(expected = ParseException.class)
+    @Test
     public void sealedClassBeforeJava17() {
-        java16.parseResource("geometry/Shape.java");
+        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                java16.parseResource("geometry/Shape.java");
+            }
+        });
+        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
+                thrown.getMessage().contains("Sealed Classes are only supported with JDK 16 Preview and JDK >= 17."));
     }
 
     @Test
@@ -45,9 +54,16 @@ public class Java17TreeDumpTest extends BaseTreeDumpTest {
         java17p.parseResource("geometry/Square.java"); // make sure we can parse it with preview as well
     }
 
-    @Test(expected = ParseException.class)
+    @Test
     public void sealedInterfaceBeforeJava17() {
-        java16.parseResource("expression/Expr.java");
+        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                java16.parseResource("expression/Expr.java");
+            }
+        });
+        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
+                thrown.getMessage().contains("Sealed Classes are only supported with JDK 16 Preview and JDK >= 17."));
     }
 
     @Test

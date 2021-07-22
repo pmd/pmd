@@ -2269,13 +2269,16 @@ void SwitchLabel() :
 void CaseLabelElement(ASTSwitchLabel label) #void:
 {}
 {
-    LOOKAHEAD(1) NullLiteral() {checkForNullCaseLabel();}
-    |
     "default" {label.setDefault(); checkForDefaultCaseLabel();}
     |
     LOOKAHEAD(Pattern()) Pattern() {checkForPatternMatchingInSwitch();}
     |
     ConditionalExpression() #Expression
+        {
+            if ("null".equals(((ASTExpression) jjtree.peekNode()).jjtGetFirstToken().getImage())) {
+                checkForNullCaseLabel();
+            }
+        }
 }
 
 void YieldStatement() :

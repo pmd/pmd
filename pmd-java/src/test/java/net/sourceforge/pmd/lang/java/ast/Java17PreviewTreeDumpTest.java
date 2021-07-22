@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
@@ -27,9 +29,16 @@ public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
         return java17p;
     }
 
-    @Test(expected = ParseException.class)
+    @Test
     public void patternMatchingForSwitchBeforeJava17Preview() {
-        java17.parseResource("PatternsInSwitchLabels.java");
+        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                java17.parseResource("PatternsInSwitchLabels.java");
+            }
+        });
+        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
+                thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 17 Preview."));
     }
 
     @Test
@@ -47,9 +56,16 @@ public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
         doTest("ScopeOfPatternVariableDeclarations");
     }
 
-    @Test(expected = ParseException.class)
+    @Test
     public void dealingWithNullBeforeJava17Preview() {
-        java17.parseResource("DealingWithNull.java");
+        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                java17.parseResource("DealingWithNull.java");
+            }
+        });
+        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
+                thrown.getMessage().contains("Null case labels in switch are only supported with JDK 17 Preview."));
     }
 
     @Test
@@ -57,9 +73,16 @@ public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
         doTest("DealingWithNull");
     }
 
-    @Test(expected = ParseException.class)
+    @Test
     public void guardedAndParenthesizedPatternsBeforeJava17Preview() {
-        java17.parseResource("GuardedAndParenthesizedPatterns.java");
+        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                java17.parseResource("GuardedAndParenthesizedPatterns.java");
+            }
+        });
+        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
+                thrown.getMessage().contains("Guarded patterns are only supported with JDK 17 Preview."));
     }
 
     @Test
