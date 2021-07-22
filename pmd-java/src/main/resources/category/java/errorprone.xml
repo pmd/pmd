@@ -2068,6 +2068,74 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="ImplicitSwitchFallThrough"
+          language="java"
+          since="3.0"
+          message="This switch case may be reached by fallthrough from the previous case"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ImplicitSwitchFallThrough"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#implicitswitchfallthrough">
+        <description>
+Switch statements without break or return statements for each case option
+may indicate problematic behaviour. Empty cases are ignored as these indicate
+an intentional fall-through.
+
+You can ignore a violation by commenting `// fallthrough` before the case label
+which is reached by fallthrough, or with `@SuppressWarnings("fallthrough")`.
+
+This rule has been renamed from "MissingBreakInSwitch" with PMD 6.37.0.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public void bar(int status) {
+    switch(status) {
+      case CANCELLED:
+        doCancelled();
+        // break; hm, should this be commented out?
+      case NEW:
+        doNew();
+        // is this really a fall-through?
+        // what happens if you add another case after this one?
+      case REMOVED:
+        doRemoved();
+        // fallthrough - this comment just clarifies that you want a fallthrough
+      case OTHER: // empty case - this is interpreted as an intentional fall-through
+      case ERROR:
+        doErrorHandling();
+        break;
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ImportFromSamePackage"
+          language="java"
+          since="1.02"
+          deprecated="true"
+          message="No need to import a type that lives in the same package"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ImportFromSamePackageRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#importfromsamepackage">
+        <description>
+There is no need to import a type that lives in the same package.
+
+This rule is deprecated since PMD 6.34.0. Use the rule {% rule "java/codestyle/UnnecessaryImport" %}
+from category codestyle instead.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+package foo;
+
+import foo.Buz;     // no need for this
+import foo.*;       // or this
+
+public class Bar{}
+]]>
+        </example>
+    </rule>
+
+>>>>>>> master
     <rule name="InstantiationToGetClass"
           language="java"
           since="2.0"
@@ -2303,40 +2371,7 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="MissingBreakInSwitch"
-          language="java"
-          since="3.0"
-          message="This switch case may be reached by fallthrough from the previous case"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.MissingBreakInSwitchRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingbreakinswitch">
-        <description>
-Switch statements without break or return statements for each case option
-may indicate problematic behaviour. Empty cases are ignored as these indicate
-an intentional fall-through.
-
-You can ignore a violation by commenting `// fallthrough` before the case label
-which is reached by fallthrough, or with `@SuppressWarnings("fallthrough")`.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public void bar(int status) {
-    switch(status) {
-      case CANCELLED:
-        doCancelled();
-        // break; hm, should this be commented out?
-      case REMOVED:
-        doRemoved();
-        // fallthrough - this comment just clarifies that you want a fallthrough
-      case OTHER: // empty case - this is interpreted as an intentional fall-through
-      case ERROR:
-        doErrorHandling();
-        break;
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="MissingBreakInSwitch" ref="ImplicitSwitchFallThrough" deprecated="true"/>
 
     <rule name="MissingSerialVersionUID"
           language="java"
