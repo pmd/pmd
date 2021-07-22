@@ -1,4 +1,9 @@
 /**
+ * Promote "JEP 409: Sealed Classes" as permanent language feature with Java 17.
+ * Support "JEP 406: Pattern Matching for switch (Preview)" for Java 17 Preview.
+ * Remove support for Java 15 preview language features
+ * Andreas Dangel 07/2021
+ *====================================================================
  * Fix #3117 - infinite loop when parsing invalid code nested in lambdas
  * Andreas Dangel 03/2021
  *====================================================================
@@ -297,10 +302,6 @@ class JavaParserImpl {
     return isRecordTypeSupported();
   }
 
-  private boolean isSealedClassSupported() {
-      return jdkVersion == 15 && preview || jdkVersion == 16 && preview;
-  }
-
   /**
    * Keeps track during tree construction, whether we are currently building a switch label.
    * A switch label must not contain a LambdaExpression.
@@ -310,6 +311,7 @@ class JavaParserImpl {
    * See also comment at #Expression().
    */
   private boolean inSwitchLabel = false;
+
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -1714,6 +1716,33 @@ void EqualityExpression() #void:
   )*
 }
 
+void Pattern() #void:
+{}
+{
+    PrimaryPattern() [ GuardedPatternCondition() #GuardedPattern(2) ]
+}
+
+void GuardedPatternCondition() #void:
+{}
+{
+    "&&" ConditionalAndExpression()
+}
+
+void PrimaryPattern() #void:
+{}
+{
+    TypePattern()
+    | "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
+}
+
+void TypePattern():
+{}
+{
+  AnnotatedRefType() VariableDeclaratorId()
+  |
+  LocalVarModifierList() ReferenceType() VariableDeclaratorId()
+}
+
 void InstanceOfExpression() #void:
 {}
 {
@@ -1721,9 +1750,11 @@ void InstanceOfExpression() #void:
     LOOKAHEAD(1)
     ("instanceof"
         (
-            AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
+              LOOKAHEAD("final" | "@") PrimaryPattern()
             |
-            ( LocalVarModifierList() ReferenceType() VariableDeclaratorId() ) #TypePattern(3)
+              LOOKAHEAD("(") Pattern()
+            |
+              AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
         )
         {
             jjtThis.setOp(BinaryOp.INSTANCEOF);
@@ -2405,11 +2436,26 @@ void SwitchLabel() :
 {
 { inSwitchLabel = true; }
 (
-  "case" ConditionalExpression() ( "," ConditionalExpression() )*
+  "case" CaseLabelElement(jjtThis) ( "," CaseLabelElement(jjtThis) )*
 |
   "default" {jjtThis.setDefault();}
 )
 { inSwitchLabel = false; }
+}
+
+void CaseLabelElement(ASTSwitchLabel label) #void:
+{}
+{
+    "default" {label.setDefault(); checkForDefaultCaseLabel();}
+    |
+    LOOKAHEAD(Pattern()) Pattern() {checkForPatternMatchingInSwitch();}
+    |
+    ConditionalExpression() #Expression
+        {
+            if ("null".equals(((ASTExpression) jjtree.peekNode()).jjtGetFirstToken().getImage())) {
+                checkForNullCaseLabel();
+            }
+        }
 }
 
 void YieldStatement() :

@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
@@ -137,8 +138,14 @@ public class LanguageLevelChecker<T> {
         /**
          * @see <a href="https://openjdk.java.net/jeps/360">JEP 360: Sealed Classes (Preview)</a>
          * @see <a href="https://openjdk.java.net/jeps/397">JEP 397: Sealed Classes (Second Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/409">JEP 409: Sealed Classes</a>
          */
-        SEALED_CLASSES(15, 16, false),
+        SEALED_CLASSES(15, 16, true),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+         */
+        PATTERN_MATCHING_FOR_SWITCH(17, 17, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -488,6 +495,12 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTTypePattern node, T data) {
             check(node, PreviewFeature.TYPE_PATTERNS_IN_INSTANCEOF, data);
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTGuardedPattern node, T data) {
+            check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
             return null;
         }
 
