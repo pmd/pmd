@@ -38,7 +38,7 @@ public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 17 Preview."));
+                thrown.getMessage().contains("Pattern matching for switch is a preview feature of JDK 17, you should select your language version accordingly"));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Null case labels in switch are only supported with JDK 17 Preview."));
+                thrown.getMessage().contains("Null case labels is a preview feature of JDK 17, you should select your language version accordingly"));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Guarded patterns are only supported with JDK 17 Preview."));
+                thrown.getMessage().contains("Guarded patterns is a preview feature of JDK 17, you should select your language version accordingly"));
     }
 
     @Test

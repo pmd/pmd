@@ -149,6 +149,20 @@ public class LanguageLevelChecker<T> {
          */
         PATTERN_MATCHING_FOR_SWITCH(17, 17, false),
 
+        /**
+         * Part of pattern matching for switch
+         * @see #PATTERN_MATCHING_FOR_SWITCH
+         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+         */
+        GUARDED_PATTERNS(17, 17, false),
+
+        /**
+         * Part of pattern matching for switch
+         * @see #PATTERN_MATCHING_FOR_SWITCH
+         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+         */
+        NULL_CASE_LABELS(17, 17, false),
+
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
 
@@ -502,7 +516,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTGuardedPattern node, T data) {
-            check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
+            check(node, PreviewFeature.GUARDED_PATTERNS, data);
             return null;
         }
 
@@ -547,11 +561,14 @@ public class LanguageLevelChecker<T> {
             if (node.isDefault() && "case".equals(node.getFirstToken().getImage())) {
                 check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
             }
+            if (node.getFirstChild() instanceof ASTGuardedPattern) {
+                check(node, PreviewFeature.GUARDED_PATTERNS, data);
+            }
             if (node.getFirstChild() instanceof ASTPattern) {
                 check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
             }
             if (node.getFirstChild() instanceof ASTNullLiteral) {
-                check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
+                check(node, PreviewFeature.NULL_CASE_LABELS, data);
             }
             return null;
         }

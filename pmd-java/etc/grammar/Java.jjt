@@ -1742,8 +1742,6 @@ void PrimaryPattern() #void:
 void TypePattern():
 {}
 {
-  AnnotatedRefType() VariableDeclaratorId()
-  |
   LocalVarModifierList() ReferenceType() VariableDeclaratorId()
 }
 
@@ -1754,11 +1752,11 @@ void InstanceOfExpression() #void:
     LOOKAHEAD(1)
     ("instanceof"
         (
+              AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
+            |
               LOOKAHEAD("final" | "@") PrimaryPattern()
             |
               LOOKAHEAD("(") Pattern()
-            |
-              AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
         )
         {
             jjtThis.setOp(BinaryOp.INSTANCEOF);
