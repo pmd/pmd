@@ -1770,7 +1770,7 @@ void PrimaryPattern() #void:
 {}
 {
     TypePattern()
-    | "(" Pattern() ")"
+    | "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
 }
 
 void TypePattern():

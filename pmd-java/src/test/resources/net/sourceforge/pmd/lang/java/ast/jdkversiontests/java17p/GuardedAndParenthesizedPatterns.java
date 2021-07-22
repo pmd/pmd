@@ -13,6 +13,8 @@ public class GuardedAndParenthesizedPatterns {
             case String s && (s.length() == 1)    -> System.out.println("single char string");
             case String s                         -> System.out.println("string");
             case (Integer i && i.intValue() == 1) -> System.out.println("integer 1");
+            case (((Long l && l.longValue() == 1L))) -> System.out.println("long 1 with parens");
+            case (((Double d)))                   -> System.out.println("double with parens");
             default                               -> System.out.println("default case");
         }
     }

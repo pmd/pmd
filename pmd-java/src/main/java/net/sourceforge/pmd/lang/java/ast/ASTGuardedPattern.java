@@ -21,6 +21,8 @@ import net.sourceforge.pmd.annotation.Experimental;
 @Experimental
 public final class ASTGuardedPattern extends AbstractJavaNode implements ASTPattern {
 
+    private int parenDepth;
+
     ASTGuardedPattern(int id) {
         super(id);
     }
@@ -41,5 +43,15 @@ public final class ASTGuardedPattern extends AbstractJavaNode implements ASTPatt
 
     public JavaNode getGuard() {
         return getChild(1);
+    }
+
+    void bumpParenDepth() {
+        parenDepth++;
+    }
+
+    @Override
+    @Experimental
+    public int getParenthesisDepth() {
+        return parenDepth;
     }
 }

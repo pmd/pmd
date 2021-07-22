@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
  * A type pattern (JDK16). This can be found on
  * the right-hand side of an {@link ASTInstanceOfExpression InstanceOfExpression}.
@@ -21,6 +23,7 @@ import java.util.List;
 public final class ASTTypePattern extends AbstractJavaAnnotatableNode implements ASTPattern {
 
     private boolean isFinal;
+    private int parenDepth;
 
     ASTTypePattern(int id) {
         super(id);
@@ -59,5 +62,15 @@ public final class ASTTypePattern extends AbstractJavaAnnotatableNode implements
 
     boolean isFinal() {
         return isFinal;
+    }
+
+    void bumpParenDepth() {
+        parenDepth++;
+    }
+
+    @Override
+    @Experimental
+    public int getParenthesisDepth() {
+        return parenDepth;
     }
 }

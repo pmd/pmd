@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
  * A pattern (for pattern matching constructs like {@link ASTInstanceOfExpression InstanceOfExpression}
  * or within a {@link ASTSwitchLabel}). This is a JDK 16 feature.
@@ -23,4 +25,10 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public interface ASTPattern extends JavaNode {
 
+    /**
+     * Returns the number of parenthesis levels around this pattern.
+     * If this method returns 0, then no parentheses are present.
+     */
+    @Experimental
+    int getParenthesisDepth();
 }
