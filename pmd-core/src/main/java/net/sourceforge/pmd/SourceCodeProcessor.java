@@ -203,8 +203,10 @@ public class SourceCodeProcessor {
     private void determineLanguage(RuleContext ctx) {
         // If LanguageVersion of the source file is not known, make a
         // determination
-        if (ctx.getLanguageVersion() == null) {
-            LanguageVersion languageVersion = configuration.getLanguageVersionOfFile(ctx.getSourceCodeFilename());
+        LanguageVersion languageVersion = ctx.getLanguageVersion();
+        if (languageVersion == null) {
+            languageVersion = configuration.getForceLanguageVersion();
+            languageVersion = languageVersion != null ? languageVersion : configuration.getLanguageVersionOfFile(ctx.getSourceCodeFilename());
             ctx.setLanguageVersion(languageVersion);
         }
     }

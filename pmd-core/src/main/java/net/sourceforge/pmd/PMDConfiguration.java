@@ -88,6 +88,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
     private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
+    private LanguageVersion forceLanguageVersion;
 
     // Rule and source file options
     private String ruleSets;
@@ -208,6 +209,26 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public LanguageVersionDiscoverer getLanguageVersionDiscoverer() {
         return languageVersionDiscoverer;
+    }
+
+    /**
+     * Get the LanguageVersion specified by the force-language parameter. This overrides detection based on file
+     * extensions
+     *
+     * @return The LanguageVersion.
+     */
+    public LanguageVersion getForceLanguageVersion() {
+        return forceLanguageVersion;
+    }
+
+    /**
+     * Set the LanguageVersion specified by the force-language parameter. This overrides detection based on file
+     * extensions
+     *
+     * @param forceLanguageVersion the language version
+     */
+    public void setForceLanguageVersion(LanguageVersion forceLanguageVersion) {
+        this.forceLanguageVersion = forceLanguageVersion;
     }
 
     /**

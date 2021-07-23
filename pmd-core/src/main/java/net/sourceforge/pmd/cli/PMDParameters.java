@@ -101,6 +101,9 @@ public class PMDParameters {
     @Parameter(names = { "-language", "-l" }, description = "Specify a language PMD should use.")
     private String language = null;
 
+    @Parameter(names = "-force-language", description = "Force a language to be used for all input files, irrespective of filenames.")
+    private String forceLanguage = null;
+
     @Parameter(names = "-auxclasspath",
             description = "Specifies the classpath for libraries used by the source code. "
                     + "This is used by the type resolution. The platform specific path delimiter "
@@ -215,8 +218,11 @@ public class PMDParameters {
         configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
 
         LanguageVersion languageVersion = LanguageRegistry
-                .findLanguageVersionByTerseName(this.getLanguage() + ' ' + this.getVersion());
+                .findLanguageVersionByTerseName(forceLanguage != null ? forceLanguage : (this.getLanguage()) + ' ' + this.getVersion());
         if (languageVersion != null) {
+            if (forceLanguage != null) {
+                configuration.setForceLanguageVersion(languageVersion);
+            }
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
         }
         try {
