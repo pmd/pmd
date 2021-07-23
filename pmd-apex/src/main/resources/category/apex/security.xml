@@ -58,7 +58,7 @@ public class Foo {
         Contact c = [SELECT Status__c FROM Contact WHERE Id=:ID WITH SECURITY_ENFORCED];
 
         // Make sure we can update the database before even trying
-        if (!Schema.sObjectType.Contact.fields.Name.isUpdateable()) {
+        if (!Schema.sObjectType.Contact.fields.Status__c.isUpdateable()) {
             return null;
         }
 
