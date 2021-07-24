@@ -831,11 +831,15 @@ public class Foo {
           since="3.8"
           message="Unnecessary wrapper object creation"
           class="net.sourceforge.pmd.lang.java.rule.performance.UnnecessaryWrapperObjectCreationRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation"
+          deprecated="true">
         <description>
 Most wrapper classes provide static conversion methods that avoid the need to create intermediate objects
 just to create the primitive forms. Using these avoids the cost of creating objects that also need to be
 garbage-collected later.
+
+This rule has been deprecated with PMD 7. It is replaced by the more general rule
+{% rule java/codestyle/UnnecessaryBoxing %}.
         </description>
         <priority>3</priority>
         <example>

@@ -101,6 +101,11 @@ conversions that may be made implicit.
   properly without a property.
 * {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed. The rule is now more precise and will check these cases properly.
 
+#### Deprecated Rules
+
+*   {% rule "java/performance/UnnecessaryWrapperObjectCreation" %} has been deprecated.
+    It is replaced by the more general rule {% rule java/codestyle/UnnecessaryBoxing %}.
+
 #### Removed Rules
 
 The following previously deprecated rules have been finally removed:

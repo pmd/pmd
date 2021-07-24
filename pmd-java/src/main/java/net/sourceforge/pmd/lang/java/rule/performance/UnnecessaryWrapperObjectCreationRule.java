@@ -10,7 +10,12 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryBoxingRule;
 
+/**
+ * @deprecated Replaced by {@link UnnecessaryBoxingRule}.
+ */
+@Deprecated
 public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRulechainRule {
     private static final Set<String> SUFFIX_SET = setOf("toString", "byteValue",
         "shortValue", "intValue", "longValue", "floatValue", "doubleValue", "charValue", "booleanValue");
