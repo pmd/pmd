@@ -7,6 +7,7 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Bar {
     void foo(float value) {
@@ -31,6 +32,7 @@ public class Bar {
     <test-code>
         <description>failure case for 1.5+</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Bar {
     void foo(boolean value) {
@@ -43,6 +45,7 @@ public class Bar {
     <test-code>
         <description>Patch 2075906: Add toString() to the rule UnnecessaryWrapperObjectCreation</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Bar {
     void foo(boolean value) {
@@ -55,6 +58,7 @@ public class Bar {
     <test-code>
         <description>#1057 False positive for UnnecessaryWrapperObjectCreation</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Test {
     public void test() {
