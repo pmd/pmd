@@ -68,4 +68,20 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>NPE with static method call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Locale;
+
+public enum SampleEnum {
+    A;
+
+    public static SampleEnum getInstance(String name) {
+        return valueOf(SampleEnum.class, name.trim().toUpperCase(Locale.ENGLISH));
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

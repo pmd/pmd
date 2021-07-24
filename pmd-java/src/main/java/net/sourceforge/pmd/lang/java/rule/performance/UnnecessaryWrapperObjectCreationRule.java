@@ -26,7 +26,8 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRulechainR
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        if (!"valueOf".equals(node.getMethodName()) || !node.getQualifier().getTypeMirror().isBoxedPrimitive()
+        if (!"valueOf".equals(node.getMethodName()) || node.getQualifier() == null
+                || !node.getQualifier().getTypeMirror().isBoxedPrimitive()
                 || !(node.getParent() instanceof ASTMethodCall)) {
             return data;
         }
