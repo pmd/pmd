@@ -74,7 +74,14 @@ The default version is always ES6.
 
 #### New Rules
 
+##### Apex
+
 *   The Apex rule {% rule "apex/design/UnusedMethod" %} finds unused methods in your code.
+
+##### Java
+
+*   {% rule "java/codestyle/UnnecessaryBoxing" %} reports boxing and unboxing
+conversions that may be made implicit.
 
 #### Changed Rules
 
