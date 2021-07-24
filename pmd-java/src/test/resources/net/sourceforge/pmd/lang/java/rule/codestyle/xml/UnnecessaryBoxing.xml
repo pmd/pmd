@@ -7,6 +7,7 @@
     <test-code>
         <description>pos - new Integer(int)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     Integer i = new Integer(42);
@@ -37,6 +38,7 @@ public class Foo {
     <test-code>
         <description>pos - Integer.valueOf(int)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <expected-messages>
             <message>Unnecessary explicit boxing</message>
         </expected-messages>
@@ -49,6 +51,7 @@ public class Foo {
     <test-code>
         <description>pos - new Integer(int)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <expected-messages>
             <message>Unnecessary explicit boxing</message>
         </expected-messages>
@@ -61,6 +64,7 @@ public class Foo {
     <test-code>
         <description>pos - new Integer(int) with widening</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>Unnecessary explicit conversion from char to Integer</message>
         </expected-messages>
@@ -74,6 +78,7 @@ public class Foo {{
     <test-code>
         <description>pos - new Integer(int) assigned to object</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>Unnecessary explicit boxing</message>
         </expected-messages>
@@ -87,6 +92,7 @@ public class Foo {{
     <test-code>
         <description>pos - unboxing</description>
         <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
         <expected-messages>
             <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit conversion from Integer to double</message>
@@ -120,6 +126,7 @@ public class Foo {
     <test-code>
         <description>pos - unboxing to smaller type</description>
         <expected-problems>5</expected-problems>
+        <expected-linenumbers>5,6,7,8,9</expected-linenumbers>
         <expected-messages>
             <message>Unnecessary explicit boxing</message>
             <message>Unnecessary explicit unboxing</message>
@@ -145,6 +152,7 @@ public class Foo {
         <!-- Casts are left to UnnecessaryCast -->
         <description>Unnecessary (primitive -> primitive) casts</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
             <message>Unnecessary explicit boxing</message>
         </expected-messages>
