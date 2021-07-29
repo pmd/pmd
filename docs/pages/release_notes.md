@@ -16,7 +16,16 @@ This is a {{ site.pmd.release_type }} release.
 
 #### New rules
 
-This release ships with 1 new Java rule.
+This release ships with 2 new Java rules.
+
+*   {% rule java/bestpractices/SimplifiableTestAssertion %} suggests rewriting
+    some test assertions to be more readable.
+
+```xml
+    <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
 
 *   {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} suggests returning empty collections / arrays
     instead of null.
@@ -38,9 +47,19 @@ This release ships with 1 new Java rule.
 
 #### Deprecated rules
 
+The following Java rules are deprecated and removed from the quickstart ruleset,
+ as the new rule {% rule java/bestpractices/SimplifiableTestAssertion %} merges
+ their functionality:
+* {% rule java/bestpractices/UseAssertEqualsInsteadOfAssertTrue %}
+* {% rule java/bestpractices/UseAssertNullInsteadOfAssertTrue %}
+* {% rule java/bestpractices/UseAssertSameInsteadOfAssertTrue %}
+* {% rule java/bestpractices/UseAssertTrueInsteadOfAssertEquals %}
+* {% rule java/design.xml/SimplifyBooleanAssertion %}
+
 The rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
 the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
 supersedes it.
+
 
 ### Fixed Issues
 
@@ -50,6 +69,8 @@ supersedes it.
 *   core
     *   [#3377](https://github.com/pmd/pmd/issues/3377): \[core] NPE when specifying report file in current directory in PMD CLI
     *   [#3387](https://github.com/pmd/pmd/issues/3387): \[core] CPD should avoid unnecessary copies when running with --skip-lexical-errors
+*   java-bestpractices
+    *   [#2908](https://github.com/pmd/pmd/issues/2908): \[java] Merge Junit assertion simplification rules
 *   java-errorprone
     *   [#3361](https://github.com/pmd/pmd/issues/3361): \[java] Rename rule MissingBreakInSwitch to ImplicitSwitchFallThrough
     *   [#3382](https://github.com/pmd/pmd/pull/3382): \[java] New rule ReturnEmptyCollectionRatherThanNull
