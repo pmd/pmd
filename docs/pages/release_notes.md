@@ -54,7 +54,7 @@ The following Java rules are deprecated and removed from the quickstart ruleset,
 * {% rule java/bestpractices/UseAssertNullInsteadOfAssertTrue %}
 * {% rule java/bestpractices/UseAssertSameInsteadOfAssertTrue %}
 * {% rule java/bestpractices/UseAssertTrueInsteadOfAssertEquals %}
-* {% rule java/design.xml/SimplifyBooleanAssertion %}
+* {% rule java/design/SimplifyBooleanAssertion %}
 
 The rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
 the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}

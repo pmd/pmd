@@ -1379,7 +1379,7 @@ public class Foo {
             The rule only applies within test classes for the moment. It replaces
             the deprecated rules {% rule UseAssertEqualsInsteadOfAssertTrue %},
             {% rule UseAssertNullInsteadOfAssertTrue %}, {% rule UseAssertSameInsteadOfAssertTrue %},
-            {% rule UseAssertTrueInsteadOfAssertEquals %}, and {% rule java/design.xml/SimplifyBooleanAssertion %}.
+            {% rule UseAssertTrueInsteadOfAssertEquals %}, and {% rule java/design/SimplifyBooleanAssertion %}.
         </description>
         <priority>3</priority>
         <example>
