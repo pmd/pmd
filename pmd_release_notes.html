@@ -1493,6 +1493,7 @@ supersedes it.</p>
   </li>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1603">#1603</a>: [core] Language version comparison</li>
       <li><a href="https://github.com/pmd/pmd/issues/3377">#3377</a>: [core] NPE when specifying report file in current directory in PMD CLI</li>
       <li><a href="https://github.com/pmd/pmd/issues/3387">#3387</a>: [core] CPD should avoid unnecessary copies when running with –skip-lexical-errors</li>
     </ul>
@@ -1500,6 +1501,7 @@ supersedes it.</p>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2908">#2908</a>: [java] Merge Junit assertion simplification rules</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3235">#3235</a>: [java] UseTryWithResources false positive when closeable is provided as a method argument or class field</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -1511,6 +1513,16 @@ supersedes it.</p>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<h4 id="internal-api">Internal API</h4>
+
+<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+
+<ul>
+  <li>The inner class <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.37.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenEntry.State.html#"><code>net.sourceforge.pmd.cpd.TokenEntry.State</code></a> is considered to be internal API.
+It will probably be moved away with PMD 7.</li>
+</ul>
 
 <h3 id="external-contributions">External Contributions</h3>
 

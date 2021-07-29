@@ -3760,15 +3760,7 @@ are better handled: If an exception occurred both in the <code class="language-p
 the try block was suppressed. With the <code class="language-plaintext highlighter-rouge">try</code>-with-resources statement, the exception thrown from the try-block is
 preserved.</p>
 
-<p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">TryStatement</span><span class="p">[</span><span class="nt">FinallyStatement</span><span class="o">//</span><span class="nt">Name</span><span class="p">[</span><span class="w">
-    </span><span class="kr">to</span><span class="nf">kenize</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'\.'</span><span class="p">)[</span><span class="nf">last</span><span class="p">()]</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nv">$closeMethods</span><span class="w">
-</span><span class="p">][</span><span class="w">
-    </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.AutoCloseable'</span><span class="p">)</span><span class="w">
-    </span><span class="ow">or</span><span class="w">
-    </span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.AutoCloseable'</span><span class="p">)]</span><span class="w">
-</span><span class="p">]]</span><span class="w">
-</span></code></pre></div></div>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UseTryWithResourcesRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UseTryWithResourcesRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
