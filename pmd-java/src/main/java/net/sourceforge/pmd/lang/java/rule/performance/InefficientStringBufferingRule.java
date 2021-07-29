@@ -83,7 +83,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
             if (name.getNameDeclaration() != null && name.getNameDeclaration() instanceof VariableNameDeclaration) {
                 VariableNameDeclaration vnd = (VariableNameDeclaration) name.getNameDeclaration();
                 AccessNode accessNodeParent = vnd.getAccessNodeParent();
-                if (accessNodeParent.isFinal()) {
+                if (accessNodeParent != null && accessNodeParent.isFinal()) {
                     return data;
                 }
             }
