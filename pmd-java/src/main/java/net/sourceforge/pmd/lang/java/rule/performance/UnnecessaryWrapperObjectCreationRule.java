@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
