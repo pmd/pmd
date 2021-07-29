@@ -1910,21 +1910,6 @@ the try block was suppressed. With the `try`-with-resources statement, the excep
 preserved.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="closeMethods" type="List[String]" delimiter="," description="Method names in finally block, which trigger this rule" value="close,closeQuietly"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//TryStatement[FinallyClause//ExpressionStatement/MethodCall[@MethodName = $closeMethods][
-    (:   vvvvvvvvvvvvvvvvvvvvvvvvv This is to rule out static method call :)
-    *[1][not(self::TypeExpression) and pmd-java:typeIs('java.lang.AutoCloseable')]
-    or
-    ArgumentList/*[pmd-java:typeIs('java.lang.AutoCloseable')]
-]]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public class TryWithResources {

@@ -75,6 +75,7 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.ast.AstLocalVarSym;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
@@ -806,8 +807,7 @@ public final class JavaRuleUtil {
      */
     public static boolean isReferenceToLocal(ASTExpression expr) {
         if (expr instanceof ASTVariableAccess) {
-            JVariableSymbol sym = ((ASTVariableAccess) expr).getReferencedSym();
-            return sym != null && !sym.isField();
+            return ((ASTVariableAccess) expr).getReferencedSym() instanceof AstLocalVarSym;
         }
         return false;
     }
