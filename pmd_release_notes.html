@@ -1432,7 +1432,17 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h4 id="new-rules">New rules</h4>
 
-<p>This release ships with 1 new Java rule.</p>
+<p>This release ships with 2 new Java rules.</p>
+
+<ul>
+  <li><a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> suggests rewriting
+some test assertions to be more readable.</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/SimplifiableTestAssertion"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p>The rule is part of the quickstart.xml ruleset.</p>
 
 <ul>
   <li><a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a> suggests returning empty collections / arrays
@@ -1457,6 +1467,17 @@ as well. This enables us to improve this rule in the future.</li>
 
 <h4 id="deprecated-rules">Deprecated rules</h4>
 
+<p>The following Java rules are deprecated and removed from the quickstart ruleset,
+ as the new rule <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> merges
+ their functionality:</p>
+<ul>
+  <li><a href="pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertEqualsInsteadOfAssertTrue</code></a></li>
+  <li><a href="pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertNullInsteadOfAssertTrue</code></a></li>
+  <li><a href="pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertSameInsteadOfAssertTrue</code></a></li>
+  <li><a href="pmd_rules_java_bestpractices.html#useasserttrueinsteadofassertequals"><code class="language-plaintext highlighter-rouge">UseAssertTrueInsteadOfAssertEquals</code></a></li>
+  <li><a href="pmd_rules_java_design.html#simplifybooleanassertion"><code class="language-plaintext highlighter-rouge">SimplifyBooleanAssertion</code></a></li>
+</ul>
+
 <p>The rule <a href="pmd_rules_java_errorprone.html#returnemptyarrayratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyArrayRatherThanNull</code></a> is deprecated and removed from
 the quickstart ruleset, as the new rule <a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a>
 supersedes it.</p>
@@ -1474,6 +1495,11 @@ supersedes it.</p>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3377">#3377</a>: [core] NPE when specifying report file in current directory in PMD CLI</li>
       <li><a href="https://github.com/pmd/pmd/issues/3387">#3387</a>: [core] CPD should avoid unnecessary copies when running with –skip-lexical-errors</li>
+    </ul>
+  </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2908">#2908</a>: [java] Merge Junit assertion simplification rules</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -1511,7 +1537,7 @@ supersedes it.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 16, 2021 <br />
+ Site last generated: Jul 29, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

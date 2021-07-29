@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedAssignment, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedAssignment, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -2994,6 +2994,51 @@ effectively.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/ReplaceVectorWithList"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="simplifiabletestassertion">SimplifiableTestAssertion</h2>
+
+<p><strong>Since:</strong> PMD 6.37.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Reports test assertions that may be simplified using a more specific
+assertion method. This enables better error messages, and makes the
+assertions more readable.</p>
+
+<p>The rule only applies within test classes for the moment. It replaces
+the deprecated rules <a href="pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertEqualsInsteadOfAssertTrue</code></a>,
+<a href="pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertNullInsteadOfAssertTrue</code></a>, <a href="pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertSameInsteadOfAssertTrue</code></a>,
+<a href="pmd_rules_java_bestpractices.html#useasserttrueinsteadofassertequals"><code class="language-plaintext highlighter-rouge">UseAssertTrueInsteadOfAssertEquals</code></a>, and <a href="pmd_rules_java_design.html#simplifybooleanassertion"><code class="language-plaintext highlighter-rouge">SimplifyBooleanAssertion</code></a>.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/SimplifiableTestAssertionRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.SimplifiableTestAssertionRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.junit.Test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">Assert</span><span class="o">.*;</span>
+
+<span class="kd">class</span> <span class="nc">SomeTestClass</span> <span class="o">{</span>
+    <span class="nc">Object</span> <span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">;</span>
+    <span class="nd">@Test</span>
+    <span class="kt">void</span> <span class="nf">testMethod</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">b</span><span class="o">));</span> <span class="c1">// could be assertEquals(a, b);</span>
+        <span class="n">assertTrue</span><span class="o">(!</span><span class="n">a</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">b</span><span class="o">));</span> <span class="c1">// could be assertNotEquals(a, b);</span>
+
+        <span class="n">assertTrue</span><span class="o">(!</span><span class="n">something</span><span class="o">);</span> <span class="c1">// could be assertFalse(something);</span>
+        <span class="n">assertFalse</span><span class="o">(!</span><span class="n">something</span><span class="o">);</span> <span class="c1">// could be assertTrue(something);</span>
+
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="o">);</span> <span class="c1">// could be assertSame(a, b);</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">a</span> <span class="o">!=</span> <span class="n">b</span><span class="o">);</span> <span class="c1">// could be assertNotSame(a, b);</span>
+
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">a</span> <span class="o">==</span> <span class="kc">null</span><span class="o">);</span> <span class="c1">// could be assertNull(a);</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">a</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">);</span> <span class="c1">// could be assertNotNull(a);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/SimplifiableTestAssertion"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="switchstmtsshouldhavedefault">SwitchStmtsShouldHaveDefault</h2>
 
 <p><strong>Since:</strong> PMD 1.0</p>
@@ -3437,11 +3482,15 @@ Variables whose name starts with <code class="language-plaintext highlighter-rou
 
 <h2 id="useassertequalsinsteadofasserttrue">UseAssertEqualsInsteadOfAssertTrue</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.1</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.</p>
+
+<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="w">
@@ -3480,12 +3529,16 @@ Variables whose name starts with <code class="language-plaintext highlighter-rou
 
 <h2 id="useassertnullinsteadofasserttrue">UseAssertNullInsteadOfAssertTrue</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.5</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>This rule detects JUnit assertions in object references equality. These assertions should be made by
 more specific methods, like assertNull, assertNotNull.</p>
+
+<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="w">
@@ -3527,12 +3580,16 @@ more specific methods, like assertNull, assertNotNull.</p>
 
 <h2 id="useassertsameinsteadofasserttrue">UseAssertSameInsteadOfAssertTrue</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.1</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>This rule detects JUnit assertions in object references equality. These assertions should be made
 by more specific methods, like assertSame, assertNotSame.</p>
+
+<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="w">
@@ -3572,11 +3629,15 @@ by more specific methods, like assertSame, assertNotSame.</p>
 
 <h2 id="useasserttrueinsteadofassertequals">UseAssertTrueInsteadOfAssertEquals</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 5.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.</p>
+
+<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'assertEquals'</span><span class="p">]]</span><span class="w">
@@ -3872,7 +3933,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 16, 2021 <br />
+ Site last generated: Jul 29, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
