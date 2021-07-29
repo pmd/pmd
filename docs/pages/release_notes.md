@@ -16,13 +16,17 @@ This is a {{ site.pmd.release_type }} release.
 
 #### New rules
 
-This release ships with 1 new Java rule.
+This release ships with 2 new Java rules.
 
 *   {% rule java/bestpractices/SimplifiableTestAssertion %} suggests rewriting
     some test assertions to be more readable.
+
 ```xml
     <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion" />
 ```
+
+   The rule is part of the quickstart.xml ruleset.
+
 *   {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} suggests returning empty collections / arrays
     instead of null.
 
