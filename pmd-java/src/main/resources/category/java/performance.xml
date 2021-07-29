@@ -347,10 +347,13 @@ bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
           since="1.2"
           message="Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead."
           class="net.sourceforge.pmd.lang.java.rule.performance.BooleanInstantiationRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#booleaninstantiation">
         <description>
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
 Note that new Boolean() is deprecated since JDK 9 for that reason.
+
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/PrimitiveWrapperInstantiation %} instead.
         </description>
         <priority>2</priority>
         <example>
