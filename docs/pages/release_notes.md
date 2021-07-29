@@ -16,7 +16,16 @@ This is a {{ site.pmd.release_type }} release.
 
 #### New rules
 
-This release ships with 2 new Java rules.
+This release ships with 3 new Java rules.
+
+*   {% rule java/bestpractices/PrimitiveWrapperInstantiation %} reports usages of primitive wrapper
+    constructors. They are deprecated since Java 9 and should not be used.
+
+```xml
+    <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
 
 *   {% rule java/bestpractices/SimplifiableTestAssertion %} suggests rewriting
     some test assertions to be more readable.
@@ -47,19 +56,33 @@ This release ships with 2 new Java rules.
 
 #### Deprecated rules
 
-The following Java rules are deprecated and removed from the quickstart ruleset,
- as the new rule {% rule java/bestpractices/SimplifiableTestAssertion %} merges
- their functionality:
-* {% rule java/bestpractices/UseAssertEqualsInsteadOfAssertTrue %}
-* {% rule java/bestpractices/UseAssertNullInsteadOfAssertTrue %}
-* {% rule java/bestpractices/UseAssertSameInsteadOfAssertTrue %}
-* {% rule java/bestpractices/UseAssertTrueInsteadOfAssertEquals %}
-* {% rule java/design/SimplifyBooleanAssertion %}
+*   The following Java rules are deprecated and removed from the quickstart ruleset,
+    as the new rule {% rule java/bestpractices/SimplifiableTestAssertion %} merges
+    their functionality:
+    * {% rule java/bestpractices/UseAssertEqualsInsteadOfAssertTrue %}
+    * {% rule java/bestpractices/UseAssertNullInsteadOfAssertTrue %}
+    * {% rule java/bestpractices/UseAssertSameInsteadOfAssertTrue %}
+    * {% rule java/bestpractices/UseAssertTrueInsteadOfAssertEquals %}
+    * {% rule java/design/SimplifyBooleanAssertion %}
 
-The rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
-the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
-supersedes it.
+*   The Java rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
+    the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
+    supersedes it.
 
+*   The following Java rules are deprecated and removed from the quickstart ruleset,
+    as the new rule {% rule java/bestpractices/PrimitiveWrapperInstantiation %} merges
+    their functionality:
+    * {% rule java/performance/BooleanInstantiation %}
+    * {% rule java/performance/ByteInstantiation %}
+    * {% rule java/performance/IntegerInstantiation %}
+    * {% rule java/performance/LongInstantiation %}
+    * {% rule java/performance/ShortInstantiation %}
+
+*   The Java rule {% rule java/performance/UnnecessaryWrapperObjectCreation %} is deprecated
+    with no planned replacement before PMD 7. In it's current state, the rule is not useful
+    as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
+    in the same expression. In PMD 7 this and more cases will be covered by a
+    new rule `UnnecessaryBoxing`.
 
 ### Fixed Issues
 
