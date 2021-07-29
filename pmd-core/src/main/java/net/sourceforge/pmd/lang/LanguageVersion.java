@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.List;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
@@ -120,27 +122,28 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
 
     @Override
     public int compareTo(LanguageVersion o) {
-        if (o == null) {
-            return 1;
-        }
+        List<LanguageVersion> versions = language.getVersions();
+        int thisPosition = versions.indexOf(this);
+        int otherPosition = versions.indexOf(o);
+        return Integer.compare(thisPosition, otherPosition);
+    }
 
-        int comp = getName().compareTo(o.getName());
-        if (comp != 0) {
-            return comp;
+    /**
+     * Compare this version to another version of the same language identified
+     * by the given version string.
+     *
+     * @param versionString The version with which to compare
+     *
+     * @throws IllegalArgumentException If the argument is not a valid version
+     *                                  string for the parent language
+     */
+    public int compareToVersion(String versionString) {
+        LanguageVersion otherVersion = language.getVersion(versionString);
+        if (otherVersion == null) {
+            throw new IllegalArgumentException(
+                "No such version '" + versionString + "' for language " + language.getName());
         }
-
-        String[] vals1 = getName().split("\\.");
-        String[] vals2 = o.getName().split("\\.");
-        int i = 0;
-        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
-            i++;
-        }
-        if (i < vals1.length && i < vals2.length) {
-            int diff = Integer.valueOf(vals1[i]).compareTo(Integer.valueOf(vals2[i]));
-            return Integer.signum(diff);
-        } else {
-            return Integer.signum(vals1.length - vals2.length);
-        }
+        return this.compareTo(otherVersion);
     }
 
     @Override

@@ -1169,6 +1169,7 @@ public class Foo {
           since="3.6"
           message="assertTrue(!expr) can be replaced by assertFalse(expr)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanassertion">
         <description>
 Avoid negation in an assertTrue or assertFalse test.
@@ -1181,6 +1182,7 @@ as:
 
     assertFalse(expr);
 
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
