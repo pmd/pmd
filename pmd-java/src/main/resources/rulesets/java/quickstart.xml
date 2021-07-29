@@ -41,6 +41,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceEnumerationWithIterator" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList" /> -->
+    <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion"/>
     <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault"/>
     <!-- <rule ref="category/java/bestpractices.xml/SystemPrintln" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnusedAssignment"/> -->
@@ -48,10 +49,6 @@
     <rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod"/>
-    <rule ref="category/java/bestpractices.xml/UseAssertEqualsInsteadOfAssertTrue"/>
-    <rule ref="category/java/bestpractices.xml/UseAssertNullInsteadOfAssertTrue"/>
-    <rule ref="category/java/bestpractices.xml/UseAssertSameInsteadOfAssertTrue"/>
-    <rule ref="category/java/bestpractices.xml/UseAssertTrueInsteadOfAssertEquals"/>
     <rule ref="category/java/bestpractices.xml/UseCollectionIsEmpty"/>
     <rule ref="category/java/bestpractices.xml/UseStandardCharsets" />
     <!-- <rule ref="category/java/bestpractices.xml/UseTryWithResources" /> -->
@@ -155,7 +152,6 @@
     <!-- <rule ref="category/java/design.xml/NPathComplexity" /> -->
     <!-- <rule ref="category/java/design.xml/SignatureDeclareThrowsException" /> -->
     <rule ref="category/java/design.xml/SimplifiedTernary"/>
-    <!-- <rule ref="category/java/design.xml/SimplifyBooleanAssertion" /> -->
     <!-- <rule ref="category/java/design.xml/SimplifyBooleanExpressions" /> -->
     <rule ref="category/java/design.xml/SimplifyBooleanReturns"/>
     <rule ref="category/java/design.xml/SimplifyConditional"/>
