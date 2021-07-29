@@ -1740,12 +1740,16 @@ for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal
 
 <h2 id="booleaninstantiation">BooleanInstantiation</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 1.2</p>
 
 <p><strong>Priority:</strong> Medium High (2)</p>
 
 <p>Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
 Note that new Boolean() is deprecated since JDK 9 for that reason.</p>
+
+<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/BooleanInstantiationRule.java">net.sourceforge.pmd.lang.java.rule.performance.BooleanInstantiationRule</a></p>
 
@@ -1761,6 +1765,8 @@ Note that new Boolean() is deprecated since JDK 9 for that reason.</p>
 
 <h2 id="byteinstantiation">ByteInstantiation</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 4.0</p>
 
 <p><strong>Priority:</strong> Medium High (2)</p>
@@ -1768,6 +1774,8 @@ Note that new Boolean() is deprecated since JDK 9 for that reason.</p>
 <p>Calling new Byte() causes memory allocation that can be avoided by the static Byte.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Byte() is deprecated since JDK 9 for that reason.</p>
+
+<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
@@ -1968,6 +1976,8 @@ is assumed if the length of the constructor can not be determined.</p>
 
 <h2 id="integerinstantiation">IntegerInstantiation</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.5</p>
 
 <p><strong>Priority:</strong> Medium High (2)</p>
@@ -1975,6 +1985,8 @@ is assumed if the length of the constructor can not be determined.</p>
 <p>Calling new Integer() causes memory allocation that can be avoided by the static Integer.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Integer() is deprecated since JDK 9 for that reason.</p>
+
+<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
@@ -1995,6 +2007,8 @@ Note that new Integer() is deprecated since JDK 9 for that reason.</p>
 
 <h2 id="longinstantiation">LongInstantiation</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 4.0</p>
 
 <p><strong>Priority:</strong> Medium High (2)</p>
@@ -2002,6 +2016,8 @@ Note that new Integer() is deprecated since JDK 9 for that reason.</p>
 <p>Calling new Long() causes memory allocation that can be avoided by the static Long.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Long() is deprecated since JDK 9 for that reason.</p>
+
+<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
@@ -2106,6 +2122,8 @@ is redundant and results in a larger class file (approximately three additional 
 
 <h2 id="shortinstantiation">ShortInstantiation</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 4.0</p>
 
 <p><strong>Priority:</strong> Medium High (2)</p>
@@ -2113,6 +2131,8 @@ is redundant and results in a larger class file (approximately three additional 
 <p>Calling new Short() causes memory allocation that can be avoided by the static Short.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Short() is deprecated since JDK 9 for that reason.</p>
+
+<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="w">
@@ -2284,6 +2304,8 @@ if-then statement to increase code readability.</p>
 
 <h2 id="unnecessarywrapperobjectcreation">UnnecessaryWrapperObjectCreation</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.8</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -2291,6 +2313,8 @@ if-then statement to increase code readability.</p>
 <p>Most wrapper classes provide static conversion methods that avoid the need to create intermediate objects
 just to create the primitive forms. Using these avoids the cost of creating objects that also need to be
 garbage-collected later.</p>
+
+<p>Deprecated since PMD 6.37.0. The planned replacement is not expected before PMD 7.0.0.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UnnecessaryWrapperObjectCreationRule.java">net.sourceforge.pmd.lang.java.rule.performance.UnnecessaryWrapperObjectCreationRule</a></p>
 

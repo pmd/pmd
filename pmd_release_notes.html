@@ -1432,7 +1432,17 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h4 id="new-rules">New rules</h4>
 
-<p>This release ships with 2 new Java rules.</p>
+<p>This release ships with 3 new Java rules.</p>
+
+<ul>
+  <li><a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a> reports usages of primitive wrapper
+constructors. They are deprecated since Java 9 and should not be used.</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/PrimitiveWrapperInstantiation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p>The rule is part of the quickstart.xml ruleset.</p>
 
 <ul>
   <li><a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> suggests rewriting
@@ -1467,20 +1477,40 @@ as well. This enables us to improve this rule in the future.</li>
 
 <h4 id="deprecated-rules">Deprecated rules</h4>
 
-<p>The following Java rules are deprecated and removed from the quickstart ruleset,
- as the new rule <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> merges
- their functionality:</p>
 <ul>
-  <li><a href="pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertEqualsInsteadOfAssertTrue</code></a></li>
-  <li><a href="pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertNullInsteadOfAssertTrue</code></a></li>
-  <li><a href="pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertSameInsteadOfAssertTrue</code></a></li>
-  <li><a href="pmd_rules_java_bestpractices.html#useasserttrueinsteadofassertequals"><code class="language-plaintext highlighter-rouge">UseAssertTrueInsteadOfAssertEquals</code></a></li>
-  <li><a href="pmd_rules_java_design.html#simplifybooleanassertion"><code class="language-plaintext highlighter-rouge">SimplifyBooleanAssertion</code></a></li>
-</ul>
-
-<p>The rule <a href="pmd_rules_java_errorprone.html#returnemptyarrayratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyArrayRatherThanNull</code></a> is deprecated and removed from
+  <li>The following Java rules are deprecated and removed from the quickstart ruleset,
+as the new rule <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> merges
+their functionality:
+    <ul>
+      <li><a href="pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertEqualsInsteadOfAssertTrue</code></a></li>
+      <li><a href="pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertNullInsteadOfAssertTrue</code></a></li>
+      <li><a href="pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertSameInsteadOfAssertTrue</code></a></li>
+      <li><a href="pmd_rules_java_bestpractices.html#useasserttrueinsteadofassertequals"><code class="language-plaintext highlighter-rouge">UseAssertTrueInsteadOfAssertEquals</code></a></li>
+      <li><a href="pmd_rules_java_design.html#simplifybooleanassertion"><code class="language-plaintext highlighter-rouge">SimplifyBooleanAssertion</code></a></li>
+    </ul>
+  </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_errorprone.html#returnemptyarrayratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyArrayRatherThanNull</code></a> is deprecated and removed from
 the quickstart ruleset, as the new rule <a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a>
 supersedes it.</p>
+  </li>
+  <li>The following Java rules are deprecated and removed from the quickstart ruleset,
+as the new rule <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a> merges
+their functionality:
+    <ul>
+      <li><a href="pmd_rules_java_performance.html#booleaninstantiation"><code class="language-plaintext highlighter-rouge">BooleanInstantiation</code></a></li>
+      <li><a href="pmd_rules_java_performance.html#byteinstantiation"><code class="language-plaintext highlighter-rouge">ByteInstantiation</code></a></li>
+      <li><a href="pmd_rules_java_performance.html#integerinstantiation"><code class="language-plaintext highlighter-rouge">IntegerInstantiation</code></a></li>
+      <li><a href="pmd_rules_java_performance.html#longinstantiation"><code class="language-plaintext highlighter-rouge">LongInstantiation</code></a></li>
+      <li><a href="pmd_rules_java_performance.html#shortinstantiation"><code class="language-plaintext highlighter-rouge">ShortInstantiation</code></a></li>
+    </ul>
+  </li>
+  <li>The Java rule <a href="pmd_rules_java_performance.html#unnecessarywrapperobjectcreation"><code class="language-plaintext highlighter-rouge">UnnecessaryWrapperObjectCreation</code></a> is deprecated
+with no planned replacement before PMD 7. In it’s current state, the rule is not useful
+as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
+in the same expression. In PMD 7 this and more cases will be covered by a
+new rule <code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code>.</li>
+</ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
 
