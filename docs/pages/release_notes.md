@@ -16,7 +16,16 @@ This is a {{ site.pmd.release_type }} release.
 
 #### New rules
 
-This release ships with 2 new Java rules.
+This release ships with 3 new Java rules.
+
+*   {% rule java/bestpractices/PrimitiveWrapperInstantiation %} reports usages of primitive wrapper
+    constructors. They are deprecated since Java 9 and should not be used.
+
+```xml
+    <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
 
 *   {% rule java/bestpractices/SimplifiableTestAssertion %} suggests rewriting
     some test assertions to be more readable.
@@ -59,6 +68,16 @@ The following Java rules are deprecated and removed from the quickstart ruleset,
 The rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
 the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
 supersedes it.
+
+The following Java rules are deprecated and removed from the quickstart ruleset,
+ as the new rule {% rule java/bestpractices/PrimitiveWrapperInstantiation %} merges
+ their functionality:
+* {% rule java/performance/BooleanInstantiation %}
+* {% rule java/performance/ByteInstantiation %}
+* {% rule java/performance/IntegerInstantiation %}
+* {% rule java/performance/LongInstantiation %}
+* {% rule java/performance/ShortInstantiation %}
+* {% rule java/performance/UnnecessaryWrapperObjectCreation %}
 
 
 ### Fixed Issues

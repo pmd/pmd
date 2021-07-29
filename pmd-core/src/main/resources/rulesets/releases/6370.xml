@@ -8,6 +8,7 @@
 This ruleset contains links to rules that are new in PMD v6.37.0
   </description>
 
+    <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation" />
     <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion" />
     <rule ref="category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull" />
 
