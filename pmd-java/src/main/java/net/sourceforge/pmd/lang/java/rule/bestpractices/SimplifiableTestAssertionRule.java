@@ -242,7 +242,7 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRule {
     }
 
     private boolean isPositiveEqualityExpr(ASTEqualityExpression node) {
-        return node != null && node.getOperator().equals("==");
+        return node != null && node.getImage().equals("==");
     }
 
     private static JavaNode getNegatedExprOperand(JavaNode node) {
