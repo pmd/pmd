@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class MissingBreakInSwitchTest extends PmdRuleTst {
+public class ReturnEmptyCollectionRatherThanNullTest extends PmdRuleTst {
+
     // no additional unit tests
 }
