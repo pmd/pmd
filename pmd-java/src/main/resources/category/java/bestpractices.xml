@@ -2026,7 +2026,7 @@ public class UseStandardCharsets {
           since="6.12.0"
           typeResolution="true"
           message="Consider using a try-with-resources statement instead of explicitly closing the resource"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UseTryWithResourcesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usetrywithresources">
         <description>
 Java 7 introduced the try-with-resources statement. This statement ensures that each resource is closed at the end
@@ -2036,23 +2036,6 @@ the try block was suppressed. With the `try`-with-resources statement, the excep
 preserved.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="closeMethods" type="List[String]" delimiter="," description="Method names in finally block, which trigger this rule" value="close,closeQuietly"/>
-            <property name="version" value="2.0" />
-            <property name="xpath">
-                <value>
-<![CDATA[
-//TryStatement[FinallyStatement//Name[
-    tokenize(@Image, '\.')[last()] = $closeMethods
-][
-    pmd-java:typeIs('java.lang.AutoCloseable')
-    or
-    ../../PrimarySuffix/Arguments//PrimaryPrefix[pmd-java:typeIs('java.lang.AutoCloseable')]
-]]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public class TryWithResources {
