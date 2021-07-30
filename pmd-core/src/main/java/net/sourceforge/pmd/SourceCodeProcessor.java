@@ -113,7 +113,9 @@ public class SourceCodeProcessor {
             processSource(sourceCode, ruleSets, ctx);
         } catch (ParseException pe) {
             configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
-            throw new PMDException("Error while parsing " + ctx.getSourceCodeFile(), pe);
+            if (!configuration.isForceLanguageVersion()) {
+                throw new PMDException("Error while parsing " + ctx.getSourceCodeFile(), pe);
+            }
         } catch (Exception e) {
             configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
             throw new PMDException("Error while processing " + ctx.getSourceCodeFile(), e);

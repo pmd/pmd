@@ -222,6 +222,15 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
+     * Is the force-language parameter set to anything?
+     *
+     * @return true if ${@link #getForceLanguageVersion()} is not null
+     */
+    public Boolean isForceLanguageVersion() {
+        return forceLanguageVersion != null;
+    }
+
+    /**
      * Set the LanguageVersion specified by the force-language parameter. This overrides detection based on file
      * extensions
      *
