@@ -35,7 +35,25 @@ Note: Support for Java 15 preview language features have been removed. The versi
 
 #### New rules
 
-This release ships with 1 new Java rule.
+This release ships with 3 new Java rules.
+
+*   {% rule java/bestpractices/PrimitiveWrapperInstantiation %} reports usages of primitive wrapper
+    constructors. They are deprecated since Java 9 and should not be used.
+
+```xml
+    <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
+
+*   {% rule java/bestpractices/SimplifiableTestAssertion %} suggests rewriting
+    some test assertions to be more readable.
+
+```xml
+    <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
 
 *   {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} suggests returning empty collections / arrays
     instead of null.
@@ -57,9 +75,33 @@ This release ships with 1 new Java rule.
 
 #### Deprecated rules
 
-The rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
-the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
-supersedes it.
+*   The following Java rules are deprecated and removed from the quickstart ruleset,
+    as the new rule {% rule java/bestpractices/SimplifiableTestAssertion %} merges
+    their functionality:
+    * {% rule java/bestpractices/UseAssertEqualsInsteadOfAssertTrue %}
+    * {% rule java/bestpractices/UseAssertNullInsteadOfAssertTrue %}
+    * {% rule java/bestpractices/UseAssertSameInsteadOfAssertTrue %}
+    * {% rule java/bestpractices/UseAssertTrueInsteadOfAssertEquals %}
+    * {% rule java/design/SimplifyBooleanAssertion %}
+
+*   The Java rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
+    the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
+    supersedes it.
+
+*   The following Java rules are deprecated and removed from the quickstart ruleset,
+    as the new rule {% rule java/bestpractices/PrimitiveWrapperInstantiation %} merges
+    their functionality:
+    * {% rule java/performance/BooleanInstantiation %}
+    * {% rule java/performance/ByteInstantiation %}
+    * {% rule java/performance/IntegerInstantiation %}
+    * {% rule java/performance/LongInstantiation %}
+    * {% rule java/performance/ShortInstantiation %}
+
+*   The Java rule {% rule java/performance/UnnecessaryWrapperObjectCreation %} is deprecated
+    with no planned replacement before PMD 7. In it's current state, the rule is not useful
+    as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
+    in the same expression. In PMD 7 this and more cases will be covered by a
+    new rule `UnnecessaryBoxing`.
 
 ### Fixed Issues
 
@@ -67,8 +109,12 @@ supersedes it.
     *   [#3201](https://github.com/pmd/pmd/issues/3201): \[apex] ApexCRUDViolation doesn't report Database class DMLs, inline no-arg object instantiations and inline list initialization
     *   [#3329](https://github.com/pmd/pmd/issues/3329): \[apex] ApexCRUDViolation doesn't report SOQL for loops
 *   core
+    *   [#1603](https://github.com/pmd/pmd/issues/1603): \[core] Language version comparison
     *   [#3377](https://github.com/pmd/pmd/issues/3377): \[core] NPE when specifying report file in current directory in PMD CLI
     *   [#3387](https://github.com/pmd/pmd/issues/3387): \[core] CPD should avoid unnecessary copies when running with --skip-lexical-errors
+*   java-bestpractices
+    *   [#2908](https://github.com/pmd/pmd/issues/2908): \[java] Merge Junit assertion simplification rules
+    *   [#3235](https://github.com/pmd/pmd/issues/3235): \[java] UseTryWithResources false positive when closeable is provided as a method argument or class field
 *   java-errorprone
     *   [#3361](https://github.com/pmd/pmd/issues/3361): \[java] Rename rule MissingBreakInSwitch to ImplicitSwitchFallThrough
     *   [#3382](https://github.com/pmd/pmd/pull/3382): \[java] New rule ReturnEmptyCollectionRatherThanNull
@@ -82,6 +128,14 @@ supersedes it.
         {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#isNonSealed() %},
         {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#getPermittedSubclasses() %}
     *   {% jdoc java::lang.java.ast.ASTPermitsList %}
+
+#### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   The inner class {% jdoc !!core::cpd.TokenEntry.State %} is considered to be internal API.
+    It will probably be moved away with PMD 7.
 
 ### External Contributions
 
