@@ -1,4 +1,9 @@
 /**
+ * Promote "JEP 409: Sealed Classes" as permanent language feature with Java 17.
+ * Support "JEP 406: Pattern Matching for switch (Preview)" for Java 17 Preview.
+ * Remove support for Java 15 preview language features
+ * Andreas Dangel 07/2021
+ *====================================================================
  * Fix #3117 - infinite loop when parsing invalid code nested in lambdas
  * Andreas Dangel 03/2021
  *====================================================================
@@ -394,12 +399,6 @@ public class JavaParser {
     }
   }
 
-  private void checkforBadInstanceOfPattern() {
-    if (!(jdkVersion == 15 && preview || jdkVersion >= 16)) {
-      throwParseException("Pattern Matching for instanceof is only supported with Java 15 Preview and Java >= 16");
-    }
-  }
-
   private void checkForBadAnonymousDiamondUsage() {
     if (jdkVersion < 9) {
       ASTAllocationExpression node = (ASTAllocationExpression)jjtree.peekNode();
@@ -443,14 +442,14 @@ public class JavaParser {
     if (jdkVersion >= 14 && "yield".equals(image)) {
       throwParseException("With JDK 14, 'yield' is a contextual keyword and cannot be used for type declarations!");
     }
-    if ((jdkVersion == 15 && preview || jdkVersion >= 16) && "record".equals(image)) {
-      throwParseException("With JDK 15 Preview and Java >= 16, 'record' is a contextual keyword and cannot be used for type declarations!");
+    if (jdkVersion >= 16 && "record".equals(image)) {
+      throwParseException("With JDK >= 16, 'record' is a contextual keyword and cannot be used for type declarations!");
     }
-    if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview) && "sealed".equals(image)) {
-      throwParseException("With JDK 15 Preview and JDK 16 Preview, 'sealed' is a contextual keyword and cannot be used for type declarations!");
+    if ((jdkVersion == 16 && preview || jdkVersion >= 17) && "sealed".equals(image)) {
+      throwParseException("With JDK 16 Preview and JDK >= 17, 'sealed' is a contextual keyword and cannot be used for type declarations!");
     }
-    if ((jdkVersion == 15 && preview || jdkVersion == 16 && preview) && "permits".equals(image)) {
-      throwParseException("With JDK 15 Preview and JDK 16 Preview, 'permits' is a contextual keyword and cannot be used for type declarations!");
+    if ((jdkVersion == 16 && preview || jdkVersion >= 17) && "permits".equals(image)) {
+      throwParseException("With JDK 16 Preview and JDK >= 17, 'permits' is a contextual keyword and cannot be used for type declarations!");
     }
   }
   private void checkForMultipleCaseLabels() {
@@ -497,30 +496,64 @@ public class JavaParser {
     }
   }
 
+  private void checkforBadInstanceOfPattern() {
+    if (jdkVersion < 16) {
+      throwParseException("Pattern Matching for instanceof is only supported with JDK >= 16");
+    }
+  }
+
+  private boolean isRecordTypeSupported() {
+    return jdkVersion >= 16;
+  }
+
   private void checkForRecordType() {
     if (!isRecordTypeSupported()) {
-      throwParseException("Records are only supported with Java 15 Preview and Java >= 16");
+      throwParseException("Records are only supported with JDK >= 16");
     }
   }
 
   private void checkForLocalInterfaceOrEnumType() {
       if (!isRecordTypeSupported()) {
-          throwParseException("Local interfaces and enums are only supported with Java 15 Preview and Java >= 16");
+          throwParseException("Local interfaces and enums are only supported with JDK >= 16");
       }
   }
 
-  private boolean isRecordTypeSupported() {
-    return jdkVersion == 15 && preview || jdkVersion >= 16;
-  }
-
   private boolean isSealedClassSupported() {
-      return jdkVersion == 15 && preview || jdkVersion == 16 && preview;
+      return jdkVersion == 16 && preview || jdkVersion >= 17;
   }
 
   private void checkForSealedClassUsage() {
      if (!isSealedClassSupported()) {
-        throwParseException("Sealed Classes are only supported with Java 15 Preview");
+        throwParseException("Sealed Classes are only supported with JDK 16 Preview and JDK >= 17.");
      }
+  }
+
+  private boolean isJEP406Supported() {
+    return jdkVersion == 17 && preview;
+  }
+
+  private void checkForPatternMatchingInSwitch() {
+    if (!isJEP406Supported()) {
+        throwParseException("Pattern Matching in Switch is only supported with JDK 17 Preview.");
+    }
+  }
+
+  private void checkForNullCaseLabel() {
+    if (!isJEP406Supported()) {
+        throwParseException("Null case labels in switch are only supported with JDK 17 Preview.");
+    }
+  }
+
+  private void checkForDefaultCaseLabel() {
+    if (!isJEP406Supported()) {
+        throwParseException("Default case labels in switch are only supported with JDK 17 Preview.");
+    }
+  }
+
+  private void checkForGuardedPatterns() {
+    if (!isJEP406Supported()) {
+        throwParseException("Guarded patterns are only supported with JDK 17 Preview.");
+    }
   }
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
@@ -586,7 +619,7 @@ public class JavaParser {
       return false;
   }
 
-  private boolean classModifierLookahead() {
+  private boolean classModifierForLocalTypesLookahead() {
       Token next = getToken(1);
       return next.kind == AT
         || next.kind == PUBLIC
@@ -595,9 +628,7 @@ public class JavaParser {
         || next.kind == ABSTRACT
         || next.kind == STATIC
         || next.kind == FINAL
-        || next.kind == STRICTFP
-        || isSealedClassSupported() && isKeyword("sealed")
-        || isSealedClassSupported() && isNonSealedModifier();
+        || next.kind == STRICTFP;
   }
 
   private boolean localTypeDeclLookahead() {
@@ -1721,6 +1752,25 @@ void EqualityExpression() #EqualityExpression(>1):
   InstanceOfExpression()  ( LOOKAHEAD(2) ( "==" {jjtThis.setImage("==");} | "!=" {jjtThis.setImage("!=");} ) InstanceOfExpression()  )*
 }
 
+void Pattern() #void:
+{}
+{
+    PrimaryPattern() [ GuardedPatternCondition() #GuardedPattern(2) {checkForGuardedPatterns();} ]
+}
+
+void GuardedPatternCondition() #void:
+{}
+{
+    "&&" ConditionalAndExpression()
+}
+
+void PrimaryPattern() #void:
+{}
+{
+    TypePattern()
+    | "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
+}
+
 void TypePattern():
 {}
 {
@@ -1735,7 +1785,9 @@ void InstanceOfExpression() #InstanceOfExpression(>1):
   RelationalExpression()
   [ "instanceof"
       (
-        LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} TypePattern()
+        LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} PrimaryPattern()
+      |
+        LOOKAHEAD("(") Pattern() {checkforBadInstanceOfPattern();}
       |
         Type()
         [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypePattern(2) ]
@@ -2090,7 +2142,7 @@ void BlockStatement():
         }
         ";"
     )
-| LOOKAHEAD({classModifierLookahead() || localTypeDeclLookahead()})
+| LOOKAHEAD({classModifierForLocalTypesLookahead() || localTypeDeclLookahead()})
     mods=Modifiers()
     LocalTypeDecl(mods)
 | LOOKAHEAD(Type() <IDENTIFIER>)
@@ -2205,11 +2257,26 @@ void SwitchLabel() :
 {
 { inSwitchLabel = true; }
 (
-  "case" ( ConditionalExpression() #Expression ) ({checkForMultipleCaseLabels();} "," ( ConditionalExpression() #Expression ) )*
+  "case" CaseLabelElement(jjtThis) ( {checkForMultipleCaseLabels();} "," CaseLabelElement(jjtThis) )*
 |
   "default" {jjtThis.setDefault();}
 )
 { inSwitchLabel = false; }
+}
+
+void CaseLabelElement(ASTSwitchLabel label) #void:
+{}
+{
+    "default" {label.setDefault(); checkForDefaultCaseLabel();}
+    |
+    LOOKAHEAD(Pattern()) Pattern() {checkForPatternMatchingInSwitch();}
+    |
+    ConditionalExpression() #Expression
+        {
+            if ("null".equals(((ASTExpression) jjtree.peekNode()).jjtGetFirstToken().getImage())) {
+                checkForNullCaseLabel();
+            }
+        }
 }
 
 void YieldStatement() :
