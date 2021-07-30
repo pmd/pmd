@@ -377,7 +377,7 @@ class JavaParserImpl {
       return false;
   }
 
-  private boolean classModifierLookahead() {
+  private boolean classModifierForLocalTypesLookahead() {
       Token next = getToken(1);
       return next.kind == AT
         || next.kind == PUBLIC
@@ -386,9 +386,7 @@ class JavaParserImpl {
         || next.kind == ABSTRACT
         || next.kind == STATIC
         || next.kind == FINAL
-        || next.kind == STRICTFP
-        || isSealedClassSupported() && isKeyword("sealed")
-        || isSealedClassSupported() && isNonSealedModifier();
+        || next.kind == STRICTFP;
   }
 
   private boolean localTypeDeclAfterModifiers() {
@@ -403,9 +401,7 @@ class JavaParserImpl {
   }
 
   private boolean localTypeDeclGivenNextIsIdent() {
-      return localTypesSupported() && (
-          isNonSealedModifier() || isRecordStart() || isEnumStart()
-      );
+      return localTypesSupported() && (isRecordStart() || isEnumStart());
   }
 
   /**

@@ -72,4 +72,8 @@ public class Java17TreeDumpTest extends BaseTreeDumpTest {
         java17p.parseResource("expression/Expr.java"); // make sure we can parse it with preview as well
     }
 
+    @Test
+    public void localVars() {
+        doTest("LocalVars");
+    }
 }
