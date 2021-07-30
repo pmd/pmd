@@ -619,7 +619,7 @@ public class JavaParser {
       return false;
   }
 
-  private boolean classModifierLookahead() {
+  private boolean classModifierForLocalTypesLookahead() {
       Token next = getToken(1);
       return next.kind == AT
         || next.kind == PUBLIC
@@ -628,9 +628,7 @@ public class JavaParser {
         || next.kind == ABSTRACT
         || next.kind == STATIC
         || next.kind == FINAL
-        || next.kind == STRICTFP
-        || isSealedClassSupported() && isKeyword("sealed")
-        || isSealedClassSupported() && isNonSealedModifier();
+        || next.kind == STRICTFP;
   }
 
   private boolean localTypeDeclLookahead() {
@@ -2144,7 +2142,7 @@ void BlockStatement():
         }
         ";"
     )
-| LOOKAHEAD({classModifierLookahead() || localTypeDeclLookahead()})
+| LOOKAHEAD({classModifierForLocalTypesLookahead() || localTypeDeclLookahead()})
     mods=Modifiers()
     LocalTypeDecl(mods)
 | LOOKAHEAD(Type() <IDENTIFIER>)
