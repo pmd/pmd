@@ -1,7 +1,13 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
+    [class]                                 1         5
+    [tabWidth]                              7         14
+    [{]                                     16        16
+L2
     [int]                                   2         4
     [i]                                     6         6
     [=]                                     8         8
     [0]                                     10        10
+L3
+    [}]                                     1         1
 EOF
