@@ -1430,6 +1430,21 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="java-17-support">Java 17 Support</h4>
+
+<p>This release of PMD brings support for Java 17. PMD supports <a href="https://openjdk.java.net/jeps/409">JEP 409: Sealed Classes</a>
+which has been promoted to be a standard language feature of Java 17.</p>
+
+<p>PMD also supports <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> as a preview
+language feature. In order to analyze a project with PMD that uses these language features, you’ll need to enable
+it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version <code class="language-plaintext highlighter-rouge">17-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+./run.sh pmd -language java -version 17-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for Java 15 preview language features have been removed. The version “15-preview” is no longer available.</p>
+
 <h4 id="new-rules">New rules</h4>
 
 <p>This release ships with 3 new Java rules.</p>
@@ -1544,6 +1559,19 @@ new rule <code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</c
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="experimental-apis">Experimental APIs</h4>
+
+<ul>
+  <li>The AST types and APIs around Sealed Classes are not experimental anymore:
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isSealed()"><code>ASTClassOrInterfaceDeclaration#isSealed</code></a>,
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isNonSealed()"><code>ASTClassOrInterfaceDeclaration#isNonSealed</code></a>,
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getPermittedSubclasses()"><code>ASTClassOrInterfaceDeclaration#getPermittedSubclasses</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPermitsList.html#"><code>ASTPermitsList</code></a></li>
+    </ul>
+  </li>
+</ul>
+
 <h4 id="internal-api">Internal API</h4>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
@@ -1579,7 +1607,7 @@ It will probably be moved away with PMD 7.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 29, 2021 <br />
+ Site last generated: Jul 30, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
