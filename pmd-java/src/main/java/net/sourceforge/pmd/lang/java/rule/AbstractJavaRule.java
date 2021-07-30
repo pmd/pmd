@@ -52,7 +52,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return false;
     }
 
-
     @Override
     public boolean dependsOn(AstProcessingStage<?> stage) {
         if (!(stage instanceof JavaProcessingStage)) {
