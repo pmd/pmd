@@ -79,6 +79,17 @@ The tool comes with a rather extensive help text, simply running with `-help`!
                description="Path to file containing a comma delimited list of files to analyze.
                             If this is given, then you don't need to provide `-dir`."
     %}
+    {% include custom/cli_option_row.html options="-force-language"
+               option_arg="lang"
+               description="Force a language to be used for all input files, irrespective of
+                            filenames. When using this option, the automatic language selection
+                            by extension is disabled and all files are tried to be parsed with
+                            the given language `&lt;lang&gt;`. Parsing errors are ignored and unparsable files
+                            are skipped.
+                            
+                            <p>This option allows to use the xml language for files, that don't
+                            use xml as extension. See [example](#analyze-other-xml-formats) below.</p>"
+    %}
     {% include custom/cli_option_row.html options="-ignorelist"
                option_arg="filepath"
                description="Path to file containing a comma delimited list of files to ignore.
@@ -202,3 +213,26 @@ Example:
 PMD comes with many different renderers.
 All formats are described at [PMD Report formats](pmd_userdocs_report_formats.html)
 
+## Examples
+
+### Analyze other xml formats
+
+If your xml language doesn't use `xml` as file extension, you can still use PMD with `-force-language`:
+
+```
+$ ./run.sh pmd -d /home/me/src/xml-file.ext -f text -R ruleset.xml -force-language xml
+```
+
+You can also specify a directory instead of a single file. Then all files are analyzed. In that case,
+parse errors are suppressed in order to reduce irrelevant noise:
+
+```
+$ ./run.sh pmd -d /home/me/src/ -f text -R ruleset.xml -force-language xml
+```
+
+Alternatively, you can create a filelist to only analyze files with a given extension:
+
+```
+$ find /home/me/src -name "*.ext" > /home/me/src/filelist.txt
+$ ./run.sh pmd -filelist /home/me/src/filelist.txt -f text -R ruleset.xml -force-language xml
+```

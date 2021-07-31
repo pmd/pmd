@@ -5,6 +5,7 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -417,7 +418,7 @@ public class PMD {
 
     private static List<DataSource> internalGetApplicableFiles(PMDConfiguration configuration,
                                                                Set<Language> languages) {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(languages);
+        FilenameFilter fileSelector = configuration.isForceLanguageVersion() ? new AcceptAllFilenames() : new LanguageFilenameFilter(languages);
         List<DataSource> files = new ArrayList<>();
 
         if (null != configuration.getInputPaths()) {
@@ -635,5 +636,12 @@ public class PMD {
             return this.code;
         }
 
+    }
+
+    private static class AcceptAllFilenames implements FilenameFilter {
+        @Override
+        public boolean accept(File dir, String name) {
+            return true;
+        }
     }
 }
