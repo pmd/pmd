@@ -791,8 +791,13 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
     }
 
     @Override
-    @Experimental
     public Object visit(ASTPermitsList node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Experimental
+    @Override
+    public Object visit(ASTGuardedPattern node, Object data) {
         return visitor.visit(node, data);
     }
 }

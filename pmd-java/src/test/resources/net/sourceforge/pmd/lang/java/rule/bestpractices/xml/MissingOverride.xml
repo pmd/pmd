@@ -377,7 +377,7 @@ public class CovariantReturnType extends AbstractClass {
     </test-code>
 
     <test-code>
-        <description>Avoid false positives when in ambiguous situation</description>
+        <description>Avoid false positives when in ambiguous situation - AmbiguousOverload</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
@@ -403,7 +403,7 @@ public class AmbiguousOverload implements Comparator<StringBuilder> {
     </test-code>
 
     <test-code>
-        <description>Avoid false positives when in ambiguous situation</description>
+        <description>Avoid false positives when in ambiguous situation - HierarchyWithSeveralBridges</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
