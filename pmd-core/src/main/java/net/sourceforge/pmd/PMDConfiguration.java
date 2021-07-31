@@ -226,7 +226,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return true if ${@link #getForceLanguageVersion()} is not null
      */
-    public Boolean isForceLanguageVersion() {
+    public boolean isForceLanguageVersion() {
         return forceLanguageVersion != null;
     }
 

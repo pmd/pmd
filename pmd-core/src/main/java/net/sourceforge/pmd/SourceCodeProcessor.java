@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -30,6 +32,8 @@ import net.sourceforge.pmd.lang.xpath.Initializer;
 @Deprecated
 @InternalApi
 public class SourceCodeProcessor {
+
+    private static final Logger LOG = Logger.getLogger(SourceCodeProcessor.class.getName());
 
     private final PMDConfiguration configuration;
 
@@ -113,7 +117,9 @@ public class SourceCodeProcessor {
             processSource(sourceCode, ruleSets, ctx);
         } catch (ParseException pe) {
             configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
-            if (!configuration.isForceLanguageVersion()) {
+            if (configuration.isForceLanguageVersion()) {
+                LOG.log(Level.FINE, "Error while parsing " + ctx.getSourceCodeFile(), pe);
+            } else {
                 throw new PMDException("Error while parsing " + ctx.getSourceCodeFile(), pe);
             }
         } catch (Exception e) {
@@ -203,12 +209,19 @@ public class SourceCodeProcessor {
     }
 
     private void determineLanguage(RuleContext ctx) {
-        // If LanguageVersion of the source file is not known, make a
-        // determination
-        LanguageVersion languageVersion = ctx.getLanguageVersion();
-        if (languageVersion == null) {
-            languageVersion = configuration.getForceLanguageVersion();
-            languageVersion = languageVersion != null ? languageVersion : configuration.getLanguageVersionOfFile(ctx.getSourceCodeFilename());
+        if (ctx.getLanguageVersion() != null) {
+            // we already have a language
+            return;
+        }
+
+        // If LanguageVersion of the source file is not known, make a determination
+        LanguageVersion forceLanguage = configuration.getForceLanguageVersion();
+        if (forceLanguage != null) {
+            // use force language if given
+            ctx.setLanguageVersion(forceLanguage);
+        } else {
+            // otherwise determine by file extension
+            LanguageVersion languageVersion = configuration.getLanguageVersionOfFile(ctx.getSourceCodeFilename());
             ctx.setLanguageVersion(languageVersion);
         }
     }

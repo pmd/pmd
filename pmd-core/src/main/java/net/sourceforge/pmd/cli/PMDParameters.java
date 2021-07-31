@@ -217,14 +217,18 @@ public class PMDParameters {
         configuration.setAnalysisCacheLocation(this.cacheLocation);
         configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
 
+        LanguageVersion forceLangVersion = LanguageRegistry
+                .findLanguageVersionByTerseName(this.getForceLanguage());
+        if (forceLangVersion != null) {
+            configuration.setForceLanguageVersion(forceLangVersion);
+        }
+
         LanguageVersion languageVersion = LanguageRegistry
-                .findLanguageVersionByTerseName(forceLanguage != null ? forceLanguage : (this.getLanguage()) + ' ' + this.getVersion());
+                .findLanguageVersionByTerseName(this.getLanguage() + ' ' + this.getVersion());
         if (languageVersion != null) {
-            if (forceLanguage != null) {
-                configuration.setForceLanguageVersion(languageVersion);
-            }
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
         }
+
         try {
             configuration.prependClasspath(this.getAuxclasspath());
         } catch (IOException e) {
@@ -309,6 +313,10 @@ public class PMDParameters {
 
     public String getLanguage() {
         return language != null ? language : LanguageRegistry.getDefaultLanguage().getTerseName();
+    }
+
+    public String getForceLanguage() {
+        return forceLanguage != null ? forceLanguage : "";
     }
 
     public String getAuxclasspath() {
