@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.37.0</li>
+    <li class="sidebarTitle">PMD 6.38.0-SNAPSHOT</li>
     
     
     
@@ -1422,207 +1422,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="31-july-2021---6370">31-July-2021 - 6.37.0</h2>
+  <h2 id="28-august-2021---6380-snapshot">28-August-2021 - 6.38.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.37.0.</p>
+<p>The PMD team is pleased to announce PMD 6.38.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="java-17-support">Java 17 Support</h4>
-
-<p>This release of PMD brings support for Java 17. PMD supports <a href="https://openjdk.java.net/jeps/409">JEP 409: Sealed Classes</a>
-which has been promoted to be a standard language feature of Java 17.</p>
-
-<p>PMD also supports <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> as a preview
-language feature. In order to analyze a project with PMD that uses these language features, you’ll need to enable
-it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version <code class="language-plaintext highlighter-rouge">17-preview</code>:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
-./run.sh pmd -language java -version 17-preview ...
-</code></pre></div></div>
-
-<p>Note: Support for Java 15 preview language features have been removed. The version “15-preview” is no longer available.</p>
-
-<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
-
-<p>This PMD release ships a new version of the pmd-designer.
-For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/6.37.0">PMD Designer Changelog</a>.</p>
-
-<h4 id="new-rules">New rules</h4>
-
-<p>This release ships with 3 new Java rules.</p>
-
-<ul>
-  <li><a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a> reports usages of primitive wrapper
-constructors. They are deprecated since Java 9 and should not be used.</li>
-</ul>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/PrimitiveWrapperInstantiation"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<p>The rule is part of the quickstart.xml ruleset.</p>
-
-<ul>
-  <li><a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> suggests rewriting
-some test assertions to be more readable.</li>
-</ul>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/SimplifiableTestAssertion"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<p>The rule is part of the quickstart.xml ruleset.</p>
-
-<ul>
-  <li><a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a> suggests returning empty collections / arrays
-instead of null.</li>
-</ul>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<p>The rule is part of the quickstart.xml ruleset.</p>
-
-<h4 id="renamed-rules">Renamed rules</h4>
-
-<ul>
-  <li>The Java rule <a href="pmd_rules_java_errorprone.html#missingbreakinswitch"><code class="language-plaintext highlighter-rouge">MissingBreakInSwitch</code></a> has been renamed to
-<a href="pmd_rules_java_errorprone.html#implicitswitchfallthrough"><code class="language-plaintext highlighter-rouge">ImplicitSwitchFallThrough</code></a> (category error prone) to better reflect the rule’s
-purpose: The rule finds implicit fall-through cases in switch statements, which are most
-likely unexpected. The old rule name described only one way how to avoid a fall-through,
-namely using <code class="language-plaintext highlighter-rouge">break</code> but <code class="language-plaintext highlighter-rouge">continue</code>, <code class="language-plaintext highlighter-rouge">throw</code> and <code class="language-plaintext highlighter-rouge">return</code> avoid a fall-through
-as well. This enables us to improve this rule in the future.</li>
-</ul>
-
-<h4 id="deprecated-rules">Deprecated rules</h4>
-
-<ul>
-  <li>The following Java rules are deprecated and removed from the quickstart ruleset,
-as the new rule <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> merges
-their functionality:
-    <ul>
-      <li><a href="pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertEqualsInsteadOfAssertTrue</code></a></li>
-      <li><a href="pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertNullInsteadOfAssertTrue</code></a></li>
-      <li><a href="pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertSameInsteadOfAssertTrue</code></a></li>
-      <li><a href="pmd_rules_java_bestpractices.html#useasserttrueinsteadofassertequals"><code class="language-plaintext highlighter-rouge">UseAssertTrueInsteadOfAssertEquals</code></a></li>
-      <li><a href="pmd_rules_java_design.html#simplifybooleanassertion"><code class="language-plaintext highlighter-rouge">SimplifyBooleanAssertion</code></a></li>
-    </ul>
-  </li>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_errorprone.html#returnemptyarrayratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyArrayRatherThanNull</code></a> is deprecated and removed from
-the quickstart ruleset, as the new rule <a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a>
-supersedes it.</p>
-  </li>
-  <li>The following Java rules are deprecated and removed from the quickstart ruleset,
-as the new rule <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a> merges
-their functionality:
-    <ul>
-      <li><a href="pmd_rules_java_performance.html#booleaninstantiation"><code class="language-plaintext highlighter-rouge">BooleanInstantiation</code></a></li>
-      <li><a href="pmd_rules_java_performance.html#byteinstantiation"><code class="language-plaintext highlighter-rouge">ByteInstantiation</code></a></li>
-      <li><a href="pmd_rules_java_performance.html#integerinstantiation"><code class="language-plaintext highlighter-rouge">IntegerInstantiation</code></a></li>
-      <li><a href="pmd_rules_java_performance.html#longinstantiation"><code class="language-plaintext highlighter-rouge">LongInstantiation</code></a></li>
-      <li><a href="pmd_rules_java_performance.html#shortinstantiation"><code class="language-plaintext highlighter-rouge">ShortInstantiation</code></a></li>
-    </ul>
-  </li>
-  <li>The Java rule <a href="pmd_rules_java_performance.html#unnecessarywrapperobjectcreation"><code class="language-plaintext highlighter-rouge">UnnecessaryWrapperObjectCreation</code></a> is deprecated
-with no planned replacement before PMD 7. In it’s current state, the rule is not useful
-as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
-in the same expression. In PMD 7 this and more cases will be covered by a
-new rule <code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code>.</li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3201">#3201</a>: [apex] ApexCRUDViolation doesn’t report Database class DMLs, inline no-arg object instantiations and inline list initialization</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3329">#3329</a>: [apex] ApexCRUDViolation doesn’t report SOQL for loops</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1603">#1603</a>: [core] Language version comparison</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2133">#2133</a>: [xml] Allow to check Salesforce XML Metadata using XPath rules</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3377">#3377</a>: [core] NPE when specifying report file in current directory in PMD CLI</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3387">#3387</a>: [core] CPD should avoid unnecessary copies when running with –skip-lexical-errors</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2908">#2908</a>: [java] Merge Junit assertion simplification rules</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3235">#3235</a>: [java] UseTryWithResources false positive when closeable is provided as a method argument or class field</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3361">#3361</a>: [java] Rename rule MissingBreakInSwitch to ImplicitSwitchFallThrough</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3382">#3382</a>: [java] New rule ReturnEmptyCollectionRatherThanNull</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3420">#3420</a>: [java] NPE in <code class="language-plaintext highlighter-rouge">InefficientStringBuffering</code> with Records</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<h4 id="pmd-cli">PMD CLI</h4>
-
-<ul>
-  <li>
-    <p>PMD has a new CLI option <code class="language-plaintext highlighter-rouge">-force-language</code>. With that a language can be forced to be used for all input files,
-irrespective of filenames. When using this option, the automatic language selection by extension is disabled
-and all files are tried to be parsed with the given language. Parsing errors are ignored and unparsable files
-are skipped.</p>
-
-    <p>This option allows to use the xml language for files, that don’t use xml as extension.
-See also the examples on <a href="pmd_userdocs_cli_reference.html#analyze-other-xml-formats">PMD CLI reference</a>.</p>
-  </li>
-</ul>
-
-<h4 id="experimental-apis">Experimental APIs</h4>
-
-<ul>
-  <li>The AST types and APIs around Sealed Classes are not experimental anymore:
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isSealed()"><code>ASTClassOrInterfaceDeclaration#isSealed</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isNonSealed()"><code>ASTClassOrInterfaceDeclaration#isNonSealed</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getPermittedSubclasses()"><code>ASTClassOrInterfaceDeclaration#getPermittedSubclasses</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0/net/sourceforge/pmd/lang/java/ast/ASTPermitsList.html#"><code>ASTPermitsList</code></a></li>
-    </ul>
-  </li>
-</ul>
-
-<h4 id="internal-api">Internal API</h4>
-
-<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
-You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
-
-<ul>
-  <li>The inner class <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.37.0/net/sourceforge/pmd/cpd/TokenEntry.State.html#"><code>net.sourceforge.pmd.cpd.TokenEntry.State</code></a> is considered to be internal API.
-It will probably be moved away with PMD 7.</li>
-</ul>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/3367">#3367</a>: [apex] Check SOQL CRUD on for loops - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3373">#3373</a>: [apex] Add ApexCRUDViolation support for database class, inline no-arg object construction DML and inline list initialization DML - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3385">#3385</a>: [core] CPD: Optimize –skip-lexical-errors option - <a href="https://github.com/woongsikchoi">Woongsik Choi</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3388">#3388</a>: [doc] Add Code Inspector in the list of tools - <a href="https://github.com/juli1">Julien Delange</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3417">#3417</a>: [core] Support forcing a specific language from the command-line - <a href="https://github.com/aidan-harding">Aidan Harding</a></li>
-</ul>
-
-<h3 id="stats">Stats</h3>
-<ul>
-  <li>82 commits</li>
-  <li>29 closed tickets &amp; PRs</li>
-  <li>Days since last release: 35</li>
-</ul>
 
 
 
