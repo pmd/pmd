@@ -1445,6 +1445,11 @@ it via the environment variable <code class="language-plaintext highlighter-roug
 
 <p>Note: Support for Java 15 preview language features have been removed. The version “15-preview” is no longer available.</p>
 
+<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
+
+<p>This PMD release ships a new version of the pmd-designer.
+For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/6.37.0">PMD Designer Changelog</a>.</p>
+
 <h4 id="new-rules">New rules</h4>
 
 <p>This release ships with 3 new Java rules.</p>
@@ -1539,6 +1544,7 @@ new rule <code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</c
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1603">#1603</a>: [core] Language version comparison</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2133">#2133</a>: [xml] Allow to check Salesforce XML Metadata using XPath rules</li>
       <li><a href="https://github.com/pmd/pmd/issues/3377">#3377</a>: [core] NPE when specifying report file in current directory in PMD CLI</li>
       <li><a href="https://github.com/pmd/pmd/issues/3387">#3387</a>: [core] CPD should avoid unnecessary copies when running with –skip-lexical-errors</li>
     </ul>
@@ -1563,6 +1569,20 @@ new rule <code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</c
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<h4 id="pmd-cli">PMD CLI</h4>
+
+<ul>
+  <li>
+    <p>PMD has a new CLI option <code class="language-plaintext highlighter-rouge">-force-language</code>. With that a language can be forced to be used for all input files,
+irrespective of filenames. When using this option, the automatic language selection by extension is disabled
+and all files are tried to be parsed with the given language. Parsing errors are ignored and unparsable files
+are skipped.</p>
+
+    <p>This option allows to use the xml language for files, that don’t use xml as extension.
+See also the examples on <a href="pmd_userdocs_cli_reference.html#analyze-other-xml-formats">PMD CLI reference</a>.</p>
+  </li>
+</ul>
 
 <h4 id="experimental-apis">Experimental APIs</h4>
 
@@ -1594,6 +1614,7 @@ It will probably be moved away with PMD 7.</li>
   <li><a href="https://github.com/pmd/pmd/pull/3373">#3373</a>: [apex] Add ApexCRUDViolation support for database class, inline no-arg object construction DML and inline list initialization DML - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3385">#3385</a>: [core] CPD: Optimize –skip-lexical-errors option - <a href="https://github.com/woongsikchoi">Woongsik Choi</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3388">#3388</a>: [doc] Add Code Inspector in the list of tools - <a href="https://github.com/juli1">Julien Delange</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3417">#3417</a>: [core] Support forcing a specific language from the command-line - <a href="https://github.com/aidan-harding">Aidan Harding</a></li>
 </ul>
 
 
@@ -1612,7 +1633,7 @@ It will probably be moved away with PMD 7.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 30, 2021 <br />
+ Site last generated: Jul 31, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -1687,6 +1687,35 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 
 <tr>
+    <td><a style="pointer-events: none; cursor: default;" name="force-language"><code>-force-language&nbsp;&lt;lang&gt;</code></a></td>
+    <td>Force a language to be used for all input files, irrespective of
+                            filenames. When using this option, the automatic language selection
+                            by extension is disabled and all files are tried to be parsed with
+                            the given language <code>&lt;lang&gt;</code>. Parsing errors are ignored and unparsable files
+                            are skipped.
+                            
+                            <p>This option allows to use the xml language for files, that don't
+                            use xml as extension. See <a href="#analyze-other-xml-formats">example</a> below.</p></td>
+    <td><code></code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
     <td><a style="pointer-events: none; cursor: default;" name="ignorelist"><code>-ignorelist&nbsp;&lt;filepath&gt;</code></a></td>
     <td>Path to file containing a comma delimited list of files to ignore.
                             This option can be combined with <code>-dir</code> and <code>-filelist</code>.
@@ -2071,6 +2100,26 @@ and <code class="language-plaintext highlighter-rouge">-version</code> parameter
 <p>PMD comes with many different renderers.
 All formats are described at <a href="pmd_userdocs_report_formats.html">PMD Report formats</a></p>
 
+<h2 id="examples">Examples</h2>
+
+<h3 id="analyze-other-xml-formats">Analyze other xml formats</h3>
+
+<p>If your xml language doesn’t use <code class="language-plaintext highlighter-rouge">xml</code> as file extension, you can still use PMD with <code class="language-plaintext highlighter-rouge">-force-language</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh pmd -d /home/me/src/xml-file.ext -f text -R ruleset.xml -force-language xml
+</code></pre></div></div>
+
+<p>You can also specify a directory instead of a single file. Then all files are analyzed. In that case,
+parse errors are suppressed in order to reduce irrelevant noise:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh pmd -d /home/me/src/ -f text -R ruleset.xml -force-language xml
+</code></pre></div></div>
+
+<p>Alternatively, you can create a filelist to only analyze files with a given extension:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ find /home/me/src -name "*.ext" &gt; /home/me/src/filelist.txt
+$ ./run.sh pmd -filelist /home/me/src/filelist.txt -f text -R ruleset.xml -force-language xml
+</code></pre></div></div>
 
 
     <div class="tags">
@@ -2095,7 +2144,7 @@ All formats are described at <a href="pmd_userdocs_report_formats.html">PMD Repo
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 30, 2021 <br />
+ Site last generated: Jul 31, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
