@@ -158,5 +158,10 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   [#3388](https://github.com/pmd/pmd/pull/3388): \[doc] Add Code Inspector in the list of tools - [Julien Delange](https://github.com/juli1)
 *   [#3417](https://github.com/pmd/pmd/pull/3417): \[core] Support forcing a specific language from the command-line - [Aidan Harding](https://github.com/aidan-harding)
 
+### Stats
+* 82 commits
+* 29 closed tickets & PRs
+* Days since last release: 35
+
 {% endtocmaker %}
 

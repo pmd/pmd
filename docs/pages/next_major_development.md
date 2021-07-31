@@ -125,6 +125,34 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.37.0
+
+##### PMD CLI
+
+*   PMD has a new CLI option `-force-language`. With that a language can be forced to be used for all input files,
+    irrespective of filenames. When using this option, the automatic language selection by extension is disabled
+    and all files are tried to be parsed with the given language. Parsing errors are ignored and unparsable files
+    are skipped.
+    
+    This option allows to use the xml language for files, that don't use xml as extension.
+    See also the examples on [PMD CLI reference](pmd_userdocs_cli_reference.html#analyze-other-xml-formats).
+
+##### Experimental APIs
+
+*   The AST types and APIs around Sealed Classes are not experimental anymore:
+    *   {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#isSealed() %},
+        {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#isNonSealed() %},
+        {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#getPermittedSubclasses() %}
+    *   {% jdoc java::lang.java.ast.ASTPermitsList %}
+
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   The inner class {% jdoc !!core::cpd.TokenEntry.State %} is considered to be internal API.
+    It will probably be moved away with PMD 7.
+
 #### 6.36.0
 
 No changes.
@@ -1209,3 +1237,30 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
 *   The Java rule {% rule "java/errorprone/CloneThrowsCloneNotSupportedException" %} has been deprecated without
     replacement.
 
+*   The following Java rules are deprecated and removed from the quickstart ruleset,
+    as the new rule {% rule java/bestpractices/SimplifiableTestAssertion %} merges
+    their functionality:
+    * {% rule java/bestpractices/UseAssertEqualsInsteadOfAssertTrue %}
+    * {% rule java/bestpractices/UseAssertNullInsteadOfAssertTrue %}
+    * {% rule java/bestpractices/UseAssertSameInsteadOfAssertTrue %}
+    * {% rule java/bestpractices/UseAssertTrueInsteadOfAssertEquals %}
+    * {% rule java/design/SimplifyBooleanAssertion %}
+
+*   The Java rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
+    the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
+    supersedes it.
+
+*   The following Java rules are deprecated and removed from the quickstart ruleset,
+    as the new rule {% rule java/bestpractices/PrimitiveWrapperInstantiation %} merges
+    their functionality:
+    * {% rule java/performance/BooleanInstantiation %}
+    * {% rule java/performance/ByteInstantiation %}
+    * {% rule java/performance/IntegerInstantiation %}
+    * {% rule java/performance/LongInstantiation %}
+    * {% rule java/performance/ShortInstantiation %}
+
+*   The Java rule {% rule java/performance/UnnecessaryWrapperObjectCreation %} is deprecated
+    with no planned replacement before PMD 7. In it's current state, the rule is not useful
+    as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
+    in the same expression. In PMD 7 this and more cases will be covered by a
+    new rule `UnnecessaryBoxing`.
