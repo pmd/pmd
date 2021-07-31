@@ -107,7 +107,7 @@
 
         <pmd.build-tools.version>15</pmd.build-tools.version>
 
-        <pmd-designer.version>6.27.0</pmd-designer.version>
+        <pmd-designer.version>6.37.0</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>

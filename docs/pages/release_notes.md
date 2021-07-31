@@ -33,6 +33,11 @@ it via the environment variable `PMD_JAVA_OPTS` and select the new language vers
 
 Note: Support for Java 15 preview language features have been removed. The version "15-preview" is no longer available.
 
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/6.37.0).
+
 #### New rules
 
 This release ships with 3 new Java rules.
@@ -110,6 +115,7 @@ This release ships with 3 new Java rules.
     *   [#3329](https://github.com/pmd/pmd/issues/3329): \[apex] ApexCRUDViolation doesn't report SOQL for loops
 *   core
     *   [#1603](https://github.com/pmd/pmd/issues/1603): \[core] Language version comparison
+    *   [#2133](https://github.com/pmd/pmd/issues/2133): \[xml] Allow to check Salesforce XML Metadata using XPath rules
     *   [#3377](https://github.com/pmd/pmd/issues/3377): \[core] NPE when specifying report file in current directory in PMD CLI
     *   [#3387](https://github.com/pmd/pmd/issues/3387): \[core] CPD should avoid unnecessary copies when running with --skip-lexical-errors
 *   java-bestpractices
@@ -122,6 +128,16 @@ This release ships with 3 new Java rules.
     *   [#3420](https://github.com/pmd/pmd/issues/3420): \[java] NPE in `InefficientStringBuffering` with Records
 
 ### API Changes
+
+#### PMD CLI
+
+*   PMD has a new CLI option `-force-language`. With that a language can be forced to be used for all input files,
+    irrespective of filenames. When using this option, the automatic language selection by extension is disabled
+    and all files are tried to be parsed with the given language. Parsing errors are ignored and unparsable files
+    are skipped.
+    
+    This option allows to use the xml language for files, that don't use xml as extension.
+    See also the examples on [PMD CLI reference](pmd_userdocs_cli_reference.html#analyze-other-xml-formats).
 
 #### Experimental APIs
 
@@ -145,6 +161,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   [#3373](https://github.com/pmd/pmd/pull/3373): \[apex] Add ApexCRUDViolation support for database class, inline no-arg object construction DML and inline list initialization DML - [Jonathan Wiesel](https://github.com/jonathanwiesel)
 *   [#3385](https://github.com/pmd/pmd/pull/3385): \[core] CPD: Optimize --skip-lexical-errors option - [Woongsik Choi](https://github.com/woongsikchoi)
 *   [#3388](https://github.com/pmd/pmd/pull/3388): \[doc] Add Code Inspector in the list of tools - [Julien Delange](https://github.com/juli1)
+*   [#3417](https://github.com/pmd/pmd/pull/3417): \[core] Support forcing a specific language from the command-line - [Aidan Harding](https://github.com/aidan-harding)
 
 {% endtocmaker %}
 
