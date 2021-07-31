@@ -28,6 +28,11 @@ it via the environment variable `PMD_JAVA_OPTS` and select the new language vers
 
 Note: Support for Java 15 preview language features have been removed. The version "15-preview" is no longer available.
 
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/6.37.0).
+
 #### New rules
 
 This release ships with 3 new Java rules.
