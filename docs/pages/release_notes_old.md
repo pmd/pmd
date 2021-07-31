@@ -5,6 +5,179 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
+## 28-August-2021 - 6.38.0-SNAPSHOT
+
+The PMD team is pleased to announce PMD 6.38.0-SNAPSHOT.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [Java 17 Support](#java-17-support)
+    * [Updated PMD Designer](#updated-pmd-designer)
+    * [New rules](#new-rules)
+    * [Renamed rules](#renamed-rules)
+    * [Deprecated rules](#deprecated-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [PMD CLI](#pmd-cli)
+    * [Experimental APIs](#experimental-apis)
+    * [Internal API](#internal-api)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### Java 17 Support
+
+This release of PMD brings support for Java 17. PMD supports [JEP 409: Sealed Classes](https://openjdk.java.net/jeps/409)
+which has been promoted to be a standard language feature of Java 17.
+
+PMD also supports [JEP 406: Pattern Matching for switch (Preview)](https://openjdk.java.net/jeps/406) as a preview
+language feature. In order to analyze a project with PMD that uses these language features, you'll need to enable
+it via the environment variable `PMD_JAVA_OPTS` and select the new language version `17-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    ./run.sh pmd -language java -version 17-preview ...
+
+Note: Support for Java 15 preview language features have been removed. The version "15-preview" is no longer available.
+
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/6.37.0).
+
+#### New rules
+
+This release ships with 3 new Java rules.
+
+*   [`PrimitiveWrapperInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#primitivewrapperinstantiation) reports usages of primitive wrapper
+    constructors. They are deprecated since Java 9 and should not be used.
+
+```xml
+    <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
+
+*   [`SimplifiableTestAssertion`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#simplifiabletestassertion) suggests rewriting
+    some test assertions to be more readable.
+
+```xml
+    <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
+
+*   [`ReturnEmptyCollectionRatherThanNull`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_errorprone.html#returnemptycollectionratherthannull) suggests returning empty collections / arrays
+    instead of null.
+
+```xml
+    <rule ref="category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
+
+#### Renamed rules
+
+*   The Java rule [`MissingBreakInSwitch`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_errorprone.html#missingbreakinswitch) has been renamed to
+    [`ImplicitSwitchFallThrough`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_errorprone.html#implicitswitchfallthrough) (category error prone) to better reflect the rule's
+    purpose: The rule finds implicit fall-through cases in switch statements, which are most
+    likely unexpected. The old rule name described only one way how to avoid a fall-through,
+    namely using `break` but `continue`, `throw` and `return` avoid a fall-through
+    as well. This enables us to improve this rule in the future.
+
+#### Deprecated rules
+
+*   The following Java rules are deprecated and removed from the quickstart ruleset,
+    as the new rule [`SimplifiableTestAssertion`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#simplifiabletestassertion) merges
+    their functionality:
+    * [`UseAssertEqualsInsteadOfAssertTrue`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue)
+    * [`UseAssertNullInsteadOfAssertTrue`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue)
+    * [`UseAssertSameInsteadOfAssertTrue`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue)
+    * [`UseAssertTrueInsteadOfAssertEquals`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#useasserttrueinsteadofassertequals)
+    * [`SimplifyBooleanAssertion`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_design.html#simplifybooleanassertion)
+
+*   The Java rule [`ReturnEmptyArrayRatherThanNull`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_errorprone.html#returnemptyarrayratherthannull) is deprecated and removed from
+    the quickstart ruleset, as the new rule [`ReturnEmptyCollectionRatherThanNull`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_errorprone.html#returnemptycollectionratherthannull)
+    supersedes it.
+
+*   The following Java rules are deprecated and removed from the quickstart ruleset,
+    as the new rule [`PrimitiveWrapperInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#primitivewrapperinstantiation) merges
+    their functionality:
+    * [`BooleanInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_performance.html#booleaninstantiation)
+    * [`ByteInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_performance.html#byteinstantiation)
+    * [`IntegerInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_performance.html#integerinstantiation)
+    * [`LongInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_performance.html#longinstantiation)
+    * [`ShortInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_performance.html#shortinstantiation)
+
+*   The Java rule [`UnnecessaryWrapperObjectCreation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation) is deprecated
+    with no planned replacement before PMD 7. In it's current state, the rule is not useful
+    as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
+    in the same expression. In PMD 7 this and more cases will be covered by a
+    new rule `UnnecessaryBoxing`.
+
+### Fixed Issues
+
+*   apex
+    *   [#3201](https://github.com/pmd/pmd/issues/3201): \[apex] ApexCRUDViolation doesn't report Database class DMLs, inline no-arg object instantiations and inline list initialization
+    *   [#3329](https://github.com/pmd/pmd/issues/3329): \[apex] ApexCRUDViolation doesn't report SOQL for loops
+*   core
+    *   [#1603](https://github.com/pmd/pmd/issues/1603): \[core] Language version comparison
+    *   [#2133](https://github.com/pmd/pmd/issues/2133): \[xml] Allow to check Salesforce XML Metadata using XPath rules
+    *   [#3377](https://github.com/pmd/pmd/issues/3377): \[core] NPE when specifying report file in current directory in PMD CLI
+    *   [#3387](https://github.com/pmd/pmd/issues/3387): \[core] CPD should avoid unnecessary copies when running with --skip-lexical-errors
+*   java-bestpractices
+    *   [#2908](https://github.com/pmd/pmd/issues/2908): \[java] Merge Junit assertion simplification rules
+    *   [#3235](https://github.com/pmd/pmd/issues/3235): \[java] UseTryWithResources false positive when closeable is provided as a method argument or class field
+*   java-errorprone
+    *   [#3361](https://github.com/pmd/pmd/issues/3361): \[java] Rename rule MissingBreakInSwitch to ImplicitSwitchFallThrough
+    *   [#3382](https://github.com/pmd/pmd/pull/3382): \[java] New rule ReturnEmptyCollectionRatherThanNull
+*   java-performance
+    *   [#3420](https://github.com/pmd/pmd/issues/3420): \[java] NPE in `InefficientStringBuffering` with Records
+
+### API Changes
+
+#### PMD CLI
+
+*   PMD has a new CLI option `-force-language`. With that a language can be forced to be used for all input files,
+    irrespective of filenames. When using this option, the automatic language selection by extension is disabled
+    and all files are tried to be parsed with the given language. Parsing errors are ignored and unparsable files
+    are skipped.
+    
+    This option allows to use the xml language for files, that don't use xml as extension.
+    See also the examples on [PMD CLI reference](pmd_userdocs_cli_reference.html#analyze-other-xml-formats).
+
+#### Experimental APIs
+
+*   The AST types and APIs around Sealed Classes are not experimental anymore:
+    *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.38.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isSealed()"><code>ASTClassOrInterfaceDeclaration#isSealed</code></a>,
+        <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.38.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isNonSealed()"><code>ASTClassOrInterfaceDeclaration#isNonSealed</code></a>,
+        <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.38.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getPermittedSubclasses()"><code>ASTClassOrInterfaceDeclaration#getPermittedSubclasses</code></a>
+    *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.38.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPermitsList.html#"><code>ASTPermitsList</code></a>
+
+#### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   The inner class <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.38.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenEntry.State.html#"><code>net.sourceforge.pmd.cpd.TokenEntry.State</code></a> is considered to be internal API.
+    It will probably be moved away with PMD 7.
+
+### External Contributions
+
+*   [#3367](https://github.com/pmd/pmd/pull/3367): \[apex] Check SOQL CRUD on for loops - [Jonathan Wiesel](https://github.com/jonathanwiesel)
+*   [#3373](https://github.com/pmd/pmd/pull/3373): \[apex] Add ApexCRUDViolation support for database class, inline no-arg object construction DML and inline list initialization DML - [Jonathan Wiesel](https://github.com/jonathanwiesel)
+*   [#3385](https://github.com/pmd/pmd/pull/3385): \[core] CPD: Optimize --skip-lexical-errors option - [Woongsik Choi](https://github.com/woongsikchoi)
+*   [#3388](https://github.com/pmd/pmd/pull/3388): \[doc] Add Code Inspector in the list of tools - [Julien Delange](https://github.com/juli1)
+*   [#3417](https://github.com/pmd/pmd/pull/3417): \[core] Support forcing a specific language from the command-line - [Aidan Harding](https://github.com/aidan-harding)
+
+### Stats
+* 82 commits
+* 29 closed tickets & PRs
+* Days since last release: 35
+
 ## 26-June-2021 - 6.36.0
 
 The PMD team is pleased to announce PMD 6.36.0.
