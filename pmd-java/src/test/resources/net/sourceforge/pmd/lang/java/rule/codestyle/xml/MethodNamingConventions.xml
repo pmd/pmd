@@ -207,8 +207,8 @@ public class TournamentTest {
     <test-code>
         <description>JUnit 5 test detection</description>
         <rule-property name="junit5TestPattern">[a-z][A-Za-z]*Test</rule-property>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>5,9</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,10,14</expected-linenumbers>
         <expected-messages>
             <message>The JUnit 5 test method name 'testGetBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
             <message>The JUnit 5 test method name 'getBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
