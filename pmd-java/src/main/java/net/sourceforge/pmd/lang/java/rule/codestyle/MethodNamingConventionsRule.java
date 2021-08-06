@@ -49,7 +49,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
     }
 
     private boolean isJunit5Test(ASTMethodDeclaration node) {
-        return node.isAnnotationPresent("org.junit.jupiter.api.Test");
+        return node.isAnnotationPresent("org.junit.jupiter.api.Test") || node.isAnnotationPresent("org.junit.jupiter.params.ParameterizedTest");
     }
 
     private boolean isJunit4Test(ASTMethodDeclaration node) {
