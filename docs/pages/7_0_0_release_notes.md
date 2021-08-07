@@ -114,20 +114,25 @@ The following previously deprecated rules have been finally removed:
 *   AvoidFinalLocalVariable (java-codestyle)
 *   AvoidPrefixingMethodParameters (java-codestyle)
 *   AvoidUsingShortType (java-performance)
+*   BadComparison (java-errorprone) -> use {% rule "java/errorprone/ComparisonWithNaN" %}
 *   BooleanInstantiation (java-performance)
 *   ByteInstantiation (java-performance)
+*   CloneThrowsCloneNotSupportedException (java-errorprone) -> not replaced
 *   DataflowAnomalyAnalysis (java-errorprone)
 *   DefaultPackage (java-codestyle)
 *   ForLoopsMustUseBraces (java-codestyle)
 *   IfElseStmtsMustUseBraces (java-codestyle)
 *   IfStmtsMustUseBraces (java-codestyle)
 *   IntegerInstantiation (java-performance)
+*   InvalidSlf4jMessageFormat (java-errorprone) ->  use {% rule "java/errorprone/InvalidLogMessageFormat" %}
 *   LoggerIsNotStaticFinal (java-errorprone)
 *   LongInstantiation (java-performance)
 *   MIsLeadingVariableName (java-codestyle)
+*   MissingBreakInSwitch (java-errorprone) ->  use {% rule "java/errorprone/ImplicitSwitchFallThrough" %}
 *   ModifiedCyclomaticComplexity (java-design)
 *   PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices)
 *   PositionLiteralsFirstInComparisons (java-bestpractices)
+*   ReturnEmptyArrayRatherThanNull (java-errorprone) ->  use {% rule "java/errorprone/ReturnEmptyCollectionRatherThanNull" %}
 *   ShortInstantiation (java-performance)
 *   SimplifyBooleanAssertion (java-design)
 *   SimplifyStartsWith (java-performance)
