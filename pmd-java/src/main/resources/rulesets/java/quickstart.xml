@@ -295,7 +295,6 @@
     <!-- <rule ref="category/java/performance.xml/AvoidCalendarDateCreation" /> -->
     <!-- <rule ref="category/java/performance.xml/AvoidFileStream" /> -->
     <!-- <rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops" /> -->
-    <!-- <rule ref="category/java/performance.xml/AvoidUsingShortType"/> -->
     <rule ref="category/java/performance.xml/BigIntegerInstantiation"/>
     <!-- <rule ref="category/java/performance.xml/ConsecutiveAppendsShouldReuse" /> -->
     <!-- <rule ref="category/java/performance.xml/ConsecutiveLiteralAppends" /> -->
@@ -304,7 +303,6 @@
     <!-- <rule ref="category/java/performance.xml/InsufficientStringBufferDeclaration" /> -->
     <rule ref="category/java/performance.xml/OptimizableToArrayCall"/>
     <!--<rule ref="category/java/performance.xml/RedundantFieldInitializer"/>-->
-    <!-- <rule ref="category/java/performance.xml/SimplifyStartsWith" /> -->
     <!-- <rule ref="category/java/performance.xml/StringInstantiation" /> -->
     <!-- <rule ref="category/java/performance.xml/StringToString" /> -->
     <!--<rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement"/>-->
