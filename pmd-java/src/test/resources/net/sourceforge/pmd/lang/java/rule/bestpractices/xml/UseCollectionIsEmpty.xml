@@ -463,7 +463,6 @@ public record CollectionRecord(List<String> theList) {
     }
 }
         ]]></code>
-        <source-type>java 15-preview</source-type>
     </test-code>
 
     <test-code>

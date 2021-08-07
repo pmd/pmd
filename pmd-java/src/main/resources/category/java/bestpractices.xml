@@ -802,7 +802,6 @@ public class MyTest {
           since="6.35.0"
           message="JUnit 5 tests should be package-private."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate">
         <description><![CDATA[
 Reports JUnit 5 test classes and methods that are not package-private.
@@ -1197,6 +1196,36 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="PrimitiveWrapperInstantiation"
+          language="java"
+          since="6.37.0"
+          message="Do not use `new {0}(...)`, prefer `{0}.valueOf(...)`"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.PrimitiveWrapperInstantiationRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#primitivewrapperinstantiation">
+        <description>
+            Reports usages of primitive wrapper constructors. They are deprecated
+            since Java 9 and should not be used. Even before Java 9, they can
+            be replaced with usage of the corresponding static `valueOf` factory method
+            (which may be automatically inserted by the compiler since Java 1.5).
+            This has the advantage that it may reuse common instances instead of creating
+            a new instance each time.
+
+            Note that for `Boolean`, the named constants `Boolean.TRUE` and `Boolean.FALSE`
+            are preferred instead of `Boolean.valueOf`.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+            public class Foo {
+                private Integer ZERO = new Integer(0);      // violation
+                private Integer ZERO1 = Integer.valueOf(0); // better
+                private Integer ZERO1 = 0;                  // even better
+            }
+            ]]>
+        </example>
+    </rule>
+
+
     <rule name="ReplaceEnumerationWithIterator"
           language="java"
           since="3.4"
@@ -1284,6 +1313,49 @@ public class Foo {
     }
 }
 ]]>
+        </example>
+    </rule>
+
+    <rule name="SimplifiableTestAssertion"
+          language="java"
+          since="6.37.0"
+          message="Assertion may be simplified using {0}"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.SimplifiableTestAssertionRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#simplifiabletestassertion">
+        <description>
+            Reports test assertions that may be simplified using a more specific
+            assertion method. This enables better error messages, and makes the
+            assertions more readable.
+
+            The rule only applies within test classes for the moment. It replaces
+            the deprecated rules {% rule UseAssertEqualsInsteadOfAssertTrue %},
+            {% rule UseAssertNullInsteadOfAssertTrue %}, {% rule UseAssertSameInsteadOfAssertTrue %},
+            {% rule UseAssertTrueInsteadOfAssertEquals %}, and {% rule java/design/SimplifyBooleanAssertion %}.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+class SomeTestClass {
+    Object a,b;
+    @Test
+    void testMethod() {
+        assertTrue(a.equals(b)); // could be assertEquals(a, b);
+        assertTrue(!a.equals(b)); // could be assertNotEquals(a, b);
+
+        assertTrue(!something); // could be assertFalse(something);
+        assertFalse(!something); // could be assertTrue(something);
+
+        assertTrue(a == b); // could be assertSame(a, b);
+        assertTrue(a != b); // could be assertNotSame(a, b);
+
+        assertTrue(a == null); // could be assertNull(a);
+        assertTrue(a != null); // could be assertNotNull(a);
+    }
+}
+            ]]>
         </example>
     </rule>
 
@@ -1580,9 +1652,12 @@ public class Something {
           since="3.1"
           message="Use assertEquals(x, y) instead of assertTrue(x.equals(y))"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue">
         <description>
 This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.
+
+Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1615,10 +1690,13 @@ public class FooTest extends TestCase {
           since="3.5"
           message="Use assertNull(x) instead of assertTrue(x==null), or assertNotNull(x) vs assertFalse(x==null)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue">
         <description>
 This rule detects JUnit assertions in object references equality. These assertions should be made by
 more specific methods, like assertNull, assertNotNull.
+
+Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1655,10 +1733,13 @@ public class FooTest extends TestCase {
           since="3.1"
           message="Use assertSame(x, y) instead of assertTrue(x==y), or assertNotSame(x,y) vs assertFalse(x==y)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue">
         <description>
 This rule detects JUnit assertions in object references equality. These assertions should be made
 by more specific methods, like assertSame, assertNotSame.
+
+Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1693,9 +1774,12 @@ public class FooTest extends TestCase {
           since="5.0"
           message="Use assertTrue(x)/assertFalse(x) instead of assertEquals(true, x)/assertEquals(false, x) or assertEquals(Boolean.TRUE, x)/assertEquals(Boolean.FALSE, x)."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useasserttrueinsteadofassertequals">
         <description>
 When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.
+
+Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1816,7 +1900,7 @@ public class UseStandardCharsets {
           minimumLanguageVersion="1.7"
           since="6.12.0"
           message="Consider using a try-with-resources statement instead of explicitly closing the resource"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UseTryWithResourcesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usetrywithresources">
         <description>
 Java 7 introduced the try-with-resources statement. This statement ensures that each resource is closed at the end
@@ -1826,21 +1910,6 @@ the try block was suppressed. With the `try`-with-resources statement, the excep
 preserved.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="closeMethods" type="List[String]" delimiter="," description="Method names in finally block, which trigger this rule" value="close,closeQuietly"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//TryStatement[FinallyClause//ExpressionStatement/MethodCall[@MethodName = $closeMethods][
-    (:   vvvvvvvvvvvvvvvvvvvvvvvvv This is to rule out static method call :)
-    *[1][not(self::TypeExpression) and pmd-java:typeIs('java.lang.AutoCloseable')]
-    or
-    ArgumentList/*[pmd-java:typeIs('java.lang.AutoCloseable')]
-]]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public class TryWithResources {
