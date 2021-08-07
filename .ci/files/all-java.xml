@@ -42,9 +42,11 @@
     <rule ref="category/java/bestpractices.xml/MissingOverride"/>
     <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine"/>
     <rule ref="category/java/bestpractices.xml/PreserveStackTrace"/>
+    <!-- <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation"/> -->
     <rule ref="category/java/bestpractices.xml/ReplaceEnumerationWithIterator"/>
     <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap"/>
     <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList"/>
+    <!-- <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion" /> -->
     <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault"/>
     <rule ref="category/java/bestpractices.xml/SystemPrintln"/>
     <rule ref="category/java/bestpractices.xml/UnusedAssignment"/>
@@ -127,7 +129,7 @@
     <!-- <rule ref="category/java/design.xml/AvoidThrowingNewInstanceOfSameException"/> -->
     <rule ref="category/java/design.xml/AvoidThrowingNullPointerException"/>
     <!-- <rule ref="category/java/design.xml/AvoidThrowingRawExceptionTypes"/> -->
-    <!-- <rule ref="category/java/design.xml/AvoidUncheckedExceptionsInSignatures"/> -->
+    <rule ref="category/java/design.xml/AvoidUncheckedExceptionsInSignatures"/>
     <!-- <rule ref="category/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal"/> -->
     <rule ref="category/java/design.xml/CognitiveComplexity" />
     <rule ref="category/java/design.xml/CollapsibleIfStatements"/>
@@ -190,7 +192,7 @@
     <!-- <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidLosingExceptionInformation"/> -->
     <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators"/>
-    <!-- <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/> -->
+    <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/>
     <!-- <rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize"/> -->
     <rule ref="category/java/errorprone.xml/BrokenNullCheck"/>
     <!-- <rule ref="category/java/errorprone.xml/CallSuperFirst"/> -->
@@ -288,10 +290,10 @@
 
     <rule ref="category/java/performance.xml/AddEmptyString"/>
     <rule ref="category/java/performance.xml/AppendCharacterWithChar"/>
-    <!-- <rule ref="category/java/performance.xml/AvoidArrayLoops"/> -->
-    <!-- <rule ref="category/java/performance.xml/AvoidCalendarDateCreation"/> -->
+    <rule ref="category/java/performance.xml/AvoidArrayLoops"/>
+    <rule ref="category/java/performance.xml/AvoidCalendarDateCreation"/>
     <rule ref="category/java/performance.xml/AvoidFileStream"/>
-    <!-- <rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops"/> -->
+    <rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops"/>
     <rule ref="category/java/performance.xml/AvoidUsingShortType"/>
     <rule ref="category/java/performance.xml/BigIntegerInstantiation"/>
     <!-- <rule ref="category/java/performance.xml/BooleanInstantiation"/> -->

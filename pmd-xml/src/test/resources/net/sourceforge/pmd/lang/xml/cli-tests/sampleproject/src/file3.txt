@@ -1,0 +1,3 @@
+BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+
+Other file that is not a xml file.

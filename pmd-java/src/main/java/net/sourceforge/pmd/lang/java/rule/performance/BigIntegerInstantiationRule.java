@@ -31,7 +31,6 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
         super(ASTConstructorCall.class);
     }
 
-
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
         LanguageVersion languageVersion = node.getAstInfo().getLanguageVersion();

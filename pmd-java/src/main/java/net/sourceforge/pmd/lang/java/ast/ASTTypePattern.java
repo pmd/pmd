@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
  * A type pattern (JDK16). This can be found on
  * the right-hand side of an {@link ASTInfixExpression InstanceOfExpression},
@@ -18,6 +20,8 @@ package net.sourceforge.pmd.lang.java.ast;
  * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
 */
 public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern, AccessNode {
+
+    private int parenDepth;
 
     ASTTypePattern(int id) {
         super(id);
@@ -38,5 +42,15 @@ public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern
     /** Returns the declared variable. */
     public ASTVariableDeclaratorId getVarId() {
         return getFirstChildOfType(ASTVariableDeclaratorId.class);
+    }
+
+    void bumpParenDepth() {
+        parenDepth++;
+    }
+
+    @Override
+    @Experimental
+    public int getParenthesisDepth() {
+        return parenDepth;
     }
 }
