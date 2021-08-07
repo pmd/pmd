@@ -58,10 +58,18 @@ abstract class CpdTextComparisonTest(
     }
 
     @JvmOverloads
-    fun expectTokenMgrError(source: String, properties: Properties = defaultProperties()): TokenMgrError =
-            shouldThrow {
-                newTokenizer(properties).tokenize(sourceCodeOf(source), Tokens())
-            }
+    fun expectTokenMgrError(
+        source: String,
+        fileName: String = SourceCode.StringCodeLoader.DEFAULT_NAME,
+        properties: Properties = defaultProperties()
+    ): TokenMgrError =
+        expectTokenMgrError(FileData(fileName, source), properties)
+
+    @JvmOverloads
+    fun expectTokenMgrError(fileData: FileData, properties: Properties = defaultProperties()): TokenMgrError =
+        shouldThrow {
+            newTokenizer(properties).tokenize(sourceCodeOf(fileData), Tokens())
+        }
 
 
     private fun StringBuilder.format(tokens: Tokens) {
@@ -139,11 +147,13 @@ abstract class CpdTextComparisonTest(
 
 
     fun sourceCodeOf(str: String): SourceCode = SourceCode(SourceCode.StringCodeLoader(str))
+    fun sourceCodeOf(fileData: FileData): SourceCode =
+        SourceCode(SourceCode.StringCodeLoader(fileData.fileText, fileData.fileName))
 
     fun tokenize(tokenizer: Tokenizer, str: String): Tokens =
-            Tokens().also {
-                tokenizer.tokenize(sourceCodeOf(str), it)
-            }
+        Tokens().also {
+            tokenizer.tokenize(sourceCodeOf(str), it)
+        }
 
     private companion object {
         const val Indent = "    "
