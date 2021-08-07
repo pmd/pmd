@@ -129,6 +129,7 @@ The following previously deprecated rules have been finally removed:
 *   PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices)
 *   PositionLiteralsFirstInComparisons (java-bestpractices)
 *   ShortInstantiation (java-performance)
+*   SimplifyBooleanAssertion (java-design)
 *   SimplifyStartsWith (java-performance)
 *   StdCyclomaticComplexity (java-design)
 *   SuspiciousConstantFieldName (java-codestyle)

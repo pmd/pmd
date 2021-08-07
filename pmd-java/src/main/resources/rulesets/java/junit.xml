@@ -22,5 +22,5 @@ These rules deal with different problems that can occur with JUnit tests.
     <rule ref="category/java/bestpractices.xml/UseAssertSameInsteadOfAssertTrue" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/UseAssertTrueInsteadOfAssertEquals" deprecated="true" />
 
-    <rule ref="category/java/design.xml/SimplifyBooleanAssertion" deprecated="true" />
+<!--    <rule ref="category/java/design.xml/SimplifyBooleanAssertion" deprecated="true" />-->
 </ruleset>
