@@ -110,43 +110,43 @@ conversions that may be made implicit.
 
 The following previously deprecated rules have been finally removed:
 
-*   AbstractNaming (java-codestyle)
-*   AvoidFinalLocalVariable (java-codestyle)
-*   AvoidPrefixingMethodParameters (java-codestyle)
-*   AvoidUsingShortType (java-performance)
+*   AbstractNaming (java-codestyle) -> use {% rule 'java/codestyle/ClassNamingConventions' %}
+*   AvoidFinalLocalVariable (java-codestyle) -> not replaced
+*   AvoidPrefixingMethodParameters (java-codestyle) -> use {% rule 'java/codestyle/FormalParameterNamingConventions' %}
+*   AvoidUsingShortType (java-performance) -> not replaced
 *   BadComparison (java-errorprone) -> use {% rule "java/errorprone/ComparisonWithNaN" %}
-*   BooleanInstantiation (java-performance)
-*   ByteInstantiation (java-performance)
+*   BooleanInstantiation (java-performance) -> use {% rule 'java/codestyle/UnnecessaryBoxing' %} and {% rule 'java/bestpractices/PrimitiveWrapperInstantiation' %}
+*   ByteInstantiation (java-performance) -> use {% rule 'java/codestyle/UnnecessaryBoxing' %} and {% rule 'java/bestpractices/PrimitiveWrapperInstantiation' %}
 *   CloneThrowsCloneNotSupportedException (java-errorprone) -> not replaced
-*   DataflowAnomalyAnalysis (java-errorprone)
-*   DefaultPackage (java-codestyle)
-*   ForLoopsMustUseBraces (java-codestyle)
-*   IfElseStmtsMustUseBraces (java-codestyle)
-*   IfStmtsMustUseBraces (java-codestyle)
-*   IntegerInstantiation (java-performance)
+*   DataflowAnomalyAnalysis (java-errorprone) -> not replaced
+*   DefaultPackage (java-codestyle) -> use {% rule 'java/codestyle/UnnecessaryBoxing' %} and {% rule 'java/bestpractices/PrimitiveWrapperInstantiation' %}
+*   ForLoopsMustUseBraces (java-codestyle) -> use {% rule 'java/codestyle/ControlStatementBraces' %}
+*   IfElseStmtsMustUseBraces (java-codestyle) -> use {% rule 'java/codestyle/ControlStatementBraces' %}
+*   IfStmtsMustUseBraces (java-codestyle) -> use {% rule 'java/codestyle/ControlStatementBraces' %}
+*   IntegerInstantiation (java-performance) -> use {% rule 'java/codestyle/UnnecessaryBoxing' %} and {% rule 'java/bestpractices/PrimitiveWrapperInstantiation' %}
 *   InvalidSlf4jMessageFormat (java-errorprone) ->  use {% rule "java/errorprone/InvalidLogMessageFormat" %}
 *   LoggerIsNotStaticFinal (java-errorprone)
-*   LongInstantiation (java-performance)
-*   MIsLeadingVariableName (java-codestyle)
+*   LongInstantiation (java-performance) -> use {% rule 'java/codestyle/UnnecessaryBoxing' %} and {% rule 'java/bestpractices/PrimitiveWrapperInstantiation' %}
+*   MIsLeadingVariableName (java-codestyle) -> use {% rule 'java/codestyle/FieldNamingConventions' %}
 *   MissingBreakInSwitch (java-errorprone) ->  use {% rule "java/errorprone/ImplicitSwitchFallThrough" %}
-*   ModifiedCyclomaticComplexity (java-design)
-*   PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices)
-*   PositionLiteralsFirstInComparisons (java-bestpractices)
+*   ModifiedCyclomaticComplexity (java-design) -> use {% rule 'java/design/CyclomaticComplexity' %}
+*   PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) -> use {% rule 'java/bestpractices/LiteralsFirstInComparisons' %}
+*   PositionLiteralsFirstInComparisons (java-bestpractices) -> use {% rule 'java/bestpractices/LiteralsFirstInComparisons' %}
 *   ReturnEmptyArrayRatherThanNull (java-errorprone) ->  use {% rule "java/errorprone/ReturnEmptyCollectionRatherThanNull" %}
-*   ShortInstantiation (java-performance)
-*   SimplifyBooleanAssertion (java-design)
-*   SimplifyStartsWith (java-performance)
-*   StdCyclomaticComplexity (java-design)
+*   ShortInstantiation (java-performance) -> use {% rule 'java/codestyle/UnnecessaryBoxing' %} and {% rule 'java/bestpractices/PrimitiveWrapperInstantiation' %}
+*   SimplifyBooleanAssertion (java-design) -> use {% rule 'java/bestpractices/SimplifiableTestAssertion' %}
+*   SimplifyStartsWith (java-performance) -> not replaced
+*   StdCyclomaticComplexity (java-design) -> use {% rule 'java/design/CyclomaticComplexity' %}
 *   SuspiciousConstantFieldName (java-codestyle)
-*   UnnecessaryWrapperObjectCreation (java-performance) -> note: the replacement is the new rule {% rule "java/codestyle/UnnecessaryBoxing" %}
+*   UnnecessaryWrapperObjectCreation (java-performance) -> use the new rule {% rule "java/codestyle/UnnecessaryBoxing" %}
 *   UnsynchronizedStaticDateFormatter (java-multithreading)
-*   UseAssertEqualsInsteadOfAssertTrue (java-bestpractices)
-*   UseAssertNullInsteadOfAssertEquals (java-bestpractices)
-*   UseAssertSameInsteadOfAssertEquals (java-bestpractices)
-*   UseAssertTrueInsteadOfAssertEquals (java-bestpractices)
+*   UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) -> use {% rule 'java/bestpractices/SimplifiableTestAssertion' %}
+*   UseAssertNullInsteadOfAssertEquals (java-bestpractices) -> use {% rule 'java/bestpractices/SimplifiableTestAssertion' %}
+*   UseAssertSameInsteadOfAssertEquals (java-bestpractices) -> use {% rule 'java/bestpractices/SimplifiableTestAssertion' %}
+*   UseAssertTrueInsteadOfAssertEquals (java-bestpractices) -> use {% rule 'java/bestpractices/SimplifiableTestAssertion' %}
 *   VariableNamingConventions (apex-codestyle)
-*   VariableNamingConventions (java-codestyle)
-*   WhileLoopsMustUseBraces (java-codestyle)
+*   VariableNamingConventions (java-codestyle) -> use {% rule 'java/codestyle/FieldNamingConventions' %} and such
+*   WhileLoopsMustUseBraces (java-codestyle) -> use {% rule 'java/codestyle/ControlStatementBraces' %}
 
 ### Fixed Issues
 
