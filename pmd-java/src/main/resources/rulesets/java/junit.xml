@@ -17,10 +17,10 @@ These rules deal with different problems that can occur with JUnit tests.
     <rule ref="category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert" deprecated="true" />
-    <rule ref="category/java/bestpractices.xml/UseAssertEqualsInsteadOfAssertTrue" deprecated="true" />
-    <rule ref="category/java/bestpractices.xml/UseAssertNullInsteadOfAssertTrue" deprecated="true" />
-    <rule ref="category/java/bestpractices.xml/UseAssertSameInsteadOfAssertTrue" deprecated="true" />
-    <rule ref="category/java/bestpractices.xml/UseAssertTrueInsteadOfAssertEquals" deprecated="true" />
+<!--    <rule ref="category/java/bestpractices.xml/UseAssertEqualsInsteadOfAssertTrue" deprecated="true" />-->
+<!--    <rule ref="category/java/bestpractices.xml/UseAssertNullInsteadOfAssertTrue" deprecated="true" />-->
+<!--    <rule ref="category/java/bestpractices.xml/UseAssertSameInsteadOfAssertTrue" deprecated="true" />-->
+<!--    <rule ref="category/java/bestpractices.xml/UseAssertTrueInsteadOfAssertEquals" deprecated="true" />-->
 
 <!--    <rule ref="category/java/design.xml/SimplifyBooleanAssertion" deprecated="true" />-->
 </ruleset>

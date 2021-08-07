@@ -135,6 +135,10 @@ The following previously deprecated rules have been finally removed:
 *   SuspiciousConstantFieldName (java-codestyle)
 *   UnnecessaryWrapperObjectCreation (java-performance) -> note: the replacement is the new rule {% rule "java/codestyle/UnnecessaryBoxing" %}
 *   UnsynchronizedStaticDateFormatter (java-multithreading)
+*   UseAssertEqualsInsteadOfAssertTrue (java-bestpractices)
+*   UseAssertNullInsteadOfAssertEquals (java-bestpractices)
+*   UseAssertSameInsteadOfAssertEquals (java-bestpractices)
+*   UseAssertTrueInsteadOfAssertEquals (java-bestpractices)
 *   VariableNamingConventions (apex-codestyle)
 *   VariableNamingConventions (java-codestyle)
 *   WhileLoopsMustUseBraces (java-codestyle)
