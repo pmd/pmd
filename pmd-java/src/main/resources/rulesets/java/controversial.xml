@@ -33,7 +33,7 @@ They are held here to allow people to include them as they see fit within their 
 
     <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine" deprecated="true" />
 
-    <rule ref="category/java/performance.xml/AvoidUsingShortType" deprecated="true" />
+<!--    <rule ref="category/java/performance.xml/AvoidUsingShortType" deprecated="true" />-->
 
     <rule ref="category/java/design.xml/UseObjectForClearerAPI" deprecated="true" />
 
