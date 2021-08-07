@@ -111,12 +111,16 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * so.
      */
     @JvmOverloads
-    open fun parse(sourceCode: String, version: String? = null): T {
+    open fun parse(
+        sourceCode: String,
+        version: String? = null,
+        fileName: String = "src/a/test-file-name.txt"
+    ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val handler = lversion.languageVersionHandler
         val options = params.parserOptions ?: handler.defaultParserOptions
         val parser = handler.getParser(options)
-        val rootNode = rootClass.cast(parser.parse(null, StringReader(sourceCode)))
+        val rootNode = rootClass.cast(parser.parse(fileName, StringReader(sourceCode)))
         if (params.doProcess) {
             handler.getQualifiedNameResolutionFacade(javaClass.classLoader).start(rootNode)
             handler.getSymbolFacade(javaClass.classLoader).start(rootNode)

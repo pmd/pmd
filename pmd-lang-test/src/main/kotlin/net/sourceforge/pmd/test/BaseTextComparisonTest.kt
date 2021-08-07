@@ -27,6 +27,8 @@ abstract class BaseTextComparisonTest {
     /** Extension that the unparsed source file is supposed to have. */
     protected abstract val extensionIncludingDot: String
 
+    data class FileData(val fileName:String, val fileText:String)
+
     /**
      * Executes the test. The test files are looked up using the [parser].
      * The reference test file must be named [fileBaseName] + [ExpectedExt].
@@ -37,7 +39,7 @@ abstract class BaseTextComparisonTest {
      */
     internal fun doTest(fileBaseName: String,
                         expectedSuffix: String = "",
-                        transformTextContent: (String) -> String) {
+                        transformTextContent: (FileData) -> String) {
         val expectedFile = findTestFile(resourceLoader, "${resourcePrefix}/$fileBaseName$expectedSuffix$ExpectedExt").toFile()
 
         val actual = transformTextContent(sourceText(fileBaseName))
@@ -52,7 +54,7 @@ abstract class BaseTextComparisonTest {
         assertEquals(expected.normalize(), actual.normalize(), "File comparison failed, see the reference: $expectedFile")
     }
 
-    protected fun sourceText(fileBaseName: String): String {
+    protected fun sourceText(fileBaseName: String): FileData {
         val sourceFile = findTestFile(resourceLoader, "${resourcePrefix}/$fileBaseName$extensionIncludingDot").toFile()
 
         assert(sourceFile.isFile) {
@@ -60,7 +62,7 @@ abstract class BaseTextComparisonTest {
         }
 
         val sourceText = sourceFile.readText(Charsets.UTF_8).normalize()
-        return sourceText
+        return FileData(fileName = sourceFile.toString(), fileText = sourceText)
     }
 
     // Outputting a path makes for better error messages

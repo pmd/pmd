@@ -42,7 +42,7 @@ public class ApexParser extends AbstractParser {
 
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
-        return apexParser.parse(source);
+        return apexParser.parse(source, fileName);
     }
 
     @Override

@@ -46,8 +46,8 @@ abstract class CpdTextComparisonTest(
      */
     @JvmOverloads
     fun doTest(fileBaseName: String, expectedSuffix: String = "", properties: Properties = defaultProperties()) {
-        super.doTest(fileBaseName, expectedSuffix) { sourceText ->
-            val sourceCode = SourceCode(SourceCode.StringCodeLoader(sourceText, "$fileBaseName$extensionIncludingDot"))
+        super.doTest(fileBaseName, expectedSuffix) { fileData ->
+            val sourceCode = SourceCode(SourceCode.StringCodeLoader(fileData.fileText, fileData.fileName))
             val tokens = Tokens().also {
                 val tokenizer = newTokenizer(properties)
                 tokenizer.tokenize(sourceCode, it)

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.nio.file.Paths;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
@@ -14,6 +16,9 @@ import apex.jorje.services.Version;
 @Deprecated
 @InternalApi
 public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T> implements RootNode {
+
+    private String fileName;
+
     @Deprecated
     @InternalApi
     public ApexRootNode(T node) {
@@ -49,6 +54,19 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
      */
     public double getApexVersion() {
         return node.getDefiningType().getCodeUnitDetails().getVersion().getExternal();
+    }
+
+    void setFileName(String fileName) {
+        // remove prefixed path segments.
+        this.fileName = Paths.get(fileName).getFileName().toString();
+    }
+
+    /**
+     * Returns the name of the file, including its extension. This
+     * excludes any segments for containing directories.
+     */
+    public String getFileName() {
+        return fileName;
     }
 
     @Override

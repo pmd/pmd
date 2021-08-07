@@ -31,9 +31,13 @@ abstract class BaseTreeDumpTest(
      * @see BaseTextComparisonTest.doTest
      */
     fun doTest(fileBaseName: String) {
-        super.doTest(fileBaseName, "") { sourceText ->
+        super.doTest(fileBaseName, "") { fileData ->
             buildString {
-                printer.renderSubtree(parser.parse(sourceText), this)
+                val ast = parser.parse(
+                    sourceCode = fileData.fileText,
+                    fileName = fileData.fileName
+                )
+                printer.renderSubtree(ast, this)
             }
         }
     }
