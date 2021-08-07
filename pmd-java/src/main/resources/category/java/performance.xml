@@ -313,21 +313,25 @@ public class UsingShort {
     <rule name="BigIntegerInstantiation"
           language="java"
           since="3.9"
-          message="Don't create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
+          message="Don''t create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
           class="net.sourceforge.pmd.lang.java.rule.performance.BigIntegerInstantiationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#bigintegerinstantiation">
         <description>
-Don't create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and
-for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN)
+Don't create instances of already existing BigInteger (`BigInteger.ZERO`, `BigInteger.ONE`),
+for Java 1.5 onwards, BigInteger.TEN and BigDecimal (`BigDecimal.ZERO`, `BigDecimal.ONE`, `BigDecimal.TEN`) and
+for Java 9 onwards `BigInteger.TWO`.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-BigInteger bi = new BigInteger(1);       // reference BigInteger.ONE instead
+BigInteger bi1 = new BigInteger("1");    // reference BigInteger.ONE instead
 BigInteger bi2 = new BigInteger("0");    // reference BigInteger.ZERO instead
-BigInteger bi3 = new BigInteger(0.0);    // reference BigInteger.ZERO instead
-BigInteger bi4;
-bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
+BigInteger bi3;
+bi3 = new BigInteger("0");               // reference BigInteger.ZERO instead
+
+BigDecimal bd1 = new BigDecimal(0);      // reference BigDecimal.ZERO instead
+BigDecimal bd2 = new BigDecimal("0.") ;  // reference BigDecimal.ZERO instead
+BigDecimal bd3 = new BigDecimal(10);     // reference BigDecimal.TEN instead
 ]]>
         </example>
     </rule>
@@ -337,10 +341,13 @@ bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
           since="1.2"
           message="Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead."
           class="net.sourceforge.pmd.lang.java.rule.performance.BooleanInstantiationRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#booleaninstantiation">
         <description>
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
 Note that new Boolean() is deprecated since JDK 9 for that reason.
+
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/PrimitiveWrapperInstantiation %} instead.
         </description>
         <priority>2</priority>
         <example>
@@ -356,11 +363,14 @@ Boolean buz = Boolean.valueOf(false);    // ...., just reference Boolean.FALSE;
           since="4.0"
           message="Avoid instantiating Byte objects. Call Byte.valueOf() instead"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#byteinstantiation">
         <description>
 Calling new Byte() causes memory allocation that can be avoided by the static Byte.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Byte() is deprecated since JDK 9 for that reason.
+
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/PrimitiveWrapperInstantiation %} instead.
         </description>
         <priority>2</priority>
         <properties>
@@ -530,11 +540,14 @@ good.append("This is a long string, which is pre-sized");
           since="3.5"
           message="Avoid instantiating Integer objects. Call Integer.valueOf() instead."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#integerinstantiation">
         <description>
 Calling new Integer() causes memory allocation that can be avoided by the static Integer.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Integer() is deprecated since JDK 9 for that reason.
+
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/PrimitiveWrapperInstantiation %} instead.
         </description>
         <priority>2</priority>
         <properties>
@@ -560,11 +573,14 @@ public class Foo {
           since="4.0"
           message="Avoid instantiating Long objects.Call Long.valueOf() instead"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#longinstantiation">
         <description>
 Calling new Long() causes memory allocation that can be avoided by the static Long.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Long() is deprecated since JDK 9 for that reason.
+
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/PrimitiveWrapperInstantiation %} instead.
         </description>
         <priority>2</priority>
         <properties>
@@ -713,11 +729,14 @@ public class Foo {
           since="4.0"
           message="Avoid instantiating Short objects. Call Short.valueOf() instead"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#shortinstantiation">
         <description>
 Calling new Short() causes memory allocation that can be avoided by the static Short.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Short() is deprecated since JDK 9 for that reason.
+
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/PrimitiveWrapperInstantiation %} instead.
         </description>
         <priority>2</priority>
         <properties>
@@ -827,11 +846,14 @@ public class Foo {
           since="3.8"
           message="Unnecessary wrapper object creation"
           class="net.sourceforge.pmd.lang.java.rule.performance.UnnecessaryWrapperObjectCreationRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation">
         <description>
 Most wrapper classes provide static conversion methods that avoid the need to create intermediate objects
 just to create the primitive forms. Using these avoids the cost of creating objects that also need to be
 garbage-collected later.
+
+Deprecated since PMD 6.37.0. The planned replacement is not expected before PMD 7.0.0.
         </description>
         <priority>3</priority>
         <example>
