@@ -170,4 +170,34 @@ public class Foo {
             }
         ]]></code>
     </test-code>
-</test-data>
+    <test-code>
+        <description>Patch 2075906: Add toString() to the rule UnnecessaryWrapperObjectCreation</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary explicit boxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                void foo(boolean value) {
+                    String b = Boolean.valueOf(value).toString();
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1057 False positive for UnnecessaryWrapperObjectCreation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit conversion from int to Float</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Test {
+                public void test() {
+                    Float.valueOf(5).toString(); // this will raise the rule
+                    Float.toString(5); // this is the preferred way
+                }
+            }
+            ]]></code>
+    </test-code></test-data>
