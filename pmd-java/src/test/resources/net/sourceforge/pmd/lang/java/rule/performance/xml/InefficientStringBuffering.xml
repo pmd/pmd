@@ -463,4 +463,22 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] NPE in InefficientStringBuffering with Records #3420</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package a;
+
+import java.io.InputStream;
+
+import com.google.common.io.ByteStreams;
+
+public record A(long from, long to) {
+    public InputStream a() {
+        return ByteStreams.limit(null, to - from);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -74,7 +74,14 @@ The default version is always ES6.
 
 #### New Rules
 
+##### Apex
+
 *   The Apex rule {% rule "apex/design/UnusedMethod" %} finds unused methods in your code.
+
+##### Java
+
+*   {% rule "java/codestyle/UnnecessaryBoxing" %} reports boxing and unboxing
+conversions that may be made implicit.
 
 #### Changed Rules
 
@@ -89,6 +96,7 @@ The default version is always ES6.
   reading and understanding the expressions.
 * {% rule "java/bestpractices/LooseCoupling" %}: the rule has a new property to allow some types to be coupled to (`allowedTypes`).
 * {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+* {% rule "java/errorprone/DontImportSun" %}: `sun.misc.Signal` is not special-cased anymore.
 * {% rule "java/codestyle/UseDiamondOperator" %}: the property `java7Compatibility` is removed. The rule now handles Java 7
   properly without a property.
 * {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed. The rule is now more precise and will check these cases properly.

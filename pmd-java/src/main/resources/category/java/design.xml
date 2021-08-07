@@ -286,8 +286,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures">
         <description>
-A method or constructor should not explicitly declare unchecked exceptions in its
-`throws` clause. Java doesn't force the caller to handle an unchecked exception,
+Reports unchecked exceptions in the `throws` clause of a method or constructor.
+Java doesn't force the caller to handle an unchecked exception,
 so it's unnecessary except for documentation. A better practice is to document the
 exceptional cases with a `@throws` Javadoc tag, which allows being more descriptive.
         </description>
@@ -296,9 +296,7 @@ exceptional cases with a `@throws` Javadoc tag, which allows being more descript
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration/NameList/Name[pmd-java:typeIs("java.lang.RuntimeException")]
-|
-//ConstructorDeclaration/NameList/Name[pmd-java:typeIs("java.lang.RuntimeException")]
+//ThrowsList/ClassOrInterfaceType[pmd-java:typeIs('java.lang.RuntimeException')]
 ]]>
                 </value>
             </property>
@@ -347,40 +345,41 @@ public class Foo {  //Should be final
     <rule name="CollapsibleIfStatements"
           language="java"
           since="3.1"
-          message="These nested if statements could be combined"
+          message="This if statement could be combined with its parent"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#collapsibleifstatements">
-        <description>
-Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
-        </description>
+        <description><![CDATA[
+Reports nested 'if' statements that can be merged together by joining their
+conditions with a boolean `&&` operator in between.
+        ]]></description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement[@Else= false()]/Statement
- /IfStatement[@Else= false()]
- |
-//IfStatement[@Else= false()]/Statement
- /Block[count(BlockStatement)=1]/BlockStatement
-  /Statement/IfStatement[@Else= false()]
+//IfStatement[@Else = false()]/IfStatement[@Else = false()]
+|
+//IfStatement[@Else = false()]/Block[count(*) = 1]/IfStatement[@Else = false()]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
 <![CDATA[
-void bar() {
-    if (x) {            // original implementation
-        if (y) {
-            // do stuff
+class Foo {
+
+    void bar() {
+        if (x) {            // original implementation
+            if (y) {
+                // do stuff
+            }
         }
     }
-}
 
-void bar() {
-    if (x && y) {        // optimized implementation
-        // do stuff
+    void bar() {
+        if (x && y) {        // clearer implementation
+            // do stuff
+        }
     }
 }
 ]]>
@@ -1168,6 +1167,7 @@ public class Foo {
           since="3.6"
           message="assertTrue(!expr) can be replaced by assertFalse(expr)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanassertion">
         <description>
 Avoid negation in an assertTrue or assertFalse test.
@@ -1180,6 +1180,7 @@ as:
 
     assertFalse(expr);
 
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
