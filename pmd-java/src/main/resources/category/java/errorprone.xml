@@ -1146,7 +1146,7 @@ class Foo {
             <property name="xpath">
                 <value>
                     <![CDATA[
-(//EqualityExpression | //RelationalExpression)/PrimaryExpression/PrimaryPrefix/Name[@Image='Double.NaN' or @Image='Float.NaN']
+//InfixExpression[@Operator = ("==", "!=", "<=", ">=", "<", ">")]/FieldAccess[@Name='NaN' and (pmd-java:typeIs('double') or pmd-java:typeIs('float'))]
 ]]>
                 </value>
             </property>
@@ -1445,12 +1445,27 @@ public class Foo {
           language="java"
           since="1.5"
           message="Avoid importing anything from the 'sun.*' packages"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.DontImportSunRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#dontimportsun">
         <description>
-Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
+Avoid importing anything from the 'sun.*' packages. These packages are not portable
+and are likely to change.
+
+If you find yourself having to depend on Sun APIs, confine this dependency to as
+small a scope as possible, for instance by writing a stable wrapper class around
+the unstable API. You can then suppress this rule in the implementation of the wrapper.
         </description>
         <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ImportDeclaration[starts-with(@ImportedName, 'sun.')]
+]]>
+                </value>
+            </property>
+
+        </properties>
         <example>
 <![CDATA[
 import sun.misc.foo;
@@ -2053,6 +2068,47 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="ImplicitSwitchFallThrough"
+          language="java"
+          since="3.0"
+          message="This switch case may be reached by fallthrough from the previous case"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ImplicitSwitchFallThroughRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#implicitswitchfallthrough">
+        <description>
+Switch statements without break or return statements for each case option
+may indicate problematic behaviour. Empty cases are ignored as these indicate
+an intentional fall-through.
+
+You can ignore a violation by commenting `// fallthrough` before the case label
+which is reached by fallthrough, or with `@SuppressWarnings("fallthrough")`.
+
+This rule has been renamed from "MissingBreakInSwitch" with PMD 6.37.0.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public void bar(int status) {
+    switch(status) {
+      case CANCELLED:
+        doCancelled();
+        // break; hm, should this be commented out?
+      case NEW:
+        doNew();
+        // is this really a fall-through?
+        // what happens if you add another case after this one?
+      case REMOVED:
+        doRemoved();
+        // fallthrough - this comment just clarifies that you want a fallthrough
+      case OTHER: // empty case - this is interpreted as an intentional fall-through
+      case ERROR:
+        doErrorHandling();
+        break;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="InstantiationToGetClass"
           language="java"
           since="2.0"
@@ -2288,40 +2344,7 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="MissingBreakInSwitch"
-          language="java"
-          since="3.0"
-          message="This switch case may be reached by fallthrough from the previous case"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.MissingBreakInSwitchRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingbreakinswitch">
-        <description>
-Switch statements without break or return statements for each case option
-may indicate problematic behaviour. Empty cases are ignored as these indicate
-an intentional fall-through.
-
-You can ignore a violation by commenting `// fallthrough` before the case label
-which is reached by fallthrough, or with `@SuppressWarnings("fallthrough")`.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public void bar(int status) {
-    switch(status) {
-      case CANCELLED:
-        doCancelled();
-        // break; hm, should this be commented out?
-      case REMOVED:
-        doRemoved();
-        // fallthrough - this comment just clarifies that you want a fallthrough
-      case OTHER: // empty case - this is interpreted as an intentional fall-through
-      case ERROR:
-        doErrorHandling();
-        break;
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="MissingBreakInSwitch" ref="ImplicitSwitchFallThrough" deprecated="true"/>
 
     <rule name="MissingSerialVersionUID"
           language="java"
@@ -2687,12 +2710,15 @@ public class Foo {
           language="java"
           since="4.2"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           message="Return an empty array rather than 'null'."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#returnemptyarrayratherthannull">
         <description>
 For any method that returns an array, it is a better to return an empty array rather than a
 null reference. This removes the need for null checking all results and avoids inadvertent
 NullPointerExceptions.
+
+Deprecated since PMD 6.37.0, use {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} instead.
         </description>
         <priority>1</priority>
         <properties>
@@ -2702,6 +2728,54 @@ NullPointerExceptions.
 //MethodDeclaration
 [
 (./ResultType/Type[@ArrayType= true()])
+and
+(./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Example {
+    // Not a good idea...
+    public int[] badBehavior() {
+        // ...
+        return null;
+    }
+
+    // Good behavior
+    public String[] bonnePratique() {
+        //...
+        return new String[0];
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ReturnEmptyCollectionRatherThanNull"
+          language="java"
+          since="6.37.0"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          message="Return an empty collection rather than 'null'."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#returnemptycollectionratherthannull">
+        <description>
+For any method that returns an collection (such as an array, Collection or Map), it is better to return
+an empty one rather than a null reference. This removes the need for null checking all results and avoids
+inadvertent NullPointerExceptions.
+
+See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays instead of null
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration
+[
+(./ResultType/Type[pmd-java:typeIs('java.util.Collection') or pmd-java:typeIs('java.util.Map') or @ArrayType=true()])
 and
 (./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
 ]
@@ -2975,24 +3049,20 @@ Item 10: Obey the general contract when overriding equals.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Name = 'equals']
-[
+//MethodDeclaration[@Name = 'equals'][
     (@Arity = 1
-    and not (MethodDeclarator/FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
-        [@Image = 'Object' or @Image = 'java.lang.Object'])
-    or not (ResultType/Type/PrimitiveType[@Image = 'boolean'])
-    )  or  (
-    @Arity = 2
-    and ResultType/Type/PrimitiveType[@Image = 'boolean']
-    and MethodDeclarator/FormalParameters//ClassOrInterfaceType[@Image = 'Object' or @Image = 'java.lang.Object']
-    and not(../Annotation/MarkerAnnotation/Name[@Image='Override'])
+     and not(FormalParameters/FormalParameter[pmd-java:typeIsExactly('java.lang.Object')])
+     or not(PrimitiveType[@Kind = 'boolean'])
+    ) or (
+     @Arity = 2
+     and PrimitiveType[@Kind = 'boolean']
+     and FormalParameters/FormalParameter[pmd-java:typeIsExactly('java.lang.Object')]
+     and not(pmd-java:hasAnnotation('java.lang.Override'))
     )
 ]
-| //MethodDeclaration[@Name = 'equal']
-[
+| //MethodDeclaration[@Name = 'equal'][
     @Arity = 1
-    and MethodDeclarator/FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
-        [@Image = 'Object' or @Image = 'java.lang.Object']
+    and FormalParameters/FormalParameter[pmd-java:typeIsExactly('java.lang.Object')]
 ]
 ]]>
                 </value>
@@ -3019,12 +3089,26 @@ public class Foo {
           language="java"
           since="1.5"
           message="The method name and return type are suspiciously close to hashCode()"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.SuspiciousHashcodeMethodNameRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#suspicioushashcodemethodname">
         <description>
 The method name and return type are suspiciously close to hashCode(), which may denote an intention
 to override the hashCode() method.
         </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration[
+        lower-case(@Name) = 'hashcode'
+    and @Name != 'hashCode'
+    and @Arity = 0
+    and PrimitiveType[@Kind = 'int']
+]
+]]>
+                </value>
+            </property>
+        </properties>
         <priority>3</priority>
         <example>
 <![CDATA[

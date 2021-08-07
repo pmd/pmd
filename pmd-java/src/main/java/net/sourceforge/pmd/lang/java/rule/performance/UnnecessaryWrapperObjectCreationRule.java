@@ -8,53 +8,36 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryBoxingRule;
 
-public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
-
-    private static final Set<String> PREFIX_SET = setOf("Byte.valueOf", "Short.valueOf",
-        "Integer.valueOf", "Long.valueOf", "Float.valueOf", "Double.valueOf", "Character.valueOf");
-
+/**
+ * @deprecated Replaced by {@link UnnecessaryBoxingRule}.
+ */
+@Deprecated
+public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRulechainRule {
     private static final Set<String> SUFFIX_SET = setOf("toString", "byteValue",
-        "shortValue", "intValue", "longValue", "floatValue", "doubleValue", "charValue");
+        "shortValue", "intValue", "longValue", "floatValue", "doubleValue", "charValue", "booleanValue");
 
-    @Override
-    public Object visit(ASTPrimaryPrefix node, Object data) {
-        if (node.getNumChildren() == 0 || !(node.getChild(0) instanceof ASTName)) {
-            return super.visit(node, data);
-        }
-
-        String image = ((ASTName) node.getChild(0)).getImage();
-        if (image.startsWith("java.lang.")) {
-            image = image.substring(10);
-        }
-
-        boolean checkBoolean = node.getAstInfo().getLanguageVersion()
-                                   .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
-
-        if (PREFIX_SET.contains(image) || checkBoolean && "Boolean.valueOf".equals(image)) {
-            ASTPrimaryExpression parent = (ASTPrimaryExpression) node.getParent();
-            if (parent.getNumChildren() >= 3) {
-                Node n = parent.getChild(2);
-                if (n instanceof ASTPrimarySuffix) {
-                    ASTPrimarySuffix suffix = (ASTPrimarySuffix) n;
-                    image = suffix.getImage();
-
-                    if (SUFFIX_SET.contains(image) || checkBoolean && "booleanValue".equals(image)) {
-                        super.addViolation(data, node);
-                        return data;
-                    }
-                }
-            }
-        }
-        return super.visit(node, data);
+    public UnnecessaryWrapperObjectCreationRule() {
+        super(ASTMethodCall.class);
     }
 
+    @Override
+    public Object visit(ASTMethodCall node, Object data) {
+        if (!"valueOf".equals(node.getMethodName()) || node.getQualifier() == null
+                || !node.getQualifier().getTypeMirror().isBoxedPrimitive()
+                || !(node.getParent() instanceof ASTMethodCall)) {
+            return data;
+        }
+
+        ASTMethodCall nextMethodCall = (ASTMethodCall) node.getParent();
+        String methodName = nextMethodCall.getMethodName();
+        if (SUFFIX_SET.contains(methodName)) {
+            addViolation(data, node);
+        }
+        
+        return data;
+    }
 }

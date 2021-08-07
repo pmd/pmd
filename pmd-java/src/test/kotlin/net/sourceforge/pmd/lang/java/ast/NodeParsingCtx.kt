@@ -90,7 +90,7 @@ object ExpressionParsingCtx : NodeParsingCtx<ASTExpression>("expression") {
 object StatementParsingCtx : NodeParsingCtx<ASTStatement>("statement") {
 
     override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
-            TypeBodyParsingCtx.getTemplate("{\n$construct}", ctx)
+            TypeBodyParsingCtx.getTemplate("  {\n    $construct\n  }", ctx)
 
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTStatement =

@@ -61,33 +61,33 @@ sb.append('a');     // use this instead
     <rule name="AvoidArrayLoops"
           language="java"
           since="3.5"
-          message="System.arraycopy is more efficient"
+          message="Arrays.copyOf or System.arraycopy are more efficient"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidarrayloops">
         <description>
-Instead of manually copying data between two arrays, use the efficient Arrays.copyOf or System.arraycopy method instead.
+Instead of manually copying data between two arrays, use the more efficient `Arrays.copyOf` or `System.arraycopy`
+methods instead.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Statement[(ForStatement or WhileStatement) and
-count(*//AssignmentOperator[@Image = '='])=1
-and
-*/Statement
-[
-./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
-/PrimaryPrefix/Name/../../PrimarySuffix/Expression
-[(PrimaryExpression or AdditiveExpression) and count
-(.//PrimaryPrefix/Name)=1]//PrimaryPrefix/Name/@Image
-and
-./Block/BlockStatement/Statement/StatementExpression/Expression/PrimaryExpression
-/PrimaryPrefix/Name/../../PrimarySuffix[count
-(..//PrimarySuffix)=1]/Expression[(PrimaryExpression
-or AdditiveExpression) and count(.//PrimaryPrefix/Name)=1]
-//PrimaryPrefix/Name/@Image
-]]
+//(ForStatement[ForUpdate//(UnaryExpression[@Operator='++'] | AssignmentExpression[@Operator = '+='][NumericLiteral[@Image = '1']])]
+ | WhileStatement)
+    [not(.//ContinueStatement)]
+    [not(.//BreakStatement)]
+    [not(.//ThrowStatement)]
+    [not(.//ReturnStatement)]
+    [count(Block//AssignmentExpression[@Operator='=']
+                                      (: no nested arrays or method calls as array index :)
+                                      [count(ArrayAccess[not(.//ArrayAccess)]
+                                                        [not(.//MethodCall)])=2]
+                                      (: array names must be different :)
+                                      [count(distinct-values(ArrayAccess/VariableAccess[1]/@Name)) = 2]
+                                      (: array index must be same :)
+                                      [count(distinct-values(ArrayAccess/VariableAccess[2]/@Name)) = 1]
+     )=1]
 ]]>
                 </value>
             </property>
@@ -98,12 +98,15 @@ public class Test {
     public void bar() {
         int[] a = new int[10];
         int[] b = new int[10];
+
+        // instead of this loop
         for (int i=0;i<10;i++) {
             b[i]=a[i];
         }
+        // use: System.arraycopy(a, 0, b, 0, 10);
 
         int[] c = new int[10];
-        // this will trigger the rule
+        // this won't trigger the rule
         for (int i=0;i<10;i++) {
             b[i]=a[c[i]];
         }
@@ -116,12 +119,13 @@ public class Test {
     <rule name="AvoidCalendarDateCreation"
           since="6.25.0"
           language="java"
-          message="A Calendar is used to create a Date or DateTime, this is expensive."
+          message="A Calendar is used to get the current time, this is expensive."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidcalendardatecreation">
         <description>
-Problem: A Calendar is a heavyweight object and expensive to create.
+Problem: `java.util.Calendar` is a heavyweight object and expensive to create. It should only be used, if
+calendar calculations are needed.
 
 Solution: Use `new Date()`, Java 8+ `java.time.LocalDateTime.now()` or `ZonedDateTime.now()`.
         </description>
@@ -129,26 +133,32 @@ Solution: Use `new Date()`, Java 8+ `java.time.LocalDateTime.now()` or `ZonedDat
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-//PrimaryPrefix[Name[ends-with(@Image, 'Calendar.getInstance')]] [count(../PrimarySuffix) > 2 and ../PrimarySuffix[last()-1][@Image = 'getTime' or @Image='getTimeInMillis']]
+//MethodCall[pmd-java:matchesSig("java.util.Calendar#getTime()") or pmd-java:matchesSig("java.util.Calendar#getTimeInMillis()")]
+  [*[1][local-name() = ('MethodCall', 'ConstructorCall')]
+                               [pmd-java:matchesSig("java.util.Calendar#getInstance()")
+                             or pmd-java:matchesSig("java.util.GregorianCalendar#getInstance()")
+                             or pmd-java:matchesSig("java.util.GregorianCalendar#new()")]
+  ]
 |
-//MethodDeclaration[not(MethodDeclarator/FormalParameters//ClassOrInterfaceType[pmd-java:typeIs('java.util.Calendar')])]
-  /Block/BlockStatement//PrimaryExpression
-  /PrimaryPrefix/Name
-    [pmd-java:typeIs('java.util.Calendar')]
-    [every $var in @Image satisfies (
-       (ends-with($var, '.getTime') or ends-with($var, '.getTimeInMillis'))
-       and
-       (: ignore if .set* or .add* or .clear is called on the variable :)
-       not(ancestor::Block/BlockStatement//Name[
-          starts-with(@Image, concat((tokenize($var, '\.'), $var)[1], '.set'))
-          or
-          starts-with(@Image, concat((tokenize($var, '\.'), $var)[1], '.add'))
-          or
-          starts-with(@Image, concat((tokenize($var, '\.'), $var)[1], '.clear'))
-       ])
-    )]
+//MethodCall[pmd-java:matchesSig("java.util.Calendar#getTime()") or pmd-java:matchesSig("java.util.Calendar#getTimeInMillis()")]
+   [*[1][local-name() = 'VariableAccess']]
+  (: ignore if .set* or .add or .clear or .roll is called on the variable :)
+  [not(VariableAccess/@Name = ancestor::Block//MethodCall[starts-with(@MethodName, "set") or @MethodName = ("add", "clear", "roll")]/VariableAccess/@Name)]
+  (: variable must be initialized with getInstance :)
+  [VariableAccess/@Name = ancestor::Block//LocalVariableDeclaration/VariableDeclarator[
+     (MethodCall | ConstructorCall)
+      [pmd-java:matchesSig("java.util.Calendar#getInstance()")
+       or pmd-java:matchesSig("java.util.GregorianCalendar#getInstance()")
+       or pmd-java:matchesSig("java.util.GregorianCalendar#new()")]
+  ]/VariableDeclaratorId/@Name]
 |
-//ClassOrInterfaceType[pmd-java:typeIs('org.joda.time.DateTime') or pmd-java:typeIs('org.joda.time.LocalDateTime')][../Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name[ends-with(@Image, 'Calendar.getInstance')]]
+//ConstructorCall[pmd-java:typeIs("org.joda.time.DateTime") or pmd-java:typeIs("org.joda.time.LocalDateTime")]
+  [ArgumentList[(MethodCall | ConstructorCall)
+       [pmd-java:matchesSig("java.util.Calendar#getInstance()")
+     or pmd-java:matchesSig("java.util.GregorianCalendar#getInstance()")
+     or pmd-java:matchesSig("java.util.GregorianCalendar#new()")]]
+  ]
+
                 ]]></value>
             </property>
         </properties>
@@ -313,21 +323,25 @@ public class UsingShort {
     <rule name="BigIntegerInstantiation"
           language="java"
           since="3.9"
-          message="Don't create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
+          message="Don''t create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
           class="net.sourceforge.pmd.lang.java.rule.performance.BigIntegerInstantiationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#bigintegerinstantiation">
         <description>
-Don't create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and
-for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN)
+Don't create instances of already existing BigInteger (`BigInteger.ZERO`, `BigInteger.ONE`),
+for Java 1.5 onwards, BigInteger.TEN and BigDecimal (`BigDecimal.ZERO`, `BigDecimal.ONE`, `BigDecimal.TEN`) and
+for Java 9 onwards `BigInteger.TWO`.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-BigInteger bi = new BigInteger(1);       // reference BigInteger.ONE instead
+BigInteger bi1 = new BigInteger("1");    // reference BigInteger.ONE instead
 BigInteger bi2 = new BigInteger("0");    // reference BigInteger.ZERO instead
-BigInteger bi3 = new BigInteger(0.0);    // reference BigInteger.ZERO instead
-BigInteger bi4;
-bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
+BigInteger bi3;
+bi3 = new BigInteger("0");               // reference BigInteger.ZERO instead
+
+BigDecimal bd1 = new BigDecimal(0);      // reference BigDecimal.ZERO instead
+BigDecimal bd2 = new BigDecimal("0.") ;  // reference BigDecimal.ZERO instead
+BigDecimal bd3 = new BigDecimal(10);     // reference BigDecimal.TEN instead
 ]]>
         </example>
     </rule>
@@ -337,10 +351,13 @@ bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
           since="1.2"
           message="Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead."
           class="net.sourceforge.pmd.lang.java.rule.performance.BooleanInstantiationRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#booleaninstantiation">
         <description>
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
 Note that new Boolean() is deprecated since JDK 9 for that reason.
+
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/PrimitiveWrapperInstantiation %} instead.
         </description>
         <priority>2</priority>
         <example>
@@ -356,11 +373,14 @@ Boolean buz = Boolean.valueOf(false);    // ...., just reference Boolean.FALSE;
           since="4.0"
           message="Avoid instantiating Byte objects. Call Byte.valueOf() instead"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#byteinstantiation">
         <description>
 Calling new Byte() causes memory allocation that can be avoided by the static Byte.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Byte() is deprecated since JDK 9 for that reason.
+
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/PrimitiveWrapperInstantiation %} instead.
         </description>
         <priority>2</priority>
         <properties>
@@ -530,11 +550,14 @@ good.append("This is a long string, which is pre-sized");
           since="3.5"
           message="Avoid instantiating Integer objects. Call Integer.valueOf() instead."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#integerinstantiation">
         <description>
 Calling new Integer() causes memory allocation that can be avoided by the static Integer.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Integer() is deprecated since JDK 9 for that reason.
+
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/PrimitiveWrapperInstantiation %} instead.
         </description>
         <priority>2</priority>
         <properties>
@@ -560,11 +583,14 @@ public class Foo {
           since="4.0"
           message="Avoid instantiating Long objects.Call Long.valueOf() instead"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#longinstantiation">
         <description>
 Calling new Long() causes memory allocation that can be avoided by the static Long.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Long() is deprecated since JDK 9 for that reason.
+
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/PrimitiveWrapperInstantiation %} instead.
         </description>
         <priority>2</priority>
         <properties>
@@ -713,11 +739,14 @@ public class Foo {
           since="4.0"
           message="Avoid instantiating Short objects. Call Short.valueOf() instead"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#shortinstantiation">
         <description>
 Calling new Short() causes memory allocation that can be avoided by the static Short.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 Note that new Short() is deprecated since JDK 9 for that reason.
+
+Deprecated since PMD 6.37.0, use {% rule java/bestpractices/PrimitiveWrapperInstantiation %} instead.
         </description>
         <priority>2</priority>
         <properties>
@@ -827,11 +856,14 @@ public class Foo {
           since="3.8"
           message="Unnecessary wrapper object creation"
           class="net.sourceforge.pmd.lang.java.rule.performance.UnnecessaryWrapperObjectCreationRule"
+          deprecated="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation">
         <description>
 Most wrapper classes provide static conversion methods that avoid the need to create intermediate objects
 just to create the primitive forms. Using these avoids the cost of creating objects that also need to be
 garbage-collected later.
+
+Deprecated since PMD 6.37.0. The planned replacement is not expected before PMD 7.0.0.
         </description>
         <priority>3</priority>
         <example>
