@@ -117,6 +117,7 @@ The following previously deprecated rules have been finally removed:
 *   BooleanInstantiation (java-performance)
 *   ByteInstantiation (java-performance)
 *   DataflowAnomalyAnalysis (java-errorprone)
+*   DefaultPackage (java-codestyle)
 *   ForLoopsMustUseBraces (java-codestyle)
 *   IfElseStmtsMustUseBraces (java-codestyle)
 *   IfStmtsMustUseBraces (java-codestyle)
