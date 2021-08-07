@@ -15,7 +15,7 @@ public class ApexParserTestBase {
         return apex.parse(code);
     }
 
-    protected ApexNode<Compilation> parse(String code, String fileName) {
+    protected ApexNode<? extends Compilation> parse(String code, String fileName) {
         return apex.parse(code, null, fileName);
     }
 

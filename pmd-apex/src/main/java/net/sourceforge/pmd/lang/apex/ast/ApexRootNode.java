@@ -66,6 +66,10 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
      * excludes any segments for containing directories.
      */
     public String getFileName() {
+        if (fileName == null) {
+            // a nested class
+            return getFirstParentOfType(ApexRootNode.class).getFileName();
+        }
         return fileName;
     }
 

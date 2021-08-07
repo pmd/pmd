@@ -40,6 +40,18 @@ public class ApexParserTest extends ApexParserTestBase {
         assertEquals(4, methods.size());
     }
 
+    @Test
+    public void fileNameInNestedClass() {
+        String code = "class Outer { class Inner {}}";
+
+        ASTUserClass rootNode = (ASTUserClass) parse(code, "src/filename.cls");
+
+        assertEquals("filename.cls", rootNode.getFileName());
+        ASTUserClass inner = rootNode.getFirstDescendantOfType(ASTUserClass.class);
+        assertEquals("Inner", inner.getImage());
+        assertEquals("filename.cls", inner.getFileName());
+    }
+
     private String testCodeForLineNumbers =
               "public class SimpleClass {\n" // line 1
             + "    public void method1() {\n" // line 2
