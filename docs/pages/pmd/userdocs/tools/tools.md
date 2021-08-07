@@ -20,6 +20,18 @@ With Codacy you have PMDJava analysis out-of-the-box, and it is free for open so
 * Source code: [https://github.com/codacy/codacy-pmdjava](https://github.com/codacy/codacy-pmdjava)
 * Maintainer: Codacy
 
+### Code Inspector
+
+[Code Inspector](https://www.code-inspector.com) automates code review, check your code quality and helps you manage your technical debt.
+It is integrated with GitHub, GitLab and Bitbucket. The platform also analyzes code directly in your IDE using its integration
+plugins for VS Code and IntelliJ, providing a consistent analysis along your development cycle (from the IDE to the CI/CD pipeline).
+
+Code Inspector uses PMD to check Java and Apex code.
+
+* Homepage: [https://www.code-inspector.com](https://www.code-inspector.com)
+* Documentation: [https://doc.code-inspector.com](https://doc.code-inspector.com)
+
+
 ## IDE Integrations
 
 ### Summary

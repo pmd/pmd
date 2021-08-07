@@ -135,6 +135,32 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>Proper CRUD,FLS via upsert with database class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if (Contact.sObjectType.getDescribe().isCreateable() && Contact.sObjectType.getDescribe().isUpdateable()) {
+            Database.upsert(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check for inline upsert with database class</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Database.upsert(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>VF built-in CRUD checks via getter, but cannot determine if is really VF</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
@@ -601,6 +627,40 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>No CRUD,FLS check for update with database class</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+        c.Name = newName;
+        Database.update(c);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS check for update with database class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo(String newName, String tempID) {
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+            Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+            if (!Schema.sObjectType.Contact.fields.Name.isUpdateable()){
+                return null;
+            }
+            c.Name = newName;
+        }
+        Database.update(c);
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>No CRUD check for insert</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -622,6 +682,34 @@ public class Foo {
         if (Contact.sObjectType.getDescribe().isCreateable()) {
             Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
             insert myCon;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check for insert with database class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+        Database.insert(myCon);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check for insert with database class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (Contact.sObjectType.getDescribe().isCreateable()) {
+            Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+            Database.insert(myCon);
         }
     }
 }
@@ -651,6 +739,36 @@ public class Foo {
             Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
             if (Contact.sObjectType.getDescribe().isDeletable()) {
                 delete toDelete;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check for delete with database class</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String contactId) {
+            Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+            Database.delete(toDelete);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check for delete with database class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String contactId) {
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+            Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+            if (Contact.sObjectType.getDescribe().isDeletable()) {
+                Database.delete(toDelete);
             }
         }
     }
@@ -924,7 +1042,7 @@ public class Foo {
 public class Foo {
     void bar() {
         for (Account a : [SELECT Id FROM Account]) {
-
+        
         }
     }
 }
@@ -955,6 +1073,84 @@ public class Foo {
             for (Account a : [SELECT Id FROM Account]) {
                 
             }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for inline no-args object</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        insert new Account();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for inline no-args object</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if(Account.sObjectType.getDescribe().isCreateable()) {
+            insert new Account();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for inline literal list</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        insert new Account[]{new Account(Name = 'X')};
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for inline literal list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if(Account.sObjectType.getDescribe().isCreateable()) {
+            insert new Account[]{new Account(Name = 'X')};
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for inline initialized list</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        insert new List<Account>(new Account(Name = 'X'));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for inline initialized list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if(Account.sObjectType.getDescribe().isCreateable()) {
+            insert new List<Account>(new Account(Name = 'X'));
         }
     }
 }

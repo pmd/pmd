@@ -105,6 +105,9 @@ public class PMDParameters {
     @Parameter(names = { "-language", "-l" }, description = "Specify a language PMD should use.")
     private String language = null;
 
+    @Parameter(names = "-force-language", description = "Force a language to be used for all input files, irrespective of filenames.")
+    private String forceLanguage = null;
+
     @Parameter(names = "-auxclasspath",
             description = "Specifies the classpath for libraries used by the source code. "
                     + "This is used by the type resolution. The platform specific path delimiter "
@@ -218,10 +221,16 @@ public class PMDParameters {
         configuration.setAnalysisCacheLocation(this.cacheLocation);
         configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
 
+        LanguageVersion forceLangVersion = getForceLangVersion();
+        if (forceLangVersion != null) {
+            configuration.setForceLanguageVersion(forceLangVersion);
+        }
+
         LanguageVersion languageVersion = getLangVersion();
         if (languageVersion != null) {
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
         }
+
         try {
             configuration.prependClasspath(this.getAuxclasspath());
         } catch (IOException e) {
@@ -304,7 +313,7 @@ public class PMDParameters {
         return version != null ? lang.getVersion(version)
                                : lang.getDefaultVersion();
     }
-
+    
     public String getVersion() {
         if (version != null) {
             return version;
@@ -314,6 +323,15 @@ public class PMDParameters {
 
     public String getLanguage() {
         return language != null ? language : LanguageRegistry.getDefaultLanguage().getTerseName();
+    }
+
+    private @Nullable LanguageVersion getForceLangVersion() {
+        Language lang = forceLanguage != null ? LanguageRegistry.findLanguageByTerseName(forceLanguage) : null;
+        return lang != null ? lang.getDefaultVersion() : null;
+    }
+
+    public String getForceLanguage() {
+        return forceLanguage != null ? forceLanguage : "";
     }
 
     public String getAuxclasspath() {
