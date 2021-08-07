@@ -120,6 +120,7 @@ The following previously deprecated rules have been finally removed:
 *   CloneThrowsCloneNotSupportedException (java-errorprone) -> not replaced
 *   DataflowAnomalyAnalysis (java-errorprone) -> not replaced
 *   DefaultPackage (java-codestyle) -> use {% rule 'java/codestyle/UnnecessaryBoxing' %} and {% rule 'java/bestpractices/PrimitiveWrapperInstantiation' %}
+*   DoNotCallSystemExit (java-errorprone) -> use {% rule 'java/errorprone/DoNotTerminateVM' %}
 *   ForLoopsMustUseBraces (java-codestyle) -> use {% rule 'java/codestyle/ControlStatementBraces' %}
 *   IfElseStmtsMustUseBraces (java-codestyle) -> use {% rule 'java/codestyle/ControlStatementBraces' %}
 *   IfStmtsMustUseBraces (java-codestyle) -> use {% rule 'java/codestyle/ControlStatementBraces' %}
