@@ -20,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.xpath.internal.FileNameXPathFunction;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
 
@@ -47,7 +47,7 @@ public class ApexParserTest extends ApexParserTestBase {
 
         ASTUserClass rootNode = (ASTUserClass) parse(code, "src/filename.cls");
 
-        assertEquals("filename.cls", rootNode.getUserMap().get(RootNode.FILE_NAME_KEY));
+        assertEquals("filename.cls", rootNode.getUserMap().get(FileNameXPathFunction.FILE_NAME_KEY));
     }
 
     private String testCodeForLineNumbers =

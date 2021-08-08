@@ -8,7 +8,7 @@ import java.io.Reader;
 import java.nio.file.Paths;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.xpath.internal.FileNameXPathFunction;
 
 /**
  * This is a generic implementation of the Parser interface.
@@ -44,7 +44,7 @@ public abstract class AbstractParser implements Parser {
         Node rootNode = parser.parse(fileName, source);
         // remove prefixed path segments.
         String simpleFileName = Paths.get(fileName).getFileName().toString();
-        rootNode.getUserMap().set(RootNode.FILE_NAME_KEY, simpleFileName);
+        rootNode.getUserMap().set(FileNameXPathFunction.FILE_NAME_KEY, simpleFileName);
         return rootNode;
     }
 }

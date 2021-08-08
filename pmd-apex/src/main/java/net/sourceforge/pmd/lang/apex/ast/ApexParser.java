@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
-import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
 
@@ -49,13 +48,7 @@ public class ApexParser {
         return visitor.getTopLevel();
     }
 
-    @Deprecated
     public ApexNode<Compilation> parse(final Reader reader) {
-        throw new UnsupportedOperationException("use the other overload, this class is internal API btw");
-    }
-
-    public ApexNode<Compilation> parse(final Reader reader, final String fileName) {
-        Objects.requireNonNull(fileName, "file name is null");
         try {
             final String sourceCode = IOUtils.toString(reader);
             final Compilation astRoot = parseApex(sourceCode);
@@ -66,9 +59,7 @@ public class ApexParser {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
-            ApexRootNode<Compilation> root = (ApexRootNode<Compilation>) treeBuilder.build(astRoot);
-            root.setFileName(fileName);
-            return root;
+            return treeBuilder.build(astRoot);
         } catch (IOException | apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);
         }
@@ -78,7 +69,7 @@ public class ApexParser {
         return suppressMap;
     }
 
-    private static class TopLevelVisitor extends AstVisitor<AdditionalPassScope> {
+    private class TopLevelVisitor extends AstVisitor<AdditionalPassScope> {
         Compilation topLevel;
 
         public Compilation getTopLevel() {

@@ -13,7 +13,8 @@ import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 /**
  * A function that returns the current file name.
@@ -21,6 +22,12 @@ import net.sourceforge.pmd.lang.ast.RootNode;
  * @author Clément Fournier
  */
 public class FileNameXPathFunction implements org.jaxen.Function {
+
+    /**
+     * The name of the file, including its extension. This
+     * excludes any segments for containing directories.
+     */
+    public static final SimpleDataKey<String> FILE_NAME_KEY = DataMap.simpleDataKey("pmd.fileName");
 
     public static void registerSelfInSimpleContext() {
         ((SimpleFunctionContext) XPathFunctionContext.getInstance()).registerFunction(null, "fileName",
@@ -50,7 +57,7 @@ public class FileNameXPathFunction implements org.jaxen.Function {
         }
         Objects.requireNonNull(n, "No root node in tree?");
 
-        String fileName = n.getUserMap().get(RootNode.FILE_NAME_KEY);
+        String fileName = n.getUserMap().get(FILE_NAME_KEY);
         return Objects.requireNonNull(fileName, "File name was not set");
     }
 }

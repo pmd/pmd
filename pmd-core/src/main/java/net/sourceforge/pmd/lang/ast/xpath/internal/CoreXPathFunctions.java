@@ -14,6 +14,10 @@ import net.sf.saxon.expr.XPathContext;
  */
 public final class CoreXPathFunctions {
 
+    private CoreXPathFunctions() {
+        // util class
+    }
+
     public static String fileName(final XPathContext context) {
         Node ctxNode = ((ElementNode) context.getContextItem()).getUnderlyingNode();
         return FileNameXPathFunction.getFileName(ctxNode);
