@@ -110,7 +110,7 @@ end TestPackage;
 })
 
 fun String.parseModelica(): ASTStoredDefinition =
-    ModelicaParsingHelper.DEFAULT.parse(this, ":dummy")
+    ModelicaParsingHelper.DEFAULT.parse(this)
 
 fun Node.assertBounds(bline: Int, bcol: Int, eline: Int, ecol: Int) {
     this::getBeginLine shouldBe bline

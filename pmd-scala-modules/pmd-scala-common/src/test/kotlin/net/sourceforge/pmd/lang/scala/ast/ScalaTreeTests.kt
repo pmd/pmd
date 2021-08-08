@@ -81,7 +81,7 @@ class Foo {
 })
 
 fun String.parseScala(): ASTSource =
-    ScalaParsingHelper.DEFAULT.parse(this, ":dummy")
+    ScalaParsingHelper.DEFAULT.parse(this)
 
 
 fun Node.assertBounds(bline: Int, bcol: Int, eline: Int, ecol: Int) {
