@@ -54,11 +54,11 @@ public class Foo {
 
     <test-code>
         <description>condition ? true : false</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public boolean test(boolean condition) {
-        return condition ? true : false; // Existing rule
+        return condition ? true : false;
     }
 }
         ]]></code>
