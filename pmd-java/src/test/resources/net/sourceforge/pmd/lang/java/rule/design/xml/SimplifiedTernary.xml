@@ -9,7 +9,7 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public boolean test() {
+    public boolean test(boolean condition) {
         return condition ? true : something();
     }
 }
@@ -21,7 +21,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void test() {
+    public void test(boolean condition) {
         final boolean value = condition ? false : something();
     }
 }
@@ -33,7 +33,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public boolean test() {
+    public boolean test(boolean condition) {
         return condition ? something() : true;
     }
 }
@@ -45,7 +45,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void test() {
+    public void test(boolean condition) {
         final boolean otherValue = condition ? something() : false;
     }
 }
@@ -57,7 +57,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public boolean test() {
+    public boolean test(boolean condition) {
         return condition ? true : false; // Existing rule
     }
 }
@@ -69,8 +69,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class SimplifiedTernary {
-    private SomeValue doStuff(SomeValue someValue) {
-        return THE_VALUE.equals(rangeValue.to) ? new SomeValue(someValue.from, null, true) : someValue;
+    private SimplifiedTernary doStuff(SimplifiedTernary someValue, boolean condition) {
+        return condition ? something(true) : someValue;
     }
 }
         ]]></code>
@@ -81,7 +81,7 @@ public class SimplifiedTernary {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class SimplifiedTernary {
-    public Boolean getHasCustomName() {
+    public Boolean getHasCustomName(boolean mHasCustomName) {
         return mHasCustomName ? true : null;
     }
 }
