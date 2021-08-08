@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.matchNode
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.modelica.ModelicaParsingHelper
 import java.io.StringReader
 
 class ModelicaCoordsTest : FunSpec({
@@ -108,12 +109,8 @@ end TestPackage;
     }
 })
 
-fun String.parseModelica(): ASTStoredDefinition {
-    val ver = LanguageRegistry.getLanguage("Modelica").defaultVersion.languageVersionHandler
-    val parser = ver.getParser(ver.defaultParserOptions)
-
-    return parser.parse(":dummy:", StringReader(this)) as ASTStoredDefinition
-}
+fun String.parseModelica(): ASTStoredDefinition =
+    ModelicaParsingHelper.DEFAULT.parse(this, ":dummy")
 
 fun Node.assertBounds(bline: Int, bcol: Int, eline: Int, ecol: Int) {
     this::getBeginLine shouldBe bline

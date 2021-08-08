@@ -80,12 +80,9 @@ class Foo {
     }
 })
 
-fun String.parseScala(): ASTSource {
-    val ver = LanguageRegistry.getLanguage("Scala").defaultVersion.languageVersionHandler
-    val parser = ver.getParser(ver.defaultParserOptions)
+fun String.parseScala(): ASTSource =
+    ScalaParsingHelper.DEFAULT.parse(this, ":dummy")
 
-    return parser.parse(":dummy:", StringReader(this)) as ASTSource
-}
 
 fun Node.assertBounds(bline: Int, bcol: Int, eline: Int, ecol: Int) {
     this::getBeginLine shouldBe bline

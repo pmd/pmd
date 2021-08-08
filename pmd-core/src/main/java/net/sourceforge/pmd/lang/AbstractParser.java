@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang;
 
 import java.io.Reader;
 
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
+
 /**
  * This is a generic implementation of the Parser interface.
  *
@@ -34,4 +37,11 @@ public abstract class AbstractParser implements Parser {
     }
 
     protected abstract TokenManager createTokenManager(Reader source);
+
+    @Deprecated
+    public static Node doParse(Parser parser, String fileName, Reader source) {
+        Node rootNode = parser.parse(fileName, source);
+        rootNode.getUserMap().set(RootNode.FILE_NAME_KEY, fileName);
+        return rootNode;
+    }
 }
