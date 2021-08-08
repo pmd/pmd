@@ -12,6 +12,11 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
  * This interface can be used to tag the root node of various ASTs.
  */
 public interface RootNode extends Node {
+
+    /**
+     * The name of the file, including its extension. This
+     * excludes any segments for containing directories.
+     */
     @Experimental
     SimpleDataKey<String> FILE_NAME_KEY = DataMap.simpleDataKey("pmd.fileName");
 

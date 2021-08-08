@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang;
 
 import java.io.Reader;
+import java.nio.file.Paths;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -41,7 +42,9 @@ public abstract class AbstractParser implements Parser {
     @Deprecated
     public static Node doParse(Parser parser, String fileName, Reader source) {
         Node rootNode = parser.parse(fileName, source);
-        rootNode.getUserMap().set(RootNode.FILE_NAME_KEY, fileName);
+        // remove prefixed path segments.
+        String simpleFileName = Paths.get(fileName).getFileName().toString();
+        rootNode.getUserMap().set(RootNode.FILE_NAME_KEY, simpleFileName);
         return rootNode;
     }
 }

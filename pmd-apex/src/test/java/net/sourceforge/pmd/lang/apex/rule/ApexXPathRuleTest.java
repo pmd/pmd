@@ -30,7 +30,7 @@ public class ApexXPathRuleTest extends ApexParserTestBase {
 
     @Test
     public void testFileNameInXpath() {
-        Report report = apex.executeRule(makeXPath("/UserClass[@FileName = 'Foo.cls']"),
+        Report report = apex.executeRule(makeXPath("/UserClass[pmd:fileName() = 'Foo.cls']"),
                                          "class Foo {}",
                                          "src/Foo.cls");
 

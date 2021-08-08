@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
 
@@ -41,15 +42,12 @@ public class ApexParserTest extends ApexParserTestBase {
     }
 
     @Test
-    public void fileNameInNestedClass() {
+    public void fileName() {
         String code = "class Outer { class Inner {}}";
 
         ASTUserClass rootNode = (ASTUserClass) parse(code, "src/filename.cls");
 
-        assertEquals("filename.cls", rootNode.getFileName());
-        ASTUserClass inner = rootNode.getFirstDescendantOfType(ASTUserClass.class);
-        assertEquals("Inner", inner.getImage());
-        assertEquals("filename.cls", inner.getFileName());
+        assertEquals("filename.cls", rootNode.getUserMap().get(RootNode.FILE_NAME_KEY));
     }
 
     private String testCodeForLineNumbers =

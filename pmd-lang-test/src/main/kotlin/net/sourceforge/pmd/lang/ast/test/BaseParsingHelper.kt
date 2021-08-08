@@ -124,7 +124,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val handler = lversion.languageVersionHandler
         val options = params.parserOptions ?: handler.defaultParserOptions
         val parser = handler.getParser(options)
-        val rootNode = rootClass.cast(parser.parse(fileName, StringReader(sourceCode)))
+        val rootNode = rootClass.cast(AbstractParser.doParse(parser, fileName, StringReader(sourceCode)))
         if (params.doProcess) {
             handler.getQualifiedNameResolutionFacade(javaClass.classLoader).start(rootNode)
             handler.getSymbolFacade(javaClass.classLoader).start(rootNode)

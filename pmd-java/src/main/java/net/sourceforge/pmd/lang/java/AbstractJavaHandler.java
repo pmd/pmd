@@ -62,6 +62,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
         return new DefaultASTXPathHandler() {
             @Override
             public void initialize() {
+                super.initialize();
                 TypeOfFunction.registerSelfInSimpleContext();
                 GetCommentOnFunction.registerSelfInSimpleContext();
                 MetricFunction.registerSelfInSimpleContext();
@@ -71,6 +72,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
 
             @Override
             public void initialize(IndependentContext context) {
+                super.initialize(context);
                 super.initialize(context, LanguageRegistry.getLanguage(JavaLanguageModule.NAME), JavaFunctions.class);
             }
         };
