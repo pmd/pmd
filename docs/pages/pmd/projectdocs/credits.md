@@ -432,6 +432,7 @@ author: Tom Copeland <tom@infoether.org>
 *   Alan Hohn - for adding Standard and modified cyclomatic complexity rules
 *   Jan van Nunen - for adding CPD support for Matlab, Objective-C, Python, Scala and various bug fixes
 *   Juan Martín Sotuyo Dodero - for many bugfixes/pull requests improving Java grammar and performance
+*   Nathan Reynolds - AvoidAssertRule
 
 ## Organizations
 
