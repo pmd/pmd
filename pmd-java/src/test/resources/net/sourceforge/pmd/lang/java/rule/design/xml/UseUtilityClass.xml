@@ -121,14 +121,14 @@ public class FooTest extends TestSuite {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
+@SuiteClasses(FooTest.class)
 public class FooTest {
-    public static Test suite() {
-        return new TestSuite();
-    }
 }
-        ]]></code>
+            ]]></code>
     </test-code>
 
     <test-code>
@@ -226,19 +226,17 @@ public class MyException extends RuntimeException {
         <description>#1467 UseUtilityClass can't correctly check functions with multiple annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class AccountFragment extends Fragment {
+public class AccountFragment {
 
     public static AccountFragment newInstance() {
-        AccountFragment instance = new AccountFragment();
-        //OTHER STUFF
-        return instance;
+        // ...
+        return new AccountFragment();
     }
 
-    @Nullable
+    @SafeVarargs
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-        Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.mylayout, container, false);
+    public void onCreateView() {
+        // ...
     }
 }
         ]]></code>
@@ -269,21 +267,6 @@ import static lombok.AccessLevel.PRIVATE;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
-public class Foo {
-    public static Foo get() {
-        return null;
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Lombok NoArgsConstructor no import- ok</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class Foo {
     public static Foo get() {
         return null;

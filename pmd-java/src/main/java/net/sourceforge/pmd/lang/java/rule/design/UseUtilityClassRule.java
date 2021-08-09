@@ -41,7 +41,6 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
             || klass.isAbstract()
             || klass.getSuperClassTypeNode() != null
             || klass.getSuperInterfaceTypeNodes().nonEmpty()
-            //    || JavaRuleUtil.isUtilityClass(node)
         ) {
             return data;
         }
