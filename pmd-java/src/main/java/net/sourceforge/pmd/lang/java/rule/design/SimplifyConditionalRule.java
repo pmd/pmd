@@ -40,12 +40,12 @@ public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
             if (isInfixExprWithOperator(node.getParent(), CONDITIONAL_AND)) {
                 // a != null && a instanceof T
                 negated = false;
-                nullCheckExpr =  getOtherOperandIfInInfixExpr(node);
+                nullCheckExpr = getOtherOperandIfInInfixExpr(node);
             } else if (isBooleanNegation(node.getParent())
                 && isInfixExprWithOperator(node.getParent().getParent(), CONDITIONAL_OR)) {
                 // a == null || a instanceof T
                 negated = true;
-                nullCheckExpr =  getOtherOperandIfInInfixExpr(node.getParent());
+                nullCheckExpr = getOtherOperandIfInInfixExpr(node.getParent());
             } else {
                 return null;
             }
