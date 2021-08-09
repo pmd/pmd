@@ -159,7 +159,7 @@
     <rule ref="category/java/design.xml/SimplifyBooleanReturns"/>
     <!-- <rule ref="category/java/design.xml/SimplifyConditional"/> -->
     <rule ref="category/java/design.xml/SingularField"/>
-    <!-- <rule ref="category/java/design.xml/SwitchDensity"/> -->
+    <rule ref="category/java/design.xml/SwitchDensity"/>
     <!-- <rule ref="category/java/design.xml/TooManyFields"/> -->
     <!-- <rule ref="category/java/design.xml/TooManyMethods"/> -->
     <!-- <rule ref="category/java/design.xml/UseObjectForClearerAPI"/> -->
