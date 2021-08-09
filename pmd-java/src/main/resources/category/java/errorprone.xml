@@ -129,6 +129,28 @@ public class Violation {
         </example>
     </rule>
 
+    <rule name="AvoidAssert"
+          language="java"
+          since="6.38"
+          message="Avoid using assert"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidAssertRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidassert">
+        <description>
+For test code, use the JUnit or TestNG Assert class since it cannot be disabled like the assert keyword.
+For production code, it requires 3 test cases to cover all scenarios:
+1) The assert defaults to disabled.  In this case, the assert's condition is not executed.  
+2) If asserts are enabled, the assert's condition can evaluate to true and the condition may introduce side-effects that must be tested.
+3) If asserts are enabled, the assert's condition can evaluate to false and the exception handling must be tested.
+An if statement is a better choice since it cannot be disabled and hence reduces the need for 1 test case.
+        </description>
+        <priority>2</priority>
+        <example>
+<![CDATA[
+assert changeState() : "The state did not change";
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidAssertAsIdentifier"
           language="java"
           since="3.4"
