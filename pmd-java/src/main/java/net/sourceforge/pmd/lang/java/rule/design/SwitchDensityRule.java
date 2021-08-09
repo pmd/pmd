@@ -36,7 +36,7 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
                        .build();
 
     public SwitchDensityRule() {
-        super(ASTSwitchStatement.class);
+        super(ASTSwitchStatement.class, ASTSwitchExpression.class);
         definePropertyDescriptor(REPORT_LEVEL);
     }
 
