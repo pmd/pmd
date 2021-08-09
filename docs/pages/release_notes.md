@@ -14,10 +14,22 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New rules
+
+This release ships with 1 new Java rule.
+
+*   java-errorprone
+    *   [`AvoidAssert`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_errorprone.html#avoidassert) reports usages of assert.  An if statement is a better choice since it cannot be disabled and hence reduces the need for 1 test case.
+    
+```xml
+    <rule ref="category/java/errorprone.xml/AvoidAssert" />
+```
+
 ### Fixed Issues
 
 *   java-bestpractices
     *   [#3403](https://github.com/pmd/pmd/issues/3403): \[java] MethodNamingConventions junit5TestPattern does not detect parameterized tests
+    
 
 ### API Changes
 
