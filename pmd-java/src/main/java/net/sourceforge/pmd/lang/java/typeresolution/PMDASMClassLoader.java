@@ -47,6 +47,11 @@ public final class PMDASMClassLoader extends ClassLoader implements NullableClas
      */
     private final ConcurrentMap<String, Boolean> dontBother = new ConcurrentHashMap<>();
 
+    /**
+     * Caches the names of the classes and loaded classes that we can reuse instead of loading the same class.
+     */
+    private final ConcurrentMap<String,Class<?>> loadedClasses = new ConcurrentHashMap<>();
+    
     static {
         registerAsParallelCapable();
     }
@@ -81,15 +86,20 @@ public final class PMDASMClassLoader extends ClassLoader implements NullableClas
     /**
      * Not throwing CNFEs to represent failure makes a huge performance
      * difference. Typeres as a whole is 2x faster.
+     * By reusing the already loaded class, the performance enhances.
      */
     @Override
     public Class<?> loadClassOrNull(String name) {
         if (dontBother.containsKey(name)) {
             return null;
         }
-
+        if (this.loadedClasses .containsKey(name)) {
+            return this.loadedClasses.get(name);
+        }
         try {
-            return super.loadClass(name);
+            Class<?> loadedClass = super.loadClass(name);
+            this.loadedClasses.put(name, loadedClass);
+            return loadedClass;
         } catch (ClassNotFoundException | LinkageError e) {
             dontBother.put(name, Boolean.TRUE);
             return null;
