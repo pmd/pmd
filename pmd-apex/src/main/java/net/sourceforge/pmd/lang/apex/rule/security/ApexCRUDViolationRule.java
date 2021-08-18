@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
@@ -96,6 +97,17 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
+
+    @Override
+    public void start(RuleContext ctx) {
+        varToTypeMapping.clear();
+        typeToDMLOperationMapping.clear();
+        checkedTypeToDMLOperationViaESAPI.clear();
+        classMethods.clear();
+        className = null;
+        super.start(ctx);
+    }
+
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -246,7 +258,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             checkForAccessibility(soql, data);
         }
 
-        return data;
+        return super.visit(node, data);
     }
 
     private void addVariableToMapping(final String variableName, final String type) {
@@ -539,7 +551,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
 
-    private void validateCRUDCheckPresent(final ApexNode<?> node, final Object data, final String crudMethod,
+    private boolean validateCRUDCheckPresent(final ApexNode<?> node, final Object data, final String crudMethod,
             final String typeCheck) {
         boolean missingKey = !typeToDMLOperationMapping.containsKey(typeCheck);
         boolean isImproperDMLCheck = !isProperESAPICheckForDML(typeCheck, crudMethod);
@@ -548,6 +560,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             //if condition returns true, add violation, otherwise return.
             if (isImproperDMLCheck && noSecurityEnforced) {
                 addViolation(data, node);
+                return true;
             }
         } else {
             boolean properChecksHappened = false;
@@ -566,8 +579,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
             if (!properChecksHappened) {
                 addViolation(data, node);
+                return true;
             }
         }
+        return false;
     }
 
     private void checkForAccessibility(final ASTSoqlExpression node, Object data) {
@@ -591,7 +606,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         if (wrappingMethod != null) {
             returnType = getReturnType(wrappingMethod);
         }
-
+        boolean violationAdded = false;
         final ASTVariableDeclaration variableDecl = node.getFirstParentOfType(ASTVariableDeclaration.class);
         if (variableDecl != null) {
             String type = variableDecl.getType();
@@ -600,13 +615,18 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                     .append(":").append(type);
 
             if (typesFromSOQL.isEmpty()) {
-                validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
+                violationAdded = validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
             } else {
                 for (String typeFromSOQL : typesFromSOQL) {
-                    validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
+                    violationAdded = validateCRUDCheckPresent(node, data, ANY, typeFromSOQL) || violationAdded;
                 }
             }
 
+        }
+
+        // If the node's already in violation, we don't need to keep checking.
+        if (violationAdded) {
+            return;
         }
 
         final ASTAssignmentExpression assignment = node.getFirstParentOfType(ASTAssignmentExpression.class);
@@ -617,10 +637,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 if (varToTypeMapping.containsKey(variableWithClass)) {
                     String type = varToTypeMapping.get(variableWithClass);
                     if (typesFromSOQL.isEmpty()) {
-                        validateCRUDCheckPresent(node, data, ANY, type);
+                        violationAdded = validateCRUDCheckPresent(node, data, ANY, type);
                     } else {
                         for (String typeFromSOQL : typesFromSOQL) {
-                            validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
+                            violationAdded = validateCRUDCheckPresent(node, data, ANY, typeFromSOQL) || violationAdded;
                         }
                     }
                 }
@@ -628,15 +648,25 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
         }
 
+        // If the node's already in violation, we don't need to keep checking.
+        if (violationAdded) {
+            return;
+        }
+
         final ASTReturnStatement returnStatement = node.getFirstParentOfType(ASTReturnStatement.class);
         if (returnStatement != null) {
             if (typesFromSOQL.isEmpty()) {
-                validateCRUDCheckPresent(node, data, ANY, returnType);
+                violationAdded = validateCRUDCheckPresent(node, data, ANY, returnType);
             } else {
                 for (String typeFromSOQL : typesFromSOQL) {
-                    validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
+                    violationAdded = validateCRUDCheckPresent(node, data, ANY, typeFromSOQL) || violationAdded;
                 }
             }
+        }
+
+        // If the node's already in violation, we don't need to keep checking.
+        if (violationAdded) {
+            return;
         }
 
         final ASTForEachStatement forEachStatement = node.getFirstParentOfType(ASTForEachStatement.class);
