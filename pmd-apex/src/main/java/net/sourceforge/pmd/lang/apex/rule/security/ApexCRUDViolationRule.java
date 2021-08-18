@@ -100,6 +100,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     @Override
     public void start(RuleContext ctx) {
+        // At the start of each rule execution, these member variables need to be fresh. So they're initialized in the
+        // .start() method instead of the constructor, since .start() is called before every execution.
         varToTypeMapping = new HashMap<>();
         typeToDMLOperationMapping = ArrayListMultimap.create();
         checkedTypeToDMLOperationViaESAPI = new HashMap<>();
