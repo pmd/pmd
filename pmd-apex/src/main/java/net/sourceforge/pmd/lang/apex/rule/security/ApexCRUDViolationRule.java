@@ -86,10 +86,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private static final Pattern WITH_SECURITY_ENFORCED = Pattern.compile("(?is).*[^']\\s*WITH\\s+SECURITY_ENFORCED\\s*[^']*");
 
-    private final Map<String, String> varToTypeMapping = new HashMap<>();
-    private final ListMultimap<String, String> typeToDMLOperationMapping = ArrayListMultimap.create();
-    private final Map<String, String> checkedTypeToDMLOperationViaESAPI = new HashMap<>();
-    private final Map<String, ASTMethod> classMethods = new WeakHashMap<>();
+    private Map<String, String> varToTypeMapping;
+    private ListMultimap<String, String> typeToDMLOperationMapping;
+    private Map<String, String> checkedTypeToDMLOperationViaESAPI;
+    private Map<String, ASTMethod> classMethods;
     private String className;
 
     public ApexCRUDViolationRule() {
@@ -100,10 +100,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     @Override
     public void start(RuleContext ctx) {
-        varToTypeMapping.clear();
-        typeToDMLOperationMapping.clear();
-        checkedTypeToDMLOperationViaESAPI.clear();
-        classMethods.clear();
+        varToTypeMapping = new HashMap<>();
+        typeToDMLOperationMapping = ArrayListMultimap.create();
+        checkedTypeToDMLOperationViaESAPI = new HashMap<>();
+        classMethods = new WeakHashMap<>();
         className = null;
         super.start(ctx);
     }
@@ -618,7 +618,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 violationAdded = validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
             } else {
                 for (String typeFromSOQL : typesFromSOQL) {
-                    violationAdded = validateCRUDCheckPresent(node, data, ANY, typeFromSOQL) || violationAdded;
+                    violationAdded |= validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
                 }
             }
 
@@ -640,7 +640,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                         violationAdded = validateCRUDCheckPresent(node, data, ANY, type);
                     } else {
                         for (String typeFromSOQL : typesFromSOQL) {
-                            violationAdded = validateCRUDCheckPresent(node, data, ANY, typeFromSOQL) || violationAdded;
+                            violationAdded |= validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
                         }
                     }
                 }
@@ -659,7 +659,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 violationAdded = validateCRUDCheckPresent(node, data, ANY, returnType);
             } else {
                 for (String typeFromSOQL : typesFromSOQL) {
-                    violationAdded = validateCRUDCheckPresent(node, data, ANY, typeFromSOQL) || violationAdded;
+                    violationAdded |= validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
                 }
             }
         }
