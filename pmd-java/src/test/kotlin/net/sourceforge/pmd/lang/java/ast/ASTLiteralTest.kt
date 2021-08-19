@@ -46,7 +46,7 @@ class ASTLiteralTest : ParserTestSpec({
         }
     }
 
-    parserTest("Text block literal", javaVersions = since(J15__PREVIEW)) {
+    parserTest("Text block literal", javaVersions = since(J15)) {
 
         val delim = "\"\"\""
 

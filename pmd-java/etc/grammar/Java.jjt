@@ -1,4 +1,9 @@
 /**
+ * Promote "JEP 409: Sealed Classes" as permanent language feature with Java 17.
+ * Support "JEP 406: Pattern Matching for switch (Preview)" for Java 17 Preview.
+ * Remove support for Java 15 preview language features
+ * Andreas Dangel 07/2021
+ *====================================================================
  * Fix #3117 - infinite loop when parsing invalid code nested in lambdas
  * Andreas Dangel 03/2021
  *====================================================================
@@ -298,7 +303,7 @@ class JavaParserImpl {
   }
 
   private boolean isSealedClassSupported() {
-      return jdkVersion == 15 && preview || jdkVersion == 16 && preview;
+      return jdkVersion == 16 && preview || jdkVersion >= 17;
   }
 
   /**
@@ -310,6 +315,7 @@ class JavaParserImpl {
    * See also comment at #Expression().
    */
   private boolean inSwitchLabel = false;
+
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -371,7 +377,7 @@ class JavaParserImpl {
       return false;
   }
 
-  private boolean classModifierLookahead() {
+  private boolean classModifierForLocalTypesLookahead() {
       Token next = getToken(1);
       return next.kind == AT
         || next.kind == PUBLIC
@@ -380,9 +386,7 @@ class JavaParserImpl {
         || next.kind == ABSTRACT
         || next.kind == STATIC
         || next.kind == FINAL
-        || next.kind == STRICTFP
-        || isSealedClassSupported() && isKeyword("sealed")
-        || isSealedClassSupported() && isNonSealedModifier();
+        || next.kind == STRICTFP;
   }
 
   private boolean localTypeDeclAfterModifiers() {
@@ -397,9 +401,7 @@ class JavaParserImpl {
   }
 
   private boolean localTypeDeclGivenNextIsIdent() {
-      return localTypesSupported() && (
-          isNonSealedModifier() || isRecordStart() || isEnumStart()
-      );
+      return localTypesSupported() && (isRecordStart() || isEnumStart());
   }
 
   /**
@@ -1714,6 +1716,31 @@ void EqualityExpression() #void:
   )*
 }
 
+void Pattern() #void:
+{}
+{
+    PrimaryPattern() [ GuardedPatternCondition() #GuardedPattern(2) ]
+}
+
+void GuardedPatternCondition() #void:
+{}
+{
+    "&&" ConditionalAndExpression()
+}
+
+void PrimaryPattern() #void:
+{}
+{
+    TypePattern()
+    | "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
+}
+
+void TypePattern():
+{}
+{
+  LocalVarModifierList() ReferenceType() VariableDeclaratorId()
+}
+
 void InstanceOfExpression() #void:
 {}
 {
@@ -1721,9 +1748,11 @@ void InstanceOfExpression() #void:
     LOOKAHEAD(1)
     ("instanceof"
         (
-            AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
+              AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
             |
-            ( LocalVarModifierList() ReferenceType() VariableDeclaratorId() ) #TypePattern(3)
+              LOOKAHEAD("final" | "@") PrimaryPattern()
+            |
+              LOOKAHEAD("(") Pattern()
         )
         {
             jjtThis.setOp(BinaryOp.INSTANCEOF);
@@ -2405,11 +2434,21 @@ void SwitchLabel() :
 {
 { inSwitchLabel = true; }
 (
-  "case" ConditionalExpression() ( "," ConditionalExpression() )*
+  "case" CaseLabelElement(jjtThis) ( "," CaseLabelElement(jjtThis) )*
 |
   "default" {jjtThis.setDefault();}
 )
 { inSwitchLabel = false; }
+}
+
+void CaseLabelElement(ASTSwitchLabel label) #void:
+{}
+{
+    "default" {label.setDefault();}
+    |
+    LOOKAHEAD(Pattern()) Pattern()
+    |
+    ConditionalExpression()
 }
 
 void YieldStatement() :

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 /**
  * @author Clément Fournier
  */
-final class AstLocalVarSym extends AbstractAstVariableSym implements JLocalVariableSymbol {
+public final class AstLocalVarSym extends AbstractAstVariableSym implements JLocalVariableSymbol {
 
     AstLocalVarSym(ASTVariableDeclaratorId node, AstSymFactory factory) {
         super(node, factory);

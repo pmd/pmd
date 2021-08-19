@@ -12,9 +12,9 @@ import java.io.IOException
 
 class ASTPatternTest : ProcessorTestSpec({
 
-    val typePatternsVersions = JavaVersion.since(J16).plus(J15__PREVIEW)
+    val typePatternsVersions = JavaVersion.since(J16)
 
-    parserTest("Test patterns only available on JDK 15 (preview) and JDK16 and JDK16 (preview)",
+    parserTest("Test patterns only available on JDK16 and JDK16 (preview) and JDK17 and JDK 17 (preview)",
         javaVersions = JavaVersion.except(typePatternsVersions)) {
 
         inContext(ExpressionParsingCtx) {

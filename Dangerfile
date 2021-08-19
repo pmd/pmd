@@ -12,7 +12,7 @@ def get_args(base_branch, autogen = TRUE, patch_config = './pmd/.ci/files/all-ja
    '--patch-branch', 'HEAD',
    '--patch-config', patch_config,
    '--mode', 'online',
-   autogen ? '--auto-gen-config' : '--filter-with-patch-config',
+   # autogen ? '--auto-gen-config' : '--filter-with-patch-config',
    '--keep-reports',
    '--error-recovery',
    '--baseline-download-url', 'https://pmd-code.org/pmd-regression-tester/',

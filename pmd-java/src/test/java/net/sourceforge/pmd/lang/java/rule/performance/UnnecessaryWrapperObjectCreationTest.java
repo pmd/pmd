@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-@org.junit.Ignore("Rule has not been updated yet")
 public class UnnecessaryWrapperObjectCreationTest extends PmdRuleTst {
     // no additional unit tests
 }

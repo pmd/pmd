@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -58,7 +59,7 @@ public class CoreCliTest {
 
         assertTrue("Report file should exist", Files.exists(reportFile));
 
-        runPmdSuccessfully("-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+        runPmdSuccessfully("-no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
 
         assertNotEquals(readString(reportFile), STRING_TO_REPLACE);
     }
@@ -69,13 +70,32 @@ public class CoreCliTest {
 
         assertFalse("Report file should not exist", Files.exists(reportFile));
 
-        runPmdSuccessfully("-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+        runPmdSuccessfully("-no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
 
         assertTrue("Report file should have been created", Files.exists(reportFile));
     }
 
+    /**
+     * This tests to create the report file in the current working directory.
+     *
+     * <p>Note: We can't change the cwd in the running VM, so the file will not be created
+     * in the temporary folder, but really in the cwd. The test fails if a file already exists
+     * and makes sure to cleanup the file afterwards.
+     */
+    @Test
+    public void testRelativeReportFile() throws IOException {
+        String reportFile = "reportFile.txt";
+        Path absoluteReportFile = FileSystems.getDefault().getPath(reportFile).toAbsolutePath();
+        // verify the file doesn't exist yet - we will delete the file at the end!
+        assertFalse("Report file must not exist yet!", Files.exists(absoluteReportFile));
 
-
+        try {
+            runPmdSuccessfully("-no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+            assertTrue("Report file should have been created", Files.exists(absoluteReportFile));
+        } finally {
+            Files.deleteIfExists(absoluteReportFile);
+        }
+    }
 
 
 
