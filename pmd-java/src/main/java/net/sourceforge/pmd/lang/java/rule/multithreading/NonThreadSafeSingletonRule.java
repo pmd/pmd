@@ -10,28 +10,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
-public class NonThreadSafeSingletonRule extends AbstractJavaRule {
-
-    private Map<String, ASTFieldDeclaration> fieldDecls = new HashMap<>();
-
-    private boolean checkNonStaticMethods = true;
-    private boolean checkNonStaticFields = true;
+public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_METHODS_DESCRIPTOR =
             booleanProperty("checkNonStaticMethods")
@@ -42,70 +38,61 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
                     .desc("Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.")
                     .defaultValue(false).build();
 
+    private Map<String, ASTFieldDeclaration> fieldDecls = new HashMap<>();
+
+    private boolean checkNonStaticMethods = true;
+    private boolean checkNonStaticFields = true;
 
     public NonThreadSafeSingletonRule() {
+        super(ASTFieldDeclaration.class, ASTMethodDeclaration.class);
         definePropertyDescriptor(CHECK_NON_STATIC_METHODS_DESCRIPTOR);
         definePropertyDescriptor(CHECK_NON_STATIC_FIELDS_DESCRIPTOR);
     }
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
+    public void start(RuleContext ctx) {
         fieldDecls.clear();
         checkNonStaticMethods = getProperty(CHECK_NON_STATIC_METHODS_DESCRIPTOR);
         checkNonStaticFields = getProperty(CHECK_NON_STATIC_FIELDS_DESCRIPTOR);
-        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        if (checkNonStaticFields || node.isStatic()) {
-            fieldDecls.put(node.getVariableName(), node);
+        if (checkNonStaticFields || node.hasModifiers(JModifier.STATIC)) {
+            for (ASTVariableDeclaratorId varId : node.getVarIds()) {
+                fieldDecls.put(varId.getName(), node);
+            }
         }
-        return super.visit(node, data);
+        return data;
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-
-        if (checkNonStaticMethods && !node.isStatic() || node.isSynchronized()) {
-            return super.visit(node, data);
+        if (checkNonStaticMethods && !node.hasModifiers(JModifier.STATIC) || node.hasModifiers(JModifier.SYNCHRONIZED)) {
+            return data;
         }
 
-        List<ASTIfStatement> ifStatements = node.findDescendantsOfType(ASTIfStatement.class);
+        List<ASTIfStatement> ifStatements = node.descendants(ASTIfStatement.class).toList();
         for (ASTIfStatement ifStatement : ifStatements) {
-            if (ifStatement.getFirstParentOfType(ASTSynchronizedStatement.class) == null) {
-                if (!ifStatement.hasDescendantOfType(ASTNullLiteral.class)) {
+            if (ifStatement.ancestors(ASTSynchronizedStatement.class).isEmpty()) {
+                if (ifStatement.getCondition().descendants(ASTNullLiteral.class).isEmpty()) {
                     continue;
                 }
-                ASTName n = ifStatement.getFirstDescendantOfType(ASTName.class);
-                if (n == null || !fieldDecls.containsKey(n.getImage())) {
+                ASTNamedReferenceExpr n = ifStatement.getCondition().descendants(ASTNamedReferenceExpr.class).first();
+                if (n == null || !fieldDecls.containsKey(n.getName())) {
                     continue;
                 }
-                List<ASTAssignmentOperator> assignments = ifStatement
-                        .findDescendantsOfType(ASTAssignmentOperator.class);
+                List<ASTAssignmentExpression> assignments = ifStatement.descendants(ASTAssignmentExpression.class).toList();
                 boolean violation = false;
-                for (int ix = 0; ix < assignments.size(); ix++) {
-                    ASTAssignmentOperator oper = assignments.get(ix);
-                    if (!(oper.getParent() instanceof ASTStatementExpression)) {
-                        continue;
-                    }
-                    ASTStatementExpression expr = (ASTStatementExpression) oper.getParent();
-                    if (expr.getChild(0) instanceof ASTPrimaryExpression
-                            && ((ASTPrimaryExpression) expr.getChild(0)).getNumChildren() == 1
-                            && ((ASTPrimaryExpression) expr.getChild(0))
-                                    .getChild(0) instanceof ASTPrimaryPrefix) {
-                        ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ((ASTPrimaryExpression) expr.getChild(0))
-                                .getChild(0);
-                        String name = null;
-                        if (pp.usesThisModifier()) {
-                            ASTPrimarySuffix priSuf = expr.getFirstDescendantOfType(ASTPrimarySuffix.class);
-                            name = priSuf.getImage();
-                        } else {
-                            ASTName astName = (ASTName) pp.getChild(0);
-                            name = astName.getImage();
-                        }
-                        if (fieldDecls.containsKey(name)) {
-                            violation = true;
+                for (ASTAssignmentExpression assignment : assignments) {
+                    ASTAssignableExpr left = assignment.getLeftOperand();
+                    if (left instanceof ASTNamedReferenceExpr) {
+                        JVariableSymbol referencedSym = ((ASTNamedReferenceExpr) left).getReferencedSym();
+                        if (referencedSym instanceof JFieldSymbol) {
+                            String name = ((ASTNamedReferenceExpr) left).getName();
+                            if (fieldDecls.containsKey(name)) {
+                                violation = true;
+                            }
                         }
                     }
                 }
@@ -114,6 +101,6 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
                 }
             }
         }
-        return super.visit(node, data);
+        return data;
     }
 }
