@@ -402,15 +402,16 @@
                     </configuration>
                     <dependencies>
                         <!-- Note: we can't use a property for the version here due to https://issues.apache.org/jira/browse/MRELEASE-932 -->
+                        <!-- We use the comment "pmd.dogfood.version" as a marker and manually change the version - see .ci/build.sh -->
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.37.0</version>
+                            <version>6.37.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.37.0</version>
+                            <version>6.37.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -1050,33 +1051,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>pmd-dogfood</id>
-            <properties>
-                <pmd.dogfood.version>${project.version}</pmd.dogfood.version>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-pmd-plugin</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>net.sourceforge.pmd</groupId>
-                                <artifactId>pmd-core</artifactId>
-                                <version>${pmd.dogfood.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>net.sourceforge.pmd</groupId>
-                                <artifactId>pmd-java</artifactId>
-                                <version>${pmd.dogfood.version}</version>
-                            </dependency>
-                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
