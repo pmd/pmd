@@ -3534,7 +3534,7 @@ Thread.currentThread().getContextClassLoader() instead.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//PrimarySuffix[@Image='getClassLoader'] | //PrimaryPrefix[ends-with(Name/@Image, '.getClassLoader')]</value>
+                <value>//MethodCall[pmd-java:matchesSig("java.lang.Class#getClassLoader()")]</value>
             </property>
         </properties>
         <example>

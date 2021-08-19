@@ -9,7 +9,7 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() { ClassLoader cl = SomeClass.class.getClassLoader(); }
+    void bar() { ClassLoader cl = Foo.class.getClassLoader(); }
 }
         ]]></code>
     </test-code>
