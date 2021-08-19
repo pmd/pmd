@@ -14,6 +14,10 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 
 @Deprecated
 @InternalApi
+// we use "null" if the constraint reduces to false. If we return a empty list, this indicates,
+// that the constraint reduces to true without bounds. If there are bounds, then the returned list
+// is not empty.
+@SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
 public enum InferenceRuleType {
 
     /**
