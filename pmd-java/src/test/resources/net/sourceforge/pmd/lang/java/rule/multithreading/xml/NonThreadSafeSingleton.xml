@@ -174,4 +174,24 @@ class A extends B {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive with correct double checked pattern</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static volatile Object o;
+    public static Object getO() {
+        if (o == null) {
+            synchronized(Foo.class) {
+                if (o == null) {
+                    o = new Object();
+                }
+            }
+        }
+        return o;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
