@@ -1920,20 +1920,11 @@ If the finalize() is implemented, its last action should be to call super.finali
 <!-- in English: a method declaration of finalize(), with no arguments, containing
 a block whose last statement is NOT a call to super.finalize -->
 <![CDATA[
-//MethodDeclaration[@Name='finalize'][@Arity = 0]
-   /Block
-      /BlockStatement[last()]
-      [not(Statement/StatementExpression/PrimaryExpression
-            [./PrimaryPrefix[@SuperModifier= true()]]
-            [./PrimarySuffix[@Image='finalize']]
-          )
-      ]
-      [not(Statement/TryStatement/FinallyStatement
-       /Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
-            [./PrimaryPrefix[@SuperModifier= true()]]
-            [./PrimarySuffix[@Image='finalize']]
-          )
-      ]
+//MethodDeclaration[@Name = "finalize"][@Arity = 0]
+   /Block/*[last()]
+      [not(MethodCall[@MethodName = "finalize"]/SuperExpression)]
+      [not(FinallyClause/Block/ExpressionStatement/
+          MethodCall[@MethodName = "finalize"]/SuperExpression)]
 ]]>
                 </value>
             </property>
@@ -1963,12 +1954,7 @@ If the finalize() is implemented, it should do something besides just calling su
                 <value>
 <![CDATA[
 //MethodDeclaration[@Name='finalize'][@Arity = 0]
-   /Block[count(BlockStatement)=1]
-     /BlockStatement[
-       Statement/StatementExpression/PrimaryExpression
-       [./PrimaryPrefix[@SuperModifier= true()]]
-       [./PrimarySuffix[@Image='finalize']]
-     ]
+   [Block[@Size=1]/ExpressionStatement/MethodCall[@MethodName = "finalize"][SuperExpression]]
 ]]>
                 </value>
             </property>
@@ -2032,7 +2018,7 @@ Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Protected=false()][@Name='finalize'][@Arity = 0]
+//MethodDeclaration[@Visibility != "protected"][@Name='finalize'][@Arity = 0]
 ]]>
                 </value>
             </property>
@@ -2123,12 +2109,9 @@ Avoid instantiating an object just to call getClass() on it; use the .class publ
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimarySuffix
- [@Image='getClass']
- [parent::PrimaryExpression
-  [PrimaryPrefix/AllocationExpression]
-  [count(PrimarySuffix) = 2]
- ]
+//MethodCall
+ [@MethodName='getClass']
+ [ConstructorCall]
 ]]>
                 </value>
             </property>
@@ -2364,8 +2347,7 @@ chain needs an own serialVersionUID field. See also [Should an abstract class ha
 <![CDATA[
 //ClassOrInterfaceDeclaration
     [@Interface = false()]
-    [count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-        /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Name='serialVersionUID']) = 0]
+    [count(ClassOrInterfaceBody/FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Name='serialVersionUID']) = 0]
     [(ImplementsList | ExtendsList)/ClassOrInterfaceType[pmd-java:typeIs('java.io.Serializable')]]
 ]]>
                 </value>
@@ -2546,7 +2528,7 @@ confusing.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Initializer[@Static=false()][not(ancestor::*[3][self::AllocationExpression or self::EnumConstant])]
+//Initializer[@Static=false()][not(ancestor::*[3][self::ConstructorCall or self::EnumConstant])]
 ]]>
                 </value>
             </property>
