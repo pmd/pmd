@@ -219,6 +219,7 @@ public class TryWithResources {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>[java] UseTryWithResources - false negative for explicit close #2882</description>
         <expected-problems>1</expected-problems>
@@ -275,5 +276,119 @@ public class TryWithResources {
                 }
             }
             ]]></code>
+    </test-code>
+
+    <code-fragment id="issue-3235"><![CDATA[
+import java.io.IOException;
+import java.io.Reader;
+
+class Scratch {
+    public static int count(AutoCloseable iterator) {
+        int count = 0;
+        try {
+            count++;
+        } finally {
+            iterator.close();
+        }
+        return count;
+    }
+}
+
+class Holder implements AutoCloseable {
+   private Reader reader;
+   public void close() throws IOException {
+      try {
+         someOtherActivity();
+      } finally {
+         reader.close();
+      }
+   }
+   private void someOtherActivity() throws IOException {
+     // do stuff
+   }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>[java] UseTryWithResources false positive when closeable is provided as a method argument or class field #3235 before java 9</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="issue-3235"/>
+        <source-type>java 1.8</source-type>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseTryWithResources false positive when closeable is provided as a method argument or class field #3235</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,19</expected-linenumbers>
+        <code-ref id="issue-3235"/>
+    </test-code>
+
+    <code-fragment id="issue-3235-with-local-var"><![CDATA[
+import java.io.IOException;
+import java.io.Reader;
+
+class Scratch {
+    public static int count() {
+        AutoCloseable iterator;
+        int count = 0;
+        try {
+            count++;
+        } finally {
+            iterator.close();
+        }
+        return count;
+    }
+}
+
+class Holder implements AutoCloseable {
+   public void close() throws IOException {
+      Reader reader;
+      try {
+         someOtherActivity();
+      } finally {
+         reader.close();
+      }
+   }
+   private void someOtherActivity() throws IOException {
+     // do stuff
+   }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>[java] UseTryWithResources with local var and before java 9 #3235</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,20</expected-linenumbers>
+        <code-ref id="issue-3235-with-local-var"/>
+        <source-type>java 1.8</source-type>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseTryWithResources with local var and latest java #3235</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,20</expected-linenumbers>
+        <code-ref id="issue-3235-with-local-var"/>
+    </test-code>
+
+    <test-code>
+        <description>NPE when determining closeTarget</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.InputStream;
+import java.io.IOException;
+
+public class UseTryWithResources {
+    public void read(InputStream is, boolean close) throws IOException {
+        try {
+            is.read();
+        } finally {
+            if (close) {
+                is.close();
+            }
+        }
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

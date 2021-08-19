@@ -7,6 +7,7 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Bar {
     void foo(float value) {
@@ -31,6 +32,7 @@ public class Bar {
     <test-code>
         <description>failure case for 1.5+</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Bar {
     void foo(boolean value) {
@@ -43,6 +45,7 @@ public class Bar {
     <test-code>
         <description>Patch 2075906: Add toString() to the rule UnnecessaryWrapperObjectCreation</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Bar {
     void foo(boolean value) {
@@ -55,11 +58,28 @@ public class Bar {
     <test-code>
         <description>#1057 False positive for UnnecessaryWrapperObjectCreation</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Test {
     public void test() {
         Float.valueOf(5).toString(); // this will raise the rule
         Float.toString(5); // this is the preferred way
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE with static method call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Locale;
+
+public enum SampleEnum {
+    A;
+
+    public static SampleEnum getInstance(String name) {
+        return valueOf(SampleEnum.class, name.trim().toUpperCase(Locale.ENGLISH));
     }
 }
         ]]></code>

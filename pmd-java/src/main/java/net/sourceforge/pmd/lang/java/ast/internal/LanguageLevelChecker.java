@@ -22,13 +22,16 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
@@ -137,8 +140,28 @@ public class LanguageLevelChecker<T> {
         /**
          * @see <a href="https://openjdk.java.net/jeps/360">JEP 360: Sealed Classes (Preview)</a>
          * @see <a href="https://openjdk.java.net/jeps/397">JEP 397: Sealed Classes (Second Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/409">JEP 409: Sealed Classes</a>
          */
-        SEALED_CLASSES(15, 16, false),
+        SEALED_CLASSES(15, 16, true),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+         */
+        PATTERN_MATCHING_FOR_SWITCH(17, 17, false),
+
+        /**
+         * Part of pattern matching for switch
+         * @see #PATTERN_MATCHING_FOR_SWITCH
+         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+         */
+        GUARDED_PATTERNS(17, 17, false),
+
+        /**
+         * Part of pattern matching for switch
+         * @see #PATTERN_MATCHING_FOR_SWITCH
+         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+         */
+        NULL_CASE_LABELS(17, 17, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -492,6 +515,12 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
+        public Void visit(ASTGuardedPattern node, T data) {
+            check(node, PreviewFeature.GUARDED_PATTERNS, data);
+            return null;
+        }
+
+        @Override
         public Void visit(ASTTryStatement node, T data) {
             if (node.isTryWithResources()) {
                 if (check(node, RegularLanguageFeature.TRY_WITH_RESOURCES, data)) {
@@ -528,6 +557,18 @@ public class LanguageLevelChecker<T> {
         public Void visit(ASTSwitchLabel node, T data) {
             if (IteratorUtil.count(node.iterator()) > 1) {
                 check(node, RegularLanguageFeature.COMPOSITE_CASE_LABEL, data);
+            }
+            if (node.isDefault() && "case".equals(node.getFirstToken().getImage())) {
+                check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
+            }
+            if (node.getFirstChild() instanceof ASTGuardedPattern) {
+                check(node, PreviewFeature.GUARDED_PATTERNS, data);
+            }
+            if (node.getFirstChild() instanceof ASTPattern) {
+                check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
+            }
+            if (node.getFirstChild() instanceof ASTNullLiteral) {
+                check(node, PreviewFeature.NULL_CASE_LABELS, data);
             }
             return null;
         }
