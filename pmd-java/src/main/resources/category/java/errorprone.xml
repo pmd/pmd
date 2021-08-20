@@ -3465,38 +3465,29 @@ class Test {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselocalewithcaseconversions">
         <description>
-            When doing `String::toLowerCase()/toUpperCase()` conversions, use an explicit locale argument to specify the case transformation rules.
+When doing `String::toLowerCase()/toUpperCase()` conversions, use an explicit locale argument to specify the case
+transformation rules.
 
-            Using `String::toLowerCase()` without arguments implicitly uses `Locale::getDefault()`.
-            The problem is that the default locale depends on the current JVM setup (and usually on the system in which it is running).
-            Using the system default may be exactly what you want (e.g. if you are manipulating strings you got through standard input),
-            but it may as well not be the case (e.g. if you are getting the string over the network or a file, and the encoding is well-defined
-            and independent of the environment). In the latter case, using the default locale makes the case transformation brittle, as
-            it may yield unexpected results on a machine whose locale has other case translation rules. For example, in Turkish, the
-            uppercase form of `i` is `İ` (U+0130, not ASCII) and not `I` (U+0049) as in English.
+Using `String::toLowerCase()` without arguments implicitly uses `Locale::getDefault()`.
+The problem is that the default locale depends on the current JVM setup (and usually on the system in which
+it is running). Using the system default may be exactly what you want (e.g. if you are manipulating strings
+you got through standard input), but it may as well not be the case (e.g. if you are getting the string over
+the network or a file, and the encoding is well-defined and independent of the environment). In the latter case,
+using the default locale makes the case transformation brittle, as it may yield unexpected results on a machine
+whose locale has other case translation rules. For example, in Turkish, the uppercase form of `i` is `İ` (U+0130,
+not ASCII) and not `I` (U+0049) as in English.
 
-            The rule is intended to *force* developers to think about locales when dealing with strings. By taking a conscious decision about
-            the choice of locale at the time of writing, you reduce the risk of surprising behaviour down the line, and communicate your intent
-            to future readers.
+The rule is intended to *force* developers to think about locales when dealing with strings. By taking a
+conscious decision about the choice of locale at the time of writing, you reduce the risk of surprising
+behaviour down the line, and communicate your intent to future readers.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
-[
-PrimaryPrefix
-[Name[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]]
-[following-sibling::PrimarySuffix[position() = 1]/Arguments[@Size=0]]
-
-or
-
-PrimarySuffix
-[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]
-[following-sibling::PrimarySuffix[position() = 1]/Arguments[@Size=0]]
-]
-[not(PrimaryPrefix/Name[ends-with(@Image, 'toHexString')])]
+//MethodCall[pmd-java:matchesSig("java.lang.String#toLowerCase()") or pmd-java:matchesSig("java.lang.String#toUpperCase()")]
+            [not(MethodCall[@MethodName = "toHexString"])]
 ]]>
                 </value>
             </property>
