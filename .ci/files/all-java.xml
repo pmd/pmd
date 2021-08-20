@@ -267,7 +267,7 @@
     <!-- <rule ref="category/java/errorprone.xml/UnnecessaryCaseChange"/> -->
     <!-- <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary"/> -->
     <!-- <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging"/> -->
+    <rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging"/>
     <!-- <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/> -->
     <!-- <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/> -->
     <!-- <rule ref="category/java/errorprone.xml/UseProperClassLoader"/> -->
