@@ -3405,15 +3405,14 @@ public class Main {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#useequalstocomparestrings">
         <description>
 Using '==' or '!=' to compare strings only works if intern version is used on both sides.
-Use the equals() method instead.
+Use the `equals()` method instead.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//EqualityExpression
-    [count(PrimaryExpression[pmd-java:typeIs('java.lang.String')]) = 2]
+//InfixExpression[count(*[pmd-java:typeIsExactly('java.lang.String')]) = 2]
 ]]>
                 </value>
             </property>
