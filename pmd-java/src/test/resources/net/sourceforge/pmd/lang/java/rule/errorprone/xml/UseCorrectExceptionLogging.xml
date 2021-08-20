@@ -130,4 +130,29 @@ public class UseCorrectExceptionLoggingCase {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UseCorrectExceptionLogging FP in 6.31.0 #3100</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+class TestUseCorrectExceptionLogging{
+        private static Log log = LogFactory.getLog(TestUseCorrectExceptionLogging.class);
+        public void testPMD(){
+                try{
+                        //something
+                }
+                catch(Exception e){
+                        log.error(TestUseCorrectExceptionLogging.getStackTrace(e));
+                }
+        }
+
+        private static String getStackTrace(Throwable t) {
+            return "stack...";
+        }
+}
+        ]]></code>
+    </test-code>
 </test-data>
