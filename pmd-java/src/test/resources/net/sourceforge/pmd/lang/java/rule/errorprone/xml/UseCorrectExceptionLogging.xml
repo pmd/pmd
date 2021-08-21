@@ -155,4 +155,23 @@ class TestUseCorrectExceptionLogging{
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negative with string concatenation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+public class Foo {
+    static final Log _LOG = LogFactory.getLog( Foo.class );
+    void foo() {
+        try {
+        } catch (IllegalArgumentException iae) {
+            _LOG.error("wrong arg: " + iae);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
