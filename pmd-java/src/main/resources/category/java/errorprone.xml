@@ -3300,11 +3300,11 @@ it to another object's equals() method.
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement
-    //InfixExpression[@Operator = '&&']
-      /MethodCall[pmd-java:matchesSig("java.lang.Object#equals(java.lang.Object)")]
-                [ArgumentList/VariableAccess/@Name = preceding-sibling::InfixExpression/VariableAccess/@Name]
-                [preceding-sibling::InfixExpression[@Operator = '!='][NullLiteral]]
+//InfixExpression[@Operator = '&&']
+  /MethodCall[pmd-java:matchesSig("java.lang.Object#equals(java.lang.Object)")]
+             [not(StringLiteral)]
+             [not(VariableAccess[@CompileTimeConstant = true()])]
+             [ArgumentList/VariableAccess/@Name = ..//InfixExpression[@Operator = '!='][NullLiteral]/VariableAccess/@Name]
 ]]>
                 </value>
             </property>

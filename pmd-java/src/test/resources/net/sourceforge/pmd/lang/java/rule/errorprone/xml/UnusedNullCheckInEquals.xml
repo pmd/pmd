@@ -110,4 +110,51 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negative with another condition in the middle</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,7,14</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private boolean matches(String thatString, Object other, Class<?> otherClass) {
+        return thatString != null && otherClass == thatString.getClass() && other.equals(thatString);
+    }
+
+    private boolean matches_if(String thatString, Object other, Class<?> otherClass) {
+        if (thatString != null && otherClass == thatString.getClass() && other.equals(thatString)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean matches_var(String thatString, Object other, Class<?> otherClass) {
+        boolean result = thatString != null && otherClass == thatString.getClass() && other.equals(thatString);
+        return result;
+    }
+
+    private boolean matchesCorrected(String thatString, Object other, Class<?> otherClass) {
+        return thatString != null && otherClass == thatString.getClass() && thatString.equals(other);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with string literals / constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final String CONST = "";
+
+    private boolean test(String val) {
+        return val != null && "".equals(val);
+    }
+
+    private boolean test_const(String val) {
+        return val != null && CONST.equals(val);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
