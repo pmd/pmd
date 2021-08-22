@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
@@ -53,7 +54,9 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
     public Void visitSwitchLike(ASTSwitchLike node, Object data) {
         // note: this does not cross find boundaries.
         int stmtCount = node.descendants(ASTStatement.class).count();
-        int labelCount = node.getBranches().sumBy(branch -> branch.getLabel().getExprList().count());
+        int labelCount = node.getBranches()
+                .map(ASTSwitchBranch::getLabel)
+                .sumBy(label -> label.isDefault() ? 1 : label.getExprList().count());
 
         // note: if labelCount is zero, double division will produce NaN, not ArithmeticException
         double density = stmtCount / (double) labelCount;

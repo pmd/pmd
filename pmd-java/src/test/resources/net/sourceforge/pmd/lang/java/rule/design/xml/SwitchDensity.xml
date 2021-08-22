@@ -116,4 +116,26 @@ public class SwitchDensity3 {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>False positive with default label</description>
+        <rule-property name="minimum">10</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SwitchWithDefault
+{
+    public void someMethod()
+    {
+        int i = 0;
+        switch (i)
+        {
+            default:
+                i--;
+                i++;
+                break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
