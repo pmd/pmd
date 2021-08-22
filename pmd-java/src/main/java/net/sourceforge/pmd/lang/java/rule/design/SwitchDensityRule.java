@@ -45,6 +45,7 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
         return visitSwitchLike(node, data);
     }
 
+    @Override
     public Object visit(ASTSwitchExpression node, Object data) {
         return visitSwitchLike(node, data);
     }
