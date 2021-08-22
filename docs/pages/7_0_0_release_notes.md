@@ -100,6 +100,7 @@ conversions that may be made implicit.
 * {% rule "java/codestyle/UseDiamondOperator" %}: the property `java7Compatibility` is removed. The rule now handles Java 7
   properly without a property.
 * {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed. The rule is now more precise and will check these cases properly.
+* {% rule "java/design/UseUtilityClass" %}: The property `ignoredAnnotations` has been removed.
 
 #### Deprecated Rules
 
