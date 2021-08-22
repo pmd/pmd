@@ -1352,22 +1352,22 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
     is deprecated in favour of {% rule "java/bestpractices/UnusedAssignment" %} (`java-bestpractices`),
     which was introduced in PMD 6.26.0.
 
-*   The java rule {% rule "java/codestyle/DefaultPackage" %} has been deprecated in favor of
+*   The java rule `DefaultPackage` (java-codestyle) has been deprecated in favor of
     {% rule "java/codestyle/CommentDefaultAccessModifier" %}.
 
-*   The Java rule {% rule "java/errorprone/CloneThrowsCloneNotSupportedException" %} has been deprecated without
+*   The Java rule `CloneThrowsCloneNotSupportedException` (java-errorprone) has been deprecated without
     replacement.
 
 *   The following Java rules are deprecated and removed from the quickstart ruleset,
     as the new rule {% rule java/bestpractices/SimplifiableTestAssertion %} merges
     their functionality:
-    * {% rule java/bestpractices/UseAssertEqualsInsteadOfAssertTrue %}
-    * {% rule java/bestpractices/UseAssertNullInsteadOfAssertTrue %}
-    * {% rule java/bestpractices/UseAssertSameInsteadOfAssertTrue %}
-    * {% rule java/bestpractices/UseAssertTrueInsteadOfAssertEquals %}
-    * {% rule java/design/SimplifyBooleanAssertion %}
+    * `UseAssertEqualsInsteadOfAssertTrue` (java-bestpractices)
+    * `UseAssertNullInsteadOfAssertTrue` (java-bestpractices)
+    * `UseAssertSameInsteadOfAssertTrue` (java-bestpractices)
+    * `UseAssertTrueInsteadOfAssertEquals` (java-bestpractices)
+    * `SimplifyBooleanAssertion` (java-design)
 
-*   The Java rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
+*   The Java rule `ReturnEmptyArrayRatherThanNull` (java-errorprone) is deprecated and removed from
     the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
     supersedes it.
 
