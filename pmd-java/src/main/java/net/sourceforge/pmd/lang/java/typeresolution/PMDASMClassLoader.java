@@ -50,7 +50,7 @@ public final class PMDASMClassLoader extends ClassLoader implements NullableClas
     /**
      * Caches the names of the classes and loaded classes that we can reuse instead of loading the same class.
      */
-    private final ConcurrentMap<String,Class<?>> loadedClasses = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Class<?>> loadedClasses = new ConcurrentHashMap<>();
     
     static {
         registerAsParallelCapable();
@@ -93,7 +93,7 @@ public final class PMDASMClassLoader extends ClassLoader implements NullableClas
         if (dontBother.containsKey(name)) {
             return null;
         }
-        if (this.loadedClasses .containsKey(name)) {
+        if (this.loadedClasses.containsKey(name)) {
             return this.loadedClasses.get(name);
         }
         try {
