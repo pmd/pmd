@@ -403,54 +403,6 @@ while (true) {  // preferred approach
         </example>
     </rule>
 
-    <rule name="DefaultPackage"
-          deprecated="true"
-          language="java"
-          since="3.4"
-          message="Use explicit scoping instead of the default package private level"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#defaultpackage">
-        <description>
-Use explicit scoping instead of accidental usage of default package private level.
-The rule allows methods and fields annotated with Guava's @VisibleForTesting and JUnit 5's annotations.
-
-This rule is deprecated since PMD 6.35.0. It assumes that any usage of package-access is accidental,
-and by doing so, prohibits using a really fundamental and useful feature of the language.
-
-To satisfy the rule, you have to make the member public even if it doesn't need to, or make it protected,
-which muddies your intent even more if you don't intend the class to be extended, and may be at odds with
-other rules like {% rule "java/codestyle/AvoidProtectedFieldInFinalClass" %}.
-
-The rule {% rule "java/codestyle/CommentDefaultAccessModifier" %} should be used instead. This rule flags
-the same thing, but has an escape hatch.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[@Interface= false()]
-/ClassOrInterfaceBody
-/*[ self::FieldDeclaration or self::MethodDeclaration ]
-[@Visibility = "package"]
-[ not( pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.RepeatedTest')
-    or pmd-java:hasAnnotation('org.junit.jupiter.params.ParameterizedTest')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.TestFactory')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.TestTemplate')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.BeforeAll')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.AfterAll')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.BeforeEach')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.AfterEach')
-    or pmd-java:hasAnnotation('com.google.common.annotations.VisibleForTesting')
-  )
-]
-]]>
-                </value>
-            </property>
-        </properties>
-    </rule>
-
     <rule name="EmptyMethodInAbstractClassShouldBeAbstract"
           language="java"
           since="4.1"

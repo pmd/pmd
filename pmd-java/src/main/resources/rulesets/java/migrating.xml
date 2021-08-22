@@ -24,9 +24,9 @@ rather, use a wrapper ruleset such as migrating_to_13.xml.
     <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap" deprecated="true" />
     <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList" deprecated="true" />
 
-    <rule ref="category/java/performance.xml/ByteInstantiation" deprecated="true" />
-    <rule ref="category/java/performance.xml/IntegerInstantiation" deprecated="true" />
-    <rule ref="category/java/performance.xml/LongInstantiation" deprecated="true" />
-    <rule ref="category/java/performance.xml/ShortInstantiation" deprecated="true" />
+<!--    <rule ref="category/java/performance.xml/ByteInstantiation" deprecated="true" />-->
+<!--    <rule ref="category/java/performance.xml/IntegerInstantiation" deprecated="true" />-->
+<!--    <rule ref="category/java/performance.xml/LongInstantiation" deprecated="true" />-->
+<!--    <rule ref="category/java/performance.xml/ShortInstantiation" deprecated="true" />-->
 
 </ruleset>

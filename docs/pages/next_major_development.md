@@ -1374,13 +1374,13 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
 *   The following Java rules are deprecated and removed from the quickstart ruleset,
     as the new rule {% rule java/bestpractices/PrimitiveWrapperInstantiation %} merges
     their functionality:
-    * {% rule java/performance/BooleanInstantiation %}
-    * {% rule java/performance/ByteInstantiation %}
-    * {% rule java/performance/IntegerInstantiation %}
-    * {% rule java/performance/LongInstantiation %}
-    * {% rule java/performance/ShortInstantiation %}
+    * java/performance/BooleanInstantiation
+    * java/performance/ByteInstantiation
+    * java/performance/IntegerInstantiation
+    * java/performance/LongInstantiation
+    * java/performance/ShortInstantiation
 
-*   The Java rule {% rule java/performance/UnnecessaryWrapperObjectCreation %} is deprecated
+*   The Java rule java/performance/UnnecessaryWrapperObjectCreation is deprecated
     with no planned replacement before PMD 7. In it's current state, the rule is not useful
     as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
     in the same expression. In PMD 7 this and more cases will be covered by a

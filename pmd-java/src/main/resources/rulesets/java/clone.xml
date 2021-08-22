@@ -12,7 +12,7 @@ The Clone Implementation ruleset contains a collection of rules that find questi
     <rule ref="category/java/errorprone.xml/CloneMethodMustBePublic" deprecated="true" />
     <rule ref="category/java/errorprone.xml/CloneMethodMustImplementCloneable" deprecated="true" />
     <rule ref="category/java/errorprone.xml/CloneMethodReturnTypeMustMatchClassName" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/CloneThrowsCloneNotSupportedException" deprecated="true" />
+<!--    <rule ref="category/java/errorprone.xml/CloneThrowsCloneNotSupportedException" deprecated="true" />-->
     <rule ref="category/java/errorprone.xml/ProperCloneImplementation" deprecated="true" />
 
 </ruleset>

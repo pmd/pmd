@@ -637,8 +637,6 @@ k = i * j;      // set k with 80 not 120
         </example>
     </rule>
 
-    <rule name="BadComparison" ref="ComparisonWithNaN" deprecated="true" />
-
     <rule name="BeanMembersShouldSerialize"
           language="java"
           since="1.1"
@@ -964,53 +962,6 @@ public class Foo implements Cloneable {
 public class Foo implements Cloneable {
     @Override
     public Foo clone() { //Ok
-    }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="CloneThrowsCloneNotSupportedException"
-          deprecated="true"
-          language="java"
-          since="1.9"
-          message="clone() method should throw CloneNotSupportedException"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception">
-        <description>
-The method clone() should throw a CloneNotSupportedException.
-
-This rule is deprecated since PMD 6.35.0 without replacement. The rule has no real value as
-`CloneNotSupportedException` is a checked exception and therefore you need to deal with it while
-implementing the `clone()` method. You either need to declare the exception or catch it. If you catch it,
-then subclasses can't throw it themselves explicitly. However, `Object.clone()` will still throw this
-exception if the `Cloneable` interface is not implemented.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration
-[
-@Name = 'clone'
-and @Arity = 0
-and count(NameList/Name[contains
-(@Image,'CloneNotSupportedException')]) = 0
-]
-[
-../../../../ClassOrInterfaceDeclaration[@Final = false()]
-]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class MyClass implements Cloneable{
-    public Object clone() { // will cause an error
-         MyClass clone = (MyClass)super.clone();
-         return clone;
     }
 }
 ]]>
@@ -2127,10 +2078,6 @@ Class c = String.class;
         </example>
     </rule>
 
-    <rule name="InvalidSlf4jMessageFormat"
-          ref="category/java/errorprone.xml/InvalidLogMessageFormat"
-          deprecated="true" />
-
     <rule name="InvalidLogMessageFormat"
           language="java"
           since="5.5.0"
@@ -2326,8 +2273,6 @@ public class Foo {
 ]]>
         </example>
     </rule>
-
-    <rule name="MissingBreakInSwitch" ref="ImplicitSwitchFallThrough" deprecated="true"/>
 
     <rule name="MissingSerialVersionUID"
           language="java"
@@ -2683,54 +2628,6 @@ public class Foo {
     private static final Log LOG = LogFactory.getLog(Foo.class);    // proper way
 
     protected Log LOG = LogFactory.getLog(Testclass.class);         // wrong approach
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="ReturnEmptyArrayRatherThanNull"
-          language="java"
-          since="4.2"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          deprecated="true"
-          message="Return an empty array rather than 'null'."
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#returnemptyarrayratherthannull">
-        <description>
-For any method that returns an array, it is a better to return an empty array rather than a
-null reference. This removes the need for null checking all results and avoids inadvertent
-NullPointerExceptions.
-
-Deprecated since PMD 6.37.0, use {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} instead.
-        </description>
-        <priority>1</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration
-[
-(./ResultType/Type[@ArrayType= true()])
-and
-(./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
-]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class Example {
-    // Not a good idea...
-    public int[] badBehavior() {
-        // ...
-        return null;
-    }
-
-    // Good behavior
-    public String[] bonnePratique() {
-        //...
-        return new String[0];
-    }
 }
 ]]>
         </example>
