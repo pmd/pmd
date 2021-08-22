@@ -1099,12 +1099,12 @@ public void foo() throws Exception {
     <rule name="SimplifiedTernary"
           language="java"
           since="5.4.0"
-          message="Ternary operators that can be simplified with || or &amp;&amp;"
+          message="This conditional expression can be simplified with || or &amp;&amp;"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifiedternary">
         <description>
 <![CDATA[
-Look for ternary operators with the form `condition ? literalBoolean : foo`
+Reports ternary expression with the form `condition ? literalBoolean : foo`
 or `condition ? foo : literalBoolean`.
 
 These expressions can be simplified respectively to
@@ -1120,9 +1120,7 @@ or
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConditionalExpression[not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
-|
-//ConditionalExpression[not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
+//ConditionalExpression[BooleanLiteral and not(NullLiteral)]
 ]]>
                 </value>
             </property>
