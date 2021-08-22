@@ -1613,6 +1613,86 @@ information from the AST.</p>
 
 <!-- Generates the documentation of XPath functions. -->
 
+<h3 id="any-language">Any language</h3>
+
+<p>Any language functions are in the namespace <code class="language-plaintext highlighter-rouge">pmd</code>.</p>
+
+<div class="table-responsive">
+    <table width="100%">
+
+        <thead>
+        <tr>
+            <th>Function name</th>
+            <th>Description (click for details)</th>
+            <th></th>
+        </tr>
+        </thead>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-fileName" data-target="#pmd-fileName-expand" class="accordion-toggle">
+
+            <td>fileName</td>
+            <td>Returns the current filename</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-fileName-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-fileName">
+                            <span class="fun-ns">pmd:</span><span class="fun-name">fileName</span><span class="fun-ns">() as xs:string</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns the current simple filename without path but including the extension. This can be used to write rules that check filename naming conventions.
+<p>This function is available since PMD 6.38.0.</p></dd>
+                                <dt>Remarks</dt>
+                                <dd>The function can be called on any node.</dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//b[pmd:fileName() = 'Foo.xml']</code></dt>
+                                        <dd>Matches any <code>&lt;b&gt;</code> tags in files called <code>Foo.xml</code>.</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+    </table>
+
+</div>
+
+<!-- Generates the documentation of XPath functions. -->
+
 <h3 id="java">Java</h3>
 
 <p>Java functions are in the namespace <code class="language-plaintext highlighter-rouge">pmd-java</code>.</p>
@@ -1871,7 +1951,7 @@ deprecated and whose usages should be replaced with uses of <code class="languag
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Aug 19, 2021 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Aug 22, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
