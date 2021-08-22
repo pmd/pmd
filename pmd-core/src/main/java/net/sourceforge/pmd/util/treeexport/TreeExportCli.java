@@ -22,6 +22,7 @@ import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -174,7 +175,7 @@ public class TreeExportCli {
         Logger.getLogger(Attribute.class.getName()).setLevel(Level.OFF);
 
         try (Reader reader = source) {
-            Node root = parser.parse(file, reader);
+            Node root = AbstractParser.doParse(parser, file, reader);
             languageHandler.getQualifiedNameResolutionFacade(this.getClass().getClassLoader()).start(root);
 
             renderer.renderSubtree(root, System.out);

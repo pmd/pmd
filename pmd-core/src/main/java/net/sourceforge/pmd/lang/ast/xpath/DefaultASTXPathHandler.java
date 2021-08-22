@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast.xpath;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.xpath.internal.FileNameXPathFunction;
 
 import net.sf.saxon.sxpath.IndependentContext;
 
@@ -15,11 +16,12 @@ public class DefaultASTXPathHandler extends AbstractASTXPathHandler {
 
     @Override
     public void initialize() {
-        // override if needed
+        FileNameXPathFunction.registerSelfInSimpleContext();
     }
 
     @Override
     public void initialize(IndependentContext context) {
         // override if needed
     }
+
 }

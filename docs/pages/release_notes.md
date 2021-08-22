@@ -16,6 +16,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   core
+    *   [#3446](https://github.com/pmd/pmd/issues/3446): \[core] Allow XPath rules to access the current file name
 *   java-bestpractices
     *   [#3403](https://github.com/pmd/pmd/issues/3403): \[java] MethodNamingConventions junit5TestPattern does not detect parameterized tests
 

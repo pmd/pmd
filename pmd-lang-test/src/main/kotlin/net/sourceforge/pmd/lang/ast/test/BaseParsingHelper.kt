@@ -3,13 +3,12 @@
  */
 package net.sourceforge.pmd.lang.ast.test
 
-import net.sourceforge.pmd.lang.LanguageRegistry
-import net.sourceforge.pmd.lang.LanguageVersion
-import net.sourceforge.pmd.lang.LanguageVersionHandler
-import net.sourceforge.pmd.lang.ParserOptions
+import net.sourceforge.pmd.*
+import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.RootNode
 import org.apache.commons.io.IOUtils
+import java.io.File
 import java.io.InputStream
 import java.io.StringReader
 import java.nio.charset.StandardCharsets
@@ -54,12 +53,17 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * defined by the language module).
      */
     fun getVersion(version: String?): LanguageVersion {
-        val language = LanguageRegistry.getLanguage(langName)
+        val language = language
         return if (version == null) language.defaultVersion
-               else language.getVersion(version) ?: throw AssertionError("Unsupported version $version for language $language")
+        else language.getVersion(version)
+            ?: throw AssertionError("Unsupported version $version for language $language")
     }
 
-     val defaultVersion: LanguageVersion
+    val language: Language
+        get() = LanguageRegistry.getLanguage(langName)
+            ?: throw AssertionError("'$langName' is not a supported language (available ${LanguageRegistry.getLanguages()})")
+
+    val defaultVersion: LanguageVersion
         get() = getVersion(params.defaultVerString)
 
 
@@ -111,12 +115,16 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * so.
      */
     @JvmOverloads
-    open fun parse(sourceCode: String, version: String? = null): T {
+    open fun parse(
+        sourceCode: String,
+        version: String? = null,
+        fileName: String = "src/a/test-file-name.${language.extensions[0]}"
+    ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val handler = lversion.languageVersionHandler
         val options = params.parserOptions ?: handler.defaultParserOptions
         val parser = handler.getParser(options)
-        val rootNode = rootClass.cast(parser.parse(null, StringReader(sourceCode)))
+        val rootNode = rootClass.cast(AbstractParser.doParse(parser, fileName, StringReader(sourceCode)))
         if (params.doProcess) {
             handler.getQualifiedNameResolutionFacade(javaClass.classLoader).start(rootNode)
             handler.getSymbolFacade(javaClass.classLoader).start(rootNode)
@@ -134,7 +142,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      */
     @JvmOverloads
     open fun parseResource(resource: String, version: String? = null): T =
-            parse(readResource(resource), version)
+        parse(readResource(resource), version, fileName = resource)
 
     /**
      * Fetches the source of the given [clazz].
@@ -172,10 +180,44 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             sourceFile = sourceFile.substring(0, clazz.name.indexOf('$')) + ".java"
         }
         val input = javaClass.classLoader.getResourceAsStream(sourceFile)
-                ?: throw IllegalArgumentException("Unable to find source file $sourceFile for $clazz")
+            ?: throw IllegalArgumentException("Unable to find source file $sourceFile for $clazz")
 
         return consume(input)
     }
 
+
+    /**
+     * Execute the given [rule] on the [code]. Produce a report with the violations
+     * found by the rule. The language version of the piece of code is determined by the [params].
+     */
+    @JvmOverloads
+    fun executeRule(
+        rule: Rule,
+        code: String,
+        filename: String = "testfile.${language.extensions[0]}"
+    ): Report {
+        val config = PMDConfiguration().apply {
+            val marker = params.parserOptions?.suppressMarker
+            if (marker != null)
+                suppressMarker = marker
+        }
+        val processor = SourceCodeProcessor(config)
+        val ctx = RuleContext()
+        val report = Report()
+        ctx.report = report
+        ctx.sourceCodeFile = File(filename)
+        ctx.isIgnoreExceptions = false
+
+        val rules = RuleSet.forSingleRule(rule)
+        try {
+            processor.processSourceCode(StringReader(code), RuleSets(rules), ctx)
+        } catch (e: PMDException) {
+            throw e.cause!!
+        }
+        return report
+    }
+
+    fun executeRuleOnResource(rule: Rule, resourcePath: String): Report =
+        executeRule(rule, readResource(resourcePath))
 
 }

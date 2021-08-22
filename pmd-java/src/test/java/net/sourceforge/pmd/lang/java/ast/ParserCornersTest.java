@@ -36,8 +36,8 @@ public class ParserCornersTest {
     @Test
     public void testInvalidUnicodeEscape() {
         expect.expect(TokenMgrError.class); // previously Error
-        expect.expectMessage("Lexical error in file (no file name provided) at line 1, column 2.  Encountered: Invalid unicode escape");
-        java.parse("\\u00k0");
+        expect.expectMessage("Lexical error in file x/filename.java at line 1, column 2.  Encountered: Invalid unicode escape");
+        java.parse("\\u00k0", null, "x/filename.java");
     }
 
     /**

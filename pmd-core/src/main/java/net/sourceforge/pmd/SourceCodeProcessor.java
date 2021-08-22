@@ -17,6 +17,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -132,7 +133,7 @@ public class SourceCodeProcessor {
 
     private Node parse(RuleContext ctx, Reader sourceCode, Parser parser) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.PARSER)) {
-            Node rootNode = parser.parse(String.valueOf(ctx.getSourceCodeFile()), sourceCode);
+            Node rootNode = AbstractParser.doParse(parser, String.valueOf(ctx.getSourceCodeFile()), sourceCode);
             ctx.getReport().suppress(parser.getSuppressMap());
             return rootNode;
         }
