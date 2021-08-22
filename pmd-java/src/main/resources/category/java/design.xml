@@ -1215,44 +1215,12 @@ public boolean isBarEqualTo(int x) {
           language="java"
           since="3.1"
           message="No need to check for null before an instanceof"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.SimplifyConditionalRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifyconditional">
         <description>
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//Expression
- [ConditionalOrExpression
- [EqualityExpression[@Image='==']
-  //NullLiteral
-  and
-  UnaryExpressionNotPlusMinus
-   [@Image='!']//InstanceOfExpression[PrimaryExpression
-     //Name/@Image = ancestor::ConditionalOrExpression/EqualityExpression
-      /PrimaryExpression/PrimaryPrefix/Name/@Image]
-  and
-  (count(UnaryExpressionNotPlusMinus) + 1 = count(*))
- ]
-or
-ConditionalAndExpression
- [EqualityExpression[@Image='!=']//NullLiteral
- and
-InstanceOfExpression
- [PrimaryExpression[not(PrimarySuffix[@ArrayDereference= true()])]
-  //Name[not(contains(@Image,'.'))]/@Image = ancestor::ConditionalAndExpression
-   /EqualityExpression/PrimaryExpression/PrimaryPrefix/Name/@Image]
- and
-(count(InstanceOfExpression) + 1 = count(*))
- ]
-]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 class Foo {
