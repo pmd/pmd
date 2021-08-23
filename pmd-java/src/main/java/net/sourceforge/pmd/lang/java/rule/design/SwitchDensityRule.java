@@ -58,7 +58,7 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
                 .map(ASTSwitchBranch::getLabel)
                 .sumBy(label -> label.isDefault() ? 1 : label.getExprList().count());
 
-        // note: if labelCount is zero, double division will produce NaN, not ArithmeticException
+        // note: if labelCount is zero, double division will produce +Infinity or NaN, not ArithmeticException
         double density = stmtCount / (double) labelCount;
         if (density >= getProperty(REPORT_LEVEL)) {
             addViolation(data, node);
