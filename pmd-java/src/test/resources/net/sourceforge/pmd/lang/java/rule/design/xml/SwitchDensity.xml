@@ -138,4 +138,20 @@ public class SwitchWithDefault
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Empty switch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SwitchWithDefault
+{
+    public void someMethod()
+    {
+        int i = 0;
+        switch (i)
+        {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
