@@ -1050,6 +1050,38 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>No CRUD check inside for-each loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Id[] accIds = new List<Id>();
+        for (Id accId : accIds) {
+            Account acc = [SELECT Id FROM Account WHERE Id = :accId];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check inside for-each loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Id[] accIds = new List<Id>();
+        if (Account.sObjectType.getDescribe().isAccessible()) {
+            for (Id accId : accIds) {
+                Account a = [SELECT Id FROM Account WHERE Id = :accId];
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Proper CRUD check in SOQL for-loop with security enforced</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

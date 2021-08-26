@@ -29,6 +29,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
+import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -147,7 +148,7 @@ public final class Benchmarker {
 
         for (DataSource ds : dataSources) {
             try (DataSource dataSource = ds; InputStreamReader reader = new InputStreamReader(dataSource.getInputStream())) {
-                parser.parse(dataSource.getNiceFileName(false, null), reader);
+                AbstractParser.doParse(parser, dataSource.getNiceFileName(false, null), reader);
             }
         }
 

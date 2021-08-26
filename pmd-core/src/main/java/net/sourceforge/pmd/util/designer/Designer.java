@@ -105,6 +105,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SourceCodeProcessor;
+import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -199,7 +200,8 @@ public class Designer implements ClipboardOwner {
 
     static Node getCompilationUnit(LanguageVersionHandler languageVersionHandler, String code) {
         Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
-        Node node = parser.parse(null, new StringReader(code));
+        Node node = AbstractParser.doParse(parser, "no file name", new StringReader(code));
+
         languageVersionHandler.getSymbolFacade().start(node);
         languageVersionHandler.getTypeResolutionFacade(Designer.class.getClassLoader()).start(node);
         return node;

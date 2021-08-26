@@ -23,7 +23,7 @@ public class ApexTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void safeNavigationOperator() throws Exception {
+    public void safeNavigationOperator() {
         doTest("SafeNavigationOperator");
     }
 }

@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.FileNameXPathFunction;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
 
@@ -38,6 +39,15 @@ public class ApexParserTest extends ApexParserTestBase {
         // Verify
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
         assertEquals(4, methods.size());
+    }
+
+    @Test
+    public void fileName() {
+        String code = "class Outer { class Inner {}}";
+
+        ASTUserClass rootNode = (ASTUserClass) parse(code, "src/filename.cls");
+
+        assertEquals("filename.cls", rootNode.getUserMap().get(FileNameXPathFunction.FILE_NAME_KEY));
     }
 
     private String testCodeForLineNumbers =
