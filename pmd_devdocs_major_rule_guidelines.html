@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="keywords" content="devdocs,  ">
-<title>Building PMD from source | PMD Source Code Analyzer</title>
+<meta name="description" content="Guidelines for rules that are included in the standard distribution">
+<meta name="keywords" content="devdocsextending,  ">
+<title>Guidelines for standard rules | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
 
@@ -140,7 +140,7 @@
                                 searchInput: document.getElementById('search-input'),
                                 resultsContainer: document.getElementById('results-container'),
                                 dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Building PMD from source">{title}</a></li>',
+                                searchResultTemplate: '<li><a href="{url}" title="Guidelines for standard rules">{title}</a></li>',
                     noResultsText: 'No results found.',
                             limit: 10,
                             fuzzy: true,
@@ -1088,7 +1088,7 @@
             
 
                 
-                <li class="active"><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
+                <li><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
                 
 
             
@@ -1179,7 +1179,7 @@
                         
                         
                         
-                        <li><a href="pmd_devdocs_major_rule_guidelines.html">Rule Guidelines</a></li>
+                        <li class="active"><a href="pmd_devdocs_major_rule_guidelines.html">Rule Guidelines</a></li>
                         
                         
                         
@@ -1392,13 +1392,15 @@
         <!-- Content Column -->
         <div class="col-md-9" id="tg-sb-content">
             <div class="post-header">
-   <h1 class="post-title-main">Building PMD from source</h1>
+   <h1 class="post-title-main">Guidelines for standard rules</h1>
 </div>
 
 
 
 <div class="post-content">
 
+   
+    <div class="summary">Guidelines for rules that are included in the standard distribution</div>
    
 
     
@@ -1423,97 +1425,104 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
         
         
         
-        <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/devdocs/building.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+        <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/devdocs/major_contributions/rule_guidelines.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
         
 
     
 
-  <!-- Gives visibility -->
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> TODO add IDE specific indications</div>
+  <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> 
+These guidelines are new and most rules don’t follow these guidelines yet.
+The goal is, that eventually all rules are updated.
+</div>
 
-<h1 id="compiling-pmd">Compiling PMD</h1>
-
-<ul>
-  <li>JDK 11 or higher</li>
-</ul>
-
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> While Java 11 is required for building, running PMD only requires Java 7
-(or Java 8 for Apex, JavaScript, Scala, Visualforce, and the Designer).</div>
-
-<p>You’ll need to either check out the source code or download the latest source release. Assuming you’ve got the latest source release, unzip it to a directory:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ ls -l
-total 5716
--rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-6.38.0-SNAPSHOT.zip
-[tom@hal building]$ unzip -q pmd-src-6.38.0-SNAPSHOT.zip
-[tom@hal building]$
-</code></pre></div></div>
-
-<p>Now cd down into the <code class="language-plaintext highlighter-rouge">pmd</code> directory:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ cd pmd-src-6.38.0-SNAPSHOT
-[tom@hal pmd-src-6.38.0-SNAPSHOT]$ ls -l | grep pom.xml
--rw-rw-r--    1 tom      tom          36482 14\. Nov 17:36 pom.xml
-[tom@hal pmd-src-6.38.0-SNAPSHOT]$
-</code></pre></div></div>
-
-<p>That’s the project configuration for maven… let’s compile!</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal pmd-src-6.38.0-SNAPSHOT]$ ./mvnw clean verify
-[INFO] Scanning for projects...
-[INFO] ------------------------------------------------------------------------
-[INFO] Reactor Build Order:
-[INFO]
-[INFO] PMD
-[INFO] PMD Core
-...
-... after a few minutes ...
-[INFO] ------------------------------------------------------------------------
-[INFO] Reactor Summary:
-[INFO]
-[INFO] PMD ................................................ SUCCESS [  3.061 s]
-[INFO] PMD Core ........................................... SUCCESS [ 25.675 s]
-[INFO] PMD Test Framework ................................. SUCCESS [  0.457 s]
-[INFO] PMD C++ ............................................ SUCCESS [  1.893 s]
-[INFO] PMD C# ............................................. SUCCESS [  0.619 s]
-[INFO] PMD Fortran ........................................ SUCCESS [  0.609 s]
-[INFO] PMD Go ............................................. SUCCESS [  0.103 s]
-[INFO] PMD Java ........................................... SUCCESS [01:08 min]
-[INFO] PMD JavaScript ..................................... SUCCESS [  3.279 s]
-[INFO] PMD JSP ............................................ SUCCESS [  3.944 s]
-[INFO] PMD Matlab ......................................... SUCCESS [  1.342 s]
-[INFO] PMD Objective-C .................................... SUCCESS [  2.281 s]
-[INFO] PMD PHP ............................................ SUCCESS [  0.536 s]
-[INFO] PMD PL/SQL ......................................... SUCCESS [ 10.973 s]
-[INFO] PMD Python ......................................... SUCCESS [  1.758 s]
-[INFO] PMD Ruby ........................................... SUCCESS [  0.438 s]
-[INFO] PMD Velocity ....................................... SUCCESS [  3.941 s]
-[INFO] PMD XML and XSL .................................... SUCCESS [  2.174 s]
-[INFO] PMD Scala .......................................... SUCCESS [ 11.901 s]
-[INFO] PMD Distribution Packages .......................... SUCCESS [ 11.366 s]
-[INFO] PMD Java 8 Integration ............................. SUCCESS [  0.560 s]
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time: 02:36 min
-[INFO] Finished at: 2015-11-14T17:46:06+01:00
-[INFO] Final Memory: 63M/765M
-[INFO] ------------------------------------------------------------------------
-[tom@hal pmd-src-6.38.0-SNAPSHOT]$
-</code></pre></div></div>
-
-<p>Now the source and binary distribution zip files can be found in the folder <code class="language-plaintext highlighter-rouge">pmd-dist/target</code>.</p>
-
-<p><strong>Notes:</strong></p>
+<h2 id="why-do-we-need-these-guidelines">Why do we need these guidelines?</h2>
 
 <ul>
-  <li>The rules that have already been written are specified in the <code class="language-plaintext highlighter-rouge">src/main/resources/rulesets/</code> directories of
-the specific languages, e.g. <code class="language-plaintext highlighter-rouge">pmd-java/src/main/resources/rulesets</code>.
-They’re also in the jar file that’s included with both the source and binary distributions.</li>
+  <li>To prevent low quality contributions</li>
+  <li>To reduce time reviewing rules</li>
 </ul>
 
-<p>A paucity of detail, I’m sure you’d agree. If you think this document can be improved,
-please post <a href="http://sourceforge.net/p/pmd/discussion/188192">here</a> and let me know how. Thanks!</p>
+<p>They just apply to rules included in the standard distribution.</p>
+
+<h2 id="requirements-for-standard-rules">Requirements for standard rules</h2>
+
+<p>To be included in stock PMD, a rule needs</p>
+
+<ul>
+  <li>Broad applicability. It may be specific to a framework, but then, this framework should be widely used</li>
+  <li>Solid documentation. See below</li>
+  <li>If it’s a performance rule: solid benchmarks. No micro-optimization rules</li>
+  <li>No overlap with other rules</li>
+</ul>
+
+<h2 id="dosdonts-rule-rules">Dos/Don’ts (rule rules)</h2>
+
+<ul>
+  <li>Rule naming
+    <ul>
+      <li><strong>Don’t</strong> put the implementation of the rule in the name, because it will be awkward
+if the scope of the rule changes
+        <ul>
+          <li>Eg. <em>SwitchStmtShouldHaveDefault</em> -&gt; since enums are a thing they don’t necessarily
+need to have a default anymore, they should be exhaustive. So the rule name lies now…</li>
+          <li>Eg. <em>MissingBreakInSwitch</em> -&gt; it’s obvious that this is supposed to find fall-through
+switches. Counting breaks is not a clever way to do it, but since it’s in the name
+we can’t change it without renaming the rule.</li>
+        </ul>
+      </li>
+      <li><strong>Do</strong> use rule names that name the underlying problem that violations exhibit
+        <ul>
+          <li>Eg. instead of <em>SwitchStmtShouldHaveDefault</em>, use <em>NonExhaustiveSwitchStatement</em> -&gt; this
+is the problem, the description of the rule will clarify why it is a problem and how
+to fix it (add a default, or add branches, or something else in the future)</li>
+          <li>Eg. instead of <em>MissingBreakInSwitch</em>, use <em>SwitchCaseFallsThrough</em></li>
+        </ul>
+      </li>
+      <li><strong>Don’t</strong> create several rules for instances of the same problem
+        <ul>
+          <li><em>EmptyIfStmt</em> and <em>EmptyWhileStmt</em> are actually the same problem, namely,
+that there’s useless syntax in the tree.</li>
+        </ul>
+      </li>
+      <li><strong>Don’t</strong> limit the rule name to strictly what the rule can do today
+        <ul>
+          <li>Eg. <em>UnusedPrivateField</em> is a bad name. The problem is that there is an unused field,
+not that it is private as well. If we had the ability to find unused package-private
+fields, we would report them too. So if one day we get that ability,
+using a name like <em>UnusedField</em> would allow us to keep the name.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Rule messages
+    <ul>
+      <li><strong>Do</strong> write rule messages that neutrally point out a problem or construct that should
+be reviewed (“Unnecessary parentheses”)</li>
+      <li><strong>Don’t</strong> write rule messages that give an order (“Avoid unnecessary parentheses”)
+especially without explaining why, like here</li>
+      <li><strong>Don’t</strong> write rule messages that are tautological (“Unnecessary parentheses should be removed”).
+The answer to this would be an annoyed “yes I know, so what?”.</li>
+    </ul>
+  </li>
+  <li><strong>Do</strong> use Markdown in rule descriptions and break lines at a reasonable 80 chars</li>
+  <li><strong>Do</strong> thoroughly comment rule examples. It must be obvious where to look</li>
+  <li><strong>Do</strong> comment your xpath expressions too</li>
+</ul>
+
+<h2 id="rule-description-template">Rule description template</h2>
+
+<ul>
+  <li>What the rule reports (1 summary line)</li>
+  <li>Why the rule exists and where it might be useful (including, since which language version, etc)</li>
+  <li>Blank line</li>
+  <li>Explain all assumptions that the rule makes and keywords used in the previous paragraph.
+(“overridden methods are ignored”, “for the purposes of this rule, a ‘visible’ field is
+non-private”).</li>
+  <li>Describe known limitations if any</li>
+  <li>Blank line</li>
+  <li>For each property, explain how it modifies the assumptions and why you would want to use it.
+<strong>If you can’t explain why it’s there then it shouldn’t be there!</strong></li>
+</ul>
 
 
     <div class="tags">
@@ -1523,6 +1532,10 @@ please post <a href="http://sourceforge.net/p/pmd/discussion/188192">here</a> an
         
         
         <a href="tag_devdocs.html" class="btn btn-default navbar-btn cursorNorm" role="button">devdocs</a>
+        
+        
+        
+        <a href="tag_extending.html" class="btn btn-default navbar-btn cursorNorm" role="button">extending</a>
         
         
         
@@ -1538,7 +1551,7 @@ please post <a href="http://sourceforge.net/p/pmd/discussion/188192">here</a> an
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 27, 2021 <br />
+<span>Page last updated:</span> August, 2021<br/> Site last generated: Aug 27, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

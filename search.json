@@ -5468,6 +5468,22 @@
 
 
 {
+"title": "Guidelines for standard rules",
+"tags": "devdocsextending",
+"keywords": "",
+"url": "pmd_devdocs_major_rule_guidelines.html",
+"summary": "Guidelines for rules that are included in the standard distribution"
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "Rule guidelines",
 "tags": "extendinguserdocs",
 "keywords": "",
