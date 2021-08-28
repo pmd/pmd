@@ -397,6 +397,9 @@ entries:
       - title: Major contributions
         output: web, pdf
         subfolderitems:
+        - title: Rule Guidelines
+          url: /pmd_devdocs_major_rule_guidelines.html
+          output: web, pdf
         - title: Adding a new language
           url: /pmd_devdocs_major_adding_new_language.html
           output: web, pdf
