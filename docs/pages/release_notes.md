@@ -12,8 +12,6 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker is_release_notes_processor %}
 
-### New and noteworthy
-
 ### Fixed Issues
 
 *   apex
@@ -24,12 +22,15 @@ This is a {{ site.pmd.release_type }} release.
 *   java-bestpractices
     *   [#3403](https://github.com/pmd/pmd/issues/3403): \[java] MethodNamingConventions junit5TestPattern does not detect parameterized tests
 
-### API Changes
-
 ### External Contributions
 
 *   [#3445](https://github.com/pmd/pmd/pull/3445): \[java] Fix #3403 about MethodNamingConventions and JUnit5 parameterized tests - [Cyril Sicard](https://github.com/CyrilSicard)
 *   [#3470](https://github.com/pmd/pmd/pull/3470): \[apex] Fix ApexCRUDViolationRule - add super call - [Josh Feingold](https://github.com/jfeingold35)
+
+### Stats
+* 32 commits
+* 8 closed tickets & PRs
+* Days since last release: 27
 
 {% endtocmaker %}
 
