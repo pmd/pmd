@@ -56,7 +56,7 @@ public class StaticField {
     <rule name="AvoidAccessibilityAlteration"
           language="java"
           since="4.1"
-          message="You should not modify visibility of class or methods using getDeclaredConstructors(), getDeclaredConstructor(Class[]), setAccessible() or PrivilegedAction."
+          message="You should not modify visibility of constructors, methods or fields using setAccessible()"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidaccessibilityalteration">
         <description>
