@@ -35,40 +35,9 @@ See also [Getting Started](https://pmd.github.io/latest/pmd_userdocs_installatio
 
 **Demo:**
 
-For this sample file:
+This shows how PMD can detect for loops, that can be replaced by for-each loops.
 
-```java
-import java.util.List;
-
-public class MyClass {
-  void loop(List<String> l) {
-    for (int i = 0; i < l.size(); i++) {
-      System.out.println(l.get(i));
-    }
-  }
-}
-```
-
-Run PMD on the command line:
-
-```bash
-$ run.sh pmd -d /usr/src -R rulesets/java/quickstart.xml -f xml
-<?xml version="1.0" encoding="UTF-8"?>
-<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd" version="6.37.0" timestamp="2021-08-20T15:26:35.564">
-<file name="/home/andreas/temp/pmd-test/MyClass.java">
-<violation beginline="3" endline="9" begincolumn="1" endcolumn="1" rule="NoPackage" ruleset="Code Style" class="MyClass" externalInfoUrl="https://pmd.github.io/pmd-6.37.0/pmd_rules_java_codestyle.html#nopackage" priority="3">
-All classes, interfaces, enums and annotations must belong to a named package
-</violation>
-<violation beginline="5" endline="7" begincolumn="5" endcolumn="5" rule="ForLoopCanBeForeach" ruleset="Best Practices" class="MyClass" method="loop" externalInfoUrl="https://pmd.github.io/pmd-6.37.0/pmd_rules_java_bestpractices.html#forloopcanbeforeach" priority="3">
-This for loop can be replaced by a foreach loop
-</violation>
-</file>
-</pmd>
-```
-
-PMD Eclipse Plugin:
-
-![Screenshot PMD Eclipse Plugin](docs/images/userdocs/screenshot_pmd-eclipse-plugin.png)
+![Demo](docs/images/userdocs/pmd-demo.gif)
 
 There are plugins for Maven and Gradle as well as for various IDEs.
 See [Tools / Integrations](https://pmd.github.io/latest/pmd_userdocs_tools.html)
