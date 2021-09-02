@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -69,7 +71,17 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
                     Expression step = newPath.getStepExpression();
                     if (step instanceof FilterExpression) {
                         FilterExpression filterExpression = (FilterExpression) newPath.getStepExpression();
-                        result = new FilterExpression(new AxisExpression(Axis.SELF, null), filterExpression.getFilter());
+
+                        Deque<Expression> filters = new ArrayDeque<>();
+                        Expression walker = filterExpression;
+                        while (walker instanceof FilterExpression) {
+                            filters.push(((FilterExpression) walker).getFilter());
+                            walker = ((FilterExpression) walker).getBaseExpression();
+                        }
+                        result = new FilterExpression(new AxisExpression(Axis.SELF, null), filters.pop());
+                        while (!filters.isEmpty()) {
+                            result = new FilterExpression(result, filters.pop());
+                        }
                         rootElementReplaced = true;
                     } else if (step instanceof AxisExpression) {
                         if (newPath.getStartExpression() instanceof RootExpression) {

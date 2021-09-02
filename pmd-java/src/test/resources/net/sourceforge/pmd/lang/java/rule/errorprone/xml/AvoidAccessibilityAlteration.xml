@@ -150,4 +150,19 @@ public class Violation {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>false positive when accessible object is used as primary prefix</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.reflect.Constructor;
+import java.util.List;
+
+public class NoViolation { {
+    List<Constructor<?>> list = new ArrayList<>();
+    Constructor<?> ctor = NoViolation.class.getConstructor();
+    list.add(ctor);
+} }
+        ]]></code>
+    </test-code>
 </test-data>
