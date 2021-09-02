@@ -24,7 +24,7 @@
       "login": "oowekyala",
       "name": "Clément Fournier",
       "avatar_url": "https://avatars.githubusercontent.com/u/24524930?v=4",
-      "profile": "https://www.linkedin.com/in/le-clement-fournier/",
+      "profile": "https://github.com/oowekyala",
       "contributions": [
         "code",
         "doc"
@@ -243,5 +243,6 @@
       ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "contributorsSortAlphabetically": true
 }

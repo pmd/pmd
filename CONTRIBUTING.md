@@ -61,7 +61,7 @@ be imported into a fresh workspace.
 
 We use [All Contributors](https://allcontributors.org/en).
 
-1. Install the CLI: `npm i -D all-contributors-cli`
+1. Install the CLI: `npm i` (in PMD's top level directory)
 2. Add yourself: `npx all-contributors add <username> <contribution>`
 
 Where `username` is your GitHub username and `contribution` is a `,`-separated list
