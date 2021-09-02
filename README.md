@@ -11,7 +11,7 @@
 
 **PMD** is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
 unnecessary object creation, and so forth. It supports many languages. It can be extended with custom rules.
-It uses JavaCC and Antlr for parsing source into AST and runs rules against it to find violations.
+It uses JavaCC and Antlr to parse source files into abstract syntax trees (AST) and runs rules against them to find violations.
 Rules can be written in Java or using a XPath query.
 
 It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
