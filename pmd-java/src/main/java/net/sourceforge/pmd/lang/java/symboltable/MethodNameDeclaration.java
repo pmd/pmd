@@ -4,45 +4,33 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import java.util.List;
+import java.util.Objects;
+
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
 
-    public MethodNameDeclaration(ASTMethodDeclarator node) {
+    public MethodNameDeclaration(ASTMethodDeclaration node) {
         super(node);
     }
 
     public int getParameterCount() {
-        return ((ASTMethodDeclarator) node).getParameterCount();
+        return getDeclarator().getArity();
     }
 
     public boolean isVarargs() {
-        ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
-        if (params.getParameterCount() == 0) {
-            return false;
-        }
-
-        // If it's a varargs, it HAS to be the last parameter
-        ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(params.getParameterCount() - 1);
-        return p.isVarargs();
-    }
-
-    public ASTMethodDeclarator getMethodNameDeclaratorNode() {
-        return (ASTMethodDeclarator) node;
+        return getDeclarator().isVarargs();
     }
 
     public String getParameterDisplaySignature() {
         StringBuilder sb = new StringBuilder("(");
-        ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
-        // TODO - this can be optimized - add [0] then ,[n] in a loop.
-        // no need to trim at the end
-        for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
+        // TODO - this can be written with Streams and Collectors::joining
+        for (ASTFormalParameter p : getDeclarator().getFormalParameters()) {
             sb.append(p.getTypeNode().getTypeImage());
             if (p.isVarargs()) {
                 sb.append("...");
@@ -56,6 +44,10 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         return sb.toString();
     }
 
+    public ASTMethodDeclaration getDeclarator() {
+        return (ASTMethodDeclaration) node;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof MethodNameDeclaration)) {
@@ -65,77 +57,56 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         MethodNameDeclaration other = (MethodNameDeclaration) o;
 
         // compare name
-        if (!other.node.getImage().equals(node.getImage())) {
+        if (!other.getName().equals(getName())) {
             return false;
         }
 
         // compare parameter count - this catches the case where there are no
         // params, too
-        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node)
-                .getParameterCount()) {
+        if (other.getParameterCount() != this.getParameterCount()) {
             return false;
         }
 
         // compare parameter types
-        ASTFormalParameters myParams = (ASTFormalParameters) node.jjtGetChild(0);
-        ASTFormalParameters otherParams = (ASTFormalParameters) other.node.jjtGetChild(0);
-        for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
-            ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.jjtGetChild(i);
+
+        List<ASTFormalParameter> myParams = IteratorUtil.toList(getDeclarator().getFormalParameters().iterator());
+        List<ASTFormalParameter> otherParams = IteratorUtil.toList(other.getDeclarator().getFormalParameters().iterator());
+
+        for (int i = 0; i < myParams.size(); i++) {
+            ASTFormalParameter myParam = myParams.get(i);
+            ASTFormalParameter otherParam = otherParams.get(i);
 
             // Compare vararg
             if (myParam.isVarargs() != otherParam.isVarargs()) {
                 return false;
             }
 
-            Node myTypeNode = myParam.getTypeNode().jjtGetChild(0);
-            Node otherTypeNode = otherParam.getTypeNode().jjtGetChild(0);
+            ASTType myTypeNode = myParam.getTypeNode();
+            ASTType otherTypeNode = otherParam.getTypeNode();
 
             // compare primitive vs reference type
             if (myTypeNode.getClass() != otherTypeNode.getClass()) {
                 return false;
             }
 
-            // simple comparison of type images
+            // fallback on simple comparison of type images
             // this can be fooled by one method using "String"
             // and the other method using "java.lang.String"
             // once we get real types in here that should get fixed
-            String myTypeImg;
-            String otherTypeImg;
-            if (myTypeNode instanceof ASTPrimitiveType) {
-                myTypeImg = myTypeNode.getImage();
-                otherTypeImg = otherTypeNode.getImage();
-            } else {
-                myTypeImg = myTypeNode.jjtGetChild(0).getImage();
-                otherTypeImg = otherTypeNode.jjtGetChild(0).getImage();
-            }
-
-            if (!myTypeImg.equals(otherTypeImg)) {
+            if (!Objects.equals(myTypeNode.getTypeImage(), otherTypeNode.getTypeImage())) {
                 return false;
             }
-
-            // if type is ASTPrimitiveType and is an array, make sure the other
-            // one is also
         }
         return true;
     }
 
     @Override
     public int hashCode() {
-        int hash = node.getImage().hashCode() * 31 + ((ASTMethodDeclarator) node).getParameterCount();
+        ASTMethodDeclaration declaration = getDeclarator();
+        int hash = declaration.getName().hashCode() * 31 + declaration.getArity();
 
-        ASTFormalParameters myParams = (ASTFormalParameters) node.jjtGetChild(0);
-        for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
-            Node myTypeNode = myParam.getTypeNode().jjtGetChild(0);
-
-            String myTypeImg;
-            if (myTypeNode instanceof ASTPrimitiveType) {
-                myTypeImg = myTypeNode.getImage();
-            } else {
-                myTypeImg = myTypeNode.jjtGetChild(0).getImage();
-            }
-
+        for (ASTFormalParameter myParam : declaration.getFormalParameters()) {
+            String myTypeImg = myParam.getTypeNode().getTypeImage();
             hash = hash * 31 + myTypeImg.hashCode();
         }
 
@@ -145,6 +116,6 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     @Override
     public String toString() {
         return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = "
-                + ((ASTMethodDeclarator) node).getParameterCount();
+                + getDeclarator().getArity();
     }
 }

@@ -1,0 +1,3546 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>NPE on nested record decl #3224</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                public record NestedRecord(int x, int y) { }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(int b) {
+        for (int i = 0; i < 10; i++) {
+            throw new Exception();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DD anomaly</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'i' is never used (overwritten on line 4)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+        i=1;
+        if (i==2) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DU anomaly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>DU anomaly (reportUnusedVariables)</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UR anomaly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i;
+        if (i == 0) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Conditional flow 0</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'j' is never used (overwritten on line 6)</message>
+            <message>The initializer for variable 'z' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(int i) {
+        int j = 0;
+        int z = 0; // unused
+        if (i < 10) {
+            j = i;
+            print(j);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Conditional flow 1</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'z' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(int i) {
+        int j = 0;
+        int z = 0; // unused
+        if (i < 10) {
+            j = i;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Conditional flow 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'j' is never used (overwritten on lines 6 and 8)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(int i) {
+        int j = 0; // unused
+        int z = 0;
+        if (i < 10) {
+            j = i;
+        } else {
+            j = z;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Conditional flow with abrupt throw</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,6</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'j' is never used (overwritten on lines 6 and 9)</message>
+            <message>The value assigned to variable 'j' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(int i) {
+        int j = 0; // unused
+        int z = 0;
+        if (i < 10) {
+            j = i; // unused
+            throw new Exception();
+        } else {
+            j = z;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Conditional flow with abrupt return</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,6</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'j' is never used (overwritten on lines 6 and 9)</message>
+            <message>The value assigned to variable 'j' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(int i) {
+        int j = 0;  // unused
+        int z = 0;
+        if (i < 10) {
+            j = i;  // unused
+            return;
+        } else {
+            j = z;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Local variable in loop</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>2,10,11,19</expected-linenumbers>
+        <expected-messages>
+            <message>Parameter 'args' is never used</message>
+            <message>The initializer for variable 'fail' is never used (overwritten on line 19)</message>
+            <message>Loop variable 'j' is never used</message>
+            <message>The value assigned to variable 'fail' is never used (reassigned every iteration)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class LoopTest {
+    public static void main(String[] args) {
+        int[] a = {1,2,3};
+        int[] b = {4,5,6};
+        int[] c = {7,8,9};
+        for (int i : a) {
+            if (i == 0) {
+                break;
+            } else {
+                boolean fail = false;
+                for (int j : b) {
+                    boolean match = false;
+                    for (int k : c) {
+                        if (k == 42) {
+                            match = true;
+                        }
+                    }
+                    if (!match) {
+                        fail = true;
+                    }
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#408 Assert statements causing </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AssertTest {
+    public void test() {
+        final String s = "";
+        assert(s != null);
+
+        System.out.println(s);
+
+        final Double d = 9;
+        assert(d != null);
+
+        System.out.println(d);
+
+        final String k = "k";
+        assert(k != null);
+
+        System.out.println(k);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 1. DU-Anomaly(b)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'b' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int b = 0 ;
+        a = a + b ;
+        b = a + b ;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        for(int i = 0 ; i <= 10; i ++){
+            a = a+3;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For loop 2</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'a' is never used (overwritten on line 5)</message>
+            <message>The value assigned to variable 'a' is never used (reassigned every iteration)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        for(int i = 0 ; i <= 10; i ++){
+            a = i * 3;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For loop 3</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        for(int i = 0 ; i <= 10; i ++){
+            a = i * 3;
+        }
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For loop 4</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        for(int i = 0 ; (i + a) <= 10; i ++){
+            a = i * 3;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Foreach</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int[] b = new int[10];
+        for(int a : b){
+            a = a+3;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Foreach unused</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
+        <expected-messages>
+            <message>Parameter 'args' is never used</message>
+            <message>Loop variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int[] b = new int[10];
+        for(int a : b){
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        while (i < 30) {
+            a = a + 3;
+            i += 3;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop 2</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'i' is never used (overwritten on line 7)</message>
+            <message>The value assigned to variable 'i' is never used (reassigned every iteration)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0; // unused
+        while (a < 30) {
+            a = a + 3;
+            i = 5; // unused (kills itself)
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>While loop with break</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        while (true) {
+            if (a >= 30) {
+                i = a + 1; // unused
+                break;
+            }
+            a = a + 3;
+            i = i + 1; // used by itself
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop without break (control case)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0; // used by compound below
+        int i = 0;
+        while (true) {
+            if (a >= 30) {
+                i += a + 1; // unused by below
+                // break;  // no break here
+            }
+            a = a + 3;
+            i = a + 2; // used by above
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop without break 2 (control case)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used (overwritten on line 16)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0; // unused now
+
+        outer:
+        while (true) {
+            a += 2;
+
+            while (true) {
+                if (a >= 30) {
+                    i += a + 1; // unused because of i = a + 2
+                    // break outer;
+                }
+                a = a + 3;
+                i = a + 2;  // killed by below
+            }
+
+            i = 2; // used by print
+        }
+
+        System.out.println(i); // uses i = i + 1
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop without break 2 (control case)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used (overwritten on line 19)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0; // unused now
+
+        outer:
+        while (true) {
+            a += 2;
+
+            while (true) {
+                if (a >= 30) {
+                    i += a + 1; // unused because of i = 2
+                    break;
+                }
+                a = a + 3;
+                i = a + 2;  // used by i += a + 1
+            }
+
+            i = 2; // used by print
+        }
+
+        System.out.println(i); // uses i = i + 1
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop with named break 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0; // unused now
+
+        outer:
+        while (true) {
+            a += 2;
+
+            while (true) {
+                if (a >= 30) {
+                    i += a + 1; // used by print
+                    break outer;
+                }
+                a = a + 3;
+                i = a + 2;  // used by i += a + 1
+            }
+
+            i = 2; // used by print
+        }
+
+        System.out.println(i); // uses i = i + 1
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>While loop with continue</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        while (true) {
+            if (a >= 30) {
+                i = a + 1; // used by below
+                continue;
+            }
+            a = a + 3;
+            i = i + 1; // used by itself
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop with continue 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        while (a < 50) {
+            if (i >= 30) {
+                a = i + 1; // used by loop condition
+                continue;
+            }
+            i++; // used by itself
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop with break (control for continue test above)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        while (a < 50) {
+            if (i >= 30) {
+                a = i + 1; // unused
+                break;
+            }
+            i++; // used by itself
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do while 0</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        do {
+            a = a+3;
+            i += 3;
+        } while (i < 30);
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do while 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'a' is never used (overwritten on line 6)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        do {
+            a = i+3;
+            i += 3;
+        } while ((a+i) < 30);
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do while with break</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,8</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        do {
+            if (a >= 20) {
+                i = 4;
+                a *= 5;
+                break;
+            }
+
+            a = i + 3;
+            i += 3;
+        } while (i < 30);
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do while with continue</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        do {
+            if (a >= 20) {
+                i = 4;  // used by condition
+                a *= 5;
+                continue;
+            }
+
+            a = i + 3;
+            i += 3;
+        } while (i < 30);
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch statement 0</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>6,8,10,12</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        switch(i){
+            case 1 : a = a+1;
+            break;
+            case 2 : a = a+2;
+            break;
+            case 3 : a = a+3;
+            break;
+            default : a = a + 1;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch statement 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        switch(i){
+            case 1 : a = 1;
+            break;
+            case 2 : a = 2;
+            break;
+            case 3 : a = 3;
+            break;
+            default : a = a + 1;
+        }
+
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch statement 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        switch(i){
+            case 1 : a = 1;
+                     if (args.length > 0) break; // else fallthrough
+            case 2 : a = 2; break;
+            case 3 : a = 3; break;
+            default : a = a + 1;
+        }
+
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch fallthrough</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 8)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        switch(i){
+            case 1 : a = 1; // unused
+            // break; // no break
+            case 2 : a = 2;
+            break;
+            case 3 : a = 3;
+            break;
+            default : a = a + 1;
+        }
+
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch fallthrough 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        switch(i){
+            case 1 : a = a+1;
+            case 2 : a = a+2;
+            case 3 : a = a+3;
+            default : a = a + 0; // this one
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch non-fallthrough</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        switch(i) {
+            case 1 -> a = 1;
+            case 2 -> a = 2;
+            case 3 -> a = 3;
+            default -> a = a + 1;
+        }
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch non-fallthrough blocks</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        switch(i) {
+            case 1 -> a = 1;
+            case 2 -> {
+                if (args.length > 0) {
+                    i = 4;
+                    break;
+                }
+                a = 2;
+            }
+            case 3 -> a = 3;
+            default -> a = a + 1;
+        }
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch expr non-fallthrough</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>6,7,8,9</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        a = switch(i) { // this is used
+            // all those are unused
+            case 1 -> a = 1;
+            case 2 -> a = 2;
+            case 3 -> a = 3;
+            default -> a = a + 1;
+        };
+
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch expr with yield</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>6,9,13,14</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+            <message>The updated value of variable 'a' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        a = switch(i) { // this is used
+            // all those are unused
+            case 1 -> a = 1;
+            case 2 -> {
+                if (a > 0) {
+                    yield a++;
+                }
+                yield 4;
+            }
+            case 3 -> a = 3;
+            default -> a = a + 1;
+        };
+
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Usage as LHS of method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 't1' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int t1 = 0 ;
+        Test test = new Test() ;
+        t1 = test.simpleTest(t1) ;
+    }
+    Test simpleTest(Test t) {return t;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment in operand</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 't1' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int t1 = 0 ;
+        int t2 = 0 ;
+        Test test = new Test();
+        if((t1 = test.simpleTest(t1)) == t2);
+    }
+    Test simpleTest(Test t) {return t;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment in operand 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 't1' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int t1 = 0 ;
+        int t2 = 0 ;
+        // the left assignment reaches the right of the ==
+        if (   (t1 = t1 + t2)
+            == (t1 = t2 * t1) ); // only this assignment is unused
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment in operand 3</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int t1 = 0 ;
+
+        Test test = new Test();
+        if( (t1 = test.simpleTest(t1)) == t1);
+   }
+    Test simpleTest(Test t) {return t;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment in operand 4</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,4,6</expected-linenumbers>
+        <expected-messages>
+            <message>Parameter 'args' is never used</message>
+            <message>The initializer for variable 't2' is never used</message>
+            <message>The value assigned to variable 't1' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int t1 = 0;
+        int t2 = 0;
+        Test test = new Test() ;
+        if( t1 == (t1 = test.simpleTest(t1))) ;
+   }
+    Test simpleTest(Test t) {return t;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1749 DD False Positive in DataflowAnomalyAnalysis</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    public void test(){
+        int a = 0;
+        a = a + 3;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Compound assignment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    public void test(){
+        int a = 0;
+        a += 3; // same with compound
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Another case</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'iter' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'iter' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    public void test(Test node, ScopeData before){
+       ScopeData iter = acceptOpt(node.getBody(), before.fork()); // this assignment is unused
+       iter = acceptOpt(node.getCondition(), before.fork());
+       iter = acceptOpt(node.getBody(), iter);
+    }
+    Test getBody() { return this; }
+    Test getCondition() { return this; }
+    ScopeData acceptOpt(Test node, ScopeData data) {return data;}
+    class ScopeData {ScopeData fork() {return this;}}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Var usage in lambda (#1304)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Set;
+public class Foo {
+
+    public boolean dummyMethod(final String captured, final Set<String> dummySet) {
+        captured = captured.trim();
+        return dummySet.stream().noneMatch(value -> value.equalsIgnoreCase(captured));
+    }
+
+}        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Try/catch</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'a' is never used (overwritten on lines 7 and 9)</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.*;
+public class Foo {
+
+    public int foo() {
+        int a = 0;
+        try (Reader r = new StringReader("")) {
+            a = r.read();
+        } catch (IOException e) {
+            a = -1;
+        }
+        return a;
+    }
+
+}        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Try with several catches</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+public class Foo {
+
+    public int foo() {
+        int a;
+        try (Reader r = new StringReader("")) {
+            a = r.read();
+        } catch (IOException e) {
+            a = -1;
+        } catch (IllegalArgumentException e) {
+            a = 2;
+        }
+        return a;
+    }
+
+}        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Try with resources: resources should be used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+public class Foo {
+
+    public void foo() {
+        try (Reader r = new StringReader("")) {
+
+        }
+    }
+
+}        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Definitions in try block reach catch blocks through method calls</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'halfway' is never used (overwritten on line 7)</message>
+            <message>The value assigned to variable 'halfway' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+
+    void method() {
+        boolean halfway = false;
+
+        try {
+            halfway = true; // this may not fail so the catch block is unreachable
+        } catch(Exception e) {
+            System.out.println(halfway);
+        }
+    }
+}
+
+
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Definitions in try block reach catch blocks through method calls 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'halfway' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+
+    void method() {
+        boolean halfway = false;
+
+        try {
+            halfway = true;
+            trySomethingWhichFails(); // catch may be reached if this throws
+        } catch(Exception e) {
+            System.out.println(halfway);
+        }
+    }
+    void trySomethingWhichFails() throws Exception {}
+}
+
+
+]]></code>
+    </test-code>
+    <test-code>
+        <description>Definitions in try block reach catch blocks through method calls 3</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'halfway' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+
+    void method() {
+        boolean halfway = false;
+
+        try {
+            trySomethingWhichFails(); // catch may be reached if this throws (initializer would be used)
+            halfway = true;
+        } catch(Exception e) {
+            System.out.println(halfway);
+        }
+    }
+    void trySomethingWhichFails() throws RuntimeException {}
+}
+
+
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Try/catch finally</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+public class Foo {
+
+    public int foo() {
+        int a = 0; // used in catch
+        try (Reader r = new StringReader("")) {
+            a = r.read();  // used in finally
+        } catch (IOException e) {
+            a = -1; // used in finally
+        } finally {
+            print(a);
+        }
+        return 0;
+    }
+
+}        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Try/catch finally 3</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'a' is never used (overwritten on lines 7 and 9)</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.*;
+public class Foo {
+
+    public int foo() {
+        int a = 0;
+        try (Reader r = new StringReader("")) {
+            a = r.read();  // used in return
+        } catch (IOException e) {
+            a = -1; // used in return
+        } finally {
+            // don't use a
+        }
+        return a;
+    }
+
+}        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Try/catch finally 4</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,7,9</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'a' is never used (overwritten on lines 7, 9 and 11)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 11)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 11)</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.*;
+public class Foo {
+
+    public int foo() {
+        int a = 0; // overwritten in try body & catch
+        try (Reader r = new StringReader("")) {
+            a = r.read();  // overwritten in finally
+        } catch (IOException e) {
+            a = -1; // overwritten in finally
+        } finally {
+            a = 0;
+        }
+        return a;
+    }
+
+}        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Nested finally</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>8,11,13,16</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'a' is never used (overwritten on lines 11, 13, 16 and 18)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 13)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on lines 16 and 18)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 18)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.io.IOException;
+            import java.io.Reader;
+            import java.io.StringReader;
+
+            public class Foo {
+
+                public int foo() {
+                    int a = 0;
+                    try (Reader r = new StringReader("")) {
+                        try (Reader r = new StringReader("")) {
+                            a = r.read();       // overwritten in finally
+                        } finally {
+                            a = 0; // overwritten in enclosing catch, if `read()` threw, otherwise in enclosing finally
+                        }
+                    } catch (IOException e) {
+                        a = -1; // overwritten in finally
+                    } finally {
+                        a = 1;
+                    }
+                    return a;
+                }
+
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Try/catch finally in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+
+class Foo {
+
+    public int foo() {
+        int a = 0;
+        while (a > 10) {
+            try (Reader r = new StringReader("")) {
+                r.read();
+            } catch (IOException e) {
+                a = -1; // used in finally even if break
+                break;
+            } finally {
+                a++;
+            }
+        }
+        return a;
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Abstract method NPE</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+abstract class Foo {
+
+    public abstract int foo();
+
+    interface Bar {
+        int bar();
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP in finally</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+class Foo {
+    public Object intercept(Object proxy) throws Throwable {
+        Object oldProxy = null; // FP here
+        try {
+            oldProxy = new Object[] { proxy };
+            return null;
+        }
+        finally {
+            System.out.println(oldProxy);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Lambda captured var use</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+class Foo {
+
+  public Stream<Object> decode() {
+    Stream<List<String>> splitEvents = null;
+    return map(events -> {
+      return unmarshal(events, splitEvents);
+    });
+  }
+  Stream<Object> map(Function<List<String>, Object> f) {return null;}
+  Object unmarshal(List<String> items, Stream<List<String>> splitEvts) { return null;}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Lambda assignment</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'k' is never used (overwritten on line 6)</message>
+            <message>The value assigned to variable 'k' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+  public void decode() {
+    doSomething(events -> {
+      int k = 0;
+      return k = 2;
+    });
+  }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Lambda returns 2</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>9,11</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'splitEvents' is never used</message>
+            <message>The value assigned to variable 'events' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.ArrayList;
+            import java.util.List;
+            import java.util.function.Function;
+            import java.util.stream.Stream;
+
+            class Foo {
+
+                public Stream<Object> decode() {
+                    Stream<List<String>> splitEvents = null;
+                    return map(events -> {
+                        events = new ArrayList<>(events);
+                        return null;
+                    });
+                }
+
+                Stream<Object> map(Function<List<String>, Object> f) { f.apply(null); return null; }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP in try</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package foo;
+import java.lang.reflect.Method;
+class Foo {
+
+    public Object getSubject() {
+      try {
+        Object subject = Other.currentUserMethod.invoke();
+        if (subject == null) {
+          subject = Other.anonymousSubjectMethod.invoke(0);
+        }
+        return subject;
+      } catch (Exception ex) {
+        throw new RuntimeException("Failed to obtain SubjectHandle", ex);
+      }
+    }
+
+    static class Other {
+        Method currentUserMethod;
+        Method anonymousSubjectMethod;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field initializers 0</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+
+    int f1 = 0;
+    int f2 = f1++;
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field initializers 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'f1' is never used (overwritten on line 4)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+    int f1 = 0;
+    int f2 = f1 = 1, f3 = f2;
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field initializers 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'f1' is never used (overwritten on line 4)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+    int f1 = 0;
+    int f2 = this.f1 = 1, f3 = f2;
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field initializers and ctor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'f1' is never used (overwritten on lines 7 and 11)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+    int f1 = 0;
+    int f2 = 0;
+
+    Foo(int f) {
+        f1 = f;
+    }
+
+    Foo(int f, int g) {
+        f1 = f;
+        f2 = f + g;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field initializers and ctor with this</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'f1' is never used (overwritten on lines 7 and 11)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+    int f1 = 0;
+    int f2 = 0;
+
+    Foo(int f) {
+        this.f1 = f;
+    }
+
+    Foo(int f, int g) {
+        this.f1 = f;
+        this.f2 = f + g;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field initializers and ctor with this, shadowing</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'f1' is never used (overwritten on lines 7 and 11)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+    int f1 = 0;
+    int f2 = 0;
+
+    Foo(int f1) {
+        this.f1 = f1;
+    }
+
+    Foo(int f1, int g) {
+        this.f1 = f1;
+        this.f2 = f1 + g;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field initializers and ctor with this, field access</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+
+    Bar f1 = new Bar();
+    Bar f2 = null;
+
+    Foo(Bar f1) {
+        this.f1.field = f1;
+    }
+
+    Foo(Bar f1, Bar g) {
+        this.f1 = f1;
+        this.f2 = f1.plus(g);
+    }
+
+    static class Bar { Bar field; Bar plus(Bar other) { return other; }}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field initializers and ctor</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,11</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'f1' is never used (overwritten on line 11)</message>
+            <message>The value assigned to field 'f1' is never used (overwritten on lines 7 and 15)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+    int f1 = 0;
+    int f3 = 0;
+
+    Foo(int f) {
+        f1 = f;
+    }
+
+    {
+        f1 = 1;
+    }
+
+    Foo(int f, int g) {
+        f1 = f;
+        f2 = f + g;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.annotation.Annotation;
+class Foo {
+	private static Class<? extends Annotation> ejbRefClass;
+
+	private static Class<? extends Annotation> webServiceRefClass;
+
+	static {
+		try {
+			Class<? extends Annotation> clazz = (Class<? extends Annotation>)					Class.forName("javax.xml.ws.WebServiceRef");
+			webServiceRefClass = clazz;
+		} catch (ClassNotFoundException ex) {
+			webServiceRefClass = null;
+		}
+
+		try {
+			Class<? extends Annotation> clazz = (Class) Class.forName("javax.ejb.EJB");
+			ejbRefClass = clazz;
+		} catch (ClassNotFoundException ex) {
+			ejbRefClass = null;
+		}
+	}
+
+
+	private static Class<? extends Annotation> other = webServiceRefClass;
+
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>FP with anonymous classes on the way</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.security.AccessController.getProtectionDomain;
+
+import java.lang.reflect.*;
+import java.lang.invoke.*;
+import java.security.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sourceforge.pmd.FooRule;
+
+class Foo {
+    private static final Method privateLookupInMethod;
+
+    private static final Method lookupDefineClassMethod;
+
+    private static final Method classLoaderDefineClassMethod;
+
+    private static final ProtectionDomain PROTECTION_DOMAIN;
+
+    private static final Throwable THROWABLE;
+
+    private static final List<Method> OBJECT_METHODS = new ArrayList<Method>();
+
+    static {
+        Method privateLookupIn;
+        Method lookupDefineClass;
+        Method classLoaderDefineClass;
+        ProtectionDomain protectionDomain;
+        Throwable throwable = null;
+        try {
+            privateLookupIn = (Method) AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                public Object run() throws Exception {
+                    try {
+                        return MethodHandles.class.getMethod("privateLookupIn", Class.class, MethodHandles.Lookup.class);
+                    }
+                    catch (NoSuchMethodException ex) {
+                        return null;
+                    }
+                }
+            });
+            lookupDefineClass = (Method) AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                public Object run() throws Exception {
+                    try {
+                        return MethodHandles.Lookup.class.getMethod("defineClass", byte[].class);
+                    }
+                    catch (NoSuchMethodException ex) {
+                        return null;
+                    }
+                }
+            });
+            classLoaderDefineClass = (Method) AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                public Object run() throws Exception {
+                    return ClassLoader.class.getDeclaredMethod("defineClass",
+                                                               String.class, byte[].class, Integer.TYPE, Integer.TYPE, ProtectionDomain.class);
+                }
+            });
+            protectionDomain = getProtectionDomain(Foo.class);
+            AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                public Object run() throws Exception {
+                    Method[] methods = Object.class.getDeclaredMethods();
+                    for (Method method : methods) {
+                        if ("finalize".equals(method.getName())
+                            || (method.getModifiers() & (Modifier.FINAL | Modifier.STATIC)) > 0) {
+                            continue;
+                        }
+                        OBJECT_METHODS.add(method);
+                    }
+                    return null;
+                }
+            });
+        }
+        catch (Throwable t) {
+            privateLookupIn = null;
+            lookupDefineClass = null;
+            classLoaderDefineClass = null;
+            protectionDomain = null;
+            throwable = t;
+        }
+        privateLookupInMethod = privateLookupIn;
+        lookupDefineClassMethod = lookupDefineClass;
+        classLoaderDefineClassMethod = classLoaderDefineClass;
+        PROTECTION_DOMAIN = protectionDomain;
+        THROWABLE = throwable;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP with array access 0</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Map;
+
+class Foo {
+    void foo(Map<String, String> map, String name, int[] arr) {
+        Integer index = map.get(name);
+        arr[index] = 4;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP with array access 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The initial value of parameter 'arr' is never used (overwritten on line 3)</message>
+        </expected-messages>
+        <code><![CDATA[
+
+class Foo {
+    int foo(int index, int[] arr) {
+        arr = new int[4];
+        index = arr[index];
+        return index;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP with long field access</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+class Foo {
+    int foo(int index, int[] arr) {
+        index.method().field = 4; // not an assignment to index
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP with long access 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The initial value of parameter 'arr' is never used (overwritten on line 3)</message>
+        </expected-messages>
+        <code><![CDATA[
+
+class Foo {
+    int foo(int index, String[] arr) {
+        arr = new String[] { "1" };
+        arr[0].trim(); // this is a usage of arr
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with long access 3</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The initial value of parameter 'arr' is never used (overwritten on line 3)</message>
+        </expected-messages>
+        <code><![CDATA[
+
+class Foo {
+    int foo(int index, String[] arr) {
+        arr = new String[] { "1" };
+        arr.clone().clone(); // this is a usage of arr
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with casts</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import static org.junit.Assert.assertSame;
+class Foo {
+
+	public void test(BeanFactory bf, Foo tb) {
+		// Two calls
+		Foo bean = (Foo) bf.getBean("annotatedBean");
+		bean = (Foo) bf.getBean("annotatedBean");
+		assertSame(tb, bean.getTestBean());
+		assertSame(tb, bean.getTestBean2());
+	}
+	class BeanFactory { Object getBean(String name) {return null;}}
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>SuppressWarnings test (local)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(int i) {
+        int j = 0;
+        @SuppressWarnings("unused")
+        int z = 0; // unused
+        if (i < 10) {
+            j = i;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>SuppressWarnings test (method)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @SuppressWarnings("unused")
+    void bar(int i) {
+        int j = 0;
+        int z = 0; // unused
+        if (i < 10) {
+            j = i;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>SuppressWarnings test (class)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings("unused")
+public class Foo {
+    void bar(int i) {
+        int j = 0;
+        int z = 0; // unused
+        if (i < 10) {
+            j = i;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Post-increment behavior</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The updated value of variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+        i++;
+        i++;
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Post-increment behavior 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The updated value of variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+        i++;
+        i++;
+        foo(i++);
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+
+    <test-code>
+        <description>Pre-increment behavior</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The updated value of variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+        ++i;
+        ++i;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pre-increment behavior</description>
+        <rule-property name="checkUnusedPrefixIncrement">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The updated value of variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+        ++i;
+        ++i;
+    }
+    void foo(int i) {}
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Pre-increment behavior 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+        ++i;
+        ++i;
+        foo(++i);
+    }
+    void foo(int i) {}
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Pre-increment behavior 2</description>
+        <rule-property name="checkUnusedPrefixIncrement">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The updated value of variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+        ++i;
+        ++i;
+        foo(++i);
+    }
+    void foo(int i) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pre-increment behavior 2</description>
+        <rule-property name="checkUnusedPrefixIncrement">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The updated value of variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int i=0;
+        --i;
+        --i;
+        foo(--i);
+    }
+    void foo(int i) {}
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Test local class</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'shadowed' is never used</message>
+            <message>The field initializer for 'f' is never used (overwritten on line 8)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int captured = 0;
+        int shadowed = 2;
+        class Local {
+            int f = captured;
+            Local(int shadowed) {
+                f = shadowed;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test anonymous class</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,5,6</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'shadowed' is never used (overwritten on line 5)</message>
+            <message>The value assigned to variable 'shadowed' is never used</message>
+            <message>The field initializer for 'f' is never used (overwritten on line 8)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int captured = 0;
+        int shadowed = 2;
+        new Foo(shadowed = 4) {
+            int f = captured;
+            {
+                f = 2;
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test shortcut AND</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'k' is never used (overwritten on line 9)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+  void main(int[] bufline, int start, int bufsize) {
+
+    int i = 0, j, k = 0;
+
+    while (i < bufline.length
+        // this is AND
+        && bufline[j = start % bufsize] == bufline[k = ++start % bufsize]) {
+
+      bufline[j] = bufline[k];
+      i++;
+    }
+  }
+}
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test shortcut OR</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+
+  void main(int[] bufline, int start, int bufsize) {
+
+    int i = 0, j, k = 0;
+
+    while (i < bufline.length
+        // this is OR
+        || bufline[j = start % bufsize] == bufline[k = ++start % bufsize]) {
+
+      // here j, k might be their initializers
+      bufline[j] = bufline[k];
+      i++;
+    }
+  }
+}
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test shortcut OR</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,7,8</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'i' is never used (overwritten on line 7)</message>
+            <message>The value assigned to variable 'j' is never used (overwritten on line 8)</message>
+            <message>The value assigned to variable 'j' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+  void main(int[] bufline, int start, int bufsize) {
+
+    int i = 0, j, k = 0;
+
+    if (  (i = 2) < (j = i)
+     ||   (j = k) == i       ) {
+
+        // reaching: i = 2, j = i, j = k
+
+    } else {
+        // reaching: i = 2, j = k  (not j = i)
+    }
+  }
+}
+
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Test shortcut OR 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The initializer for variable 'i' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+  void main(int[] bufline, int start, int bufsize) {
+
+    int i = 0, j, k = 0;
+
+    if (  (i = 2) < (j = i)
+     ||   (j = k) == i       ) {
+
+        // reaching: i = 2, j = i, j = k
+        log(j);
+    } else {
+        // reaching: i = 2, j = k  (not j = i)
+    }
+  }
+}
+
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Test shortcut AND</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,7</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'i' is never used (overwritten on line 7)</message>
+            <message>The value assigned to variable 'j' is never used (overwritten on line 8)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+  void main(int[] bufline, int start, int bufsize) {
+
+    int i = 0, j, k = 0;
+
+    if (  (i = 2) < (j = i)
+       && (j = k) == i       ) {
+
+        // reaching: i = 2, j = k  (not j = i)
+        log(j);
+    } else {
+        // reaching: i = 2, j = k, j = i
+    }
+  }
+}
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test shortcut AND 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The initializer for variable 'i' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+
+              void main(int[] bufline, int start, int bufsize) {
+
+                int i = 0, j, k = 0;
+
+                if (  (i = 2) < (j = i)
+                   && (j = k) == i       ) {
+
+                    // reaching: i = 2, j = k  (not j = i)
+                } else {
+                    // reaching: i = 2, j = k, j = i
+                    log(j);
+                }
+              }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested boolean logic 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+
+              void main(int[] bufline, int start, int bufsize) {
+
+                int i = 0, j, k = 0;
+
+                if ( (i = 1) > 0 || ((i = 2) < (j = i) && (j = k) == i) ) {
+                    // reaching: i = 1, i = 2, j = k  (not j = i)
+                } else {
+                    // reaching: i = 2, j = k, j = i  (not i = 1)
+                    log(j);
+                    log(i);
+                }
+              }
+            }
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Nested boolean logic 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+
+              void main(int[] bufline, int start, int bufsize) {
+
+                int i = 0, j, k = 0;
+
+                if ( (i = 1) > 0 && ((i = 2) < (j = i) || (j = k) == i) ) {
+                    // reaching: i = 2, j = i, j = k  (not i = 1)
+                    log(i);
+                } else {
+                    // reaching: i = 1, i = 2, j = k, j = i
+                    log(j);
+                }
+              }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP with argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The initializer for variable 'i' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+
+                static String replaceBackslash(String str) {
+                    int i = 0, len = str.length();
+                    char c;
+                    StringBuffer b = new StringBuffer();
+                    for (i = 0; i < len; i++)
+                        if ((c = str.charAt(i)) == '\\')
+                            b.append("\\\\");
+                        else
+                            b.append(c);
+
+                    return b.toString();
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DU anomaly false positive? #1304</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import static org.apache.commons.lang3.StringUtils.trimToNull;
+            import java.util.Set;
+
+            public class DummyService {
+
+                public boolean dummyMethod(final String stringValue, final Set<String> dummySet) {
+                    final String trimmedValue = stringValue.trim();
+                    return dummySet.stream()
+                                   .noneMatch(value -> value.equalsIgnoreCase(trimmedValue));
+                }
+
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DataflowAnomalyAnalysis DU false positive #399</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Test {
+                boolean[] digits;
+                int size;
+                public int indexOf(Object obj) {
+                    // throws ClassCastException
+                    Integer dig = (Integer)obj;
+                    if (dig != 0 && dig != 1) {
+                        return -1;
+                    }
+                    // throws IllegalArgumentException and NullPointerException
+                    boolean cand = int2bool(dig);//<cand
+                    for(int i = 0; i < this.size; i++) {
+                        if (cand == this.digits[i]) {
+                            return i;
+                        }
+                    }
+                    return -1;
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DataflowAnomalyAnalysis: DD false positive #400</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Test<T> {
+                T zeroS() {return null;}
+                public T addS(java.util.List<T> args) {
+                    T res = zeroS();//<res
+                    for (T arg : args) {
+                        res = res.add(arg);
+                    }
+
+                    return res;
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DU Anomaly #1107</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Sample {
+
+                public ZDT sample(final String date, final ZDT paymentTimeStamp) {
+                    final ZDT startOfDayOnInceptionDate = zonedDateTimeAtOnePastMidnight(date, paymentTimeStamp.getZone());
+                    final ZDT startOfDayOnPaymentDate = zonedDateTimeAtOnePastMidnight(paymentTimeStamp.toLocalDate(), paymentTimeStamp.getZone());
+                    if (startOfDayOnInceptionDate.isAfter(paymentTimeStamp)) {
+                        return startOfDayOnInceptionDate;
+                    } else if (paymentTimeStamp.isAfter(startOfDayOnPaymentDate)) {
+                        return paymentTimeStamp;
+                    } else {
+                        return startOfDayOnPaymentDate;
+                    }
+                }
+
+                public ZDT zonedDateTimeAtOnePastMidnight(final String date, final ZoneId zoneId) {
+                    return zonedDateTimeAtOnePastMidnight(parseStringWithIsoDateFormat(date), zoneId);
+                }
+
+                private ZDT zonedDateTimeAtOnePastMidnight(final LocalDate localDate, final ZoneId zoneId) {
+                    return ZDT.of(localDate, zoneId);
+                }
+
+                LocalDate parseStringWithIsoDateFormat(String s) {return null;}
+                static abstract class ZDT {
+                    abstract boolean isAfter(ZDT zdt);
+                    abstract boolean isBefore(ZDT zdt);
+                    abstract ZoneId getZone();
+                    abstract LocalDate toLocalDate();
+                    static ZDT of(LocalDate date, ZoneId zone) {return null;}
+                }
+                static class LocalDate { }
+                static enum ZoneId { }
+            }
+
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>DataflowAnomalyAnalysis: DD false positive for arrays #1251</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.math.BigInteger;
+            public class Test {
+                public void test(int x2) {
+                    final BigInteger[] msg2 = new BigInteger[11];
+                    msg2[0] = modPow(x2, 4);
+                    BigInteger[] res = proofKnowLog(x2, 3);
+                    msg2[1] = res[0];
+                    msg2[2] = res[1];
+                    // etc.
+                }
+                BigInteger modPow(int x2, int op);
+                BigInteger[] proofKnowLog(int x2, int op);
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DU false positive in DataflowAnomalyAnalysis #1606</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public final class Fib {
+                /** utility class */
+                private Fib() {}
+
+                public static int fib(final int n) {
+                    checkArgument(n >= 0);
+
+                    if (n < 2) {
+                        return n;
+                    } else {
+                        int a = 0;
+                        int b = 1;
+                        final int m = n - 1;
+
+                        for (int i = 0; i < m; i++) {
+                            final int c = a;
+                            a = b;
+                            b = c + b;
+                        }
+
+                        return b;
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false-positive in DD-part of DataflowAnomalyAnalysis #1675</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[import java.lang.reflect.InvocationTargetException;
+
+public class Formatter {
+                public Formatter test(String formatterClassName) {
+                    Formatter formatter = null;
+                    if (formatterClassName != null) {
+                        try {
+                            Class<? extends Formatter> formatterClass = (Class) Class.forName(formatterClassName);
+                            formatter = formatterClass.getDeclaredConstructor().newInstance();
+                        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException ignored) {
+                        }
+                    }
+                    return ((formatter == null) ? new Formatter() : formatter);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DU false positive in DataflowAnomalyAnalysis #1682</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[import java.util.Map;
+import java.util.List;
+
+public class Test {
+
+    Map<String, List<String>> bufferedMessages;
+
+    static class LogEvent { int timeMillis; String message; }
+    static class DiscordManager { }
+    void sendMessage(DiscordManager discordManager, String message) {}
+    void bufferMessage(String message, int time) {}
+
+    public void append(LogEvent event, DiscordManager discordManager) {
+        String logMessage = event.message;
+        if (discordManager == null) {
+            bufferMessage(logMessage, event.timeMillis);
+        } else {
+            bufferedMessages.computeIfPresent("getName()", (name, bufferedMessages) -> {
+                bufferedMessages.forEach(bufferedMessage -> sendMessage(discordManager, bufferedMessage));
+                return null;
+            });
+            sendMessage(discordManager, logMessage);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>DataflowAnomalyAnalysis has false positive for object initialised outside loop. #2131</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package pmdtests;
+
+            import java.util.ArrayList;
+            import java.util.List;
+            import java.util.stream.Collectors;
+            import java.util.stream.IntStream;
+
+            public class TestDu {
+
+                private List<String> list = new ArrayList<>();
+
+                public void run() {
+                    String str = Thread.currentThread().getName() + " Element : %d";
+                    for (int i = 0; i < 10_000; i++) {
+                        list.add(String.format(str, i));
+                    }
+                }
+
+                public void runAgain() {
+                    String str = Thread.currentThread().getName() + " Element : %d";
+                    for (int i = 0; i < 10_000; i++)
+                        list.add(String.format(str, i));
+                }
+
+                public void runOnceMore() {
+                    String str = Thread.currentThread().getName() + " Element : %d";
+                    list =  IntStream.range(0, 10_000)
+                                     .mapToObj(i -> String.format(str, i))
+                                     .collect(Collectors.toList());
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>ClassCastException with annotated foreach var</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+
+            class Foo {
+                {
+                    for (String s : someExpression()) {
+
+                    }
+
+                    for (final String s : someExpression()) {
+
+                    }
+
+                    for (@Annot final String s : someExpression()) {
+
+                    }
+
+                    for (final @Annot String s : someExpression()) {
+
+                    }
+                }
+                @interface Annot {}
+            }
+
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Catch in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            class Foo {
+                {
+                    for (String s : someExpression()) {
+                        try {
+                            foo(s);
+                        } catch (Exception e) {
+                            print("failure");
+                        }
+
+                    }
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Catch in loop (reportUnusedVariables)</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Exception parameter 'e' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                {
+                    for (String s : someExpression()) {
+                        try {
+                            foo(s);
+                        } catch (Exception e) {
+                            print("failure");
+                        }
+
+                    }
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Catch in loop (reportUnusedVariables)</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>6</expected-problems>
+        <code><![CDATA[
+
+            class Foo {
+                void method(int i) {
+                    while (true) {
+                        switch (i) {
+                        case 19:
+                            try {
+                                i++;
+                                break;
+                            } catch (RuntimeException e) { // warn
+                                break;
+                            } catch (Error e) { // warn
+                                return;
+                            }
+                        case 20:
+                            try {
+                                i++;
+                                break;
+                            } catch (RuntimeException e) { // warn
+                            } catch (Error e) { // warn
+                                return;
+                            }
+                        case 21:  //fallthrough
+                            try {
+                                i++;
+                            } catch (RuntimeException e) { // warn
+                                i--;
+                            } finally {
+                                break;
+                            }
+                        case 22:
+                            try {
+                                i++;
+                                break;
+                            } catch (RuntimeException e) { // warn
+                                i--;
+                                break;
+                            } finally {
+                                i++;
+                            }
+                        default:  //warn
+                            // this is the last label
+                            i++;
+                        }
+                    }
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+
+
+    <test-code>
+        <description>Unused formal value</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The initial value of parameter 'i' is never used (overwritten on line 3)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                int method(int i) {
+                    i = 2;
+                    return i;
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unused formal value</description>
+        <rule-property name="reportUnusedVariables">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The initial value of parameter 'i' is never used (overwritten on line 3)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                int method(int i) {
+                    i = 2;
+                    return i;
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test ignored name 0</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                int method(int param, int other) {
+                    return 2;
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test ignored name 1 (method param, reportUnusedVariables)</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                int method(int ignored, int unused) {
+                    return 2;
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test ignored name 2 (single underscore, reportUnusedVariables)</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                int method(int[] arr) {
+                    for (int _ : arr) {
+                        print("iter");
+                    }
+                    return 2;
+                }
+            }
+
+        ]]></code>
+        <source-type>java 7</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Test ignored name 3 (reportUnusedVariables)</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import Something;
+
+            class Foo {
+                int method() {
+                    try (Something ignored = Something.create()) {
+                        // even if ignored is unused, it won't be flagged
+                        // its purpose might be to side-effect in the create/close routines
+
+                    } catch (Exception e) { // this is unused and will cause a warning if `reportUnusedVariables` is true
+                        // you should choose a name that starts with "ignored"
+                        return;
+                    }
+                }
+                static class Something {
+                    static Something create() {}
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test ignored name 3 (!reportUnusedVariables)</description>
+        <rule-property name="reportUnusedVariables">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import Something;
+
+            class Foo {
+                int method() {
+                    try (Something ignored = Something.create()) {
+                        // even if ignored is unused, it won't be flagged
+                        // its purpose might be to side-effect in the create/close routines
+
+                    } catch (Exception e) { // this is unused and will cause a warning if `reportUnusedVariables` is true
+                        // you should choose a name that starts with "ignored"
+                        return;
+                    }
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test annot suppression</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                int method(@SuppressWarnings("unused") int param) {
+                    return 2;
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This reference leak #2668</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>19,26</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to field 'ignore' is never used (overwritten on line 20)</message>
+            <message>The value assigned to field 'ignore' is never used (overwritten on line 28)</message>
+        </expected-messages>
+        <code><![CDATA[
+
+            class Worker {
+                private final Worker.Listener listener;
+
+                Worker(Listener listener) {
+                    this.listener = listener;
+                    work();
+                }
+
+                void work() {listener.onWork();}
+
+                interface Listener { void onWork(); }
+            }
+
+            class A implements Worker.Listener {
+                private boolean ignore;
+                private Worker worker;
+
+                A() {
+                    ignore = false; // actually unused
+                    ignore = true;  // may be observed by the leak
+                    worker = new Worker(this); // leak
+
+                    // This could technically be observed by another thread (not sure, maybe the field needs to be volatile too)
+                    // This looks like a very rare circumstance though.
+                    // So we say it's unused
+                    ignore = false;
+
+                    ignore = false; // this exits the ctor so may be used later
+                }
+
+                void doWork() { worker.work(); }
+
+                public void onWork() {
+                    if (ignore) {
+                        return;
+                    }
+                    System.out.println("onWork");
+                }
+            }
+
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This reference leak in field initializers #2668</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import somewhere.Worker;
+
+            class A {
+                private boolean ignore = true;  // used
+
+                A() {
+                    ignore = false; // used
+                }
+
+                private Worker worker = new Worker(this.foo()); // there is a leak here
+
+                A foo() { return null; } // is virtual
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This reference leak in conditional #2668</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,13</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'ignore' is never used (overwritten on line 7)</message>
+            <message>The value assigned to field 'ignore' is never used (overwritten on line 15)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import somewhere.Worker;
+
+            class A {
+                private boolean ignore = true;  // unused
+
+                A() {
+                    ignore = false; // may be used by leak
+
+                    if (Worker.something()) {
+                        worker = new Worker(this.foo()); // marks the reaching defs as used bc of leak
+                    } else {
+                        worker = null;
+                        ignore = true; // there is no leak in this branch
+                    }
+                    ignore = true;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This reference leak with super call #2668</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'ignore' is never used (overwritten on line 8)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import somewhere.Worker;
+
+            class A extends Worker { // extends some unknown class
+                private boolean ignore = true;  // unused
+
+                A() {
+                    // implicit super call, which may observe the default value of ignore
+                    ignore = false; // may be used by leak
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This reference leak with explicit this ctor #2668</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import somewhere.Worker;
+
+            class A {
+                private boolean ignore = true;
+
+                A() {
+                    this(2); // this may observe `ignore = true`
+                    ignore = false; // may be used by leak
+                }
+
+                A(int k) {
+                    Worker.show(this); // observes `ignore = true`
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Don't report params of abstract methods #2686</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import somewhere.Worker;
+
+            abstract class A {
+
+                abstract void foo(int p, String d);
+
+            }
+
+            interface A {
+
+                void foo(int p, String d);
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Don't report params of abstract methods (reportUnusedVariables) #2686</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import somewhere.Worker;
+
+            abstract class A {
+
+                abstract void foo(int p, String d);
+
+            }
+
+            interface A {
+
+                void foo(int p, String d);
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Don't report params of native methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnusedAssignmentNative {
+    public final native void call(int p);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Don't report params of native methods (reportUnusedVariables)</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnusedAssignmentNative {
+    public final native void call(int p);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Try stmt FP in try when method can throw #2684</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.io.Reader;
+            import java.io.StringReader;
+            import java.io.IOException;
+
+            public class Foo {
+
+                public int foo() {
+                    int a = 0;
+                    try (Reader r = new StringReader("")) {
+                        a = r.read(); // might assign or fail
+                        a = r.read(); // might assign or fail
+                    } catch (IOException e) {
+                    }
+                    return a;
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Try stmt FP in try when method can throw (2) #2684</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used (overwritten on lines 11 and 13)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.io.IOException;
+            import java.io.Reader;
+            import java.io.StringReader;
+
+            class Foo {
+
+                public int foo() {
+                    int a;
+                    try (Reader r = new StringReader("")) {
+                        a = r.read(); // really unused: overwritten with r.read() and 0;
+                        a = r.read(); // might assign or fail
+                    } catch (IOException e) {
+                        a = 0;
+                    }
+                    return a;
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with method that may throw in forked state (the if state) #2759</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                int a() {
+                    int a = 10;
+                    while (a > 0) {
+                        a--;
+                        try {
+                            if (dummy) {
+                                return somethingThatCanThrowRandomly(1);
+                            } else {
+                                return somethingThatCanThrowRandomly(2);
+                            }
+                        } catch (RuntimeException e) {
+                            // retry
+                        }
+                    }
+                    return 0;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <!-- This was an unhandled edge case in PMD 6, fixed in PMD 7 -->
+        <description>Call chain with side-effects in try</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The initializer for variable 'a' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                int a() {
+                    int a = 10;
+                    try {
+                        // both method calls may throw, so a = 2 and a = 4 reach after the try,
+                        // but not a = 10
+                        "".substring(a = 2)
+                          .substring(a = 4);
+                    } catch (RuntimeException e) {
+
+                    }
+                    return a;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code regressionTest="false">
+        <!-- TODO for later -->
+        <description>Explicit this ctor call</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for field 'field' is never used (overwritten on line 10)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+
+                private int field = 0;
+
+                Test() {
+                    this(0);
+                }
+
+                Test(int i) {
+                    field = i;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field access on something else than this</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                int field;
+                void foo(Test t) {
+                    t.field = 2 * t.field;
+                    if (t.field > 5) {
+                        t.field = 5;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment to an ignorable prefix increment</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'd' is never used (overwritten on line 6)</message>
+            <message>The value assigned to variable 'd' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                static {
+                    int b = 0;
+                    int d = 0;
+                    {
+                        d = ++b;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Static field reassignment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'b' is never used (overwritten on line 4)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                static int b = 0;
+                static {
+                    b = 2;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static field reassignment with ctor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The field initializer for 'b' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                static int b = 0;
+                Test() {
+                    System.out.println(b); // does not count as usage
+                }
+                static {
+                    b = 2;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Branches in switch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test {
+                private int getC(int c) { return c + 1; }
+                private int use(int cc) { return cc + 2; }
+                private String readUTF(int index, final int utfLen, final char[] buf) {
+                    int endIndex = index + utfLen;
+                    int c;
+                    char cc = 0;
+                    while (index < endIndex) {
+                        c = getC(index++);
+                        switch (st) {
+                        case 0:
+                            if (c < 0xE0 && c > 0xBF) cc = 1;
+                            else cc = 0;
+                            break;
+
+                        case 1:
+                            use(cc); break;
+
+                        case 2:
+                            cc = use(cc); break;
+                        }
+                    }
+                    return "";
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This field in method</description>
+        <!-- https://chunk.io/pmd/22cd54bf483045218e268ee7580716c6/diff2/spring-framework/index.html#A33 -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Test<T> {
+                private final java.util.List<T> interceptors;
+                private int preProcessIndex = -1;
+
+                public void applyPreProcess(String request, java.util.concurrent.Callable<?> task) throws Exception {
+                    for (T interceptor : this.interceptors) {
+                        interceptor.preProcess(request, task);
+                        this.preProcessIndex++;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] UnusedAssignment false positive in for-each assignment #3076</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import static java.lang.System.arraycopy;
+            import static java.util.Arrays.fill;
+
+            public class RadixSort {
+                private static final int TEN = 10;
+                int[] a;
+
+                void countSort(int exp) {
+                    int[] count = new int[TEN];
+                    fill(count, 0);
+                    for (int val : a) // error flagged here
+                        count[(val / exp) % TEN]++;
+
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedAssignment false positive when reporting unused variables #3114</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+import static org.objectweb.asm.Opcodes.*;
+import org.objectweb.asm.ClassWriter; 
+import org.objectweb.asm.FieldVisitor; 
+import org.objectweb.asm.MethodVisitor;
+
+public class Dumper {
+    private static final String VERSION = "version";
+    private static final String CLASS = "Dumper";
+
+    public static byte[] dump() throws IOException {
+        // ClassWriter is a class visitor that generates the code for the class
+        ClassWriter cw = new ClassWriter(0);
+        // Start creating the class.
+        cw.visit(V11, ACC_PUBLIC + ACC_SUPER, CLASS, null, "java/lang/Object", null);
+        FieldVisitor fv; // false positive
+        MethodVisitor mv; // false positive
+        {
+            // version field
+            fv = cw.visitField(ACC_PRIVATE, VERSION, "I", null, null);
+            fv.visitEnd();
+        }
+        {
+            // Implementing the constructor
+            mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(1, 1);
+            mv.visitEnd();
+        }
+        cw.visitEnd();
+
+        return cw.toByteArray();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedAssignment false positive when reporting unused variables #3114 - simplified code</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnusedAssignmentUnusedVariableFP {
+    public void case1() {
+        String notUnused;
+        {
+            notUnused = "a";
+            System.out.println(notUnused);
+        }
+    }
+    public int case2() {
+        int start;
+        if (true)
+            start = 1;
+        else
+            start = 2;
+        return start;
+    }
+    private boolean case3(int number) {
+        String stringNumber = String.valueOf(number);
+        int divRest;
+        if (stringNumber.length() == 3)
+            divRest = number % 10;
+        else if (stringNumber.length() == 4)
+            divRest = number % 100;
+        else
+            divRest = number % 10_000;
+        if (divRest == 0)
+            return true;
+        return number % 2 == 0;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

@@ -13,22 +13,19 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.benchmark.TimeTracker;
-import net.sourceforge.pmd.benchmark.TimedOperation;
-import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.ChecksumAware;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.filter.Filter;
-import net.sourceforge.pmd.util.filter.Filters;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 
 /**
  * This class represents a collection of rules along with some optional filter
@@ -50,11 +47,14 @@ public class RuleSet implements ChecksumAware {
     private final String name;
     private final String description;
 
-    // TODO should these not be Sets or is their order important?
-    private final List<String> excludePatterns;
-    private final List<String> includePatterns;
+    /*
+     * Order is unimportant, but we preserve the order given by the user to be deterministic.
+     * Using Sets is useless, since Pattern does not override #equals anyway.
+     */
+    private final List<Pattern> excludePatterns;
+    private final List<Pattern> includePatterns;
 
-    private final Filter<File> filter;
+    private final Predicate<File> filter;
 
     /**
      * Creates a new RuleSet with the given checksum.
@@ -69,36 +69,120 @@ public class RuleSet implements ChecksumAware {
         description = Objects.requireNonNull(builder.description, MISSING_RULESET_DESCRIPTION);
         // TODO: ideally, the rules would be unmodifiable, too. But removeDysfunctionalRules might change the rules.
         rules = builder.rules;
-        excludePatterns = Collections.unmodifiableList(builder.excludePatterns);
-        includePatterns = Collections.unmodifiableList(builder.includePatterns);
+        excludePatterns = Collections.unmodifiableList(new ArrayList<>(builder.excludePatterns));
+        includePatterns = Collections.unmodifiableList(new ArrayList<>(builder.includePatterns));
 
-        final Filter<String> regexFilter = Filters.buildRegexFilterIncludeOverExclude(includePatterns, excludePatterns);
-        filter = Filters.toNormalizedFileFilter(regexFilter);
+        final Predicate<String> regexFilter = PredicateUtil.buildRegexFilterIncludeOverExclude(includePatterns, excludePatterns);
+        filter = PredicateUtil.toNormalizedFileFilter(regexFilter);
     }
-    
+
     public RuleSet(final RuleSet rs) {
         checksum = rs.checksum;
         fileName = rs.fileName;
         name = rs.name;
         description = rs.description;
-        
+
         rules = new ArrayList<>(rs.rules.size());
         for (final Rule rule : rs.rules) {
             rules.add(rule.deepCopy());
         }
-        
+
         excludePatterns = rs.excludePatterns; // we can share immutable lists of immutable elements
         includePatterns = rs.includePatterns;
         filter = rs.filter; // filters are immutable, can be shared
     }
 
+    /**
+     * Creates a new ruleset containing a single rule. The ruleset will
+     * have default description, name, and null file name.
+     *
+     * @param rule The rule being created
+     *
+     * @return The newly created RuleSet
+     */
+    public static RuleSet forSingleRule(final Rule rule) {
+        final long checksum;
+        if (rule instanceof XPathRule) {
+            checksum = ((XPathRule) rule).getXPathExpression().hashCode();
+        } else {
+            // TODO : Is this good enough? all properties' values + rule name
+            checksum = rule.getPropertiesByPropertyDescriptor().values().hashCode() * 31 + rule.getName().hashCode();
+        }
+
+        final RuleSetBuilder builder =
+            new RuleSetBuilder(checksum)
+                .withName(rule.getName())
+                .withDescription("RuleSet for " + rule.getName());
+        builder.addRule(rule);
+        return builder.build();
+    }
+
+
+    /**
+     * Creates a new ruleset with the given metadata such as name, description,
+     * fileName, exclude/include patterns are used. The rules are taken from the given
+     * collection.
+     *
+     * <p><strong>Note:</strong> The rule instances are shared between the collection
+     * and the new ruleset (copy-by-reference). This might lead to concurrency issues,
+     * if the rules of the collection are also referenced by other rulesets and used
+     * in different threads.
+     * </p>
+     *
+     * @param name            the name of the ruleset
+     * @param description     the description
+     * @param fileName        the filename
+     * @param excludePatterns list of exclude patterns
+     * @param includePatterns list of include patterns, that override the exclude patterns
+     * @param rules           the collection with the rules to add to the new ruleset
+     *
+     * @return the new ruleset
+     *
+     * @throws NullPointerException If any parameter is null, or the collections contain null elements
+     */
+    public static RuleSet create(String name,
+                                 String description,
+                                 String fileName,
+                                 Collection<Pattern> excludePatterns,
+                                 Collection<Pattern> includePatterns,
+                                 Iterable<? extends Rule> rules) {
+        RuleSetBuilder builder = new RuleSetBuilder(0L); // TODO: checksum missing
+        builder.withName(name)
+               .withDescription(description)
+               .withFileName(fileName)
+               .replaceFileExclusions(excludePatterns)
+               .replaceFileInclusions(includePatterns);
+        for (Rule rule : rules) {
+            builder.addRule(rule);
+        }
+        return builder.build();
+    }
+
+    /**
+     * Creates a copy of the given ruleset. All properties like name, description, fileName
+     * and exclude/include patterns are copied.
+     *
+     * <p><strong>Note:</strong> The rule instances are shared between the original
+     * and the new ruleset (copy-by-reference). This might lead to concurrency issues,
+     * if the original ruleset and the new ruleset are used in different threads.
+     * </p>
+     *
+     * @param original the original rule set to copy from
+     *
+     * @return the copy
+     */
+    public static RuleSet copy(RuleSet original) {
+        return new RuleSet(original);
+    }
+
     /* package */ static class RuleSetBuilder {
+
         public String description;
         public String name;
         public String fileName;
         private final List<Rule> rules = new ArrayList<>();
-        private final List<String> excludePatterns = new ArrayList<>(0);
-        private final List<String> includePatterns = new ArrayList<>(0);
+        private final Set<Pattern> excludePatterns = new LinkedHashSet<>();
+        private final Set<Pattern> includePatterns = new LinkedHashSet<>();
         private final long checksum;
 
         /* package */ RuleSetBuilder(final long checksum) {
@@ -111,8 +195,8 @@ public class RuleSet implements ChecksumAware {
             this.withName(original.getName())
                 .withDescription(original.getDescription())
                 .withFileName(original.getFileName())
-                .setExcludePatterns(original.getExcludePatterns())
-                .setIncludePatterns(original.getIncludePatterns());
+                .replaceFileExclusions(original.getFileExclusions())
+                .replaceFileInclusions(original.getFileInclusions());
             addRuleSet(original);
         }
 
@@ -132,7 +216,7 @@ public class RuleSet implements ChecksumAware {
             // check for duplicates - adding more than one rule with the same name will
             // be problematic - see #RuleSet.getRuleByName(String)
             for (Rule rule : rules) {
-                if (rule.getName().equals(newRule.getName()) && rule.getLanguage() == newRule.getLanguage()) {
+                if (rule.getName().equals(newRule.getName()) && rule.getLanguage().equals(newRule.getLanguage())) {
                     LOG.warning("The rule with name " + newRule.getName() + " is duplicated. "
                             + "Future versions of PMD will reject to load such rulesets.");
                     break;
@@ -141,6 +225,32 @@ public class RuleSet implements ChecksumAware {
 
             rules.add(newRule);
             return this;
+        }
+
+        /**
+         * Finds an already added rule by same name and language, if it already exists.
+         * @param rule the rule to search
+         * @return the already added rule or <code>null</code> if no rule was added yet to the builder.
+         */
+        Rule getExistingRule(final Rule rule) {
+            for (Rule r : rules) {
+                if (r.getName().equals(rule.getName()) && r.getLanguage().equals(rule.getLanguage())) {
+                    return r;
+                }
+            }
+
+            return null;
+        }
+
+        /**
+         * Checks, whether a rule with the same name and language already exists in the
+         * ruleset.
+         * @param rule to rule to check
+         * @return <code>true</code> if the rule already exists, <code>false</code> if the given
+         *     rule is the first configuration of this rule.
+         */
+        boolean hasRule(final Rule rule) {
+            return getExistingRule(rule) != null;
         }
 
         /**
@@ -159,7 +269,7 @@ public class RuleSet implements ChecksumAware {
 
             for (final Iterator<Rule> it = rules.iterator(); it.hasNext();) {
                 final Rule r = it.next();
-                if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
+                if (r.getName().equals(rule.getName()) && r.getLanguage().equals(rule.getLanguage())) {
                     it.remove();
                 }
             }
@@ -188,13 +298,7 @@ public class RuleSet implements ChecksumAware {
                 rule = ((RuleReference) rule).getRule();
             }
 
-            boolean exists = false;
-            for (final Rule r : rules) {
-                if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
-                    exists = true;
-                    break;
-                }
-            }
+            boolean exists = hasRule(rule);
             if (!exists) {
                 addRule(ruleOrRef);
             }
@@ -237,7 +341,7 @@ public class RuleSet implements ChecksumAware {
          * @return The same builder, for a fluid programming interface
          */
         public RuleSetBuilder addRuleSet(final RuleSet ruleSet) {
-            rules.addAll(rules.size(), ruleSet.getRules());
+            rules.addAll(ruleSet.getRules());
             return this;
         }
 
@@ -294,83 +398,118 @@ public class RuleSet implements ChecksumAware {
         }
 
         /**
-         * Adds a new file exclusion pattern.
+         * Adds some new file exclusion patterns.
          *
-         * @param aPattern
-         *            the pattern
-         * @return The same builder, for a fluid programming interface
+         * @param p1   The first pattern
+         * @param rest Additional patterns
+         *
+         * @return This builder
+         *
+         * @throws NullPointerException If any of the specified patterns is null
          */
-        public RuleSetBuilder addExcludePattern(final String aPattern) {
-            if (!excludePatterns.contains(aPattern)) {
-                excludePatterns.add(aPattern);
+        public RuleSetBuilder withFileExclusions(Pattern p1, Pattern... rest) {
+            Objects.requireNonNull(p1, "Pattern was null");
+            Objects.requireNonNull(rest, "Other patterns was null");
+            excludePatterns.add(p1);
+            for (Pattern p : rest) {
+                Objects.requireNonNull(p, "Pattern was null");
+                excludePatterns.add(p);
             }
             return this;
         }
 
         /**
-         * Adds new file exclusion patterns.
+         * Adds some new file exclusion patterns.
          *
-         * @param someExcludePatterns
-         *            the patterns
-         * @return The same builder, for a fluid programming interface
+         * @param patterns Exclusion patterns to add
+         *
+         * @return This builder
+         *
+         * @throws NullPointerException If any of the specified patterns is null
          */
-        public RuleSetBuilder addExcludePatterns(final Collection<String> someExcludePatterns) {
-            CollectionUtil.addWithoutDuplicates(someExcludePatterns, excludePatterns);
+        public RuleSetBuilder withFileExclusions(Collection<? extends Pattern> patterns) {
+            Objects.requireNonNull(patterns, "Pattern collection was null");
+            for (Pattern p : patterns) {
+                Objects.requireNonNull(p, "Pattern was null");
+                excludePatterns.add(p);
+            }
             return this;
         }
 
         /**
          * Replaces the existing exclusion patterns with the given patterns.
          *
-         * @param theExcludePatterns
-         *            the new patterns
+         * @param patterns Exclusion patterns to set
+         *
+         * @return This builder
+         *
+         * @throws NullPointerException If any of the specified patterns is null
          */
-        public RuleSetBuilder setExcludePatterns(final Collection<String> theExcludePatterns) {
-            if (!excludePatterns.equals(theExcludePatterns)) {
-                excludePatterns.clear();
-                CollectionUtil.addWithoutDuplicates(theExcludePatterns, excludePatterns);
+        public RuleSetBuilder replaceFileExclusions(Collection<? extends Pattern> patterns) {
+            Objects.requireNonNull(patterns, "Pattern collection was null");
+            excludePatterns.clear();
+            for (Pattern p : patterns) {
+                Objects.requireNonNull(p, "Pattern was null");
+                excludePatterns.add(p);
+            }
+            return this;
+        }
+
+
+        /**
+         * Adds some new file inclusion patterns.
+         *
+         * @param p1   The first pattern
+         * @param rest Additional patterns
+         *
+         * @return This builder
+         *
+         * @throws NullPointerException If any of the specified patterns is null
+         */
+        public RuleSetBuilder withFileInclusions(Pattern p1, Pattern... rest) {
+            Objects.requireNonNull(p1, "Pattern was null");
+            Objects.requireNonNull(rest, "Other patterns was null");
+            includePatterns.add(p1);
+            for (Pattern p : rest) {
+                Objects.requireNonNull(p, "Pattern was null");
+                includePatterns.add(p);
             }
             return this;
         }
 
         /**
-         * Adds new inclusion patterns.
+         * Adds some new file inclusion patterns.
          *
-         * @param someIncludePatterns
-         *            the patterns
-         * @return The same builder, for a fluid programming interface
+         * @param patterns Inclusion patterns to add
+         *
+         * @return This builder
+         *
+         * @throws NullPointerException If any of the specified patterns is null
          */
-        public RuleSetBuilder addIncludePatterns(final Collection<String> someIncludePatterns) {
-            CollectionUtil.addWithoutDuplicates(someIncludePatterns, includePatterns);
+        public RuleSetBuilder withFileInclusions(Collection<? extends Pattern> patterns) {
+            Objects.requireNonNull(patterns, "Pattern collection was null");
+            for (Pattern p : patterns) {
+                Objects.requireNonNull(p, "Pattern was null");
+                includePatterns.add(p);
+            }
             return this;
         }
 
         /**
          * Replaces the existing inclusion patterns with the given patterns.
          *
-         * @param theIncludePatterns
-         *            the new patterns
-         * @return The same builder, for a fluid programming interface
-         */
-        public RuleSetBuilder setIncludePatterns(final Collection<String> theIncludePatterns) {
-            if (!includePatterns.equals(theIncludePatterns)) {
-                includePatterns.clear();
-                CollectionUtil.addWithoutDuplicates(theIncludePatterns, includePatterns);
-            }
-
-            return this;
-        }
-
-        /**
-         * Adds a new inclusion pattern.
+         * @param patterns Inclusion patterns to set
          *
-         * @param aPattern
-         *            the pattern
-         * @return The same builder, for a fluid programming interface
+         * @return This builder
+         *
+         * @throws NullPointerException If any of the specified patterns is null
          */
-        public RuleSetBuilder addIncludePattern(final String aPattern) {
-            if (!includePatterns.contains(aPattern)) {
-                includePatterns.add(aPattern);
+        public RuleSetBuilder replaceFileInclusions(Collection<? extends Pattern> patterns) {
+            Objects.requireNonNull(patterns, "Pattern collection was null");
+            includePatterns.clear();
+            for (Pattern p : patterns) {
+                Objects.requireNonNull(p, "Pattern was null");
+                includePatterns.add(p);
             }
             return this;
         }
@@ -466,7 +605,7 @@ public class RuleSet implements ChecksumAware {
      *         <code>false</code> otherwise
      */
     public boolean applies(File file) {
-        return file == null || filter.filter(file);
+        return file == null || filter.test(file);
     }
 
     /**
@@ -489,29 +628,12 @@ public class RuleSet implements ChecksumAware {
      *            the node list, usually the root nodes like compilation units
      * @param ctx
      *            the current context
+     *
+     * @deprecated Use {@link RuleSets#apply(List, RuleContext)}
      */
+    @Deprecated
     public void apply(List<? extends Node> acuList, RuleContext ctx) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULE)) {
-            for (Rule rule : rules) {
-                if (!rule.isRuleChain() && applies(rule, ctx.getLanguageVersion())) {
-
-                    try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
-                        rule.apply(acuList, ctx);
-                    } catch (RuntimeException e) {
-                        if (ctx.isIgnoreExceptions()) {
-                            ctx.getReport().addError(new Report.ProcessingError(e, ctx.getSourceCodeFilename()));
-
-                            if (LOG.isLoggable(Level.WARNING)) {
-                                LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
-                                        + ctx.getSourceCodeFilename() + ", continuing with next rule", e);
-                            }
-                        } else {
-                            throw e;
-                        }
-                    }
-                }
-            }
-        }
+        new RuleSets(this).apply(acuList, ctx);
     }
 
     /**
@@ -588,74 +710,20 @@ public class RuleSet implements ChecksumAware {
         return description;
     }
 
-    public List<String> getExcludePatterns() {
+    /**
+     * Returns the file exclusion patterns as an unmodifiable list.
+     */
+    public List<Pattern> getFileExclusions() {
         return excludePatterns;
     }
 
-    public List<String> getIncludePatterns() {
+    /**
+     * Returns the file inclusion patterns as an unmodifiable list.
+     */
+    public List<Pattern> getFileInclusions() {
         return includePatterns;
     }
 
-
-
-    /**
-     * Does any Rule for the given Language use the DFA layer?
-     *
-     * @param language
-     *            The Language.
-     * @return <code>true</code> if a Rule for the Language uses the DFA layer,
-     *         <code>false</code> otherwise.
-     * @deprecated See {@link Rule#isDfa()}
-     */
-    @Deprecated
-    public boolean usesDFA(Language language) {
-        for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.isDfa()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Does any Rule for the given Language use Type Resolution?
-     *
-     * @param language
-     *            The Language.
-     * @return <code>true</code> if a Rule for the Language uses Type
-     *         Resolution, <code>false</code> otherwise.
-     * @deprecated See {@link Rule#isTypeResolution()}
-     */
-    @Deprecated
-    public boolean usesTypeResolution(Language language) {
-        for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.isTypeResolution()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * Does any Rule for the given Language use multi-file analysis?
-     *
-     * @param language
-     *            The Language.
-     *
-     * @return {@code true} if a Rule for the Language uses multi file analysis,
-     *         {@code false} otherwise.
-     * @deprecated See {@link Rule#isMultifile()}
-     */
-    @Deprecated
-    public boolean usesMultifile(Language language) {
-        for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.isMultifile()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Remove and collect any misconfigured rules.

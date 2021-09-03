@@ -1,20 +1,23 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.TEST_METHOD;
+
 import apex.jorje.semantic.ast.modifier.ModifierNode;
 import apex.jorje.semantic.symbol.type.ModifierTypeInfos;
 
-public class ASTModifierNode extends AbstractApexNode<ModifierNode> implements AccessNode {
+public final class ASTModifierNode extends AbstractApexNode<ModifierNode> implements AccessNode {
 
-    public ASTModifierNode(ModifierNode modifierNode) {
+    ASTModifierNode(ModifierNode modifierNode) {
         super(modifierNode);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -58,8 +61,18 @@ public class ASTModifierNode extends AbstractApexNode<ModifierNode> implements A
         return (node.getModifiers().getJavaModifiers() & TRANSIENT) == TRANSIENT;
     }
 
+    /**
+     * Returns true if function has `@isTest` annotation or `testmethod` modifier
+     */
     public boolean isTest() {
         return node.getModifiers().isTest();
+    }
+
+    /**
+     * Returns true if function has `testmethod` modifier
+     */
+    public boolean hasDeprecatedTestMethod() {
+        return node.getModifiers().has(TEST_METHOD);
     }
 
     public boolean isTestOrTestSetup() {

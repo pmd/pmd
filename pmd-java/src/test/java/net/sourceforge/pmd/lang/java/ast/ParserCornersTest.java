@@ -4,30 +4,45 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava15;
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava17;
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava18;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class ParserCornersTest {
+public class ParserCornersTest extends BaseJavaTreeDumpTest {
+    private final JavaParsingHelper java = JavaParsingHelper.WITH_PROCESSING.withResourceContext(getClass());
+    private final JavaParsingHelper java4 = java.withDefaultVersion("1.4");
+    private final JavaParsingHelper java7 = java.withDefaultVersion("1.7");
+    private final JavaParsingHelper java8 = java.withDefaultVersion("1.8");
+    private final JavaParsingHelper java5 = java.withDefaultVersion("1.7");
+    @Rule
+    public ExpectedException expect = ExpectedException.none();
+
+
+    @Override
+    public @NonNull BaseParsingHelper<?, ?> getParser() {
+        return java4;
+    }
+
+    @Test
+    public void testInvalidUnicodeEscape() {
+        expect.expect(TokenMgrError.class); // previously Error
+        expect.expectMessage("Lexical error in file x/filename.java at line 1, column 2.  Encountered: Invalid unicode escape");
+        java.parse("\\u00k0", null, "x/filename.java");
+    }
 
     /**
      * #1107 PMD 5.0.4 couldn't parse call of parent outer java class method
@@ -35,48 +50,48 @@ public class ParserCornersTest {
      */
     @Test
     public void testInnerOuterClass() {
-        parseJava17("/**\n" + " * @author azagorulko\n" + " *\n" + " */\n"
-                + "public class TestInnerClassCallsOuterParent {\n" + "\n" + "    public void test() {\n"
-                + "        new Runnable() {\n" + "            @Override\n" + "            public void run() {\n"
-                + "                TestInnerClassCallsOuterParent.super.toString();\n" + "            }\n"
-                + "        };\n" + "    }\n" + "}\n");
+        java7.parse("/**\n" + " * @author azagorulko\n" + " *\n" + " */\n"
+                        + "public class TestInnerClassCallsOuterParent {\n" + "\n" + "    public void test() {\n"
+                        + "        new Runnable() {\n" + "            @Override\n" + "            public void run() {\n"
+                        + "                TestInnerClassCallsOuterParent.super.toString();\n" + "            }\n"
+                        + "        };\n" + "    }\n" + "}\n");
     }
-    
+
     /**
      * #888 PMD 6.0.0 can't parse valid <> under 1.8.
      */
     @Test
     public void testDiamondUsageJava8() {
-        parseJava18("public class PMDExceptionTest {\n"
-                + "  private Component makeUI() {\n"
-                + "    String[] model = {\"123456\", \"7890\"};\n"
-                + "    JComboBox<String> comboBox = new JComboBox<>(model);\n"
-                + "    comboBox.setEditable(true);\n"
-                + "    comboBox.setEditor(new BasicComboBoxEditor() {\n"
-                + "      private Component editorComponent;\n"
-                + "      @Override public Component getEditorComponent() {\n"
-                + "        if (editorComponent == null) {\n"
-                + "          JTextField tc = (JTextField) super.getEditorComponent();\n"
-                + "          editorComponent = new JLayer<>(tc, new ValidationLayerUI<>());\n"
-                + "        }\n"
-                + "        return editorComponent;\n"
-                + "      }\n"
-                + "    });\n"
-                + "    JPanel p = new JPanel();\n"
-                + "    p.add(comboBox);\n"
-                + "    return p;\n"
-                + "  }\n"
-                + "}");
+        java8.parse("public class PMDExceptionTest {\n"
+                        + "  private Component makeUI() {\n"
+                        + "    String[] model = {\"123456\", \"7890\"};\n"
+                        + "    JComboBox<String> comboBox = new JComboBox<>(model);\n"
+                        + "    comboBox.setEditable(true);\n"
+                        + "    comboBox.setEditor(new BasicComboBoxEditor() {\n"
+                        + "      private Component editorComponent;\n"
+                        + "      @Override public Component getEditorComponent() {\n"
+                        + "        if (editorComponent == null) {\n"
+                        + "          JTextField tc = (JTextField) super.getEditorComponent();\n"
+                        + "          editorComponent = new JLayer<>(tc, new ValidationLayerUI<>());\n"
+                        + "        }\n"
+                        + "        return editorComponent;\n"
+                        + "      }\n"
+                        + "    });\n"
+                        + "    JPanel p = new JPanel();\n"
+                        + "    p.add(comboBox);\n"
+                        + "    return p;\n"
+                        + "  }\n"
+                        + "}");
     }
 
     @Test
     public final void testGetFirstASTNameImageNull() {
-        parseJava14(ABSTRACT_METHOD_LEVEL_CLASS_DECL);
+        java4.parse(ABSTRACT_METHOD_LEVEL_CLASS_DECL);
     }
 
     @Test
     public final void testCastLookaheadProblem() {
-        parseJava14(CAST_LOOKAHEAD_PROBLEM);
+        java4.parse(CAST_LOOKAHEAD_PROBLEM);
     }
 
     /**
@@ -85,32 +100,23 @@ public class ParserCornersTest {
      */
     @Test
     public void testGenericsProblem() {
-        parseJava15(GENERICS_PROBLEM);
-        parseJava17(GENERICS_PROBLEM);
+        java5.parse(GENERICS_PROBLEM);
+        java7.parse(GENERICS_PROBLEM);
     }
 
     @Test
     public void testParsersCases15() {
-        String test15 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases.java");
-        parseJava15(test15);
+        doTest("ParserCornerCases", java5);
     }
 
     @Test
     public void testParsersCases17() {
-        String test17 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases17.java");
-        parseJava17(test17);
+        doTest("ParserCornerCases17", java7);
     }
 
     @Test
-    public void testParsersCases18() throws Exception {
-        String test18 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases18.java");
-        ASTCompilationUnit cu = parseJava18(test18);
-
-        Assert.assertEquals(21, cu.findChildNodesWithXPath("//FormalParameter").size());
-        Assert.assertEquals(4,
-                cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='true']").size());
-        Assert.assertEquals(17,
-                cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='false']").size());
+    public void testParsersCases18() {
+        doTest("ParserCornerCases18", java8);
     }
 
     /**
@@ -118,19 +124,12 @@ public class ParserCornersTest {
      */
     @Test
     public void testLambdaBug1333() {
-        parseJava18("final class Bug1333 {\n"
-                + "    private static final Logger LOG = LoggerFactory.getLogger(Foo.class);\n" + "\n"
-                + "    public void deleteDirectoriesByNamePattern() {\n"
-                + "        delete(path -> deleteDirectory(path));\n" + "    }\n" + "\n"
-                + "    private void delete(Consumer<? super String> consumer) {\n"
-                + "        LOG.debug(consumer.toString());\n" + "    }\n" + "\n"
-                + "    private void deleteDirectory(String path) {\n" + "        LOG.debug(path);\n" + "    }\n" + "}");
+        doTest("LambdaBug1333", java8);
     }
 
     @Test
     public void testLambdaBug1470() {
-        String code = readAsString("LambdaBug1470.java");
-        parseJava18(code);
+        doTest("LambdaBug1470", java8);
     }
 
     /**
@@ -138,125 +137,95 @@ public class ParserCornersTest {
      */
     @Test
     public void emptyFileJustComment() {
-        parseJava18("// just a comment");
+        getParser().parse("// just a comment");
     }
 
-    @Test
-    public void testMultipleExceptionCatching() {
-        String code = "public class Foo { public void bar() { "
-                + "try { System.out.println(); } catch (RuntimeException | IOException e) {} } }";
-        try {
-            parseJava15(code);
-            fail("Expected exception");
-        } catch (ParseException e) {
-            assertEquals(
-                    "Line 1, Column 94: Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode!",
-                    e.getMessage());
-        }
-
-        try {
-            parseJava17(code);
-            // no exception expected
-        } catch (ParseException e) {
-            fail();
-        }
-    }
 
     @Test
     public void testBug1429ParseError() {
-        String c = readAsString("Bug1429.java");
-        parseJava18(c);
+        doTest("Bug1429", java8);
     }
 
     @Test
     public void testBug1530ParseError() {
-        String c = readAsString("Bug1530.java");
-        parseJava18(c);
-    }
-    
-    @Test
-    public void testGitHubBug207() {
-        String c = readAsString("GitHubBug207.java");
-        parseJava18(c);
+        doTest("Bug1530", java8);
     }
 
     @Test
-    public void testBug206() throws Exception {
-        String code = "public @interface Foo {" + PMD.EOL
-            + "static final ThreadLocal<Interner<Integer>> interner =" + PMD.EOL
-            + "    ThreadLocal.withInitial(Interners::newStrongInterner);" + PMD.EOL
-            + "}";
-        parseJava18(code);
+    public void testGitHubBug207() {
+        doTest("GitHubBug207", java8);
+    }
+
+    @Test
+    public void testLambda2783() {
+        java8.parseResource("LambdaBug2783.java");
+    }
+
+    @Test
+    public void testGitHubBug2767() {
+        // PMD fails to parse an initializer block.
+        // PMD 6.26.0 parses this code just fine.
+        java.withDefaultVersion("16")
+            .parse("class Foo {\n"
+                       + "    {final int I;}\n"
+                       + "}\n");
+    }
+
+    @Test
+    public void testBug206() {
+        doTest("LambdaBug206", java8);
     }
 
     @Test
     public void testGitHubBug208ParseError() {
-        String c = readAsString("GitHubBug208.java");
-        parseJava15(c);
-    }
-    
-    @Test
-    public void testGitHubBug257NonExistingCast() throws Exception {
-        String code = "public class Test {" + PMD.EOL
-                + "     public static void main(String[] args) {" + PMD.EOL
-                + "         double a = 4.0;" + PMD.EOL
-                + "         double b = 2.0;" + PMD.EOL
-                + "         double result = Math.sqrt((a)   - b);" + PMD.EOL
-                + "         System.out.println(result);" + PMD.EOL
-                + "     }" + PMD.EOL
-                + "}";
-        ASTCompilationUnit compilationUnit = parseJava15(code);
-        assertEquals("A cast was found when none expected", 0, compilationUnit.findDescendantsOfType(ASTCastExpression.class).size());
+        doTest("GitHubBug208", java5);
     }
 
     @Test
-    public void testGitHubBug309() throws Exception {
-        String code = readAsString("GitHubBug309.java");
-        ASTCompilationUnit compilationUnit = parseJava18(code);
-        assertNotNull(compilationUnit);
+    public void testGitHubBug309() {
+        doTest("GitHubBug309", java8);
     }
 
-    /**
-     * This triggered bug #1484 UnusedLocalVariable - false positive -
-     * parenthesis
-     * 
-     * @throws Exception
-     */
+    @Test(timeout = 30000)
+    public void testInfiniteLoopInLookahead() {
+        expect.expect(ParseException.class);
+        // https://github.com/pmd/pmd/issues/3117
+        java8.parseResource("InfiniteLoopInLookahead.java");
+    }
+
     @Test
-    public void stringConcatentationShouldNotBeCast() throws Exception {
+    public void stringConcatentationShouldNotBeCast() {
+        // https://github.com/pmd/pmd/issues/1484
         String code = "public class Test {\n" + "    public static void main(String[] args) {\n"
-                + "        System.out.println(\"X\" + (args) + \"Y\");\n" + "    }\n" + "}";
-        ASTCompilationUnit cu = parseJava18(code);
-        Assert.assertEquals(0, cu.findDescendantsOfType(ASTCastExpression.class).size());
+            + "        System.out.println(\"X\" + (args) + \"Y\");\n" + "    }\n" + "}";
+        Assert.assertEquals(0, java8.parse(code).findDescendantsOfType(ASTCastExpression.class).size());
     }
+
 
     /**
      * Empty statements should be allowed.
-     * @throws Exception
+     *
      * @see <a href="https://github.com/pmd/pmd/issues/378">github issue 378</a>
      */
     @Test
-    public void testParseEmptyStatements() throws Exception {
-        String code = "import a;;import b; public class Foo {}";
-        ASTCompilationUnit cu = parseJava18(code);
-        assertNotNull(cu);
-        Assert.assertEquals(ASTEmptyStatement.class, cu.jjtGetChild(1).getClass());
-
-        String code2 = "package c;; import a; import b; public class Foo {}";
-        ASTCompilationUnit cu2 = parseJava18(code2);
-        assertNotNull(cu2);
-        Assert.assertEquals(ASTEmptyStatement.class, cu2.jjtGetChild(1).getClass());
-
-        String code3 = "package c; import a; import b; public class Foo {};";
-        ASTCompilationUnit cu3 = parseJava18(code3);
-        assertNotNull(cu3);
-        Assert.assertEquals(ASTEmptyStatement.class, cu3.jjtGetChild(4).getClass());
+    public void testEmptyStatements1() {
+        doTest("EmptyStmts1");
     }
 
     @Test
-    public void testMethodReferenceConfused() throws Exception {
-        String code = readAsString("MethodReferenceConfused.java");
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10", code);
+    public void testEmptyStatements2() {
+        doTest("EmptyStmts2");
+    }
+
+    @Test
+    public void testEmptyStatements3() {
+        doTest("EmptyStmts3");
+    }
+
+    @Test
+    @Ignore("this test depends on usage resolution")
+    public void testMethodReferenceConfused() {
+        ASTCompilationUnit compilationUnit = java.parseResource("MethodReferenceConfused.java", "10");
         Assert.assertNotNull(compilationUnit);
         ASTBlock firstBlock = compilationUnit.getFirstDescendantOfType(ASTBlock.class);
         Map<NameDeclaration, List<NameOccurrence>> declarations = firstBlock.getScope().getDeclarations();
@@ -275,38 +244,37 @@ public class ParserCornersTest {
     }
 
     @Test
-    public void testSwitchWithFallthrough() throws Exception {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("11", readAsString("SwitchWithFallthrough.java"));
-        Assert.assertNotNull(compilationUnit);
-        ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
-        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchLabel.class).size());
+    public void testSwitchWithFallthrough() {
+        doTest("SwitchWithFallthrough");
     }
 
     @Test
-    public void testSwitchStatements() throws Exception {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("11", readAsString("SwitchStatements.java"));
-        Assert.assertNotNull(compilationUnit);
-        ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
-        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchLabel.class).size());
+    public void testSwitchStatements() {
+        doTest("SwitchStatements");
+    }
+
+    @Test
+    public void testSynchronizedStatements() {
+        doTest("SynchronizedStmts");
     }
 
 
-    private String readAsString(String resource) {
-        try (InputStream in = ParserCornersTest.class.getResourceAsStream(resource)) {
-            return IOUtils.toString(in, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private static final String GENERICS_PROBLEM =
+        "public class Test {\n public void test() {\n   String o = super.<String> doStuff(\"\");\n }\n}";
+
+    private static final String ABSTRACT_METHOD_LEVEL_CLASS_DECL =
+        "public class Test {\n"
+            + "  void bar() {\n"
+            + "   abstract class X { public abstract void f(); }\n"
+            + "   class Y extends X { public void f() { new Y().f(); } }\n"
+            + "  }\n"
+            + "}";
+
+    private static final String CAST_LOOKAHEAD_PROBLEM =
+        "public class BadClass {\n  public Class foo() {\n    return (byte[].class);\n  }\n}";
+
+    @Test
+    public void testGithubBug3101UnresolvedTypeParams() {
+        java.parseResource("GitHubBug3101.java");
     }
-
-    private static final String GENERICS_PROBLEM = "public class Test {" + PMD.EOL + " public void test() {" + PMD.EOL
-            + "   String o = super.<String> doStuff(\"\");" + PMD.EOL + " }" + PMD.EOL + "}";
-
-    private static final String ABSTRACT_METHOD_LEVEL_CLASS_DECL = "public class Test {" + PMD.EOL + "  void bar() {"
-            + PMD.EOL + "   abstract class X { public abstract void f(); }" + PMD.EOL
-            + "   class Y extends X { public void f() {" + PMD.EOL + "    new Y().f();" + PMD.EOL + "   }}" + PMD.EOL
-            + "  }" + PMD.EOL + "}";
-
-    private static final String CAST_LOOKAHEAD_PROBLEM = "public class BadClass {" + PMD.EOL + "  public Class foo() {"
-            + PMD.EOL + "    return (byte[].class);" + PMD.EOL + "  }" + PMD.EOL + "}";
 }

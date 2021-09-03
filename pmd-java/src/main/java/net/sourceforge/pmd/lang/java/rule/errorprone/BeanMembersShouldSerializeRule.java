@@ -18,15 +18,16 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -72,15 +73,15 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
             return data;
         }
 
-        if (hasLombokAnnotation(node)) {
+        if (JavaRuleUtil.hasLombokAnnotation(node)) {
             return super.visit(node, data);
         }
 
         Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class)
                 .getMethodDeclarations();
-        List<ASTMethodDeclarator> getSetMethList = new ArrayList<>(methods.size());
+        List<ASTMethodDeclaration> getSetMethList = new ArrayList<>(methods.size());
         for (MethodNameDeclaration d : methods.keySet()) {
-            ASTMethodDeclarator mnd = d.getMethodNameDeclaratorNode();
+            ASTMethodDeclaration mnd = d.getDeclarator();
             if (isBeanAccessor(mnd)) {
                 getSetMethList.add(mnd);
             }
@@ -95,7 +96,7 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
             VariableNameDeclaration decl = entry.getKey();
             AccessNode accessNodeParent = decl.getAccessNodeParent();
-            if (entry.getValue().isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic() 
+            if (entry.getValue().isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic()
                     || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
                 continue;
             }
@@ -119,19 +120,17 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
         return img;
     }
 
-    private boolean isBeanAccessor(ASTMethodDeclarator meth) {
+    private boolean isBeanAccessor(ASTMethodDeclaration meth) {
 
-        String methodName = meth.getImage();
+        String methodName = meth.getMethodName();
 
         if (methodName.startsWith("get") || methodName.startsWith("set")) {
             return true;
         }
         if (methodName.startsWith("is")) {
-            ASTResultType ret = ((ASTMethodDeclaration) meth.jjtGetParent()).getResultType();
+            ASTResultType ret = ((ASTMethodDeclaration) meth.getParent()).getResultType();
             List<ASTPrimitiveType> primitives = ret.findDescendantsOfType(ASTPrimitiveType.class);
-            if (!primitives.isEmpty() && primitives.get(0).isBoolean()) {
-                return true;
-            }
+            return !primitives.isEmpty() && primitives.get(0).getTypeMirror().isPrimitive(PrimitiveTypeKind.BOOLEAN);
         }
         return false;
     }

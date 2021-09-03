@@ -6,12 +6,10 @@ package net.sourceforge.pmd.cpd;
 
 import org.antlr.v4.runtime.CharStream;
 
-import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
-import net.sourceforge.pmd.lang.go.antlr4.GolangLexer;
+import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
+import net.sourceforge.pmd.lang.go.ast.GolangLexer;
 
-/**
- * The Go tokenizer.
- */
 public class GoTokenizer extends AntlrTokenizer {
 
     @Override

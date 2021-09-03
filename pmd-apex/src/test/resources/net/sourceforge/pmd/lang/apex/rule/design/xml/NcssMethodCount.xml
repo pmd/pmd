@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,12 +11,12 @@
         <code><![CDATA[
 public class Foo {
     public void foo() {
-		bar();
+        bar();
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>lots of comments</description>
         <rule-property name="minimum">13</rule-property>
@@ -25,55 +24,55 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public void foo() {
-		//nothing to see here
-		//nothing to see here
-		//nothing to see here
-		//nothing to see here
-		bar();
-		//nothing to see here
-		//nothing to see here
-		//nothing to see here
-		//nothing to see here
-		foo();
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        bar();
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        foo();
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <code-fragment id="long-method"><![CDATA[
 public class Foo {
     public void foo() {
-		//nothing to see here
-		//nothing to see here
-		//nothing to see here
-		//nothing to see here
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		//nothing to see here
-		//nothing to see here
-		//nothing to see here
-		//nothing to see here
-		foo();
-		foo();
-		foo();
-		foo();
-		foo();
-		foo();
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        foo();
+        foo();
+        foo();
+        foo();
+        foo();
+        foo();
     }
 }
-		]]></code-fragment>
-		
+    ]]></code-fragment>
+
     <test-code>
         <description>long method</description>
         <rule-property name="minimum">13</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="long-method"/>
     </test-code>
-    
+
     <test-code>
         <description>long method - changed minimum</description>
         <!-- validated this number against NCSS -->
@@ -81,7 +80,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code-ref id="long-method"/>
     </test-code>
-    
+
     <test-code>
         <description>ignores constructor</description>
         <rule-property name="minimum">10</rule-property>
@@ -89,23 +88,24 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public Foo() {
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Github issue #183 - lines are counted properly</description>
         <rule-property name="minimum">10</rule-property>
@@ -113,7 +113,7 @@ public class Foo {
         <code>
 @isTest
 private class AcceptanceTests_Test {
-    
+
     @isTest
     private static void test() {
         // Setup
@@ -143,7 +143,7 @@ public class SomeClass {
      * Comment
      */
     public void doSomething() {
-        System.debug("hello world");
+        System.debug('hello world');
     }
 
     /** Field comment */

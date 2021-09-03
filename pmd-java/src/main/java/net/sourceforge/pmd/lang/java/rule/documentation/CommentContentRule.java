@@ -16,10 +16,10 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -30,7 +30,7 @@ import net.sourceforge.pmd.properties.PropertySource;
  *
  * @author Brian Remedios
  */
-public class CommentContentRule extends AbstractCommentRule {
+public class CommentContentRule extends AbstractJavaRulechainRule {
 
     private boolean caseSensitive;
     private List<String> originalBadWords;
@@ -52,6 +52,7 @@ public class CommentContentRule extends AbstractCommentRule {
     }
 
     public CommentContentRule() {
+        super(ASTCompilationUnit.class);
         definePropertyDescriptor(CASE_SENSITIVE_DESCRIPTOR);
         definePropertyDescriptor(DISSALLOWED_TERMS_DESCRIPTOR);
     }
@@ -73,22 +74,13 @@ public class CommentContentRule extends AbstractCommentRule {
         }
     }
 
-    /**
-     * .
-     * @see Rule#end(RuleContext)
-     */
-    @Override
-    public void end(RuleContext ctx) {
-        // Override as needed
-    }
-
     private List<String> illegalTermsIn(Comment comment) {
 
         if (currentBadWords.isEmpty()) {
             return Collections.emptyList();
         }
 
-        String commentText = filteredCommentIn(comment);
+        String commentText = comment.getFilteredComment();
         if (StringUtils.isBlank(commentText)) {
             return Collections.emptyList();
         }
@@ -140,12 +132,17 @@ public class CommentContentRule extends AbstractCommentRule {
             addViolationWithMessage(data, cUnit, errorMsgFor(badWords), comment.getBeginLine(), comment.getEndLine());
         }
 
-        return super.visit(cUnit, data);
+        return null;
     }
 
-    public boolean hasDissallowedTerms() {
+    private boolean hasDisallowedTerms() {
         List<String> terms = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
         return !terms.isEmpty();
+    }
+
+    @Deprecated
+    public boolean hasDissallowedTerms() {
+        return this.hasDisallowedTerms();
     }
 
     /**

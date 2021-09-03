@@ -63,15 +63,10 @@
    <rule ref="category/apex/design.xml/CyclomaticComplexity">
       <priority>3</priority>
    </rule>
+   <!-- <rule ref="category/apex/design.xml/CognitiveComplexity"/> -->
 
    <!-- PERFORMANCE -->
-   <rule ref="category/apex/performance.xml/AvoidSoqlInLoops" message="Avoid Soql queries inside loops">
-      <priority>3</priority>
-   </rule>
-   <rule ref="category/apex/performance.xml/AvoidSoslInLoops" message="Avoid Sosl queries inside loops">
-      <priority>3</priority>
-   </rule>
-   <rule ref="category/apex/performance.xml/AvoidDmlStatementsInLoops" message="Avoid DML Statements inside loops">
+   <rule ref="category/apex/performance.xml/OperationWithLimitsInLoop" message="Avoid operations in loops that may hit governor limits">
       <priority>3</priority>
    </rule>
    <rule ref="category/apex/errorprone.xml/AvoidDirectAccessTriggerMap" message="Avoid directly accessing Trigger.old and Trigger.new">
@@ -88,6 +83,7 @@
    <rule ref="category/apex/errorprone.xml/AvoidHardcodingId" message="Avoid hardcoding ID's">
       <priority>3</priority>
    </rule>
+<!--    <rule ref="category/apex/performance.xml/AvoidDebugStatements" /> -->
 
    <!-- NAMING -->
    <rule ref="category/apex/codestyle.xml/ClassNamingConventions" message="Class names should begin with an uppercase character">
@@ -123,6 +119,7 @@
    </rule>
 <!--    <rule ref="category/apex/bestpractices.xml/ApexAssertionsShouldIncludeMessage"/> -->
 <!--    <rule ref="category/apex/bestpractices.xml/ApexUnitTestMethodShouldHaveIsTestAnnotation"/> -->
+<!--    <rule ref="category/apex/errorprone.xml/TestMethodsMustBeInTestClasses"/> -->
 
    <!-- SECURITY -->
    <rule ref="category/apex/security.xml/ApexSharingViolations" message="Apex classes should declare a sharing model if DML or SOQL is used">
@@ -131,7 +128,7 @@
    <rule ref="category/apex/security.xml/ApexInsecureEndpoint" message="Apex callouts should use encrypted communication channels">
       <priority>3</priority>
    </rule>
-   <rule ref="category/apex/security.xml/ApexCSRF" message="Avoid making DML operations in Apex class constructor/init method">
+   <rule ref="category/apex/errorprone.xml/ApexCSRF">
       <priority>3</priority>
    </rule>
    <rule ref="category/apex/security.xml/ApexOpenRedirect" message="Apex classes should safely redirect to a known location">
@@ -194,9 +191,19 @@
    <rule ref="category/apex/codestyle.xml/OneDeclarationPerLine">
       <priority>3</priority>
    </rule>
+   <!-- <rule ref="category/apex/codestyle.xml/FieldDeclarationsShouldBeAtStart"/> -->
 
    <!-- DOCUMENTATION -->
    <rule ref="category/apex/documentation.xml/ApexDoc" message="Document classes, methods, and properties that are public or global.">
       <priority>3</priority>
    </rule>
+
+   <!-- CLARITY / BEST PRACTICES -->
+   <rule ref="category/apex/bestpractices.xml/DebugsShouldUseLoggingLevel">
+      <priority>3</priority>
+   </rule>
+   <!-- <rule ref="category/apex/bestpractices.xml/UnusedLocalVariable"/> -->
+   <!-- <rule ref="category/apex/errorprone.xml/OverrideBothEqualsAndHashcode" /> -->
+   <!-- <rule ref="category/apex/errorprone.xml/InaccessibleAuraEnabledGetter" /> -->
+
 </ruleset>

@@ -4,22 +4,16 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyAstStages;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
-import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
 /**
  * Dummy language used for testing PMD.
@@ -30,90 +24,67 @@ public class DummyLanguageModule extends BaseLanguageModule {
     public static final String TERSE_NAME = "dummy";
 
     public DummyLanguageModule() {
-        super(NAME, null, TERSE_NAME, DummyRuleChainVisitor.class, "dummy");
-        addVersion("1.0", new Handler(), false);
-        addVersion("1.1", new Handler(), false);
-        addVersion("1.2", new Handler(), false);
-        addVersion("1.3", new Handler(), false);
-        addVersion("1.4", new Handler(), false);
-        addVersion("1.5", new Handler(), false);
-        addVersion("1.6", new Handler(), false);
-        addVersion("1.7", new Handler(), true);
-        addVersion("1.8", new Handler(), false);
-    }
-
-    public static class DummyRuleChainVisitor extends AbstractRuleChainVisitor {
-        @Override
-        protected void visit(Rule rule, Node node, RuleContext ctx) {
-            rule.apply(Arrays.asList(node), ctx);
-        }
-
-        @Override
-        protected void indexNodes(List<Node> nodes, RuleContext ctx) {
-            for (Node n : nodes) {
-                indexNode(n);
-                List<Node> childs = new ArrayList<>();
-                for (int i = 0; i < n.jjtGetNumChildren(); i++) {
-                    childs.add(n.jjtGetChild(i));
-                }
-                indexNodes(childs, ctx);
-            }
-        }
+        super(NAME, null, TERSE_NAME, "dummy");
+        addVersion("1.0", new Handler());
+        addVersion("1.1", new Handler());
+        addVersion("1.2", new Handler());
+        addVersion("1.3", new Handler());
+        addVersion("1.4", new Handler());
+        addVersion("1.5", new Handler(), "5");
+        addVersion("1.6", new Handler(), "6");
+        addDefaultVersion("1.7", new Handler(), "7");
+        addVersion("1.8", new Handler(), "8");
+        addVersion("1.9-throws", new HandlerWithParserThatThrows());
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
+        public Handler() {
+            super(DummyAstStages.class);
+        }
+
         @Override
         public RuleViolationFactory getRuleViolationFactory() {
             return new RuleViolationFactory();
         }
 
+
         @Override
-        public Parser getParser(ParserOptions parserOptions) {
-            return new AbstractParser(parserOptions) {
-                @Override
-                public Node parse(String fileName, Reader source) throws ParseException {
-                    DummyNode node = new DummyNode(1);
-                    node.testingOnlySetBeginLine(1);
-                    node.testingOnlySetBeginColumn(1);
-                    node.setImage("Foo");
-                    return node;
-                }
-
-                @Override
-                public Map<Integer, String> getSuppressMap() {
-                    return Collections.emptyMap();
-                }
-
-                @Override
-                public boolean canParse() {
-                    return true;
-                }
-
-                @Override
-                protected TokenManager createTokenManager(Reader source) {
-                    return null;
-                }
+        public Parser getParser() {
+            return task -> {
+                DummyRoot node = new DummyRoot();
+                node.setCoords(1, 1, 2, 10);
+                node.setImage("Foo");
+                node.withFileName(task.getFileDisplayName());
+                node.withLanguage(task.getLanguageVersion());
+                node.withSourceText(task.getSourceText());
+                return node;
             };
         }
     }
 
-    public static class RuleViolationFactory extends AbstractRuleViolationFactory {
+    public static class HandlerWithParserThatThrows extends Handler {
         @Override
-        protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-            return createRuleViolation(rule, ruleContext, node, message, 0, 0);
+        public Parser getParser() {
+            return task -> {
+                throw new AssertionError("test error while parsing");
+            };
         }
+    }
+
+    public static class RuleViolationFactory extends DefaultRuleViolationFactory {
 
         @Override
-        protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
-                int beginLine, int endLine) {
-            ParametricRuleViolation<Node> rv = new ParametricRuleViolation<Node>(rule, ruleContext, node, message) {
-                public String getPackageName() {
+        public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String filename, @NonNull String formattedMessage) {
+            return new ParametricRuleViolation<Node>(rule, filename, location, formattedMessage) {
+                {
                     this.packageName = "foo"; // just for testing variable expansion
+                }
+
+                @Override
+                public String getPackageName() {
                     return super.getPackageName();
                 }
             };
-            rv.setLines(beginLine, endLine);
-            return rv;
         }
     }
 }

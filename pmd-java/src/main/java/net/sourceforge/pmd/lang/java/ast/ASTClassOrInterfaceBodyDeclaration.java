@@ -4,58 +4,23 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclaration implements JavaNode {
 
-public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclaration implements CanSuppressWarnings, ASTAnyTypeBodyDeclaration {
-
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceBodyDeclaration(int id) {
+    ASTClassOrInterfaceBodyDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceBodyDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public boolean isFindBoundary() {
-        return isAnonymousInnerClass();
-    }
-
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 
 
     public boolean isAnonymousInnerClass() {
-        return jjtGetParent().jjtGetParent() instanceof ASTAllocationExpression;
+        return getParent().getParent() instanceof ASTAllocationExpression;
     }
 
     public boolean isEnumChild() {
-        return jjtGetParent().jjtGetParent() instanceof ASTEnumConstant;
+        return getParent().getParent() instanceof ASTEnumConstant;
     }
 }

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
@@ -78,7 +80,11 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * </tr>
  * </tbody>
  * </table>
+ *
+ * @deprecated This is part of the internals of the {@link RuleSetLoader}.
  */
+@Deprecated
+@InternalApi
 public class RuleSetReferenceId {
     private final boolean external;
     private final String ruleSetFileName;
@@ -392,22 +398,27 @@ public class RuleSetReferenceId {
      *
      * @param rl The {@link ResourceLoader} to use.
      * @return An InputStream to that resource.
-     * @throws RuleSetNotFoundException
-     *             if unable to find a resource.
      */
-    public InputStream getInputStream(final ResourceLoader rl) throws RuleSetNotFoundException {
+    public InputStream getInputStream(final ResourceLoader rl) throws IOException {
         if (externalRuleSetReferenceId == null) {
-            InputStream in = StringUtils.isBlank(ruleSetFileName) ? null
-                    : rl.loadResourceAsStream(ruleSetFileName);
-            if (in == null) {
-                throw new RuleSetNotFoundException("Can't find resource '" + ruleSetFileName + "' for rule '" + ruleName
-                        + "'" + ".  Make sure the resource is a valid file or URL and is on the CLASSPATH. "
-                        + "Here's the current classpath: " + System.getProperty("java.class.path"));
+            if (StringUtils.isBlank(ruleSetFileName)) {
+                throw notFoundException();
             }
-            return in;
+            try {
+                return rl.loadResourceAsStream(ruleSetFileName);
+            } catch (FileNotFoundException ignored) {
+                throw notFoundException();
+            }
         } else {
             return externalRuleSetReferenceId.getInputStream(rl);
         }
+    }
+
+    private FileNotFoundException notFoundException() {
+        return new FileNotFoundException("Can't find resource '" + ruleSetFileName + "' for rule '" + ruleName
+                                            + "'" + ".  Make sure the resource is a valid file or URL and is on the classpath. "
+                                            + "Here's the current classpath: " 
+                                            + System.getProperty("java.class.path"));
     }
 
     /**

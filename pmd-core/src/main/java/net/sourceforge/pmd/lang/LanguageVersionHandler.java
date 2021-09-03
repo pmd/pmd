@@ -4,23 +4,25 @@
 
 package net.sourceforge.pmd.lang;
 
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
-import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 
 
 /**
  * Interface for obtaining the classes necessary for checking source files of a
  * specific language.
- *
- * Note: "façade" getters like {@link #getSymbolFacade()} will be removed with 7.0.0
- * and replaced with a more extensible mechanism. They're now deprecated. See also
- * https://github.com/pmd/pmd/pull/1426
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
@@ -30,7 +32,9 @@ public interface LanguageVersionHandler {
     /**
      * Get the XPathHandler.
      */
-    XPathHandler getXPathHandler();
+    default XPathHandler getXPathHandler() {
+        return XPathHandler.noFunctionDefinitions();
+    }
 
 
     /**
@@ -39,15 +43,18 @@ public interface LanguageVersionHandler {
      * @return A list of all optional processing stages.
      */
     @Experimental
-    List<? extends AstProcessingStage<?>> getProcessingStages();
+    default List<? extends AstProcessingStage<?>> getProcessingStages() {
+        return emptyList();
+    }
 
 
     /**
-     * Get the default ParserOptions.
-     *
-     * @return ParserOptions
+     * @deprecated This is transitional
      */
-    ParserOptions getDefaultParserOptions();
+    @Deprecated
+    default void declareParserTaskProperties(PropertySource source) {
+        // do nothing
+    }
 
 
     /**
@@ -55,95 +62,16 @@ public interface LanguageVersionHandler {
      *
      * @return Parser
      */
-    Parser getParser(ParserOptions parserOptions);
+    Parser getParser();
+
 
 
     /**
      * Get the RuleViolationFactory.
      */
-    RuleViolationFactory getRuleViolationFactory();
-
-
-    /**
-     * Get the DataFlowHandler.
-     */
-    @Deprecated
-    DataFlowHandler getDataFlowHandler();
-
-
-    /**
-     * Get the DataFlowFacade.
-     *
-     * @return VisitorStarter
-     * @deprecated see note in the class description
-     */
-    @Deprecated
-    VisitorStarter getDataFlowFacade();
-
-
-    /**
-     * Get the SymbolFacade.
-     *
-     * @return VisitorStarter
-     * @deprecated see note in the class description
-     */
-    @Deprecated
-    VisitorStarter getSymbolFacade();
-
-
-    /**
-     * Get the SymbolFacade.
-     *
-     * @param classLoader A ClassLoader to use for resolving Types.
-     *
-     * @return VisitorStarter
-     * @deprecated see note in the class description
-     */
-    @Deprecated
-    VisitorStarter getSymbolFacade(ClassLoader classLoader);
-
-
-    /**
-     * Get the TypeResolutionFacade.
-     *
-     * @param classLoader A ClassLoader to use for resolving Types.
-     *
-     * @return VisitorStarter
-     * @deprecated see note in the class description
-     */
-    @Deprecated
-    VisitorStarter getTypeResolutionFacade(ClassLoader classLoader);
-
-
-    /**
-     * Gets the visitor that performs multifile data gathering.
-     *
-     * @return The visitor starter
-     * @deprecated see note in the class description
-     */
-    @Deprecated
-    VisitorStarter getMultifileFacade();
-
-
-    /**
-     * Gets the visitor that populates the qualified names of the
-     * nodes.
-     *
-     * @param classLoader The classloader to use to resolve the types of type qualified names
-     *
-     * @return The visitor starter
-     * @deprecated see note in the class description
-     */
-    @Deprecated
-    VisitorStarter getQualifiedNameResolutionFacade(ClassLoader classLoader);
-
-
-    /**
-     * @deprecated This is internal API
-     */
-    @Deprecated
-    @InternalApi
-    DFAGraphRule getDFAGraphRule();
+    default RuleViolationFactory getRuleViolationFactory() {
+        return DefaultRuleViolationFactory.defaultInstance();
+    }
 
 
     /**
@@ -155,6 +83,21 @@ public interface LanguageVersionHandler {
      * instance the return type will probably be changed to an Optional.
      */
     @Experimental
-    LanguageMetricsProvider<?, ?> getLanguageMetricsProvider();
+    default LanguageMetricsProvider getLanguageMetricsProvider() {
+        return null;
+    }
+
+
+    /**
+     * Returns the designer bindings for this language version.
+     * Null is not an acceptable result, use {@link DefaultDesignerBindings#getInstance()}
+     * instead.
+     *
+     * @since 6.20.0
+     */
+    @Experimental
+    default DesignerBindings getDesignerBindings() {
+        return DefaultDesignerBindings.getInstance();
+    }
 
 }

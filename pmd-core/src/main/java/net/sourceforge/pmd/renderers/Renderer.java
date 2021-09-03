@@ -6,8 +6,10 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -18,6 +20,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * <ol>
  * <li>Renderer construction/initialization</li>
  * <li>{@link Renderer#setShowSuppressedViolations(boolean)}</li>
+ * <li>{@link Renderer#setUseShortNames(List)}</li>
  * <li>{@link Renderer#setWriter(Writer)}</li>
  * <li>{@link Renderer#start()}</li>
  * <li>{@link Renderer#startFileAnalysis(DataSource)} for each source file
@@ -90,6 +93,16 @@ public interface Renderer extends PropertySource {
     void setShowSuppressedViolations(boolean showSuppressedViolations);
 
     /**
+     * Render the filenames of found violations with short names. That is, any prefix
+     * given as inputPaths is removed.
+     * By default, the full pathnames are used. If the given list of {@code inputPaths}
+     * is empty, then the full pathnames are used.
+     *
+     * @param inputPaths
+     */
+    void setUseShortNames(List<String> inputPaths);
+
+    /**
      * Get the Writer for the Renderer.
      *
      * @return The Writer.
@@ -151,4 +164,17 @@ public interface Renderer extends PropertySource {
     void end() throws IOException;
 
     void flush() throws IOException;
+
+    /**
+     * Sets the filename where the report should be written to. If no filename is provided,
+     * the renderer should write to stdout.
+     *
+     * <p>Implementations must initialize the writer of the renderer.
+     *
+     * <p>See {@link AbstractRenderer#setReportFile(String)} for the default impl.
+     *
+     * @param reportFilename the filename (optional).
+     */
+    @Experimental
+    void setReportFile(String reportFilename);
 }

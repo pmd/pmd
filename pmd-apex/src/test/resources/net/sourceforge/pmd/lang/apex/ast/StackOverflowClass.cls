@@ -85,7 +85,7 @@ public class SomeClass {
                 if(object1Map.get(object1.Id).Id != null && object1.Text != null){
                     Item post = new Item();
                     post.ParentId = object1Map.get(object1.Id).Id;
-                    post.Body = "Something";
+                    post.Body = 'Something';
 
                     itemList.add(post);
                 }
@@ -99,7 +99,7 @@ public class SomeClass {
                 if(object1.Text != null && object1.Id != null){
                     Item post = new Item();
                     post.ParentId = object1.Id;
-                    post.Body = "Something";
+                    post.Body = 'Something';
                     itemList.add(post);
                 }
             }

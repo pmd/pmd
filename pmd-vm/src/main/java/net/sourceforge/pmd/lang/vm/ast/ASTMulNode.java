@@ -21,10 +21,9 @@ package net.sourceforge.pmd.lang.vm.ast;
  */
 
 /**
- * Handles multiplication<br>
- * <br>
+ * Handles multiplication
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:wglass@forio.com">Will Glass-Husain</a>
@@ -33,25 +32,15 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTMulNode.java 691048 2008-09-01 20:26:11Z nbubna $
  */
-public class ASTMulNode extends ASTMathNode {
-    /**
-     * @param id
-     */
-    public ASTMulNode(final int id) {
+public final class ASTMulNode extends ASTMathNode {
+
+    ASTMulNode(int id) {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
-    public ASTMulNode(final VmParser p, final int id) {
-        super(p, id);
-    }
 
-    /** Accept the visitor. **/
     @Override
-    public Object jjtAccept(VmParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVmVisitor(VmVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

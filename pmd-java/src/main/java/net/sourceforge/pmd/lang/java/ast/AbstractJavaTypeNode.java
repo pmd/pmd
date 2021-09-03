@@ -4,8 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
+import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 
 /**
  * An extension of the SimpleJavaNode which implements the TypeNode interface.
@@ -13,45 +17,58 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  * @see AbstractJavaNode
  * @see TypeNode
  */
-@Deprecated
-@InternalApi
-public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
+abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
 
-    private JavaTypeDefinition typeDefinition;
+    private JTypeMirror typeMirror;
 
-    @InternalApi
-    @Deprecated
-    public AbstractJavaTypeNode(int i) {
+    AbstractJavaTypeNode(int i) {
         super(i);
     }
 
-    @InternalApi
-    @Deprecated
-    public AbstractJavaTypeNode(JavaParser p, int i) {
-        super(p, i);
+    void forceTypeResolution() {
+        getTypeMirror();
+    }
+
+    <T> T assertNonNullAfterTypeRes(T value) {
+        assert value != null : "Something went wrong after type resolution of " + this;
+        return value;
     }
 
     @Override
-    public Class<?> getType() {
-        return typeDefinition == null ? null : typeDefinition.getType();
-    }
-
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setType(Class<?> type) {
-        typeDefinition = JavaTypeDefinition.forClass(type);
+    public @NonNull JTypeMirror getTypeMirror() {
+        return getTypeMirror(TypingContext.DEFAULT);
     }
 
     @Override
-    public JavaTypeDefinition getTypeDefinition() {
-        return typeDefinition;
+    public @NonNull JTypeMirror getTypeMirror(TypingContext context) {
+        if (context.isEmpty() && typeMirror != null) {
+            return typeMirror;
+        }
+
+        LazyTypeResolver resolver = getRoot().getLazyTypeResolver();
+        JTypeMirror result;
+        try {
+            result = this.acceptVisitor(resolver, context);
+            assert result != null : "LazyTypeResolver returned null";
+        } catch (RuntimeException e) {
+            throw AssertionUtil.contexted(e).addContextValue("Resolving type of", this);
+        } catch (AssertionError e) {
+            throw AssertionUtil.contexted(e).addContextValue("Resolving type of", this);
+        }
+
+        if (context.isEmpty() && typeMirror == null) {
+            typeMirror = result; // cache it
+        }
+        return result;
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
-        this.typeDefinition = typeDefinition;
+    JTypeMirror getTypeMirrorInternal() {
+        return typeMirror;
     }
+
+    void setTypeMirror(JTypeMirror mirror) {
+        typeMirror = mirror;
+    }
+
+
 }

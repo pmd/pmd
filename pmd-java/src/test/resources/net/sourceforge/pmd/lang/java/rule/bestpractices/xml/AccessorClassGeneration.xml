@@ -3,21 +3,22 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>inner class has private constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo1 {
- public class InnerClass {
-   private InnerClass(){
-   }
- }
- void method(){
-   new InnerClass();//Causes generation of accessor
- }
+    public class InnerClass {
+        private InnerClass() {
+        }
+    }
+    void method() {
+        new InnerClass(); //Causes generation of accessor
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -25,16 +26,16 @@ public class Foo1 {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo2 {
- public class InnerClass {
-   public InnerClass(){
-   }
- }
- void method(){
-   new InnerClass(); //OK, due to public constructor
- }
+    public class InnerClass {
+        public InnerClass() {
+        }
+    }
+    void method() {
+        new InnerClass(); //OK, due to public constructor
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -43,15 +44,15 @@ public class Foo2 {
         <code><![CDATA[
 public class Foo3 {
     public class InnerClass {
-      void method(){
-        new Foo3();//Causes generation of accessor
+      void method() {
+        new Foo3(); //Causes generation of accessor
       }
     }
     private Foo3() {
     }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -59,31 +60,31 @@ public class Foo3 {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void method() {
-   final class Inner {};
-   Inner i = new Inner();
- }
+    void method() {
+        final class Inner {};
+        Inner i = new Inner();
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
- 
+
     <test-code>
         <description>interface inner class has private constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
- package foo;
+package foo;
 public interface Foo1 {
- public class InnerClass {
-   private InnerClass(){
-   }
- }
- void method(){
-   new InnerClass();//Causes generation of accessor
- }
+    public class InnerClass {
+        private InnerClass(){
+        }
+    }
+    void method() {
+        new InnerClass(); //Causes generation of accessor
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -91,23 +92,23 @@ public interface Foo1 {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo1 {
- public class InnerClass {
-   private InnerClass(int[] a){
-   }
- }
- void method(){
-   new InnerClass(new int[]{1});//Causes generation of accessor
- }
+    public class InnerClass {
+        private InnerClass(int[] a){
+        }
+    }
+    void method() {
+        new InnerClass(new int[]{1}); //Causes generation of accessor
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
         <description>#1452 ArrayIndexOutOfBoundsException with Annotations for AccessorClassGenerationRule</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public @interface Something { public interface SomthingElse{}; }
+public @interface Something { public interface SomthingElse{}; }
         ]]></code>
         <source-type>java 10</source-type>
     </test-code>
@@ -117,23 +118,23 @@ public class Foo1 {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Example extends View {
-  private int foo;
+    private int foo;
 
-  private Example(final Context context) {
-    super(context);
-  }
+    private Example(final Context context) {
+        super(context);
+    }
 
-  public static void create() {
-    new Handler().post(new Runnable() {
-      @Override
-      public void run() {
-          Example example = new Example(null); // Should be marked since the constructor is private.
-      }
-    });
-  }
+    public static void create() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                Example example = new Example(null); // Should be marked since the constructor is private.
+            }
+        });
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -152,7 +153,42 @@ public class Foo {
         }
     }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+    <test-code>
+        <description>AccessorClassGeneration false-negative: subclass calls private constructor #1998</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                private Foo() { }
+                private Foo(String foo) { } //this one is called
+                public Foo(String foo, String bar) { }
+                private static class Bar extends Foo {
+                    public Bar() { super(null); }
+                }
+            }
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+    <test-code>
+        <description>AccessorClassGeneration false positive for private constructors #755</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Outer {
+                public static class Inner {
+                    private Inner(int x) { }
+                    public Inner(Object x) { }
+                }
+
+                public static void main(String[] args)
+                {
+                    // PMD.AccessorClassGeneration
+                    // Avoid instantiation through private constructors from outside of the constructors class.
+                    new Inner(null); // complains as if Inner(int) is was called
+                }
+            }
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 </test-data>

@@ -11,7 +11,10 @@ import java.util.Locale;
  *
  * @author Zev Blut zb@ubit.com
  * @author Romain PELISSE belaran@gmail.com
+ *
+ * @deprecated Use an {@link AnyTokenizer} instead, it's basically as powerful.
  */
+@Deprecated
 public abstract class AbstractTokenizer implements Tokenizer {
 
     // FIXME depending on subclasses to assign local vars is rather fragile -
@@ -34,6 +37,10 @@ public abstract class AbstractTokenizer implements Tokenizer {
     private int lineNumber = 0;
     private String currentLine;
 
+    // both zero-based
+    private int tokBeginLine;
+    private int tokBeginCol;
+
     protected boolean spanMultipleLinesString = true; // Most languages do, so
     // default is true
     protected Character spanMultipleLinesLineContinuationCharacter = null;
@@ -49,24 +56,35 @@ public abstract class AbstractTokenizer implements Tokenizer {
             int loc = 0;
             while (loc < currentLine.length()) {
                 StringBuilder token = new StringBuilder();
-                loc = getTokenFromLine(token, loc);
-                if (token.length() > 0 && !isIgnorableString(token.toString())) {
-                    if (downcaseString) {
-                        token = new StringBuilder(token.toString().toLowerCase(Locale.ROOT));
-                    }
-                    // need to re-think how to link this
-                    // if ( CPD.debugEnable ) {
-                    // System.out.println("Token added:" + token.toString());
-                    // }
-                    tokenEntries.add(new TokenEntry(token.toString(), tokens.getFileName(), lineNumber + 1));
+                loc = getTokenFromLine(token, loc); // may jump several lines
 
+                if (token.length() > 0 && !isIgnorableString(token.toString())) {
+                    final String image;
+                    if (downcaseString) {
+                        image = token.toString().toLowerCase(Locale.ROOT);
+                    } else {
+                        image = token.toString();
+                    }
+
+                    tokenEntries.add(new TokenEntry(image,
+                                                    tokens.getFileName(),
+                                                    tokBeginLine + 1,
+                                                    tokBeginCol + 1,
+                                                    loc + 1));
                 }
             }
         }
         tokenEntries.add(TokenEntry.getEOF());
     }
 
+    /**
+     * Returns (0-based) EXclusive offset of the end of the token,
+     * may jump several lines (sets {@link #lineNumber} in this case).
+     */
     private int getTokenFromLine(StringBuilder token, int loc) {
+        tokBeginLine = lineNumber;
+        tokBeginCol = loc;
+
         for (int j = loc; j < currentLine.length(); j++) {
             char tok = currentLine.charAt(j);
             if (!Character.isWhitespace(tok) && !ignoreCharacter(tok)) {
@@ -90,6 +108,9 @@ public abstract class AbstractTokenizer implements Tokenizer {
             } else {
                 if (token.length() > 0) {
                     return j;
+                } else {
+                    // ignored char
+                    tokBeginCol++;
                 }
             }
             loc = j;
@@ -100,7 +121,7 @@ public abstract class AbstractTokenizer implements Tokenizer {
     private int parseString(StringBuilder token, int loc, char stringDelimiter) {
         boolean escaped = false;
         boolean done = false;
-        char tok = ' '; // this will be replaced.
+        char tok;
         while (loc < currentLine.length() && !done) {
             tok = currentLine.charAt(loc);
             if (escaped && tok == stringDelimiter) { // Found an escaped string
@@ -108,38 +129,32 @@ public abstract class AbstractTokenizer implements Tokenizer {
             } else if (tok == stringDelimiter && token.length() > 0) {
                 // We are done, we found the end of the string...
                 done = true;
-            } else if (tok == '\\') { // Found an escaped char
-                escaped = true;
-            } else { // Adding char...
-                escaped = false;
+            } else {
+                // Found an escaped char?
+                escaped = tok == '\\';
             }
             // Adding char to String:" + token.toString());
             token.append(tok);
             loc++;
         }
         // Handling multiple lines string
-        if (!done && // ... we didn't find the end of the string
-                loc >= currentLine.length() && // ... we have reach the end of
-                // the line ( the String is
-                // incomplete, for the moment at
-                // least)
-                spanMultipleLinesString && // ... the language allow multiple
-                // line span Strings
-                lineNumber < code.size() - 1 // ... there is still more lines to
-        // parse
+        if (!done // ... we didn't find the end of the string (but the end of the line)
+            && spanMultipleLinesString // ... the language allow multiple line span Strings
+            && lineNumber < code.size() - 1 // ... there is still more lines to parse
         ) {
             // removes last character, if it is the line continuation (e.g.
             // backslash) character
-            if (spanMultipleLinesLineContinuationCharacter != null && token.length() > 0
-                    && token.charAt(token.length() - 1) == spanMultipleLinesLineContinuationCharacter.charValue()) {
-                token.deleteCharAt(token.length() - 1);
+            if (spanMultipleLinesLineContinuationCharacter != null
+                && token.length() > 0
+                && token.charAt(token.length() - 1) == spanMultipleLinesLineContinuationCharacter) {
+                token.setLength(token.length() - 1);
             }
             // parsing new line
             currentLine = code.get(++lineNumber);
             // Warning : recursive call !
             loc = parseString(token, 0, stringDelimiter);
         }
-        return loc + 1;
+        return loc;
     }
 
     private boolean ignoreCharacter(char tok) {

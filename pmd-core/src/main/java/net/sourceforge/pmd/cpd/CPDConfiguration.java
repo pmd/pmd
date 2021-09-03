@@ -40,7 +40,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     public static final String DEFAULT_RENDERER = "text";
 
     private static final Map<String, Class<? extends CPDRenderer>> RENDERERS = new HashMap<>();
-    
+
     static {
         RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
         RENDERERS.put("xml", XMLRenderer.class);
@@ -71,7 +71,7 @@ public class CPDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     private Renderer renderer;
-    
+
     private CPDRenderer cpdRenderer;
 
     private String encoding;
@@ -90,6 +90,9 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     @Parameter(names = "--ignore-usings", description = "Ignore using directives in C#", required = false)
     private boolean ignoreUsings;
+
+    @Parameter(names = "--ignore-literal-sequences", description = "Ignore sequences of literals", required = false)
+    private boolean ignoreLiteralSequences = false;
 
     @Parameter(names = "--skip-lexical-errors",
             description = "Skip files which can't be tokenized due to invalid characters instead of aborting CPD",
@@ -203,7 +206,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             return new SimpleRenderer();
         }
     }
-    
+
     public static CPDRenderer getCPDRendererFromString(String name, String encoding) {
         String clazzname = name;
         if (clazzname == null || "".equals(clazzname)) {
@@ -273,6 +276,11 @@ public class CPDConfiguration extends AbstractConfiguration {
         } else {
             properties.remove(Tokenizer.IGNORE_USINGS);
         }
+        if (configuration.isIgnoreLiteralSequences()) {
+            properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, "true");
+        } else {
+            properties.remove(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES);
+        }
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(!configuration.isNoSkipBlocks()));
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, configuration.getSkipBlocksPattern());
         configuration.getLanguage().setProperties(properties);
@@ -317,7 +325,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     public Renderer getRenderer() {
         return renderer;
     }
-    
+
     public CPDRenderer getCPDRenderer() {
         return cpdRenderer;
     }
@@ -373,7 +381,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.renderer = renderer;
         this.cpdRenderer = null;
     }
-    
+
     public void setCPDRenderer(CPDRenderer renderer) {
         this.cpdRenderer = renderer;
         this.renderer = null;
@@ -409,6 +417,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setIgnoreUsings(boolean ignoreUsings) {
         this.ignoreUsings = ignoreUsings;
+    }
+
+    public boolean isIgnoreLiteralSequences() {
+        return ignoreLiteralSequences;
+    }
+
+    public void setIgnoreLiteralSequences(boolean ignoreLiteralSequences) {
+        this.ignoreLiteralSequences = ignoreLiteralSequences;
     }
 
     public boolean isSkipLexicalErrors() {

@@ -23,13 +23,14 @@ import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
 /**
  * Detects if variables in Database.query(variable) is escaped with
  * String.escapeSingleQuotes
- * 
+ *
  * @author sergey.gorbaty
  *
  */
@@ -48,6 +49,10 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     private static final Pattern SELECT_PATTERN = Pattern.compile("^select[\\s]+?.*?$", Pattern.CASE_INSENSITIVE);
     private final Set<String> safeVariables = new HashSet<>();
     private final Map<String, Boolean> selectContainingVariables = new HashMap<>();
+
+    public ApexSOQLInjectionRule() {
+        addRuleChainVisit(ASTUserClass.class);
+    }
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -117,7 +122,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 
     }
 
-    private void findSanitizedVariables(AbstractApexNode<?> node) {
+    private void findSanitizedVariables(ApexNode<?> node) {
         final ASTVariableExpression left = node.getFirstChildOfType(ASTVariableExpression.class);
         final ASTLiteralExpression literal = node.getFirstChildOfType(ASTLiteralExpression.class);
         final ASTMethodCallExpression right = node.getFirstChildOfType(ASTMethodCallExpression.class);
@@ -164,7 +169,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
         }
     }
 
-    private void findSelectContainingVariables(AbstractApexNode<?> node) {
+    private void findSelectContainingVariables(ApexNode<?> node) {
         final ASTVariableExpression left = node.getFirstChildOfType(ASTVariableExpression.class);
         final ASTBinaryExpression right = node.getFirstChildOfType(ASTBinaryExpression.class);
         if (left != null && right != null) {

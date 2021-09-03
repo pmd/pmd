@@ -66,7 +66,7 @@ public class PMDTestRunner extends Runner implements Filterable, Sortable {
         try {
             unitTests.filter(filter);
         } catch (NoTestsRemainException e) {
-            noUnitTests = false;
+            noUnitTests = true;
         }
 
         if (noRuleTests && noUnitTests) {

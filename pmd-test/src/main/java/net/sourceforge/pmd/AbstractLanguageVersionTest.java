@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -18,12 +19,11 @@ import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
  * Base test class for {@link LanguageVersion} implementations. <br>
  * Each language implementation should subclass this and provide a data method.
- * 
+ *
  * <pre>
  * &#64;Parameters
  *     public static Collection&lt;Object[]&gt; data() {
@@ -38,7 +38,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
  *              null }
  *       });
  * </pre>
- * 
+ *
  * <p>For the parameters, see the constructor
  * {@link #AbstractLanguageVersionTest(String, String, String, LanguageVersion)}.</p>
  */
@@ -48,12 +48,11 @@ public class AbstractLanguageVersionTest {
     private String name;
     private String version;
     private String simpleTerseName;
-    private String terseName;
     private LanguageVersion expected;
 
     /**
      * Creates a new {@link AbstractLanguageVersionTest}
-     * 
+     *
      * @param name
      *            the name under which the language module is registered
      * @param terseName
@@ -67,20 +66,7 @@ public class AbstractLanguageVersionTest {
         this.name = name;
         this.version = version;
         this.simpleTerseName = terseName;
-        this.terseName = terseName;
-        if (version != null && !version.isEmpty()) {
-            this.terseName += " " + version;
-        }
         this.expected = expected;
-    }
-
-    /**
-     * Checks that the expected {@link LanguageVersion} can be found by the
-     * combination of {@link #terseName} and {@link #version}.
-     */
-    @Test
-    public void testGetLanguageVersionForTerseName() {
-        assertEquals(expected, LanguageRegistry.findLanguageVersionByTerseName(terseName));
     }
 
     /**
@@ -103,28 +89,77 @@ public class AbstractLanguageVersionTest {
     }
 
     /**
-     * Makes sure, that for each language a "rulesets.properties" file exists.
-     * 
+     * Makes sure, that for each language a "categories.properties" file exists.
+     *
      * @throws Exception
      *             any error
      */
     @Test
     public void testRegisteredRulesets() throws Exception {
-        // only check for languages, that support rules
-        if (expected == null || expected.getLanguage().getRuleChainVisitorClass() == null) {
+        if (expected == null) {
             return;
         }
 
-        ResourceLoader rl = new ResourceLoader();
         Properties props = new Properties();
-        String rulesetsProperties = "rulesets/" + simpleTerseName + "/rulesets.properties";
-        try (InputStream inputStream = rl.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
+        String rulesetsProperties = "/category/" + simpleTerseName + "/categories.properties";
+        try (InputStream inputStream = getClass().getResourceAsStream(rulesetsProperties)) {
+            if (inputStream == null) {
+                throw new IOException();
+            }
             props.load(inputStream);
         }
+        assertRulesetsAndCategoriesProperties(props);
+    }
+
+    /**
+     * If a rulesets.properties file still exists, test it as well.
+     *
+     * @throws Exception
+     *             any error
+     */
+    @Test
+    public void testOldRegisteredRulesets() throws Exception {
+        // only check for languages, that support rules
+        if (expected == null) {
+            return;
+        }
+
+        Properties props = new Properties();
+        String rulesetsProperties = "/rulesets/" + simpleTerseName + "/rulesets.properties";
+        InputStream inputStream = getClass().getResourceAsStream(rulesetsProperties);
+        if (inputStream != null) {
+            // rulesets.properties file exists
+            try (InputStream in = inputStream) {
+                props.load(in);
+            }
+            assertRulesetsAndCategoriesProperties(props);
+        }
+    }
+
+    @Test
+    public void testVersionsAreDistinct() {
+        if (expected == null) {
+            return;
+        }
+
+        Language lang = expected.getLanguage();
+
+        int count = 0;
+        for (LanguageVersion lv : lang.getVersions()) {
+            if (lv.equals(expected)) {
+                count++;
+            }
+        }
+
+        assertEquals("Expected exactly one occurrence of " + expected
+                         + " in the language versions of its language", 1, count);
+    }
+
+    private void assertRulesetsAndCategoriesProperties(Properties props) throws IOException {
         String rulesetFilenames = props.getProperty("rulesets.filenames");
         assertNotNull(rulesetFilenames);
 
-        RuleSetFactory factory = new RuleSetFactory();
+        RuleSetLoader rulesetLoader = new RuleSetLoader();
 
         if (rulesetFilenames.trim().isEmpty()) {
             return;
@@ -132,10 +167,7 @@ public class AbstractLanguageVersionTest {
 
         String[] rulesets = rulesetFilenames.split(",");
         for (String r : rulesets) {
-            InputStream stream = rl.loadClassPathResourceAsStream(r);
-            assertNotNull(stream);
-            stream.close();
-            RuleSet ruleset = factory.createRuleSet(r);
+            RuleSet ruleset = rulesetLoader.loadFromResource(r);
             assertNotNull(ruleset);
         }
     }

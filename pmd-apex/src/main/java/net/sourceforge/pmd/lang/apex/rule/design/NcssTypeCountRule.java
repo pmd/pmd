@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 
 /**
  * Non-commented source statement counter for type declarations.
- * 
+ *
  * @author ported from Java original of Jason Bennett
  */
 public class NcssTypeCountRule extends AbstractNcssCountRule {

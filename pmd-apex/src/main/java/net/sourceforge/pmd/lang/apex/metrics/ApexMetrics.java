@@ -1,135 +1,143 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.metrics;
 
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import org.apache.commons.lang3.mutable.MutableInt;
+
+import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
-import net.sourceforge.pmd.lang.metrics.MetricKey;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
+import net.sourceforge.pmd.lang.apex.metrics.internal.CognitiveComplexityVisitor;
+import net.sourceforge.pmd.lang.apex.metrics.internal.CognitiveComplexityVisitor.State;
+import net.sourceforge.pmd.lang.apex.metrics.internal.StandardCycloVisitor;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 /**
- * User-bound façade of the Apex metrics framework.
- *
- * @author Clément Fournier
- * @since 6.0.0
+ * Built-in Apex metrics. See {@link Metric} and {@link MetricsUtil}
+ * for usage doc.
  */
 public final class ApexMetrics {
-
-    private static final ApexMetricsFacade FACADE = new ApexMetricsFacade();
-
-
-    private ApexMetrics() { // Cannot be instantiated
-
-    }
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static final Class<ApexNode<?>> GENERIC_APEX_NODE_CLASS =
+        (Class) ApexNode.class; // this is a Class<ApexNode>, the raw type
 
 
     /**
-     * Returns the underlying facade.
+     * Number of independent paths through a block of code.
+     * Formally, given that the control flow graph of the block has n
+     * vertices, e edges and p connected components, the cyclomatic complexity
+     * of the block is given by {@code CYCLO = e - n + 2p}. In practice
+     * it can be calculated by counting control flow statements following
+     * the standard rules given below.
      *
-     * @return The facade
+     *
+     * <p>The standard version of the metric complies with McCabe’s original definition:
+     * <ul>
+     *  <li>Methods have a base complexity of 1.
+     *  <li>+1 for every control flow statement (if, catch, throw, do, while, for, break, continue) and conditional expression (?:).
+     *  <li>else, finally and default do not count;
+     *  <li>+1 for every boolean operator ({@code &&}, {@code ||}) in
+     *  the guard condition of a control flow statement. That’s because
+     *  Apex has short-circuit evaluation semantics for boolean operators,
+     *  which makes every boolean operator kind of a control flow statement in itself.
+     * </ul>
+     *
+     * <p>Code example:
+     * <pre>{@code
+     * class Foo {
+     *   void baseCyclo() {                // Cyclo = 1
+     *     highCyclo();
+     *   }
+     *
+     *   void highCyclo() {                // Cyclo = 10
+     *     int x = 0, y = 2;
+     *     boolean a = false, b = true;
+     *
+     *     if (a && (y == 1 ? b : true)) { // +3
+     *       if (y == x) {                 // +1
+     *         while (true) {              // +1
+     *           if (x++ < 20) {           // +1
+     *             break;                  // +1
+     *           }
+     *         }
+     *       } else if (y == t && !d) {    // +2
+     *         x = a ? y : x;              // +1
+     *       } else {
+     *         x = 2;
+     *       }
+     *     }
+     *   }
+     * }
+     * }</pre>
      */
-    public static ApexMetricsFacade getFacade() {
-        return FACADE;
-    }
+    public static final Metric<ApexNode<?>, Integer> CYCLO =
+        Metric.of(ApexMetrics::computeCyclo, isRegularApexNode(),
+                  "Cyclomatic Complexity", "Cyclo");
 
-
-    /** Resets the entire data structure. Used for tests. */
-    static void reset() {
-        FACADE.reset();
-    }
+    /**
+     * See the corresponding {@link net.sourceforge.pmd.lang.java.metrics.JavaMetrics.COGNITIVE_COMPLEXITY Cognitive Complexity}
+     * for a general description.
+     * <p>
+     * The rule {@link net.sourceforge.pmd.lang.apex.rule.design.CognitiveComplexityRule CognitiveComplexity}
+     * by default reports methods with a complexity of 15 or more
+     * and classes the have a total complexity (sum of all methods) of 50 or more.
+     * These reported methods should be broken down into less complex components.
+     */
+    public static final Metric<ApexNode<?>, Integer> COGNITIVE_COMPLEXITY =
+        Metric.of(ApexMetrics::computeCognitiveComp, isRegularApexNode(),
+                  "Cognitive Complexity");
 
 
     /**
-     * Computes the standard value of the metric identified by its code on a class AST node.
+     * Sum of the statistical complexity of the operations in the class.
+     * We use CYCLO to quantify the complexity of an operation.
      *
-     * @param key  The key identifying the metric to be computed
-     * @param node The node on which to compute the metric
-     *
-     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node) {
-        return FACADE.computeForType(key, node, MetricOptions.emptyOptions());
+    public static final Metric<ASTUserClassOrInterface<?>, Integer> WEIGHED_METHOD_COUNT =
+        Metric.of(ApexMetrics::computeWmc, filterMapNode(ASTUserClass.class, PredicateUtil.always()),
+                  "Weighed Method Count", "WMC");
+
+    private ApexMetrics() {
+        // utility class
     }
 
 
-    /**
-     * Computes a metric identified by its code on a class AST node, possibly selecting metric options with the {@code
-     * options} parameter.
-     *
-     * @param key     The key identifying the metric to be computed
-     * @param node    The node on which to compute the metric
-     * @param options The options of the metric
-     *
-     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
-     */
-    public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node, MetricOptions options) {
-        return FACADE.computeForType(key, node, options);
+
+    private static Function<Node, ApexNode<?>> isRegularApexNode() {
+        return filterMapNode(GENERIC_APEX_NODE_CLASS, n -> !(n instanceof ASTMethod && ((ASTMethod) n).isSynthetic()));
     }
 
 
-    /**
-     * Computes the standard version of the metric identified by the key on a operation AST node.
-     *
-     * @param key  The key identifying the metric to be computed
-     * @param node The node on which to compute the metric
-     *
-     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
-     */
-    public static double get(MetricKey<ASTMethod> key, ASTMethod node) {
-        return FACADE.computeForOperation(key, node, MetricOptions.emptyOptions());
+    private static <T extends Node> Function<Node, T> filterMapNode(Class<? extends T> klass, Predicate<? super T> pred) {
+        return n -> n.asStream().filterIs(klass).filter(pred).first();
+    }
+
+    private static int computeCyclo(ApexNode<?> node, MetricOptions ignored) {
+        MutableInt result = new MutableInt(1);
+        node.acceptVisitor(new StandardCycloVisitor(), result);
+        return result.getValue();
+    }
+
+    private static int computeCognitiveComp(ApexNode<?> node, MetricOptions ignored) {
+        State state = new State();
+        node.acceptVisitor(CognitiveComplexityVisitor.INSTANCE, state);
+        return state.getComplexity();
     }
 
 
-    /**
-     * Computes a metric identified by its key on a operation AST node, possibly selecting metric options with the
-     * {@code options} parameter.
-     *
-     * @param key     The key identifying the metric to be computed
-     * @param node    The node on which to compute the metric
-     * @param options The options of the metric
-     *
-     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
-     */
-    public static double get(MetricKey<ASTMethod> key, ASTMethod node, MetricOptions options) {
-        return FACADE.computeForOperation(key, node, options);
-    }
 
-
-    /**
-     * Compute the sum, average, or highest value of the standard operation metric on all operations of the class node.
-     * The type of operation is specified by the {@link ResultOption} parameter.
-     *
-     * @param key          The key identifying the metric to be computed
-     * @param node         The node on which to compute the metric
-     * @param resultOption The result option to use
-     *
-     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is
-     * {@code null}
-     */
-    public static double get(MetricKey<ASTMethod> key, ASTUserClassOrInterface<?> node, ResultOption resultOption) {
-        return FACADE.computeWithResultOption(key, node, MetricOptions.emptyOptions(), resultOption);
-    }
-
-
-    /**
-     * Compute the sum, average, or highest value of the operation metric on all operations of the class node. The type
-     * of operation is specified by the {@link ResultOption} parameter.
-     *
-     * @param key          The key identifying the metric to be computed
-     * @param node         The node on which to compute the metric
-     * @param options      The options of the metric
-     * @param resultOption The result option to use
-     *
-     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is
-     * {@code null}
-     */
-    public static double get(MetricKey<ASTMethod> key, ASTUserClassOrInterface<?> node, MetricOptions options,
-                             ResultOption resultOption) {
-        return FACADE.computeWithResultOption(key, node, options, resultOption);
+    private static int computeWmc(ASTUserClassOrInterface<?> node, MetricOptions options) {
+        return (int) MetricsUtil.computeStatistics(CYCLO, node.getMethods(), options).getSum();
     }
 
 

@@ -3,6 +3,7 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Simple god class</description>
         <expected-problems>1</expected-problems>
@@ -10,30 +11,30 @@
 public class Foreigner {
     public int data;
     private double other;
-    
+
     public void getData() {
         return data;
     }
-    
+
     public void setData(int data) {
         this.data = data;
     }
-    
+
     public double getOther() {
         return other;
     }
-    
+
     public void setOther(double other) {
         this.other = other;
     }
-    
+
     public void someOtherNonDataMethod() {
     }
 }
 
 public class Foo {
     int myown = 2;
-    
+
     private int somePrivateFunction() {
         if (myown == 2) {
             return 42;
@@ -41,34 +42,34 @@ public class Foo {
             return myown;
         }
     }
-    
+
     private int anotherFunction() {
         // used, to have the TCC lower than 0.333 - this method
         // doesn't use myown
     }
-    
+
     public void first() {
         Foreigner f = new Foreigner();
         int a = 1;
         int b = 2;
         int c = somePrivateFunction();
-        
+
         if (a == 2) {
             b = a - 1;
         }
-        
+
         f.setData(3);
         f.data = 5;
         myown = f.getData();
         f.someOtherNonDataMethod();
     }
-    
+
     public void other() {
         int b = 100;
         for (int i = 0; i < 2; i++) {
             b++;
         }
-        
+
         if (b < 10) {
             Foreigner f2;
             f2.setOther(1.0);
@@ -81,7 +82,7 @@ public class Foo {
                 f2.setData(4);
             }
         }
-        
+
         if (true || false || true || false || true || false) {
             if (b == 1 || b == 2 || b == 3 || b == 4 || b == 5) {
                 if (b == 1 && b == 2 && b == 3 && b == 4 && b == 5) {
@@ -126,59 +127,56 @@ public class Foo {
         }
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#1085 NullPointerException by at net.sourceforge.pmd.lang.java.rule.design.GodClassRule.visit(GodClassRule.java:313)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-        public enum Color {
-          BLUE,
-          RED;
+public enum Color {
+    BLUE,
+    RED;
 
-          public int toHex() {
-            return 0;
-          }
-        }
-        ]]>
-        </code>
+    public int toHex() {
+        return 0;
+    }
+}
+        ]]></code>
     </test-code>
-
 
     <test-code>
         <description>GodClass crashes with java.lang.NullPointerException, refs #827</description>
         <expected-problems>0</expected-problems>
-        <code>
-            <![CDATA[
-            package com.pack;
+        <code><![CDATA[
+package com.pack;
 
-            import java.util.ArrayList;
-            import java.util.Arrays;
-            import java.util.Date;
-            import java.util.HashMap;
-            import java.util.List;
-            import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-            public class Pack implements IPack {
+import my.IPack;
+import my.IInner;
 
+public class Pack implements IPack {
 
-                @Override
-                public Map<String, String> get() {
+    @Override
+    public Map<String, String> get() {
 
-                    class Inner implements IInner {
+        class Inner implements IInner {
 
-                        private Map<String, String> results;
+            private Map<String, String> results;
 
-                        public Inner(Map<String, String> results) {
-                            this.results = results;
-                        }
-                    }
-                    return null;
-                }
-
+            public Inner(Map<String, String> results) {
+                this.results = results;
             }
-            ]]>
-        </code>
+        }
+        return null;
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

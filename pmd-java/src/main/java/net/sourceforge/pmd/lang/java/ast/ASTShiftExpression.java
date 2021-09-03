@@ -4,55 +4,43 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a shift expression on a numeric value. This has a precedence greater than {@link
- * ASTRelationalExpression},
- * and lower than {@link ASTAdditiveExpression}.
+ * ASTRelationalExpression}, and lower than {@link ASTAdditiveExpression}.
+ *
+ * <pre class="grammar">
+ *
+ * ShiftExpression ::=  {@linkplain ASTShiftExpression ShiftExpression} ( ( "&lt;&lt;"  | "&gt;&gt;" | "&gt;&gt;&gt;" ) {@linkplain ASTAdditiveExpression AdditiveExpression} )+
+ *
+ * </pre>
  *
  * <p>Note that the children of this node are not necessarily {@link ASTAdditiveExpression},
  * rather, they are expressions with an operator precedence greater or equal to AdditiveExpression.
  *
+ * <p>The first child may be another ShiftExpression only
+ * if its operator is different. For example, if parentheses represent
+ * nesting:
+ * <table summary="Nesting examples">
+ * <tr><th></th><th>Parses as</th></tr>
+ *     <tr><td>{@code 1 >> 2 >> 3}</td><td>{@code (1 >> 2 >> 3)}</td></tr>
+ *     <tr><td>{@code 1 >> 2 << 3}</td><td>{@code ((1 >> 2) << 3)}</td></tr>
+ *     <tr><td>{@code 1 >> 2 << 3 + 4}</td><td>{@code ((1 >> 2) << (3 + 4))}</td></tr>
+ *     <tr><td>{@code 1 >> 2 << 3 << 4}</td><td>{@code ((1 >> 2) << 3 << 4)}</td></tr>
+ *     <tr><td>{@code 1 >> 2 << 3 << 4 >> 5}</td><td>{@code (((1 >> 2) << 3 << 4) >> 5)}</td></tr>
+ * </table>
  *
- * <pre>
- *
- * ShiftExpression ::=  {@linkplain ASTAdditiveExpression AdditiveExpression} ( ( "<<"  | {@linkplain ASTRSIGNEDSHIFT RSIGNEDSHIFT} | {@linkplain ASTRUNSIGNEDSHIFT RUNSIGNEDSHIFT} ) {@linkplain ASTAdditiveExpression AdditiveExpression} )+
- *
- * </pre>
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
-// TODO we could merge the productions for ASTRSIGNEDSHIFT and ASTRUNSIGNEDSHIFT into this node using a #void production that sets the image of the parent
-public class ASTShiftExpression extends AbstractJavaTypeNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTShiftExpression(int id) {
+@Deprecated
+public final class ASTShiftExpression extends AbstractJavaExpr implements ASTExpression {
+    ASTShiftExpression(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTShiftExpression(JavaParser p, int id) {
-        super(p, id);
-    }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    /**
-     * Returns the image of the operator, i.e. "<<", ">>", or ">>>".
-     */
-    public String getOperator() {
-        return getImage();
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 
 }

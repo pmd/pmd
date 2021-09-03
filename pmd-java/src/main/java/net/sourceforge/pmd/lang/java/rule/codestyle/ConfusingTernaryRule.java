@@ -6,17 +6,14 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.UnaryOp;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -53,29 +50,24 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * }
  * </pre>
  */
-public class ConfusingTernaryRule extends AbstractJavaRule {
-    private static PropertyDescriptor<Boolean> ignoreElseIfProperty = booleanProperty("ignoreElseIf").desc("Ignore conditions with an else-if case").defaultValue(false).build();
+public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
+
+    private static final PropertyDescriptor<Boolean> IGNORE_ELSE_IF = booleanProperty("ignoreElseIf").desc("Ignore conditions with an else-if case").defaultValue(false).build();
 
     public ConfusingTernaryRule() {
-        super();
-        definePropertyDescriptor(ignoreElseIfProperty);
+        super(ASTIfStatement.class, ASTConditionalExpression.class);
+        definePropertyDescriptor(IGNORE_ELSE_IF);
     }
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         // look for "if (match) ..; else .."
-        if (node.jjtGetNumChildren() == 3) {
-            Node inode = node.jjtGetChild(0);
-            if (inode instanceof ASTExpression && inode.jjtGetNumChildren() == 1) {
-                Node jnode = inode.jjtGetChild(0);
-                if (isMatch(jnode)) {
-
-                    if (!getProperty(ignoreElseIfProperty)
-                            || !(node.jjtGetChild(2).jjtGetChild(0) instanceof ASTIfStatement)
-                                    && !(node.jjtGetParent().jjtGetParent() instanceof ASTIfStatement)) {
-                        addViolation(data, node);
-                    }
-                }
+        if (node.getNumChildren() == 3
+            && isMatch(node.getCondition())) {
+            if (!getProperty(IGNORE_ELSE_IF)
+                || !(node.getElseBranch() instanceof ASTIfStatement)
+                && !(node.getParent() instanceof ASTIfStatement)) {
+                addViolation(data, node);
             }
         }
         return super.visit(node, data);
@@ -84,66 +76,42 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
         // look for "match ? .. : .."
-        if (node.jjtGetNumChildren() > 0) {
-            Node inode = node.jjtGetChild(0);
-            if (isMatch(inode)) {
-                addViolation(data, node);
-            }
+        if (isMatch(node.getCondition())) {
+            addViolation(data, node);
         }
         return super.visit(node, data);
     }
 
     // recursive!
-    private static boolean isMatch(Node node) {
-        return isUnaryNot(node) || isNotEquals(node) || isConditionalWithAllMatches(node)
-                || isParenthesisAroundMatch(node);
+    private static boolean isMatch(ASTExpression node) {
+        return isUnaryNot(node) || isNotEquals(node) || isConditionalWithAllMatches(node);
     }
 
-    private static boolean isUnaryNot(Node node) {
+    private static boolean isUnaryNot(ASTExpression node) {
         // look for "!x"
-        return node instanceof ASTUnaryExpressionNotPlusMinus && "!".equals(node.getImage());
+        return node instanceof ASTUnaryExpression
+            && ((ASTUnaryExpression) node).getOperator().equals(UnaryOp.NEGATION);
     }
 
-    private static boolean isNotEquals(Node node) {
+    private static boolean isNotEquals(ASTExpression node) {
         // look for "x != y"
-        return node instanceof ASTEqualityExpression && "!=".equals(node.getImage());
+        return node instanceof ASTInfixExpression
+            && ((ASTInfixExpression) node).getOperator().equals(BinaryOp.NE);
     }
 
-    private static boolean isConditionalWithAllMatches(Node node) {
+    private static boolean isConditionalWithAllMatches(ASTExpression node) {
         // look for "match && match" or "match || match"
-        if (!(node instanceof ASTConditionalAndExpression) && !(node instanceof ASTConditionalOrExpression)) {
-            return false;
-        }
-        int n = node.jjtGetNumChildren();
-        if (n <= 0) {
-            return false;
-        }
-        for (int i = 0; i < n; i++) {
-            Node inode = node.jjtGetChild(i);
-            // recurse!
-            if (!isMatch(inode)) {
+        if (node instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) node;
+            if (infix.getOperator() != BinaryOp.CONDITIONAL_AND
+                && infix.getOperator() != BinaryOp.CONDITIONAL_OR) {
                 return false;
             }
-        }
-        // all match
-        return true;
-    }
 
-    private static boolean isParenthesisAroundMatch(Node node) {
-        // look for "(match)"
-        if (!(node instanceof ASTPrimaryExpression) || node.jjtGetNumChildren() != 1) {
-            return false;
+            return isMatch(infix.getLeftOperand())
+                && isMatch(infix.getRightOperand());
         }
-        Node inode = node.jjtGetChild(0);
-        if (!(inode instanceof ASTPrimaryPrefix) || inode.jjtGetNumChildren() != 1) {
-            return false;
-        }
-        Node jnode = inode.jjtGetChild(0);
-        if (!(jnode instanceof ASTExpression) || jnode.jjtGetNumChildren() != 1) {
-            return false;
-        }
-        Node knode = jnode.jjtGetChild(0);
-        // recurse!
-        return isMatch(knode);
+
+        return false;
     }
 }

@@ -11,22 +11,37 @@
 
     <fileSets>
         <fileSet>
-            <useDefaultExcludes>true</useDefaultExcludes>
+            <useDefaultExcludes>false</useDefaultExcludes>
             <directory>${project.basedir}/..</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory></outputDirectory>
             <excludes>
+                <exclude>.git/**</exclude>
                 <exclude>**/target/**</exclude>
                 <exclude>**/bin/**</exclude>
-                <exclude>**/.settings</exclude>
+
+                <exclude>**/.settings/**</exclude>
                 <exclude>**/.project</exclude>
                 <exclude>**/.classpath</exclude>
                 <exclude>**/.checkstyle</exclude>
                 <exclude>**/.pmd</exclude>
+                <exclude>**/.pmdruleset.xml</exclude>
                 <exclude>**/.ruleset</exclude>
-                <exclude>**/.git</exclude>
-                <exclude>**/.travis/secrets.tar</exclude>
-                <exclude>**/.travis/id_rsa</exclude>
-                <exclude>**/.travis/*.gpg</exclude>
+                <exclude>**/.idea/**</exclude>
+                <exclude>**/*.iml</exclude>
+
+                <exclude>.ci/files/id_rsa</exclude>
+                <exclude>.ci/files/private-env</exclude>
+                <exclude>.ci/files/public-env</exclude>
+                <exclude>.ci/files/release-signing-key-D0BF1D737C9A1C22.gpg.gpg</exclude>
+
+                <exclude>.bundle/**</exclude>
+                <exclude>vendor/**</exclude>
+                <exclude>Gemfile.lock</exclude>
+                <exclude>docs/.bundle/**</exclude>
+                <exclude>docs/vendor/**</exclude>
+                <exclude>docs/_site/**</exclude>
+
+                <exclude>pmd-core/dependency-reduced-pom.xml</exclude>
             </excludes>
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>

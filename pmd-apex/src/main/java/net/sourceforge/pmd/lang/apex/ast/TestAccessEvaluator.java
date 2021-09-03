@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 // Note: taken from https://github.com/forcedotcom/idecore/blob/3083815933c2d015d03417986f57bd25786d58ce/com.salesforce.ide.apex.core/src/apex/jorje/semantic/common/TestAccessEvaluator.java
@@ -45,7 +45,7 @@ import com.google.common.collect.SetMultimap;
  *
  * @author jspagnola
  */
-public class TestAccessEvaluator implements AccessEvaluator {
+class TestAccessEvaluator implements AccessEvaluator {
 
     private final SetMultimap<Namespace, StructuredVersion> validPageVersions;
     private final SetMultimap<SObjectTypeInfo, TypeInfo> visibleSetupEntitiesToTypes;
@@ -67,7 +67,7 @@ public class TestAccessEvaluator implements AccessEvaluator {
     private boolean hasRemoteActionPerm;
     private boolean hasPersonAccountApiAvailable;
 
-    public TestAccessEvaluator() {
+    TestAccessEvaluator() {
         validPageVersions = HashMultimap.create();
         visibleSetupEntitiesToTypes = HashMultimap.create();
         managedPackagesNotInstalled = new HashSet<>();
@@ -346,6 +346,16 @@ public class TestAccessEvaluator implements AccessEvaluator {
 
     @Override
     public boolean useTestValueForAnonymousScriptLengthLimit() {
+        return false;
+    }
+
+    @Override
+    public boolean hasNamespaceGuardedAccess(Namespace namespace, String arg1) {
+        return false;
+    }
+
+    @Override
+    public boolean isNamespaceGuardNamespace(Namespace arg0) {
         return false;
     }
 }

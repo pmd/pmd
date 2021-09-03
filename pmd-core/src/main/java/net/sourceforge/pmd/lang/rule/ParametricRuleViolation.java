@@ -4,20 +4,25 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import java.util.regex.Pattern;
+import java.io.File;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.StringUtil;
 
+/**
+ * @deprecated This is internal. Clients should exclusively use {@link RuleViolation}.
+ */
+@Deprecated
+@InternalApi
 public class ParametricRuleViolation<T extends Node> implements RuleViolation {
 
     protected final Rule rule;
     protected final String description;
-    protected boolean suppressed;
     protected String filename;
 
     protected int beginLine;
@@ -35,47 +40,42 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     // must not (to prevent erroneous Rules silently logging w/o a Node). Modify
     // RuleViolationFactory to support identifying without a Node, and update
     // Rule base classes too.
+    // TODO we never need a node. We just have to have a "position", ie line/column, or offset, + file, whatever
+
+    /**
+     * @deprecated Use {@link #ParametricRuleViolation(Rule, String, Node, String)}
+     */
+    @Deprecated
     public ParametricRuleViolation(Rule theRule, RuleContext ctx, T node, String message) {
-        rule = theRule;
-        description = message;
-        filename = ctx.getSourceCodeFilename();
-        if (filename == null) {
-            filename = "";
-        }
+        this(theRule, getFilename(ctx), node, message);
+    }
+
+    public ParametricRuleViolation(Rule theRule, String filename, T node, String message) {
+        this.rule = AssertionUtil.requireParamNotNull("rule", theRule);
+        this.description = AssertionUtil.requireParamNotNull("message", message);
+        this.filename = AssertionUtil.requireParamNotNull("file name", filename);
+
         if (node != null) {
             beginLine = node.getBeginLine();
             beginColumn = node.getBeginColumn();
             endLine = node.getEndLine();
             endColumn = node.getEndColumn();
         }
-
-        // Apply Rule specific suppressions
-        if (node != null && rule != null) {
-            setSuppression(rule, node);
-        }
-
     }
 
-    private void setSuppression(Rule rule, T node) {
-
-        String regex = rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR); // Regex
-        if (regex != null && description != null) {
-            if (Pattern.matches(regex, description)) {
-                suppressed = true;
-            }
-        }
-
-        if (!suppressed) { // XPath
-            String xpath = rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
-            if (xpath != null) {
-                suppressed = node.hasDescendantMatchingXPath(xpath);
-            }
+    private static String getFilename(RuleContext ctx) {
+        File file = ctx.getSourceCodeFile();
+        if (file != null) {
+            return file.getPath();
+        } else {
+            return "";
         }
     }
 
     protected String expandVariables(String message) {
+        // TODO move that to RuleContext with the rest of the formatting logic
 
-        if (message.indexOf("${") < 0) {
+        if (!message.contains("${")) {
             return message;
         }
 
@@ -85,17 +85,13 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
             final int endIndex = buf.indexOf("}", startIndex);
             if (endIndex >= 0) {
                 final String name = buf.substring(startIndex + 2, endIndex);
-                if (isVariable(name)) {
-                    buf.replace(startIndex, endIndex + 1, getVariableValue(name));
+                String variableValue = getVariableValue(name);
+                if (variableValue != null) {
+                    buf.replace(startIndex, endIndex + 1, variableValue);
                 }
             }
         }
         return buf.toString();
-    }
-
-    protected boolean isVariable(String name) {
-        return StringUtil.isAnyOf(name, "variableName", "methodName", "className", "packageName")
-                || rule.getPropertyDescriptor(name) != null;
     }
 
     protected String getVariableValue(String name) {
@@ -109,7 +105,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
             return packageName;
         } else {
             final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
-            return String.valueOf(rule.getProperty(propertyDescriptor));
+            return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
         }
     }
 
@@ -121,11 +117,6 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     @Override
     public String getDescription() {
         return expandVariables(description);
-    }
-
-    @Override
-    public boolean isSuppressed() {
-        return suppressed;
     }
 
     @Override
@@ -174,6 +165,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     }
 
     public void setLines(int theBeginLine, int theEndLine) {
+        assert theBeginLine > 0 && theEndLine > 0 && theBeginLine <= theEndLine : "Line numbers are 1-based";
         beginLine = theBeginLine;
         endLine = theEndLine;
     }

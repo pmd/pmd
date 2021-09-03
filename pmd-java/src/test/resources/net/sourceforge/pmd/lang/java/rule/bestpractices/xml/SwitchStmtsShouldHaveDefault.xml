@@ -3,19 +3,20 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
- <test-code>
+
+    <test-code>
         <description>simple failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  int x = 2;
-  switch (x) {
-   case 2: int y=8;
-  }
- }
+    void bar() {
+        int x = 2;
+        switch (x) {
+            case 2: int y=8;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -23,61 +24,138 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  int x = 2;
-  switch (x) {
-   case 2: int y=8;
-   default: int j=8;
-  }
- }
+    void bar() {
+        int x = 2;
+        switch (x) {
+            case 2: int y=8;
+            default: int j=8;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#651 Enum type, not ok</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
 
-            public class Foo {
-                void bar() {
-                    SimpleEnum a;
+public class Foo {
+    void bar() {
+        SimpleEnum a;
 
-                    // This switch is NOT exhaustive
-                    switch (a) {
-                    case BZAZ:
-                        int y = 8;
-                        break;
-                    }
-                }
-            }
-            ]]></code>
+        // This switch is NOT exhaustive
+        switch (a) {
+        case BZAZ:
+            int y = 8;
+            break;
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#651 Enum type, ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
 
-            public class Foo {
-                void bar() {
-                    SimpleEnum x;
+public class Foo {
+    void bar() {
+        SimpleEnum x;
 
-                    // This switch is exhaustive
-                    switch (x) {
-                    case BZAZ:
-                        int y = 8;
-                        break;
-                    case FOO:
-                        break;
-                    case BAR:
-                        int w = 8;
-                        break;
-                    }
-                }
-            }
-            ]]></code>
+        // This switch is exhaustive
+        switch (x) {
+        case BZAZ:
+            int y = 8;
+            break;
+        case FOO:
+            break;
+        case BAR:
+            int w = 8;
+            break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Enum type, not ok</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+
+public class Foo {
+    enum MyEnum { A, B, C }
+    void bar(MyEnum x) {
+        // This switch is not exhaustive
+        switch (x) {
+        case A:
+            int y = 8;
+            break;
+        case B:
+            break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Enum type, not ok (arrow branches)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+
+public class Foo {
+    enum MyEnum { A, B, C }
+    void bar(MyEnum x) {
+        // This switch is not exhaustive
+        switch (x) {
+        case A -> {
+            int y = 8;
+        }
+        case B -> throw new IllegalStateException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2806 [java] SwitchStmtsShouldHaveDefault false-positive with Java 14 non-fallthrough branches</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+
+public class Foo {
+    public String foo(String foo) {
+        switch (foo) {
+        case "=" -> foo = "eq";
+        case "!=" -> foo = "ne";
+        default -> throw new IllegalArgumentException();
+        }
+        return foo + 'a';
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] SwitchStmtsShouldHaveDefault false positive on enum inside enums #2946</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum GradeSystem {
+    SysA, SysB;
+
+    public boolean isValid() {
+        switch (this) { // false-positive
+        case SysA:
+        case SysB:
+            return true;
+        }
+
+        return false;
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

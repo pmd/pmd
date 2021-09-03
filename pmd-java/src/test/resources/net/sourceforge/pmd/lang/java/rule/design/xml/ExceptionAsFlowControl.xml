@@ -3,73 +3,95 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
+        <description>failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  try {
-   try {
-   } catch (Exception e) {
-    throw new WrapperException(e);
-    // this is essentially a GOTO to the WrapperException catch block
-   }
-  } catch (WrapperException e) {
-   // do some more stuff 
-  }
- }
+    void bar() {
+        try {
+            try {
+            } catch (Exception e) {
+                throw new WrapperException(e);
+                // this is essentially a GOTO to the WrapperException catch block
+            }
+        } catch (WrapperException e) {
+            // do some more stuff
+        }
+    }
 }
-     ]]></code>
+class WrapperException extends Exception {}
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-normal throw catch
-     ]]></description>
+        <description>normal throw catch</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  try {} catch (Exception e) {}
- }
+    void bar() {
+        try {} catch (Exception e) {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-BUG 996007
-     ]]></description>
+        <description>BUG 996007</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+public class Foo {
+    void bar(Foo foo) {
+        try {
+        } catch (IOException e) {
+            if (foo!=null)
+                throw new IOException(foo.toString());
+            else
+                throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  try {} catch (IOException e) {
-  if (foo!=null) 
-       throw new IOException(foo.getResponseMessage()); 
-  else  
-       throw e; 
-  
-  }
- }
+    void bar() {
+        switch(foo) {
+        default:
+            throw new IllegalArgumentException();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-NPE
-     ]]></description>
-        <expected-problems>0</expected-problems>
+        <description>Catch block for subtype</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
         <code><![CDATA[
-public class Foo {
- void bar() {
-  switch(foo) {
-   default:
-    throw new IllegalArgumentException();
-  }
- }
-}
-     ]]></code>
+public class Foo {{
+
+    try {
+        throw new TopE();
+    } catch (SubE e) { // no violation
+
+    }
+
+    try {
+        throw new SubE();
+    } catch (TopE e) { // warn
+
+    }
+}}
+class TopE extends Exception { }
+class SubE extends TopE { }
+
+        ]]></code>
     </test-code>
 </test-data>

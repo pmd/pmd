@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
 
 /**
@@ -14,39 +12,21 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * If the parent is an interface declaration, then these types are all interface
  * types. Otherwise, then this list contains exactly one element.
  *
- * <pre>
- *  ExtendsList ::= "extends" (TypeAnnotation)* ClassOrInterfaceType
- *                ( "," (TypeAnnotation)* ClassOrInterfaceType )*
+ * <pre class="grammar">
+ *
+ * ExtendsList ::= "extends" {@link ASTType Type} ( "," {@link ASTType Type} )*
  * </pre>
  */
-public class ASTExtendsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
+public final class ASTExtendsList extends ASTNonEmptyList<ASTClassOrInterfaceType> {
 
-    @InternalApi
-    @Deprecated
-    public ASTExtendsList(int id) {
-        super(id);
+    ASTExtendsList(int id) {
+        super(id, ASTClassOrInterfaceType.class);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTExtendsList(JavaParser p, int id) {
-        super(p, id);
-    }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    @Override    // TODO this doesn't preserve the annotations.
-    public Iterator<ASTClassOrInterfaceType> iterator() {
-        return new NodeChildrenIterator<>(this, ASTClassOrInterfaceType.class);
-    }
 }

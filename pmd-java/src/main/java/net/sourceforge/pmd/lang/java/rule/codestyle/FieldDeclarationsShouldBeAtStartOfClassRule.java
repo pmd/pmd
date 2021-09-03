@@ -6,106 +6,89 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEmptyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
 /**
  * Detects fields that are declared after methods, constructors, etc. It was a
- * XPath rule, but the Java version is much faster. The XPath rule for
- * reference:
- * 
- * <pre>
-//ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
-[not(.//ClassOrInterfaceBodyDeclaration) or $ignoreAnonymousClassDeclarations = 'false']
-[../preceding-sibling::ClassOrInterfaceBodyDeclaration
-    [  count(ClassOrInterfaceDeclaration) &gt; 0
-    or count(ConstructorDeclaration) &gt; 0
-    or count(MethodDeclaration) &gt; 0
-    or count(AnnotationTypeDeclaration) &gt; 0
-    or ($ignoreEnumDeclarations = 'false' and count(EnumDeclaration) &gt; 0)
-    ]
-]
- * </pre>
+ * XPath rule, but the Java version is much faster.
  */
-public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRule {
+public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRulechainRule {
 
-    private final PropertyDescriptor<Boolean> ignoreEnumDeclarations = booleanProperty("ignoreEnumDeclarations").defaultValue(true).desc("Ignore Enum Declarations that precede fields.").build();
-    private final PropertyDescriptor<Boolean> ignoreAnonymousClassDeclarations = booleanProperty("ignoreAnonymousClassDeclarations").defaultValue(true).desc("Ignore Field Declarations, that are initialized with anonymous class declarations").build();
-    private final PropertyDescriptor<Boolean> ignoreInterfaceDeclarations = booleanProperty("ignoreInterfaceDeclarations").defaultValue(false).desc("Ignore Interface Declarations that precede fields.").build();
+    private static final PropertyDescriptor<Boolean> IGNORE_ANONYMOUS_CLASS_DECLARATIONS =
+        booleanProperty("ignoreAnonymousClassDeclarations")
+            .defaultValue(true)
+            .desc("Ignore field declarations, that are initialized with an anonymous class creation expression").build();
 
+    private static final PropertyDescriptor<Boolean> IGNORE_ENUM_DECLARATIONS =
+        booleanProperty("ignoreEnumDeclarations")
+            .defaultValue(true)
+            .desc("Ignore enum declarations that precede fields").build();
+
+    private static final PropertyDescriptor<Boolean> IGNORE_INTERFACE_DECLARATIONS =
+        booleanProperty("ignoreInterfaceDeclarations")
+            .defaultValue(false)
+            .desc("Ignore interface declarations that precede fields").build();
 
     public FieldDeclarationsShouldBeAtStartOfClassRule() {
-        definePropertyDescriptor(ignoreEnumDeclarations);
-        definePropertyDescriptor(ignoreAnonymousClassDeclarations);
-        definePropertyDescriptor(ignoreInterfaceDeclarations);
+        super(ASTAnyTypeDeclaration.class);
+        definePropertyDescriptor(IGNORE_ANONYMOUS_CLASS_DECLARATIONS);
+        definePropertyDescriptor(IGNORE_INTERFACE_DECLARATIONS);
+        definePropertyDescriptor(IGNORE_ENUM_DECLARATIONS);
     }
 
     @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
-        Node parent = node.jjtGetParent().jjtGetParent();
-        for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
-            Node child = parent.jjtGetChild(i);
-            if (child.jjtGetNumChildren() > 0) {
-                child = skipAnnotations(child);
-            }
-            if (child.equals(node)) {
-                break;
-            }
-            if (child instanceof ASTFieldDeclaration) {
-                continue;
-            }
-            if (node.hasDescendantOfType(ASTClassOrInterfaceBodyDeclaration.class)
-                    && getProperty(ignoreAnonymousClassDeclarations)) {
-                continue;
-            }
-            if (child instanceof ASTMethodDeclaration || child instanceof ASTConstructorDeclaration
-                    || child instanceof ASTAnnotationTypeDeclaration) {
-                addViolation(data, node);
-                break;
-            }
-            if (child instanceof ASTClassOrInterfaceDeclaration) {
-                ASTClassOrInterfaceDeclaration declaration = (ASTClassOrInterfaceDeclaration) child;
-                if (declaration.isInterface() && getProperty(ignoreInterfaceDeclarations)) {
-                    continue;
-                } else {
-                    addViolation(data, node);
-                    break;
-                }
-            }
-            if (child instanceof ASTEnumDeclaration && !getProperty(ignoreEnumDeclarations)) {
-                addViolation(data, node);
-                break;
-            }
-        }
-        return data;
+    public Object visitJavaNode(JavaNode node, Object data) {
+        assert node instanceof ASTAnyTypeDeclaration;
+        return visit((ASTAnyTypeDeclaration) node, data);
     }
 
-    /**
-     * Ignore all annotations, until anything, that is not an annotation and
-     * return this node
-     * 
-     * @param child
-     *            the node from where to start the search
-     * @return the first child or the first child after annotations
-     */
-    private Node skipAnnotations(Node child) {
-        Node nextChild = child.jjtGetChild(0);
-        for (int j = 0; j < child.jjtGetNumChildren(); j++) {
-            if (!(child.jjtGetChild(j) instanceof ASTAnnotation)) {
-                nextChild = child.jjtGetChild(j);
-                break;
+    public Object visit(ASTAnyTypeDeclaration node, Object data) {
+        boolean inStartOfClass = true;
+        for (ASTBodyDeclaration declaration : node.getDeclarations()) {
+            if (!isAllowedAtStartOfClass(declaration)) {
+                inStartOfClass = false;
+            }
+            if (!inStartOfClass && declaration instanceof ASTFieldDeclaration) {
+                ASTFieldDeclaration field = (ASTFieldDeclaration) declaration;
+                if (!isInitializerOk(field)) {
+                    addViolation(data, declaration);
+                }
             }
         }
-        return nextChild;
+        return null;
+    }
+
+    private boolean isAllowedAtStartOfClass(ASTBodyDeclaration declaration) {
+        return declaration instanceof ASTFieldDeclaration
+            || declaration instanceof ASTInitializer
+            || declaration instanceof ASTEnumConstant
+            || declaration instanceof ASTEmptyDeclaration
+            || declaration instanceof ASTEnumDeclaration && getProperty(IGNORE_ENUM_DECLARATIONS)
+            || isInterface(declaration) && getProperty(IGNORE_INTERFACE_DECLARATIONS);
+    }
+
+    private boolean isInterface(ASTBodyDeclaration declaration) {
+        return declaration instanceof ASTAnyTypeDeclaration
+            && ((ASTAnyTypeDeclaration) declaration).isRegularInterface();
+    }
+
+    private boolean isInitializerOk(ASTFieldDeclaration fieldDeclaration) {
+        if (getProperty(IGNORE_ANONYMOUS_CLASS_DECLARATIONS) && fieldDeclaration.getVarIds().count() == 1) {
+            ASTExpression initializer = fieldDeclaration.getVarIds().firstOrThrow().getInitializer();
+            return JavaRuleUtil.isAnonymousClassCreation(initializer);
+        }
+        return false;
     }
 }

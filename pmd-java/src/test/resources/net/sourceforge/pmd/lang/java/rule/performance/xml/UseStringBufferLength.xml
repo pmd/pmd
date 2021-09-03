@@ -3,185 +3,170 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Using length properly
-     ]]></description>
+        <description>Using length properly</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-  void bar() {
-    StringBuffer sb = new StringBuffer();
-     if ( sb.length() == 0 ){
-           sb.append(",");
-     }
-    sb.append( "whatever" );
-  }
-  void bar2() {
-    StringBuilder sb = new StringBuilder();
-     if ( sb.length() == 0 ){
-           sb.append(",");
-     }
-    sb.append( "whatever" );
-  }
+    void bar() {
+        StringBuffer sb = new StringBuffer();
+        if ( sb.length() == 0 ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+    void bar2() {
+        StringBuilder sb = new StringBuilder();
+        if ( sb.length() == 0 ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-        
+
     <test-code>
-        <description><![CDATA[
-StringBuffer.toString.equals(""), bad
-     ]]></description>
+        <!-- Note: this changed in PMD 7. -->
+        <description>StringBuffer.toString.equals(""), bad</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        StringBuffer sb = new StringBuffer();
+        if ( sb.toString().equals("") ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+    void bar2() {
+        StringBuilder sb = new StringBuilder();
+        if ( sb.toString().equals("") ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>StringBuffer.toString.equals("foo"), ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        StringBuffer sb = new StringBuffer();
+        if ( sb.toString().equals("foo") ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+    void bar2() {
+        StringBuilder sb = new StringBuilder();
+        if ( sb.toString().equals("foo") ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>StringBuffer.toString.length(), bad</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
-  void bar() {
-    StringBuffer sb = new StringBuffer();
-     if ( sb.toString().equals("") ){
-           sb.append(",");
-     }
-    sb.append( "whatever" );
-   }
-  void bar2() {
-    StringBuilder sb = new StringBuilder();
-     if ( sb.toString().equals("") ){
-           sb.append(",");
-     }
-    sb.append( "whatever" );
-   }
+    void bar() {
+        StringBuffer sb = new StringBuffer();
+        if ( sb.toString().length() == 0 ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+    void bar2() {
+        StringBuilder sb = new StringBuilder();
+        if ( sb.toString().length() == 0 ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
 }
-     ]]></code>
-    </test-code>
-    
-    <test-code>
-        <description><![CDATA[
-StringBuffer.toString.equals("foo"), ok
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-  void bar() {
-    StringBuffer sb = new StringBuffer();
-     if ( sb.toString().equals("foo") ){
-           sb.append(",");
-     }
-    sb.append( "whatever" );
-  }
-  void bar2() {
-    StringBuilder sb = new StringBuilder();
-     if ( sb.toString().equals("foo") ){
-           sb.append(",");
-     }
-    sb.append( "whatever" );
-  }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-StringBuffer.toString.length(), bad
-     ]]></description>
-        <expected-problems>2</expected-problems>
-        <code><![CDATA[
-public class Foo {
-  void bar() {
-    StringBuffer sb = new StringBuffer();
-     if ( sb.toString().length() == 0 ){
-           sb.append(",");
-     }
-    sb.append( "whatever" );
-  }
-  void bar2() {
-    StringBuilder sb = new StringBuilder();
-     if ( sb.toString().length() == 0 ){
-           sb.append(",");
-     }
-    sb.append( "whatever" );
-  }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-no literals
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- boolean bar(Object foo) {
-  StringBuffer sb = new StringBuffer();
-  return sb.toString().equals(foo);
- }
- boolean bar2(Object foo) {
-  StringBuilder sb = new StringBuilder();
-  return sb.toString().equals(foo);
- }
-}
-     ]]></code>
-    </test-code>
-    
-    <test-code>
-        <description><![CDATA[
-empty + non-empty string
-sb.toString().equals("" + "x"), ok (as in: do not use StringBuffer.length())
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- boolean bar() {
-  StringBuffer sb = new StringBuffer();
-  return sb.toString().equals("" + "x");
- }
-}
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-sb.toString().trim().equals(""), ok (as in: do not use StringBuffer.length())
-     ]]></description>
+        <description>no literals</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- boolean bar() {
-  StringBuffer sb = new StringBuffer(" ");
-  return sb.toString().trim().equals("");
- }
+    boolean bar(Object foo) {
+        StringBuffer sb = new StringBuffer();
+        return sb.toString().equals(foo);
+    }
+    boolean bar2(Object foo) {
+        StringBuilder sb = new StringBuilder();
+        return sb.toString().equals(foo);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-sb.toString().equals(baz("")), ok
-     ]]></description>
+        <description>empty + non-empty string sb.toString().equals("" + "x"), ok (as in: do not use StringBuffer.length())</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- boolean bar() {
-  StringBuffer sb = new StringBuffer();
-  return sb.toString().equals(baz(""));
- }
- String baz(String s) {
-  return s + "x";
- }
+    boolean bar() {
+        StringBuffer sb = new StringBuffer();
+        return sb.toString().equals("" + "x");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-sb.toString().trim().length == 0, ok (as in: do not use StringBuffer.length())
-     ]]></description>
+        <description>sb.toString().trim().equals(""), ok (as in: do not use StringBuffer.length())</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- boolean bar() {
-  StringBuffer sb = new StringBuffer();
-  return sb.toString().trim().length == 0;
- }
+    boolean bar() {
+        StringBuffer sb = new StringBuffer(" ");
+        return sb.toString().trim().equals("");
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>sb.toString().equals(baz("")), ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar() {
+        StringBuffer sb = new StringBuffer();
+        return sb.toString().equals(baz(""));
+    }
+    String baz(String s) {
+        return s + "x";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>sb.toString().trim().length == 0, ok (as in: do not use StringBuffer.length())</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar() {
+        StringBuffer sb = new StringBuffer();
+        return sb.toString().trim().length == 0;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>

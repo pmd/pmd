@@ -3,89 +3,112 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-bad, new BigDecimal(.1)
-     ]]></description>
+        <description>bad, new BigDecimal(.1)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
- void bar() {
-  BigDecimal bd = new BigDecimal(.1);
- }
+    void bar() {
+        BigDecimal bd = new BigDecimal(.1);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, new BigDecimal(".1")
-     ]]></description>
+        <description>ok, new BigDecimal(".1")</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
- void bar() {
-  BigDecimal bd = new BigDecimal(".1");
- }
+    void bar() {
+        BigDecimal bd = new BigDecimal(".1");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>ok, new BigDecimal(10)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
- void bar() {
-  BigDecimal bd = new BigDecimal(10);
- }
+    void bar() {
+        BigDecimal bd = new BigDecimal(10);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-bad, same as #1 but outside an initializer context
-     ]]></description>
+        <description>bad, same as #1 but outside an initializer context</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
- BigDecimal bar() {
-  return new BigDecimal(1.0);
- }
+    BigDecimal bar() {
+        return new BigDecimal(1.0);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1187 double variable with AvoidDecimalLiteralsInBigDecimalConstructor</description>
         <expected-problems>8</expected-problems>
-        <expected-linenumbers>4,8,11,14,18,22,25,28</expected-linenumbers>
+        <expected-linenumbers>6,10,13,16,20,24,27,30</expected-linenumbers>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
     public void bar() {
         double d = 0.1;
-        BigDecimal bd = new BigDecimal(d); // line 4
+        BigDecimal bd = new BigDecimal(d); // line 6
     }
     public void bar2() {
         float f = 0.1f;
-        BigDecimal bd = new BigDecimal(f); // line 8
+        BigDecimal bd = new BigDecimal(f); // line 10
     }
     public BigDecimal bar3(double e) {
-        return new BigDecimal(e); // line 11
+        return new BigDecimal(e); // line 13
     }
     public BigDecimal bar4(float g) {
-        return new BigDecimal(g); // line 14
+        return new BigDecimal(g); // line 16
     }
     public void bar5() {
         Double h = 0.1;
-        BigDecimal bd = new BigDecimal(h); // line 18
+        BigDecimal bd = new BigDecimal(h); // line 20
     }
     public void bar6() {
         Float k = 0.1f;
-        BigDecimal bd = new BigDecimal(k); // line 22
+        BigDecimal bd = new BigDecimal(k); // line 24
     }
     public BigDecimal bar7(Double m) {
-        return new BigDecimal(m); // line 25
+        return new BigDecimal(m); // line 27
     }
     public BigDecimal bar8(Float n) {
-        return new BigDecimal(n); // line 28
+        return new BigDecimal(n); // line 30
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2532 Expression as argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.math.BigDecimal;
+
+public class Foo {
+    public void bar(double d) {
+        BigDecimal bd = new BigDecimal(6 * d);
     }
 }
         ]]></code>

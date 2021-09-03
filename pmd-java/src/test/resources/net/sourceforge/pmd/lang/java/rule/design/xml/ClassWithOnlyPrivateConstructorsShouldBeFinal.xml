@@ -3,45 +3,40 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Simple violation
-     ]]></description>
+        <description>Simple violation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	private Foo() { }
+    private Foo() { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, class is final
-     ]]></description>
+        <description>ok, class is final</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public final class Foo {
-	private Foo() { }
+    private Foo() { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-One public constructor, not required to be final
-     ]]></description>
+        <description>One public constructor, not required to be final</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	private Foo() { }
-
-	public Foo(String param) { }
+    private Foo() { }
+    public Foo(String param) { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, subclass using the private constructor
-     ]]></description>
+        <description>Ok, subclass using the private constructor</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -51,12 +46,11 @@ public class Foo {
         public Bar() { }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, subclass using the private constructor of another subclass
-     ]]></description>
+        <description>Ok, subclass using the private constructor of another subclass</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -70,12 +64,11 @@ public class Foo {
         public Barbie() { }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, two classes 
-     ]]></description>
+        <description>Ok, two classes</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -84,64 +77,86 @@ public class Foo {
 public class Bar extends Foo {
     public Bar() { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-One protected constructor, not required to be final
-     ]]></description>
+        <description>One protected constructor, not required to be final</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class ClassWithOnlyPrivateConstructorsShouldBeFinal {
     private String string;
-    
+
     protected ClassWithOnlyPrivateConstructorsShouldBeFinal(final Object object) {
         this(object.toString());
     }
-    
+
     private ClassWithOnlyPrivateConstructorsShouldBeFinal(final String string) {
         super();
-        
+
         setString(string);
     }
-    
+
     public final void setString(final String string) {
         this.string = string;
     }
-    
+
     public String getString() {
         return string;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-One package private constructor, not required to be final
-     ]]></description>
+        <description>One package private constructor, not required to be final</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class ClassWithOnlyPrivateConstructorsShouldBeFinal {
     private String string;
-    
+
     ClassWithOnlyPrivateConstructorsShouldBeFinal(final Object object) {
         this(object.toString());
     }
-    
+
     private ClassWithOnlyPrivateConstructorsShouldBeFinal(final String string) {
         super();
-        
+
         setString(string);
     }
-    
+
     public final void setString(final String string) {
         this.string = string;
     }
-    
+
     public String getString() {
         return string;
     }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2536 [java] ClassWithOnlyPrivateConstructorsShouldBeFinal can't detect inner class with only private constructor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+            public class Main209 {
+                private static class InputBits {
+                    private InputBits(int number) { }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Private inner class with no ctor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+            public class Main209 {
+                private static class InputBits {
+                    // default ctor is implicitly private
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

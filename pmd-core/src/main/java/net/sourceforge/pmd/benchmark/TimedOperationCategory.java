@@ -9,24 +9,26 @@ import java.util.Locale;
 import org.apache.commons.lang3.StringUtils;
 
 /**
+ * A category for a {@link TimedOperation}, rendered either as a section
+ * if several operations are registered on the same category but with
+ * distinct labels, or put into the "remaining categories" section.
+ *
  * @author Juan Martín Sotuyo Dodero
  */
 public enum TimedOperationCategory {
+    /** Rule execution proper. */
     RULE,
-    RULECHAIN_RULE,
     COLLECT_FILES,
     LOAD_RULES,
     PARSER,
-    QUALIFIED_NAME_RESOLUTION,
-    SYMBOL_TABLE,
-    DFA,
-    TYPE_RESOLUTION,
-    RULECHAIN_VISIT,
-    MULTIFILE_ANALYSIS,
+    /** Subdivided into one label for each stage. */
+    LANGUAGE_SPECIFIC_PROCESSING,
+    RULE_AST_INDEXATION,
     REPORTING,
     FILE_PROCESSING,
+    ANALYSIS_CACHE,
     UNACCOUNTED;
-    
+
     public String displayName() {
         final String[] parts = name().toLowerCase(Locale.getDefault()).split("_");
         final StringBuilder sb = new StringBuilder();

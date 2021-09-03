@@ -18,7 +18,7 @@ author: Tom Copeland <tom@infoether.org>
 
 *   <a href="http://www.vanwardtechnologies.com/products.php">Vanward Technology's Convergence [link broken]</a> -
     a quality management dashboard for the Java platform.  Thanks to Vanward Technologies for their support of PMD
-    by buying copies of <a href="http://pmdapplied.com/">PMD Applied</a>!
+    by buying copies of <a href="https://pmdapplied.thomasleecopeland.com/">PMD Applied</a>!
 
 *   <a href="http://javacentral.compuware.com/products/optimaladvisor/">Compuware's OptimalAdvisor [link broken]</a>
     <a href="http://www.componentsource.com/beasv/products/compuware-optimaladvisor/index.html">OptimalAdvisor from ComponentSource</a> -
@@ -26,8 +26,9 @@ author: Tom Copeland <tom@infoether.org>
 
 ## Books that mention PMD
 
-*   <a href="http://pmdapplied.com">PMD Applied</a> - the official manual; get an extra copy for the home!
-    Or office!  Whatever!
+*   <a href="https://pmdapplied.thomasleecopeland.com/">PMD Applied</a> - the official manual by Tom Copeland.
+    
+    *Note:* This book is from November 2005 and quite outdated. It discusses PMD 3.
 
 *   <a href="http://www.oreilly.com/catalog/9780596510237">Checking Java Programs</a> - by Ian Darwin;
     also discusses FindBugs.

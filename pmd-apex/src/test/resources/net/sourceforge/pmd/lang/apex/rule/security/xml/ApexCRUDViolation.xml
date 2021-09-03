@@ -1,39 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-	<test-code>
-		<description>Scheduled classes don't need crud, run as system
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-class FooBatchJob implements Database.Batchable < sObject > , Database.Stateful { 	
-	public void justGiveMeFoo() {
-	 	AggregateResult[] test = [SELECT Id FROM Opportunity];
-	} 
-} 
-]]></code>
-	</test-code>
+    <test-code>
+        <description>Scheduled classes don't need crud, run as system
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class FooBatchJob implements Database.Batchable < sObject > , Database.Stateful {
+    public void justGiveMeFoo() {
+         AggregateResult[] test = [SELECT Id FROM Opportunity];
+    }
+}
+        ]]></code>
+    </test-code>
 
-
-	<test-code>
-		<description>Complex SOQL</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
+    <test-code>
+        <description>Complex SOQL</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public with sharing class configurationSettingControllerV1 {
 
     List<FiscalYearSettings> lstfiscalsetting;
-  
+
     public configurationSettingControllerV1(){
-       
-        if (Schema.sObjectType.OpportunityStage.fields.Id.isAccessible() && Schema.sObjectType.OpportunityStage.fields.APiName.isAccessible() 
-        && Schema.sObjectType.OpportunityStage.fields.defaultProbability.isAccessible() && Schema.sObjectType.OpportunityStage.fields.ForecastCategoryName.isAccessible() 
-        && Schema.sObjectType.OpportunityStage.fields.IsActive.isAccessible() && Schema.sObjectType.OpportunityStage.fields.MasterLabel.isAccessible() 
+
+        if (Schema.sObjectType.OpportunityStage.fields.Id.isAccessible() && Schema.sObjectType.OpportunityStage.fields.APiName.isAccessible()
+        && Schema.sObjectType.OpportunityStage.fields.defaultProbability.isAccessible() && Schema.sObjectType.OpportunityStage.fields.ForecastCategoryName.isAccessible()
+        && Schema.sObjectType.OpportunityStage.fields.IsActive.isAccessible() && Schema.sObjectType.OpportunityStage.fields.MasterLabel.isAccessible()
         && Schema.sObjectType.OpportunityStage.fields.SortOrder.isAccessible() ){
-         
+
             if (Schema.sObjectType.FiscalYearSettings.fields.Description.isAccessible()
                 && Schema.sObjectType.FiscalYearSettings.fields.EndDate.isAccessible()
                 && Schema.sObjectType.FiscalYearSettings.fields.IsStandardYear.isAccessible()
@@ -53,777 +51,1141 @@ public with sharing class configurationSettingControllerV1 {
                 && Schema.sObjectType.Period.fields.PeriodLabel.isAccessible()
                 && Schema.sObjectType.Period.fields.QuarterLabel.isAccessible()
                 && Schema.sObjectType.Period.fields.StartDate.isAccessible()
-                && Schema.sObjectType.Period.fields.Type.isAccessible()){
-          
-        
-        lstfiscalsetting = [select Description,EndDate,IsStandardYear,Name,(select EndDate,FiscalYearSettingsId,IsForecastPeriod,Number,PeriodLabel,QuarterLabel,StartDate,Type from Period ),PeriodLabelScheme,
-        PeriodPrefix,QuarterLabelScheme,QuarterPrefix,StartDate,WeekLabelScheme, WeekStartDay,YearType from FiscalYearSettings where name <> null  order by startdate limit 100 ];
+                && Schema.sObjectType.Period.fields.Type.isAccessible()) {
 
-    		}
-    	}
-    
+                    lstfiscalsetting = [select Description,EndDate,IsStandardYear,Name,(select EndDate,FiscalYearSettingsId,IsForecastPeriod,Number,PeriodLabel,QuarterLabel,StartDate,Type from Period ),PeriodLabelScheme,
+                                        PeriodPrefix,QuarterLabelScheme,QuarterPrefix,StartDate,WeekLabelScheme, WeekStartDay,YearType from FiscalYearSettings where name <> null  order by startdate limit 100 ];
+
+            }
+        }
     }
-    
-
-    
 }
-]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Proper CRUD checks for Aggregate Result</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	public void justGiveMeFoo() {
-		if (Opportunity.sObjectType.getDescribe().isAccessible()) {
-	 		return;
-	 	}
-	 	AggregateResult[] test = [SELECT Id FROM Opportunity];
-	} 
-} 
-]]></code>
-	</test-code>
-
-
-	<test-code>
-		<description>Proper CRUD checks for Aggregate Result return
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	public AggregateResult[] justGiveMeFoo() {
-		if (Opportunity.sObjectType.getDescribe().isAccessible()) {
-	 		return null;
-	 	}
-	 	return [SELECT Id FROM Opportunity];
-	} 
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Not a getter</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	public Contact getFoo(ID tempID) {
-	 	Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-	 	return c;
-	} 
-	
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Proper CRUD,FLS via upsert</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) { 
-		if (Contact.sObjectType.getDescribe().isCreateable() && Contact.sObjectType.getDescribe().isUpdateable()) {
-			upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-		}
-	} 
-} ]]></code>
-	</test-code>
-
-	<test-code>
-		<description>No CRUD check for inline upsert</description>
-		<expected-problems>2</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Proper CRUD checks for Aggregate Result</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void foo() {
-		upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-	}
+    public void justGiveMeFoo() {
+        if (Opportunity.sObjectType.getDescribe().isAccessible()) {
+             return;
+         }
+         AggregateResult[] test = [SELECT Id FROM Opportunity];
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>VF built-in CRUD checks via getter</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	public Contact getFoo() {
-		String tempID = 'someID';
-	 	Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-	 	return c;
-	} 
-	
-	public Contact getBaz() {
-		String tempID = 'someID';
-	 	return  [SELECT Name FROM Contact WHERE Id=:tempID];
-	} 
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Bypassing VF built-in CRUD checks via getter method
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	public String getUserName() {
-		String tempID = 'someID';
-	 	Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-	 	return c.Name;
-	} 
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>No VF provided CRUD checks via getter method
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	public Contact justGiveMeFoo() {
-		String tempID = 'someID';
-	 	return [SELECT Name FROM Contact WHERE Id=:tempID];
-	} 
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Proper CRUD checks</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	public Contact justGiveMeFoo() {
-		String tempID = 'someID';
-		if (Contact.sObjectType.getDescribe().isAccessible()) {
-	 		return [SELECT Name FROM Contact WHERE Id=:tempID];
-	 	}
-	 	return null;
-	} 
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>No CRUD,FLS via sObject property</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public Contact contactProperty { get; set; }
-	
-	public void foo(String tempID) {
-	 		contactProperty = [SELECT Name FROM Contact WHERE Id=:tempID];
-	} 
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Proper FLS check </description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) { 
-		List<String> fieldsToView = new List<String> { 'name' };
-		if (ESAPI.accessController().isAuthorizedToUpdate(Contact.sObject, fieldsToView)) { 
-			Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
-			c.Name = newName;
-			update c; 
-		}
-	} 
-} ]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Proper FLS fall-through check </description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) { 
-		if (Schema.sObjectType.Contact.fields.Name.isUpdateable()) {
-			Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
-			c.Name = newName;
-			update c; 
-		}
-	} 
-} ]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Improper accessibility CRUD </description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public Contact foo(String tempID) { 
-		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-		return c;
-	} 
-} ]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Proper accessibility CRUD,FLS </description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public Contact foo(String tempID) { 
-		if (Contact.sObjectType.getDescribe().isAccessible()) {
-			Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-			return c;
-		}
-		return null;
-	} 
-} ]]></code>
-	</test-code>
-
-
-	<test-code>
-		<description>Proper CRUD,FLS via property</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public Contact MyWriteOnlyProp { get; set; }
-	
-	public void foo(String newName, String tempID) { 
-		if (Contact.sObjectType.getDescribe().isCreateable()) {
-			MyWriteOnlyProp = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-			insert MyWriteOnlyProp;
-		}
-	} 
-	
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>No CRUD,FLS via sObject property, write is not protected
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public Contact MyWriteOnlyProp { get; set; }
-	
-	public void foo(String newName, String tempID) { 
-			MyWriteOnlyProp = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-			insert MyWriteOnlyProp;
-	} 
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>No CRUD,FLS for List insertion </description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public List<Contact> MyWriteOnlyProp { get; set; }
-	
-	public void foo(String newName, String tempID) { 
-			MyWriteOnlyProp.add(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
-			insert MyWriteOnlyProp;
-	} 
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Proper CRUD,FLS for List insertion </description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public List<Contact> MyWriteOnlyProp { get; set; }
-	
-	public void foo(String newName, String tempID) { 
-			MyWriteOnlyProp.add(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
-			if(Contact.sObjectType.getDescribe().isCreateable()) {
-				insert MyWriteOnlyProp;
-			}
-	} 
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>No CRUD,FLS via String property</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public String nameProperty { get; set; }
-	
-	public void foo(String tempID) {
-	 		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-			nameProperty = c.Name;
-	} 
-} 
-]]></code>
-	</test-code>
-
-
-	<test-code>
-		<description>Proper CRUD,FLS via upsert</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) { 
-		if (Contact.sObjectType.getDescribe().isCreateable() && Contact.sObjectType.getDescribe().isUpdateable()) {
-			Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-			upsert myCon;
-		}
-	} 
-} ]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Partial CRUD,FLS via upsert</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) { 
-		if (Contact.sObjectType.getDescribe().isUpdateable()) {
-			Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-			upsert myCon;
-		}
-	} 
-} ]]></code>
-	</test-code>
-
-	<test-code>
-		<description> No CRUD,FLS via upsert</description>
-		<expected-problems>2</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) { 
-		Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-		upsert myCon;
-	} 
-} ]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Improper CRUD,FLS via ESAPI 1</description>
-		<expected-problems>2</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) { 
-		// missing accessibility check
-		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-		List<String> fieldsToView = new List<String> { 'name' };
-		// wrong ESAPI check
-		if (ESAPI.accessController().isAuthorizedToView(Contact.sObject, fieldsToView)) { 
-			c.Name = newName; 
-			update c; 
-		}
-	} 
-} ]]></code>
-	</test-code>
-
-
-
-	<test-code>
-		<description>Proper CRUD,FLS via ESAPI</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) {
-		List<String> fieldsToView = new List<String> { 'name' };
-		if (ESAPI.accessController().isAuthorizedToView(Contact.sObject, fieldsToView)) { 
-			Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-			if (ESAPI.accessController().isAuthorizedToUpdate(Contact.sObject, fieldsToView)) { 
-				c.Name = newName; 
-				update c; 
-			}
-		}
-	} 
-} ]]></code>
-	</test-code>
-
-
-	<test-code>
-		<description>Improper CRUD,FLS via ESAPI 2</description>
-		<expected-problems>2</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) { 
-		// missing accessibility check
-		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-		List<String> fieldsToView = new List<String> { 'name' };
-		// wrong object check
-		if (ESAPI.accessController().isAuthorizedToView(Lead.sObject, fieldsToView)) { 
-			c.Name = newName; 
-			update c; 
-		}
-	} 
-} ]]></code>
-	</test-code>
-
-	<test-code>
-		<description>CRUD,FLS check for update</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) { 
-		List<String> fieldsToView = new List<String> { 'name' };
-		if (ESAPI.accessController().isAuthorizedToView(Contact.sObject, fieldsToView)) { 
-			Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
-			if(Schema.sObjectType.Contact.fields.Name.isUpdateable()) {
-				c.Name = newName; 
-				update c; 
-			}
-		}
-	} 
-} ]]></code>
-	</test-code>
-
-
-	<test-code>
-		<description>No CRUD,FLS check for update</description>
-		<expected-problems>2</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) { 
-		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
-		c.Name = newName; 
-		update c; 
-	} 
-} ]]></code>
-	</test-code>
-
-
-	<test-code>
-		<description>Proper CRUD,FLS check for update</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public Contact foo(String newName, String tempID) { 
-		if (Contact.sObjectType.getDescribe().isAccessible()) {
-			Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
-			if (!Schema.sObjectType.Contact.fields.Name.isUpdateable()){ 
-				return null; 
-			} 
-			c.Name = newName; 
-		}
-		update c; 
-		return c; 
-	} 
-} ]]></code>
-	</test-code>
-
-	<test-code>
-		<description>No CRUD check for insert</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Proper CRUD checks for Aggregate Result return
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void foo() {
-		Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-		insert myCon;
-	}
+    public AggregateResult[] justGiveMeFoo() {
+        if (Opportunity.sObjectType.getDescribe().isAccessible()) {
+             return null;
+         }
+         return [SELECT Id FROM Opportunity];
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Proper CRUD check for insert</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Not a getter</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void foo() {
-		if (Contact.sObjectType.getDescribe().isCreateable()) {
-			Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-			insert myCon;
-		}	
-	}
-}
-		]]></code>
-	</test-code>
+    public Contact getFoo(ID tempID) {
+         Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+         return c;
+    }
 
-	<test-code>
-		<description>No CRUD check for delete</description>
-		<expected-problems>2</expected-problems>
-		<code><![CDATA[
-public class Foo {
-	public void bar(String contactId) {
-			Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
-			delete toDelete;			
-	}
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Proper CRUD check for delete</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Proper CRUD,FLS via upsert</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void bar(String contactId) {
-		if (Contact.sObjectType.getDescribe().isAccessible()) {
-			Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];		
-			if (Contact.sObjectType.getDescribe().isDeletable()) {
-				delete toDelete;
-			}	
-		}
-	}
+    public void foo(String newName, String tempID) {
+        if (Contact.sObjectType.getDescribe().isCreateable() && Contact.sObjectType.getDescribe().isUpdateable()) {
+            upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+        }
+    }
 }
-		]]></code>
-	</test-code>
-	<test-code>
-		<description>Proper CRUD check for a list of sObject</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-public class Foo {
-	public void bar(String contactId) {
-		if (Contact.sObjectType.getDescribe().isAccessible()) {
-			List<Contact> contacts = [SELECT Id FROM Contact];		
-			if (Contact.sObjectType.getDescribe().isDeletable()) {
-				delete contacts;
-			}	
-		}
-	}
-}
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>No issues found in test classes</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>No CRUD check for inline upsert</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS via upsert with database class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if (Contact.sObjectType.getDescribe().isCreateable() && Contact.sObjectType.getDescribe().isUpdateable()) {
+            Database.upsert(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check for inline upsert with database class</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Database.upsert(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>VF built-in CRUD checks via getter, but cannot determine if is really VF</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact getFoo() {
+        String tempID = 'someID';
+         Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+         return c;
+    }
+
+    public Contact getBaz() {
+        String tempID = 'someID';
+         return  [SELECT Name FROM Contact WHERE Id=:tempID];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD checks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact justGiveMeFoo() {
+        String tempID = 'someID';
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+             return [SELECT Name FROM Contact WHERE Id=:tempID];
+         }
+         return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS via sObject property</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact contactProperty { get; set; }
+
+    public void foo(String tempID) {
+             contactProperty = [SELECT Name FROM Contact WHERE Id=:tempID];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper FLS check </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        List<String> fieldsToView = new List<String> { 'name' };
+        if (ESAPI.accessController().isAuthorizedToUpdate(Contact.sObject, fieldsToView)) {
+            Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+            c.Name = newName;
+            update c;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper FLS fall-through check </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if (Schema.sObjectType.Contact.fields.Name.isUpdateable()) {
+            Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+            c.Name = newName;
+            update c;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Improper accessibility CRUD </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo(String tempID) {
+        Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Accepts Closure SECURITY ENFORCED </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo(String tempID) {
+        Contact c = [SELECT Name FROM Contact WHERE Id=: tempID WITH SECURITY_ENFORCED];
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Accepts Closure SECURITY ENFORCED Line Break </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo(String tempID) {
+        Contact c = [SELECT Name FROM Contact WHERE Id=: tempID
+        WITH SECURITY_ENFORCED];
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Accepts Closure SECURITY ENFORCED in a List </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public List<Contact> m() {
+        List<Contact> c = [SELECT Name FROM Contact WITH SECURITY_ENFORCED LIMIT 1];
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Accepts Closure SECURITY ENFORCED in a List Line Break</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public List<Contact> m() {
+        List<Contact> c = [SELECT Name FROM Contact
+        WITH SECURITY_ENFORCED LIMIT 1];
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Accepts Closure SECURITY ENFORCED with Case Insensitivity </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo(String tempID) {
+        Contact c = [SELECT Name FROM Contact WHERE Id=: tempID WItH SECURITY_ENFORCED];
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Accepts Closure SECURITY ENFORCED with Case Insensitivity Line Break </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo(String tempID) {
+        Contact c = [SELECT Name FROM Contact WHERE Id=: tempID
+        WItH SECURITY_ENFORCED];
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Accepts Closure SECURITY ENFORCED Not Secured </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo() {
+        Contact c = [SELECT Name FROM Contact WHERE Id=: 'WITH SECURITY_ENFORCED'];
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Accepts Closure SECURITY ENFORCED Secured </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo() {
+        Contact c = [SELECT Name FROM Contact WHERE Name = 'WITH SECURITY_ENFORCED' WITH SECURITY_ENFORCED];
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Accepts Closure SECURITY ENFORCED Secured Line Break </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo() {
+        Contact c = [SELECT Name FROM Contact WHERE Name = 'WITH SECURITY_ENFORCED'
+        WITH SECURITY_ENFORCED];
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper accessibility CRUD,FLS </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo(String tempID) {
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+            Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+            return c;
+        }
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS via property</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact MyWriteOnlyProp { get; set; }
+
+    public void foo(String newName, String tempID) {
+        if (Contact.sObjectType.getDescribe().isCreateable()) {
+            MyWriteOnlyProp = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+            insert MyWriteOnlyProp;
+        }
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS via sObject property, write is not protected
+        </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact MyWriteOnlyProp { get; set; }
+
+    public void foo(String newName, String tempID) {
+            MyWriteOnlyProp = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+            insert MyWriteOnlyProp;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for List insertion </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public List<Contact> MyWriteOnlyProp { get; set; }
+
+    public void foo(String newName, String tempID) {
+            MyWriteOnlyProp.add(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
+            insert MyWriteOnlyProp;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for List insertion </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public List<Contact> MyWriteOnlyProp { get; set; }
+
+    public void foo(String newName, String tempID) {
+            MyWriteOnlyProp.add(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
+            if(Contact.sObjectType.getDescribe().isCreateable()) {
+                insert MyWriteOnlyProp;
+            }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS via String property</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String nameProperty { get; set; }
+
+    public void foo(String tempID) {
+             Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+            nameProperty = c.Name;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS via upsert</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if (Contact.sObjectType.getDescribe().isCreateable() && Contact.sObjectType.getDescribe().isUpdateable()) {
+            Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+            upsert myCon;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Partial CRUD,FLS via upsert</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if (Contact.sObjectType.getDescribe().isUpdateable()) {
+            Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+            upsert myCon;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description> No CRUD,FLS via upsert</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+        upsert myCon;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Improper CRUD,FLS via ESAPI 1</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        // missing accessibility check
+        Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+        List<String> fieldsToView = new List<String> { 'name' };
+        // wrong ESAPI check
+        if (ESAPI.accessController().isAuthorizedToView(Contact.sObject, fieldsToView)) {
+            c.Name = newName;
+            update c;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS via ESAPI</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        List<String> fieldsToView = new List<String> { 'name' };
+        if (ESAPI.accessController().isAuthorizedToView(Contact.sObject, fieldsToView)) {
+            Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+            if (ESAPI.accessController().isAuthorizedToUpdate(Contact.sObject, fieldsToView)) {
+                c.Name = newName;
+                update c;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Improper CRUD,FLS via ESAPI 2</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        // missing accessibility check
+        Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+        List<String> fieldsToView = new List<String> { 'name' };
+        // wrong object check
+        if (ESAPI.accessController().isAuthorizedToView(Lead.sObject, fieldsToView)) {
+            c.Name = newName;
+            update c;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CRUD,FLS check for update</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        List<String> fieldsToView = new List<String> { 'name' };
+        if (ESAPI.accessController().isAuthorizedToView(Contact.sObject, fieldsToView)) {
+            Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+            if(Schema.sObjectType.Contact.fields.Name.isUpdateable()) {
+                c.Name = newName;
+                update c;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS check for update</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+        c.Name = newName;
+        update c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS check for update</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo(String newName, String tempID) {
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+            Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+            if (!Schema.sObjectType.Contact.fields.Name.isUpdateable()){
+                return null;
+            }
+            c.Name = newName;
+        }
+        update c;
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS check for update with database class</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+        c.Name = newName;
+        Database.update(c);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS check for update with database class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo(String newName, String tempID) {
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+            Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+            if (!Schema.sObjectType.Contact.fields.Name.isUpdateable()){
+                return null;
+            }
+            c.Name = newName;
+        }
+        Database.update(c);
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check for insert</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+        insert myCon;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check for insert</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (Contact.sObjectType.getDescribe().isCreateable()) {
+            Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+            insert myCon;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check for insert with database class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+        Database.insert(myCon);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check for insert with database class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (Contact.sObjectType.getDescribe().isCreateable()) {
+            Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+            Database.insert(myCon);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check for delete</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String contactId) {
+            Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+            delete toDelete;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check for delete</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String contactId) {
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+            Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+            if (Contact.sObjectType.getDescribe().isDeletable()) {
+                delete toDelete;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check for delete with database class</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String contactId) {
+            Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+            Database.delete(toDelete);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check for delete with database class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String contactId) {
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+            Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+            if (Contact.sObjectType.getDescribe().isDeletable()) {
+                Database.delete(toDelete);
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check for a list of sObject</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String contactId) {
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+            List<Contact> contacts = [SELECT Id FROM Contact];
+            if (Contact.sObjectType.getDescribe().isDeletable()) {
+                delete contacts;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No issues found in test classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class FooTest {
-	public void foo() {
-		upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-	}
+    public void foo() {
+        upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Control flow based CRUD,FLS check</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) { 
-			doChecks();
-			upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-		
-	} 
-	
-	public void doChecks() {
-		if (!Contact.sObjectType.getDescribe().isCreateable() && !Contact.sObjectType.getDescribe().isUpdateable()) {
-			throw new NoAccessException();
-		}
-	}
-	
-} ]]></code>
-	</test-code>
-	<test-code>
-		<description>Control flow based CRUD,FLS check recursive</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
-	public void foo(String newName, String tempID) { 
-			doChecks();
-			insert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-		
-	} 
-	
-	public void doChecks() {
-		anotherLevelHere("yolo");
-	}
-	
-	private void anotherLevelHere(String s) {
-		if (!Contact.sObjectType.getDescribe().isCreateable()) {
-			throw new NoAccessException();
-		}
-	}
-	
-} ]]></code>
-	</test-code>
-	<test-code>
-		<description>Control flow constructor based CRUD,FLS check
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 
+    <test-code>
+        <description>Control flow based CRUD,FLS check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+            doChecks();
+            upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
 
-	public void foo(String newName, String tempID) { 
-			upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-		
-	} 
-	
-	public Foo() {
-		if (!Contact.sObjectType.getDescribe().isCreateable() && !Contact.sObjectType.getDescribe().isUpdateable()) {
-			throw new NoAccessException();
-		}
-	}
-	
-} ]]></code>
-	</test-code>
+    }
 
-	<test-code>
-		<description>Control flow accessibility CRUD check</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	public Contact justGiveMeFoo() {
-		checkPerms(); 
-		
-		String tempID = 'someID';
-	 	return [SELECT Name FROM Contact WHERE Id=:tempID];
-	} 
-	
-	private void checkPerms() {
-		if (!Contact.sObjectType.getDescribe().isAccessible()) {
-			throw new NoAccessException();
-		}
-	}
-} 
-]]></code>
-	</test-code>
+    public void doChecks() {
+        if (!Contact.sObjectType.getDescribe().isCreateable()
+        && !Contact.sObjectType.getDescribe().isUpdateable()) {
+            throw new NoAccessException();
+        }
+    }
 
-	<test-code>
-		<description>Control flow substitute CRUD check</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	public Contact justGiveMeFoo() {
-		checkPerms();
-		String tempID = 'someID';
-	 	return [SELECT Name FROM Contact WHERE Id=:tempID];
-	} 
-	
-	private void checkPerms() {
-		if (!Contact.sObjectType.getDescribe().isCreateable()) {
-			throw new NoAccessException();
-		}
-	}
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Forgot to call the CRUD check</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	public Contact justGiveMeFoo() {
-		String tempID = 'someID';
-	 	return [SELECT Name FROM Contact WHERE Id=:tempID];
-	} 
-	
-	private void checkPerms() {
-		if (!Contact.sObjectType.getDescribe().isCreateable()) {
-			throw new NoAccessException();
-		}
-	}
-} 
-]]></code>
-	</test-code>
-	<test-code>
-		<description>Control flow substitute CRUD check should fail when check
-			follows SOQL
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	private void bar() {
-		List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
-		checkPerms();
-	}
-
-	private void checkPerms() {
-		if (!Profile.sObjectType.getDescribe().isCreateable()) {
-			throw new NoAccessException();
-		}
-	}
-} 
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Control flow with nested statements</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	private void bar() {
-		if (whatever()) {
-			checkPerms();
-			if (something()) {
-				List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
-			}
-		}
-	}
-
-	private void checkPerms() {
-		if (!Profile.sObjectType.getDescribe().isCreateable()) {
-			throw new NoAccessException();
-		}
-	}
 }
-	
-]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Count does not expose data and CRUD checks are
-			unnecessary
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	public Integer getBaz() {
-	 	return  [SELECT count() FROM Contact];
-	} 
-} 
-]]></code>
-	</test-code>
+    <test-code>
+        <description>Control flow based CRUD,FLS check recursive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+            doChecks();
+            insert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+    }
 
-	<test-code>
-		<description>Count does not leak data and CRUD checks are unnecessary
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo { 	
-	public void getBaz() {
-		Integer countAdmins = [SELECT count() FROM Profile WHERE Name = 'System Administrator'];
-	} 
-} 
-]]></code>
-	</test-code>
+    public void doChecks() {
+        anotherLevelHere('yolo');
+    }
 
-	<test-code>
-		<description>Field detection</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[ 
-public class MyProfilePageController { 	
-	private User currentUser;
+    private void anotherLevelHere(String s) {
+        if (!Contact.sObjectType.getDescribe().isCreateable()) {
+            throw new NoAccessException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Control flow constructor based CRUD,FLS check
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    public void foo(String newName, String tempID) {
+            upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+
+    }
+
+    public Foo() {
+        if (!Contact.sObjectType.getDescribe().isCreateable() && !Contact.sObjectType.getDescribe().isUpdateable()) {
+            throw new NoAccessException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Control flow accessibility CRUD check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact justGiveMeFoo() {
+        checkPerms();
+
+        String tempID = 'someID';
+         return [SELECT Name FROM Contact WHERE Id=:tempID];
+    }
+
+    private void checkPerms() {
+        if (!Contact.sObjectType.getDescribe().isAccessible()) {
+            throw new NoAccessException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Control flow substitute CRUD check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact justGiveMeFoo() {
+        checkPerms();
+        String tempID = 'someID';
+         return [SELECT Name FROM Contact WHERE Id=:tempID];
+    }
+
+    private void checkPerms() {
+        if (!Contact.sObjectType.getDescribe().isCreateable()) {
+            throw new NoAccessException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Forgot to call the CRUD check</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact justGiveMeFoo() {
+        String tempID = 'someID';
+         return [SELECT Name FROM Contact WHERE Id=:tempID];
+    }
+
+    private void checkPerms() {
+        if (!Contact.sObjectType.getDescribe().isCreateable()) {
+            throw new NoAccessException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Control flow substitute CRUD check should fail when check follows SOQL</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+        List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+        checkPerms();
+    }
+
+    private void checkPerms() {
+        if (!Profile.sObjectType.getDescribe().isCreateable()) {
+            throw new NoAccessException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Control flow with nested statements</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+        if (whatever()) {
+            checkPerms();
+            if (something()) {
+                List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+            }
+        }
+    }
+
+    private void checkPerms() {
+        if (!Profile.sObjectType.getDescribe().isCreateable()) {
+            throw new NoAccessException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Count does expose data and CRUD checks are necessary</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Integer getBaz() {
+         return  [SELECT count() FROM Contact];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Count does leak data and CRUD checks are necessary
+        </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void getBaz() {
+        Integer countAdmins = [SELECT count() FROM Profile WHERE Name = 'System Administrator'];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field detection</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class MyProfilePageController {
+    private User currentUser;
 
     public MyProfilePageController() {
         currentUser = [SELECT id FROM User WHERE id = :UserInfo.getUserId()];
-    } 
-}
-	
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>ClassCastException detection</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[ 
-public class Foo {    
-    public list<A.B[]> bar;
-    public map<Id,A.B[]> baz;                
-}
-]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Regression issue #799 detection</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-public class Foo {
-    void chainedMethods() {
-    	firstMethod().lastMethod();
     }
 }
-]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ClassCastException detection</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public list<A.B[]> bar;
+    public map<Id,A.B[]> baz;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Regression issue #799 detection</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void chainedMethods() {
+        firstMethod().lastMethod();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check in SOQL for-loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        for (Account a : [SELECT Id FROM Account]) {
+        
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check inside for-each loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Id[] accIds = new List<Id>();
+        for (Id accId : accIds) {
+            Account acc = [SELECT Id FROM Account WHERE Id = :accId];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check inside for-each loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Id[] accIds = new List<Id>();
+        if (Account.sObjectType.getDescribe().isAccessible()) {
+            for (Id accId : accIds) {
+                Account a = [SELECT Id FROM Account WHERE Id = :accId];
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check in SOQL for-loop with security enforced</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        for (Account a : [SELECT Id FROM Account WITH SECURITY_ENFORCED]) {
+            
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check in SOQL for-loop with explicit check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if (Account.sObjectType.getDescribe().isAccessible()) {
+            for (Account a : [SELECT Id FROM Account]) {
+                
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for inline no-args object</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        insert new Account();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for inline no-args object</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if(Account.sObjectType.getDescribe().isCreateable()) {
+            insert new Account();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for inline literal list</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        insert new Account[]{new Account(Name = 'X')};
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for inline literal list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if(Account.sObjectType.getDescribe().isCreateable()) {
+            insert new Account[]{new Account(Name = 'X')};
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for inline initialized list</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        insert new List<Account>(new Account(Name = 'X'));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for inline initialized list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if(Account.sObjectType.getDescribe().isCreateable()) {
+            insert new List<Account>(new Account(Name = 'X'));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

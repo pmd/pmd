@@ -3,41 +3,60 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Preferred usage (sf #1454)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class Foo {
- {x.toArray(new Foo[0]);}
+    {
+        List<Foo> x;
+        x.toArray(new Foo[0]);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Array dimensioner uses method call, performance issue</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class Foo {
- {x.toArray(new Foo[x.size()]);}
+    {
+        List<Foo> x;
+        x.toArray(new Foo[x.size()]);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Array dimensioner uses variable, performance issue</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class Foo {
- {x.toArray(new Foo[y]);}
+    {
+        List<Foo> x;
+        int y = 1;
+        x.toArray(new Foo[y]);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#937 OptimizableToArrayCall does not catch multilevel method chains</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class Test {
+    private Test x;
+    private List<Test> y;
     public void foo() {
-        x.y.toArray(new Foo[0]);
+        x.y.toArray(new Test[0]);
     }
 }
         ]]></code>
@@ -47,8 +66,10 @@ public class Test {
         <description>Array with a literal dimension, zero still better</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class Foo {
     public void foo() {
+        List<Foo> x;
         x.toArray(new Foo[10]);
     }
 }
@@ -59,8 +80,10 @@ public class Foo {
         <description>toArray call without an array should not be flagged</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class Foo {
     public void foo() {
+        List<Foo> x;
         x.toArray();
     }
 }

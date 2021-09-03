@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.vm.ast.ASTElseIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTElseStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTText;
-import net.sourceforge.pmd.lang.vm.ast.AbstractVmNode;
+import net.sourceforge.pmd.lang.vm.ast.VmNode;
 import net.sourceforge.pmd.lang.vm.rule.AbstractVmRule;
 
 public class CollapsibleIfStatementsRule extends AbstractVmRule {
@@ -26,22 +26,22 @@ public class CollapsibleIfStatementsRule extends AbstractVmRule {
     @Override
     public Object visit(final ASTElseIfStatement node, final Object data) {
         // verify that this elseif doesn't have any siblings
-        if (node.jjtGetParent().findChildrenOfType(ASTElseIfStatement.class).size() == 1) {
+        if (node.getParent().findChildrenOfType(ASTElseIfStatement.class).size() == 1) {
             handleIfElseIf(node, data);
         }
         return super.visit(node, data);
     }
 
-    private void handleIfElseIf(final AbstractVmNode node, final Object data) {
+    private void handleIfElseIf(final VmNode node, final Object data) {
         if (node.getFirstChildOfType(ASTElseStatement.class) == null
                 && node.getFirstChildOfType(ASTElseIfStatement.class) == null) {
             final ASTBlock ifBlock = node.getFirstChildOfType(ASTBlock.class);
             boolean violationFound = false;
             int ifCounter = 0;
-            for (int i = 0; i < ifBlock.jjtGetNumChildren(); i++) {
-                final Node blockChild = ifBlock.jjtGetChild(i);
+            for (int i = 0; i < ifBlock.getNumChildren(); i++) {
+                final Node blockChild = ifBlock.getChild(i);
                 if (blockChild instanceof ASTText) {
-                    if (StringUtils.isNotBlank(((ASTText) blockChild).getFirstToken().toString())) {
+                    if (StringUtils.isNotBlank(((ASTText) blockChild).getFirstToken().getImage())) {
                         violationFound = false;
                         break;
                     }

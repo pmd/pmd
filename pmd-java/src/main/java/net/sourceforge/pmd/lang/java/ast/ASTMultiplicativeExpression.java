@@ -4,45 +4,45 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a multiplication, division, or modulo operation on
  * two or more values. This has a precedence greater than {@link ASTAdditiveExpression},
  * and lower than {@linkplain ASTUnaryExpression UnaryExpression}.
  *
+ * <pre class="grammar">
+ *
+ * MultiplicativeExpression ::= {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} ( ( "*" | "/" | "%" ) {@linkplain ASTUnaryExpression UnaryExpression} )+
+ *
+ * </pre>
+ *
  * <p>Note that the children of this node are not necessarily {@link ASTUnaryExpression}s,
  * rather, they are expressions with an operator precedence greater or equal to UnaryExpression.
  *
- * <pre>
+ * <p>The first child may be another MultiplicativeExpression only
+ * if its operator is different. For example, if parentheses represent
+ * nesting:
+ * <table summary="Nesting examples">
+ * <tr><th></th><th>Parses as</th></tr>
+ *     <tr><td>{@code 1 * 2 * 3}</td><td>{@code (1 * 2 * 3)}</td></tr>
+ *     <tr><td>{@code 1 * 2 / 3}</td><td>{@code ((1 * 2) / 3)}</td></tr>
+ *     <tr><td>{@code 1 * 2 / 3 / 4}</td><td>{@code ((1 * 2) / 3 / 4)}</td></tr>
+ * </table>
  *
- * MultiplicativeExpression ::= {@linkplain ASTUnaryExpression UnaryExpression} ( ( "*" | "/" | "%" ) {@linkplain ASTUnaryExpression UnaryExpression} )+
  *
- * </pre>
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
-public class ASTMultiplicativeExpression extends AbstractJavaTypeNode {
+@Deprecated
+public final class ASTMultiplicativeExpression extends AbstractJavaExpr {
 
-    @InternalApi
-    @Deprecated
-    public ASTMultiplicativeExpression(int id) {
+
+    ASTMultiplicativeExpression(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTMultiplicativeExpression(JavaParser p, int id) {
-        super(p, id);
-    }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 
 

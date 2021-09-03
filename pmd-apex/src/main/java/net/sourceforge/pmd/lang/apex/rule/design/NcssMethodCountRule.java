@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 
 /**
  * Non-commented source statement counter for methods.
- * 
+ *
  * @author ported from Java original of Jason Bennett
  */
 public class NcssMethodCountRule extends AbstractNcssCountRule<ASTMethod> {

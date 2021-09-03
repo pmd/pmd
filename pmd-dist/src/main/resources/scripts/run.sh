@@ -10,7 +10,7 @@ usage() {
 }
 
 valid_app_options () {
-    echo "pmd, cpd, cpdgui, designer"
+    echo "pmd, cpd, cpdgui, designer, ast-dump"
 }
 
 is_cygwin() {
@@ -186,6 +186,9 @@ case "${APPNAME}" in
     ;;
   "cpdgui")
     readonly CLASSNAME="net.sourceforge.pmd.cpd.GUI"
+    ;;
+  "ast-dump")
+    readonly CLASSNAME="net.sourceforge.pmd.util.treeexport.TreeExportCli"
     ;;
   *)
     echo "${APPNAME} is NOT a valid application name, valid options are:$(valid_app_options)"

@@ -21,10 +21,9 @@ package net.sourceforge.pmd.lang.vm.ast;
  */
 
 /**
- * Handles modulus division<br>
- * <br>
+ * Handles modulus division
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:wglass@forio.com">Will Glass-Husain</a>
@@ -32,25 +31,15 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTModNode.java 691048 2008-09-01 20:26:11Z nbubna $
  */
-public class ASTModNode extends ASTMathNode {
-    /**
-     * @param id
-     */
-    public ASTModNode(final int id) {
+public final class ASTModNode extends ASTMathNode {
+
+    ASTModNode(int id) {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
-    public ASTModNode(final VmParser p, final int id) {
-        super(p, id);
-    }
 
-    /** Accept the visitor. **/
     @Override
-    public Object jjtAccept(VmParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVmVisitor(VmVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

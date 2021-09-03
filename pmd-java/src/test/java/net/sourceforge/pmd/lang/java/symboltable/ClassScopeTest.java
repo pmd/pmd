@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -13,13 +13,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass;
 import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerClass;
@@ -27,21 +31,22 @@ import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerCla
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class ClassScopeTest extends STBBaseTst {
+@Ignore
+public class ClassScopeTest extends BaseNonParserTest {
 
     @Test
     public void testEnumsClassScope() {
-        parseCode15(ENUM_SCOPE);
+        java5.parse(ENUM_SCOPE);
     }
 
     @Test
     public void testEnumTypeParameter() {
-        parseCode15(ENUM_TYPE_PARAMETER);
+        java5.parse(ENUM_TYPE_PARAMETER);
     }
 
     @Test
     public void testVarArgsEmpty() {
-        parseCode15("public class Foo {\n" + "  public void bar1(String s, Integer... i) {}\n"
+        java5.parse("public class Foo {\n" + "  public void bar1(String s, Integer... i) {}\n"
                 + "  public void bar1() {}\n" + "  public void c() {\n" + "    bar1();\n" + "  }\n" + "}\n");
     }
 
@@ -60,58 +65,57 @@ public class ClassScopeTest extends STBBaseTst {
     public void testContains() {
         ClassNameDeclaration classDeclaration = new ClassNameDeclaration(null);
         ClassScope s = new ClassScope("Foo", classDeclaration);
-        ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
-        node.setImage("bar");
+        ASTVariableDeclaratorId node = InternalApiBridge.newVarId("bar");
         s.addDeclaration(new VariableNameDeclaration(node));
         assertTrue(s.getDeclarations().keySet().iterator().hasNext());
     }
 
     @Test
     public void testCantContainsSuperToString() {
-        ClassNameDeclaration classDeclaration = new ClassNameDeclaration(null);
+        ASTCompilationUnit cu = java.parse("class Foo { public String toString() { return super.toString(); } }");
+        ClassNameDeclaration classDeclaration = new ClassNameDeclaration(cu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class));
         ClassScope s = new ClassScope("Foo", classDeclaration);
-        JavaNode node = new DummyJavaNode(1);
-        node.setImage("super.toString");
-        assertFalse(s.contains(new JavaNameOccurrence(node, node.getImage())));
+        JavaNode node = cu.getFirstDescendantOfType(ASTPrimaryExpression.class); // "super.toString();"
+        assertFalse(s.contains(new JavaNameOccurrence(node, "super.toString")));
     }
 
     @Test
     public void testContainsStaticVariablePrefixedWithClassName() {
-        ClassNameDeclaration classDeclaration = new ClassNameDeclaration(null);
+        ASTCompilationUnit cu = java.parse("class Foo { static int X; public int bar() { return Foo.X; } }");
+
+        ClassNameDeclaration classDeclaration = new ClassNameDeclaration(cu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class));
         ClassScope s = new ClassScope("Foo", classDeclaration);
-        ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
-        node.setImage("X");
+        ASTVariableDeclaratorId node = cu.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         s.addDeclaration(new VariableNameDeclaration(node));
 
-        JavaNode node2 = new DummyJavaNode(2);
-        node2.setImage("Foo.X");
+        JavaNode node2 = cu.getFirstDescendantOfType(ASTName.class);
         assertTrue(s.contains(new JavaNameOccurrence(node2, node2.getImage())));
     }
 
     @Test
     public void testClassName() {
-        parseCode(CLASS_NAME);
+        ASTCompilationUnit acu = parseCode(CLASS_NAME);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         assertEquals("Foo", n.getScope().getEnclosingScope(ClassScope.class).getClassName());
     }
 
     @Test
     public void testMethodDeclarationRecorded() {
-        parseCode(METHOD_DECLARATIONS_RECORDED);
+        ASTCompilationUnit acu = parseCode(METHOD_DECLARATIONS_RECORDED);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         ClassScope s = (ClassScope) n.getScope();
         Map<NameDeclaration, List<NameOccurrence>> m = s.getDeclarations();
         assertEquals(1, m.size());
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
         assertEquals("bar", mnd.getImage());
-        ASTMethodDeclaration node = (ASTMethodDeclaration) mnd.getNode().jjtGetParent();
+        ASTMethodDeclaration node = (ASTMethodDeclaration) mnd.getNode().getParent();
         assertTrue(node.isPrivate());
     }
 
     @Test
     public void testTwoMethodsSameNameDiffArgs() {
         // TODO this won't work with String and java.lang.String
-        parseCode(METHODS_WITH_DIFF_ARG);
+        ASTCompilationUnit acu = parseCode(METHODS_WITH_DIFF_ARG);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
         assertEquals(2, m.size());
@@ -123,7 +127,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public final void testOneParam() {
-        parseCode(ONE_PARAM);
+        ASTCompilationUnit acu = parseCode(ONE_PARAM);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
@@ -132,7 +136,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public final void testTwoParams() {
-        parseCode(TWO_PARAMS);
+        ASTCompilationUnit acu = parseCode(TWO_PARAMS);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
@@ -141,7 +145,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public final void testNoParams() {
-        parseCode(NO_PARAMS);
+        ASTCompilationUnit acu = parseCode(NO_PARAMS);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
@@ -150,7 +154,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public final void testOneParamVararg() {
-        parseCode15(ONE_PARAM_VARARG);
+        ASTCompilationUnit acu = java5.parse(ONE_PARAM_VARARG);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
@@ -159,7 +163,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public final void testTwoParamsVararg() {
-        parseCode15(TWO_PARAMS_VARARG);
+        ASTCompilationUnit acu = java5.parse(TWO_PARAMS_VARARG);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
@@ -168,7 +172,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public void testNestedClassesOfImportResolution() {
-        parseCode(NESTED_CLASSES_OF_IMPORT);
+        ASTCompilationUnit acu = parseCode(NESTED_CLASSES_OF_IMPORT);
         final ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         final ClassScope c = (ClassScope) n.getScope();
         assertEquals(EnumTest.class, c.resolveType("TheInnerClass.EnumTest"));
@@ -176,8 +180,8 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public void testNestedClassesResolution() {
-        parseForClass(InnerClass.class);
-        final ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        final ASTClassOrInterfaceDeclaration n = java.parseClass(InnerClass.class)
+                                                     .findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         final ClassScope c = (ClassScope) n.getScope();
         assertEquals(InnerClass.class, c.resolveType("InnerClass"));
         assertEquals(TheInnerClass.class, c.resolveType("InnerClass.TheInnerClass"));
@@ -186,7 +190,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public void testImportNestedClassesResolution() {
-        parseCode(IMPORT_NESTED_CLASSES);
+        ASTCompilationUnit acu = parseCode(IMPORT_NESTED_CLASSES);
         final ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         final ClassScope c = (ClassScope) n.getScope();
         assertEquals(EnumTest.class, c.resolveType("EnumTest"));
@@ -194,7 +198,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public final void testNestedClassDeclFound() {
-        parseCode(NESTED_CLASS_FOUND);
+        ASTCompilationUnit acu = parseCode(NESTED_CLASS_FOUND);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         ClassScope c = (ClassScope) n.getScope();
         Map<NameDeclaration, List<NameOccurrence>> m = c.getDeclarations();
@@ -211,7 +215,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public void testMethodUsageSeen() {
-        parseCode(METHOD_USAGE_SEEN);
+        ASTCompilationUnit acu = parseCode(METHOD_USAGE_SEEN);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
         Iterator<Map.Entry<NameDeclaration, List<NameOccurrence>>> i = m.entrySet().iterator();
@@ -230,7 +234,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public void testMethodUsageSeenWithThis() {
-        parseCode(METHOD_USAGE_SEEN_WITH_THIS);
+        ASTCompilationUnit acu = parseCode(METHOD_USAGE_SEEN_WITH_THIS);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
         Iterator<Map.Entry<NameDeclaration, List<NameOccurrence>>> i = m.entrySet().iterator();
@@ -249,7 +253,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public void testMethodUsageSeen2() {
-        parseCode(METHOD_USAGE_SEEN2);
+        ASTCompilationUnit acu = parseCode(METHOD_USAGE_SEEN2);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
 
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
@@ -278,7 +282,7 @@ public class ClassScopeTest extends STBBaseTst {
      */
     @Test
     public void testNestedClassFieldAndParameter() {
-        parseCode(NESTED_CLASS_FIELD_AND_PARAM);
+        ASTCompilationUnit acu = parseCode(NESTED_CLASS_FIELD_AND_PARAM);
         ASTMethodDeclaration node = acu.getFirstDescendantOfType(ASTMethodDeclaration.class);
         Map<VariableNameDeclaration, List<NameOccurrence>> vd = node.getScope().getDeclarations(VariableNameDeclaration.class);
         assertEquals(2, vd.size());
@@ -287,7 +291,7 @@ public class ClassScopeTest extends STBBaseTst {
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vd.entrySet()) {
             if (entry.getKey().getDeclaratorId().isFormalParameter()) {
                 assertEquals("field", entry.getKey().getImage());
-    
+
                 List<NameOccurrence> occurrences = entry.getValue();
                 assertEquals(2, occurrences.size());
                 NameOccurrence no1 = occurrences.get(0);
@@ -303,7 +307,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public void testNullType() {
-        parseCode(TEST_NULL_TYPE);
+        ASTCompilationUnit acu = parseCode(TEST_NULL_TYPE);
     }
 
     private static final String NESTED_CLASS_FIELD_AND_PARAM = "public class Foo {" + PMD.EOL + " class Test {"

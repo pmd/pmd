@@ -30,14 +30,12 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
 
 
     public FormalParameterNamingConventionsRule() {
+        super(ASTVariableDeclaratorId.class);
         definePropertyDescriptor(formalParamRegex);
         definePropertyDescriptor(finalFormalParamRegex);
         definePropertyDescriptor(lambdaParamRegex);
         definePropertyDescriptor(explicitLambdaParamRegex);
-
-        addRuleChainVisit(ASTVariableDeclaratorId.class);
     }
-
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
@@ -57,6 +55,10 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
         return CAMEL_CASE;
     }
 
+    @Override
+    String nameExtractor(ASTVariableDeclaratorId node) {
+        return node.getName();
+    }
 
     @Override
     String kindDisplayName(ASTVariableDeclaratorId node, PropertyDescriptor<Pattern> descriptor) {

@@ -1,22 +1,36 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.vm.rule.design;
 
-import net.sourceforge.pmd.lang.vm.ast.ASTprocess;
-import net.sourceforge.pmd.lang.vm.rule.AbstractStatisticalVmRule;
-import net.sourceforge.pmd.stat.DataPoint;
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
-public class ExcessiveTemplateLengthRule extends AbstractStatisticalVmRule {
+import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
+import net.sourceforge.pmd.lang.vm.ast.ASTTemplate;
+import net.sourceforge.pmd.lang.vm.rule.AbstractVmRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
+public class ExcessiveTemplateLengthRule extends AbstractVmRule {
+
+    private static final PropertyDescriptor<Integer> REPORT_LEVEL =
+        CommonPropertyDescriptors.reportLevelProperty()
+                                 .desc("Threshold above which a node is reported")
+                                 .require(positive())
+                                 .defaultValue(1000)
+                                 .build();
+
+    public ExcessiveTemplateLengthRule() {
+        definePropertyDescriptor(REPORT_LEVEL);
+        addRuleChainVisit(ASTTemplate.class);
+    }
 
     @Override
-    public Object visit(final ASTprocess node, final Object data) {
-        final DataPoint point = new DataPoint();
-        point.setNode(node);
-        point.setScore(1.0 * (node.getEndLine() - node.getBeginLine()));
-        point.setMessage(getMessage());
-        addDataPoint(point);
-        return node.childrenAccept(this, data);
+    public Object visit(final ASTTemplate node, final Object data) {
+
+        if (node.getEndLine() - node.getBeginLine() >= getProperty(REPORT_LEVEL)) {
+            addViolation(data, node);
+        }
+        return data;
     }
 }

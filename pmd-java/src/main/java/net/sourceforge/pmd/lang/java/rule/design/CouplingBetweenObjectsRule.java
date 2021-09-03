@@ -54,14 +54,14 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         typesFoundSoFar = new HashSet<>();
         couplingCount = 0;
 
-        Object returnObj = cu.childrenAccept(this, data);
+        cu.children().forEach(it -> it.acceptVisitor(this, data));
 
         if (couplingCount > getProperty(THRESHOLD_DESCRIPTOR)) {
             addViolation(data, cu,
                     "A value of " + couplingCount + " may denote a high amount of coupling within the class");
         }
 
-        return returnObj;
+        return data;
     }
 
     @Override
@@ -74,12 +74,12 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTResultType node, Object data) {
-        for (int x = 0; x < node.jjtGetNumChildren(); x++) {
-            Node tNode = node.jjtGetChild(x);
+        for (int x = 0; x < node.getNumChildren(); x++) {
+            Node tNode = node.getChild(x);
             if (tNode instanceof ASTType) {
-                Node reftypeNode = tNode.jjtGetChild(0);
+                Node reftypeNode = tNode.getChild(0);
                 if (reftypeNode instanceof ASTReferenceType) {
-                    Node classOrIntType = reftypeNode.jjtGetChild(0);
+                    Node classOrIntType = reftypeNode.getChild(0);
                     if (classOrIntType instanceof ASTClassOrInterfaceType) {
                         Node nameNode = classOrIntType;
                         this.checkVariableType(nameNode, nameNode.getImage());
@@ -104,11 +104,11 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        for (int x = 0; x < node.jjtGetNumChildren(); ++x) {
-            Node firstStmt = node.jjtGetChild(x);
+        for (int x = 0; x < node.getNumChildren(); ++x) {
+            Node firstStmt = node.getChild(x);
             if (firstStmt instanceof ASTType) {
                 ASTType tp = (ASTType) firstStmt;
-                Node nd = tp.jjtGetChild(0);
+                Node nd = tp.getChild(0);
                 checkVariableType(nd, nd.getImage());
             }
         }
@@ -117,14 +117,14 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     }
 
     /**
-     * convience method to handle hierarchy. This is probably too much work and
+     * Convenience method to handle hierarchy. This is probably too much work and
      * will go away once I figure out the framework
      */
     private void handleASTTypeChildren(Node node) {
-        for (int x = 0; x < node.jjtGetNumChildren(); x++) {
-            Node sNode = node.jjtGetChild(x);
+        for (int x = 0; x < node.getNumChildren(); x++) {
+            Node sNode = node.getChild(x);
             if (sNode instanceof ASTType) {
-                Node nameNode = sNode.jjtGetChild(0);
+                Node nameNode = sNode.getChild(0);
                 checkVariableType(nameNode, nameNode.getImage());
             }
         }

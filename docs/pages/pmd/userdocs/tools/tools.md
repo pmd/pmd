@@ -20,6 +20,18 @@ With Codacy you have PMDJava analysis out-of-the-box, and it is free for open so
 * Source code: [https://github.com/codacy/codacy-pmdjava](https://github.com/codacy/codacy-pmdjava)
 * Maintainer: Codacy
 
+### Code Inspector
+
+[Code Inspector](https://www.code-inspector.com) automates code review, check your code quality and helps you manage your technical debt.
+It is integrated with GitHub, GitLab and Bitbucket. The platform also analyzes code directly in your IDE using its integration
+plugins for VS Code and IntelliJ, providing a consistent analysis along your development cycle (from the IDE to the CI/CD pipeline).
+
+Code Inspector uses PMD to check Java and Apex code.
+
+* Homepage: [https://www.code-inspector.com](https://www.code-inspector.com)
+* Documentation: [https://doc.code-inspector.com](https://doc.code-inspector.com)
+
+
 ## IDE Integrations
 
 ### Summary
@@ -243,11 +255,11 @@ Here's how to set it up as an "External Tool":
     *   Name: PMD
     *   Description: PMD, good for what ails you.
     *   Menu: Select the "Main menu", "Project views", "Editor menu", and "Search results" checkboxes.
-    *   Program: $JDKPath$\bin\java.exe
+    *   Program: `c:\pmd\bin\pmd.bat`
     *   For the next parameter you'll need to plug in the location of your PMD installation
         and the rulesets you want to use
     *   Parameters:
-        `-cp %CLASSPATH%;c:\pmd\lib\pmd-{{pmd.site.version}}.jar;c:\pmd\lib\asm-3.2.jar;c:\pmd\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD "$FilePath$" ideaj unusedcode,imports "$Sourcepath$" $FileClass$.method $FileName$`
+        `-d "$FilePath$" -f ideaj -R rulesets/java/quickstart.xml -P sourcePath="$Sourcepath$" -P classAndMethodName=$FileClass$.method -P fileName=$FileName$`
 
 That's pretty much it. Now you can right click on a source directory and select PMD,
 it'll run recursively on the source files, and the results should

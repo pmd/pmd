@@ -3,6 +3,7 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Format called from non-synchronized block</description>
         <expected-problems>1</expected-problems>
@@ -15,8 +16,9 @@ public class Foo {
         sdf.format();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>2, No call to format</description>
         <expected-problems>0</expected-problems>
@@ -28,8 +30,9 @@ public class Foo {
     void bar() {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>3, Inside synchronized, Not OK</description>
         <expected-problems>1</expected-problems>
@@ -42,8 +45,9 @@ public class Foo {
         sdf.format();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>4, Inside synchronized, OK</description>
         <expected-problems>0</expected-problems>
@@ -58,8 +62,9 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>5, Use DateFormat, not ok</description>
         <expected-problems>1</expected-problems>
@@ -72,8 +77,9 @@ public class Foo {
         sdf.format();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>5a, Use DateFormat, ok</description>
         <expected-problems>0</expected-problems>
@@ -88,8 +94,9 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>6, Use DateFormat, fail</description>
         <expected-problems>1</expected-problems>
@@ -102,7 +109,7 @@ public class Foo {
         sdf.format();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -134,7 +141,7 @@ public class Foo {
         decimalFormat.format();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -149,8 +156,9 @@ public class Foo {
         messageFormat.format();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1633 [java] UnsynchronizedStaticFormatter reports commons lang FastDateFormat</description>
         <expected-problems>0</expected-problems>
@@ -163,7 +171,7 @@ public class Foo {
         FDF.format(new Date());
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -178,7 +186,7 @@ public class Foo {
         sdf.format();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -193,7 +201,7 @@ public class Foo {
         sdf.format();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -209,7 +217,7 @@ public class Foo {
         sdf.format();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -225,7 +233,7 @@ public class Foo {
         sdf.format();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -242,7 +250,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -259,9 +267,9 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1903 - Block synch is valid even with allowMethodLevelSynchronization</description>
         <rule-property name="allowMethodLevelSynchronization">true</rule-property>
@@ -272,11 +280,11 @@ import java.text.SimpleDateFormat;
 public class Foo {
     private static final SimpleDateFormat sdf = new SimpleDateFormat();
     private void bar() {
-        synchronized(sdf) { 
+        synchronized(sdf) {
             sdf.format();
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

@@ -4,37 +4,41 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
+/**
+ * @deprecated Replaced by {@link ASTArgumentList}
+ */
+@Deprecated
 public class ASTArguments extends AbstractJavaNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTArguments(int id) {
+    ASTArguments(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTArguments(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    public int getArgumentCount() {
-        if (this.jjtGetNumChildren() == 0) {
+    /**
+     * Gets the number of arguments.
+     * @return
+     */
+    public int size() {
+        if (this.getNumChildren() == 0) {
             return 0;
         }
-        return this.jjtGetChild(0).jjtGetNumChildren();
+        return ((ASTArgumentList) this.getChild(0)).size();
     }
 
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
+    /**
+     * @deprecated for removal. Use {@link #size()} or {@link ASTArgumentList#size()} instead.
+     */
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Size")
+    public int getArgumentCount() {
+        return size();
     }
 
 
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

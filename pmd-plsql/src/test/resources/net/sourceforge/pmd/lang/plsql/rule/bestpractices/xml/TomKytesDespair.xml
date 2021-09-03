@@ -15,15 +15,15 @@ IS
 PROCEDURE set_new_planned (p_emp_id IN NUMBER, p_project_id IN NUMBER, p_hours IN NUMBER)
 IS
 BEGIN
-   UPDATE employee_on_activity ea
-   SET ea.ea_planned_hours = p_hours
-   WHERE
-            ea.ea_emp_id = p_emp_id
-            AND ea.ea_proj_id = p_project_id;
+    UPDATE employee_on_activity ea
+    SET ea.ea_planned_hours = p_hours
+    WHERE
+        ea.ea_emp_id = p_emp_id
+        AND ea.ea_proj_id = p_project_id;
 
 EXCEPTION
-          WHEN NO_DATA_FOUND THEN
-          RAISE_APPLICATION_ERROR (-20100, 'No such employee or project');
+        WHEN NO_DATA_FOUND THEN
+        RAISE_APPLICATION_ERROR (-20100, 'No such employee or project');
 
 END set_new_planned;
 
@@ -50,7 +50,6 @@ BEGIN
 END update_planned_hrs;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -98,6 +97,5 @@ BEGIN
 END update_planned_hrs;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 </test-data>

@@ -1,84 +1,373 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-bad
-     ]]></description>
+        <description>End of a method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                void bar() {
+                    int y = 3;
+                    return;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok since method is not void</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int bar() {
+        return 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Return within if</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  int y = 3;
-  return;
- }
+    void bar() {
+        if (System.out != null) return;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-ok since method is not void
-     ]]></description>
-        <expected-problems>0</expected-problems>
+        <description>Return within if, has follower</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- int bar() {
-  return 2;
- }
+    void bar() {
+        if (System.out != null) return;
+
+        if (System.in != null) {
+            return; // unnecessary
+        } else {
+            System.out.println("ok");
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok since return is in sub block
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar() {
-  if (false) return;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-interface methods don't have return statements
-     ]]></description>
+        <description>interface methods don't have return statements</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- void bar();
+    void bar();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-abstract methods don't have return statements
-     ]]></description>
+        <description>abstract methods don't have return statements</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- abstract void bar();
+    abstract void bar();
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>return inside a catch</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        try {
+        } catch(Exception e){
+            return;
+        }
+    }
+}
+        ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-return inside a catch - ok
-     ]]></description>
+        <description>return inside a catch - no problem</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  try { 
-  } catch(Exception e){
-     return;
-  }
- }
+    void bar() {
+        try {
+        } catch(Exception e){
+            return;
+        }
+        toString();
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Catch within initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static {
+        try {
+        } catch(Exception e){
+            return;
+        }
+        toString();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Catch within initializer - violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static {
+        try {
+        } catch(Exception e){
+            return;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Catch within initializer - violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static {
+        try {
+        } catch(Exception e) {
+            return;
+        } finally {
+            printSomething();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>If within initializer - violation</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static {
+        int i;
+        if (foo()) {
+            i = 0;
+            return;
+        } else if (bar()) {
+            i = 1;
+            return;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>If within initializer - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static {
+        int i;
+        if (foo()) {
+            i = 0;
+            return;
+        } else if (bar()) {
+            i = 1;
+            return;
+        }
+        System.out.println(i);
+    }
+}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in fallthrough switch</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                {
+                    int i, j;
+                    switch (i) {
+                    case 1:
+                        return;
+                    case 2:
+                        j = 2;
+                    case 4:
+                        j = 5;
+                        return; // this one is unnecessary
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in fallthrough switch (with blocks)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>15</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                // Note that those blocks are useless, they just limit the scope of locals,
+                // and don't act on control flow. So this is identical as the above.
+                {
+                    int i, j;
+                    switch (i) {
+                    case 1: {
+                        return;
+                    }
+                    case 2: {
+                        j = 2;
+                    }
+                    case 4: {
+                        j = 5;
+                        return; // this one is unnecessary
+                    }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in switch arrow: violation</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                static {
+                    int i, j;
+                    switch (i) {
+                    case 1 -> {
+                        j = 1;
+                        return; // unnecessary
+                    }
+                    case 2 -> {
+                        j = 2;
+                    }
+                    case 4 -> {
+                        j = 5;
+                        return; // unnecessary
+                    }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in switch arrow: no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                static {
+                    int i, j;
+                    switch (i) {
+                    case 1 -> {
+                        j = 1;
+                        return; // necessary
+                    }
+                    case 2 -> {
+                        j = 2;
+                    }
+                    case 4 -> {
+                        j = 5;
+                        return; // necessary
+                    }
+                    }
+                    System.out.println(j);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in switch expression: no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                static {
+                    int i, j;
+                    int k = switch (i) {
+                        case 1 -> {
+                            return; // necessary
+                        }
+                        case 2 -> {
+                            j = 2;
+                        }
+                        case 4 -> {
+                            j = 5;
+                            return; // necessary
+                        }
+                    };
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in lambda x ctor</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                interface Lambda { void run();}
+
+                static void foo(Lambda lambda) {}
+
+                public Foo() {
+                    foo(() -> {return;}); // unnecessary
+                    foo(() -> {
+                        if (System.out == null)
+                            return;  // unnecessary
+                        else {
+                            System.out.println("djiedeid");
+                        }
+                    }); // unnecessary
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in loop (like break)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.List;
+            public class Foo {
+
+                protected boolean process(String str) {return str.isEmpty();}
+
+                protected void process(List<String> list) {
+                    for (String resource : list) {
+                        boolean found = process(resource);
+                        if (resource.isEmpty() || found) {
+                            return; // necessary, it's like a break from the loop
+                        }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <description>Ignore local class statements</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                protected void process() {
+                    if (System.out == null) return;
+                    // This could be ignore because it doesn't contribute to control flow.
+                    // But this is rare enough that it hasn't been implemented
+                    class Foo {}
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

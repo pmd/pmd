@@ -1,94 +1,56 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.io.IOUtils;
-
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
-import net.sourceforge.pmd.lang.apex.ApexParserOptions;
+import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.Compilation;
-import apex.jorje.semantic.ast.compilation.UserClass;
-import apex.jorje.semantic.ast.compilation.UserEnum;
-import apex.jorje.semantic.ast.compilation.UserInterface;
-import apex.jorje.semantic.ast.compilation.UserTrigger;
-import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
-import apex.jorje.semantic.ast.visitor.AstVisitor;
 
-public class ApexParser {
-    protected final ApexParserOptions parserOptions;
+@InternalApi
+public final class ApexParser implements Parser {
 
-    private Map<Integer, String> suppressMap;
+    @InternalApi // todo change that to optional<file> when properties are updated
+    public static final PropertyDescriptor<String> MULTIFILE_DIRECTORY =
+        PropertyFactory.stringProperty("rootDirectory")
+                       .desc("The root directory of the Salesforce metadata, where `sfdx-project.json` resides. "
+                                 + "Set environment variable PMD_APEX_ROOTDIRECTORY to use this.")
+                       .defaultValue("") // is this ok?
+                       .build();
 
-    public ApexParser(ApexParserOptions parserOptions) {
+    public ApexParser() {
         ApexJorjeLogging.disableLogging();
-        this.parserOptions = parserOptions;
-    }
-
-    public Compilation parseApex(final String sourceCode) throws ParseException {
-
-        TopLevelVisitor visitor = new TopLevelVisitor();
         Locations.useIndexFactory();
-        CompilerService.INSTANCE.visitAstFromString(sourceCode, visitor);
-
-        return visitor.getTopLevel();
     }
 
-    public ApexNode<Compilation> parse(final Reader reader) {
+    @Override
+    public ASTApexFile parse(final ParserTask task) {
         try {
-            final String sourceCode = IOUtils.toString(reader);
-            final Compilation astRoot = parseApex(sourceCode);
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode);
-            suppressMap = new HashMap<>();
+            String sourceCode = task.getSourceText();
+            final Compilation astRoot = CompilerService.INSTANCE.parseApex(task.getFileDisplayName(), sourceCode);
 
             if (astRoot == null) {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
-            return treeBuilder.build(astRoot);
-        } catch (IOException e) {
+            String property = task.getProperties().getProperty(MULTIFILE_DIRECTORY);
+            ApexMultifileAnalysis analysisHandler = ApexMultifileAnalysis.getAnalysisInstance(property);
+
+            SourceCodePositioner positioner = new SourceCodePositioner(sourceCode);
+            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, task.getCommentMarker(), positioner);
+            AbstractApexNode<Compilation> treeRoot = treeBuilder.build(astRoot);
+            return new ASTApexFile(positioner, task, treeRoot, treeBuilder.getSuppressMap(), analysisHandler);
+        } catch (apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);
-        }
-    }
-
-    public Map<Integer, String> getSuppressMap() {
-        return suppressMap;
-    }
-
-    private class TopLevelVisitor extends AstVisitor<AdditionalPassScope> {
-        Compilation topLevel;
-
-        public Compilation getTopLevel() {
-            return topLevel;
-        }
-
-        @Override
-        public void visitEnd(UserClass node, AdditionalPassScope scope) {
-            topLevel = node;
-        }
-
-        @Override
-        public void visitEnd(UserEnum node, AdditionalPassScope scope) {
-            topLevel = node;
-        }
-
-        @Override
-        public void visitEnd(UserInterface node, AdditionalPassScope scope) {
-            topLevel = node;
-        }
-
-        @Override
-        public void visitEnd(UserTrigger node, AdditionalPassScope scope) {
-            topLevel = node;
         }
     }
 }

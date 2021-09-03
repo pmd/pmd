@@ -4,44 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.rule.performance;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
-import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import net.sourceforge.pmd.lang.ast.Node;
 
-public class AvoidSoslInLoopsRule extends AbstractApexRule {
+/**
+ * @deprecated use {@link OperationWithLimitsInLoopRule}
+ */
+@Deprecated
+public class AvoidSoslInLoopsRule extends AbstractAvoidNodeInLoopsRule {
 
     @Override
     public Object visit(ASTSoslExpression node, Object data) {
-        if (insideLoop(node) && parentNotReturn(node) && parentNotForEach(node)) {
-            addViolation(data, node);
-        }
-        return data;
-    }
-
-    private boolean parentNotReturn(ASTSoslExpression node) {
-        return !(node.jjtGetParent() instanceof ASTReturnStatement);
-    }
-
-    private boolean parentNotForEach(ASTSoslExpression node) {
-        return !(node.jjtGetParent() instanceof ASTForEachStatement);
-    }
-
-    private boolean insideLoop(ASTSoslExpression node) {
-        Node n = node.jjtGetParent();
-
-        while (n != null) {
-            if (n instanceof ASTDoLoopStatement || n instanceof ASTWhileLoopStatement
-                    || n instanceof ASTForLoopStatement || n instanceof ASTForEachStatement) {
-                return true;
-            }
-            n = n.jjtGetParent();
-        }
-
-        return false;
+        return checkForViolation(node, data);
     }
 }

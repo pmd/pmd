@@ -4,68 +4,79 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
-import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 public class AvoidCallingFinalizeRule extends AbstractJavaRule {
 
-    private Set<MethodScope> checked = new HashSet<>();
+    private static final Pattern FINALIZE_METHOD_PATTERN = Pattern.compile("^(.+\\.)?finalize$");
 
-    @Override
-    public Object visit(ASTCompilationUnit acu, Object ctx) {
-        checked.clear();
-        return super.visit(acu, ctx);
+    public AvoidCallingFinalizeRule() {
+        addRuleChainVisit(ASTPrimaryExpression.class);
     }
 
     @Override
-    public Object visit(ASTName name, Object ctx) {
-        if (name.getImage() == null || !name.getImage().endsWith("finalize")) {
-            return ctx;
+    public Object visit(ASTPrimaryExpression primaryExpression, Object data) {
+        if (isIncorrectFinalizeMethodCall(primaryExpression)) {
+            addViolation(data, primaryExpression);
         }
-        if (!checkForViolation(name)) {
-            return ctx;
-        }
-        addViolation(ctx, name);
-        return ctx;
+        return data;
     }
 
-    @Override
-    public Object visit(ASTPrimaryPrefix pp, Object ctx) {
-        List<ASTPrimarySuffix> primarySuffixes = pp.jjtGetParent().findChildrenOfType(ASTPrimarySuffix.class);
-        ASTPrimarySuffix firstSuffix = null;
+    private boolean isIncorrectFinalizeMethodCall(ASTPrimaryExpression primaryExpression) {
+        return isFinalizeMethodCall(primaryExpression)
+                && (isNotInFinalizeMethod(primaryExpression) || isNotSuperMethodCall(primaryExpression));
+    }
+
+    private boolean isNotInFinalizeMethod(ASTPrimaryExpression primaryExpression) {
+        ASTMethodDeclaration methodDeclaration = primaryExpression.getFirstParentOfType(ASTMethodDeclaration.class);
+        return methodDeclaration == null || isNotFinalizeMethodDeclaration(methodDeclaration);
+    }
+
+    private boolean isNotFinalizeMethodDeclaration(ASTMethodDeclaration methodDeclaration) {
+        return !isFinalizeMethodDeclaration(methodDeclaration);
+    }
+
+    private boolean isFinalizeMethodDeclaration(ASTMethodDeclaration methodDeclaration) {
+        return "finalize".equals(methodDeclaration.getName()) && methodDeclaration.getArity() == 0;
+    }
+
+    private boolean isFinalizeMethodCall(ASTPrimaryExpression primaryExpression) {
+        return hasFinalizeName(primaryExpression) && getArgsCount(primaryExpression) == 0;
+    }
+
+    private boolean hasFinalizeName(ASTPrimaryExpression primaryExpression) {
+        List<JavaNode> expressionNodes = primaryExpression.findDescendantsOfType(JavaNode.class);
+        for (JavaNode expressionNode : expressionNodes) {
+            if (isFinalizeName(expressionNode.getImage())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isFinalizeName(String name) {
+        return name != null && FINALIZE_METHOD_PATTERN.matcher(name).find();
+    }
+
+    private int getArgsCount(ASTPrimaryExpression primaryExpression) {
+        List<ASTPrimarySuffix> primarySuffixes = primaryExpression.findChildrenOfType(ASTPrimarySuffix.class);
         if (!primarySuffixes.isEmpty()) {
-            firstSuffix = primarySuffixes.get(0);
+            int lastSuffixIndex = primarySuffixes.size() - 1;
+            return primarySuffixes.get(lastSuffixIndex).getArgumentCount();
         }
-        if (firstSuffix == null || firstSuffix.getImage() == null || !firstSuffix.getImage().endsWith("finalize")) {
-            return super.visit(pp, ctx);
-        }
-        if (!checkForViolation(pp)) {
-            return super.visit(pp, ctx);
-        }
-        addViolation(ctx, pp);
-        return super.visit(pp, ctx);
+        return -1;
     }
 
-    private boolean checkForViolation(ScopedNode node) {
-        MethodScope meth = node.getScope().getEnclosingScope(MethodScope.class);
-        if (meth != null && "finalize".equals(meth.getName())) {
-            return false;
-        }
-        if (meth != null && checked.contains(meth)) {
-            return false;
-        }
-        if (meth != null) {
-            checked.add(meth);
-        }
-        return true;
+    private boolean isNotSuperMethodCall(ASTPrimaryExpression primaryExpression) {
+        ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+        return primaryPrefix == null || !primaryPrefix.usesSuperModifier();
     }
 }

@@ -8,20 +8,20 @@ import static net.sourceforge.pmd.properties.constraints.NumericConstraints.posi
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric.NcssOption;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.NcssOption;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -31,45 +31,39 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  *
  * @author Clément Fournier
  */
-public final class NcssCountRule extends AbstractJavaMetricsRule {
+public final class NcssCountRule extends AbstractJavaRulechainRule {
 
 
     private static final PropertyDescriptor<Integer> METHOD_REPORT_LEVEL_DESCRIPTOR =
-            PropertyFactory.intProperty("methodReportLevel")
-                           .desc("NCSS reporting threshold for methods")
-                           .require(positive())
-                           .defaultValue(60)
-                           .build();
+        PropertyFactory.intProperty("methodReportLevel")
+                       .desc("NCSS reporting threshold for methods")
+                       .require(positive())
+                       .defaultValue(60)
+                       .build();
 
     private static final PropertyDescriptor<Integer> CLASS_REPORT_LEVEL_DESCRIPTOR =
-            PropertyFactory.intProperty("classReportLevel")
-                           .desc("NCSS reporting threshold for classes")
-                           .require(positive())
-                           .defaultValue(1500)
-                           .build();
+        PropertyFactory.intProperty("classReportLevel")
+                       .desc("NCSS reporting threshold for classes")
+                       .require(positive())
+                       .defaultValue(1500)
+                       .build();
 
-    private static final Map<String, NcssOption> OPTION_MAP;
-
+    private static final PropertyDescriptor<List<NcssOption>> NCSS_OPTIONS_DESCRIPTOR;
 
     static {
-        OPTION_MAP = new HashMap<>();
-        OPTION_MAP.put(NcssOption.COUNT_IMPORTS.valueName(), NcssOption.COUNT_IMPORTS);
+        Map<String, NcssOption> options = new HashMap<>();
+        options.put(NcssOption.COUNT_IMPORTS.valueName(), NcssOption.COUNT_IMPORTS);
+
+        NCSS_OPTIONS_DESCRIPTOR = PropertyFactory.enumListProperty("ncssOptions", options)
+                                                 .desc("Choose options for the computation of Ncss")
+                                                 .emptyDefaultValue()
+                                                 .build();
+
     }
 
 
-    private static final PropertyDescriptor<List<NcssOption>> NCSS_OPTIONS_DESCRIPTOR =
-            PropertyFactory.enumListProperty("ncssOptions", OPTION_MAP)
-                           .desc("Choose options for the computation of Ncss")
-                           .emptyDefaultValue()
-                           .build();
-
-
-    private int methodReportLevel;
-    private int classReportLevel;
-    private MetricOptions ncssOptions;
-
-
     public NcssCountRule() {
+        super(ASTMethodOrConstructorDeclaration.class, ASTAnyTypeDeclaration.class);
         definePropertyDescriptor(METHOD_REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(CLASS_REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(NCSS_OPTIONS_DESCRIPTOR);
@@ -77,47 +71,55 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
 
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
-        methodReportLevel = getProperty(METHOD_REPORT_LEVEL_DESCRIPTOR);
-        classReportLevel = getProperty(CLASS_REPORT_LEVEL_DESCRIPTOR);
-        ncssOptions = MetricOptions.ofOptions(getProperty(NCSS_OPTIONS_DESCRIPTOR));
+    public Object visitJavaNode(JavaNode node, Object data) {
+        int methodReportLevel = getProperty(METHOD_REPORT_LEVEL_DESCRIPTOR);
+        int classReportLevel = getProperty(CLASS_REPORT_LEVEL_DESCRIPTOR);
+        MetricOptions ncssOptions = MetricOptions.ofOptions(getProperty(NCSS_OPTIONS_DESCRIPTOR));
 
-        super.visit(node, data);
+        if (node instanceof ASTAnyTypeDeclaration) {
+            visitTypeDecl((ASTAnyTypeDeclaration) node, classReportLevel, ncssOptions, (RuleContext) data);
+        } else if (node instanceof ASTMethodOrConstructorDeclaration) {
+            visitMethod((ASTMethodOrConstructorDeclaration) node, methodReportLevel, ncssOptions, (RuleContext) data);
+        } else {
+            throw AssertionUtil.shouldNotReachHere("unreachable");
+        }
         return data;
     }
 
 
-    @Override
-    public Object visit(ASTAnyTypeDeclaration node, Object data) {
+    private void visitTypeDecl(ASTAnyTypeDeclaration node,
+                               int level,
+                               MetricOptions ncssOptions,
+                               RuleContext data) {
 
-        super.visit(node, data);
+        if (JavaMetrics.NCSS.supports(node)) {
+            int classSize = MetricsUtil.computeMetric(JavaMetrics.NCSS, node, ncssOptions);
+            int classHighest = (int) MetricsUtil.computeStatistics(JavaMetrics.NCSS, node.getOperations(), ncssOptions).getMax();
 
-        if (JavaClassMetricKey.NCSS.supports(node)) {
-            int classSize = (int) JavaMetrics.get(JavaClassMetricKey.NCSS, node, ncssOptions);
-            int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.NCSS, node, ncssOptions, ResultOption.HIGHEST);
-
-            if (classSize >= classReportLevel) {
-                String[] messageParams = {node.getTypeKind().name().toLowerCase(Locale.ROOT),
-                                          node.getImage(),
+            if (classSize >= level) {
+                String[] messageParams = {PrettyPrintingUtil.getPrintableNodeKind(node),
+                                          node.getSimpleName(),
                                           classSize + " (Highest = " + classHighest + ")", };
 
                 addViolation(data, node, messageParams);
             }
         }
-        return data;
     }
 
 
-    @Override
-    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+    private void visitMethod(ASTMethodOrConstructorDeclaration node,
+                             int level,
+                             MetricOptions ncssOptions,
+                             RuleContext data) {
 
-        int methodSize = (int) JavaMetrics.get(JavaOperationMetricKey.NCSS, node, ncssOptions);
-        if (methodSize >= methodReportLevel) {
-            addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                                   node.getQualifiedName().getOperation(), "" + methodSize, });
+        if (JavaMetrics.NCSS.supports(node)) {
+            int methodSize = MetricsUtil.computeMetric(JavaMetrics.NCSS, node, ncssOptions);
+            if (methodSize >= level) {
+                addViolation(data, node, new String[] {
+                    node instanceof ASTMethodDeclaration ? "method" : "constructor",
+                    PrettyPrintingUtil.displaySignature(node), "" + methodSize, });
+            }
         }
-
-        return data;
     }
 
 }

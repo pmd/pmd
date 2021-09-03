@@ -1,94 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-local var
-     ]]></description>
+        <description>local var</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String baz() {
-  String bar = "howdy";
-  return bar.toString();
- }
+    private String baz() {
+        String bar = "howdy";
+        return bar.toString();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-parameter
-     ]]></description>
+        <description>parameter</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String baz(String bar) {
-  return bar.toString();
- }
+    private String baz(String bar) {
+        return bar.toString();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-field
-     ]]></description>
+        <description>field</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String baz;
- private int getBaz() {
-  return baz.toString();
- }
+    private String baz;
+    private int getBaz() {
+        return baz.toString();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-primitive
-     ]]></description>
+        <description>primitive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private int baz;
- private int getBaz() {
-  return baz;
- }
+    private int baz;
+    private int getBaz() {
+        return baz;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-multiple similar params
-     ]]></description>
+        <description>multiple similar params</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String getBaz(String foo, StringBuffer buffer) {
-  return buffer.toString();
- }
+    private String getBaz(String foo, StringBuffer buffer) {
+        return buffer.toString();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-string array
-     ]]></description>
+        <description>string array</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String getBaz() {
-  String[] foo = {"hi"};
-  return foo[0].toString();
- }
+    private String getBaz() {
+        String[] foo = {"hi"};
+        return foo[0].toString();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ToString on String Array Object
-     ]]></description>
+        <description>ToString on String Array Object</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -97,54 +90,225 @@ public class Foo {
         foo.toString();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-        Should only look at toString's of Arrays
-     ]]></description>
+        <description>Should only look at toString's of Arrays</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-   protected static void parse_args(String argv[]){
-     int len = argv.length;
-     int i;
-     for (i=0; i<len; i++){
-         if (argv[i].equals("-package")){
-         }
-       }
-   }
+    protected static void parse_args(String argv[]){
+        int len = argv.length;
+        int i;
+        for (i = 0; i < len; i++) {
+            if (argv[i].equals("-package")) {
+            }
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#959 StringToString False Positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+public class MyObject {
     public static String toString(MyObject o) {
         return "MyObject: " + o;
     }
 
-    public static vod main(String[] args) {
+    public static void main(String[] args) {
         //in your code
         MyObject o = new MyObject(); //MyObject has no relation with String
-        System.out.println(Foo.toString(o)); //PMD violation false positive
+        System.out.println(MyObject.toString(o)); //PMD violation false positive
     }
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1397 StringToString should ignore method references</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private void log(Supplier<String> msg) { }
+    private void log(java.util.function.Supplier<String> msg) { }
     public void run() {
         String abc = "abc";
         log(abc::toString); // fails rule
         log(() -> abc); // passes rule
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2530 toString on String value returned from a method should be detected</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public String foo() {
+        return "Test String";
+    }
+
+    public int bar() {
+        String test = this.foo().toString();
+        return test.length();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>getString().toString(), anonymous class method false-positive test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Integer value() {
+        return 0;
+    }
+
+    public String bar() {
+        Object obj = new Object() {
+            public String value() {
+                return "0";
+            }
+        };
+        return value().toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>getString().toString(), method overloading false-positive test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String value(String str) {
+        return str.trim();
+    }
+
+    public Integer value(Integer num) {
+        return num + 1;
+    }
+
+    public void bar() {
+        String str = value(5).toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>getString().toString(), object false-positive test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Person {
+    public String value() {
+        return "test";
+    }
+
+    public void bar() {
+        Person p = new Person();
+        String val = p.value();
+        if (val == null) {
+            throw new RuntimeException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>external class as a method parameter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Properties;
+public class User {
+    public Long getData(User usr) {
+        return usr.getId();
+    }
+    public String getData(Properties props) {
+        return "Props: " + props.toString();
+    }
+    public void bar() {
+        String s = getData(new Properties()).toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Limitations</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,6,7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+class A {
+    public void foo() {
+        String s = new A().str().toString(); // not detected because str() is from another class
+        s = getString().toString(); // detected
+        s = getData(new FileInputStream()).toString(); // detected because of argument (sub) type
+        s = getData(new Integer(4), new Integer(5)).toString(); // detected because of unique args count
+    }
+    public String getString() {
+        return "exampleStr";
+    }
+    public String getData(InputStream is) {
+        return "argsResolutionIssueExample";
+    }
+    public int getData(String s) {
+        return 0;
+    }
+    public String getData(Number a, Number b) {
+        return "uniqueArgsCountExample";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>variable as method call argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.performance.stringtostring;
+public class Foo {
+    public void bar() {
+        User user = new User();
+        String s = getId(user).toString();
+    }
+    public int getId(Car car) {
+        return 0;
+    }
+    public String getId(User user) {
+        return "";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method call as method call argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        String s = getData(getLong()).toString();
+    }
+    public long getLong() {
+        return 0;
+    }
+    public long getData(String d) {
+        return 0;
+    }
+    public String getData(long d) {
+        return "";
     }
 }
         ]]></code>

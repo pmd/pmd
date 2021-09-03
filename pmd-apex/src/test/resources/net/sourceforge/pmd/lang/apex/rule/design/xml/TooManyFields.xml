@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -7,175 +6,142 @@
 
     <code-fragment id="id-3-fields"><![CDATA[
 public class Foo {
-	Integer a1; 
-	Integer a2; 
-	Integer a3; 
+    Integer a1;
+    Integer a2;
+    Integer a3;
 }
-	]]></code-fragment>
- 
+    ]]></code-fragment>
+
     <test-code>
         <description>3 fields, max is 15</description>
         <expected-problems>0</expected-problems>
         <code-ref id="id-3-fields"/>
     </test-code>
-    
+
     <test-code>
         <description>3 fields, reduced max to 2</description>
         <rule-property name="maxfields">2</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="id-3-fields"/>
     </test-code>
-    
+
     <test-code>
         <description>16 fields, bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	Integer a1; 
-	Integer a2; 
-	Integer a3; 
-	Integer a4; 
-	Integer a5; 
-	Integer a6; 
-	Integer a7; 
-	Integer a8; 
-	Integer a9; 
-	Integer a10; 
-	Integer a11; 
-	Integer a12; 
-	Integer a13; 
-	Integer a14; 
-	Integer a15; 
-	Integer a16; 
+    Integer a1;
+    Integer a2;
+    Integer a3;
+    Integer a4;
+    Integer a5;
+    Integer a6;
+    Integer a7;
+    Integer a8;
+    Integer a9;
+    Integer a10;
+    Integer a11;
+    Integer a12;
+    Integer a13;
+    Integer a14;
+    Integer a15;
+    Integer a16;
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>12 fields, but 6 in inner and 6 in outer</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	Integer a1; 
-	Integer a2; 
-	Integer a3; 
-	Integer a4; 
-	Integer a5; 
-	Integer a6; 
-	public class Bar {
-		Integer a7; 
-		Integer a8; 
-		Integer a9; 
-		Integer a10; 
-		Integer a11; 
-		Integer a12; 
-	}
+    Integer a1;
+    Integer a2;
+    Integer a3;
+    Integer a4;
+    Integer a5;
+    Integer a6;
+    public class Bar {
+        Integer a7;
+        Integer a8;
+        Integer a9;
+        Integer a10;
+        Integer a11;
+        Integer a12;
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
-    <test-code>
-        <description>outer class, inner interface, both OK</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-	Integer a1; 
-	Integer a2; 
-	Integer a3; 
-	Integer a4; 
-	Integer a5; 
-	interface Bar {
-		static Integer a6; 
-		static Integer a7; 
-		static Integer a8; 
-		static Integer a9; 
-		static Integer a10; 
-	}
-}
-		]]></code>
-    </test-code>
-    
+
     <test-code>
         <description>2 inner classes, each with > 10 fields</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,20</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
-	public class Bar1 {
-		Integer b1; 
-		Integer b2; 
-		Integer b3; 
-		Integer b4; 
-		Integer b5; 
-		Integer b6; 
-		Integer b7; 
-		Integer b8; 
-		Integer b9; 
-		Integer b10; 
-		Integer b11; 
-		Integer b12; 
-		Integer b13; 
-		Integer b14; 
-		Integer b15; 
-		Integer b16; 
-	}
-	public class Bar2 {
-		Integer b1; 
-		Integer b2; 
-		Integer b3; 
-		Integer b4; 
-		Integer b5; 
-		Integer b6; 
-		Integer b7; 
-		Integer b8; 
-		Integer b9; 
-		Integer b10; 
-		Integer b11; 
-		Integer b12; 
-		Integer b13; 
-		Integer b14; 
-		Integer b15; 
-		Integer b16; 
-	}
+    public class Bar1 {
+        Integer b1;
+        Integer b2;
+        Integer b3;
+        Integer b4;
+        Integer b5;
+        Integer b6;
+        Integer b7;
+        Integer b8;
+        Integer b9;
+        Integer b10;
+        Integer b11;
+        Integer b12;
+        Integer b13;
+        Integer b14;
+        Integer b15;
+        Integer b16;
+    }
+    public class Bar2 {
+        Integer b1;
+        Integer b2;
+        Integer b3;
+        Integer b4;
+        Integer b5;
+        Integer b6;
+        Integer b7;
+        Integer b8;
+        Integer b9;
+        Integer b10;
+        Integer b11;
+        Integer b12;
+        Integer b13;
+        Integer b14;
+        Integer b15;
+        Integer b16;
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
-    <test-code>
-        <description>anonymous class with a field</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-	public class Bar1 {
-		Object foo = new Object() {public Integer x;}; 
-	}
-}
-		]]></code>
-    </test-code>
-    
+
     <test-code>
         <description>lots of static finals, those are ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public static final Integer a1 = 2 ; 
-	public static final Integer a2 = 2 ; 
-	public static final Integer a3 = 2 ; 
-	public static final Integer a4 = 2 ; 
-	public static final Integer a5 = 2 ; 
-	public static final Integer a6 = 2 ; 
-	public static final Integer a7 = 2 ; 
-	public static final Integer a8 = 2 ; 
-	public static final Integer a9 = 2 ; 
-	public static final Integer a10 = 2 ; 
-	public static final Integer a11 = 2 ; 
-	public static final Integer a12 = 2 ; 
-	public static final Integer a13 = 2 ; 
-	public static final Integer a14 = 2 ; 
-	public static final Integer a15 = 2 ; 
-	public static final Integer a16 = 2 ; 
-	public static final Integer a17 = 2 ; 
+    public static final Integer a1 = 2;
+    public static final Integer a2 = 2;
+    public static final Integer a3 = 2;
+    public static final Integer a4 = 2;
+    public static final Integer a5 = 2;
+    public static final Integer a6 = 2;
+    public static final Integer a7 = 2;
+    public static final Integer a8 = 2;
+    public static final Integer a9 = 2;
+    public static final Integer a10 = 2;
+    public static final Integer a11 = 2;
+    public static final Integer a12 = 2;
+    public static final Integer a13 = 2;
+    public static final Integer a14 = 2;
+    public static final Integer a15 = 2;
+    public static final Integer a16 = 2;
+    public static final Integer a17 = 2;
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
 </test-data>

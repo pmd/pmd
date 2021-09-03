@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents an assignment operator in an {@linkplain ASTExpression assignment expression}.
  *
@@ -14,42 +12,25 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *  AssignmentOperator ::= "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="
  *
  * </pre>
+ * @deprecated Superseded by {@link ASTAssignmentExpression}
  */
+@Deprecated
 public class ASTAssignmentOperator extends AbstractJavaNode {
 
     private boolean isCompound;
 
-    @InternalApi
-    @Deprecated
-    public ASTAssignmentOperator(int id) {
+    ASTAssignmentOperator(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTAssignmentOperator(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    // TODO this could be determined from the image of the operator, no need to set it in the parser...
-    @InternalApi
-    @Deprecated
-    public void setCompound() {
-        isCompound = true;
-    }
 
     public boolean isCompound() {
         return this.isCompound;
     }
 
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
 
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

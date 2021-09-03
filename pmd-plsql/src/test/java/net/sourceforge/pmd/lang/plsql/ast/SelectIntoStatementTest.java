@@ -4,68 +4,57 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import java.nio.charset.StandardCharsets;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
 public class SelectIntoStatementTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void testParsingComplex() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectIntoStatement.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testParsingComplex() {
+        plsql.parseResource("SelectIntoStatement.pls");
     }
 
     @Test
-    public void testParsingExample1() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectIntoStatementExample1.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testParsingExample1() {
+        plsql.parseResource("SelectIntoStatementExample1.pls");
     }
 
     @Test
-    public void testParsingExample2() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectIntoStatementExample2.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testParsingExample2() {
+        plsql.parseResource("SelectIntoStatementExample2.pls");
     }
 
     @Test
-    public void testParsingExample3() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectIntoStatementExample3.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testParsingExample3() {
+        plsql.parseResource("SelectIntoStatementExample3.pls");
     }
 
     @Test
-    public void testParsingExample4() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectIntoStatementExample4.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testParsingExample4() {
+        plsql.parseResource("SelectIntoStatementExample4.pls");
     }
 
     @Test
-    public void testParsingExample5() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectIntoStatementExample5.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testParsingExample5() {
+        plsql.parseResource("SelectIntoStatementExample5.pls");
     }
 
     @Test
-    public void testParsingWithFunctionCall() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectIntoStatementFunctionCall.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testParsingExample6Invalid() {
+        assertThrows(ParseException.class, () -> plsql.parseResource("SelectIntoStatementExample6Invalid.pls"));
     }
 
     @Test
-    public void testParsingIntoRecordField() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectIntoStatementRecordField.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testParsingWithFunctionCall() {
+        plsql.parseResource("SelectIntoStatementFunctionCall.pls");
+    }
+
+    @Test
+    public void testParsingIntoRecordField() {
+        plsql.parseResource("SelectIntoStatementRecordField.pls");
     }
 }

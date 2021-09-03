@@ -55,23 +55,44 @@ entries:
     - title: PMD CLI reference
       url: /pmd_userdocs_cli_reference.html
       output: web, pdf
+    - title: PMD Report formats
+      url: /pmd_userdocs_report_formats.html
+      output: web, pdf
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: CPD reference
+        output: web, pdf
+        subfolderitems:
+        - title: Copy-paste detection
+          url: /pmd_userdocs_cpd.html
+          output: web, pdf
+        - title: CPD Report formats
+          url: /pmd_userdocs_cpd_report_formats.html
+          output: web, pdf
     - title: null
       output: web, pdf
       subfolders:
       - title: Extending PMD
         output: web, pdf
         subfolderitems:
-        - title: Writing a rule
-          url: /pmd_userdocs_extending_writing_pmd_rules.html
+        - title: Introduction to writing rules
+          url: /pmd_userdocs_extending_writing_rules_intro.html
           output: web, pdf
-        - title: Writing XPath rules
+        - title: Your first rule
+          url: /pmd_userdocs_extending_your_first_rule.html
+          output: web, pdf
+        - title: XPath rules
           url: /pmd_userdocs_extending_writing_xpath_rules.html
+          output: web, pdf
+        - title: Java rules
+          url: /pmd_userdocs_extending_writing_java_rules.html
+          output: web, pdf
+        - title: Rule designer reference
+          url: /pmd_userdocs_extending_designer_reference.html
           output: web, pdf
         - title: Defining rule properties
           url: /pmd_userdocs_extending_defining_properties.html
-          output: web, pdf
-        - title: Using and defining code metrics
-          url: /pmd_userdocs_extending_metrics_howto.html
           output: web, pdf
         - title: Rule guidelines
           url: /pmd_userdocs_extending_rule_guidelines.html
@@ -79,21 +100,24 @@ entries:
         - title: Testing your rules
           url: /pmd_userdocs_extending_testing.html
           output: web, pdf
-    - title: Copy-paste detection
-      url: /pmd_userdocs_cpd.html
-      output: web, pdf
     - title: null
       output: web, pdf
       subfolders:
       - title: Tools / Integrations
         output: web, pdf
         subfolderitems:
-        - title: Maven PMD plugin
+        - title: Maven PMD Plugin
           output: web, pdf
           url: /pmd_userdocs_tools_maven.html
+        - title: Gradle
+          output: web, pdf
+          url: /pmd_userdocs_tools_gradle.html
         - title: Ant
           output: web, pdf
           url: /pmd_userdocs_tools_ant.html
+        - title: PMD Java API
+          output: web, pdf
+          url: /pmd_userdocs_tools_java_api.html
         - title: CI integrations
           output: web, pdf
           url: /pmd_userdocs_tools_ci.html
@@ -223,6 +247,18 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: Modelica Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_modelica.html
+        - title: Best Practices
+          output: web, pdf
+          url: /pmd_rules_modelica_bestpractices.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: PLSQL Rules
         output: web, pdf
         subfolderitems:
@@ -253,6 +289,21 @@ entries:
         - title: Security
           output: web, pdf
           url: /pmd_rules_vf_security.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Swift Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_swift.html
+        - title: Best Practices
+          output: web, pdf
+          url: /pmd_rules_swift_bestpractices.html
+        - title: Error Prone
+          output: web, pdf
+          url: /pmd_rules_swift_errorprone.html
     - title: null
       output: web, pdf
       subfolders:
@@ -298,17 +349,20 @@ entries:
         - title: Performance
           output: web, pdf
           url: /pmd_rules_xsl_performance.html
-  - title: Language Specific Documentation
+  - title: Language-Specific Documentation
     output: web, pdf
     folderitems:
-    - title: JSP Support
+    - title: Apex
+      url: /pmd_languages_apex.html
+      output: web, pdf
+    - title: Java
+      url: /pmd_languages_java.html
+      output: web, pdf
+    - title: JSP
       url: /pmd_languages_jsp.html
       output: web, pdf
-    - title: Java code metrics
-      url: /pmd_java_metrics_index.html
-      output: web, pdf
-    - title: Apex code metrics
-      url: /pmd_apex_metrics_index.html
+    - title: PLSQL
+      url: /pmd_languages_plsql.html
       output: web, pdf
   - title: Developer Documentation
     output: web, pdf
@@ -334,20 +388,29 @@ entries:
     - title: Pmdtester
       url: /pmd_devdocs_pmdtester.html
       output: web, pdf
+    - title: Rule Deprecation Policy
+      url: /pmd_devdocs_rule_deprecation_policy.html
+      output: web, pdf
     - title: null
       output: web, pdf
       subfolders:
       - title: Major contributions
         output: web, pdf
         subfolderitems:
+        - title: Rule Guidelines
+          url: /pmd_devdocs_major_rule_guidelines.html
+          output: web, pdf
         - title: Adding a new language
           url: /pmd_devdocs_major_adding_new_language.html
           output: web, pdf
         - title: Adding a new CPD language
           url: /pmd_devdocs_major_adding_new_cpd_language.html
           output: web, pdf
-        - title: Adding metrics support to a language
-          url: /pmd_devdocs_major_adding_new_metrics_framework.html
+      - title: Experimental features
+        output: web, pdf
+        subfolderitems:
+        - title: Creating (XML) dump of the AST
+          url: /pmd_devdocs_experimental_ast_dump.html
           output: web, pdf
   - title: Project documentation
     output: web, pdf
@@ -370,6 +433,9 @@ entries:
         - title: What does 'PMD' mean?
           url: /pmd_projectdocs_trivia_meaning.html
           output: web, pdf
+    - title: Logo
+      url: /pmd_projectdocs_logo.html
+      output: web, pdf
     - title: FAQ
       url: /pmd_projectdocs_faq.html
       output: web, pdf
@@ -388,10 +454,16 @@ entries:
       - title: Project management
         output: web, pdf
         subfolderitems:
+        - title: Infrastructure
+          url: /pmd_projectdocs_committers_infrastructure.html
+          output: web, pdf
         - title: Release process
           url: /pmd_projectdocs_committers_releasing.html
           output: web, pdf
         - title: Merging pull requests
           url: /pmd_projectdocs_committers_merging_pull_requests.html
+          output: web, pdf
+        - title: Main Landing page
+          url: /pmd_projectdocs_committers_main_landing_page.html
           output: web, pdf
 

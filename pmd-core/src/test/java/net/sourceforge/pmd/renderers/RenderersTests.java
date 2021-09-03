@@ -14,6 +14,19 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author Boris Gruschko ( boris at gruschko.org )
  */
 @RunWith(Suite.class)
-@SuiteClasses({ CSVRendererTest.class, EmacsRendererTest.class, XMLRendererTest.class, TextPadRendererTest.class })
+@SuiteClasses({
+    CodeClimateRendererTest.class,
+    CSVRendererTest.class,
+    EmacsRendererTest.class,
+    HTMLRendererTest.class,
+    IDEAJRendererTest.class,
+    PapariTextRendererTest.class,
+    SummaryHTMLRendererTest.class,
+    TextPadRendererTest.class,
+    VBHTMLRendererTest.class,
+    XMLRendererTest.class,
+    XSLTRendererTest.class,
+    YAHTMLRendererTest.class
+})
 public class RenderersTests {
 }

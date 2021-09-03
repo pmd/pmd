@@ -4,14 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTCatchParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.Dimensionable;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -28,28 +30,16 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public boolean isArray() {
-        ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;
-        ASTType typeNode = astVariableDeclaratorId.getTypeNode();
-        if (typeNode != null) {
-            return ((Dimensionable) typeNode.jjtGetParent()).isArray();
-        } else {
-            return false;
-        }
+        return getDeclaratorId().hasArrayType();
     }
 
+    @Deprecated
     public int getArrayDepth() {
-        ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;
-        ASTType typeNode = astVariableDeclaratorId.getTypeNode();
-        if (typeNode != null) {
-            return ((Dimensionable) typeNode.jjtGetParent()).getArrayDepth();
-        } else {
-            return 0;
-        }
+        return getExplicitTypeNode().getArrayDepth();
     }
 
     public boolean isVarargs() {
-        ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;
-        ASTFormalParameter parameter = astVariableDeclaratorId.getFirstParentOfType(ASTFormalParameter.class);
+        ASTFormalParameter parameter = node.getFirstParentOfType(ASTFormalParameter.class);
         return parameter != null && parameter.isVarargs();
     }
 
@@ -70,15 +60,14 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public boolean isPrimitiveType() {
-        return !isTypeInferred()
-                && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTPrimitiveType;
+        return getExplicitTypeNode() instanceof ASTPrimitiveType;
     }
 
     @Override
     public String getTypeImage() {
-        TypeNode typeNode = getTypeNode();
+        ASTType typeNode = getExplicitTypeNode();
         if (typeNode != null) {
-            return typeNode.getImage();
+            return typeNode.getTypeImage();
         }
         return null;
     }
@@ -87,34 +76,44 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
      * Note that an array of primitive types (int[]) is a reference type.
      */
     public boolean isReferenceType() {
-        return !isTypeInferred()
-                && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTReferenceType;
+        return getTypeNode() instanceof ASTReferenceType;
+    }
+
+    public boolean isRecordComponent() {
+        return node.getParent() instanceof ASTRecordComponent;
     }
 
     public AccessNode getAccessNodeParent() {
-        if (node.jjtGetParent() instanceof ASTFormalParameter || node.jjtGetParent() instanceof ASTLambdaExpression) {
-            return (AccessNode) node.jjtGetParent();
+        if (node.getParent() instanceof ASTFormalParameter) {
+            return (ASTFormalParameter) node.getParent();
+        } else if (node.getParent() instanceof ASTLambdaParameter) {
+            return (ASTLambdaParameter) node.getParent();
+        } else if (node.getParent() instanceof ASTEnumConstant) {
+            return (ASTEnumConstant) node.getParent();
+        } else if (node.getParent() instanceof ASTCatchParameter) {
+            return (AccessNode) node.getParent();
+        } else if (node.getParent() instanceof ASTRecordComponent) {
+            return null;
         }
-        return (AccessNode) node.jjtGetParent().jjtGetParent();
+        return (AccessNode) node.getParent().getParent();
     }
 
     public ASTVariableDeclaratorId getDeclaratorId() {
         return (ASTVariableDeclaratorId) node;
     }
 
-    private TypeNode getTypeNode() {
-        if (isPrimitiveType()) {
-            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0);
-        }
-        if (!isTypeInferred()) {
-            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).jjtGetChild(0);
-        }
-        return null;
+    @Override
+    public TypeNode getTypeNode() {
+        return getDeclaratorId();
+    }
+
+    private ASTType getExplicitTypeNode() {
+        return getDeclaratorId().getTypeNode();
     }
 
     @Override
     public Class<?> getType() {
-        TypeNode typeNode = getTypeNode();
+        TypeNode typeNode = getExplicitTypeNode();
         if (typeNode != null) {
             return typeNode.getType();
         }

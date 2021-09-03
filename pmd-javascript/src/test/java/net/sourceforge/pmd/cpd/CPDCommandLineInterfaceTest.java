@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.cpd;
 
-import org.junit.Assert;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyString;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.cli.BaseCPDCLITest;
@@ -16,8 +19,7 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
                 "src/test/resources/net/sourceforge/pmd/cpd/ts/File1.ts",
                 "src/test/resources/net/sourceforge/pmd/cpd/ts/File2.ts");
 
-        String out = getOutput();
-        Assert.assertTrue(out.contains("Found a 9 line (30 tokens) duplication in the following files"));
+        assertThat(getOutput(), containsString("Found a 9 line (32 tokens) duplication in the following files"));
     }
 
     @Test
@@ -25,7 +27,6 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
         runCPD("--minimum-tokens", "5", "--language", "js", "--files",
                 "src/test/resources/net/sourceforge/pmd/cpd/ts/");
 
-        String out = getOutput();
-        Assert.assertTrue(out.trim().isEmpty());
+        assertThat(getOutput().trim(), emptyString());
     }
 }

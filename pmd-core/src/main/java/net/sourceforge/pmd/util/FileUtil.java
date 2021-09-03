@@ -4,14 +4,20 @@
 
 package net.sourceforge.pmd.util;
 
+import static net.sourceforge.pmd.internal.util.PredicateUtil.toFileFilter;
+import static net.sourceforge.pmd.internal.util.PredicateUtil.toFilenameFilter;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -20,17 +26,17 @@ import java.util.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.datasource.ZipDataSource;
-import net.sourceforge.pmd.util.filter.AndFilter;
-import net.sourceforge.pmd.util.filter.Filter;
-import net.sourceforge.pmd.util.filter.Filters;
-import net.sourceforge.pmd.util.filter.OrFilter;
 
 /**
  * This is a utility class for working with Files.
+ * @deprecated Is internal API
  */
+@Deprecated
+@InternalApi
 public final class FileUtil {
 
     private FileUtil() {
@@ -100,6 +106,9 @@ public final class FileUtil {
         }
         if (!file.isDirectory()) {
             if (fileLocation.endsWith(".zip") || fileLocation.endsWith(".jar")) {
+                @SuppressWarnings("PMD.CloseResource")
+                // the zip file can't be closed here, it needs to be closed at the end of the PMD run
+                // see net.sourceforge.pmd.processor.AbstractPMDProcessor#processFiles(...)
                 ZipFile zipFile;
                 try {
                     zipFile = new ZipFile(fileLocation);
@@ -119,11 +128,14 @@ public final class FileUtil {
         } else {
             // Match files, or directories which are not excluded.
             // FUTURE Make the excluded directories be some configurable option
-            Filter<File> filter = new OrFilter<>(Filters.toFileFilter(filenameFilter),
-                    new AndFilter<>(Filters.getDirectoryFilter(), Filters.toNormalizedFileFilter(
-                            Filters.buildRegexFilterExcludeOverInclude(null, Collections.singletonList("SCCS")))));
+            Predicate<File> filter =
+                toFileFilter(filenameFilter)
+                    // TODO what's this SCCS directory?
+                    .or(f -> f.isDirectory() && !"SCCS".equals(f.getName()));
+
+
             FileFinder finder = new FileFinder();
-            List<File> files = finder.findFilesFrom(file, Filters.toFilenameFilter(filter), true);
+            List<File> files = finder.findFilesFrom(file, toFilenameFilter(filter), true);
             for (File f : files) {
                 dataSources.add(new FileDataSource(f));
             }
@@ -145,21 +157,27 @@ public final class FileUtil {
         Pattern regexp = Pattern.compile(pattern);
         Matcher matcher = regexp.matcher("");
 
-        FileIterable it = new FileIterable(file);
-        for (String line : it) {
-            matcher.reset(line); // reset the input
-            if (matcher.find()) {
-                return true;
+        try {
+            for (String line : Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)) {
+                matcher.reset(line); // reset the input
+                if (matcher.find()) {
+                    return true;
+                }
             }
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
         return false;
     }
 
     /**
      * Reads the file, which contains the filelist. This is used for the
      * command line arguments --filelist/-filelist for both PMD and CPD.
-     * The separator in the filelist is a command and/or newlines.
-     * 
+     * The separator in the filelist is a comma and/or newlines.
+     *
      * @param filelist the file which contains the list of path names
      * @return a comma-separated list of file paths
      * @throws IOException if the file couldn't be read

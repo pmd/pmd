@@ -8,14 +8,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
-import net.sourceforge.pmd.lang.java.ast.ASTNameList;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
  * This rule detects when a constructor is not necessary;
@@ -25,78 +29,65 @@ import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
 
     @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTEnumDeclaration.class, ASTClassOrInterfaceDeclaration.class);
+    }
+
+    @Override
     protected Collection<String> defaultSuppressionAnnotations() {
         return Collections.singletonList("javax.inject.Inject");
     }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-
-        ASTConstructorDeclaration cons = node.getFirstDescendantOfType(ASTConstructorDeclaration.class);
-        if (isExplicitDefaultConstructor(node)
-            && haveSameAccessModifier(node, cons)) {
-            addViolation(data, cons);
+        if (node.isRegularClass()) {
+            checkClassOrEnum(node, data);
         }
-
-        return super.visit(node, data);
+        return data;
     }
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
+        checkClassOrEnum(node, data);
+        return data;
+    }
 
-        ASTConstructorDeclaration cons = node.getFirstDescendantOfType(ASTConstructorDeclaration.class);
-        if (isExplicitDefaultConstructor(node) && cons.isPrivate()) {
-            addViolation(data, cons);
+    private void checkClassOrEnum(ASTAnyTypeDeclaration node, Object data) {
+        List<ASTConstructorDeclaration> ctors = node.getDeclarations(ASTConstructorDeclaration.class).take(2).toList();
+        if (ctors.size() == 1 && isExplicitDefaultConstructor(node, ctors.get(0))) {
+            addViolation(data, ctors.get(0));
+        }
+    }
+
+
+    private boolean isExplicitDefaultConstructor(ASTAnyTypeDeclaration declarator, ASTConstructorDeclaration ctor) {
+        return ctor.getArity() == 0
+            && !hasIgnoredAnnotation(ctor)
+            && hasDefaultCtorVisibility(declarator, ctor)
+            && isEmptyBlock(ctor.getBody())
+            && ctor.getThrowsList() == null;
+    }
+
+    private boolean isEmptyBlock(ASTBlock body) {
+        if (body.size() == 0) {
+            return true;
+        } else if (body.size() == 1) {
+            ASTStatement stmt = body.get(0);
+            if (stmt instanceof ASTExplicitConstructorInvocation) {
+                ASTExplicitConstructorInvocation superCall = (ASTExplicitConstructorInvocation) stmt;
+                return superCall.isSuper() && superCall.getArgumentCount() == 0;
+            }
         }
 
-        return super.visit(node, data);
+        return false;
     }
 
-    /**
-     * Returns {@code true} if the node has only one {@link ASTConstructorDeclaration}
-     * child node and the constructor has empty body or simply invokes the superclass
-     * constructor with no arguments.
-     *
-     * @param node the node to check
-     */
-    private boolean isExplicitDefaultConstructor(Node node) {
-
-        List<ASTConstructorDeclaration> nodes
-            = node.findDescendantsOfType(ASTConstructorDeclaration.class);
-
-        if (nodes.size() != 1) {
-            return false;
+    private boolean hasDefaultCtorVisibility(ASTAnyTypeDeclaration node, ASTConstructorDeclaration cons) {
+        if (node instanceof ASTClassOrInterfaceDeclaration) {
+            return node.getVisibility() == cons.getVisibility();
+        } else if (node instanceof ASTEnumDeclaration) {
+            return cons.getVisibility() == Visibility.V_PRIVATE;
         }
-
-        ASTConstructorDeclaration cdnode = nodes.get(0);
-
-        return cdnode.getParameterCount() == 0 && !hasIgnoredAnnotation(cdnode)
-            && !cdnode.hasDescendantOfType(ASTBlockStatement.class) && !cdnode.hasDescendantOfType(ASTNameList.class)
-            && hasDefaultConstructorInvocation(cdnode);
-    }
-
-    /**
-     * Returns {@code true} if the constructor simply invokes superclass constructor
-     * with no arguments or doesn't invoke any constructor, otherwise {@code false}.
-     *
-     * @param cons the node to check
-     */
-    private boolean hasDefaultConstructorInvocation(ASTConstructorDeclaration cons) {
-        ASTExplicitConstructorInvocation inv = cons.getFirstChildOfType(ASTExplicitConstructorInvocation.class);
-        return inv == null || inv.isSuper() && inv.getArgumentCount() == 0;
-    }
-
-    /**
-     * Returns {@code true} if access modifier of construtor is same as class's,
-     * otherwise {@code false}.
-     *
-     * @param node the class declaration node
-     * @param cons the constructor declaration node
-     */
-    private boolean haveSameAccessModifier(ASTClassOrInterfaceDeclaration node, ASTConstructorDeclaration cons) {
-        return node.isPrivate() && cons.isPrivate()
-            || node.isProtected() && cons.isProtected()
-            || node.isPublic() && cons.isPublic()
-            || node.isPackagePrivate() && cons.isPackagePrivate();
+        return false;
     }
 }

@@ -8,6 +8,7 @@
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
         <version>7.0.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <build>
@@ -32,9 +33,11 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>
-                                <ant antfile="src/main/ant/alljavacc.xml">
-                                    <property name="target" value="${project.build.directory}/generated-sources/javacc" />
-                                    <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar" />
+                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
+                                    <property name="no-jjtree" value="true"/> <!-- This is a CPD module -->
+                                    <property name="lang-name" value="ObjectiveC" />
+                                    <property name="lang-terse-name" value="objectivec" />
+                                    <property name="javacc.jar" value="${javacc.jar}" />
                                 </ant>
                             </target>
                         </configuration>
@@ -69,10 +72,6 @@
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -82,6 +81,11 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-lang-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

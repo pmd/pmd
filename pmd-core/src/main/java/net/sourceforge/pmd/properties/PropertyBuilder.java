@@ -11,11 +11,11 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder.Supplier;
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
@@ -487,13 +487,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
                     multiValueDelimiter,
                     type
             );
-        }
-
-
-        // Until we have Java 8
-        @Deprecated
-        interface Supplier<T> {
-            T get();
         }
     }
 }

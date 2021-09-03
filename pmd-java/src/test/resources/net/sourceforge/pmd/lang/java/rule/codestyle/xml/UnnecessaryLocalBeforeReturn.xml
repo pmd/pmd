@@ -3,70 +3,65 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-skip void/native/abstract methods
-     ]]></description>
+        <description>skip void/native/abstract methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {}
- public native int buz();
- public abstract int baz();
+    public void bar() {}
+    public native int buz();
+    public abstract int baz();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip literal returns
-     ]]></description>
+        <description>skip literal returns</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int bar() { return 5; }
+    public int bar() { return 5; }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-simple failure case
-     ]]></description>
+        <description>simple failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int bar() {
-  int x = doSomething();
-  return x;
- }
+    public int bar() {
+        int x = doSomething();
+        return x;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip complicated returns
-     ]]></description>
+        <description>skip complicated returns</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int bar() {
-  int x = doSomething();
-  return x == null ? foo : bar;
- }
+    public int bar() {
+        int x = doSomething();
+        return x == null ? foo : bar;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip method calls
-     ]]></description>
+        <description>skip method calls</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int bar() {
-  return doSomething(a, b, c);
- }
+    public int bar() {
+        return doSomething(a, b, c);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -109,7 +104,7 @@ public class Foo {
         doSomething();
         return res;
     }
-    
+
     public void doSomething() { }
 }
         ]]></code>
@@ -125,7 +120,7 @@ public class Foo {
         doSomething(res);
         return res;
     }
-    
+
     public void doSomething(int x) { }
 }
         ]]></code>
@@ -142,7 +137,7 @@ public class Foo {
         doSomething(res);
         return res;
     }
-    
+
     public void doSomething(int x) { }
 }
         ]]></code>
@@ -152,26 +147,24 @@ public class Foo {
         <description>#933 UnnecessaryLocalBeforeReturn false positive for SuppressWarnings annotation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class UnnecessaryLocalBeforeReturnCase {
-    private <T extends UserVisibleEventTypeValue<?>> T findEventTypeValueByName(Class<T> entityClass, String eventTypeName, String eventTypeValueName) {
-        Criteria criteria = this.session.createCriteria(entityClass)
-            .add(Restrictions.eq(UserVisibleEventTypeValue_.internalName, eventTypeValueName))
-            .createCriteria(UserVisibleEventTypeValue_.type)
-                .add(Restrictions.eq(UserVisibleEventType_.name, eventTypeName))
-                .setCacheable(true);
-
+public class TestCase<T> {
+    T getSomeT() { return null; }
+    private static <T> T findEventTypeValueByName(TestCase<?> unchecked) {
         @SuppressWarnings("unchecked")
-        T result = (T) criteria.uniqueResult();
+        T result = (T) unchecked.getSomeT();
         return result;
     }
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#282 UnnecessaryLocalBeforeReturn false positive when cloning Maps</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.HashMap;
 public class CustomerErrorCollector {
 
     private final ConcurrentHashMap<String, String> customerErrors = new ConcurrentHashMap<>();
@@ -193,7 +186,7 @@ public class CustomerErrorCollector {
         <description>#310 UnnecessaryLocalBeforeReturn enhancement is overly restrictive -- method order matters</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class UnnecessaryLocalBeforeReturnFP {
+public class Mutable {
     public int example1() {
         int i = compute(); // might throw
         markComputationDone();
@@ -206,6 +199,10 @@ public class UnnecessaryLocalBeforeReturnFP {
         sideEffect(m);
         return i;
     }
+    static void sideEffect(Mutable m) {}
+    static int sideEffect(Mutable m) {}
+    static int compute() {}
+    static int markComputationDone() {}
 }
         ]]></code>
     </test-code>
@@ -213,10 +210,10 @@ public class UnnecessaryLocalBeforeReturnFP {
     <test-code>
         <description>#310 UnnecessaryLocalBeforeReturn statement order does not matter</description>
         <rule-property name="statementOrderMatters">false</rule-property>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,10</expected-linenumbers>
         <code><![CDATA[
-public class UnnecessaryLocalBeforeReturnFP {
+public class Mutable {
     public int example1() {
         int i = compute(); // might throw
         markComputationDone();
@@ -229,10 +226,14 @@ public class UnnecessaryLocalBeforeReturnFP {
         sideEffect(m);
         return i;
     }
+    static void sideEffect(Mutable m) {}
+    static int sideEffect(Mutable m) {}
+    static int compute() {}
+    static int markComputationDone() {}
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1775 [java] False negative in UnnecessaryLocalBeforeReturn when splitting statements across multiple lines</description>
         <expected-problems>1</expected-problems>
@@ -241,26 +242,75 @@ public class UnnecessaryLocalBeforeReturnFP {
     public Object test2() {
         int i = 0;
         Object o = thing()
-        	.make(i);
+            .make(i);
         return o; // true positive
-    }  
+    }
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1804 [java] NPE with fields</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class ObjectCreator {
 
-    private static final String A = ""; 
+    private static final String A = "";
     private static final String B = "" + A; // the existence of this line causes the NPE.
 
     public Object create() {
         final Object o = new Object(A);
         return o;
-    }   
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP with captured method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Supplier;
+public class ObjectCreator {
+    public Supplier<String> create() {
+        final Object o = new Object(); // captured by the method ref
+        return o::toString;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with lambdas #3275</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class UnnecessaryLocal {
+    void foo() {
+        Callable<String> c = () -> { String s = "1"; return s; };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with anonymous classes #3275</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class UnnecessaryLocal {
+    void foo() {
+        Callable<String> c = new Callable<>() {
+            public String call() {
+                String s = "1";
+                return s;
+            }
+        };
+    }
 }
         ]]></code>
     </test-code>

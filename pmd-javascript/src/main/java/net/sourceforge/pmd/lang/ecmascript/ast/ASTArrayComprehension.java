@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,21 +6,18 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ArrayComprehension;
 
-public class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehension> {
-    public ASTArrayComprehension(ArrayComprehension arrayComprehension) {
+public final class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehension> {
+    ASTArrayComprehension(ArrayComprehension arrayComprehension) {
         super(arrayComprehension);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     public EcmascriptNode<?> getResult() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public int getNumArrayComprehensionLoops() {
@@ -28,7 +25,7 @@ public class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehen
     }
 
     public ASTArrayComprehensionLoop getArrayComprehensionLoop(int index) {
-        return (ASTArrayComprehensionLoop) jjtGetChild(index + 1);
+        return (ASTArrayComprehensionLoop) getChild(index + 1);
     }
 
     public boolean hasFilter() {
@@ -36,6 +33,6 @@ public class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehen
     }
 
     public EcmascriptNode<?> getFilter() {
-        return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
+        return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
     }
 }

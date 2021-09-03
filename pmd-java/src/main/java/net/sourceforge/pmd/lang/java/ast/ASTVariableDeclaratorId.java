@@ -4,11 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 // @formatter:off
@@ -18,10 +26,9 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * contexts:
  *
  * <ul>
- *    <li> Field declarations;
+ *    <li> Field and enum constant declarations;
  *    <li> Local variable declarations;
  *    <li> Method, constructor and lambda parameter declarations;
- *    <li> Method and constructor explicit receiver parameter declarations;
  *    <li> Exception parameter declarations occurring in catch clauses;
  *    <li> Resource declarations occurring in try-with-resources statements.
  * </ul>
@@ -32,38 +39,34 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  * <p>Type resolution assigns the type of the variable to this node. See {@link #getType()}'s
  * documentation for the contract of this method.
+ *
+ *
+ * <pre class="grammar">
+ *
+ * VariableDeclaratorId ::= &lt;IDENTIFIER&gt; {@link ASTArrayDimensions ArrayDimensions}?
+ *
+ * </pre>
+ *
  */
 // @formatter:on
-public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dimensionable {
+public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode, FinalizableNode {
 
-    private int arrayDepth;
     private VariableNameDeclaration nameDeclaration;
-    private boolean explicitReceiverParameter = false;
 
-    @InternalApi
-    @Deprecated
-    public ASTVariableDeclaratorId(int id) {
+    private List<ASTNamedReferenceExpr> usages = Collections.emptyList();
+
+    ASTVariableDeclaratorId(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTVariableDeclaratorId(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
+    /**
+     * Note: this might be <code>null</code> in certain cases.
+     */
     public VariableNameDeclaration getNameDeclaration() {
         return nameDeclaration;
     }
@@ -74,39 +77,87 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         nameDeclaration = decl;
     }
 
+    /**
+     * @deprecated transitional, use {@link #getLocalUsages()}
+     */
+    @Deprecated
     public List<NameOccurrence> getUsages() {
-        return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
+        return getScope().getDeclarations(VariableNameDeclaration.class)
+                         .getOrDefault(nameDeclaration, Collections.emptyList());
     }
-
-    @Deprecated
-    public void bumpArrayDepth() {
-        arrayDepth++;
-    }
-
-    @Override
-    @Deprecated
-    public int getArrayDepth() {
-        return arrayDepth;
-    }
-
 
     /**
-     * Returns true if the declared variable has an array type.
+     * Returns an unmodifiable list of the usages of this variable that
+     * are made in this file. Note that for a record component, this returns
+     * usages both for the formal parameter symbol and its field counterpart.
      *
-     * @deprecated Use {@link #hasArrayType()}
+     * <p>Note that a variable initializer is not part of the usages
+     * (though this should be evident from the return type).
      */
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return arrayDepth > 0;
+    public List<ASTNamedReferenceExpr> getLocalUsages() {
+        return usages;
     }
 
+    void addUsage(ASTNamedReferenceExpr usage) {
+        if (usages.isEmpty()) {
+            usages = new ArrayList<>(4); //make modifiable
+        }
+        usages.add(usage);
+    }
+
+    /**
+     * Returns the extra array dimensions associated with this variable.
+     * For example in the declaration {@code int a[]}, {@link #getTypeNode()}
+     * returns {@code int}, and this method returns the dimensions that follow
+     * the variable ID. Returns null if there are no such dimensions.
+     */
+    @Nullable
+    public ASTArrayDimensions getExtraDimensions() {
+        return children(ASTArrayDimensions.class).first();
+    }
+
+    @NonNull
+    @Override
+    public ASTModifierList getModifiers() {
+        // delegates modifiers
+        return getModifierOwnerParent().getModifiers();
+    }
+
+    @Override
+    public Visibility getVisibility() {
+        return isPatternBinding() ? Visibility.V_LOCAL
+                                  : getModifierOwnerParent().getVisibility();
+    }
+
+
+    private AccessNode getModifierOwnerParent() {
+        JavaNode parent = getParent();
+        if (parent instanceof ASTVariableDeclarator) {
+            return (AccessNode) parent.getParent();
+        }
+        return (AccessNode) parent;
+    }
+
+    /**
+     * @deprecated Use {@link #getName()}
+     */
+    @Override
+    @DeprecatedAttribute(replaceWith = "@Name")
+    @Deprecated
+    public String getImage() {
+        return getName();
+    }
+
+    /** Returns the name of the variable. */
+    public String getName() {
+        return super.getImage();
+    }
 
     /**
      * Returns true if the declared variable has an array type.
      */
     public boolean hasArrayType() {
-        return arrayDepth > 0 || !isTypeInferred() && getTypeNode().isArrayType();
+        return getExtraDimensions() != null || getTypeNode() instanceof ASTArrayType;
     }
 
 
@@ -115,26 +166,54 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * a {@code catch} statement.
      */
     public boolean isExceptionBlockParameter() {
-        return jjtGetParent().jjtGetParent() instanceof ASTCatchStatement;
+        return getParent() instanceof ASTCatchParameter;
     }
 
 
     /**
      * Returns true if this node declares a formal parameter for a method
-     * declaration or a lambda expression. In particular, returns false
-     * if the node is a receiver parameter (see {@link #isExplicitReceiverParameter()}).
+     * declaration or a lambda expression.
      */
     public boolean isFormalParameter() {
-        return jjtGetParent() instanceof ASTFormalParameter && !isExceptionBlockParameter() && !isResourceDeclaration()
-            || isLambdaParamWithNoType();
+        return getParent() instanceof ASTFormalParameter || isLambdaParameter();
+    }
+
+    /**
+     * Returns true if this node declares a record component. The symbol
+     * born by this node is the symbol of the corresponding field (not the
+     * formal parameter of the record constructor).
+     */
+    public boolean isRecordComponent() {
+        return getParent() instanceof ASTRecordComponent;
     }
 
 
     /**
-     * Returns true if this node declares a local variable.
+     * Returns true if this node declares a local variable from within
+     * a regular {@link ASTLocalVariableDeclaration}.
      */
     public boolean isLocalVariable() {
-        return getNthParent(2) instanceof ASTLocalVariableDeclaration;
+        return getNthParent(2) instanceof ASTLocalVariableDeclaration
+            && !isResourceDeclaration()
+            && !isForeachVariable();
+    }
+
+    /**
+     * Returns true if this node is a variable declared in a
+     * {@linkplain ASTForeachStatement foreach loop}.
+     */
+    public boolean isForeachVariable() {
+        // Foreach/LocalVarDecl/VarDeclarator/VarDeclId
+        return getNthParent(3) instanceof ASTForeachStatement;
+    }
+
+    /**
+     * Returns true if this node is a variable declared in the init clause
+     * of a {@linkplain ASTForStatement for loop}.
+     */
+    public boolean isForLoopVariable() {
+        // For/ForInit/LocalVarDecl/VarDeclarator/VarDeclId
+        return getNthParent(3) instanceof ASTForInit;
     }
 
 
@@ -144,90 +223,43 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * is not necessarily inferred, see {@link #isTypeInferred()}.
      */
     public boolean isLambdaParameter() {
-        return isLambdaParamWithNoType()
-            || jjtGetParent() instanceof ASTFormalParameter && getNthParent(3) instanceof ASTLambdaExpression;
-    }
-
-
-    private boolean isLambdaParamWithNoType() {
-        return jjtGetParent() instanceof ASTLambdaExpression;
+        return getParent() instanceof ASTLambdaParameter;
     }
 
 
     /**
-     * Returns true if this node declares a field.
+     * Returns true if this node declares a field from a regular
+     * {@link ASTFieldDeclaration}. This returns false for enum
+     * constants (use {@link JVariableSymbol#isField() getSymbol().isField()}
+     * if you want that).
      */
     public boolean isField() {
         return getNthParent(2) instanceof ASTFieldDeclaration;
     }
 
+    /**
+     * Returns true if this node declares an enum constant.
+     */
+    public boolean isEnumConstant() {
+        return getParent() instanceof ASTEnumConstant;
+    }
 
     /**
      * Returns the name of the variable.
+     *
+     * @deprecated Use {@link #getName()}
      */
-    public String getVariableName() {
-        return getImage();
-    }
-
-
-    /**
-     * Returns true if the variable declared by this node is declared final.
-     * Doesn't account for the "effectively-final" nuance. Resource
-     * declarations are implicitly final.
-     */
-    public boolean isFinal() {
-        if (isResourceDeclaration()) {
-            // this is implicit even if "final" is not explicitly declared.
-            return true;
-        } else if (isLambdaParamWithNoType()) {
-            return false;
-        }
-
-        if (jjtGetParent() instanceof ASTFormalParameter) {
-            // This accounts for exception parameters too for now
-            return ((ASTFormalParameter) jjtGetParent()).isFinal();
-        }
-
-        Node grandpa = getNthParent(2);
-
-        if (grandpa instanceof ASTLocalVariableDeclaration) {
-            return ((ASTLocalVariableDeclaration) grandpa).isFinal();
-        } else if (grandpa instanceof ASTFieldDeclaration) {
-            return ((ASTFieldDeclaration) grandpa).isFinal();
-        }
-
-        throw new IllegalStateException("All cases should be handled");
-    }
-
-
-    /**
-     * @deprecated Will be made private with 7.0.0
-     */
-    @InternalApi
     @Deprecated
-    public void setExplicitReceiverParameter() {
-        explicitReceiverParameter = true;
+    @DeprecatedAttribute(replaceWith = "@Name")
+    public String getVariableName() {
+        return getName();
     }
-
-
-    /**
-     * Returns true if this node is a receiver parameter for a method or constructor
-     * declaration. The receiver parameter has the name {@code this}, and must be declared
-     * at the beginning of the parameter list. Its only purpose is to annotate
-     * the type of the object on which the method call is issued. It was introduced
-     * in Java 8.
-     */
-    public boolean isExplicitReceiverParameter() {
-        // TODO this could be inferred from the image tbh
-        return explicitReceiverParameter;
-    }
-
 
     /**
      * Returns true if this declarator id declares a resource in a try-with-resources statement.
      */
     public boolean isResourceDeclaration() {
-        return jjtGetParent() instanceof ASTResource;
+        return getParent() instanceof ASTResource;
     }
 
 
@@ -243,25 +275,27 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * since the type node is absent.
      */
     public boolean isTypeInferred() {
-        return isLambdaParamWithNoType() || isLocalVariableTypeInferred() || isLambdaTypeInferred();
+        return getTypeNode() == null;
+    }
+
+    /**
+     * Returns true if this is a binding variable in a
+     * {@linkplain ASTPattern pattern}.
+     */
+    public boolean isPatternBinding() {
+        return getParent() instanceof ASTPattern;
     }
 
 
-    private boolean isLocalVariableTypeInferred() {
-        if (isResourceDeclaration()) {
-            // covers "var" in try-with-resources
-            return jjtGetParent().getFirstChildOfType(ASTType.class) == null;
-        } else if (getNthParent(2) instanceof ASTLocalVariableDeclaration) {
-            // covers "var" as local variables and in for statements
-            return getNthParent(2).getFirstChildOfType(ASTType.class) == null;
+    /**
+     * Returns the initializer of the variable, or null if it doesn't exist.
+     */
+    @Nullable
+    public ASTExpression getInitializer() {
+        if (getParent() instanceof ASTVariableDeclarator) {
+            return ((ASTVariableDeclarator) getParent()).getInitializer();
         }
-
-        return false;
-    }
-
-    private boolean isLambdaTypeInferred() {
-        return getNthParent(3) instanceof ASTLambdaExpression
-            && jjtGetParent().getFirstChildOfType(ASTType.class) == null;
+        return null;
     }
 
     /**
@@ -270,9 +304,9 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * type.
      */
     // TODO unreliable, not typesafe and not useful, should be deprecated
+    @Nullable
     public Node getTypeNameNode() {
-        ASTType type = getTypeNode();
-        return type == null ? null : getTypeNode().jjtGetChild(0);
+        return getTypeNode();
     }
 
 
@@ -287,21 +321,10 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * @return the type node, or {@code null} if there is no explicit type,
      *     e.g. if {@link #isTypeInferred()} returns true.
      */
+    @Nullable
     public ASTType getTypeNode() {
-        if (jjtGetParent() instanceof ASTFormalParameter) {
-            // ASTResource is a subclass of ASTFormal parameter for now but this will change
-            // and this will need to be corrected here, see #998
-            return ((ASTFormalParameter) jjtGetParent()).getTypeNode();
-        } else if (isTypeInferred()) {
-            // lambda expression with lax types. The type is inferred...
-            return null;
-        } else {
-            Node n = jjtGetParent().jjtGetParent();
-            if (n instanceof ASTLocalVariableDeclaration || n instanceof ASTFieldDeclaration) {
-                return n.getFirstChildOfType(ASTType.class);
-            }
-        }
-        return null;
+        AccessNode parent = getModifierOwnerParent();
+        return parent.children(ASTType.class).first();
     }
 
     // @formatter:off

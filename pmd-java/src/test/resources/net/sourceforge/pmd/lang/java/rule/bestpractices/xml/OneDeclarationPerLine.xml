@@ -3,42 +3,36 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-    <test-code>
-        <description><![CDATA[
-OneDeclarationPerLine's basic test case
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
-public class Foo
-{
-	public void bar()
-	{ 
-		String name, lastname, adress;
-	}
-}
-		     ]]>
-		</code>
-    </test-code>
-        <test-code>
-        <description><![CDATA[
-OneDeclarationPerLine's potential false+
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code>
-        	<![CDATA[
-public class Foo
-{
-	public void bar(String otherName, int age) 
-	{ 
-		String name;
-		String lastname;
-	}
 
+    <test-code>
+        <description>OneDeclarationPerLine's basic test case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo
+{
+    public void bar()
+    {
+        String name, lastname, adress;
+    }
 }
-		     ]]>
-		</code>
+        ]]></code>
     </test-code>
+
+    <test-code>
+        <description>OneDeclarationPerLine's potential false+</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo
+{
+    public void bar(String otherName, int age)
+    {
+        String name;
+        String lastname;
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>#1221 OneDeclarationPerLine really checks for one declaration each statement</description>
         <rule-property name="strictMode">false</rule-property>
@@ -52,6 +46,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1221 OneDeclarationPerLine really checks for one declaration each statement</description>
         <rule-property name="strictMode">true</rule-property>

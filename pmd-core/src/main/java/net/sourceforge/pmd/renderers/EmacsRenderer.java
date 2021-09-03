@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.RuleViolation;
@@ -30,12 +29,11 @@ public class EmacsRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        Writer writer = getWriter();
         StringBuilder buf = new StringBuilder();
         while (violations.hasNext()) {
             RuleViolation rv = violations.next();
             buf.setLength(0);
-            buf.append(rv.getFilename());
+            buf.append(determineFileName(rv.getFilename()));
             buf.append(':').append(Integer.toString(rv.getBeginLine()));
             buf.append(": ").append(rv.getDescription()).append(EOL);
             writer.write(buf.toString());

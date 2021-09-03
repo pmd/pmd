@@ -4,30 +4,31 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+/**
+ * Represents the {@code default} clause of an {@linkplain ASTMethodDeclaration annotation method}.
+ *
+ * <pre class="grammar">
+ *
+ * DefaultValue ::= "default" {@link ASTMemberValue MemberValue}
+ *
+ * </pre>
+ */
+public final class ASTDefaultValue extends AbstractJavaNode {
 
-public class ASTDefaultValue extends AbstractJavaNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTDefaultValue(int id) {
+    ASTDefaultValue(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTDefaultValue(JavaParser p, int id) {
-        super(p, id);
+    /**
+     * Returns the constant value nested in this node.
+     */
+    public ASTMemberValue getConstant() {
+        return (ASTMemberValue) getChild(0);
     }
 
+
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
     }
 }

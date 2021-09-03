@@ -36,6 +36,7 @@ require_relative 'jdoc_namespace_tag'
 #   * The (erased) types of method arguments must be fully qualified. This is the same
 #     convention as in javadoc {@link} tags, so you can use you're IDE's javadoc auto-
 #     complete and copy-paste. Namespaces also can be used for method arguments if they're from PMD.
+#   * Use the name <init> to reference a constructor
 #
 #
 # * Defining custom namespaces
@@ -90,13 +91,15 @@ require_relative 'jdoc_namespace_tag'
 #   - Include spaces in any part of the reference
 #   - Use double or single quotes around the arguments
 #   - Use the "#" suffix to reference a nested type, instead, use a dot "." and reference it like a normal type name
+#   - Use `[]` instead of `...` for vararg parameters
+#   - Use the type name instead of `<init>` for a constructor
 #
 #
 class JavadocTag < Liquid::Tag
 
   QNAME_NO_NAMESPACE_REGEX = /((?:\w+\.)*\w+)/
 
-  ARG_REGEX = Regexp.new(Regexp.union(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX, QNAME_NO_NAMESPACE_REGEX).source + '(\[\])*')
+  ARG_REGEX = Regexp.new(Regexp.union(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX, QNAME_NO_NAMESPACE_REGEX).source + '(\[\])*(...)?')
   ARGUMENTS_REGEX = Regexp.new('\(\)|\((' + ARG_REGEX.source + "(?:,(?:" + ARG_REGEX.source + "))*" + ')\)')
 
 
@@ -132,14 +135,15 @@ class JavadocTag < Liquid::Tag
   def render(var_ctx)
 
     artifact_name, @type_fqcn = JDocNamespaceDeclaration::parse_fqcn(@type_fqcn, var_ctx)
+    resolved_type = JavadocTag::fqcn_type(artifact_name, @type_fqcn)
 
-    JavadocTag::diagnose(artifact_name, @type_fqcn, @is_package_ref)
+    JavadocTag::diagnose(artifact_name, @type_fqcn, @is_package_ref, resolved_type)
 
     # Expand FQCN of arguments
     @member_suffix.gsub!(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX) {|fqcn| JDocNamespaceDeclaration::parse_fqcn(fqcn, var_ctx)[1]}
     @member_suffix.gsub!(JDocNamespaceDeclaration::SYM_REGEX) {|fqcn| JDocNamespaceDeclaration::parse_fqcn(fqcn, var_ctx)[1]}
 
-    visible_name = JavadocTag::get_visible_name(@opts, @type_fqcn, @member_suffix, @is_package_ref)
+    visible_name = JavadocTag::get_visible_name(@opts, @type_fqcn, @member_suffix, @is_package_ref, resolved_type)
 
     # Hack to reference the package summary
     # Has to be done after finding the visible_name
@@ -150,27 +154,35 @@ class JavadocTag < Liquid::Tag
     # Hardcode the artifact version instead of using "latest"
     api_version = var_ctx["site.pmd." + (@use_previous_api_version ? "previous_version" : "version")]
 
-
-    markup_link(visible_name, doclink(artifact_name, api_version, @type_fqcn, @member_suffix))
+    link_url = doclink(var_ctx["site.javadoc_url_prefix"], artifact_name, api_version, @type_fqcn, @member_suffix, resolved_type)
+    markup_link(visible_name, link_url)
   end
 
   private
 
-  def doclink(artifact, api_version, type_name, member_suffix)
-    "https://javadoc.io/page/net.sourceforge.pmd/#{artifact}/#{api_version}/#{type_name.gsub("\.", "/")}.html##{member_suffix}"
+  def doclink(url_prefix, artifact, api_version, type_name, member_suffix, resolved_type)
+    if resolved_type == :nested
+        resolved_type_name = "#{type_name.split(".")[0..-3].join("/")}/#{type_name.split(".")[-2..-1].join(".")}"
+    else
+        resolved_type_name = "#{type_name.gsub("\.", "/")}"
+    end
+    "#{url_prefix}/#{artifact}/#{api_version}/#{resolved_type_name}.html##{member_suffix}"
   end
 
   def markup_link(rname, link)
-    "[`#{rname}`](#{link})"
+    "<a href=\"#{link}\"><code>#{rname}</code></a>"
   end
 
 
-  def self.get_visible_name(opts, type_fqcn, member_suffix, is_package_ref)
+  def self.get_visible_name(opts, type_fqcn, member_suffix, is_package_ref, resolved_type)
 
     # method or field
-    if member_suffix && Regexp.new('(\w+)(' + ARGUMENTS_REGEX.source + ")?") =~ member_suffix
+    if member_suffix && Regexp.new('(\w+|<init>)(' + ARGUMENTS_REGEX.source + ")?") =~ member_suffix
 
       suffix = $1 # method or field name
+      if suffix == '<init>'
+        suffix = '&lt;init&gt;'
+      end
 
       if opts.show_args? && $2 && !$2.empty? # is method
 
@@ -194,6 +206,8 @@ class JavadocTag < Liquid::Tag
 
     if is_package_ref || opts.show_fqcn? || opts.is_double_bang?
       type_fqcn
+    elsif resolved_type == :nested
+      type_fqcn.split("\.")[-2..-1].join(".") # last two names
     else
       type_fqcn.split("\.").last # type simple name
     end
@@ -201,9 +215,7 @@ class JavadocTag < Liquid::Tag
 
   BASE_PMD_DIR = File.join(File.expand_path(File.dirname(__FILE__)), "..", "..")
 
-  def self.diagnose(artifact_id, fqcn, expect_package)
-    resolved_type = JavadocTag::fqcn_type(artifact_id, fqcn)
-
+  def self.diagnose(artifact_id, fqcn, expect_package, resolved_type)
     tag_name= expect_package ? "jdoc_package" : "jdoc"
 
     if resolved_type == :package && !expect_package
@@ -215,21 +227,32 @@ class JavadocTag < Liquid::Tag
     end
   end
 
-  # Returns :package, or :file depending on the type of entity the fqcn refers to on the filesystem
+  # Returns :package, :file or :nested depending on the type of entity the fqcn refers to on the filesystem
   # Returns nil if it cannot be found
   def self.fqcn_type(artifact_id, fqcn)
 
     artifact_dir = File.join(BASE_PMD_DIR, artifact_id)
+    # special case for scala as we have a different directory structure there
+    if artifact_id =~ /scala/
+      artifact_dir = File.join(BASE_PMD_DIR, "pmd-scala-modules/pmd-scala-common")
+    end
+
     src_dirs = [
         File.join(artifact_dir, "src", "main", "java"),
-        File.join(artifact_dir, "target", "generated-sources", "javacc")
+        File.join(artifact_dir, "target", "generated-sources", "javacc"),
+        File.join(artifact_dir, "target", "generated-sources", "antlr4")
     ].select {|dir| File.exist?(dir)}
 
     targets = src_dirs
                   .map {|dir| File.join(dir, fqcn.split("."))}
                   .map {|f| File.file?(f + ".java") ? :file : File.exist?(f) ? :package : nil}
-                  .compact
 
+    # consider nested classes (one level is only supported...)
+    nested_targets = src_dirs
+                        .map { |dir| File.join(dir, fqcn.split(".")[0..-2]) }
+                        .map {|f| File.file?(f + ".java") ? :nested : File.exist?(f) ? :package : nil}
+
+    targets = targets.concat(nested_targets).compact
     targets.first
   end
 

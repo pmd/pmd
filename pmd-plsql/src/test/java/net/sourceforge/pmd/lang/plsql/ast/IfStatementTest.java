@@ -14,7 +14,7 @@ public class IfStatementTest extends AbstractPLSQLParserTst {
     @Test
     public void parseIfWithElseIf() throws Exception {
         String code = "BEGIN\nIF 1 = 1 THEN null;\nELSIF (2 = 2) THEN null;\nELSE null;\nEND IF;\nEND;\n/\n";
-        ASTInput input = parsePLSQL(code);
+        ASTInput input = plsql.parse(code);
         Assert.assertNotNull(input);
     }
 }

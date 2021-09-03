@@ -20,7 +20,7 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
     }
 
     @Parameters
-    public static Collection data() {
+    public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "1.3",
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3"), },
@@ -35,13 +35,30 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
             { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "1.8",
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8"), },
             { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "9",
-                    LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("9"), },
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("9"), },
             { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "10",
-                        LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("10"), },
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("10"), },
             { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "11",
-                            LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("11"), },
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("11"), },
+            { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "12",
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("12"), },
+            { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "13",
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("13"), },
+            { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "14",
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("14"), },
+            { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "15",
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("15"), },
+            { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "16",
+                    LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("16"), },
+            { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "16-preview",
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("16-preview"), },
+            { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "17",
+                    LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("17"), },
+            { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "17-preview",
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("17-preview"), },
 
             // this one won't be found: case sensitive!
-            { "JAVA", "JAVA", "1.7", null, }, });
+            { "JAVA", "JAVA", "1.7", null, },
+        });
     }
 }

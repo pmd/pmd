@@ -1,27 +1,46 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 
 /**
  * This rule detects an abnormally long parameter list. Note: This counts Nodes,
  * and not necessarily parameters, so the numbers may not match up. (But
  * topcount and sigma should work.)
  */
-public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
+public class ExcessiveParameterListRule extends AbstractJavaCounterCheckRule<ASTFormalParameters> {
+
     public ExcessiveParameterListRule() {
         super(ASTFormalParameters.class);
-        setProperty(MINIMUM_DESCRIPTOR, 10d);
     }
 
-    // Count these nodes, but no others.
     @Override
-    public Object visit(ASTFormalParameter node, Object data) {
-        return NumericConstants.ONE;
+    protected int defaultReportLevel() {
+        return 10;
+    }
+
+    @Override
+    protected boolean isIgnored(ASTFormalParameters node) {
+        return areParametersOfPrivateConstructor(node);
+    }
+
+    private boolean areParametersOfPrivateConstructor(ASTFormalParameters params) {
+        Node parent = params.getParent();
+        if (parent instanceof ASTConstructorDeclaration) {
+            return ((ASTConstructorDeclaration) parent).getVisibility() == Visibility.V_PRIVATE;
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean isViolation(ASTFormalParameters node, int reportLevel) {
+        return node.size() > reportLevel;
     }
 }

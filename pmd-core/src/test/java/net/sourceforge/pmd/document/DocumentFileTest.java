@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,6 +46,22 @@ public class DocumentFileTest {
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
             final String actualContent = new String(readAllBytes(stream));
             assertEquals("public static void main(String[] args) {}", actualContent);
+        }
+    }
+
+    @Test
+    public void shouldPreserveNewlines() throws IOException {
+        final String testFileContent = IOUtils.toString(
+                DocumentFileTest.class.getResource("ShouldPreserveNewlines.java"), StandardCharsets.UTF_8);
+        writeContentToTemporaryFile(testFileContent);
+
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+            documentFile.insert(0, 0, "public ");
+        }
+
+        try (FileInputStream stream = new FileInputStream(temporaryFile)) {
+            final String actualContent = new String(readAllBytes(stream));
+            assertEquals("public " + testFileContent, actualContent);
         }
     }
 

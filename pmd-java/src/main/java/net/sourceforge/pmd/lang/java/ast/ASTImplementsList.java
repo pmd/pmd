@@ -4,47 +4,28 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
 
 /**
  * Represents the {@code implements} clause of a class declaration.
  *
- * <pre>
- *  ExtendsList ::= "implements" (TypeAnnotation)* ClassOrInterfaceType
- *                ( "," (TypeAnnotation)* ClassOrInterfaceType )*
+ * <pre class="grammar">
+ *
+ * ImplementsList ::= "implements" {@link ASTClassOrInterfaceType ClassOrInterfaceType} ( "," {@link ASTClassOrInterfaceType ClassOrInterfaceType})*
+ *
  * </pre>
  */
-public class ASTImplementsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
+public final class ASTImplementsList extends ASTNonEmptyList<ASTClassOrInterfaceType> {
 
-    @InternalApi
-    @Deprecated
-    public ASTImplementsList(int id) {
-        super(id);
+    ASTImplementsList(int id) {
+        super(id, ASTClassOrInterfaceType.class);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTImplementsList(JavaParser p, int id) {
-        super(p, id);
-    }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    @Override
-    public Iterator<ASTClassOrInterfaceType> iterator() {
-        return new NodeChildrenIterator<>(this, ASTClassOrInterfaceType.class);
-    }
 }

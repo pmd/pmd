@@ -1,70 +1,37 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 
-public class AbstractJspNode extends AbstractNode implements JspNode {
+abstract class AbstractJspNode extends AbstractJjtreeNode<AbstractJspNode, JspNode> implements JspNode {
 
-    protected JspParser parser;
-
-    public AbstractJspNode(int id) {
+    protected AbstractJspNode(int id) {
         super(id);
     }
 
-    public AbstractJspNode(JspParser parser, int id) {
-        super(id);
-        this.parser = parser;
-    }
-
     @Override
-    public void jjtOpen() {
-        if (beginLine == -1 && parser.token.next != null) {
-            beginLine = parser.token.next.beginLine;
-            beginColumn = parser.token.next.beginColumn;
+    @SuppressWarnings("unchecked")
+    public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        if (visitor instanceof JspVisitor) {
+            return this.acceptVisitor((JspVisitor<? super P, ? extends R>) visitor, data);
         }
+        return visitor.cannotVisit(this, data);
     }
 
-    @Override
-    public void jjtClose() {
-        if (beginLine == -1 && children.length == 0) {
-            beginColumn = parser.token.beginColumn;
-        }
-        if (beginLine == -1) {
-            beginLine = parser.token.beginLine;
-        }
-        endLine = parser.token.endLine;
-        endColumn = parser.token.endColumn;
+    protected abstract <P, R> R acceptVisitor(JspVisitor<? super P, ? extends R> visitor, P data);
+
+
+    @Override // override to make protected member accessible to parser
+    protected void setImage(String image) {
+        super.setImage(image);
     }
-
-    /**
-     * Accept the visitor. *
-     */
-    @Override
-    public Object jjtAccept(JspParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-    /**
-     * Accept the visitor. *
-     */
-    @Override
-    public Object childrenAccept(JspParserVisitor visitor, Object data) {
-        for (Node child : children) {
-            ((JspNode) child).jjtAccept(visitor, data);
-        }
-
-        return data;
-    }
-
-
-
 
     @Override
     public String getXPathNodeName() {
-        return JspParserTreeConstants.jjtNodeName[id];
+        return JspParserImplTreeConstants.jjtNodeName[id];
     }
 }

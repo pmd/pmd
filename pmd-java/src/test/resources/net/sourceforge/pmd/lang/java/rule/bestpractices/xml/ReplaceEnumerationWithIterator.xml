@@ -3,20 +3,20 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-bad, implementing Enumeration
-     ]]></description>
+        <description>bad, implementing Enumeration</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.Enumeration;
 public class Foo implements Enumeration {
- public boolean hasMoreElements() {
-  true;
- }
- public Object nextElement() {
-  return "hello";
- }
+    public boolean hasMoreElements() {
+        return true;
+    }
+    public Object nextElement() {
+        return "hello";
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

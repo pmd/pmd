@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang.jsp.rule.design;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.util.Locale;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.jsp.ast.ASTElement;
 import net.sourceforge.pmd.lang.jsp.rule.AbstractJspRule;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * This rule checks that no "style" elements (like &lt;B&gt;, &lt;FONT&gt;, ...) are used,
@@ -25,21 +26,21 @@ public class NoInlineStyleInformationRule extends AbstractJspRule {
     /**
      * List of HTML element-names that define style.
      */
-    private static final Set<String> STYLE_ELEMENT_NAMES = CollectionUtil
-            .asSet(new String[] { "B", "I", "FONT", "BASEFONT", "U", "CENTER" });
+    private static final Set<String> STYLE_ELEMENT_NAMES =
+        setOf("B", "I", "FONT", "BASEFONT", "U", "CENTER");
 
     /**
      * List of HTML element-names that can have attributes defining style.
      */
-    private static final Set<String> ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES = CollectionUtil
-            .asSet(new String[] { "P", "TABLE", "THEAD", "TBODY", "TFOOT", "TR", "TD", "COL", "COLGROUP" });
+    private static final Set<String> ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES =
+        setOf("P", "TABLE", "THEAD", "TBODY", "TFOOT", "TR", "TD", "COL", "COLGROUP");
 
     /**
      * List of attributes that define style when they are attributes of HTML
      * elements with names in ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES.
      */
-    private static final Set<String> STYLE_ATTRIBUTES = CollectionUtil
-            .asSet(new String[] { "STYLE", "FONT", "SIZE", "COLOR", "FACE", "ALIGN", "VALIGN", "BGCOLOR" });
+    private static final Set<String> STYLE_ATTRIBUTES =
+        setOf("STYLE", "FONT", "SIZE", "COLOR", "FACE", "ALIGN", "VALIGN", "BGCOLOR");
 
     @Override
     public Object visit(ASTAttribute node, Object data) {
@@ -81,8 +82,8 @@ public class NoInlineStyleInformationRule extends AbstractJspRule {
      */
     private boolean isStyleAttribute(ASTAttribute attributeNode) {
         if (STYLE_ATTRIBUTES.contains(attributeNode.getName().toUpperCase(Locale.ROOT))) {
-            if (attributeNode.jjtGetParent() instanceof ASTElement) {
-                ASTElement parent = (ASTElement) attributeNode.jjtGetParent();
+            if (attributeNode.getParent() instanceof ASTElement) {
+                ASTElement parent = (ASTElement) attributeNode.getParent();
                 if (ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES.contains(parent.getName().toUpperCase(Locale.ROOT))) {
                     return true;
                 }

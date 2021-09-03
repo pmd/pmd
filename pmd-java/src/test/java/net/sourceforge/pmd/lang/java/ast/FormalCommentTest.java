@@ -4,14 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-public class FormalCommentTest {
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+
+public class FormalCommentTest extends BaseParserTest {
 
     @Test
     public void testJavadocTagsAsChildren() {
-        String comment = "    /**\n"
+        ASTCompilationUnit acu = java.parse(
+            "interface Metric {"
+                + "   /**\n"
                 + "     * Checks if the metric can be computed on the node.\n"
                 + "     *\n"
                 + "     * @param node The node to check\n"
@@ -19,18 +25,27 @@ public class FormalCommentTest {
                 + "     * @return True if the metric can be computed\n"
                 + "     */\n"
                 + "    boolean supports(N node);\n"
-                + "";
+                + "}");
 
-        Token token = new Token();
-        token.image = comment;
-        FormalComment commentNode = new FormalComment(token);
+        ASTType booleanT = acu.descendants(ASTType.class).firstOrThrow();
+        JavaccToken firstToken = booleanT.getFirstToken();
+        assertEquals("Boolean", JavaTokenKinds.BOOLEAN, firstToken.kind);
+        JavaccToken comment = firstToken.getPreviousComment();
+        assertEquals("Implicit modifier list", JavaccToken.IMPLICIT_TOKEN, comment.kind);
+        comment = comment.getPreviousComment();
+        assertEquals("Whitespace", JavaTokenKinds.WHITESPACE, comment.kind);
+        assertEquals("\n    ", comment.getImage());
+        comment = comment.getPreviousComment();
+        assertEquals("Formal comment", JavaTokenKinds.FORMAL_COMMENT, comment.kind);
 
-        Assert.assertEquals(2, commentNode.jjtGetNumChildren());
+        FormalComment commentNode = new FormalComment(comment);
 
-        JavadocElement paramTag = (JavadocElement) commentNode.jjtGetChild(0);
+        Assert.assertEquals(2, commentNode.getNumChildren());
+
+        JavadocElement paramTag = (JavadocElement) commentNode.getChild(0);
         Assert.assertEquals("param", paramTag.tag().label);
 
-        JavadocElement returnTag = (JavadocElement) commentNode.jjtGetChild(1);
+        JavadocElement returnTag = (JavadocElement) commentNode.getChild(1);
         Assert.assertEquals("return", returnTag.tag().label);
     }
 }

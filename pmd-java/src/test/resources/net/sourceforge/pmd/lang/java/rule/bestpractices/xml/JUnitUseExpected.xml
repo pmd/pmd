@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-JUnit 4 - Contains assert
-     ]]></description>
+        <description>JUnit 4 - Contains assert</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.lang.Thread;
@@ -14,7 +13,7 @@ import org.junit.Test;
 public class Foo {
     @Test
     public void foo() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        Resolver r = n -> null;
         try {
             r.resolve("PMD");
             fail("Should have thrown an exception");
@@ -23,19 +22,19 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Junit 3 format
-     ]]></description>
+        <description>Junit 3 format</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.lang.Thread;
 import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void testFoo() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        Resolver r = n -> null;
         try {
             r.resolve("PMD");
             fail("Should have thrown an exception");
@@ -44,19 +43,19 @@ public class Foo extends TestCase {
         }
     }
 }
-     ]]></code>
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Junit 3 format
-     ]]></description>
+        <description>Junit 3 format</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.lang.Thread;
 import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void testFoo() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        Resolver r = n -> null;
         try {
             r.resolve("PMD");
             fail("Should have thrown an exception");
@@ -71,19 +70,19 @@ public class Foo extends TestCase {
         }
     }
 }
-     ]]></code>
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Throws 
-     ]]></description>
+        <description>Throws</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.lang.Thread;
 import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void testFoo() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        Resolver r = n -> null;
         try {
             r.resolve("PMD");
             throw new RuntimeException("Should have thrown an exception");
@@ -92,19 +91,19 @@ public class Foo extends TestCase {
         }
     }
 }
-     ]]></code>
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-This method can be broken into two, each checking
-     ]]></description>
+        <description>This method can be broken into two, each checking</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.lang.Thread;
 import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void testFoo() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        Resolver r = n -> null;
         try {
             r.resolve("PMD");
             throw new RuntimeException("Should have thrown an exception");
@@ -119,18 +118,18 @@ public class Foo extends TestCase {
         }
     }
 }
-     ]]></code>
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Not a JUnit class - Contains assert
-     ]]></description>
+        <description>Not a JUnit class - Contains assert</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.lang.Thread;
 public class Foo {
     public void foo() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        Resolver r = n -> null;
         try {
             r.resolve("PMD");
             fail("Should have thrown an exception");
@@ -139,6 +138,7 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
+        ]]></code>
     </test-code>
 </test-data>

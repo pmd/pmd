@@ -14,8 +14,8 @@ import org.junit.Test;
 public class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
 
     @Test
-    public void testExclusionOfUselessParantheses() throws RuleSetNotFoundException {
-        RuleSetReferenceId ref = createRuleSetReferenceId(
+    public void testExclusionOfUselessParantheses() {
+        RuleSet ruleset = new RuleSetLoader().loadFromString("",
                 "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"Custom ruleset for tests\"\n"
                         + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
                         + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
@@ -23,8 +23,6 @@ public class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
                         + "  <description>Custom ruleset for tests</description>\n"
                         + "  <rule ref=\"category/java/codestyle.xml\">\n"
                         + "    <exclude name=\"UselessParentheses\"/>\n" + "  </rule>\n" + "</ruleset>\n");
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
         Rule rule = ruleset.getRuleByName("UselessParentheses");
         assertNull(rule);
     }

@@ -3,127 +3,258 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-copy index into array
-     ]]></description>
+        <description>copy index into array</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-   for (int i=0;i<10;i++) {
-       a[i] = i;
-   }
- }
+    public void bar() {
+        int[] a = new int[10];
+        for (int i=0;i<10;i++) {
+            a[i] = i;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-copy one array to another
-     ]]></description>
+        <description>copy one array to another</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-   for (int i=0;i<10;i++) {
-       a[i] = b[i];
-   }
- }
+    public void bar(int[] b) {
+        int[] a = new int[10];
+        for (int i=0;i<10;i++) {
+            a[i] = b[i];
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-copy via while loop
-     ]]></description>
+        <description>copy via while loop</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  int i = 0;
-  while (i < 10) {
-   a[i] = b[i];
-   i++;
-  }
- }
+    public void bar(int[] b) {
+        int i = 0;
+        int[] a = new int[10];
+        while (i < 10) {
+            a[i] = b[i];
+            i++;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-copy involving multiple arrays is ok
-     ]]></description>
+        <description>copy involving multiple arrays is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  for (int i=0;i<10;i++) {
-   x[i] = b[i] + 1;
-   y[i] = a[i] + 2;
-  }
- }
+    public void bar(int[] a, int[] b) {
+        int[] x = new int[10];
+        int[] y = new int[10];
+        for (int i = 0; i < 10; i++) {
+            x[i] = b[i] + 1;
+            y[i] = a[i] + 2;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-copy involving method invocation on array element is ok
-     ]]></description>
+        <description>copy involving method invocation on array element is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  for (int i=0;i<10;i++) {
-   a[i] = b[i].size();
-  }
- }
+    public void bar(int[] b) {
+        int[] a = new int[10];
+        for (int i=0;i<10;i++) {
+            a[i] = b[i].size();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-using an offset, still bad
-     ]]></description>
+        <description>using an offset, still bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  for (int i=0;i<10;i++) {
-   b[i]=a[i+6];
-  }
- }
+    public void bar(int[] a) {
+        int[] b = new int[10];
+        for (int i=0;i<10;i++) {
+            b[i]=a[i+6];
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-nested arrays on LHS, ok
-     ]]></description>
+        <description>nested arrays on LHS, ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  for (int i=0;i<10;i++) {
-   b[c[i]] = a[i];
-  }
- }
+    public void bar(int[] a, int[] c) {
+        int[] b = new int[10];
+        for (int i=0;i<10;i++) {
+            b[c[i]] = a[i];
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-adding to array is ok
-     ]]></description>
+        <description>adding to array is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-   for (int i=0;i<10;i++) {
-       a[i] += b[i];
-   }
- }
+    public void bar(int[] b) {
+        int[] a = new int[10];
+        for (int i = 0; i < 10; i++) {
+            a[i] += b[i];
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Example code</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    public void bar() {
+        int[] a = new int[10];
+        int[] b = new int[10];
+
+        // instead of this loop
+        for (int i = 0; i < 10; i++) {
+            b[i] = a[i];
+        }
+        // use: System.arraycopy(a, 0, b, 0, 10);
+
+        int[] c = new int[10];
+        // this won't trigger the rule
+        for (int i = 0; i < 10; i++) {
+            b[i] = a[c[i]];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with calculated array index</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidArrayLoops {
+    public void test() {
+        String[] table = new String[10];
+        String[] labels = new String[10];
+        for (int i = 0; i < 10; i++) {
+            table[i] = labels[getIndex()];
+        }
+    }
+
+    private int getIndex() { return 0; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with same array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidArrayLoops {
+    public void test() {
+        String[] array = new String[10];
+        for (int i = 0, j = 1; i < 9; i++, j++) {
+            array[i] = array[j];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Correct example - System.arraycopy can be used</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class AvoidArrayLoops {
+    public void test(byte[] time) {
+        byte[] blob = new byte[time.length + 8];
+        for (int i=0; i<time.length; i++) {
+            blob[8+time.length-i-1] = time[i];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with break/continue in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidArrayLoops {
+    public void test(String[] in) {
+        String[] array = new String[10];
+        for (int i = 0; i < in.length; i++) {
+            if (i % 2) {
+                continue;
+            }
+            array[i] = in[i];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with linked list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidArrayLoops {
+    public void test(int[] uValues) {
+        int[] a = new int[10];
+        int headp = 0;
+        for (int i = 0; i < uValues.length; i++) {
+            int nextp = a[headp];
+            a[headp] = uValues[i];
+            headp = nextp;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with increment by 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidArrayLoops {
+    public void test(int[] value) {
+        int[] dst = new int[10];
+        int dstBegin = 0;
+        for (int i = 0; i < value.length; i += 2) {
+            dst[dstBegin++] = value[i];
+        }
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

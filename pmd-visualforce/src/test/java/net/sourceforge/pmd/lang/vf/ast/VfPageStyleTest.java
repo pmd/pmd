@@ -6,18 +6,18 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Set;
+import java.util.List;
 
 import org.junit.Test;
 
-public class VfPageStyleTest extends AbstractVfNodesTest {
+public class VfPageStyleTest extends AbstractVfTest {
 
     /**
      * Test parsing of a EL expression.
      */
     @Test
     public void testElExpression() {
-        Set<ASTElExpression> expressions = getNodes(ASTElExpression.class, VF_EL_EXPRESSION);
+        List<ASTElExpression> expressions = vf.getNodes(ASTElExpression.class, VF_EL_EXPRESSION);
         assertEquals("One expression expected!", 1, expressions.size());
         ASTElExpression expression = expressions.iterator().next();
         ASTExpression exp = expression.getFirstChildOfType(ASTExpression.class);
@@ -25,7 +25,7 @@ public class VfPageStyleTest extends AbstractVfNodesTest {
         assertEquals("Correct expression content expected!", "myBean", id.getImage());
         ASTDotExpression dot = exp.getFirstChildOfType(ASTDotExpression.class);
         ASTIdentifier dotid = dot.getFirstChildOfType(ASTIdentifier.class);
-        assertEquals("Correct expression content expected!", "get", dotid.getImage()); 
+        assertEquals("Correct expression content expected!", "get", dotid.getImage());
         ASTArguments arguments = exp.getFirstChildOfType(ASTArguments.class);
         ASTExpression innerExpression = arguments.getFirstChildOfType(ASTExpression.class);
         ASTLiteral literal = innerExpression.getFirstChildOfType(ASTLiteral.class);
@@ -37,7 +37,7 @@ public class VfPageStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testElExpressionInAttribute() {
-        Set<ASTElExpression> expressions = getNodes(ASTElExpression.class, VF_EL_EXPRESSION_IN_ATTRIBUTE);
+        List<ASTElExpression> expressions = vf.getNodes(ASTElExpression.class, VF_EL_EXPRESSION_IN_ATTRIBUTE);
         assertEquals("One expression expected!", 1, expressions.size());
         ASTElExpression expression = expressions.iterator().next();
         ASTExpression exp = expression.getFirstChildOfType(ASTExpression.class);

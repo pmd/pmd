@@ -23,14 +23,14 @@ It is much better to use one of the type-specific toString() methods instead.
         <properties>
             <property name="xpath">
                 <value>
-<![CDATA[ 
-//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']
+<![CDATA[
+//InfixExpression[@Operator='+']/StringLiteral[@Empty=true()]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
-<![CDATA[ 
+<![CDATA[
 String s = "" + 123;                // inefficient
 String t = Integer.toString(456);   // preferred approach
 ]]>
@@ -38,6 +38,7 @@ String t = Integer.toString(456);   // preferred approach
     </rule>
 
     <rule name="AppendCharacterWithChar"
+          language="java"
           since="3.5"
           message="Avoid appending characters as strings in StringBuffer.append."
           class="net.sourceforge.pmd.lang.java.rule.performance.AppendCharacterWithCharRule"
@@ -60,33 +61,33 @@ sb.append('a');     // use this instead
     <rule name="AvoidArrayLoops"
           language="java"
           since="3.5"
-          message="System.arraycopy is more efficient"
+          message="Arrays.copyOf or System.arraycopy are more efficient"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidarrayloops">
         <description>
-Instead of manually copying data between two arrays, use the efficient Arrays.copyOf or System.arraycopy method instead.
+Instead of manually copying data between two arrays, use the more efficient `Arrays.copyOf` or `System.arraycopy`
+methods instead.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Statement[(ForStatement or WhileStatement) and
-count(*//AssignmentOperator[@Image = '='])=1
-and
-*/Statement
-[
-./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
-/PrimaryPrefix/Name/../../PrimarySuffix/Expression
-[(PrimaryExpression or AdditiveExpression) and count
-(.//PrimaryPrefix/Name)=1]//PrimaryPrefix/Name/@Image
-and
-./Block/BlockStatement/Statement/StatementExpression/Expression/PrimaryExpression
-/PrimaryPrefix/Name/../../PrimarySuffix[count
-(..//PrimarySuffix)=1]/Expression[(PrimaryExpression
-or AdditiveExpression) and count(.//PrimaryPrefix/Name)=1]
-//PrimaryPrefix/Name/@Image
-]]
+//(ForStatement[ForUpdate//(UnaryExpression[@Operator='++'] | AssignmentExpression[@Operator = '+='][NumericLiteral[@Image = '1']])]
+ | WhileStatement)
+    [not(.//ContinueStatement)]
+    [not(.//BreakStatement)]
+    [not(.//ThrowStatement)]
+    [not(.//ReturnStatement)]
+    [count(Block//AssignmentExpression[@Operator='=']
+                                      (: no nested arrays or method calls as array index :)
+                                      [count(ArrayAccess[not(.//ArrayAccess)]
+                                                        [not(.//MethodCall)])=2]
+                                      (: array names must be different :)
+                                      [count(distinct-values(ArrayAccess/VariableAccess[1]/@Name)) = 2]
+                                      (: array index must be same :)
+                                      [count(distinct-values(ArrayAccess/VariableAccess[2]/@Name)) = 1]
+     )=1]
 ]]>
                 </value>
             </property>
@@ -97,18 +98,94 @@ public class Test {
     public void bar() {
         int[] a = new int[10];
         int[] b = new int[10];
+
+        // instead of this loop
         for (int i=0;i<10;i++) {
             b[i]=a[i];
         }
+        // use: System.arraycopy(a, 0, b, 0, 10);
 
         int[] c = new int[10];
-        // this will trigger the rule
+        // this won't trigger the rule
         for (int i=0;i<10;i++) {
             b[i]=a[c[i]];
         }
     }
 }
 ]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidCalendarDateCreation"
+          since="6.25.0"
+          language="java"
+          message="A Calendar is used to get the current time, this is expensive."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidcalendardatecreation">
+        <description>
+Problem: `java.util.Calendar` is a heavyweight object and expensive to create. It should only be used, if
+calendar calculations are needed.
+
+Solution: Use `new Date()`, Java 8+ `java.time.LocalDateTime.now()` or `ZonedDateTime.now()`.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//MethodCall[pmd-java:matchesSig("java.util.Calendar#getTime()") or pmd-java:matchesSig("java.util.Calendar#getTimeInMillis()")]
+  [*[1][local-name() = ('MethodCall', 'ConstructorCall')]
+                               [pmd-java:matchesSig("java.util.Calendar#getInstance()")
+                             or pmd-java:matchesSig("java.util.GregorianCalendar#getInstance()")
+                             or pmd-java:matchesSig("java.util.GregorianCalendar#new()")]
+  ]
+|
+//MethodCall[pmd-java:matchesSig("java.util.Calendar#getTime()") or pmd-java:matchesSig("java.util.Calendar#getTimeInMillis()")]
+   [*[1][local-name() = 'VariableAccess']]
+  (: ignore if .set* or .add or .clear or .roll is called on the variable :)
+  [not(VariableAccess/@Name = ancestor::Block//MethodCall[starts-with(@MethodName, "set") or @MethodName = ("add", "clear", "roll")]/VariableAccess/@Name)]
+  (: variable must be initialized with getInstance :)
+  [VariableAccess/@Name = ancestor::Block//LocalVariableDeclaration/VariableDeclarator[
+     (MethodCall | ConstructorCall)
+      [pmd-java:matchesSig("java.util.Calendar#getInstance()")
+       or pmd-java:matchesSig("java.util.GregorianCalendar#getInstance()")
+       or pmd-java:matchesSig("java.util.GregorianCalendar#new()")]
+  ]/VariableDeclaratorId/@Name]
+|
+//ConstructorCall[pmd-java:typeIs("org.joda.time.DateTime") or pmd-java:typeIs("org.joda.time.LocalDateTime")]
+  [ArgumentList[(MethodCall | ConstructorCall)
+       [pmd-java:matchesSig("java.util.Calendar#getInstance()")
+     or pmd-java:matchesSig("java.util.GregorianCalendar#getInstance()")
+     or pmd-java:matchesSig("java.util.GregorianCalendar#new()")]]
+  ]
+
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
+
+public class DateStuff {
+    private Date bad1() {
+        return Calendar.getInstance().getTime(); // now
+    }
+    private Date good1a() {
+        return new Date(); // now
+    }
+    private LocalDateTime good1b() {
+        return LocalDateTime.now();
+    }
+    private long bad2() {
+        return Calendar.getInstance().getTimeInMillis();
+    }
+    private long good2() {
+        return System.currentTimeMillis();
+    }
+}
+            ]]>
         </example>
     </rule>
 
@@ -142,7 +219,7 @@ that one covers both.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[
+//ConstructorCall/ClassOrInterfaceType[
        pmd-java:typeIs('java.io.FileInputStream')
     or pmd-java:typeIs('java.io.FileOutputStream')
     or pmd-java:typeIs('java.io.FileReader')
@@ -176,6 +253,7 @@ that one covers both.
     </rule>
 
     <rule name="AvoidInstantiatingObjectsInLoops"
+          language="java"
           since="2.2"
           message="Avoid instantiating new objects inside loops"
           class="net.sourceforge.pmd.lang.java.rule.performance.AvoidInstantiatingObjectsInLoopsRule"
@@ -197,121 +275,28 @@ public class Something {
         </example>
     </rule>
 
-    <rule name="AvoidUsingShortType"
-          language="java"
-          since="4.1"
-          message="Do not use the short type"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidusingshorttype">
-        <description>
-Java uses the 'short' type to reduce memory usage, not to optimize calculation. In fact, the JVM does not have any
-arithmetic capabilities for the short type: the JVM must convert the short into an int, do the proper calculation
-and convert the int back to a short. Thus any storage gains found through use of the 'short' type may be offset by
-adverse impacts on performance.
-        </description>
-        <priority>1</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//FieldDeclaration/Type/PrimitiveType[@Image = 'short']
-|
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[pmd-java:typeIs('java.lang.Override')])]
-    /MethodDeclaration/ResultType/Type/PrimitiveType[@Image = 'short']
-|
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[pmd-java:typeIs('java.lang.Override')])]
-    /MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/Type/PrimitiveType[@Image = 'short']
-|
-//LocalVariableDeclaration/Type/PrimitiveType[@Image = 'short']
-|
-//AnnotationMethodDeclaration/Type/PrimitiveType[@Image = 'short']
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class UsingShort {
-   private short doNotUseShort = 0;
-
-   public UsingShort() {
-    short shouldNotBeUsed = 1;
-    doNotUseShort += shouldNotBeUsed;
-  }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="BigIntegerInstantiation"
+          language="java"
           since="3.9"
-          message="Don't create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
+          message="Don''t create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
           class="net.sourceforge.pmd.lang.java.rule.performance.BigIntegerInstantiationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#bigintegerinstantiation">
         <description>
-Don't create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and
-for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN)
+Don't create instances of already existing BigInteger (`BigInteger.ZERO`, `BigInteger.ONE`),
+for Java 1.5 onwards, BigInteger.TEN and BigDecimal (`BigDecimal.ZERO`, `BigDecimal.ONE`, `BigDecimal.TEN`) and
+for Java 9 onwards `BigInteger.TWO`.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-BigInteger bi = new BigInteger(1);       // reference BigInteger.ONE instead
+BigInteger bi1 = new BigInteger("1");    // reference BigInteger.ONE instead
 BigInteger bi2 = new BigInteger("0");    // reference BigInteger.ZERO instead
-BigInteger bi3 = new BigInteger(0.0);    // reference BigInteger.ZERO instead
-BigInteger bi4;
-bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
-]]>
-        </example>
-    </rule>
+BigInteger bi3;
+bi3 = new BigInteger("0");               // reference BigInteger.ZERO instead
 
-    <rule name="BooleanInstantiation"
-          since="1.2"
-          message="Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead."
-          class="net.sourceforge.pmd.lang.java.rule.performance.BooleanInstantiationRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#booleaninstantiation">
-        <description>
-Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
-Note that new Boolean() is deprecated since JDK 9 for that reason.
-        </description>
-        <priority>2</priority>
-        <example>
-<![CDATA[
-Boolean bar = new Boolean("true");        // unnecessary creation, just reference Boolean.TRUE;
-Boolean buz = Boolean.valueOf(false);    // ...., just reference Boolean.FALSE;
-]]>
-        </example>
-    </rule>
-
-    <rule name="ByteInstantiation"
-          language="java"
-          since="4.0"
-          message="Avoid instantiating Byte objects. Call Byte.valueOf() instead"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#byteinstantiation">
-        <description>
-Calling new Byte() causes memory allocation that can be avoided by the static Byte.valueOf().
-It makes use of an internal cache that recycles earlier instances making it more memory efficient.
-Note that new Byte() is deprecated since JDK 9 for that reason.
-        </description>
-        <priority>2</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//AllocationExpression
-[not (ArrayDimsAndInits)
-and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')]]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class Foo {
-    private Byte i = new Byte(0); // change to Byte i = Byte.valueOf(0);
-}
+BigDecimal bd1 = new BigDecimal(0);      // reference BigDecimal.ZERO instead
+BigDecimal bd2 = new BigDecimal("0.") ;  // reference BigDecimal.ZERO instead
+BigDecimal bd3 = new BigDecimal(10);     // reference BigDecimal.TEN instead
 ]]>
         </example>
     </rule>
@@ -343,6 +328,7 @@ buf.append("Hello").append(foo).append("World"); // good
     </rule>
 
     <rule name="ConsecutiveLiteralAppends"
+          language="java"
           since="3.5"
           message="StringBuffer (or StringBuilder).append is called {0} consecutive times with literals. Use a single append with a single combined String."
           class="net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveLiteralAppendsRule"
@@ -369,8 +355,9 @@ buf.append("1m");           // good
     </rule>
 
     <rule name="InefficientEmptyStringCheck"
+          language="java"
           since="3.6"
-	  message="String.trim().length() == 0 / String.trim().isEmpty() is an inefficient way to validate a blank String."
+	        message="String.trim().length() == 0 / String.trim().isEmpty() is an inefficient way to validate a blank String."
           class="net.sourceforge.pmd.lang.java.rule.performance.InefficientEmptyStringCheckRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#inefficientemptystringcheck">
         <description>
@@ -411,6 +398,7 @@ public void bar(String string) {
     </rule>
 
     <rule name="InefficientStringBuffering"
+          language="java"
           since="3.4"
           message="Avoid concatenating nonliterals in a StringBuffer/StringBuilder constructor or append()."
           class="net.sourceforge.pmd.lang.java.rule.performance.InefficientStringBufferingRule"
@@ -433,13 +421,14 @@ sb.append(System.getProperty("java.io.tmpdir"));
     </rule>
 
     <rule name="InsufficientStringBufferDeclaration"
+          language="java"
           since="3.6"
-          message="StringBuffer constructor is initialized with size {0}, but has at least {1} characters appended."
+          message="{0} has been initialized with size {1}, but has at least {2} characters appended."
           class="net.sourceforge.pmd.lang.java.rule.performance.InsufficientStringBufferDeclarationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#insufficientstringbufferdeclaration">
         <description>
 Failing to pre-size a StringBuffer or StringBuilder properly could cause it to re-size many times
-during runtime. This rule attempts to determine the total number the characters that are actually 
+during runtime. This rule attempts to determine the total number the characters that are actually
 passed into StringBuffer.append(), but represents a best guess "worst case" scenario. An empty
 StringBuffer/StringBuilder constructor initializes the object to 16 characters. This default
 is assumed if the length of the constructor can not be determined.
@@ -447,77 +436,11 @@ is assumed if the length of the constructor can not be determined.
         <priority>3</priority>
         <example>
 <![CDATA[
-StringBuffer bad = new StringBuffer();
+StringBuilder bad = new StringBuilder();
 bad.append("This is a long string that will exceed the default 16 characters");
 
-StringBuffer good = new StringBuffer(41);
+StringBuilder good = new StringBuilder(41);
 good.append("This is a long string, which is pre-sized");
-]]>
-        </example>
-    </rule>
-
-    <rule name="IntegerInstantiation"
-          language="java"
-          since="3.5"
-          message="Avoid instantiating Integer objects. Call Integer.valueOf() instead."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#integerinstantiation">
-        <description>
-Calling new Integer() causes memory allocation that can be avoided by the static Integer.valueOf().
-It makes use of an internal cache that recycles earlier instances making it more memory efficient.
-Note that new Integer() is deprecated since JDK 9 for that reason.
-        </description>
-        <priority>2</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//AllocationExpression
-  [not (ArrayDimsAndInits)
-   and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Integer')]]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class Foo {
-    private Integer i = new Integer(0); // change to Integer i = Integer.valueOf(0);
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="LongInstantiation"
-          language="java"
-          since="4.0"
-          message="Avoid instantiating Long objects.Call Long.valueOf() instead"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#longinstantiation">
-        <description>
-Calling new Long() causes memory allocation that can be avoided by the static Long.valueOf().
-It makes use of an internal cache that recycles earlier instances making it more memory efficient.
-Note that new Long() is deprecated since JDK 9 for that reason.
-        </description>
-        <priority>2</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//AllocationExpression
-[not (ArrayDimsAndInits)
-and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Long')]]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class Foo {
-    private Long i = new Long(0); // change to Long i = Long.valueOf(0);
-}
 ]]>
         </example>
     </rule>
@@ -525,7 +448,7 @@ public class Foo {
     <rule name="OptimizableToArrayCall"
           language="java"
           since="1.8"
-	  minimumLanguageVersion="1.6"
+          minimumLanguageVersion="1.6"
           message="This call to Collection.toArray() may be optimizable"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#optimizabletoarraycall">
@@ -547,13 +470,8 @@ is faster, but returns only an array of type `Object[]`.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
-[PrimaryPrefix/Name[ends-with(@Image, 'toArray')]]
-[
-PrimarySuffix/Arguments/ArgumentList/Expression
- /PrimaryExpression/PrimaryPrefix/AllocationExpression
- /ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix[not(Literal[@Image='0'])]
-]
+//MethodCall[pmd-java:matchesSig("java.util.Collection#toArray(_)")]
+    [ArgumentList/ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr[not(NumericLiteral[@Image="0"])]]
 ]]>
                 </value>
             </property>
@@ -608,85 +526,8 @@ public class C {
         </example>
     </rule>
 
-    <rule name="SimplifyStartsWith"
-          language="java"
-          since="3.1"
-          message="This call to String.startsWith can be rewritten using String.charAt(0)"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#simplifystartswith">
-        <description>
-Since it passes in a literal of length 1, calls to (string).startsWith can be rewritten using (string).charAt(0)
-at the expense of some readability.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//PrimaryExpression
- [PrimaryPrefix/Name
-  [ends-with(@Image, '.startsWith')] or PrimarySuffix[@Image='startsWith']]
- [PrimarySuffix/Arguments/ArgumentList
-  /Expression/PrimaryExpression/PrimaryPrefix
-  /Literal
-   [string-length(@Image)=3]
-   [starts-with(@Image, '"')]
-   [ends-with(@Image, '"')]
- ]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class Foo {
-
-    boolean checkIt(String x) {
-        return x.startsWith("a");   // suboptimal
-    }
-
-    boolean fasterCheckIt(String x) {
-        return x.charAt(0) == 'a';  // faster approach
-    }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="ShortInstantiation"
-          language="java"
-          since="4.0"
-          message="Avoid instantiating Short objects. Call Short.valueOf() instead"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#shortinstantiation">
-        <description>
-Calling new Short() causes memory allocation that can be avoided by the static Short.valueOf().
-It makes use of an internal cache that recycles earlier instances making it more memory efficient.
-Note that new Short() is deprecated since JDK 9 for that reason.
-        </description>
-        <priority>2</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//AllocationExpression
-[not (ArrayDimsAndInits)
-and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Short')]]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class Foo {
-    private Short i = new Short(0); // change to Short i = Short.valueOf(0);
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="StringInstantiation"
+          language="java"
           since="1.0"
           message="Avoid instantiating String objects; this is usually unnecessary."
           class="net.sourceforge.pmd.lang.java.rule.performance.StringInstantiationRule"
@@ -703,14 +544,22 @@ private String bar = new String("bar"); // just do a String bar = "bar";
     </rule>
 
     <rule name="StringToString"
+          language="java"
           since="1.0"
           message="Avoid calling toString() on String objects; this is unnecessary."
-          class="net.sourceforge.pmd.lang.java.rule.performance.StringToStringRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#stringtostring">
         <description>
 Avoid calling toString() on objects already known to be string instances; this is unnecessary.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    //MethodCall[pmd-java:matchesSig("java.lang.String#toString()")]
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 private String baz() {
@@ -738,9 +587,7 @@ if-then statement to increase code readability.
             <property name="xpath">
                 <value>
 <![CDATA[
-//SwitchStatement[
-    (count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
-]
+//SwitchStatement[ (count(*) - 1) < $minimumNumberCaseForASwitch ]
 ]]>
                 </value>
             </property>
@@ -763,37 +610,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UnnecessaryWrapperObjectCreation"
-          since="3.8"
-          message="Unnecessary wrapper object creation"
-          class="net.sourceforge.pmd.lang.java.rule.performance.UnnecessaryWrapperObjectCreationRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation">
-        <description>
-Most wrapper classes provide static conversion methods that avoid the need to create intermediate objects
-just to create the primitive forms. Using these avoids the cost of creating objects that also need to be 
-garbage-collected later.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public int convert(String s) {
-    int i, i2;
-
-    i = Integer.valueOf(s).intValue();  // this wastes an object
-    i = Integer.parseInt(s);            // this is better
-
-    i2 = Integer.valueOf(i).intValue(); // this wastes an object
-    i2 = i;                             // this is better
-
-    String s3 = Integer.valueOf(i2).toString(); // this wastes an object
-    s3 = Integer.toString(i2);                  // this is better
-
-    return i2;
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="UseArrayListInsteadOfVector"
           language="java"
           since="3.0"
@@ -808,9 +624,7 @@ ArrayList is a much better Collection implementation than Vector if thread-safe 
             <property name="xpath">
                 <value>
 <![CDATA[
-//CompilationUnit[count(ImportDeclaration) = 0 or count(ImportDeclaration/Name[@Image='java.util.Vector']) > 0]
-  //AllocationExpression/ClassOrInterfaceType
-    [@Image='Vector' or @Image='java.util.Vector']
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]
 ]]>
                 </value>
             </property>
@@ -834,50 +648,45 @@ public class SimpleTest extends TestCase {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usearraysaslist">
         <description>
-<![CDATA[ 
-The java.util.Arrays class has a "asList" method that should be used when you want to create a new List from
+<![CDATA[
+The `java.util.Arrays` class has a `asList()` method that should be used when you want to create a new List from
 an array of objects. It is faster than executing a loop to copy all the elements of the array one by one.
 
-Note that the result of Arrays.asList() is backed by the specified array,
+Note that the result of `Arrays.asList()` is backed by the specified array,
 changes in the returned list will result in the array to be modified.
-For that reason, it is not possible to add new elements to the returned list of Arrays.asList() (UnsupportedOperationException).
-You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you (e.g. because of concurrent access).
+For that reason, it is not possible to add new elements to the returned list of `Arrays.asList()`
+(UnsupportedOperationException).
+You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for you (e.g. because of concurrent access).
 ]]>
-	</description>
+        </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Statement[
-    (ForStatement) and (ForStatement//VariableInitializer//Literal[@IntLiteral='true' and @Image='0']) and (count(.//IfStatement)=0)
-   ]
-   //StatementExpression[
-    PrimaryExpression/PrimaryPrefix/Name[
-     substring-before(@Image,'.add') = ancestor::MethodDeclaration//LocalVariableDeclaration[
-      ./Type//ClassOrInterfaceType[
-       @Image = 'Collection' or 
-       @Image = 'List' or @Image='ArrayList'
-      ]
-     ]
-     /VariableDeclarator/VariableDeclaratorId[
-      count(..//AllocationExpression/ClassOrInterfaceType[
-       @Image="ArrayList"
-      ]
-      )=1
-     ]/@Image
+//ForStatement
+  [ForInit
+    [LocalVariableDeclaration
+      [PrimitiveType[@Kind = 'int']]
+      [VariableDeclarator[NumericLiteral[@IntLiteral][@Image = '0']]]
     ]
-   and
-   PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
-   [
-     @Image = ancestor::MethodDeclaration[1]//LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId[@ArrayType="true"]/@Image
-     or
-     @Image = ancestor::MethodDeclaration[1]//FormalParameter/VariableDeclaratorId/@Image
-   ]
-   /../..[count(.//PrimarySuffix)
-   =1]/PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix
-   /Name
-   ]
+  ]
+  [not(.//IfStatement)]
+  /*[last()]//
+    MethodCall
+      [pmd-java:matchesSig('java.util.Collection#add(_)')]
+      [ArgumentList/ArrayAccess
+        [VariableAccess[@Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name]]
+      ]
+|
+//ForeachStatement
+  [not(.//IfStatement)]
+  [VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
+  /*[last()]//MethodCall
+      [pmd-java:matchesSig('java.util.Collection#add(_)')]
+      [ArgumentList
+        [VariableAccess[@Name = ancestor::ForeachStatement/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name]]
+      ]
 ]]>
                 </value>
             </property>
@@ -901,6 +710,7 @@ public class Test {
     </rule>
 
     <rule name="UseIndexOfChar"
+          language="java"
           since="3.5"
           message="String.indexOf(char) is faster than String.indexOf(String)."
           class="net.sourceforge.pmd.lang.java.rule.performance.UseIndexOfCharRule"
@@ -920,7 +730,53 @@ if (s.indexOf('d') {}
         </example>
     </rule>
 
+    <rule name="UseIOStreamsWithApacheCommonsFileItem"
+          since="6.25.0"
+          language="java"
+          message="Avoid memory intensive FileItem.get() or FileItem.getString()"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#useiostreamswithapachecommonsfileitem">
+        <description>
+Problem: Use of [FileItem.get()](https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#get--)
+and [FileItem.getString()](https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getString--)
+could exhaust memory since they load the entire file into memory.
+
+Solution: Use [FileItem.getInputStream()](https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getInputStream--)
+and buffering.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodCall
+    [@MethodName = 'get' or @MethodName = 'getString']
+    [*[pmd-java:typeIs('org.apache.commons.fileupload.FileItem')]]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import org.apache.commons.fileupload.FileItem;
+
+public class FileStuff {
+   private String bad(FileItem fileItem) {
+        return fileItem.getString();
+   }
+
+   private InputStream good(FileItem fileItem) {
+        return fileItem.getInputStream();
+   }
+}
+            ]]>
+        </example>
+    </rule>
+
     <rule name="UselessStringValueOf"
+          language="java"
           since="3.8"
           message="No need to call String.valueOf to append to a string."
           class="net.sourceforge.pmd.lang.java.rule.performance.UselessStringValueOfRule"
@@ -942,13 +798,14 @@ public String convert(int i) {
     </rule>
 
     <rule name="UseStringBufferForStringAppends"
+          language="java"
           since="3.1"
           message="Prefer StringBuilder (non-synchronized) or StringBuffer (synchronized) over += for concatenating strings"
           class="net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usestringbufferforstringappends">
         <description>
 The use of the '+=' operator for appending strings causes the JVM to create and use an internal StringBuffer.
-If a non-trivial number of these concatenations are being used then the explicit use of a StringBuilder or 
+If a non-trivial number of these concatenations are being used then the explicit use of a StringBuilder or
 threadsafe StringBuffer is recommended to avoid this.
         </description>
         <priority>3</priority>
@@ -969,15 +826,24 @@ public class Foo {
     </rule>
 
     <rule name="UseStringBufferLength"
+          language="java"
           since="3.4"
-          message="This is an inefficient use of StringBuffer.toString; call StringBuffer.length instead."
-          class="net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferLengthRule"
+          message="This is an inefficient use of CharSequence.toString; call CharSequence.length instead."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usestringbufferlength">
         <description>
 Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
 or StringBuffer.toString().length() == ...
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    //MethodCall[pmd-java:matchesSig('_#length()')
+                                 and MethodCall[pmd-java:matchesSig('java.lang.CharSequence#toString()')]]
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 StringBuffer sb = new StringBuffer();
@@ -995,7 +861,7 @@ if (sb.length() == 0) {}                // preferred
     "" + int
     or "" + (int) i
     and String.valueOf(int)
-    
+
     and using Integer.toString(int)
 
     IntegerToStringShouldBeUsed

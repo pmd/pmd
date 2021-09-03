@@ -37,5 +37,5 @@ public abstract class SingleNumericPropertyBuilder<V, T extends SingleNumericPro
         this.upperLimit = max;
         return (T) this;
     }
-    
+
 }

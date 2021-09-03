@@ -22,9 +22,8 @@ public class XSLTRendererTest {
     public void testDefaultStylesheet() throws Exception {
         XSLTRenderer renderer = new XSLTRenderer();
         Report report = new Report();
-        DummyNode node = new DummyNode(1);
-        node.testingOnlySetBeginLine(1);
-        node.testingOnlySetBeginColumn(1);
+        DummyNode node = new DummyNode();
+        node.setCoords(1, 1, 1, 2);
         RuleViolation rv = new ParametricRuleViolation<Node>(new FooRule(), new RuleContext(), node,
                 "violation message");
         report.addRuleViolation(rv);

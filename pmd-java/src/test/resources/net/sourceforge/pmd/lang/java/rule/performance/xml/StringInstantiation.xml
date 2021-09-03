@@ -3,108 +3,121 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-new 'new String's
-     ]]></description>
+        <description>new 'new String's</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String bar = new String("bar");
- private String baz = new String();
+    private String bar = new String("bar");
+    private String baz = new String();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-new String array
-     ]]></description>
+        <description>new String array</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String[] bar = new String[5];
+    private String[] bar = new String[5];
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-using multiple parameter constructor
-     ]]></description>
+        <description>using multiple parameter constructor</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  byte[] bytes = new byte[50];
-  String bar = new String(bytes, 0, bytes.length);
- }
+    void foo() {
+        byte[] bytes = new byte[50];
+        String bar = new String(bytes, 0, bytes.length);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-using 4 parameter constructor
-     ]]></description>
+        <description>using 4 parameter constructor</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  byte[] bytes = new byte[50];
-  String bar = new String(bytes, 0, bytes.length, "some-encoding");
- }
+    void foo() {
+        byte[] bytes = new byte[50];
+        String bar = new String(bytes, 0, bytes.length, "some-encoding");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-byte array constructor is ok
-     ]]></description>
+        <description>byte array constructor is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  byte[] bytes = new byte[50];
-  String bar = new String(bytes);
- }
+    void foo() {
+        byte[] bytes = new byte[50];
+        String bar = new String(bytes);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Method returning new String
-     ]]></description>
+        <description>Method returning new String</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String foo() {
-  return new String("foo");
- }
+    String foo() {
+        return new String("foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Not a new String
-     ]]></description>
+        <description>Not a new String</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import my.String;
 public class Foo {
- STRING foo() {
-  return new STRING("foo");
- }
+    String foo() {
+        return new String("foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Returns new String(str)
-     ]]></description>
+        <description>Returns new String(str)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String foo(String str) {
-  return new String(str);
- }
+    String foo(String str) {
+        return new String(str);
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2141 [java] StringInstatiation: False negative with String-array access</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,10</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        String[] arr = getArray();
+        String s = new String(arr[0]);
+        // better
+        String s2 = arr[0];
+    }
+    public void bar2() {
+        String[][] arr = getArray2();
+        String s = new String(arr[0][0]);
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

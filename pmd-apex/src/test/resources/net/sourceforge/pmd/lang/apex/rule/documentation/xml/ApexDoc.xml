@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -44,6 +43,15 @@ global class Foo { }
     <test-code>
         <description>private class does not need comment</description>
         <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private class should have comment if specified</description>
+        <rule-property name="reportPrivate">true</rule-property>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 private class Foo { }
         ]]></code>
@@ -111,6 +119,15 @@ private interface Foo { }
     </test-code>
 
     <test-code>
+        <description>private interface should have comment if specified</description>
+        <rule-property name="reportPrivate">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+private interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>interface comment should have description</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -165,6 +182,62 @@ public class Foo {
  */
 public class Foo {
     global void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private method does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    private void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>private method should have comment if specified</description>
+        <rule-property name="reportPrivate">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    private void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>protected method does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    protected void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>protected method should have comment if specified</description>
+        <rule-property name="reportProtected">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    protected void bar() { }
 }
         ]]></code>
     </test-code>
@@ -331,9 +404,9 @@ public class Foo {
     </test-code>
 
     <test-code>
-    <description>public property should have comment</description>
-    <expected-problems>1</expected-problems>
-    <code><![CDATA[
+        <description>public property should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 /**
  * @description Foo
  */
@@ -341,7 +414,7 @@ public class Foo {
     public Object Bar { get; set; }
 }
         ]]></code>
-</test-code>
+    </test-code>
 
     <test-code>
         <description>global property should have comment</description>
@@ -356,6 +429,60 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>private property does not need a comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    private Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private property should have a comment if specified</description>
+        <rule-property name="reportPrivate">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    private Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>protected property does not need a comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    protected Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>protected property should have a comment if specified</description>
+        <rule-property name="reportProtected">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    protected Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+    
     <test-code>
         <description>property comment should have description</description>
         <expected-problems>1</expected-problems>

@@ -1,4 +1,3 @@
-
 package net.sourceforge.pmd.lang.vm.ast;
 
 /*
@@ -21,10 +20,9 @@ package net.sourceforge.pmd.lang.vm.ast;
  */
 
 /**
- * Helps handle math<br>
- * <br>
+ * Helps handle math
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:wglass@forio.com">Will Glass-Husain</a>
@@ -34,20 +32,10 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @author Nathan Bubna
  * @version $Id: ASTMathNode.java 517553 2007-03-13 06:09:58Z wglass $
  */
-public abstract class ASTMathNode extends AbstractVmNode {
-    protected boolean strictMode = false;
+abstract class ASTMathNode extends AbstractVmNode {
 
-    public ASTMathNode(final int id) {
+    ASTMathNode(int id) {
         super(id);
-    }
-
-    public ASTMathNode(final VmParser p, final int id) {
-        super(p, id);
-    }
-
-    @Override
-    public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
-        return visitor.visit(this, data);
     }
 
 }

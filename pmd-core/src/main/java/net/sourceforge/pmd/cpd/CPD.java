@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
@@ -130,7 +131,8 @@ public class CPD {
         }
     }
 
-    private void add(SourceCode sourceCode) throws IOException {
+    @Experimental
+    public void add(SourceCode sourceCode) throws IOException {
         if (configuration.isSkipLexicalErrors()) {
             addAndSkipLexicalErrors(sourceCode);
         } else {
@@ -145,13 +147,12 @@ public class CPD {
     }
 
     private void addAndSkipLexicalErrors(SourceCode sourceCode) throws IOException {
-        TokenEntry.State savedTokenEntry = new TokenEntry.State(tokens.getTokens());
+        final TokenEntry.State savedState = new TokenEntry.State();
         try {
             addAndThrowLexicalError(sourceCode);
         } catch (TokenMgrError e) {
             System.err.println("Skipping " + sourceCode.getFileName() + ". Reason: " + e.getMessage());
-            tokens.getTokens().clear();
-            tokens.getTokens().addAll(savedTokenEntry.restore());
+            savedState.restore(tokens);
         }
     }
 

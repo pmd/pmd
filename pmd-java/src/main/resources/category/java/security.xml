@@ -9,6 +9,7 @@ Rules that flag potential security flaws.
     </description>
 
     <rule name="HardCodedCryptoKey"
+          language="java"
           since="6.4.0"
           message="Do not use hard coded encryption keys"
           class="net.sourceforge.pmd.lang.java.rule.security.HardCodedCryptoKeyRule"
@@ -33,6 +34,7 @@ public class Foo {
     </rule>
 
     <rule name="InsecureCryptoIv"
+          language="java"
           since="6.3.0"
           message="Do not use hard coded initialization vector in crypto operations"
           class="net.sourceforge.pmd.lang.java.rule.security.InsecureCryptoIvRule"
@@ -53,7 +55,7 @@ public class Foo {
     void bad() {
         byte[] iv = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, };
     }
-    
+
     void alsoBad() {
         byte[] iv = "secret iv in here".getBytes();
     }
@@ -62,4 +64,17 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="TypeResTest"
+          language="java"
+          since="7.0.0"
+          message="Type Resolution Test"
+          class="net.sourceforge.pmd.lang.java.rule.security.TypeResTestRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_security.html#typerestest">
+        <description>
+This is just a toy rule that counts the proportion of resolved types in a codebase, not meant as a real rule.
+
+It is used to test the capability of PMD's own type resolution.
+        </description>
+        <priority>3</priority>
+    </rule>
 </ruleset>

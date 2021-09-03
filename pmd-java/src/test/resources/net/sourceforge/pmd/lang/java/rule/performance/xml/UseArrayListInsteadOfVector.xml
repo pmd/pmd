@@ -3,77 +3,79 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-TEST0
-     ]]></description>
+        <description>TEST0</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Bar {
- void x() {
-  List v = new ArrayList(); 
- }
+    void x() {
+        List v = new ArrayList();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST1
-     ]]></description>
+        <description>TEST1</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Bar {
- void x() {
-  Vector v = new Vector(); 
- }
+    void x() {
+        Vector v = new Vector();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST2
-     ]]></description>
+        <description>TEST2</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Bar {
- Vector v = new Vector(); 
- void x() {}
+    Vector v = new Vector();
+    void x() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST3
-     ]]></description>
+        <description>TEST3</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Bar {
- List v = new Vector(); 
- void x() {}
+    List v = new Vector();
+    void x() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1146 real problem</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Vector;
 public class Foo {
-  public void bar() {
-    Vector v = new Vector();
-  }
+    public void bar() {
+        Vector v = new Vector();
+    }
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1146 UseArrayListInsteadOfVector false positive when using own Vector class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import com.mycompany.myproject.Vector;
 public class Foo {
-  public void bar() {
-    Vector v = new Vector();
-  }
+    public void bar() {
+        Vector v = new Vector();
+    }
 }
         ]]></code>
     </test-code>

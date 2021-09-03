@@ -4,46 +4,30 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.util.List;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class UnusedLocalVariableRule extends AbstractJavaRule {
 
-    public UnusedLocalVariableRule() {
-        addRuleChainVisit(ASTLocalVariableDeclaration.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTLocalVariableDeclaration.class);
     }
 
     @Override
     public Object visit(ASTLocalVariableDeclaration decl, Object data) {
-        for (int i = 0; i < decl.jjtGetNumChildren(); i++) {
-            if (!(decl.jjtGetChild(i) instanceof ASTVariableDeclarator)) {
-                continue;
-            }
-            ASTVariableDeclaratorId node = (ASTVariableDeclaratorId) decl.jjtGetChild(i).jjtGetChild(0);
-            // TODO this isArray() check misses some cases
-            // need to add DFAish code to determine if an array
-            // is initialized locally or gotten from somewhere else
-            if (!node.getNameDeclaration().isArray() && !actuallyUsed(node.getUsages())) {
-                addViolation(data, node, node.getNameDeclaration().getImage());
+        for (ASTVariableDeclaratorId varId : decl.getVarIds()) {
+            if (JavaRuleUtil.isNeverUsed(varId)
+                && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
+                addViolation(data, varId, varId.getName());
             }
         }
         return data;
-    }
-
-    private boolean actuallyUsed(List<NameOccurrence> usages) {
-        for (NameOccurrence occ : usages) {
-            JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
-            if (!jocc.isOnLeftHandSide()) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

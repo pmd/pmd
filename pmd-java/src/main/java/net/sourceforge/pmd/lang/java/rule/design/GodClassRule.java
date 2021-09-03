@@ -5,10 +5,13 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 
+import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.ACCESS_TO_FOREIGN_DATA;
+import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.TIGHT_CLASS_COHESION;
+import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.WEIGHED_METHOD_COUNT;
+
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 
@@ -21,7 +24,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @since 5.0
  */
-public class GodClassRule extends AbstractJavaRule {
+public class GodClassRule extends AbstractJavaRulechainRule {
 
     /**
      * Very high threshold for WMC (Weighted Method Count). See: Lanza. Object-Oriented Metrics in Practice. Page 16.
@@ -39,11 +42,20 @@ public class GodClassRule extends AbstractJavaRule {
     private static final double TCC_THRESHOLD = 1.0 / 3.0;
 
 
+    public GodClassRule() {
+        super(ASTClassOrInterfaceDeclaration.class);
+    }
+
+
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        int wmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node);
-        double tcc = JavaMetrics.get(JavaClassMetricKey.TCC, node);
-        int atfd = (int) JavaMetrics.get(JavaClassMetricKey.ATFD, node);
+        if (!MetricsUtil.supportsAll(node, WEIGHED_METHOD_COUNT, TIGHT_CLASS_COHESION, ACCESS_TO_FOREIGN_DATA)) {
+            return super.visit(node, data);
+        }
+
+        int wmc = MetricsUtil.computeMetric(WEIGHED_METHOD_COUNT, node);
+        double tcc = MetricsUtil.computeMetric(TIGHT_CLASS_COHESION, node);
+        int atfd = MetricsUtil.computeMetric(ACCESS_TO_FOREIGN_DATA, node);
 
         super.visit(node, data);
 

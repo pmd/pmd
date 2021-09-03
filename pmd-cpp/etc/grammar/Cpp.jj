@@ -1,0 +1,1566 @@
+/**
+ *
+ * Copyright (C) 1996, 1997 Sun Microsystems Inc.
+ *
+ * Use of this file and the system it is part of is constrained by the
+ * file COPYRIGHT in the root directory of this system.  You may, however,
+ * make any modifications you wish to this file.
+ *
+ * Author: Sreenivasa Viswanadha
+ * Date: 3/20/97
+ *
+ * This file contains a Java grammar and actions that implement a front-end.
+ *
+ *
+ * Derived in part from the following work:
+ *
+ * PUBLIC DOMAIN PCCTS-BASED C++ GRAMMAR (cplusplus.g, stat.g, expr.g)
+ *
+ * Authors: Sumana Srinivasan, NeXT Inc.;            sumana_srinivasan@next.com
+ *          Terence Parr, Parr Research Corporation; parrt@parr-research.com
+ *          Russell Quong, Purdue University;        quong@ecn.purdue.edu
+ *
+ * VERSION 1.1
+ *
+ */
+options {
+  BUILD_PARSER=false;
+  CACHE_TOKENS=true;
+  UNICODE_INPUT=true;
+}
+
+PARSER_BEGIN(CppParserImpl)
+package net.sourceforge.pmd.lang.cpp.ast;
+
+import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
+
+public final class CppParserImpl {
+
+}
+PARSER_END(CppParserImpl)
+
+SKIP:
+{
+  " "
+|
+  "\f"
+|
+  "\t"
+|
+  "\r\n"
+|
+  "\n"
+|
+  "#" : PREPROCESSOR_OUTPUT
+}
+
+<DEFAULT,PREPROCESSOR_OUTPUT> SPECIAL_TOKEN:
+{ <SINGLE_LINE_COMMENT: "//"(~["\n","\r"])* ("\n"|"\r"|"\r\n")?> }
+
+MORE:
+{ "/*" : IN_MULTI_LINE_COMMENT }
+
+<IN_MULTI_LINE_COMMENT> SPECIAL_TOKEN:
+{ <MULTI_LINE_COMMENT: "*/">: DEFAULT }
+
+<IN_MULTI_LINE_COMMENT,IN_PREPROCESSOR_OUTPUT_COMMENT> MORE:
+{ < ~[] > }
+
+<IN_PREPROCESSOR_OUTPUT_COMMENT> SPECIAL_TOKEN:
+{ <PREPROCESSOR_OUTPUT_COMMENT: "*/">: PREPROCESSOR_OUTPUT }
+
+<PREPROCESSOR_OUTPUT> SKIP:
+{
+   "\n" : DEFAULT
+}
+
+<PREPROCESSOR_OUTPUT> MORE:
+{
+  "\\\n"
+  |
+  "\\\r\n"
+  |
+  "/*": IN_PREPROCESSOR_OUTPUT_COMMENT
+  |
+  < ~[] >
+}
+
+TOKEN :
+{
+  < LCURLYBRACE: "{" >
+| < RCURLYBRACE: "}" >
+| < LSQUAREBRACKET: "[" >
+| < RSQUAREBRACKET: "]" >
+| < LPARENTHESIS: "(" >
+| < RPARENTHESIS: ")" >
+| < SCOPE: "::" >
+| < COLON: ":" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < QUESTIONMARK: "?" >
+| < ELLIPSIS: "..." >
+| < ASSIGNEQUAL: "=" >
+| < TIMESEQUAL: "*=" >
+| < DIVIDEEQUAL: "/=" >
+| < MODEQUAL: "%=" >
+| < PLUSEQUAL: "+=" >
+| < MINUSEQUAL: "-=" >
+| < SHIFTLEFTEQUAL: "<<=" >
+| < SHIFTRIGHTEQUAL: ">>=" >
+| < BITWISEANDEQUAL: "&=" >
+| < BITWISEXOREQUAL: "^=" >
+| < BITWISEOREQUAL: "|=" >
+| < OR: "||" >
+| < AND: "&&" >
+| < BITWISEOR: "|" >
+| < BITWISEXOR: "^" >
+| < AMPERSAND: "&" >
+| < EQUAL: "==" >
+| < NOTEQUAL: "!=" >
+| < LESSTHAN: "<" >
+| < GREATERTHAN: ">" >
+| < LESSTHANOREQUALTO: "<=" >
+| < GREATERTHANOREQUALTO: ">=" >
+| < SHIFTLEFT: "<<" >
+| < SHIFTRIGHT: ">>" >
+| < PLUS: "+" >
+| < MINUS: "-" >
+| < STAR: "*" >
+| < DIVIDE: "/" >
+| < MOD: "%" >
+| < PLUSPLUS: "++" >
+| < MINUSMINUS: "--" >
+| < TILDE: "~" >
+| < NOT: "!" >
+| < DOT: "." >
+| < POINTERTO: "->" >
+| < DOTSTAR: ".*" >
+| < ARROWSTAR: "->*" >
+| < AUTO: "auto" >
+| < BREAK: "break" >
+| < CASE: "case" >
+| < CATCH: "catch" >
+| < CHAR: "char" >
+| < CONST: "const" >
+| < CONTINUE: "continue" >
+| < _DEFAULT: "default" >
+| < DELETE: "delete" >
+| < DO: "do" >
+| < DOUBLE: "double" >
+| < ELSE: "else" >
+| < ENUM: "enum" >
+| < EXTERN: "extern" >
+| < FLOAT: "float" >
+| < FOR: "for" >
+| < FRIEND: "friend" >
+| < GOTO: "goto" >
+| < IF: "if" >
+| < INLINE: "inline" >
+| < INT: "int" >
+| < LONG: "long" >
+| < NEW: "new" >
+| < PRIVATE: "private" >
+| < PROTECTED: "protected" >
+| < PUBLIC: "public" >
+| < REDECLARED: "redeclared" >
+| < REGISTER: "register" >
+| < RETURN: "return" >
+| < SHORT: "short" >
+| < SIGNED: "signed" >
+| < SIZEOF: "sizeof" >
+| < STATIC: "static" >
+| < STRUCT: "struct" >
+| < CLASS : "class" >
+| < SWITCH: "switch" >
+| < TEMPLATE: "template" >
+| < THIS: "this" >
+| < TRY: "try" >
+| < TYPEDEF: "typedef" >
+| < UNION: "union" >
+| < UNSIGNED: "unsigned" >
+| < VIRTUAL: "virtual" >
+| < VOID: "void" >
+| < VOLATILE: "volatile" >
+| < WHILE: "while" >
+| < OPERATOR: "operator" >
+| < TRUETOK: "true" >
+| < FALSETOK: "false" >
+| < THROW: "throw" >
+| < AT: "@" >
+| < FINALLY: "finally" >
+}
+
+TOKEN:
+{
+  <  #BINARYDIGIT:  ["0"-"1"] >
+| <  #OCTALDIGIT:   ["0"-"7"] >
+| <  #DECIMALDIGIT: ["0"-"9"] >
+| <  #HEXDIGIT:     ["a"-"f", "A"-"F", "0"-"9"] >
+| <  #INT_SUFFIX:   ["u", "U", "l", "L"] | "uL" | "Ul" | "UL" | "ul" | "lu" | "Lu" | "lU" | "LU" >
+
+| <  ZERO: "0" >
+| <  BINARY_INT_LITERAL:      "0" ["b", "B"]            ("'" | <BINARYDIGIT>)+  (<INT_SUFFIX>)? >
+| <  OCTAL_INT_LITERAL:       "0"                       ("'" | <OCTALDIGIT>)+   (<INT_SUFFIX>)? >
+| <  DECIMAL_INT_LITERAL:     ["1"-"9"]                 ("'" | <DECIMALDIGIT>)* (<INT_SUFFIX>)? >
+| <  HEXADECIMAL_INT_LITERAL: "0" ["x", "X"] <HEXDIGIT> ("'" | <HEXDIGIT>)+     (<INT_SUFFIX>)? >
+
+// like DECIMALINT but may start with 0
+| <  #INT_IN_FLOAT: ["0"-"9"] ("'" | <DECIMALDIGIT>)* >
+| <  #EXP_PART: ["e", "E"] (["-","+"])? <INT_IN_FLOAT> >
+
+| <  FLOAT_LITERAL : <INT_IN_FLOAT> ("." (<INT_IN_FLOAT> (<EXP_PART>)?)? | <EXP_PART> ) (["f", "l", "F", "L"])? >
+}
+
+TOKEN :
+{
+  < #CHRPREF : <STRPREF>>
+| <  CHARACTER : <CHRPREF>
+      "'" ( ( ~["'","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] ) ) )+ "'" >
+
+| < #STRPREF : ("L" | "u" | "U" | "u8")? >
+| <  STRING : <STRPREF>
+      "\"" ( ( ~["\"","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] | "\n" | "\r\n" ) ) )* "\"" >
+
+}
+
+// Raw C++11 string literal support
+// https://en.cppreference.com/w/cpp/language/string_literal
+TOKEN :
+{
+  <  RSTRING : <STRPREF> "R\"" >
+  {
+    StringBuilder sb = new StringBuilder(16);
+
+    // delim ------+
+    //            vvv
+    // Matching R"...(...)..."
+    //               ^
+    for (;;) {
+      try { curChar = input_stream.readChar(); }
+      catch(java.io.IOException e) { return matchedToken; }
+      if (curChar == '(') break;
+      sb.append(curChar);
+    }
+    final String delim = sb.toString();
+
+rstringbody:
+    // Matching R"...(...)..."
+    //                   ^
+    for (;;) {
+      try { curChar = input_stream.readChar(); }
+	  catch(java.io.IOException e) { return matchedToken; }
+      if (curChar == ')') {
+	  // delim --------------+
+	  //                    vvv
+	  // Matching R"...(...)..."
+	  //                    ^^^
+	  for (int i = 0; i < delim.length(); i++) {
+	    try { curChar = input_stream.readChar(); }
+	  catch(java.io.IOException e) { return matchedToken; }
+	    if (delim.charAt(i) != curChar) {
+	      input_stream.backup(1);
+	      continue rstringbody;
+	    }
+	  }
+	  // Matching R"...(...)..."
+	  //                       ^
+	  try { curChar = input_stream.readChar(); }
+	  catch(java.io.IOException e) { return matchedToken; }
+	  if (curChar != '"') {
+	    input_stream.backup(1);
+	    continue rstringbody;
+	  }
+	  break;
+      }
+    }
+
+    matchedToken = matchedToken.replaceImage(input_stream);
+  }
+}
+
+TOKEN :
+{
+// https://en.cppreference.com/w/cpp/language/identifiers#Unicode_characters_in_identifiers
+
+  < ID : <ID_START_CHAR> (<ID_CHAR>)* >
+
+| < #UNICODE_ESCAPE: "\\" ( "u" <HEXDIGIT_4> | "U" <HEXDIGIT_4> <HEXDIGIT_4> ) >
+| < #HEXDIGIT_4: <HEXDIGIT> <HEXDIGIT> <HEXDIGIT> <HEXDIGIT> >
+| < #ID_CHAR: <UNICODE_ESCAPE> | [
+    "a"-"z", "A"-"Z", "0"-"9", "_", "$",
+    "\u00a8", "\u00aa", "\u00ad", "\u00af",
+    "\u00b2"-"\u00b5", "\u00b7"-"\u00ba",
+    "\u00b7"-"\u00ba", "\u00bc"-"\u00be",
+    "\u00c0"-"\u00d6", "\u00d8"-"\u00f6",
+    "\u00f8"-"\u167f", "\u1681"-"\u180d",
+    "\u180f"-"\u1fff", "\u200b"-"\u200d",
+    "\u202a"-"\u202e", "\u203f"-"\u2040",
+    "\u2054", "\u2060"-"\u218f",
+    "\u2460"-"\u24ff", "\u2776"-"\u2793",
+    "\u2c00"-"\u2dff", "\u2e80"-"\u2fff",
+    "\u3004"-"\u3007", "\u3021"-"\u302f",
+    "\u3031"-"\ud7ff", "\uf900"-"\ufd3d",
+    "\ufd40"-"\ufdcf", "\ufdf0"-"\ufe44",
+    "\ufe47"-"\ufffd"
+    // the standard also allows code points in planes 1 through e,
+    // but javacc doesn't support supplementary characters
+  ] >
+// this production is the same as the above,
+// with some ranges subtracted
+| < #ID_START_CHAR: <UNICODE_ESCAPE> | [
+     "a"-"z", "A"-"Z", "_", "$",
+     "\u00a8", "\u00aa", "\u00ad", "\u00af",
+     "\u00b2"-"\u00b5", "\u00b7"-"\u00ba",
+     "\u00b7"-"\u00ba", "\u00bc"-"\u00be",
+     "\u00c0"-"\u00d6", "\u00d8"-"\u00f6",
+     // subtracted u+0300-u+036f from u+00f8-u+167f
+     "\u00f8"-"\u02ff", "\u0370"-"\u167f",
+     "\u1681"-"\u180d",
+     // subtracted u+1dc0-u+1dff from u+180f-u+1fff
+     "\u180f"-"\u1dbf", "\u1e00"-"\u1fff",
+     "\u200b"-"\u200d",
+     "\u202a"-"\u202e", "\u203f"-"\u2040",
+     "\u2054",
+     // subtracted u+20d0-u+20ff from u+2060-u+218f
+     "\u2060"-"\u20cf", "\u2100"-"\u218f",
+     "\u2460"-"\u24ff", "\u2776"-"\u2793",
+     "\u2c00"-"\u2dff", "\u2e80"-"\u2fff",
+     "\u3004"-"\u3007", "\u3021"-"\u302f",
+     "\u3031"-"\ud7ff", "\uf900"-"\ufd3d",
+     "\ufd40"-"\ufdcf",
+     // subtracted u+fe20-u+fe2f from u+fdf0-u+fe44
+     "\ufdf0"-"\ufe1f", "\ufe30"-"\ufe44",
+     "\ufe47"-"\ufffd"
+   ] >
+}
+
+
+void translation_unit() :
+{}
+{
+   { sym.OpenScope(null, false); }
+   ( LOOKAHEAD(2) external_declaration() )* <EOF>
+   { sym.CloseScope(); }
+}
+
+void external_declaration() :
+{ boolean isTypedef = false; }
+{
+    LOOKAHEAD(("typedef" | template_head())? class_head()  "{")
+       ( template_head() )? declaration()
+   |
+    LOOKAHEAD("enum" (<ID>)? "{")
+       enum_specifier() (init_declarator_list(false))?  ";"
+   |
+    LOOKAHEAD ((template_head())? dtor_ctor_decl_spec()
+                               dtor_declarator() "{")
+       dtor_definition()
+   |
+    LOOKAHEAD(dtor_ctor_decl_spec() ctor_declarator_lookahead())
+       ctor_definition()
+
+   |
+    LOOKAHEAD((declaration_specifiers())?  function_declarator_lookahead())
+       function_definition()
+
+   |
+    LOOKAHEAD((scope_override())? "operator")
+         conversion_function_decl_or_def()
+   |
+    template_head()
+      (
+        LOOKAHEAD(dtor_ctor_decl_spec() ctor_declarator_lookahead())
+           ctor_definition()
+      |
+        LOOKAHEAD((declaration_specifiers())?  function_declarator_lookahead())
+           function_definition()
+      |
+        isTypedef = declaration_specifiers()
+               (init_declarator_list(isTypedef))?  ";"
+      )
+   |
+    declaration()
+   |
+    ";"
+}
+
+void function_definition() :
+{
+   Scope sc = null;
+   boolean isTypedef;
+}
+{
+
+    LOOKAHEAD(3) isTypedef = declaration_specifiers()
+        sc = function_declarator(isTypedef) func_decl_def(sc)
+   |
+    sc = function_declarator(false) func_decl_def(sc)
+}
+
+void func_decl_def(Scope sc) :
+{
+   boolean closeReqd = false;
+}
+{
+  {
+     if (closeReqd = (sc != null && sc != sym.GetCurScope()))
+        sym.OpenScope(sc);
+  }
+
+  (
+    ";"
+   |
+    compound_statement()
+  )
+
+  { if (closeReqd) sym.CloseScope(); }
+}
+
+void linkage_specification() :
+{}
+{
+   "extern" <STRING>
+   (
+    "{" ( external_declaration() )* "}"
+      ( LOOKAHEAD(";") ";")?
+   |
+    declaration()
+   )
+}
+
+void declaration() :
+{ boolean isTypedef = false; }
+{
+    LOOKAHEAD(2)
+      isTypedef = declaration_specifiers()
+               (init_declarator_list(isTypedef))? ";"
+   |
+    linkage_specification()
+}
+
+/**
+ * Very temporary. Just returns true if it sees a typedef. Finally, we will
+ * need a structure that stores all the attributes.
+ */
+boolean type_modifiers() :
+{ boolean isTypedef = false; }
+{
+   (
+     isTypedef = storage_class_specifier()
+    |
+     type_qualifier()
+    |
+     "inline"
+    |
+     "virtual"
+    |
+     "friend"
+   )
+
+   { return isTypedef; }
+}
+
+/**
+ * Very temporary. Just returns true if it sees a typedef. Finally, we will
+ * need a structure that stores all the attributes.
+ */
+boolean declaration_specifiers() :
+{
+   Token t;
+   boolean isTypedef = false, tmp;
+}
+{
+ (
+   (
+      LOOKAHEAD(type_modifiers()) tmp = type_modifiers() { isTypedef |= tmp; }
+   )+
+
+    [ LOOKAHEAD(2) (
+     LOOKAHEAD(builtin_type_specifier()) builtin_type_specifier()
+         (  LOOKAHEAD(2) (
+            LOOKAHEAD(builtin_type_specifier()) builtin_type_specifier()
+          |
+            LOOKAHEAD(type_modifiers()) tmp = type_modifiers() )
+                                        { isTypedef |= tmp; }
+         )*
+    |
+     (
+        class_specifier()
+      |
+        enum_specifier()
+      |
+        qualified_type()
+     )
+     (LOOKAHEAD(2) tmp = type_modifiers() { isTypedef |= tmp;} )*
+    ) ]
+   |
+    LOOKAHEAD(builtin_type_specifier()) builtin_type_specifier()
+         ( LOOKAHEAD(2) (
+            LOOKAHEAD(builtin_type_specifier()) builtin_type_specifier()
+          |
+            tmp = type_modifiers() { isTypedef |= tmp; } )
+         )*
+
+   |
+    (
+      class_specifier()
+     |
+      enum_specifier()
+     |
+      qualified_type()
+    )
+    (LOOKAHEAD(2) tmp = type_modifiers() { isTypedef |= tmp; } )*
+ )
+
+ { return isTypedef; }
+}
+
+/*
+void type_specifier() :
+{}
+{
+    simple_type_specifier()
+   |
+    class_specifier()
+   |
+    enum_specifier()
+}
+*/
+
+void simple_type_specifier() :
+{}
+{
+   (
+    builtin_type_specifier()
+   |
+    qualified_type()
+   )
+}
+
+void scope_override_lookahead() :
+{}
+{
+    "::"
+   |
+    <ID> ("<" template_argument_list() ">")? "::"
+}
+
+String scope_override() :
+{
+   String name = "";
+   Token t;
+}
+{
+  (
+    ("::")  { name += "::"; }
+    (
+      LOOKAHEAD(2) t = <ID> ("<" template_argument_list() ">")? "::"
+                   { name += t.getImage() + "::"; }
+    )*
+   |
+    (
+      LOOKAHEAD(2) t = <ID> ("<" template_argument_list() ">")? "::"
+                   { name += t.getImage() + "::"; }
+    )+
+  )
+  { return name; }
+}
+
+
+String qualified_id() :
+{
+   String name = "";
+   Token t;
+}
+{
+    [ LOOKAHEAD(scope_override_lookahead()) name = scope_override() ]
+    (
+      t = <ID> [ "<" template_argument_list()  ">" ]
+      { return name + t.getImage(); }
+     |
+      "operator" optor() { return "operator"; }
+    )
+}
+
+void ptr_to_member() :
+{}
+{
+    scope_override()  "*"
+}
+
+void qualified_type() :
+{}
+{
+    LOOKAHEAD({ sym.IsFullyScopedTypeName(GetFullyScopedName()) } )
+        qualified_id()
+}
+
+void type_qualifier() :
+{}
+{
+    "const" | "volatile"
+}
+
+/**
+ * Very temporary. Just returns true if it sees a typedef. Finally, we will
+ * need a structure that stores all the attributes.
+ */
+boolean storage_class_specifier() :
+{}
+{
+   ( "auto" | "register" | "static" | "extern" ) { return false; }
+   | "typedef"  { return true; }
+}
+
+void builtin_type_specifier() :
+{}
+{
+   "void" | "char" | "short" | "int" | "long" | "float" |
+   "double" | "signed" | "unsigned"
+}
+
+void init_declarator_list(boolean isTypedef) :
+{}
+{
+   init_declarator(isTypedef) ("," init_declarator(isTypedef))*
+}
+
+void init_declarator(boolean isTypedef) :
+{ String name; }
+{
+   name = declarator()
+   {
+      if (isTypedef)
+         sym.PutTypeName(name);
+   }
+   (
+    "=" initializer()
+   |
+    "(" expression_list()  ")"
+   )?
+}
+
+void class_head() :
+{}
+{
+   ("struct" | "union" | "class")
+   (<ID> (base_clause(null))?)?
+}
+
+void class_specifier() :
+{
+   ClassScope sc = null;
+   Token t;
+}
+{
+   ("struct" | "union" | "class" )
+   (
+    "{"
+        {
+           sym.OpenScope(null, false);
+        }
+        (member_declaration())*
+    "}"
+        {
+           sym.CloseScope();
+        }
+   |
+    LOOKAHEAD(2) t = <ID>
+     {
+        sc = (ClassScope)sym.OpenScope(t.getImage(), true);
+     }
+     (base_clause(sc))?
+    "{"
+      (member_declaration())*
+    "}"
+        {
+           sym.CloseScope();
+        }
+   |
+    t=<ID> (LOOKAHEAD(2) "<" template_argument_list()  ">")?
+    { sym.PutTypeName(t.getImage()); }
+   )
+}
+
+void base_clause(ClassScope scope) :
+{}
+{
+   ":" base_specifier(scope) ( "," base_specifier(scope) )*
+}
+
+void base_specifier(ClassScope scope) :
+{ Token t; }
+{
+   ("virtual" (access_specifier())? | access_specifier() ("virtual")?)?
+   (LOOKAHEAD(scope_override_lookahead()) scope_override())?
+   t = <ID> ("<" template_argument_list()  ">")?
+   {                          scope.AddSuper(sym.GetScope(t.getImage()));
+   }
+}
+
+void access_specifier() :
+{}
+{
+   "public" | "protected" | "private"
+}
+
+void member_declaration() :
+{ boolean isTypedef = false; }
+{
+    LOOKAHEAD(("typedef")? class_head() "{") declaration()
+
+   |
+    LOOKAHEAD("enum" (<ID>)? "{") enum_specifier()
+       ( member_declarator_list(false) )?  ";"
+   |
+    LOOKAHEAD( "operator" )
+       conversion_function_decl_or_def()
+   |
+    LOOKAHEAD(dtor_ctor_decl_spec() dtor_declarator() "{")
+       dtor_definition()
+   |
+    LOOKAHEAD(("inline"| "virtual")* "~")
+       dtor_ctor_decl_spec() simple_dtor_declarator()  ";"
+   |
+    LOOKAHEAD(dtor_ctor_decl_spec() ctor_declarator_lookahead())
+       ctor_definition()
+   |
+    LOOKAHEAD(dtor_ctor_decl_spec() ctor_declarator_lookahead() ";")
+      (dtor_ctor_decl_spec() ctor_declarator() ";")
+   |
+    LOOKAHEAD((declaration_specifiers())? function_declarator_lookahead())
+       function_definition()
+   |
+    LOOKAHEAD(declaration_specifiers())
+       isTypedef = declaration_specifiers()
+           (member_declarator_list(isTypedef))? ";"
+   |
+    LOOKAHEAD(<ID>) function_declarator(false) ";"
+   |
+    LOOKAHEAD(3)
+     qualified_id() ";"
+   |
+    access_specifier()  ":"
+   |
+    ";"
+}
+
+void member_declarator_list(boolean isTypedef) :
+{}
+{
+   member_declarator(isTypedef) ("=" assignment_expression())?
+   ("," member_declarator(isTypedef) ("=" assignment_expression())?)*
+}
+
+void member_declarator(boolean isTypedef) :
+{ String name; }
+{
+   name = declarator()
+   {
+      if (isTypedef)
+         sym.PutTypeName(name);
+   }
+}
+
+void conversion_function_decl_or_def() :
+{
+   Scope sc = null;
+   String name = null;
+}
+{
+   [ LOOKAHEAD(scope_override_lookahead()) name = scope_override() ]
+
+   "operator" declaration_specifiers() ("*" | "&")?
+
+   "(" (parameter_list())? ")"
+   (LOOKAHEAD(2) type_qualifier())?
+   (exception_spec())?
+   func_decl_def(null)  // Temporary (fix the null)
+}
+
+void enum_specifier() :
+{ Token t; }
+{
+   "enum"
+   (
+    "{" enumerator_list() "}"
+   |
+    t=<ID> (LOOKAHEAD(2) "{" enumerator_list() "}")?
+           { sym.PutTypeName(t.getImage()); }
+   )
+}
+
+void enumerator_list() :
+{}
+{
+   enumerator() ("," enumerator())*
+}
+
+void enumerator() :
+{}
+{
+   <ID> ("=" constant_expression())?
+}
+
+void ptr_operator() :
+{}
+{
+    "&" cv_qualifier_seq()
+   |
+    "*" cv_qualifier_seq()
+   |
+    ptr_to_member() cv_qualifier_seq()
+}
+
+void cv_qualifier_seq() :
+{}
+{
+   [ LOOKAHEAD(2) (
+     "const" [ LOOKAHEAD(2) "volatile" ]
+    |
+     "volatile" [ LOOKAHEAD(2) "const" ] )
+   ]
+}
+
+String declarator() :
+{ String name; }
+{
+  (
+    LOOKAHEAD(ptr_operator())
+      ptr_operator() name = declarator()
+   |
+    name = direct_declarator()
+  )
+
+  { return name; }
+}
+
+String direct_declarator() :
+{
+   String name;
+   Token t;
+}
+{
+   LOOKAHEAD(2)
+    "~" t = <ID> (LOOKAHEAD(2) declarator_suffixes())?
+        { return "~" + t.getImage(); }
+   |
+    "(" name = declarator() ")" (LOOKAHEAD(2) declarator_suffixes())?
+        { return name; }
+   |
+    name = qualified_id() (LOOKAHEAD(2) declarator_suffixes())?
+    { return name; }
+}
+
+void declarator_suffixes() :
+{}
+{
+    ("[" (constant_expression())? "]" )+
+   |
+    "(" (parameter_list())? ")"
+    (LOOKAHEAD(2) type_qualifier())?
+    (exception_spec())?
+}
+
+/**
+ * Used only for lookahead.
+ */
+void function_declarator_lookahead() :
+{}
+{
+   (LOOKAHEAD(2) ptr_operator() )* qualified_id() "("
+}
+
+Scope function_declarator(boolean isTypedef) :
+{ Scope sc = null; }
+{
+  (
+    LOOKAHEAD(ptr_operator())
+       ptr_operator() sc = function_declarator(isTypedef)
+   |
+     sc = function_direct_declarator(isTypedef)
+  )
+
+  { return sc; }
+}
+
+Scope function_direct_declarator(boolean isTypedef) :
+{
+  String name;
+  Scope sc = null;
+  boolean closeReqd = false;
+}
+{
+     name = qualified_id()
+
+     {
+        sc = sym.GetScopeOfFullyScopedName(name);
+
+        if (closeReqd = (sc != null && sc != sym.GetCurScope()))
+           sym.OpenScope(sc);
+     }
+
+     "(" (parameter_list())?  ")"
+     (LOOKAHEAD(2) type_qualifier())?
+     (exception_spec())?
+     ("=" <ZERO>)?
+
+     {
+        if (closeReqd)
+           sym.CloseScope();
+
+        if (isTypedef)
+           sym.PutTypeName(name);
+
+        return sc;
+     }
+}
+
+void dtor_ctor_decl_spec() :
+{}
+{
+   [
+    "virtual" [ "inline"]
+   |
+    "inline"  [ "virtual"]
+   ]
+}
+
+void dtor_definition() :
+{}
+{
+   (template_head())?
+   dtor_ctor_decl_spec()
+   dtor_declarator()
+   compound_statement()
+}
+
+void ctor_definition() :
+{
+   Scope sc = null;
+   boolean closeReqd = false;
+}
+{
+   dtor_ctor_decl_spec() sc = ctor_declarator()
+
+   {
+      if (closeReqd = (sc != null && sc != sym.GetCurScope()))
+         sym.OpenScope(sc);
+   }
+
+   (exception_spec())?
+
+   (
+     ";"
+    |
+     [ ctor_initializer() ] compound_statement()
+   )
+
+   { if (closeReqd) sym.CloseScope(); }
+}
+
+void ctor_declarator_lookahead() :
+{}
+{
+   LOOKAHEAD( { IsCtor() } ) qualified_id() "("
+}
+
+Scope ctor_declarator() :
+{
+  String name;
+  Scope sc = null;
+  boolean closeReqd = false;
+}
+{
+   LOOKAHEAD( { IsCtor() } )
+      name = qualified_id()
+
+     {
+        sc = sym.GetScopeOfFullyScopedName(name);
+
+        if (closeReqd = (sc != null && sc != sym.GetCurScope()))
+           sym.OpenScope(sc);
+     }
+
+     "(" [ LOOKAHEAD(2) parameter_list() ]  ")"
+
+     [ LOOKAHEAD(2) exception_spec() ]
+
+     {
+        if (closeReqd)
+           sym.CloseScope();
+
+        return sc;
+     }
+}
+
+void ctor_initializer() :
+{}
+{
+   ":" superclass_init() ("," superclass_init())*
+}
+
+void superclass_init() :
+{}
+{
+   qualified_id()  "(" (expression_list())?  ")"
+}
+
+void dtor_declarator() :
+{}
+{
+   (LOOKAHEAD(scope_override_lookahead()) scope_override())?
+    simple_dtor_declarator()
+}
+
+void simple_dtor_declarator() :
+{}
+{
+   "~"
+   LOOKAHEAD( { IsCtor() } ) <ID> "(" (parameter_list())?  ")"
+}
+
+void parameter_list() :
+{}
+{
+    parameter_declaration_list() [ LOOKAHEAD(2) [ "," ] "..." ]
+   |
+    "..."
+}
+
+void parameter_declaration_list() :
+{}
+{
+   parameter_declaration() (LOOKAHEAD(2) "," parameter_declaration())*
+}
+
+void parameter_declaration() :
+{}
+{
+   declaration_specifiers()
+   (
+    LOOKAHEAD(declarator()) declarator()
+   |
+    abstract_declarator()
+   )
+   ("=" assignment_expression())?
+}
+
+void initializer() :
+{}
+{
+    LOOKAHEAD(3)
+     "{" initializer() ("," initializer())* "}"
+   |
+    assignment_expression()
+}
+
+void type_name() :
+{}
+{
+   declaration_specifiers() abstract_declarator()
+}
+
+void abstract_declarator() :
+{}
+{
+   [ LOOKAHEAD(2) (
+    "(" abstract_declarator()   ")"
+    (abstract_declarator_suffix())+
+   |
+    ("[" (constant_expression())? "]")+
+   |
+    ptr_operator() abstract_declarator() )
+   ]
+}
+
+void abstract_declarator_suffix() :
+{}
+{
+    "[" ( constant_expression() )?  "]"
+   |
+    "(" (parameter_list())? ")"
+}
+
+void template_head() :
+{}
+{
+   "template" "<" template_parameter_list() ">"
+}
+
+void template_parameter_list() :
+{}
+{
+   template_parameter() ("," template_parameter())*
+}
+
+void template_parameter() :
+{ Token t; }
+{
+    LOOKAHEAD(3)
+      "class" t=<ID> { sym.PutTypeName(t.getImage()); }
+   |
+    parameter_declaration()
+}
+
+void template_id() :
+{}
+{
+   <ID> "<" template_argument_list() ">"
+}
+
+void template_argument_list() :
+{}
+{
+   template_argument() ("," template_argument())*
+}
+
+void template_argument() :
+{}
+{
+    LOOKAHEAD(3)
+      type_name()
+   |
+    shift_expression()
+}
+
+void statement_list() :
+{}
+{
+   (LOOKAHEAD(statement()) statement())+
+}
+
+void statement() :
+{}
+{
+    LOOKAHEAD( declaration() )
+      declaration()
+   |
+    LOOKAHEAD( expression() ";" )
+      expression() ";"
+   |
+    compound_statement()
+   |
+    selection_statement()
+   |
+    jump_statement()
+   |
+    ";"
+   |
+    try_block()
+   |
+    throw_statement()
+   |
+    LOOKAHEAD(2)
+      labeled_statement()
+   |
+    iteration_statement()
+}
+
+void labeled_statement() :
+{}
+{
+    <ID> ":" statement()
+   |
+    "case" constant_expression()  ":" statement()
+   |
+    "default"  ":" statement()
+}
+
+void compound_statement() :
+{}
+{
+   "{"
+
+   { sym.OpenScope(null, false); }
+
+   (statement_list())?
+
+   { sym.CloseScope(); }
+
+   "}"
+}
+
+void selection_statement() :
+{}
+{
+    "if" "(" expression() ")" statement()
+     (LOOKAHEAD(2) "else" statement())?
+   |
+    "switch" "(" expression() ")" statement()
+}
+
+void iteration_statement() :
+{}
+{
+    "while" "(" expression() ")" statement()
+   |
+    "do" statement() "while" "(" expression() ")" ";"
+   |
+    "for" "(" (LOOKAHEAD(3) declaration() | expression() ";" | ";")
+    (expression())? ";" (expression())? ")" statement()
+}
+
+void jump_statement() :
+{}
+{
+    "goto" <ID> ";"
+   |
+    "continue" ";"
+   |
+    "break" ";"
+   |
+    "return" (expression())? ";"
+}
+
+void try_block() :
+{}
+{
+   "try" compound_statement() (handler())*
+}
+
+void handler() :
+{}
+{
+   "catch" "(" exception_declaration() ")"
+   compound_statement()
+ |
+   "finally" compound_statement()
+}
+
+void exception_declaration() :
+{}
+{    parameter_declaration_list()
+   |
+     "..."
+}
+
+void throw_statement() :
+{}
+{    "throw" (assignment_expression())? ";"
+}
+
+void expression() :
+{}
+{
+   assignment_expression() ( LOOKAHEAD(2) "," assignment_expression())*
+}
+
+void assignment_expression() :
+{}
+{
+    conditional_expression()
+    (("="
+   | "*="
+   | "/="
+   | "%="
+   | "+="
+   | "-="
+   | "<<="
+   | ">>="
+   | "&="
+   | "^="
+   | "|="
+   )
+   assignment_expression()
+   )?
+}
+
+void conditional_expression() :
+{}
+{   logical_or_expression()
+   ("?" conditional_expression()  ":" conditional_expression())?
+}
+
+void constant_expression() :
+{}
+{    conditional_expression()
+}
+
+void logical_or_expression() :
+{}
+{    logical_and_expression() ( "||" logical_and_expression())*
+}
+
+void logical_and_expression() :
+{}
+{    inclusive_or_expression() ( "&&" inclusive_or_expression())*
+}
+
+void inclusive_or_expression() :
+{}
+{    exclusive_or_expression()( "|" exclusive_or_expression())*
+}
+
+void exclusive_or_expression() :
+{}
+{    and_expression()( "^" and_expression())*
+}
+
+void and_expression() :
+{}
+{    equality_expression()( LOOKAHEAD(2) "&" equality_expression())*
+}
+
+void equality_expression() :
+{}
+{    relational_expression()(( "!=" | "==") relational_expression())*
+}
+
+void relational_expression() :
+{}
+{  shift_expression()
+   (
+     LOOKAHEAD(2)
+     (
+         "<"
+       | ">"
+       | "<="
+       | ">="
+     )
+     shift_expression()
+   )*
+}
+
+void shift_expression() :
+{}
+{    additive_expression()(( "<<" | ">>") additive_expression())*
+}
+
+void additive_expression() :
+{}
+{    multiplicative_expression()
+   (LOOKAHEAD(2) ( "+" | "-") multiplicative_expression())*
+}
+
+void multiplicative_expression() :
+{}
+{  pm_expression()
+   (LOOKAHEAD(2) ( "*" | "/" | "%") pm_expression())*
+}
+
+void pm_expression() :
+{}
+{
+    cast_expression() (( ".*" | "->*" ) cast_expression())*
+}
+
+void cast_expression() :
+{}
+{
+    LOOKAHEAD( "(" type_name() ")" )
+     "(" type_name() ")" cast_expression()
+   |
+     unary_expression()
+}
+
+void unary_expression() :
+{}
+{
+     "++" unary_expression()
+   |
+     "--" unary_expression()
+   |
+     LOOKAHEAD(3)
+     unary_operator() cast_expression()
+   |
+     "sizeof"
+     (
+       LOOKAHEAD("(")
+       "(" type_name()  ")"
+     |
+       unary_expression()
+     )
+   |
+     postfix_expression()
+}
+
+void new_expression() :
+{}
+{
+   (LOOKAHEAD("::") ("::"))?
+   "new"
+   (
+     LOOKAHEAD("(" type_name() ")" )
+      "(" type_name() ")"
+    |
+     (LOOKAHEAD("(" expression_list() ) "(" expression_list() ")")?
+     (
+       LOOKAHEAD("(" type_name() ")" )
+       "(" type_name() ")"
+      |
+       LOOKAHEAD(declaration_specifiers())
+        new_type_id()
+     )
+   )
+   (LOOKAHEAD(new_initializer()) new_initializer())?
+}
+
+void new_type_id() :
+{}
+{
+   declaration_specifiers()
+   ( LOOKAHEAD(new_declarator()) new_declarator() )?
+}
+
+void new_declarator() :
+{}
+{
+     direct_new_declarator()
+   |
+     ptr_operator() cv_qualifier_seq()  [ LOOKAHEAD(2) new_declarator() ]
+}
+
+void direct_new_declarator() :
+{}
+{
+   (LOOKAHEAD(2) "[" expression() "]" )+
+}
+
+void new_initializer() :
+{}
+{    "(" ( expression_list() )? ")"
+}
+
+void delete_expression() :
+{}
+{    ( "::" )? "delete" ( "[" "]" )? cast_expression()
+}
+
+void unary_operator() :
+{}
+{    "&"
+   | "*"
+   | "+"
+   | "-"
+   | "~"
+   | "!"
+}
+
+void postfix_expression() :
+{}
+{
+   LOOKAHEAD(3)
+    primary_expression()
+    ( LOOKAHEAD(2) (
+     "[" expression() "]"
+    |
+     "(" ( expression_list() )? ")"
+    |
+     "." id_expression()
+    |
+     "->" id_expression()
+    |
+     "++"
+    |
+     "--" )
+    )*
+  |
+   simple_type_specifier() "(" ( expression_list() )? ")"
+}
+
+void id_expression() :
+{}
+{
+   (LOOKAHEAD(scope_override_lookahead()) scope_override())?
+   (     <ID>
+   | "operator" optor()
+   | "~"  <ID>
+   )
+}
+
+void primary_expression() :
+{}
+{
+     "this"
+   | ( LOOKAHEAD(2) <STRING> )+
+   | "(" expression()  ")"
+   |
+     LOOKAHEAD( ("::")? "new")
+     new_expression()
+   |
+     LOOKAHEAD( ("::")? "delete")
+     delete_expression()
+   | id_expression()
+   | constant()
+}
+
+void expression_list() :
+{}
+{    assignment_expression()( "," assignment_expression())*
+}
+
+void constant() :
+{}
+{
+     <ZERO>
+   | <OCTAL_INT_LITERAL>
+   | <DECIMAL_INT_LITERAL>
+   | <HEXADECIMAL_INT_LITERAL>
+   | <FLOAT_LITERAL>
+
+   | <CHARACTER>
+   | "true"
+   | "false"
+}
+
+void optor() :
+{}
+{
+     "new" [ LOOKAHEAD(2) "[" "]" ]
+   | "delete" [ LOOKAHEAD(2) "[" "]" ]
+   | "+"
+   | "-"
+   | "*"
+   | "/"
+   | "%"
+   | "^"
+   | "&"
+   | "|"
+   | "~"
+   | "!"
+   | "="
+   | "<"
+   | ">"
+   | "+="
+   | "-="
+   | "*="
+   | "/="
+   | "%="
+   | "^="
+   | "&="
+   | "|="
+   | "<<"
+   | ">>"
+   | ">>="
+   | "<<="
+   | "=="
+   | "!="
+   | "<="
+   | ">="
+   | "&&"
+   | "||"
+   | "++"
+   | "--"
+   | ","
+   | "->*"
+   | "->"
+   | "(" ")"
+   | "[" "]"
+   | declaration_specifiers() (LOOKAHEAD(2) ("*"|"&"))?
+}
+
+void exception_spec() :
+{}
+{
+   "throw" "(" exception_list() ")"
+}
+
+void exception_list() :
+{}
+{
+   type_name() ( "," type_name())*
+}
+
+/*end*/

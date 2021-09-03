@@ -3,10 +3,11 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-	<test-code>
-		<description>multiple declarations</description>
-		<expected-problems>5</expected-problems>
-		<code><![CDATA[
+
+    <test-code>
+        <description>multiple declarations</description>
+        <expected-problems>5</expected-problems>
+        <code><![CDATA[
 public class Foo {
     char a1 = 0, a2 = 0; // 2 Bad
     char a3 = 0, a4; // Bad
@@ -14,15 +15,16 @@ public class Foo {
     char a7 = computed(), a8 = 0, a9; // Bad
 
     static char computed() {
-	return 0;
+        return 0;
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>references</description>
-		<expected-problems>7</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>references</description>
+        <expected-problems>7</expected-problems>
+        <code><![CDATA[
 import java.util.Date;
 
 public class Foo {
@@ -40,15 +42,16 @@ public class Foo {
     Date d = new Date(null);
 
     static Object computed() {
-	return null;
+        return null;
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>arrays of primitives</description>
-		<expected-problems>7</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>arrays of primitives</description>
+        <expected-problems>7</expected-problems>
+        <code><![CDATA[
 public class Foo {
     boolean[] ba0;
     boolean[] ba = null; // Bad
@@ -80,15 +83,16 @@ public class Foo {
     double[] da1 = new double[] { 0 };
 
     static boolean[] computed() {
-	return null;
+        return null;
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>arrays of objects</description>
-		<expected-problems>2</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>arrays of objects</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
 public class Foo {
     Object[] oa0;
     Object[] oa = null; // Bad
@@ -100,15 +104,16 @@ public class Foo {
     Object[][] ooa2 = new Object[][] { { null } };
 
     static Object[] computed() {
-	return null;
+        return null;
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>mixed arrays</description>
-		<expected-problems>5</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>mixed arrays</description>
+        <expected-problems>5</expected-problems>
+        <code><![CDATA[
 public class Foo {
     int i1, iam1[];
     int i2 = 0, iam2[]; // Bad
@@ -117,46 +122,48 @@ public class Foo {
     int i5 = 0, iam5[] = computed(); // Bad
 
     static int[] computed() {
-	return null;
+        return null;
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>nested class</description>
-		<expected-problems>4</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>nested class</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
 public class Foo {
     private static class NestedClass {
-	boolean b0;
-	boolean b = false; // Bad
-	static boolean stb0;
-	static boolean stb = false; // Bad
-	Boolean stB = false;
-	static Boolean B = false;
+        boolean b0;
+        boolean b = false; // Bad
+        static boolean stb0;
+        static boolean stb = false; // Bad
+        Boolean stB = false;
+        static Boolean B = false;
 
-	double[] da0;
-	double[] da = null; // Bad
-	double[] da1 = new double[] { 0 };
-	double[] da2 = computed();
+        double[] da0;
+        double[] da = null; // Bad
+        double[] da1 = new double[] { 0 };
+        double[] da2 = computed();
 
-	Object[][] oaa0;
-	Object[][] oaa = null; // Bad
-	Object[][] ooa1 = new Object[1][];
-	Object[][] ooa2 = new Object[][] { { null } };
+        Object[][] oaa0;
+        Object[][] oaa = null; // Bad
+        Object[][] ooa1 = new Object[1][];
+        Object[][] ooa2 = new Object[][] { { null } };
 
-	private double[] computed() {
-	    double[] d = null;
-	    return d;
-	}
+        private double[] computed() {
+            double[] d = null;
+            return d;
+        }
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>boolean</description>
-		<expected-problems>2</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>boolean</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
 public class Foo {
     final boolean a1 = false;
     final boolean a2 = true;
@@ -195,15 +202,16 @@ public class Foo {
     static Boolean h4 = computed();
 
     static boolean computed() {
-	return false;
+    return false;
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>byte</description>
-		<expected-problems>14</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>byte</description>
+        <expected-problems>14</expected-problems>
+        <code><![CDATA[
 public class Foo {
     final byte a1 = 0;
     final byte a2 = 1;
@@ -334,15 +342,16 @@ public class Foo {
     static Byte h15 = computed();
 
     static byte computed() {
-	return 0;
+        return 0;
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>char</description>
-		<expected-problems>14</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>char</description>
+        <expected-problems>14</expected-problems>
+        <code><![CDATA[
 public class Foo {
     final char a1 = 0;
     final char a2 = 1;
@@ -473,15 +482,16 @@ public class Foo {
     static Character h15 = computed();
 
     static char computed() {
-	return 0;
+        return 0;
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>short</description>
-		<expected-problems>14</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>short</description>
+        <expected-problems>14</expected-problems>
+        <code><![CDATA[
 public class Foo {
     final short a1 = 0;
     final short a2 = 1;
@@ -612,15 +622,16 @@ public class Foo {
     static Short h15 = computed();
 
     static short computed() {
-	return 0;
+        return 0;
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>int</description>
-		<expected-problems>14</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>int</description>
+        <expected-problems>14</expected-problems>
+        <code><![CDATA[
 public class Foo {
     final int a1 = 0;
     final int a2 = 1;
@@ -751,15 +762,16 @@ public class Foo {
     static Integer h15 = computed();
 
     static int computed() {
-	return 0;
+        return 0;
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>long</description>
-		<expected-problems>14</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>long</description>
+        <expected-problems>14</expected-problems>
+        <code><![CDATA[
 public class Foo {
     final long a1 = 0;
     final long a2 = 1;
@@ -866,15 +878,16 @@ public class Foo {
     static Long h9 = computed();
 
     static long computed() {
-	return 0;
+        return 0;
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>float</description>
-		<expected-problems>22</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>float</description>
+        <expected-problems>22</expected-problems>
+        <code><![CDATA[
 public class Foo {
     final float a1 = 0;
     final float a2 = 1;
@@ -1061,15 +1074,16 @@ public class Foo {
     static Float h19 = (float) 0x1.2p3d;
 
     static float computed() {
-	return 0;
+        return 0;
     }
 }
-     ]]></code>
-	</test-code>
-	<test-code>
-		<description>double</description>
-		<expected-problems>22</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>double</description>
+        <expected-problems>22</expected-problems>
+        <code><![CDATA[
 public class Foo {
     final double a1 = 0;
     final double a2 = 1;
@@ -1256,11 +1270,11 @@ public class Foo {
     static Double h19 = (double) 0x1.2p3d;
 
     static double computed() {
-	return 0;
+        return 0;
     }
 }
-     ]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>#1298 Member variable int type with value 0xff000000 causes processing error</description>
@@ -1271,6 +1285,7 @@ public class LinePoint {
 }
         </code>
     </test-code>
+
     <test-code>
         <description>Java7 binary literals and underscores</description>
         <expected-problems>5</expected-problems>
@@ -1332,79 +1347,79 @@ public @interface SomeAnnotation {
         <expected-linenumbers>8,21,31,47</expected-linenumbers>
         <code><![CDATA[
 public class Test {
-  int i1 = 0b00011110;
-  int i2 = 0B00011110;
-  int i3 = 0xA;
-  int i4 = 0x1___A_F;
-  int i5 = 0b1;
-  int i6 = 0b1___1_0;
-  int i7 = 0;
-  int i8 = 02;
-  int i9 = 0_123;
-  int i10 = 1;
-  int i11 = 1___3;
-  int i12 = 1_43_43598_7;
+    int i1 = 0b00011110;
+    int i2 = 0B00011110;
+    int i3 = 0xA;
+    int i4 = 0x1___A_F;
+    int i5 = 0b1;
+    int i6 = 0b1___1_0;
+    int i7 = 0;
+    int i8 = 02;
+    int i9 = 0_123;
+    int i10 = 1;
+    int i11 = 1___3;
+    int i12 = 1_43_43598_7;
 
-  long l1 = 0b00011110L;
-  long l2 = 0B00011110l;
-  long l3 = 0xAL;
-  long l4 = 0x1___A_FL;
-  long l5 = 0b1L;
-  long l6 = 0b1___1_0L;
-  long l7 = 0l;
-  long l8 = 02L;
-  long l9 = 0_123l;
-  long l10 = 1l;
-  long l11 = 1___3l;
-  long l12 = 1_43_43598_7L;
-  long l13 = 1_43_43598_7;
-  
-  float f1 = .1f;
-  float f2 = 1.f;
-  float f3 = 0f;
-  float f4 = 1e0F;
-  float f5 = 1e0f;
-  float f6 = 12.345F;
-  float f7 = .5____2_1f;
-  float f8 = 1__42__3.f;
-  float f9 = 0__2_4__324f;
-  float f10 = 1_34e0F;
-  float f11 = 1__1_2e0f;
-  float f12 = 2_1___2.3__4_5F;
-  float f13 = 1_34e0__4__3f;
-  float f14 = 1__1_2e00__000_4f;
-  float f15 = 2_1___2.3__4_5e00______0_5F;
-  
-  double d1 = .1d;
-  double d2 = 1.D;
-  double d3 = 0d;
-  double d4 = 1e0D;
-  double d5 = 1e0d;
-  double d6 = 12.345D;
-  double d7 = .5____2_1d;
-  double d8 = 1__42__3.D;
-  double d9 = 0__2_4__324d;
-  double d10 = 1_34e0d;
-  double d11 = 1__1_2e0d;
-  double d12 = 2_1___2.3__4_5D;
-  double d13 = 1_34e0__4__3d;
-  double d14 = 1__1_2e00__000_4d;
-  double d15 = 2_1___2.3__4_5e00______0_5D;
-  double d16 = 0.12___34;
-  
-  float hf1 = 0x.1___AFp1;
-  float hf2 = 0x.1___AFp0__0__0f;
-  float hf3 = 0x2__3_34.4___AFP00_00f;
-  
-  double hd1 = 0x.1___AFp1;
-  double hd2 = 0x.1___AFp0__0__0d;
-  double hd3 = 0x2__3_34.4___AFP00_00d;
-  
-  int doc1 = 1234_5678;
-  long doc2 = 1_2_3_4__5_6_7_8L;
-  int doc3 = 0b0001_0010_0100_1000;
-  double doc4 = 3.141_592_653_589_793d;
-  double doc5 = 0x1.ffff_ffff_ffff_fP1_023;
+    long l1 = 0b00011110L;
+    long l2 = 0B00011110l;
+    long l3 = 0xAL;
+    long l4 = 0x1___A_FL;
+    long l5 = 0b1L;
+    long l6 = 0b1___1_0L;
+    long l7 = 0l;
+    long l8 = 02L;
+    long l9 = 0_123l;
+    long l10 = 1l;
+    long l11 = 1___3l;
+    long l12 = 1_43_43598_7L;
+    long l13 = 1_43_43598_7;
+
+    float f1 = .1f;
+    float f2 = 1.f;
+    float f3 = 0f;
+    float f4 = 1e0F;
+    float f5 = 1e0f;
+    float f6 = 12.345F;
+    float f7 = .5____2_1f;
+    float f8 = 1__42__3.f;
+    float f9 = 0__2_4__324f;
+    float f10 = 1_34e0F;
+    float f11 = 1__1_2e0f;
+    float f12 = 2_1___2.3__4_5F;
+    float f13 = 1_34e0__4__3f;
+    float f14 = 1__1_2e00__000_4f;
+    float f15 = 2_1___2.3__4_5e00______0_5F;
+
+    double d1 = .1d;
+    double d2 = 1.D;
+    double d3 = 0d;
+    double d4 = 1e0D;
+    double d5 = 1e0d;
+    double d6 = 12.345D;
+    double d7 = .5____2_1d;
+    double d8 = 1__42__3.D;
+    double d9 = 0__2_4__324d;
+    double d10 = 1_34e0d;
+    double d11 = 1__1_2e0d;
+    double d12 = 2_1___2.3__4_5D;
+    double d13 = 1_34e0__4__3d;
+    double d14 = 1__1_2e00__000_4d;
+    double d15 = 2_1___2.3__4_5e00______0_5D;
+    double d16 = 0.12___34;
+
+    float hf1 = 0x.1___AFp1;
+    float hf2 = 0x.1___AFp0__0__0f;
+    float hf3 = 0x2__3_34.4___AFP00_00f;
+
+    double hd1 = 0x.1___AFp1;
+    double hd2 = 0x.1___AFp0__0__0d;
+    double hd3 = 0x2__3_34.4___AFP00_00d;
+
+    int doc1 = 1234_5678;
+    long doc2 = 1_2_3_4__5_6_7_8L;
+    int doc3 = 0b0001_0010_0100_1000;
+    double doc4 = 3.141_592_653_589_793d;
+    double doc5 = 0x1.ffff_ffff_ffff_fP1_023;
 }
         ]]></code>
     </test-code>
@@ -1416,6 +1431,36 @@ public class Test {
 public class RedundantFieldInitializerTest {
     private long hexLongMinusOne = 0xffffffffffffffffL;
     private int hexIntMinusOne = 0xffffffff;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2441 can not detect a case char c = '\0';</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    char c = '\0';
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Non-literals are ok</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+public class C {
+    public static final int ZERO = 0;
+    public static final long ZEROL = 0L;
+}
+
+class O {
+    public static final int ZERO = 0;
+    private int s = C.ZERO;
+    private int s2 = 0 * 1000; //not ok
+    private int o = 2 * ZERO;
 }
         ]]></code>
     </test-code>

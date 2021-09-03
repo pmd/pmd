@@ -3,258 +3,239 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Contains assert
-     ]]></description>
+        <description>Contains assert</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
- public void test1() {
-  assertEquals("1 == 1", 1, 1);
- }
+    public void test1() {
+        assertEquals("1 == 1", 1, 1);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Missing assert
-     ]]></description>
+        <description>Missing assert</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
- public void test1() {
- }
+    public void test1() {
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-All ok
-     ]]></description>
+        <description>All ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
- public void setUp() {
- }
- public void test1() {
-  assertTrue("foo", "foo".equals("foo"));
- }
- public void test2() {
-  assertEquals("foo", "foo");
- }
+    public void setUp() {
+    }
+    public void test1() {
+        assertTrue("foo", "foo".equals("foo"));
+    }
+    public void test2() {
+        assertEquals("foo", "foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Two wrong
-     ]]></description>
+        <description>Two wrong</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
- public void setUp() {
- }
- public void test1() {
- 	int a;
- 	callMethod(a);
- }
- public void test2() {
- }
+    public void setUp() {
+    }
+    public void test1() {
+        int a;
+        callMethod(a);
+    }
+    public void test2() {
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Contains fail
-     ]]></description>
+        <description>Contains fail</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
- public void test1() {
-  fail("1 == 1");
- }
+    public void test1() {
+        fail("1 == 1");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-One wrong
-     ]]></description>
+        <description>One wrong</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
- public void setUp() {
- }
- public void test1() {
- 	int a;
- 	callMethod(a);
- }
- public void test2() {
- 	fail();
- }
+    public void setUp() {
+    }
+    public void test1() {
+        int a;
+        callMethod(a);
+    }
+    public void test2() {
+        fail();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Skip interfaces
-     ]]></description>
+        <description>Skip interfaces</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
- public void setUp() throws Exception;
+    public void setUp() throws Exception;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Skip abstract methods
-     ]]></description>
+        <description>Skip abstract methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
- public abstract void setUp() throws Exception;
+    public abstract void setUp() throws Exception;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Another fail() case
-     ]]></description>
+        <description>Another fail() case</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
-public abstract class AbstractAggregateCreatorTest extends TestCase{
+public abstract class AbstractAggregateCreatorTest extends TestCase {
     public abstract int getType();
-    public abstract ProfileAggregate create(DatabaseTransaction db,
-        DailyProfileList profiles, ProfileType type, ProfileStatus status)
-        throws VixenException;
+    public abstract String create(int status) throws Exception;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-BUG 1105633 - False +: JUnit testcases could have fail() instead of assert
-     ]]></description>
+        <description>BUG 1105633 - False +: JUnit testcases could have fail() instead of assert</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
- public void testNPEThrown() {
-  try {
-   methodCall(null);
-   fail("Expected NullPointerException to be thrown.");
-  } catch (NullPointerException npe) {
-   // Caught expected exception
-  }
- }
+    public void testNPEThrown() {
+        try {
+            methodCall(null);
+            fail("Expected NullPointerException to be thrown.");
+        } catch (NullPointerException npe) {
+            // Caught expected exception
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-BUG 1146116 PMDException with inner interfaces
-     ]]></description>
+        <description>BUG 1146116 PMDException with inner interfaces</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package at.herold.anthilltest;
 import junit.framework.TestCase;
 public class TestJunitRuleExceptionTest extends TestCase {
-   interface I1 { 
-      public void meth(); // this is ok
-   }
-   interface I2 {
-      public void meth() throws Exception; // this causes PMDException
-   }
+    interface I1 {
+        public void meth(); // this is ok
+    }
+    interface I2 {
+        public void meth() throws Exception; // this causes PMDException
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip static test methods
-     ]]></description>
+        <description>skip static test methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
- public static void testfoo() {}
+    public static void testfoo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-exceptions shouldn't block it
-     ]]></description>
+        <description>exceptions shouldn't block it</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
- public void testfoo() throws Exception {}
+    public void testfoo() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Not a JUnit test (exceptions shouldn't block it)
-     ]]></description>
+        <description>Not a JUnit test (exceptions shouldn't block it)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class FooTest {
- public void testfoo() throws Exception {}
+    public void testfoo() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-JUnit 4 test (exceptions shouldn't block it)
-     ]]></description>
+        <description>JUnit 4 test (exceptions shouldn't block it)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.junit.Test;
 public class Foo {
- @Test
- public void foo() throws Exception {}
+    @Test
+    public void foo() throws Exception {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Junit 4 static import
-     ]]></description>
+        <description>Junit 4 static import</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 public class AssertTest {
-  @Test public void testFalse() {
-    assertFalse(1 == 2);
-  }
+    @Test public void testFalse() {
+        assertFalse(1 == 2);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Junit 4 test using Assert.assert...
-     ]]></description>
+        <description>Junit 4 test using Assert.assert...</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.Assert;
 import org.junit.Test;
 public class AssertTest {
-  @Test public void testTrue() {
-    Assert.assertTrue(1 != 2);
-  }
+    @Test public void testTrue() {
+        Assert.assertTrue(1 != 2);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -271,38 +252,44 @@ public class Foo_Test
         new Foo().doSomething(-1);
         // Note - no assert is needed as we expect an exception (which is basically an assert).
     }
+    class Foo {}
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#285 Issues with @Rule annotation and ExpectedException</description>
-	<expected-problems>1</expected-problems>
-	<expected-linenumbers>7</expected-linenumbers>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 import org.junit.*;
+import org.junit.rules.*;
 public class SimpleExpectedExceptionTest {
-   @Rule
-   public ExpectedException thrown = ExpectedException.none();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-   @Test
-   public void throwsExceptionWithSpecificType() {
-     throw new NullPointerException(); // No expect! this is a violation
-   }
-     
-   @Test
-   public void throwsIllegalArgumentExceptionIfIconIsNull() {
-     thrown.expect(IllegalArgumentException.class);
-     thrown.expectMessage("Icon is null, not a file, or doesn't exist.");
-     new DigitalAssetManager(null, null);
-   } 
+    @Test
+    public void throwsExceptionWithSpecificType() {
+        throw new NullPointerException(); // No expect! this is a violation
+    }
+
+    @Test
+    public void throwsIllegalArgumentExceptionIfIconIsNull() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Icon is null, not a file, or doesn't exist.");
+        new Foo();
+    }
+    class Foo {}
 }
         ]]></code>
-    </test-code>    
+    </test-code>
+
     <test-code>
         <description>#285 Follow-up for @org.junit.Rule</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 public class SimpleExpectedExceptionTest {
      @org.junit.Rule
      public ExpectedException thrown = ExpectedException.none();
@@ -314,23 +301,25 @@ public class SimpleExpectedExceptionTest {
      }
  }
         ]]></code>
-    </test-code>    
+    </test-code>
+
     <test-code>
         <description>#330 Rule treats AllocationExpression correctly</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-	
 import org.junit.*;
-import javafx.embed.swing.JFXPanel;
+import my.JFXPanel;
+import my.UART;
 
 public class BaseConsoleTest extends UART {
-    @Test 
+    @Test
     public void testInitialize() throws InterruptedException {
         new JFXPanel(); // AllocationExpression
     }
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#330 NPE accessing local field / method with this.XXX</description>
         <expected-problems>1</expected-problems>
@@ -344,6 +333,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#358 Treat Mockito's verify as assert expressions</description>
         <expected-problems>0</expected-problems>
@@ -369,8 +359,12 @@ public class FooTest {
 
         verify(bar, times(1)).actuallyDoTask();
     }
-}]]></code>
+    class Foo {}
+    class Bar {}
+}
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#358 Treat Mockito's Mockito.verify as assert expressions</description>
         <expected-problems>0</expected-problems>
@@ -380,7 +374,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
 
 @RunWith(MockitoJUnitRunner.class)
 public class FooTest {
@@ -395,8 +388,12 @@ public class FooTest {
 
         Mockito.verify(bar, Mockito.times(1)).actuallyDoTask();
     }
-}]]></code>
+    class Foo {}
+    class Bar {}
+}
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#465 NullPointerException when dealing with @SuppressWarnings</description>
         <expected-problems>0</expected-problems>
@@ -407,16 +404,18 @@ import static org.junit.Assert.assertEquals;
 
 public class FooTest {
 
-  @SuppressWarnings("deprecation")
-  private static Foo foo = new Foo();
+    @SuppressWarnings("deprecation")
+    private static Foo foo = new Foo();
 
-  @Test
-  public void testFoo() {
-    assertEquals("doesn't matter", "doesn't matter");
-  }
-
-}]]></code>
+    @Test
+    public void testFoo() {
+        assertEquals("doesn't matter", "doesn't matter");
+    }
+}
+class Foo {}
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1365 detect test classes marked with fully qualified annotation.</description>
         <expected-problems>0</expected-problems>
@@ -424,13 +423,15 @@ public class FooTest {
 import org.junit.Test;
 
 class Style {
-  // This used to trigger the JUnitTestsShouldIncludeWarning rule
-  @org.junit.Test(expected = IllegalArgumentException.class)
-  public void moveOutOfBoundsFrom() {
-    doSomething();
-  }
-}]]></code>
+    // This used to trigger the JUnitTestsShouldIncludeWarning rule
+    @org.junit.Test(expected = IllegalArgumentException.class)
+    public void moveOutOfBoundsFrom() {
+        doSomething();
+    }
+}
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1435 Treat AssertJ soft assertions as assert expressions</description>
         <expected-problems>0</expected-problems>
@@ -453,8 +454,10 @@ class FooTest {
         softly.assertThat("doesn't matter").isEqualTo("doesn't matter");
         softly.assertAll();
     }
-}]]></code>
+}
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1435 Treat AssertJ soft assertions as assert expressions - missing assertAll</description>
         <expected-problems>2</expected-problems>
@@ -476,14 +479,17 @@ class FooTest {
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat("doesn't matter").isEqualTo("doesn't matter");
     }
-}]]></code>
+}
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1435 Treat AssertJ soft assertion rule for JUnit 4 as assert expressions</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Test;
+import org.junit.Rule;
 
 public class FooTest {
 
@@ -494,22 +500,189 @@ public class FooTest {
     void testFoo() {
         softly.assertThat("doesn't matter").isEqualTo("doesn't matter");
     }
-}]]></code>
+}
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#647 JUnitTestsShouldIncludeAssertRule should support `this.exception` as well as just `exception`</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 public class DigitalAssetManagerTest {
-  @Rule
-  public final ExpectedException exception = ExpectedException.none();
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
+    @Test
+    public void throwsIllegalArgumentExceptionIfIconIsNull() {
+        this.exception.expect(IllegalArgumentException.class);
+        this.exception.expectMessage("Icon is null, not a file, or doesn't exist.");
+        new Foo();
+    }
+}
+class Foo {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2288 JUnitTestsShouldIncludeAssertRule should support `Matchers.assertThat`</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import static org.hamcrest.MatcherAssert.*;
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
+    public void test1() {
+        MatcherAssert.assertThat("doesn't matter", null, Matchers.nullValue());
+    }
+    public void test2() {
+        assertThat("doesn't matter", null, Matchers.nullValue());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] JUnitTestsShouldIncludeAssert - false positives with lambdas and static methods #2147</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import static org.hamcrest.MatcherAssert.*;
+import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import com.fasterxml.jackson.databind.JsonNode;
+
+public class FooTest extends TestCase {
+
+    @Test
+    public void testDemo() {
+        JsonNode jsonNode = assertSuccessResponse();
+        final int totalFieldsCount = jsonNode.get("count").asInt();
+        jsonNode.get("data").forEach(item -> assertTrue(item.size() <= totalFieldsCount));
+    }
+
+    public static JsonNode assertSuccessResponse() {
+        JsonNode jsonNode = doStuffToBuildTheJsonNode();
+        assertTrue(jsonNode.hasNonNull("count"));
+        assertTrue(jsonNode.hasNonNull("data"));
+        assertTrue(jsonNode.get("count").asInt() > 0);
+        assertEquals(jsonNode.get("count").asInt(), jsonNode.get("data").size());
+        return jsonNode;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] JUnitTestsShouldIncludeAssert false positive with inherited @Rule field #1422</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.junit.Rule;
+            import org.junit.Test;
+            import org.junit.rules.ExpectedException;
+
+            abstract class Shape {
+                double size;
+
+                Shape(double size) {
+                    if (size < 0) {
+                        throw new IllegalArgumentException("negative size");
+                    }
+                    this.size = size;
+                }
+
+                public abstract double area();
+            }
+
+            class Square extends Shape {
+                Square(double size) {
+                    super(size);
+                }
+
+                public double area() {
+                    return size * size;
+                }
+            }
+
+            class Weird extends Shape {
+                Weird(double size) {
+                    super(size);
+                }
+
+                public double area() {
+                    throw new RuntimeException("just 'cause");
+                }
+            }
+
+            public abstract class ShapeTester {
+                protected abstract Shape factory(double size);
+
+                @Rule
+                public ExpectedException e = ExpectedException.none();
+
+                @Test
+                public void notAProblem() {
+                    e.expect(IllegalArgumentException.class);
+                    factory(-5);
+                }
+
+                public static final class SquareTester extends ShapeTester {
+                    protected Shape factory(double size) {
+                        return new Square(size);
+                    }
+                }
+
+                public static final class WeirdTester extends ShapeTester {
+                    protected Shape factory(double size) {
+                        return new Weird(size);
+                    }
+
+                    @Test
+                    public void thisOneTriggersRule() {
+                        e.expect(RuntimeException.class);
+                        e.expectMessage("just 'cause");
+                        factory(42).area();
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>AssertJ and JUnit5</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class JUnit5AssertJTest {
+
   @Test
-  public void throwsIllegalArgumentExceptionIfIconIsNull() {
-    this.exception.expect(IllegalArgumentException.class);
-    this.exception.expectMessage("Icon is null, not a file, or doesn't exist.");
-    new DigitalAssetManager(null, null);
+  void check() {
+    Assertions.assertThat("FOO").isNotNull();
   }
-}]]></code>
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit5</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class JUnit5Test {
+
+  @Test
+  void check() {
+    Assertions.assertNotNull("FOO");
+  }
+}
+        ]]></code>
     </test-code>
 </test-data>

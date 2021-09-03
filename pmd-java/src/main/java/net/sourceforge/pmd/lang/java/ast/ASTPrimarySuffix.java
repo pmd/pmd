@@ -4,40 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
+@Deprecated
 public class ASTPrimarySuffix extends AbstractJavaTypeNode {
 
     private boolean isArguments;
     private boolean isArrayDereference;
 
-    @InternalApi
-    @Deprecated
-    public ASTPrimarySuffix(int id) {
+    ASTPrimarySuffix(int id) {
         super(id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public ASTPrimarySuffix(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public void setIsArrayDereference() {
-        isArrayDereference = true;
     }
 
     public boolean isArrayDereference() {
         return isArrayDereference;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setIsArguments() {
-        this.isArguments = true;
-    }
 
     public boolean isArguments() {
         return this.isArguments;
@@ -55,17 +35,12 @@ public class ASTPrimarySuffix extends AbstractJavaTypeNode {
         if (!this.isArguments()) {
             return -1;
         }
-        return ((ASTArguments) jjtGetChild(jjtGetNumChildren() - 1)).getArgumentCount();
-    }
-
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
+        return ((ASTArguments) getChild(getNumChildren() - 1)).size();
     }
 
 
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

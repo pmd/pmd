@@ -26,11 +26,13 @@ import org.w3c.dom.NodeList;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
+import net.sourceforge.pmd.util.ResourceLoader;
 
 
 /**
@@ -39,6 +41,8 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder
  * @author Clément Fournier
  * @since 6.0.0
  */
+@InternalApi
+@Deprecated
 public class RuleFactory {
 
     private static final Logger LOG = Logger.getLogger(RuleFactory.class.getName());
@@ -56,8 +60,25 @@ public class RuleFactory {
     private static final String DESCRIPTION = "description";
     private static final String PROPERTY = "property";
     private static final String CLASS = "class";
-    
+
     private static final List<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(NAME, CLASS));
+
+    private final ResourceLoader resourceLoader;
+
+    /**
+     * @deprecated Use {@link #RuleFactory(ResourceLoader)} instead.
+     */
+    @Deprecated
+    public RuleFactory() {
+        this(new ResourceLoader());
+    }
+
+    /**
+     * @param resourceLoader The resource loader to load the rule from jar
+     */
+    public RuleFactory(final ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
 
     /**
      * Decorates a referenced rule with the metadata that are overridden in the given rule element.
@@ -131,8 +152,9 @@ public class RuleFactory {
         String name = ruleElement.getAttribute(NAME);
 
         RuleBuilder builder = new RuleBuilder(name,
-                ruleElement.getAttribute(CLASS),
-                ruleElement.getAttribute("language"));
+                                              resourceLoader,
+                                              ruleElement.getAttribute(CLASS),
+                                              ruleElement.getAttribute("language"));
 
         if (ruleElement.hasAttribute(MINIMUM_LANGUAGE_VERSION)) {
             builder.minimumLanguageVersion(ruleElement.getAttribute(MINIMUM_LANGUAGE_VERSION));
@@ -149,10 +171,6 @@ public class RuleFactory {
         builder.message(ruleElement.getAttribute(MESSAGE));
         builder.externalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
         builder.setDeprecated(hasAttributeSetTrue(ruleElement, DEPRECATED));
-        builder.usesDFA(hasAttributeSetTrue(ruleElement, "dfa"));
-        builder.usesTyperesolution(hasAttributeSetTrue(ruleElement, "typeResolution"));
-        // Disabled until it's safe
-        // builder.usesMultifile(hasAttributeSetTrue(ruleElement, "multifile"));
 
         Element propertiesElement = null;
 
@@ -217,17 +235,17 @@ public class RuleFactory {
      * @return A map of property names to their value
      */
     private Map<String, String> getPropertyValuesFrom(Element propertiesNode) {
-        Map<String, String> overridenProperties = new HashMap<>();
+        Map<String, String> overriddenProperties = new HashMap<>();
 
         for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
             Node node = propertiesNode.getChildNodes().item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE && PROPERTY.equals(node.getNodeName())) {
                 Entry<String, String> overridden = getPropertyValue((Element) node);
-                overridenProperties.put(overridden.getKey(), overridden.getValue());
+                overriddenProperties.put(overridden.getKey(), overridden.getValue());
             }
         }
 
-        return overridenProperties;
+        return overriddenProperties;
     }
 
     /**
@@ -318,7 +336,7 @@ public class RuleFactory {
             Attr a = (Attr) atts.item(i);
             values.put(PropertyDescriptorField.getConstant(a.getName()), a.getValue());
         }
-        
+
         if (StringUtils.isBlank(values.get(DEFAULT_VALUE))) {
             NodeList children = propertyElement.getElementsByTagName(DEFAULT_VALUE.attributeName());
             if (children.getLength() == 1) {

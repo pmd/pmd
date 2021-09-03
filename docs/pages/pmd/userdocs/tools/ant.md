@@ -57,7 +57,7 @@ The examples below won't repeat this taskdef element, as this is always required
   <tr>
     <td>rulesetfiles</td>
     <td>
-        A comma delimited list of ruleset files ('rulesets/java/basic.xml,rulesets/java/design.xml').
+        A comma delimited list of ruleset files ('rulesets/java/quickstart.xml,config/my-ruleset.xml').
         If you write your own ruleset files, you can put them on the classpath and plug them in here.
     </td>
     <td>Yes, unless the ruleset nested element is used</td>
@@ -153,9 +153,10 @@ configure multiple formatters.
        <dt>encoding</dt>
        <dd>Specifies the encoding to be used in the generated report (only honored when used with `toFile`). When rendering `toConsole` PMD will automatically detect the terminal's encoding and use it, unless the output is being redirected / piped, in which case `file.encoding` is used. See example below.</dd>
        <dt>linkPrefix</dt>
-       <dd>Used for linking to online HTMLized source (like <a href="https://maven.apache.org/plugins/maven-pmd-plugin/xref/org/apache/maven/plugins/pmd/PmdReport.html">this</a>).  See example below. Note, this only works with [maven-jxr-plugin](https://maven.apache.org/jxr/maven-jxr-plugin/index.html).</dd>
+       <dd>Used for linking to online HTMLized source (like <a href="https://maven.apache.org/plugins/maven-pmd-plugin/xref/org/apache/maven/plugins/pmd/PmdReport.html">this</a>). See example below. Note, this only works with
+       <a href="https://maven.apache.org/jxr/maven-jxr-plugin/index.html">maven-jxr-plugin</a>.</dd>
        <dt>linePrefix</dt>
-       <dd>Used for linking to online HTMLized source (like <a href="https://maven.apache.org/plugins/maven-pmd-plugin/xref/org/apache/maven/plugins/pmd/PmdReport.html#L375">this</a>).  See example below. Note, this only works with [maven-jxr-plugin](https://maven.apache.org/jxr/maven-jxr-plugin/index.html).</dd>
+       <dd>Used for linking to online HTMLized source (like <a href="https://maven.apache.org/plugins/maven-pmd-plugin/xref/org/apache/maven/plugins/pmd/PmdReport.html#L375">this</a>). See example below. Note, this only works with <a href="https://maven.apache.org/jxr/maven-jxr-plugin/index.html">maven-jxr-plugin</a>.</dd>
        </dl>
    </td>
 </tr>
@@ -179,8 +180,8 @@ automatically and the latest language version is used.
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <pmd shortFilenames="true">
-            <ruleset>rulesets/java/design.xml</ruleset>
-            <ruleset>java-basic</ruleset>
+            <ruleset>rulesets/java/quickstart.xml</ruleset>
+            <ruleset>config/my-ruleset.xml</ruleset>
             <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
                 <include name="java/lang/*.java"/>
             </fileset>
@@ -204,25 +205,44 @@ accordingly and this rule won't be executed.
 The specific version of a language to be used is selected via the `sourceLanguage`
 nested element. Possible values are:
 
-    <sourceLanguage name="apex" version="45"/>
+    <sourceLanguage name="apex" version="48"/>
     <sourceLanguage name="ecmascript" version="3"/>
     <sourceLanguage name="java" version="1.3"/>
     <sourceLanguage name="java" version="1.4"/>
     <sourceLanguage name="java" version="1.5"/>
+    <sourceLanguage name="java" version="5"/> <!-- alias for 1.5 -->
     <sourceLanguage name="java" version="1.6"/>
+    <sourceLanguage name="java" version="6"/> <!-- alias for 1.6 -->
     <sourceLanguage name="java" version="1.7"/>
+    <sourceLanguage name="java" version="7"/> <!-- alias for 1.7 -->
     <sourceLanguage name="java" version="1.8"/>
+    <sourceLanguage name="java" version="8"/> <!-- alias for 1.8 -->
     <sourceLanguage name="java" version="9"/>
+    <sourceLanguage name="java" version="1.9"/> <!-- alias for 9 -->
     <sourceLanguage name="java" version="10"/>
+    <sourceLanguage name="java" version="1.10"/> <!-- alias for 10 -->
     <sourceLanguage name="java" version="11"/>
-    <sourceLanguage name="java" version="12"/> <!-- this is the default -->
+    <sourceLanguage name="java" version="12"/>
+    <sourceLanguage name="java" version="13"/>
+    <sourceLanguage name="java" version="14"/>
+    <sourceLanguage name="java" version="15"/>
+    <sourceLanguage name="java" version="16"/>
+    <sourceLanguage name="java" version="16-preview"/>
+    <sourceLanguage name="java" version="17"/> <!-- this is the default -->
+    <sourceLanguage name="java" version="17-preview"/>
     <sourceLanguage name="jsp" version=""/>
+    <sourceLanguage name="modelica" version=""/>
     <sourceLanguage name="pom" version=""/>
     <sourceLanguage name="plsql" version=""/>
-    <sourceLanguage name="xsl" version=""/>
-    <sourceLanguage name="xml" version=""/>
+    <sourceLanguage name="scala" version="2.10"/>
+    <sourceLanguage name="scala" version="2.11"/>
+    <sourceLanguage name="scala" version="2.12"/>
+    <sourceLanguage name="scala" version="2.13"/> <!-- this is the default -->
     <sourceLanguage name="vf" version=""/>
     <sourceLanguage name="vm" version=""/>
+    <sourceLanguage name="wsdl" version=""/>
+    <sourceLanguage name="xml" version=""/>
+    <sourceLanguage name="xsl" version=""/>
 
 ### Postprocessing the report file with XSLT
 
@@ -245,7 +265,7 @@ Then, after the end of the PMD task, do this:
 Running one ruleset to produce a HTML report (and printing the report to the console as well) using a file cache
 
     <target name="pmd">
-        <pmd rulesetfiles="java-imports" cacheLocation="build/pmd/pmd.cache">
+        <pmd rulesetfiles="rulesets/java/quickstart.xml" cacheLocation="build/pmd/pmd.cache">
             <formatter type="html" toFile="pmd_report.html" toConsole="true"/>
             <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
                 <include name="**/*.java"/>
@@ -258,7 +278,7 @@ Running one ruleset to produce a HTML report (and printing the report to the con
 Running multiple rulesets to produce an XML report with the same analysis cache
 
     <target name="pmd">
-        <pmd rulesetfiles="rulesets/java/imports.xml,java-unusedcode" cacheLocation="build/pmd/pmd.cache">
+        <pmd rulesetfiles="rulesets/java/quickstart.xml,config/my-ruleset.xml" cacheLocation="build/pmd/pmd.cache">
             <formatter type="xml" toFile="c:\pmd_report.xml"/>
             <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
                 <include name="**/*.java"/>
@@ -281,7 +301,7 @@ need to be configured when defining the task:
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" />
 
     <target name="pmd">
-        <pmd rulesetfiles="rulesets/java/design.xml">
+        <pmd rulesetfiles="rulesets/java/quickstart.xml">
             <formatter type="com.mycompany.MyRenderer" toFile="foo.html"/>
             <fileset dir="/path/to/java/src">
                 <include name="**/*.java"/>
@@ -354,11 +374,13 @@ You can run pmd then with `ant pmd`.
 
     pmd:
           [pmd] Using the normal ClassLoader
-          [pmd] Using these rulesets: rulesets/java/imports.xml
-          [pmd] Using rule DontImportJavaLang
-          [pmd] Using rule UnusedImports
-          [pmd] Using rule ImportFromSamePackage
-          [pmd] Using rule DuplicateImports
+          [pmd] Using these rulesets: rulesets/java/quickstart.xml
+          [pmd] Using rule AvoidMessageDigestField
+          [pmd] Using rule AvoidStringBufferField
+          [pmd] Using rule AvoidUsingHardCodedIP
+          [pmd] Using rule CheckResultSet
+          [pmd] Using rule ConstantsInInterface
+          ...
           [pmd] Processing file /usr/local/java/src/java/lang/ref/Finalizer.java
           [pmd] Processing file /usr/local/java/src/java/lang/ref/FinalReference.java
           [pmd] Processing file /usr/local/java/src/java/lang/ref/PhantomReference.java
@@ -378,7 +400,7 @@ An HTML report with the "linkPrefix" and "linePrefix" properties:
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="java-basic" shortFilenames="true">
+        <pmd rulesetfiles="rulesets/java/quickstart.xml" shortFilenames="true">
             <formatter type="html" toFile="pmd_report.html">
                 <param name="linkPrefix" value="https://maven.apache.org/plugins/maven-pmd-plugin/xref/"/>
                 <param name="linePrefix" value="L"/>

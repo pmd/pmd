@@ -5,22 +5,25 @@
 package net.sourceforge.pmd.lang;
 
 import java.util.List;
+import java.util.ServiceLoader;
 
 /**
- * Interface each Language implementation has to implement. It is used by the
- * LanguageRregistry to access constants and implementation classes in order to
- * provide support for the language.
- * <p>
- * The following are key components of a Language in PMD:
+ * Represents a language module, and provides access to language-specific
+ * functionality. You can get a language instance from {@link LanguageRegistry}.
+ * Using a language involves first selecting the relevant {@link LanguageVersion}
+ * for the sources, and accessing implemented services through {@link LanguageVersion#getLanguageVersionHandler()}.
+ *
+ * <p>Language instances must be registered with a {@linkplain ServiceLoader service file}
+ * to be picked up on by the {@link LanguageRegistry}.
+ *
+ * <p>The following are key components of a language in PMD:
  * <ul>
- * <li>Name - Full name of the Language</li>
- * <li>Short name - The common short form of the Language</li>
- * <li>Terse name - The shortest and simplest possible form of the Language
- * name, generally used for Rule configuration</li>
- * <li>Extensions - File extensions associated with the Language</li>
- * <li>Rule Chain Visitor - The RuleChainVisitor implementation used for this
- * Language</li>
- * <li>Versions - The LanguageVersions associated with the Language</li>
+ * <li>Name - Full name of the language</li>
+ * <li>Short name - The common short form of the language</li>
+ * <li>Terse name - The shortest and simplest possible form of the language
+ * name, generally used for rule configuration</li>
+ * <li>Extensions - File extensions associated with the language</li>
+ * <li>Versions - The language versions associated with the language</li>
  * </ul>
  *
  * @see LanguageVersion
@@ -31,80 +34,86 @@ public interface Language extends Comparable<Language> {
     String LANGUAGE_MODULES_CLASS_NAMES_PROPERTY = "languageModulesClassNames";
 
     /**
-     * Get the full name of this Language. This is generally the name of this
-     * Language without the use of acronyms.
+     * Returns the full name of this Language. This is generally the name of this
+     * language without the use of acronyms, but possibly some capital letters,
+     * eg {@code "Java"}. It's suitable for displaying in a GUI.
      *
-     * @return The full name of this Language.
+     * @return The full name of this language.
      */
     String getName();
 
     /**
-     * Get the short name of this Language. This is the commonly used short form
-     * of this Language's name, perhaps an acronym.
+     * Returns the short name of this language. This is the commonly
+     * used short form of this language's name, perhaps an acronym,
+     * but possibly with special characters.
      *
-     * @return The short name of this Language.
+     * @return The short name of this language.
      */
     String getShortName();
 
     /**
-     * Get the terse name of this Language. This is used for Rule configuration.
+     * Returns the terse name of this language. This is a short, alphanumeric,
+     * lowercase name, eg {@code "java"}. It's used to identify the language
+     * in the ruleset XML, and is also in the package name of the language
+     * module.
      *
-     * @return The terse name of this Language.
+     * @return The terse name of this language.
      */
     String getTerseName();
 
     /**
-     * Get the list of file extensions associated with this Language.
+     * Returns the list of file extensions associated with this language.
+     * This list is unmodifiable. Extensions do not have a '.' prefix.
      *
-     * @return List of file extensions.
+     * @return A list of file extensions.
      */
     List<String> getExtensions();
 
     /**
-     * Returns whether the given Language handles the given file extension. The
-     * comparison is done ignoring case.
+     * Returns whether this language handles the given file extension.
+     * The comparison is done ignoring case.
      *
-     * @param extension
-     *            A file extension.
-     * @return <code>true</code> if this Language handles this extension,
-     *         <code>false</code> otherwise.
+     * @param extensionWithoutDot A file extension (without '.' prefix)
+     *
+     * @return <code>true</code> if this language handles the extension,
+     *     <code>false</code> otherwise.
      */
-    boolean hasExtension(String extension);
+    boolean hasExtension(String extensionWithoutDot);
 
     /**
-     * Get the RuleChainVisitor implementation class used when visiting the AST
-     * structure for this Rules for this Language.
+     * Returns an ordered list of supported versions for this language.
      *
-     * @return The RuleChainVisitor class.
-     * @see net.sourceforge.pmd.lang.rule.RuleChainVisitor
-     */
-    Class<?> getRuleChainVisitorClass();
-
-    /**
-     * Gets the list of supported LanguageVersion for this Language.
-     *
-     * @return The LanguageVersion for this Language.
+     * @return All supported language versions.
      */
     List<LanguageVersion> getVersions();
 
+    /**
+     * Returns true if a language version with the given {@linkplain LanguageVersion#getVersion() version string}
+     * is registered. Then, {@link #getVersion(String) getVersion} will return a non-null value.
+     *
+     * @param version A version string
+     *
+     * @return True if the version string is known
+     */
     boolean hasVersion(String version);
 
     /**
-     * Get the LanguageVersion for the version string from this Language.
+     * Returns the language version with the given {@linkplain LanguageVersion#getVersion() version string}.
+     * Returns null if no such version exists.
      *
-     * @param version
-     *            The language version string.
-     * @return The corresponding LanguageVersion, <code>null</code> if the
-     *         version string is not recognized.
+     * @param version A language version string.
+     *
+     * @return The corresponding LanguageVersion, {@code null} if the
+     *     version string is not recognized.
      */
     LanguageVersion getVersion(String version);
 
     /**
-     * Get the current PMD defined default LanguageVersion for this Language.
+     * Returns the default language version for this language.
      * This is an arbitrary choice made by the PMD product, and can change
-     * between PMD releases. Every Language has a default version.
+     * between PMD releases. Every language has a default version.
      *
-     * @return The current default LanguageVersion for this Language.
+     * @return The current default language version for this language.
      */
     LanguageVersion getDefaultVersion();
 

@@ -81,27 +81,27 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
                 if (n == null || !fieldDecls.containsKey(n.getImage())) {
                     continue;
                 }
-                List<ASTAssignmentOperator> assigmnents = ifStatement
+                List<ASTAssignmentOperator> assignments = ifStatement
                         .findDescendantsOfType(ASTAssignmentOperator.class);
                 boolean violation = false;
-                for (int ix = 0; ix < assigmnents.size(); ix++) {
-                    ASTAssignmentOperator oper = assigmnents.get(ix);
-                    if (!(oper.jjtGetParent() instanceof ASTStatementExpression)) {
+                for (int ix = 0; ix < assignments.size(); ix++) {
+                    ASTAssignmentOperator oper = assignments.get(ix);
+                    if (!(oper.getParent() instanceof ASTStatementExpression)) {
                         continue;
                     }
-                    ASTStatementExpression expr = (ASTStatementExpression) oper.jjtGetParent();
-                    if (expr.jjtGetChild(0) instanceof ASTPrimaryExpression
-                            && ((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetNumChildren() == 1
-                            && ((ASTPrimaryExpression) expr.jjtGetChild(0))
-                                    .jjtGetChild(0) instanceof ASTPrimaryPrefix) {
-                        ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ((ASTPrimaryExpression) expr.jjtGetChild(0))
-                                .jjtGetChild(0);
+                    ASTStatementExpression expr = (ASTStatementExpression) oper.getParent();
+                    if (expr.getChild(0) instanceof ASTPrimaryExpression
+                            && ((ASTPrimaryExpression) expr.getChild(0)).getNumChildren() == 1
+                            && ((ASTPrimaryExpression) expr.getChild(0))
+                                    .getChild(0) instanceof ASTPrimaryPrefix) {
+                        ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ((ASTPrimaryExpression) expr.getChild(0))
+                                .getChild(0);
                         String name = null;
                         if (pp.usesThisModifier()) {
                             ASTPrimarySuffix priSuf = expr.getFirstDescendantOfType(ASTPrimarySuffix.class);
                             name = priSuf.getImage();
                         } else {
-                            ASTName astName = (ASTName) pp.jjtGetChild(0);
+                            ASTName astName = (ASTName) pp.getChild(0);
                             name = astName.getImage();
                         }
                         if (fieldDecls.containsKey(name)) {

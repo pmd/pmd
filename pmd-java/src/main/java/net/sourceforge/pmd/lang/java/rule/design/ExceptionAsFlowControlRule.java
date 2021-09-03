@@ -4,44 +4,45 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.List;
-
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * Catches the use of exception statements as a flow control device.
- * 
+ *
  * @author Will Sargent
  */
 public class ExceptionAsFlowControlRule extends AbstractJavaRule {
 
+    // TODO tests:
+    //   - catch a supertype of the exception (unless this is unwanted)
+    //   - throw statements with not just a new SomethingExpression, eg a method call returning an exception
+
     @Override
     public Object visit(ASTThrowStatement node, Object data) {
-        ASTTryStatement parent = node.getFirstParentOfType(ASTTryStatement.class);
-        if (parent == null) {
+        JavaNode firstTryOrCatch = node.ancestors().<JavaNode>map(NodeStream.asInstanceOf(ASTTryStatement.class, ASTCatchClause.class)).first();
+        NodeStream<ASTTryStatement> enclosingTries = node.ancestors(ASTTryStatement.class);
+        if (firstTryOrCatch instanceof ASTCatchClause) {
+            // if the exception is thrown in a catch block, then the
+            // first try we're looking for is the next one
+            enclosingTries = enclosingTries.drop(1);
+        }
+        if (enclosingTries.isEmpty()) {
             return data;
         }
-        for (parent = parent.getFirstParentOfType(ASTTryStatement.class); parent != null; parent = parent
-                .getFirstParentOfType(ASTTryStatement.class)) {
 
-            List<ASTCatchStatement> list = parent.findDescendantsOfType(ASTCatchStatement.class);
-            for (ASTCatchStatement catchStmt : list) {
-                ASTFormalParameter fp = (ASTFormalParameter) catchStmt.jjtGetChild(0);
-                ASTType type = fp.getFirstDescendantOfType(ASTType.class);
-                ASTClassOrInterfaceType name = type.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-                if (node.getFirstClassOrInterfaceTypeImage() != null
-                        && node.getFirstClassOrInterfaceTypeImage().equals(name.getImage())) {
-                    addViolation(data, name);
-                }
-            }
-        }
+        JTypeMirror thrownType = node.getExpr().getTypeMirror();
+
+        enclosingTries.flatMap(ASTTryStatement::getCatchClauses)
+                      .map(ASTCatchClause::getParameter)
+                      .filter(exParam -> exParam.getAllExceptionTypes().any(type -> thrownType.isSubtypeOf(type.getTypeMirror())))
+                      .take(1)
+                      .forEach(ex -> addViolation(data, ex));
         return data;
     }
-
 }

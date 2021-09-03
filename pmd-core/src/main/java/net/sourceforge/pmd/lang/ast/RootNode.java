@@ -5,8 +5,15 @@
 package net.sourceforge.pmd.lang.ast;
 
 /**
- * This interface can be used to tag the root node of various ASTs.
+ * This interface identifies the root node of an AST. Each language
+ * implementation must ensure that every AST its parser produces has
+ * a RootNode as its root, and that there is no other RootNode instance
+ * in the tree.
  */
-public interface RootNode {
-    // that's only a marker interface.
+public interface RootNode extends Node {
+
+
+    @Override
+    AstInfo<? extends RootNode> getAstInfo();
+
 }

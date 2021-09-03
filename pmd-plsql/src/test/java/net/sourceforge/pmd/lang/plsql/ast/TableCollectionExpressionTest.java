@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
@@ -15,18 +11,12 @@ import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 public class TableCollectionExpressionTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void testExamples() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("TableCollectionExpressionExamples.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
-        Assert.assertNotNull(input);
+    public void testExamples() {
+        plsql.parseResource("TableCollectionExpressionExamples.pls");
     }
 
     @Test
-    public void testIssue1526() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("TableCollectionExpressionIssue1526.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
-        Assert.assertNotNull(input);
+    public void testIssue1526() {
+        plsql.parseResource("TableCollectionExpressionIssue1526.pls");
     }
 }

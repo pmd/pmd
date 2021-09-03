@@ -3,26 +3,41 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
+        <description>failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() { ClassLoader cl = SomeClass.class.getClassLoader(); }
+    void bar() { ClassLoader cl = SomeClass.class.getClassLoader(); }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-correct way
-     ]]></description>
+        <description>correct way</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() { ClassLoader cl = Thread.currentThread().getContextClassLoader(); }
+    void bar() { ClassLoader cl = Thread.currentThread().getContextClassLoader(); }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negatives (#2544)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <code><![CDATA[
+public class UseProperClassLoaderFN {
+    {
+        Object o = new Object();
+        ClassLoader cl = o.getClass().getClassLoader();
+
+        Class<?> c = o.getClass();
+        ClassLoader cl2 = c.getClassLoader();
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

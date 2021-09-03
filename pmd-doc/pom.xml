@@ -9,58 +9,67 @@
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
         <version>7.0.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <id>generate-rule-docs</id>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <mainClass>net.sourceforge.pmd.docs.GenerateRuleDocsCmd</mainClass>
-                            <arguments>
-                                <argument>${project.basedir}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>check-dead-links</id>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <phase>verify</phase>
-                        <configuration>
-                            <mainClass>net.sourceforge.pmd.docs.DeadLinksChecker</mainClass>
-                            <arguments>
-                                <argument>${project.basedir}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>check-rule-tags</id>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <phase>verify</phase>
-                        <configuration>
-                            <mainClass>net.sourceforge.pmd.docs.RuleTagChecker</mainClass>
-                            <arguments>
-                                <argument>${project.basedir}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <properties>
+        <java.version>8</java.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>generate-rule-docs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>generate-rule-docs</id>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <mainClass>net.sourceforge.pmd.docs.GenerateRuleDocsCmd</mainClass>
+                                    <arguments>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>check-dead-links</id>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <phase>verify</phase>
+                                <configuration>
+                                    <mainClass>net.sourceforge.pmd.docs.DeadLinksChecker</mainClass>
+                                    <arguments>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>check-rule-tags</id>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <phase>verify</phase>
+                                <configuration>
+                                    <mainClass>net.sourceforge.pmd.docs.RuleTagChecker</mainClass>
+                                    <arguments>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
@@ -83,19 +92,23 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-text</artifactId>
-          <version>1.6</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.19</version>
+            <version>1.26</version>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -3,76 +3,155 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Five stmts in one switch case, should be flagged
-     ]]></description>
+        <description>Five stmts in one switch case, should be flagged</description>
         <rule-property name="minimum">4</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 // Switch Density = 5.0
 public class SwitchDensity1 {
- public void foo(int i) {
-  switch (i) {
-  case 0:
-  {
-   System.err.println("I am a fish.");
-   System.err.println("I am a fish.");
-   System.err.println("I am a fish.");
-   System.err.println("I am a fish.");
-   System.err.println("I am a fish.");
-  }
-  }
- }
+    public void foo(int i) {
+        switch (i) {
+            case 0:
+            {
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+            }
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-One stmt in one switch case, ok
-     ]]></description>
+        <description>Switch expr</description>
+        <rule-property name="minimum">4</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+// Switch Density = 5.0
+public class SwitchDensity1 {
+    public void foo(int i) {
+        i = switch (i) {
+            case 0:
+            {
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch expr, composite label</description>
+        <rule-property name="minimum">4</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+// Switch Density = 5 / 3
+public class SwitchDensity1 {
+    public void foo(int i) {
+        i = switch (i) {
+            case 0, 1, 2:
+            {
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>One stmt in one switch case, ok</description>
         <rule-property name="minimum">4</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 // Switch Density = 1.0
 public class SwitchDensity2 {
-       public void foo(int i) {
-               switch (i) {
-                       case 0:
-                       {
-                        System.err.println("I am a fish.");
-                       }
-               }
-       }
+    public void foo(int i) {
+        switch (i) {
+            case 0:
+                {
+                    System.err.println("I am a fish.");
+                }
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Five stmts, 5 cases, OK
-     ]]></description>
+        <description>Five stmts, 5 cases, OK</description>
         <rule-property name="minimum">4</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 // Switch Density = 1.0
 public class SwitchDensity3 {
-       public void foo(int i) {
-               switch (i) {
-                       case 0:
-                       case 1:
-                       case 2:
-                       case 3:
-                       case 4:
-                       {
-                        System.err.println("I am a fish.");
-                        System.err.println("I am a fish.");
-                        System.err.println("I am a fish.");
-                        System.err.println("I am a fish.");
-                        System.err.println("I am a fish.");
-                       }
-               } 
-       }
+    public void foo(int i) {
+        switch (i) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            {
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+            }
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>False positive with default label</description>
+        <rule-property name="minimum">10</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SwitchWithDefault
+{
+    public void someMethod()
+    {
+        int i = 0;
+        switch (i)
+        {
+            default:
+                i--;
+                i++;
+                break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Empty switch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SwitchWithDefault
+{
+    public void someMethod()
+    {
+        int i = 0;
+        switch (i)
+        {
+        }
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

@@ -3,108 +3,75 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description>
-            <![CDATA[
-Qualified this as field
-            ]]>
-        </description>
+        <description>Qualified this as field</description>
         <expected-problems>1</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class Foo {
     final Foo otherFoo = Foo.this;
 }
-            ]]>
-        </code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description>
-            <![CDATA[
-Qualified this in a method
-            ]]>
-        </description>
+        <description>Qualified this in a method</description>
         <expected-problems>1</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class Foo {
     public void doSomething() {
          final Foo anotherFoo = Foo.this;
     }
 }
-            ]]>
-        </code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description>
-            <![CDATA[
-Qualified this in a Inner Class
-            ]]>
-        </description>
+        <description>Qualified this in a Inner Class</description>
         <expected-problems>0</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class Foo {
+    interface ActionListener { void actionPerformed(); }
     private ActionListener returnListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed() {
                 doSomethingWithQualifiedThis(Foo.this);
             }
         };
     }
 }
-            ]]>
-        </code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description>
-            <![CDATA[
-Qualified this in a Nested Class
-            ]]>
-        </description>
+        <description>Qualified this in a Nested Class</description>
         <expected-problems>0</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class Foo {
     private class Foo3 {
         final Foo myFoo = Foo.this;
     }
 }
-            ]]>
-        </code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description>
-            <![CDATA[
-Qualified this in a Nested Class part 2
-            ]]>
-        </description>
+        <description>Qualified this in a Nested Class part 2</description>
         <expected-problems>1</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class Foo {
     private class Foo2 {
         final Foo2 myFoo2 = Foo2.this;
     }
 }
-            ]]>
-        </code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description>
-            <![CDATA[
-Qualified this all in one
-            ]]>
-        </description>
+        <description>Qualified this all in one</description>
         <expected-problems>3</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class Foo {
     final Foo otherFoo = Foo.this;
 
@@ -115,7 +82,7 @@ public class Foo {
     private ActionListener returnListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed() {
                 doSomethingWithQualifiedThis(Foo.this);
             }
         };
@@ -128,17 +95,21 @@ public class Foo {
     private class Foo2 {
         final Foo2 myFoo2 = Foo2.this;
     }
+
+    interface ActionListener { void actionPerformed(); }
 }
-            ]]>
-        </code>
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#1422 UselessQualifiedThis: False positive with Java 8 Function</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 public class ApiExceptionCtrlAdvice {
-    public final List<ApiError> handleApiAggregateException(final ApiAggregateException e) {
+    public final List<ApiError> handleApiAggregateException(final ApiError e) {
         return e.getCauses().stream().map(
             ApiExceptionCtrlAdvice::toApiError
         ).collect(Collectors.toList());
@@ -146,8 +117,14 @@ public class ApiExceptionCtrlAdvice {
     private static ApiError toApiError(final Throwable e) {
         return new ApiError()
                 .withException(e.getClass().getName())
-                .withCause(Optional.ofNullable(e.getCause()).map(Throwable::getClass).map(Class::getName).orElse(EMPTY))
-                .withMessage(Optional.ofNullable(e.getMessage()).orElse(EMPTY));
+                .withCause(Optional.ofNullable(e.getCause()).map(Throwable::getClass).map(Class::getName).orElse(""))
+                .withMessage(Optional.ofNullable(e.getMessage()).orElse(""));
+    }
+    class ApiError {
+        List<Throwable> getCauses() {return List.of(); }
+        ApiError withException(String s) { return this; }
+        ApiError withCause(String s) { return this; }
+        ApiError withMessage(String s) { return this; }
     }
 }
         ]]></code>
@@ -156,23 +133,21 @@ public class ApiExceptionCtrlAdvice {
     <test-code>
         <description>False positive for UselessQualifiedThis #1372</description>
         <expected-problems>0</expected-problems>
-        <code>
-            <![CDATA[
-            public class Board {
-                private int[] Board;
+        <code><![CDATA[
+public class Board {
+    private int[] Board;
 
 
-                public Board(int[] b) {
-                    for (int i = 0; i < b.length; i++)
-                        Board[i] = b[i];
-                }
+    public Board(int[] b) {
+        for (int i = 0; i < b.length; i++)
+            Board[i] = b[i];
+    }
 
 
-                public int size() {
-                    return Board.length;
-                }
-            }
-            ]]>
-        </code>
+    public int size() {
+        return Board.length;
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

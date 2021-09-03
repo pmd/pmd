@@ -19,8 +19,9 @@ public class Foo {
         System.assert(o.isClosed, 'Opportunity is not closed.'); // good
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>[apex] assert should have 2 param and assertEquals should have 3 param.</description>
         <expected-problems>0</expected-problems>
@@ -33,8 +34,9 @@ public class Foo {
         System.assert(o.isClosed, 'Opportunity is not closed.'); // good
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>[apex] Avoid false positive in non test classes.</description>
         <expected-problems>0</expected-problems>
@@ -45,6 +47,6 @@ public class Foo {
         System.assert(o.isClosed);
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
 </test-data>

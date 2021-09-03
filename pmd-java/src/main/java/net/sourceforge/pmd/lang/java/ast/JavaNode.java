@@ -5,64 +5,68 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.symboltable.Scope;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 
 /**
  * Root interface for all Nodes of the Java AST.
  */
-public interface JavaNode extends ScopedNode {
+public interface JavaNode extends JjtreeNode<JavaNode>, ScopedNode {
 
     /**
      * Calls back the visitor's visit method corresponding to the runtime type of this Node.
      *
      * @param visitor Visitor to dispatch
      * @param data    Visit data
-     */
-    Object jjtAccept(JavaParserVisitor visitor, Object data);
-
-
-    /**
-     * Dispatches the given visitor to the children of this node. This is the default implementation
-     * of {@link JavaParserVisitor#visit(JavaNode, Object)}, to which all other default
-     * implementations for visit methods delegate. Unless visit methods are overridden without calling
-     * {@code super.visit}, the visitor performs a depth-first tree walk.
      *
-     * <p>The return value of the visit methods called on children are ignored.
-     *
-     * @param visitor Visitor to dispatch
-     * @param data    Visit data
+     * @deprecated Use {@link #acceptVisitor(AstVisitor, Object)}
      */
-    Object childrenAccept(JavaParserVisitor visitor, Object data);
-
-
-    /**
-     * Calls back the visitor's visit method corresponding to the runtime type of this Node.
-     *
-     * @param visitor Visitor to dispatch
-     * @param data    Visit data
-     * @param <T>     Type of data
-     */
-    <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data);
-
-
-    /**
-     * Dispatches the given visitor to the children of this node. This is the default implementation
-     * of {@link SideEffectingVisitor#visit(JavaNode, Object)}, to which all other default
-     * implementations for visit methods delegate. Unless visit methods are overridden without calling
-     * {@code super.visit}, the visitor performs a depth-first tree walk.
-     *
-     * @param visitor Visitor to dispatch
-     * @param data    Visit data
-     * @param <T>     Type of data
-     */
-    <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data);
-
-
-    @InternalApi
     @Deprecated
-    void setScope(Scope scope);
+    @DeprecatedUntil700
+    default Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return acceptVisitor(visitor, data);
+    }
+
+
+    /**
+     * Returns the node representing the type declaration this node is
+     * found in. The type of that node is the type of the {@code this}
+     * expression.
+     *
+     * <p>This returns null for nodes that aren't enclosed in a type declaration.
+     * This includes {@linkplain ASTPackageDeclaration PackageDeclaration},
+     * This includes {@linkplain ASTImportDeclaration ImportDeclaration},
+     * {@linkplain ASTModuleDeclaration ModuleDeclaration},
+     * {@linkplain ASTCompilationUnit CompilationUnit}, and top-level
+     * {@linkplain ASTAnyTypeDeclaration AnyTypeDeclaration}s.
+     */
+    default ASTAnyTypeDeclaration getEnclosingType() {
+        return getFirstParentOfType(ASTAnyTypeDeclaration.class);
+    }
+
+
+    @Override
+    @NonNull ASTCompilationUnit getRoot();
+
+    /**
+     * Returns the symbol table for the program point represented by
+     * this node.
+     */
+    @NonNull
+    JSymbolTable getSymbolTable();
+
+    /**
+     * Returns the type system with which this node was created. This is
+     * the object responsible for representing types in the compilation
+     * unit.
+     */
+    TypeSystem getTypeSystem();
 
 }

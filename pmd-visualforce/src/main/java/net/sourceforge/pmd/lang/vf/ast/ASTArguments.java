@@ -1,22 +1,17 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTArguments extends AbstractVFNode {
-    public ASTArguments(int id) {
+public final class ASTArguments extends AbstractVfNode {
+
+    ASTArguments(int id) {
         super(id);
     }
 
-    public ASTArguments(VfParser p, int id) {
-        super(p, id);
-    }
-
-    /** Accept the visitor. **/
     @Override
-    public Object jjtAccept(VfParserVisitor visitor, Object data) {
-
+    protected <P, R> R acceptVfVisitor(VfVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

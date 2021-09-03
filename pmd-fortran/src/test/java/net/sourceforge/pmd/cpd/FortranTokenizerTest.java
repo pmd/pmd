@@ -4,36 +4,34 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
 /**
  * @author rpelisse
  *
  */
-public class FortranTokenizerTest extends AbstractTokenizerTest {
+public class FortranTokenizerTest extends CpdTextComparisonTest {
 
-    @Before
-    @Override
-    public void buildTokenizer() throws IOException {
-        this.tokenizer = new FortranTokenizer();
-        this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(this.getSampleCode(), "sample.for"));
+    public FortranTokenizerTest() {
+        super(".for");
     }
 
     @Override
-    public String getSampleCode() throws IOException {
-        return IOUtils.toString(FortranTokenizerTest.class.getResourceAsStream("sample.for"), StandardCharsets.UTF_8);
+    protected String getResourcePrefix() {
+        return "../lang/fortran/cpd/testdata";
+    }
+
+    @Override
+    public Tokenizer newTokenizer(Properties properties) {
+        return new FortranLanguage().getTokenizer();
     }
 
     @Test
-    public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = 434;
-        super.tokenizeTest();
+    public void testSample() {
+        doTest("sample");
     }
 }

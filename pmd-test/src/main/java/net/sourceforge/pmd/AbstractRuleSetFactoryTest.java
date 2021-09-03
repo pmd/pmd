@@ -12,11 +12,13 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,13 +28,13 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.io.FilenameUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -43,32 +45,45 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
  * Base test class to verify the language's rulesets. This class should be
  * subclassed for each language.
  */
 public abstract class AbstractRuleSetFactoryTest {
-    private static SAXParserFactory saxParserFactory;
+    @org.junit.Rule
+    public final SystemErrRule systemErrRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
+
     private static ValidateDefaultHandler validateDefaultHandler;
     private static SAXParser saxParser;
 
     protected Set<String> validXPathClassNames = new HashSet<>();
+    private final Set<String> languagesToSkip = new HashSet<>();
 
     public AbstractRuleSetFactoryTest() {
+        this(new String[0]);
+    }
+
+    /**
+     * Constructor used when a module that depends on another module wants to filter out the dependee's rulesets.
+     *
+     * @param languagesToSkip {@link Language}s terse names that appear in the classpath via a dependency, but should be
+     * skipped because they aren't the primary language which the concrete instance of this class is testing.
+     */
+    public AbstractRuleSetFactoryTest(String... languagesToSkip) {
+        this.languagesToSkip.addAll(Arrays.asList(languagesToSkip));
         validXPathClassNames.add(XPathRule.class.getName());
     }
 
     /**
      * Setups the XML parser with validation.
-     * 
+     *
      * @throws Exception
      *             any error
      */
     @BeforeClass
     public static void init() throws Exception {
-        saxParserFactory = SAXParserFactory.newInstance();
+        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         saxParserFactory.setValidating(true);
         saxParserFactory.setNamespaceAware(true);
 
@@ -87,7 +102,7 @@ public abstract class AbstractRuleSetFactoryTest {
     /**
      * Checks all rulesets of all languages on the classpath and verifies that
      * all required attributes for all rules are specified.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -98,7 +113,7 @@ public abstract class AbstractRuleSetFactoryTest {
         int invalidClassName = 0;
         int invalidRegexSuppress = 0;
         int invalidXPathSuppress = 0;
-        String messages = "";
+        StringBuilder messages = new StringBuilder();
         List<String> ruleSetFileNames = getRuleSetFileNames();
         for (String fileName : ruleSetFileNames) {
             RuleSet ruleSet = loadRuleSetByFileName(fileName);
@@ -119,13 +134,22 @@ public abstract class AbstractRuleSetFactoryTest {
                 // Is since missing ?
                 if (rule.getSince() == null) {
                     invalidSinceAttributes++;
-                    messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'since' attribute" + PMD.EOL;
+                    messages.append("Rule ")
+                            .append(fileName)
+                            .append("/")
+                            .append(rule.getName())
+                            .append(" is missing 'since' attribute")
+                            .append(PMD.EOL);
                 }
                 // Is URL valid ?
                 if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
                     invalidExternalInfoURL++;
-                    messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'externalInfoURL' attribute"
-                            + PMD.EOL;
+                    messages.append("Rule ")
+                            .append(fileName)
+                            .append("/")
+                            .append(rule.getName())
+                            .append(" is missing 'externalInfoURL' attribute")
+                            .append(PMD.EOL);
                 } else {
                     String expectedExternalInfoURL = "https?://pmd.(sourceforge.net|github.io)/.+/pmd_rules_"
                             + language.getTerseName() + "_"
@@ -135,9 +159,15 @@ public abstract class AbstractRuleSetFactoryTest {
                     if (rule.getExternalInfoUrl() == null
                             || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {
                         invalidExternalInfoURL++;
-                        messages += "Rule " + fileName + "/" + rule.getName()
-                                + " seems to have an invalid 'externalInfoURL' value (" + rule.getExternalInfoUrl()
-                                + "), it should be:" + expectedExternalInfoURL + PMD.EOL;
+                        messages.append("Rule ")
+                                .append(fileName)
+                                .append("/")
+                                .append(rule.getName())
+                                .append(" seems to have an invalid 'externalInfoURL' value (")
+                                .append(rule.getExternalInfoUrl())
+                                .append("), it should be:")
+                                .append(expectedExternalInfoURL)
+                                .append(PMD.EOL);
                     }
                 }
                 // Proper class name/packaging?
@@ -146,22 +176,32 @@ public abstract class AbstractRuleSetFactoryTest {
                 if (!rule.getRuleClass().equals(expectedClassName)
                         && !validXPathClassNames.contains(rule.getRuleClass())) {
                     invalidClassName++;
-                    messages += "Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'class' value ("
-                            + rule.getRuleClass() + "), it should be:" + expectedClassName + PMD.EOL;
+                    messages.append("Rule ")
+                            .append(fileName)
+                            .append("/")
+                            .append(rule.getName())
+                            .append(" seems to have an invalid 'class' value (")
+                            .append(rule.getRuleClass())
+                            .append("), it should be:")
+                            .append(expectedClassName)
+                            .append(PMD.EOL);
                 }
                 // Should not have violation suppress regex property
                 if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR) != null) {
                     invalidRegexSuppress++;
-                    messages += "Rule " + fileName + "/" + rule.getName() + " should not have '"
-                            + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name()
-                            + "', this is intended for end user customization only." + PMD.EOL;
+                    messages.append("Rule ")
+                            .append(fileName)
+                            .append("/")
+                            .append(rule.getName())
+                            .append(" should not have '")
+                            .append(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name())
+                            .append("', this is intended for end user customization only.")
+                            .append(PMD.EOL);
                 }
                 // Should not have violation suppress xpath property
                 if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR) != null) {
                     invalidXPathSuppress++;
-                    messages += "Rule " + fileName + "/" + rule.getName() + " should not have '"
-                            + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()
-                            + "', this is intended for end user customization only." + PMD.EOL;
+                    messages.append("Rule ").append(fileName).append("/").append(rule.getName()).append(" should not have '").append(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()).append("', this is intended for end user customization only.").append(PMD.EOL);
                 }
             }
         }
@@ -180,7 +220,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Verifies that all rulesets are valid XML according to the xsd schema.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -197,7 +237,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Verifies that all rulesets are valid XML according to the DTD.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -215,7 +255,7 @@ public abstract class AbstractRuleSetFactoryTest {
     /**
      * Reads and writes the rulesets to make sure, that no data is lost if the
      * rulests are processed.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -230,71 +270,74 @@ public abstract class AbstractRuleSetFactoryTest {
     }
 
     // Gets all test PMD Ruleset XML files
-    private List<String> getRuleSetFileNames() throws IOException, RuleSetNotFoundException {
+    private List<String> getRuleSetFileNames() throws IOException {
         List<String> result = new ArrayList<>();
 
         for (Language language : LanguageRegistry.getLanguages()) {
+            if (this.languagesToSkip.contains(language.getTerseName())) {
+                continue;
+            }
             result.addAll(getRuleSetFileNames(language.getTerseName()));
         }
 
         return result;
     }
 
-    private List<String> getRuleSetFileNames(String language) throws IOException, RuleSetNotFoundException {
+    private List<String> getRuleSetFileNames(String language) throws IOException {
         List<String> ruleSetFileNames = new ArrayList<>();
-        try {
-            Properties properties = new Properties();
-            try (InputStream is = new ResourceLoader().loadClassPathResourceAsStreamOrThrow("rulesets/" + language + "/rulesets.properties")) {
-                properties.load(is);
-            }
-            String fileNames = properties.getProperty("rulesets.filenames");
-            StringTokenizer st = new StringTokenizer(fileNames, ",");
-            while (st.hasMoreTokens()) {
-                ruleSetFileNames.add(st.nextToken());
-            }
-        } catch (RuleSetNotFoundException e) {
+        Properties properties = new Properties();
+        @SuppressWarnings("PMD.CloseResource")
+        InputStream input = getClass().getResourceAsStream("rulesets/" + language + "/rulesets.properties");
+        if (input == null) {
             // this might happen if a language is only support by CPD, but not
             // by PMD
             System.err.println("No ruleset found for language " + language);
+            return Collections.emptyList();
         }
+        try (InputStream is = input) {
+            properties.load(is);
+        }
+        String fileNames = properties.getProperty("rulesets.filenames");
+        StringTokenizer st = new StringTokenizer(fileNames, ",");
+        while (st.hasMoreTokens()) {
+            ruleSetFileNames.add(st.nextToken());
+        }
+
         return ruleSetFileNames;
     }
 
-    private RuleSet loadRuleSetByFileName(String ruleSetFileName) throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new RuleSetFactory();
-        return rsf.createRuleSet(ruleSetFileName);
+    private RuleSet loadRuleSetByFileName(String ruleSetFileName) {
+        return new RuleSetLoader().loadFromResource(ruleSetFileName);
     }
 
-    private boolean validateAgainstSchema(String fileName)
-            throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
-        InputStream inputStream = loadResourceAsStream(fileName);
-        boolean valid = validateAgainstSchema(inputStream);
-        if (!valid) {
-            System.err.println("Validation against XML Schema failed for: " + fileName);
+    private boolean validateAgainstSchema(String fileName) throws IOException, SAXException {
+        try (InputStream inputStream = loadResourceAsStream(fileName)) {
+            boolean valid = validateAgainstSchema(inputStream);
+            if (!valid) {
+                System.err.println("Validation against XML Schema failed for: " + fileName);
+            }
+            return valid;
         }
-        return valid;
     }
 
-    private boolean validateAgainstSchema(InputStream inputStream)
-            throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
+    private boolean validateAgainstSchema(InputStream inputStream) throws IOException, SAXException {
 
         saxParser.parse(inputStream, validateDefaultHandler.resetValid());
         inputStream.close();
         return validateDefaultHandler.isValid();
     }
 
-    private boolean validateAgainstDtd(String fileName)
-            throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
-        InputStream inputStream = loadResourceAsStream(fileName);
-        boolean valid = validateAgainstDtd(inputStream);
-        if (!valid) {
-            System.err.println("Validation against DTD failed for: " + fileName);
+    private boolean validateAgainstDtd(String fileName) throws IOException, SAXException {
+        try (InputStream inputStream = loadResourceAsStream(fileName)) {
+            boolean valid = validateAgainstDtd(inputStream);
+            if (!valid) {
+                System.err.println("Validation against DTD failed for: " + fileName);
+            }
+            return valid;
         }
-        return valid;
     }
 
-    private boolean validateAgainstDtd(InputStream inputStream)
-            throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
+    private boolean validateAgainstDtd(InputStream inputStream) throws IOException, SAXException {
 
         // Read file into memory
         String file = readFullyToString(inputStream);
@@ -316,31 +359,29 @@ public abstract class AbstractRuleSetFactoryTest {
             file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset>" + PMD.EOL + file;
         }
 
-        InputStream modifiedStream = new ByteArrayInputStream(file.getBytes());
-
-        saxParser.parse(modifiedStream, validateDefaultHandler.resetValid());
-        modifiedStream.close();
+        try (InputStream modifiedStream = new ByteArrayInputStream(file.getBytes())) {
+            saxParser.parse(modifiedStream, validateDefaultHandler.resetValid());
+        }
         return validateDefaultHandler.isValid();
     }
 
     private String readFullyToString(InputStream inputStream) throws IOException {
         StringBuilder buf = new StringBuilder(64 * 1024);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            buf.append(line);
-            buf.append(PMD.EOL);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                buf.append(line);
+                buf.append(PMD.EOL);
+            }
+            return buf.toString();
         }
-        reader.close();
-        return buf.toString();
     }
 
-    private static InputStream loadResourceAsStream(String resource) throws RuleSetNotFoundException {
-        return new ResourceLoader().loadClassPathResourceAsStreamOrThrow(resource);
+    private InputStream loadResourceAsStream(String resource) {
+        return getClass().getResourceAsStream(resource);
     }
 
-    private void testRuleSet(String fileName)
-            throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
+    private void testRuleSet(String fileName) throws IOException, SAXException {
 
         // Load original XML
         // String xml1 =
@@ -359,8 +400,8 @@ public abstract class AbstractRuleSetFactoryTest {
         // System.out.println("xml2: " + xml2);
 
         // Read RuleSet from XML, first time
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        RuleSet ruleSet2 = ruleSetFactory.createRuleSet(createRuleSetReferenceId(xml2));
+        RuleSetLoader loader = new RuleSetLoader();
+        RuleSet ruleSet2 = loader.loadFromString("", xml2);
 
         // Do write/read a 2nd time, just to be sure
 
@@ -373,7 +414,7 @@ public abstract class AbstractRuleSetFactoryTest {
         // System.out.println("xml3: " + xml3);
 
         // Read RuleSet from XML, second time
-        RuleSet ruleSet3 = ruleSetFactory.createRuleSet(createRuleSetReferenceId(xml3));
+        RuleSet ruleSet3 = loader.loadFromString("", xml3);
 
         // The 2 written XMLs should all be valid w.r.t Schema/DTD
         assertTrue("1st roundtrip RuleSet XML is not valid against Schema (filename: " + fileName + ")",
@@ -400,10 +441,10 @@ public abstract class AbstractRuleSetFactoryTest {
     private void assertEqualsRuleSet(String message, RuleSet ruleSet1, RuleSet ruleSet2) {
         assertEquals(message + ", RuleSet name", ruleSet1.getName(), ruleSet2.getName());
         assertEquals(message + ", RuleSet description", ruleSet1.getDescription(), ruleSet2.getDescription());
-        assertEquals(message + ", RuleSet exclude patterns", ruleSet1.getExcludePatterns(),
-                ruleSet2.getExcludePatterns());
-        assertEquals(message + ", RuleSet include patterns", ruleSet1.getIncludePatterns(),
-                ruleSet2.getIncludePatterns());
+        assertEquals(message + ", RuleSet exclude patterns", ruleSet1.getFileExclusions(),
+                ruleSet2.getFileExclusions());
+        assertEquals(message + ", RuleSet include patterns", ruleSet1.getFileInclusions(),
+                ruleSet2.getFileInclusions());
         assertEquals(message + ", RuleSet rule count", ruleSet1.getRules().size(), ruleSet2.getRules().size());
 
         for (int i = 0; i < ruleSet1.getRules().size(); i++) {
@@ -416,8 +457,6 @@ public abstract class AbstractRuleSetFactoryTest {
             if (rule1 instanceof RuleReference) {
                 RuleReference ruleReference1 = (RuleReference) rule1;
                 RuleReference ruleReference2 = (RuleReference) rule2;
-                assertEquals(message + ", RuleReference overridden language", ruleReference1.getOverriddenLanguage(),
-                        ruleReference2.getOverriddenLanguage());
                 assertEquals(message + ", RuleReference overridden minimum language version",
                         ruleReference1.getOverriddenMinimumLanguageVersion(),
                         ruleReference2.getOverriddenMinimumLanguageVersion());
@@ -468,26 +507,6 @@ public abstract class AbstractRuleSetFactoryTest {
     }
 
     /**
-     * Create a {@link RuleSetReferenceId} by the given XML string.
-     * 
-     * @param ruleSetXml
-     *            the ruleset file content as string
-     * @return the {@link RuleSetReferenceId}
-     */
-    protected static RuleSetReferenceId createRuleSetReferenceId(final String ruleSetXml) {
-        return new RuleSetReferenceId(null) {
-            @Override
-            public InputStream getInputStream(ResourceLoader resourceLoader) throws RuleSetNotFoundException {
-                try {
-                    return new ByteArrayInputStream(ruleSetXml.getBytes("UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    return null;
-                }
-            }
-        };
-    }
-
-    /**
      * Validator for the SAX parser
      */
     private static class ValidateDefaultHandler extends DefaultHandler {
@@ -510,17 +529,17 @@ public abstract class AbstractRuleSetFactoryTest {
         }
 
         @Override
-        public void error(SAXParseException e) throws SAXException {
+        public void error(SAXParseException e) {
             log("Error", e);
         }
 
         @Override
-        public void fatalError(SAXParseException e) throws SAXException {
+        public void fatalError(SAXParseException e) {
             log("FatalError", e);
         }
 
         @Override
-        public void warning(SAXParseException e) throws SAXException {
+        public void warning(SAXParseException e) {
             log("Warning", e);
         }
 
@@ -531,17 +550,15 @@ public abstract class AbstractRuleSetFactoryTest {
         }
 
         @Override
-        public InputSource resolveEntity(String publicId, String systemId) throws IOException, SAXException {
+        public InputSource resolveEntity(String publicId, String systemId) throws IOException {
             String resource = schemaMapping.get(systemId);
 
             if (resource != null) {
-                try {
-                    InputStream inputStream = loadResourceAsStream(resource);
-                    return new InputSource(inputStream);
-                } catch (RuleSetNotFoundException e) {
-                    System.err.println(e.getMessage());
-                    throw new IOException(e.getMessage());
+                InputStream inputStream = getClass().getResourceAsStream(resource);
+                if (inputStream == null) {
+                    throw new FileNotFoundException(resource);
                 }
+                return new InputSource(inputStream);
             }
             throw new IllegalArgumentException(
                     "No clue how to handle: publicId=" + publicId + ", systemId=" + systemId);

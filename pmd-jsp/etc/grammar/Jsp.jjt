@@ -1,0 +1,733 @@
+/*
+ * Allow boolean attributes
+ *
+ * Juan Martín Sotuyo Dodero 06/2017
+ *====================================================================
+ * Added capability for Tracking Tokens.
+ *
+ * Amit Kumar Prasad 10/2015
+ *====================================================================
+ * JSP Parser for PMD.
+ * It supports supports more-or-less well written JSP files.
+ * The JSP Document style is supported, except for inline DTD.
+ * The JSP Page style (<% ... %>) is supported.
+ * Java code is not parsed.
+ * Script code inside <script> ... </script> is not parsed.
+ */
+
+options {
+	USER_CHAR_STREAM = true;
+	NODE_USES_PARSER=true;
+	UNICODE_INPUT=true;
+	FORCE_LA_CHECK = false;
+	IGNORE_CASE = true;
+	STATIC = false;
+
+	MULTI=true;
+	VISITOR=true;
+}
+
+PARSER_BEGIN(JspParserImpl)
+package net.sourceforge.pmd.lang.jsp.ast;
+
+import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+
+/**
+ * JSP Parser for PMD.
+ * @author Pieter, Application Engineers NV/SA, http://www.ae.be
+ */
+public class JspParserImpl {
+
+
+	/**
+	* Counter used to keep track of unclosed tags
+	*/
+	private OpenTagRegister tagRegister = new OpenTagRegister();
+
+	/**
+	 * Return the contents of a quote.
+	 * @param quote String - starting and ending with " or '
+	 * @return String a substring of quote: quote without the first and list
+	 * character.
+	 */
+	private static String quoteContent(String quote) {
+		return quote.substring(1, quote.length()-1);
+	}
+
+	/**
+	 * Return the contents of a EL expression or a Value Binding expression.
+	 * @param expression String - starting with ${ or #{ and ending with }
+	 * @return String a substring of expression: expression without the first two and list
+	 * characters.
+	 */
+	private static String expressionContent(String expression) {
+		return expression.substring(2, expression.length()-1).trim();
+	}
+}
+
+PARSER_END(JspParserImpl)
+
+
+/** ******************************************************************** */
+/** *************************  JSP LEXICON  **************************** */
+/** ******************************************************************** */
+
+
+/* This JavaCC lexicon has the following states:
+ * - StartTagState : this is the state entered after the "<" of a tag, until a
+ *    non-whitespace is found.
+ *    This is only for tags, not for xml-comments, declarations, etc.
+ * - AfterTagState : this is the state entered after the closing ">" of a tag,
+ *    or xml-comment or declaration, until some non-whitespace is found
+ * - CommentState : the state between "<!--" and "-->"
+ * - DeclarationState : the state between "<?" or "<!" and ">"
+ * - CDataState : the state between "<![DATA[" and "]]>"
+ * - InTagState : the state when inside a tag
+ * - AttrValueStatue : the state when starting an attribute value, before the starting single or double quote
+ * - DocTypeState : the state when inside a doctype declaration
+ * - ElExpressionState : the state when inside a ElExpression
+ * - DocTypeState : inside a document type declaration
+ * - DocTypeExternalIdState : inside an "external id" part of a dtd
+ * - AttrValueBetweenSingleQuotesState : inside an attribute that is surrounded by single quotes (')
+ * - AttrValueBetweenDoubleQuotesState : inside an attribute that is surrounded by double quotes (")
+ * - JspDirectiveState : inside a JSP directive not yet reaching the attributes of the directive
+ * - JspDirectiveAttributesState : inside the attributes part of a directive
+ * - JspScriptletState : inside a scriptlet <% ... %>
+ * - JspExpressionState : inside an expression <%= ... %>
+ * - JspDeclarationState : inside a declaration <%! ... %>
+ * - JspCommentState : inside a comment <%-- ... --%>
+ * - HtmlScriptContentState : inside an HTML script <script> ... </script>
+ */
+
+
+<*> TOKEN :
+{
+  <#ALPHA_CHAR: [
+       "\u0024",
+       "\u0041"-"\u005a",
+       "\u005f",
+       "\u0061"-"\u007a",
+       "\u00c0"-"\u00d6",
+       "\u00d8"-"\u00f6",
+       "\u00f8"-"\u00ff"
+      ] >
+| <#NUM_CHAR:   [
+       "\u0030"-"\u0039"
+      ] >
+| <#ALPHANUM_CHAR: ( <ALPHA_CHAR> | <NUM_CHAR> ) >
+| <#IDENTIFIER_CHAR: ( <ALPHANUM_CHAR> | [ "_", "-", ".", ":" ] ) >
+| <#IDENTIFIER: <ALPHA_CHAR> (<IDENTIFIER_CHAR>)* >
+| <#XMLNAME: (<ALPHA_CHAR> | "_" | ":") (<IDENTIFIER_CHAR>)* >
+| <#QUOTED_STRING_NO_BREAKS: ( "'" ( ~["'", "\r", "\n"] )* "'" ) 
+                    | ( "\"" ( ~["\"", "\r", "\n"] )* "\"" ) >
+| <#QUOTED_STRING: ( "'" ( ~["'"] )* "'" ) | ( "\"" ( ~["\""] )* "\"" ) >
+| <#WHITESPACE: ( " " | "\t" | "\n" | "\r" ) >
+| <#NEWLINE:    ( "\r\n" | "\r" | "\n" ) >
+| <#QUOTE:      ( "'" | "\"" )>
+| <#NO_WHITESPACE_OR_LT_OR_DOLLAR: (~[" ", "\t", "\n", "\r", "<", "$", "#"])>
+| <#DOLLAR_OR_HASH: ("$" | "#")>
+| <#NO_OPENBRACE: (~["{"]) >
+| <#NO_LT_OR_DOLLAR_OR_HASH: (~["<","$","#"])>
+| <#NO_ENDTAG_START: (~["<"]~["/"]) >
+| <#TEXT_IN_EL: (~["}", "'", "\""])+ >
+| <#EL_ESCAPE: ("\\${" | "\\#{") >
+
+	// anything but --%>
+| <#NO_JSP_COMMENT_END: (~["-"] | "-" ~["-"] | "--" ~["%"] | "--%" ~[">"])+ > 
+| <#NO_JSP_TAG_END: ( ~["%"] | ("%" ~[">"]) )+ >
+| <#NO_JSP_TAG_END_EXCEPT_QUOTED: ( ~["%", "\"", "'"] | ("%" ~[">"]) | <QUOTED_STRING> )+ >
+}
+
+
+<DEFAULT, JspDirectiveState, JspDirectiveAttributesState> SKIP :
+{
+  < (<WHITESPACE>)+ >
+}
+
+<AfterTagState, InTagState, HtmlScriptContentState> SPECIAL_TOKEN :
+{
+  < (<WHITESPACE>)+ >
+}
+
+<DEFAULT, AfterTagState> TOKEN : 
+{
+  <TAG_START:      			"<"       	> 	: StartTagState
+| <ENDTAG_START:   			"</"      	> 	: StartTagState
+| <COMMENT_START:  			"<!--"    	> 	: CommentState
+| <DECL_START:     			"<?"	  	>	: StartTagState
+| <DOCTYPE_DECL_START: 		"<!DOCTYPE" >	: DocTypeState
+| <CDATA_START:    			"<![CDATA[" >   : CDataState
+| <JSP_COMMENT_START:		"<%--" 		>   : JspCommentState
+| <JSP_DECLARATION_START: 	"<%!" 		>   : JspDeclarationState
+| <JSP_EXPRESSION_START: 	"<%=" 		>   : JspExpressionState
+| <JSP_SCRIPTLET_START:		"<%" 		>	: JspScriptletState
+| <JSP_DIRECTIVE_START:		"<%@"		> 	: JspDirectiveState
+| <HTML_SCRIPT_START:       "<script"   >   : InTagState
+}
+
+<AfterTagState> TOKEN :
+{	
+	<EL_EXPRESSION: 
+					( "${" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}")
+						|
+					("#{" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}")
+					>
+|	<UNPARSED_TEXT: ( <NO_LT_OR_DOLLAR_OR_HASH>|
+					  <DOLLAR_OR_HASH><NO_OPENBRACE>|
+					  <EL_ESCAPE>)+ >
+}
+
+<JspDirectiveState> TOKEN :
+{
+	<JSP_DIRECTIVE_NAME: <IDENTIFIER> > : JspDirectiveAttributesState
+}
+
+<JspDirectiveAttributesState> TOKEN :
+{
+	<JSP_DIRECTIVE_ATTRIBUTE_NAME: 		<IDENTIFIER> >
+|	<JSP_DIRECTIVE_ATTRIBUTE_EQUALS: 	"=" >
+|	<JSP_DIRECTIVE_ATTRIBUTE_VALUE: 	<QUOTED_STRING> >
+|	<JSP_DIRECTIVE_END: 				"%>" > : AfterTagState
+}
+
+<JspScriptletState> TOKEN :
+{
+	<JSP_SCRIPTLET_END: "%>" > : AfterTagState
+|	<JSP_SCRIPTLET: <NO_JSP_TAG_END_EXCEPT_QUOTED> >
+}
+
+<JspExpressionState> TOKEN :
+{
+	<JSP_EXPRESSION_END: "%>" > : AfterTagState
+|	<JSP_EXPRESSION: <NO_JSP_TAG_END> >
+}
+
+<JspDeclarationState> TOKEN :
+{
+	<JSP_DECLARATION_END: "%>" > : AfterTagState
+|	<JSP_DECLARATION: <NO_JSP_TAG_END_EXCEPT_QUOTED> >
+}
+
+<JspCommentState> TOKEN : 
+{
+	<JSP_COMMENT_END: "--%>" > : AfterTagState
+|	<JSP_COMMENT_CONTENT: <NO_JSP_COMMENT_END> >
+}
+
+<DocTypeState, DocTypeExternalIdState> TOKEN : 
+{
+	<WHITESPACES: (<WHITESPACE>)+ >
+}
+
+<DocTypeState> TOKEN:
+{
+	<NAME: (<XMLNAME>) > : DocTypeExternalIdState
+}
+
+<DocTypeExternalIdState> TOKEN:
+{
+	<PUBLIC: "PUBLIC">
+|	<SYSTEM: "SYSTEM">
+|	<DOCTYPE_DECL_END: ">" > : AfterTagState
+|	<QUOTED_LITERAL: (<QUOTED_STRING>) >
+}
+
+
+<CDataState> TOKEN :
+{
+	<UNPARSED: 		(~[])  >
+  | <CDATA_END:		("]]>") > : AfterTagState
+}
+
+<StartTagState> TOKEN :
+{
+  <TAG_NAME: <IDENTIFIER> > : InTagState
+| <LST_ERROR: ~[]>          : DEFAULT
+}
+
+<InTagState> TOKEN :
+{
+  <ATTR_NAME: (<IDENTIFIER> | "${" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}") >
+| <TAG_END: ">"            >            : AfterTagState
+| <DECL_END: ("?>" | "!>") >            : AfterTagState
+| <TAG_SLASHEND: "/>" >                 : AfterTagState
+| <ATTR_EQ: "=" >                       : AttrValueState
+| <IN_TAG_ERROR: ~[]>
+}
+
+<AttrValueState> TOKEN :
+{
+  <SINGLE_QUOTE: "'"> : AttrValueBetweenSingleQuotesState
+| <DOUBLE_QUOTE: "\""> : AttrValueBetweenDoubleQuotesState
+| <NO_QUOTE_NO_WHITESPACE: ~["\"","'"," "] > { input_stream.backup(1);} : AttrValueNoQuotesState
+| <IN_ATTR_WHITESPACE: [" "] > : InTagState //support for empty attributes
+}
+
+<AttrValueBetweenSingleQuotesState, AttrValueBetweenDoubleQuotesState,AttrValueNoQuotesState> TOKEN:
+{
+	<EL_EXPRESSION_IN_ATTRIBUTE: "${" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}" >
+|	<VALUE_BINDING_IN_ATTRIBUTE: "#{" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}" >
+|	<JSP_EXPRESSION_IN_ATTRIBUTE: "<%=" <NO_JSP_TAG_END> "%>" >
+}
+
+<AttrValueNoQuotesState> TOKEN :
+{
+     <ENDING_WHITESPACE: " " >: InTagState
+|    <UNPARSED_TEXT_NO_WHITESPACE: ( ~["$", "#", " "] |(["$", "#"] ~["{"]) | <EL_ESCAPE> )+ >
+
+}
+
+<AttrValueBetweenSingleQuotesState> TOKEN :
+{
+	<ENDING_SINGLE_QUOTE: "'"> : InTagState
+|	<UNPARSED_TEXT_NO_SINGLE_QUOTES: 
+		( (~["$", "#", "'"]) | (["$", "#"] ~["{", "'"]) | <EL_ESCAPE> )+ >
+|	<DOLLAR_OR_HASH_SINGLE_QUOTE: ["$", "#"] "'" > : InTagState
+}
+
+<AttrValueBetweenDoubleQuotesState> TOKEN :
+{
+	<ENDING_DOUBLE_QUOTE: "\""> : InTagState
+|	<UNPARSED_TEXT_NO_DOUBLE_QUOTES: 
+		( (~["$", "#", "\""]) | (["$", "#"] ~["{", "\""]) | <EL_ESCAPE> )+ >
+|	<DOLLAR_OR_HASH_DOUBLE_QUOTE: ["$", "#"] "\"" > : InTagState
+}
+
+<CommentState> TOKEN : 
+{
+  < COMMENT_END:  ("--" (" ")* ">" | "->") > : AfterTagState 
+| < COMMENT_TEXT: (~[]) >
+}
+
+<HtmlScriptContentState> TOKEN :
+{
+		 <HTML_SCRIPT_CONTENT: (~[]) >
+		| <HTML_SCRIPT_END_TAG : "</script" | "</Script" | "</SCRIPT">  : AfterTagState
+}
+
+/** ******************************************************************** */
+/** *************************  JSP GRAMMAR  **************************** */
+/** ******************************************************************** */
+
+/**
+ * The root of the AST of a JSP.
+ */
+ASTCompilationUnit CompilationUnit() :
+{}
+{
+  Prolog()
+  
+  Content() <EOF> 
+  { return jjtThis; }
+}
+
+/**
+ * The optional prolog of a JSP, including (xml) declarations and DTD.
+ */
+void Prolog() #void :
+{}
+{
+	(
+    	LOOKAHEAD( ( CommentTag() | JspComment() )* 	Declaration() )
+    	( CommentTag() | JspComment() )*
+	  	Declaration()
+	)?
+	
+    (
+    	LOOKAHEAD( ( CommentTag() | JspComment() )* 	DoctypeDeclaration() )
+    	( CommentTag() | JspComment() )*
+	    DoctypeDeclaration()
+	)?
+}
+
+/**
+ * Everything between a start-tag and the corresponding end-tag of an element (if an end tag exists).
+ */
+void Content() :
+{}
+{ 
+	( Text() | ContentElement()	)*
+}
+
+/**
+ * A single (non-text) element that can occur between a start-tag and end-tag of an element.
+ * 
+ */
+void ContentElement() #void :
+{}
+{
+	( 
+		CommentTag() 
+	  |	Element() 
+	  | CData() 
+	  | JspComment() 
+	  | JspDeclaration() 
+	  | JspExpression() 
+	  | JspScriptlet()
+	  | JspDirective() 
+      | HtmlScript()
+	)
+}
+
+void JspDirective() :
+{ 	Token t; }
+{
+	<JSP_DIRECTIVE_START>
+	t = <JSP_DIRECTIVE_NAME> { jjtThis.setName(t.image); }
+	
+	(
+		JspDirectiveAttribute()
+	)*
+	<JSP_DIRECTIVE_END>
+}
+
+void JspDirectiveAttribute() : 
+{	Token t; }
+{
+	t = <JSP_DIRECTIVE_ATTRIBUTE_NAME> { jjtThis.setName(t.image); }
+	<JSP_DIRECTIVE_ATTRIBUTE_EQUALS>
+	t = <JSP_DIRECTIVE_ATTRIBUTE_VALUE> { jjtThis.setValue(quoteContent(t.image)); }
+}
+
+void JspScriptlet() :
+{	Token t; }
+{
+	<JSP_SCRIPTLET_START>
+	t = <JSP_SCRIPTLET> { jjtThis.setImage(t.image.trim()); }
+	<JSP_SCRIPTLET_END>
+}
+
+void JspExpression() :
+{	Token t; }
+{
+	<JSP_EXPRESSION_START>
+	t = <JSP_EXPRESSION> { jjtThis.setImage(t.image.trim()); }
+	<JSP_EXPRESSION_END>
+}
+
+void JspDeclaration() :
+{	Token t; }
+{
+	<JSP_DECLARATION_START>
+	t = <JSP_DECLARATION> { jjtThis.setImage(t.image.trim()); }
+	<JSP_DECLARATION_END>
+}
+
+void JspComment() :
+{ 	Token t; }
+{
+	<JSP_COMMENT_START>
+	t = <JSP_COMMENT_CONTENT> { jjtThis.setImage(t.image.trim()); }
+	<JSP_COMMENT_END>
+}
+
+/**
+ * This production groups all characters between two tags, where
+ * tag is an xml-tag "&lt;...&gt;" or a jsp-page-tag "&lt;%...%&gt;" or CDATA "&lt;![CDATA[...]]&gt;".
+ * Text consists of unparsed text and/or Expression Language expressions.
+ */
+void Text() :
+{
+	StringBuffer content = new StringBuffer();
+	String tmp;
+}
+{	 
+	  (	
+	  	tmp = UnparsedText() { content.append(tmp); }
+	  | tmp = ElExpression() { content.append(tmp); }
+	  )+
+		{jjtThis.setImage(content.toString());}
+	  
+}
+
+String UnparsedText() :
+{ Token t; }
+{   
+	t = <UNPARSED_TEXT> 
+	{
+		jjtThis.setImage(t.image); 
+		return t.image;
+	}
+}
+
+String UnparsedTextNoWhitespace() #UnparsedText :
+{ Token t;}
+{
+  (
+    t = <UNPARSED_TEXT_NO_WHITESPACE>
+  )
+  {
+		jjtThis.setImage(t.image); 
+		return t.image;
+  }
+}
+
+  
+
+/**
+ * Text that contains no single quotes, and that does not contain the start
+ * of a EL expression or value binding.
+ */
+String UnparsedTextNoSingleQuotes() #UnparsedText : 
+{ Token t; }
+{
+	t = <UNPARSED_TEXT_NO_SINGLE_QUOTES> 
+	{ 
+		jjtThis.setImage(t.image); 
+		return t.image;
+	}
+}
+
+/**
+ * Text that contains no double quotes, and that does not contain the start
+ * of a EL expression or value binding.
+ */
+String UnparsedTextNoDoubleQuotes() #UnparsedText : 
+{ Token t; }
+{
+	t = <UNPARSED_TEXT_NO_DOUBLE_QUOTES> 
+	{ 
+		jjtThis.setImage(t.image); 
+		return t.image;
+	}
+}
+
+/**
+ * An EL expression, not within an attribute value.
+ */
+String ElExpression() :
+{ 	Token t; }
+{
+	t = <EL_EXPRESSION> 
+	{ 
+		jjtThis.setImage(expressionContent(t.image)); 
+		return t.image;
+	}
+}
+
+String ValueBindingInAttribute() #ValueBinding :
+{	Token t; }
+{
+	t = <VALUE_BINDING_IN_ATTRIBUTE> 
+	{ 
+		jjtThis.setImage(expressionContent(t.image)); 
+		return t.image;
+	}
+}
+
+String ElExpressionInAttribute() #ElExpression :
+{	Token t; }
+{
+	t = <EL_EXPRESSION_IN_ATTRIBUTE> 
+	{ 
+		jjtThis.setImage(expressionContent(t.image)); 
+		return t.image;
+	}
+}
+
+void CData() :
+{
+	StringBuffer content = new StringBuffer();
+	Token t;
+}
+{
+	<CDATA_START> ( t = <UNPARSED>  { content.append(t.image); } )* <CDATA_END>
+	{
+		jjtThis.setImage(content.toString());
+	}
+}
+
+/**
+ * A XML element, either with a single empty tag, or with a starting and closing tag
+ * with optional contained content.
+ */
+void Element() :
+{
+	Token startTag;
+	Token endTag;
+	String tagName;
+}
+{
+    (
+	      (
+	        <TAG_START> 
+	    	startTag = <TAG_NAME> { tagName = startTag.image;
+	    							jjtThis.setName(tagName);
+	    							tagRegister.openTag(jjtThis);
+	    							}
+	   	  )
+	      (Attribute())*
+	      ( 
+	    	(
+	    	  <TAG_END>{ jjtThis.setEmpty(false);}
+
+		   	 (Content())
+		    	
+			 (<ENDTAG_START> 
+			  endTag = <TAG_NAME> {tagRegister.closeTag(endTag.image);}
+		      <TAG_END>)?
+	    	)
+	   		|  
+	     	(<TAG_SLASHEND> { jjtThis.setEmpty(true);
+	     					  jjtThis.setUnclosed(false);
+	     					}
+	     	)  
+	      )
+   )
+}
+
+void Attribute() : 
+{	Token t; }
+{
+  t = <ATTR_NAME> { jjtThis.setName(t.image); }
+  (
+  	<ATTR_EQ> 
+  	AttributeValue()
+  )?
+}
+
+/**
+ * The value of an attribute of an element.
+ * EL expressions, JSF value bindings, and JSP expressions
+ * are parsed as sub-nodes of the AttributeValue node.
+ */
+void AttributeValue() : 
+{
+	StringBuffer content = new StringBuffer();
+	String tmp;
+	Token t = null ;
+}
+{
+  	(
+	  	( 	<DOUBLE_QUOTE>
+		  	( (	tmp = UnparsedTextNoDoubleQuotes() 
+			  |	tmp = QuoteIndependentAttributeValueContent()
+			) { content.append(tmp); } )*
+			( 	<ENDING_DOUBLE_QUOTE> 
+			  |	t = <DOLLAR_OR_HASH_DOUBLE_QUOTE> { content.append(t.image.substring(0, 1)); }
+			) 
+		)
+		|
+	  	( 	<SINGLE_QUOTE>
+		  	( ( tmp = UnparsedTextNoSingleQuotes() | tmp = QuoteIndependentAttributeValueContent() )
+		  	{ content.append(tmp); } )*
+			( 	<ENDING_SINGLE_QUOTE> 
+			  | t = <DOLLAR_OR_HASH_SINGLE_QUOTE>  { content.append(t.image.substring(0, 1)); }
+			 ) 
+		)
+		|
+	  	( <NO_QUOTE_NO_WHITESPACE>
+		  	( ( tmp = UnparsedTextNoWhitespace() | tmp = QuoteIndependentAttributeValueContent() )
+		  		{ content.append(tmp); }
+		  	)*
+			( <ENDING_WHITESPACE> ) 
+		)
+		| <IN_ATTR_WHITESPACE> 
+	)
+	{ jjtThis.setImage( content.toString() );
+	}
+}
+
+/**
+ * Partial content of an attribute value that can contain all quotes.
+ * This groups EL expressions, value bindings, and JSP expressions.
+ */
+String QuoteIndependentAttributeValueContent() #void :
+{ 	String tmp; }
+{
+	(	tmp = ElExpressionInAttribute()
+	| 	tmp = ValueBindingInAttribute()
+  	| 	tmp = JspExpressionInAttribute()
+	)
+	{ return tmp; }
+}
+
+String JspExpressionInAttribute() : 
+{ 	Token t; }
+{
+	t = <JSP_EXPRESSION_IN_ATTRIBUTE> 
+	{ 
+		jjtThis.setImage(t.image.substring(3, t.image.length()-2).trim()); // without <% and %>
+		return t.image;
+	}
+}
+
+void CommentTag() :
+{
+	StringBuffer content = new StringBuffer();
+	Token t;
+}
+{
+  <COMMENT_START>
+  ( t = <COMMENT_TEXT> { content.append(t.image); } )* 
+  <COMMENT_END>
+  	{
+		jjtThis.setImage(content.toString().trim());
+	}
+}
+  
+void Declaration() :
+{	Token t; }
+{
+  <DECL_START> 
+  t = <TAG_NAME> { jjtThis.setName(t.image); }
+  (Attribute())* 
+  <DECL_END>
+}
+
+void DoctypeDeclaration() :
+{	Token t; }
+{
+	<DOCTYPE_DECL_START>
+	 <WHITESPACES>
+	 t = <NAME> { jjtThis.setName(t.image); }
+	 (<WHITESPACES>)?
+	 (DoctypeExternalId() 	 (<WHITESPACES>)?)? 
+ 	<DOCTYPE_DECL_END>
+}
+
+void DoctypeExternalId() :
+{
+	Token systemLiteral;
+	Token pubIdLiteral;
+}
+{
+		(	<SYSTEM>
+			<WHITESPACES> 
+			systemLiteral = <QUOTED_LITERAL> 
+				{ jjtThis.setUri(quoteContent(systemLiteral.image)); }
+		)
+	| 	
+		(	<PUBLIC>
+			<WHITESPACES> 
+			pubIdLiteral = <QUOTED_LITERAL> 
+				{ jjtThis.setPublicId(quoteContent(pubIdLiteral.image)); }
+			<WHITESPACES> 
+			systemLiteral = <QUOTED_LITERAL> 
+				{ jjtThis.setUri(quoteContent(systemLiteral.image)); }
+		)
+}
+
+void HtmlScript() :
+{
+	StringBuffer content = new StringBuffer();
+	String tagName;
+	Token t;
+}
+{
+  	<HTML_SCRIPT_START>         {}
+  	(Attribute() )*             {}
+  	(
+  	  (
+  	   <TAG_END>				    {token_source.SwitchTo(HtmlScriptContentState);}
+  	   (t = <HTML_SCRIPT_CONTENT>  { content.append(t.image); })*
+	   <HTML_SCRIPT_END_TAG>		{ jjtThis.setImage(content.toString().trim());}
+	  )
+	|
+	  (
+	    <TAG_SLASHEND>
+	  )
+	)	
+}

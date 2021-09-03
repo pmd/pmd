@@ -5,3 +5,4 @@ _pdf
 .idea/
 vendor/
 .bundle/
+assets/*.zip

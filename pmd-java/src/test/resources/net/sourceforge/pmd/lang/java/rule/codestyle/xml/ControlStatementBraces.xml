@@ -3,18 +3,19 @@
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>While, no braces</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    while (true)
-                        x++;
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        while (true)
+            x++;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -22,43 +23,43 @@
         <rule-property name="checkWhileStmt">false</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    while (true)
-                        x++;
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        while (true)
+            x++;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>While, with braces</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    while (true) {
-                        x++;
-                    }
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        while (true) {
+            x++;
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Empty while</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    while (true)
-                        ;
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        while (true)
+            ;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -66,28 +67,28 @@
         <rule-property name="allowEmptyLoop">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    while (true)
-                        ;
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        while (true)
+            ;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>For, no braces</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    for (; ; )
-                        x++;
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        for (; ; )
+            x++;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -95,43 +96,43 @@
         <rule-property name="checkForStmt">false</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    for (; ; )
-                        x++;
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        for (; ; )
+            x++;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>For, with braces</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    for (; ; ) {
-                        x++;
-                    }
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        for (; ; ) {
+            x++;
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Empty for</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    for (; ; )
-                        ;
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        for (; ; )
+            ;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -139,29 +140,29 @@
         <rule-property name="allowEmptyLoop">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    for (; ; )
-                        ;
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        for (; ; )
+            ;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Do while, no braces</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    do
-                        x++;
-                    while(true);
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        do
+            x++;
+        while(true);
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -169,44 +170,44 @@
         <rule-property name="checkDoWhileStmt">false</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    do
-                        x++;
-                    while (true);
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        do
+            x++;
+        while (true);
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Do while, with braces</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    do {
-                        x++;
-                    } while (true);
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        do {
+            x++;
+        } while (true);
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Empty Do while</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    do;
-                    while (true);
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        do;
+        while (true);
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -214,30 +215,30 @@
         <rule-property name="allowEmptyLoop">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    do;
-                    while (true);
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        do;
+        while (true);
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>If else, no braces</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    if (true)
-                        x++;
-                    else
-                        x--;
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        if (true)
+            x++;
+        else
+            x--;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -245,49 +246,49 @@
         <rule-property name="checkIfElseStmt">false</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    if (true)
-                        x++;
-                    else
-                        x--;
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        if (true)
+            x++;
+        else
+            x--;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>If else, braces on if</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    if (true) {
-                        x++;
-                    } else
-                        x--;
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        if (true) {
+            x++;
+        } else
+            x--;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>If else, braces on else</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    if (true)
-                        x++;
-                     else {
-                        x--;
-                    }
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        if (true)
+            x++;
+         else {
+            x--;
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -295,19 +296,19 @@
         <expected-problems>2</expected-problems>
         <expected-linenumbers>5,10</expected-linenumbers>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    if (true)
-                        x++; // here
-                     else if (false) {
-                        x--;
-                    } else
+public class Foo {
+    void foo() {
+        int x = 0;
+        if (true)
+            x++; // here
+         else if (false) {
+            x--;
+        } else
 
-                        ; // and here
-                }
-            }
-            ]]></code>
+            ; // and here
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -315,14 +316,14 @@
         <rule-property name="checkSingleIfStmt">false</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    if (true)
-                        x++; // this is allowed
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        if (true)
+            x++; // this is allowed
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -331,19 +332,19 @@
         <expected-problems>2</expected-problems>
         <expected-linenumbers>5,10</expected-linenumbers>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    if (true)
-                        x++; // here
-                     else if (false) {
-                        x--;
-                    } else
+public class Foo {
+    void foo() {
+        int x = 0;
+        if (true)
+            x++; // here
+         else if (false) {
+            x--;
+        } else
 
-                        ; // and here
-                }
-            }
-            ]]></code>
+            ; // and here
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -355,17 +356,17 @@
         <expected-problems>2</expected-problems>
         <expected-linenumbers>5,7</expected-linenumbers>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    if (true)
-                        x++; // here
-                    else if (false)
-                        x--; // and here
+public class Foo {
+    void foo() {
+        int x = 0;
+        if (true)
+            x++; // here
+        else if (false)
+            x--; // and here
 
-                }
-            }
-            ]]></code>
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -373,17 +374,17 @@
         <rule-property name="checkSingleIfStmt">false</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    if (true)
-                        x++;
-                    else {
-                        x--;
-                    }
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        if (true)
+            x++;
+        else {
+            x--;
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -392,14 +393,14 @@
         <rule-property name="checkIfElseStmt">false</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    if (true)
-                        x++; // this is allowed
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        if (true)
+            x++; // this is allowed
+    }
+}
+        ]]></code>
     </test-code>
 
 
@@ -407,17 +408,17 @@
         <description>Case, no braces, allowed</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    switch (x) {
-                    case 1:
-                    case 2: x++;break;
-                    default: break;
-                    }
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        switch (x) {
+        case 1:
+        case 2: x++;break;
+        default: break;
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -426,20 +427,20 @@
         <expected-problems>2</expected-problems>
         <expected-linenumbers>6,9</expected-linenumbers>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    switch (x) {
-                    case 1:
-                    case 2:    // here
-                        x++;   // not here
-                        break; // not here
-                    default:   // here
-                        break; // not here
-                    }
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        switch (x) {
+        case 1:
+        case 2:    // here
+            x++;   // not here
+            break; // not here
+        default:   // here
+            break; // not here
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -448,49 +449,47 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    switch (x) {
-                    case 1:
-                    case 2: {    // here
-                        x++;
-                    }
-                    break;       // not here
-                    default: {   // not here
-                        break;
-                    }
-                    }
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        switch (x) {
+        case 1:
+        case 2: {    // here
+            x++;
+        }
+        break;       // not here
+        default: {   // not here
+            break;
+        }
+        }
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description>Case, dangling unbraced statement</description>
+        <description>Case, dangling unbraced statement 2</description>
         <rule-property name="checkCaseStmt">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
-            public class Foo {
-                void foo() {
-                    int x = 0;
-                    switch (x) {
-                    case 1:
-                    case 2: {    // here, should have a single block
-                        x++;
-                    }
-                    {
-                        break;
-                    }
-                    default: {   // not here
-                        break;
-                    }
-                    }
-                }
-            }
-            ]]></code>
+public class Foo {
+    void foo() {
+        int x = 0;
+        switch (x) {
+        case 1:
+        case 2: {    // here, should have a single block
+            x++;
+        }
+        {
+            break;
+        }
+        default: {   // not here
+            break;
+        }
+        }
+    }
+}
+        ]]></code>
     </test-code>
-
-
 </test-data>

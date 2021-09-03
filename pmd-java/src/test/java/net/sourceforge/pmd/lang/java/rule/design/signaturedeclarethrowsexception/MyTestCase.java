@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 /**
  * Warning, this class IS NOT useless. It is used by the some regression tests.
- * 
+ *
  * See file: SignatureDeclareThrowsException.xml
  */
 @Ignore("not a test case")

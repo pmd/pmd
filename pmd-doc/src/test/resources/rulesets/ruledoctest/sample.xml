@@ -57,6 +57,7 @@ Here might be &lt;script&gt;alert('XSS');&lt;/script&gt; as well. And "quotes".
        </description>
        <priority>3</priority>
        <properties>
+           <property name="version" value="2.0"/>
            <property name="xpath">
                <value>
 <![CDATA[
@@ -145,6 +146,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
      </description>
      <priority>3</priority>
      <properties>
+         <property name="version" value="2.0"/>
          <property name="xpath">
              <value>
  <![CDATA[
@@ -192,9 +194,18 @@ public class JumbledIncrementerRule1 {
       deprecated="true">
  <description>
 Just some description of a deprecated rule.
+
+RuleTag with quotes: Use {% rule "RenamedRule" %} instead.
+
+RuleTag without quotes: Use {% rule RenamedRule %} instead.
+
+RuleTag with full category and quotes: Use {% rule "java/sample/RenamedRule" %} instead.
+
+RuleTag with full category and without quotes: Use {% rule java/sample/RenamedRule %} instead.
  </description>
  <priority>3</priority>
  <properties>
+     <property name="version" value="2.0"/>
      <property name="xpath">
          <value>
 <![CDATA[
@@ -205,8 +216,18 @@ Just some description of a deprecated rule.
  </properties>
  </rule>
 
-<rule name="RenamedRule" ref="JumbledIncrementer"/>
+    <rule name="RenamedRule1" ref="JumbledIncrementer"/>
 
-<rule name="MovedRule" ref="rulesets/ruledoctest/sample2.xml/JumbledIncrementer"/>
+    <rule name="RenamedRule2" ref="rulesets/ruledoctest/sample.xml/JumbledIncrementer"/>
+
+    <!-- variant 1 of a renamed rule. This is definitively within the same ruleset. -->
+    <rule name="RenamedRule3" ref="JumbledIncrementer" deprecated="true" />
+
+    <!-- see Rule deprecation policy: /docs/pages/pmd/devdocs/rule_deprecation.md -->
+    <!-- variant 2 of a renamed and/or moved rule. This could also keep the rule name but
+         move the rule into a different rule or do any combination of both -->
+    <rule name="RenamedRule4" ref="rulesets/ruledoctest/sample.xml/JumbledIncrementer" deprecated="true" />
+
+    <rule name="MovedRule" ref="rulesets/ruledoctest/sample2.xml/JumbledIncrementer"/>
 
 </ruleset>

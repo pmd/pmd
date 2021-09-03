@@ -148,4 +148,9 @@ public class TestDescriptor {
     public boolean isUseAuxClasspath() {
         return useAuxClasspath;
     }
+
+    @Override
+    public String toString() {
+        return description + "\n\n" + code;
+    }
 }

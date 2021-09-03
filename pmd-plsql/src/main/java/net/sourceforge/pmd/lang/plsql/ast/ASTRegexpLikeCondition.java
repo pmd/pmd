@@ -1,23 +1,18 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-/* JavaCCOptions:MULTI=true,NODE_USES_PARSER=true,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
-public class ASTRegexpLikeCondition extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
+public final class ASTRegexpLikeCondition extends AbstractPLSQLNode {
     private String matchParam;
 
-    public ASTRegexpLikeCondition(int id) {
+    ASTRegexpLikeCondition(int id) {
         super(id);
     }
 
-    public ASTRegexpLikeCondition(PLSQLParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -30,11 +25,10 @@ public class ASTRegexpLikeCondition extends net.sourceforge.pmd.lang.plsql.ast.A
     }
 
     public ASTSqlExpression getSourceChar() {
-        return (ASTSqlExpression) jjtGetChild(0);
+        return (ASTSqlExpression) getChild(0);
     }
 
     public ASTSqlExpression getPattern() {
-        return (ASTSqlExpression) jjtGetChild(1);
+        return (ASTSqlExpression) getChild(1);
     }
 }
-/* JavaCC - OriginalChecksum=afb8806a0c67f95b736d6e8bc46def15 (do not edit this line) */

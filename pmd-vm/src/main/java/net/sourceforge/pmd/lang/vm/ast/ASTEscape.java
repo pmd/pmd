@@ -23,33 +23,32 @@ package net.sourceforge.pmd.lang.vm.ast;
 /**
  * This class is responsible for handling Escapes in VTL.
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTEscape.java 517553 2007-03-13 06:09:58Z wglass $
  */
-public class ASTEscape extends AbstractVmNode {
-    /** Used by the parser */
-    public String val;
+public final class ASTEscape extends AbstractVmNode {
 
-    /**
-     * @param id
-     */
-    public ASTEscape(final int id) {
+    /** Used by the parser. */
+    private String val;
+
+
+    ASTEscape(int id) {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
-    public ASTEscape(final VmParser p, final int id) {
-        super(p, id);
+    void setValue(String value) {
+        this.val = value;
+    }
+
+    public String getValue() {
+        return val;
     }
 
     @Override
-    public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
+    protected <P, R> R acceptVmVisitor(VmVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

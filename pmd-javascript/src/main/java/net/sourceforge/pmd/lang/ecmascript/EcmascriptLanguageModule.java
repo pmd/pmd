@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.ecmascript;
 
+import org.mozilla.javascript.Context;
+
 import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.lang.ecmascript.rule.EcmascriptRuleChainVisitor;
 
 /**
  * Created by christoferdutz on 20.09.14.
@@ -16,8 +17,7 @@ public class EcmascriptLanguageModule extends BaseLanguageModule {
     public static final String TERSE_NAME = "ecmascript";
 
     public EcmascriptLanguageModule() {
-        super(NAME, null, TERSE_NAME, EcmascriptRuleChainVisitor.class, "js");
-        addVersion("3", new Ecmascript3Handler(), true);
+        super(NAME, null, TERSE_NAME, "js");
+        addDefaultVersion("ES6", new EcmascriptHandler(Context.VERSION_ES6));
     }
-
 }

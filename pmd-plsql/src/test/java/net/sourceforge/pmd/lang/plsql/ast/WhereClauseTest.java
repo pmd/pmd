@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,10 +14,8 @@ import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 public class WhereClauseTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void testFunctionCall() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseFunctionCall.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testFunctionCall() {
+        ASTInput input = plsql.parseResource("WhereClauseFunctionCall.pls");
         List<ASTSelectIntoStatement> selectStatements = input.findDescendantsOfType(ASTSelectIntoStatement.class);
         Assert.assertEquals(4, selectStatements.size());
 
@@ -31,66 +27,48 @@ public class WhereClauseTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testLikeCondition() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseLike.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testLikeCondition() {
+        plsql.parseResource("WhereClauseLike.pls");
     }
 
     @Test
-    public void testNullCondition() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseIsNull.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testNullCondition() {
+        plsql.parseResource("WhereClauseIsNull.pls");
     }
 
     @Test
-    public void testBetweenCondition() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseBetween.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testBetweenCondition() {
+        plsql.parseResource("WhereClauseBetween.pls");
     }
 
     @Test
-    public void testInCondition() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseIn.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testInCondition() {
+        plsql.parseResource("WhereClauseIn.pls");
     }
 
     @Test
-    public void testIsOfTypeCondition() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseIsOfType.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testIsOfTypeCondition() {
+        plsql.parseResource("WhereClauseIsOfType.pls");
     }
 
     @Test
-    public void testConcatenationOperator() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseConcatenation.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testConcatenationOperator() {
+        plsql.parseResource("WhereClauseConcatenation.pls");
     }
 
     @Test
-    public void testExistsCondition() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseExists.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testExistsCondition() {
+        plsql.parseResource("WhereClauseExists.pls");
     }
 
     @Test
-    public void testMultisetCondition() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseMultiset.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testMultisetCondition() {
+        plsql.parseResource("WhereClauseMultiset.pls");
     }
 
     @Test
-    public void testRegexpLikeCondition() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseRegexpLike.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testRegexpLikeCondition() {
+        ASTInput input = plsql.parseResource("WhereClauseRegexpLike.pls");
         List<ASTRegexpLikeCondition> regexps = input.findDescendantsOfType(ASTRegexpLikeCondition.class);
         Assert.assertEquals(3, regexps.size());
         Assert.assertEquals("last_name", regexps.get(1).getSourceChar().getImage());
@@ -99,16 +77,17 @@ public class WhereClauseTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testSubqueries() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseSubqueries.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+    public void testSubqueries() {
+        plsql.parseResource("WhereClauseSubqueries.pls");
     }
 
     @Test
-    public void testParentheses() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseParens.pls"),
-                StandardCharsets.UTF_8);
-        parsePLSQL(code);
+    public void testParentheses() {
+        plsql.parseResource("WhereClauseParens.pls");
+    }
+
+    @Test
+    public void testCurrentOf() {
+        plsql.parseResource("WhereCurrentOf.pls");
     }
 }

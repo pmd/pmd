@@ -10,9 +10,10 @@ author: Tom Copeland, Xavier Le Vourch <xlv@users.sourceforge.net>
 
 # Compiling PMD
 
-*   JDK 10 or higher
+*   JDK 11 or higher
 
-{% include note.html content="While Java 10 is required for building, running PMD only requires Java 7 (or Java 8 for Apex and the Designer)." %}
+{% include note.html content="While Java 11 is required for building, running PMD only requires Java 7
+(or Java 8 for Apex, JavaScript, Scala, Visualforce, and the Designer)." %}
 
 You’ll need to either check out the source code or download the latest source release. Assuming you’ve got the latest source release, unzip it to a directory:
 

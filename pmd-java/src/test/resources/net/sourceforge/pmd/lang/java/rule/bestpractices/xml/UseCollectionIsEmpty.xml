@@ -3,12 +3,14 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-fail, == 0
-     ]]></description>
+        <description>fail, == 0</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
+import java.util.List;
+
 public class Foo {
     public static boolean bar(List lst) {
         if(lst.size() == 0){
@@ -17,14 +19,15 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, isEmpty
-     ]]></description>
+        <description>ok, isEmpty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+
 public class Foo {
     public static boolean bar(List lst) {
         if(lst.isEmpty()){
@@ -33,14 +36,16 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail, != 0
-     ]]></description>
+        <description>fail, != 0</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
+import java.util.List;
+
 public class Foo {
     public static boolean bar(List lst) {
         if(lst.size() != 0){
@@ -49,14 +54,15 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, !isEmpty
-     ]]></description>
+        <description>ok, !isEmpty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+
 public class Foo {
     public static boolean bar(List lst) {
         if(!lst.isEmpty()){
@@ -65,14 +71,16 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail, != 0
-     ]]></description>
+        <description>fail, != 0</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
+import java.util.List;
+
 public class Foo {
     public static boolean bar(List lst, boolean b) {
         if(lst.size() == 0 && b){
@@ -81,14 +89,15 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, !isEmpty
-     ]]></description>
+        <description>ok, !isEmpty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+
 public class Foo {
     public static boolean bar(List lst, boolean b) {
         if(lst.isEmpty() && b){
@@ -97,14 +106,16 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail, 0 ==
-     ]]></description>
+        <description>fail, 0 ==</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
+import java.util.List;
+
 public class Foo {
     public static boolean bar(List lst) {
         if(0 == lst.size()){
@@ -113,14 +124,16 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail, > 0
-     ]]></description>
+        <description>fail, &gt; 0</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
+import java.util.List;
+
 public class Foo {
     public static boolean bar(List lst) {
         if(lst.size() > 0){
@@ -129,14 +142,15 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, in expression
-     ]]></description>
+        <description>ok, in expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+
 public class Foo {
     public static int modulo = 2;
     public static boolean bar(List lst) {
@@ -146,14 +160,15 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, in expression
-     ]]></description>
+        <description>ok, in expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Map;
+
 public class Foo {
     final Map map;
     public boolean bar(Foo other) {
@@ -163,36 +178,36 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1214 UseCollectionIsEmpty misses some usage</description>
-        <expected-problems>5</expected-problems>
+        <expected-problems>10</expected-problems>
+        <expected-linenumbers>8,11,14,17,20,23,26,29,32,35</expected-linenumbers>
         <code><![CDATA[
-import java.util.ArrayList;
+import java.util.*;
 
 public class TestIsEmpty {
     public static void main(String args[]) {
         ArrayList<String> testObject = new ArrayList<String>();
 
-        // These ones are flagged
-//      if (testObject.size() == 0) {
-//          System.out.println("List is empty");
-//      }
-//      if (testObject.size() != 0) {
-//          System.out.println("List is empty");
-//      }
-//      if (0 == testObject.size()) {
-//          System.out.println("List is empty");
-//      }
-//      if (0 != testObject.size()) {
-//          System.out.println("List is empty");
-//      }
-//      if (testObject.size() > 0) {
-//          System.out.println("List is empty");
-//      }
-
-        // These ones are not flagged, but should be flagged
+        // These should be flagged
+        if (testObject.size() == 0) {
+            System.out.println("List is empty");
+        }
+        if (testObject.size() != 0) {
+            System.out.println("List is empty");
+        }
+        if (0 == testObject.size()) {
+            System.out.println("List is empty");
+        }
+        if (0 != testObject.size()) {
+            System.out.println("List is empty");
+        }
+        if (testObject.size() > 0) {
+            System.out.println("List is empty");
+        }
         if (testObject.size() < 1) {
             System.out.println("List is empty");
         }
@@ -220,9 +235,13 @@ public class TestIsEmpty {
     public static SomeOtherObjectWithSizeMethod GetBar() {
         return new SomeOtherObjectWithSizeMethod();
     }
+    class SomeOtherObjectWithSizeMethod {
+        int size() {}
+    }
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1230 UseCollectionIsEmpty gets false positives</description>
         <expected-problems>4</expected-problems>
@@ -234,7 +253,7 @@ public class IsEmptyTest {
     public static void main(String args[]) {
         ArrayList<String> testObject = new ArrayList<String>();
 
-        // these should be flagged (as they are equivalent to == 0) and are
+        // These should be flagged
         if (testObject.size() < 1) { // line 8
             System.out.println("List is empty");
         }
@@ -242,7 +261,7 @@ public class IsEmptyTest {
             System.out.println("List is empty");
         }
 
-        // these should not be flagged, and are not
+        // These should not be flagged
         if (testObject.size() <= 1) { // line 16
             System.out.println("List may or may not be empty");
         }
@@ -250,7 +269,7 @@ public class IsEmptyTest {
             System.out.println("List may or may not be empty");
         }
 
-        // these should be flagged (as they are equivalent to != 0) and are not
+        // These should be flagged (as they are equivalent to != 0) and are not
         if (testObject.size() >= 1) { // line 24
             System.out.println("List is not empty");
         }
@@ -258,7 +277,7 @@ public class IsEmptyTest {
             System.out.println("List is not empty");
         }
 
-        // these should not be flagged, yet are
+        // These should not be flagged
         if (testObject.size() > 1) { // line 32
             System.out.println("List is not empty, but not all non-empty lists will trigger this");
         }
@@ -281,10 +300,13 @@ public class IsEmptyTest {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1304 UseCollectionIsEmpty false positive comparing to 1</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
+
 public class PMDIsEmptyFalsePositive {
     public void falsePositive() {
         Collection<String> c = new ArrayList<String>();
@@ -297,6 +319,7 @@ public class PMDIsEmptyFalsePositive {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1345 UseCollectionIsEmpty throws NullPointerException</description>
         <expected-problems>0</expected-problems>
@@ -316,6 +339,144 @@ public class PmdBugBait {
         if (list.size() < this.getSize()) {
             throw new IllegalArgumentException();
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2543 false negative on this.collection.size</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+
+public class Foo {
+
+    private List<String> list = new ArrayList<>();
+    private Bar notACollection = new Bar();
+
+    public void bar() {
+        if (this.list.size() == 0) {
+            throw new RuntimeException("Empty list");
+        }
+        if (notACollection.size() == 0) { }
+        if (this.notACollection.size() == 0) { }
+    }
+
+    public int size() {
+        return 0;
+    }
+    class Bar { int size() { return 0; } }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2542 UseCollectionIsEmpty can not detect the case foo.bar().size()</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+
+public class Foo {
+
+    private List<String> list = new ArrayList<>();
+
+    Foo foo() { return this; }
+    Foo bar() { return this; }
+    List<String> list() { return list; }
+
+    public void bar() {
+        if (foo().bar().foo().list().size() == 0) {
+            throw new RuntimeException("Empty list");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2833 NPE in UseCollectionIsEmptyRule with enums</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum ComponentSize {
+
+    S("s");
+
+    private String size;
+
+    ComponentSize(String size) {
+        this.size = size;
+    }
+
+    @Override
+    public String toString() {
+        return size;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2833 NPE in UseCollectionIsEmptyRule with enums (sanity check)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+
+public enum ComponentSize {
+
+    S("s");
+
+    private List<String> list;
+    private String size;
+
+    ComponentSize(String size) {
+        if (list.size() == 0) {
+            this.size = size;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return size;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2833 test with records</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+
+public record CollectionRecord(List<String> theList) {
+    public CollectionRecord {
+        if (theList.size() == 0) throw new IllegalArgumentException("empty list");
+        if (theList.isEmpty()) throw new IllegalArgumentException("empty list");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2833 test local var</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+
+public class Foo {
+    public static void main(String[] args) {
+        var theList = new ArrayList<String>();
+        if (theList.size() == 0) throw new IllegalArgumentException("empty list");
+        if (theList.isEmpty()) throw new IllegalArgumentException("empty list");
     }
 }
         ]]></code>

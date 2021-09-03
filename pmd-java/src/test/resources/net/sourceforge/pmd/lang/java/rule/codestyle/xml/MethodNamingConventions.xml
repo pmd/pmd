@@ -3,15 +3,17 @@
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>method names should start with lowercase character</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void Bar() {}
+    void Bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>method names should not contain underscores</description>
         <expected-problems>1</expected-problems>
@@ -20,48 +22,26 @@ public class Foo {
         </expected-messages>
         <code><![CDATA[
 public class Foo {
- void bar_foo() {}
+    void bar_foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>all is well</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {}
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description>#1288 MethodNamingConventions for native should be deactivated</description>
-        <rule-property name="checkNativeMethods">false</rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    protected final native void __surfunc__(float[] data);
+    void foo() {}
 }
         ]]></code>
     </test-code>
-    <test-code>
-        <description>#1288 MethodNamingConventions for native should be deactivated - prevent false negative</description>
-        <rule-property name="checkNativeMethods">true</rule-property>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>2</expected-linenumbers>
-        <expected-messages>
-            <message>The native method name '__surfunc__' doesn't match '[a-z][a-zA-Z0-9]*'</message>
-        </expected-messages>
-        <code><![CDATA[
-public class Foo {
-    protected final native void __surfunc__(float[] data);
-}
-        ]]></code>
-    </test-code>
+
     <test-code>
         <description>#1343 MethodNamingConventions for overridden methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class MethodNamingConventions implements SomeInterface {
+public class MethodNamingConventions implements SomeUnknownInterface {
     @Override
     public void _foo() {
     }
@@ -78,22 +58,18 @@ public class MethodNamingConventions implements SomeInterface {
             <message>The static method name 'foo' doesn't match 'st_[a-z][A-Za-z]*'</message>
         </expected-messages>
         <code><![CDATA[
-            class Foo {
-                static void foo() {
-                }
+class Foo {
+    static void foo() {
+    }
 
+    static void st_whatever() {
+    }
 
-                static void st_whatever() {
-                }
-
-
-                // not reported
-                void bar() {
-                }
-
-            }
-            ]]>
-        </code>
+    // not reported
+    void bar() {
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -105,86 +81,133 @@ public class MethodNamingConventions implements SomeInterface {
             <message>The native method name 'foo' doesn't match 'nt_[a-z][A-Za-z]*'</message>
         </expected-messages>
         <code><![CDATA[
-            class Foo {
-                native void foo() {
-                }
+class Foo {
+    native void foo() {
+    }
 
+    native void nt_whatever() {
+    }
 
-                native void nt_whatever() {
-                }
-
-
-                // not reported
-                void bar() {
-                }
-
-            }
-            ]]>
-        </code>
+    // not reported
+    void bar() {
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>JUnit 3 test detection</description>
         <rule-property name="junit3TestPattern">test_[a-z][A-Za-z]*</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>9</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
             <message>The JUnit 3 test method name 'testGetBestTeam' doesn't match 'test_[a-z][A-Za-z]*'</message>
         </expected-messages>
         <code><![CDATA[
-            import junit.framework.Assert;
-            import junit.framework.TestCase;
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
+public class TournamentTest extends TestCase {
 
-            public class TournamentTest extends TestCase {
-                Tournament tournament;
+    public void testGetBestTeam() {
+    }
 
-
-                public void testGetBestTeam() {
-                }
-
-                // this is ok tho
-                public void test_getBestTeam() {
-                }
-            }
-            ]]>
-        </code>
+    // this is ok tho
+    public void test_getBestTeam() {
+    }
+}
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>JUnit 4 test detection</description>
         <rule-property name="junit4TestPattern">[a-z][A-Za-z]*Test</rule-property>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>12,16</expected-linenumbers>
+        <expected-linenumbers>7,11</expected-linenumbers>
         <expected-messages>
             <message>The JUnit 4 test method name 'testGetBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
             <message>The JUnit 4 test method name 'getBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
         </expected-messages>
         <code><![CDATA[
-            import junit.framework.Assert;
-            import junit.framework.TestCase;
+import junit.framework.TestCase;
+import org.junit.Test;
 
-            import org.junit.Test;
+public class TournamentTest extends TestCase {
 
+    @Test // note that this is also a junit 3 test, but the junit4 rule applies
+    public void testGetBestTeam() {
+    }
 
-            public class TournamentTest extends TestCase {
-                Tournament tournament;
+    @Test // this is just a junit 4 test
+    public void getBestTeam() {
+    }
 
+    // this is ok
+    @Test
+    public void getBestTeamTest() {
+    }
+}
+        ]]></code>
+    </test-code>
 
-                @Test // note that this is also a junit 3 test, but the junit4 rule applies
-                public void testGetBestTeam() {
-                }
+    <test-code useAuxClasspath="false">
+        <description>JUnit 4 test detection without proper auxclasspath</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>The JUnit 4 test method name 'get_best_team' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.junit.Test; // note: test case uses "useAuxClasspath=false"!!
 
-                @Test // this is just a junit 4 test
-                public void getBestTeam() {
-                }
+public class TournamentTest {
 
-                // this is ok
-                @Test
-                public void getBestTeamTest() {
-                }
-            }
-            ]]>
-        </code>
+    // wrong test name pattern
+    @Test
+    public void get_best_team() {
+    }
+
+    // this is ok
+    @Test
+    public void getBestTeam() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 5 test detection</description>
+        <rule-property name="junit5TestPattern">[a-z][A-Za-z]*Test</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,10,14</expected-linenumbers>
+        <expected-messages>
+            <message>The JUnit 5 test method name 'testGetBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
+            <message>The JUnit 5 test method name 'getBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
+            <message>The JUnit 5 test method name 'getWorstTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+
+public class TournamentTest {
+    @Test // note that this is also a junit 3 test, but the junit 5 rule applies
+    public void testGetBestTeam() {
+    }
+
+    @Test // this is just a junit 5 test
+    public void getBestTeam() {
+    }
+
+    @ParameterizedTest // this is a paramterized junit 5 test
+    public void getWorstTeam(String param) {
+    }
+
+    // this is ok
+    @Test
+    public void getBestTeamTest() {
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -196,16 +219,44 @@ public class MethodNamingConventions implements SomeInterface {
             <message>The instance method name 'fooBar' doesn't match 'm_[a-z][A-Za-z]*'</message>
         </expected-messages>
         <code><![CDATA[
-            public class Foo {
+public class Foo {
 
-                public void fooBar() {
-                }
+    public void fooBar() {
+    }
 
-                public void m_fooBar() {
-                }
-            }
-            ]]>
-        </code>
+    public void m_fooBar() {
+    }
+}
+        ]]></code>
     </test-code>
+    <test-code>
+        <description>#2528 [java] MethodNamingConventions - JUnit 5 method naming not support ParameterizedTest</description>
+        <rule-property name="junit5TestPattern">moo_[a-z][A-Za-z]*</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
+        <expected-messages>
+            <message>The JUnit 5 test method name 'moo_str2' doesn't match 'moo_[a-z][A-Za-z]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.ValueSource;
+import static org.junit.jupiter.api.Assertions.*;
+public class Foo {
 
+    @ParameterizedTest
+    @ValueSource(strings = { "FEMALE", "MALE" })
+    public void moo_str(final String value) {
+        assertNotNull(Gender.fromValue(value));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "FEMALE", "MALE" })
+    public void moo_str2(final String value) {
+        assertNotNull(Gender.fromValue(value));
+    }
+
+    enum Gender { }
+}
+        ]]></code>
+    </test-code>
 </test-data>

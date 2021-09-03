@@ -1,0 +1,1274 @@
+/**
+ * This Objective-C grammar was copied and adapted from the Objective-C-CPD-Language Github project. (https://github.com/jkennedy1980/Objective-C-CPD-Language)
+ *
+ * Original author:
+ * @author Michael Hall - Based on Parnel SableCC ObjectiveC grammar and javacc C grammar
+ *
+ * Original source file:
+ * https://github.com/jkennedy1980/Objective-C-CPD-Language/blob/master/src/main/javacc/ObjC2.0.jj (commit 5b07b5cc424522e435929bbff7589c690100edf6)
+ */
+
+options {
+  JAVA_UNICODE_ESCAPE = true;
+  BUILD_PARSER=false;
+  CACHE_TOKENS=true;
+  STATIC=false;
+}
+
+PARSER_BEGIN(ObjectiveCParserImpl)
+package net.sourceforge.pmd.lang.objectivec.ast;
+
+import java.io.*;
+import java.util.*;
+
+import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
+
+/**
+ * Grammar to parse ObjectiveC 2.0
+ * @author Michael Hall - Based on Parnel SableCC ObjectiveC grammar and javacc C grammar
+ *
+ * Josh Kennedy - added CSTRING_LITERAL so parser doesn't die on CStrings.
+ * Paul Taykalo - added support for 0x literals, @compatibility_alias, and the $ character identifier
+ * Paul Taykalo - vertical tab (\v) and alert (\a) characters are added
+ */
+
+public class ObjectiveCParserImpl {}
+
+PARSER_END(ObjectiveCParserImpl)
+
+SKIP : {
+ " "
+|  "\t"
+|  "\n"
+|  "\r"
+|  "\f"
+|  "\\\n"    /* Special issue for long strings concatenation */
+|  "\\\r\n"  /* Special issue for long strings concatenation */
+|  "__weak"
+|  "__strong"
+|  "__attribute__"
+|  "__objc_exception__"
+| "#" : PREPROCESSOR_OUTPUT
+| "extern \"C\" {"
+| "CF_EXPORT"
+| "CF_INLINE"
+| "CF_EXTERN_C_BEGIN"
+| "CF_EXTERN_C_END"
+| "CA_EXTERN_C_BEGIN"
+| "CA_EXTERN_C_END"
+| "CA_EXTERN"
+| "CA_DEPRECATED"
+| "COREDATA_EXTERN"
+| "NS_INLINE"
+| "APPKIT_EXTERN"
+| "FOUNDATION_EXPORT" : PREPROCESSOR_OUTPUT    /* mjh - Cocoa specific not currently of interest, ignore like preprocessor stuff */
+| "DEPRECATED_IN_MAC_OS_X_VERSION_10_0_AND_LATER"            /* mjh - not currently of interest */
+| "DEPRECATED_IN_MAC_OS_X_VERSION_10_1_AND_LATER"            /* mjh - not currently of interest */
+| "DEPRECATED_IN_MAC_OS_X_VERSION_10_2_AND_LATER"            /* mjh - not currently of interest */
+| "DEPRECATED_IN_MAC_OS_X_VERSION_10_3_AND_LATER"            /* mjh - not currently of interest */
+| "DEPRECATED_IN_MAC_OS_X_VERSION_10_4_AND_LATER"            /* mjh - not currently of interest */
+| "DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER"            /* mjh - not currently of interest */
+| "DEPRECATED_IN_MAC_OS_X_VERSION_10_6_AND_LATER"            /* mjh - not currently of interest */
+| "AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER"                /* mjh - not currently of interest */
+| "AVAILABLE_MAC_OS_X_VERSION_10_1_AND_LATER"                /* mjh - not currently of interest */
+| "AVAILABLE_MAC_OS_X_VERSION_10_2_AND_LATER"                /* mjh - not currently of interest */
+| "AVAILABLE_MAC_OS_X_VERSION_10_3_AND_LATER"                /* mjh - not currently of interest */
+| "AVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER"                /* mjh - not currently of interest */
+| "AVAILABLE_MAC_OS_X_VERSION_10_5_AND_LATER"                /* mjh - not currently of interest */
+| "AVAILABLE_MAC_OS_X_VERSION_10_6_AND_LATER"                /* mjh - not currently of interest */
+| "AVAILABLE_MAC_OS_X_VERSION_10_6_AND_LATER_BUT_DEPRECATED" /* mjh - not currently of interest */
+| "AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_6"
+| "AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_4"
+| "AVAILABLE_MAC_OS_X_VERSION_10_1_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_4"
+| "AVAILABLE_MAC_OS_X_VERSION_10_1_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_5"
+| "AVAILABLE_MAC_OS_X_VERSION_10_2_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_5"
+| "AVAILABLE_MAC_OS_X_VERSION_10_3_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_4"
+| "AVAILABLE_MAC_OS_X_VERSION_10_3_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_5"
+| "AVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_5"
+| "AVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_6"
+| "AVAILABLE_WEBKIT_VERSION_1_3_AND_LATER_BUT_DEPRECATED_IN_WEBKIT_VERSION_3_0"
+| "AVAILABLE_WEBKIT_VERSION_1_0_AND_LATER_BUT_DEPRECATED_IN_WEBKIT_VERSION_4_0"
+| "AVAILABLE_WEBKIT_VERSION_3_0_AND_LATER"                   /* mjh - not currently of interest */
+| "AVAILABLE_WEBKIT_VERSION_3_0_AND_LATER_BUT_DEPRECATED"    /* mjh - not currently of interest */
+| "AVAILABLE_MAC_OS_X_VERSION_10_5_AND_LATER_BUT_DEPRECATED" /* mjh - not currently of interest */
+| "AVAILABLE_IN_WEBKIT_VERSION_4_0"                          /* mjh - not currently of interest */
+| "NP_LOADDS"                                                /* mjh - not currently of interest */
+| "NS_REQUIRES_NIL_TERMINATION"
+| "UNAVAILABLE_ATTRIBUTE"
+| <"," "NS_NONATOMIC_IPHONEONLY">                            /* mjh - not currently of interest */
+| "NS_FORMAT_FUNCTION" : FORMAT_FUNC
+| "CF_FORMAT_ARGUMENT" : FORMAT_FUNC
+| "__OSX_AVAILABLE_STARTING" : FORMAT_FUNC					 /* mjh - same sort of thing */
+| "WEBKIT_OBJC_METHOD_ANNOTATION" : FORMAT_FUNC              /* mjh - same sort of thing */
+| "(void (^)" : VOID_BLOCK
+}
+
+/* mjh - we try to just ignore the parameter list */
+<VOID_BLOCK> SKIP :
+{
+  "))" : DEFAULT
+}
+
+<VOID_BLOCK> MORE:
+{
+  < ~[")"] >
+}
+
+<PREPROCESSOR_OUTPUT> SKIP:
+{
+     "\n" : DEFAULT
+}
+
+<PREPROCESSOR_OUTPUT> MORE:
+{
+ "\\\n"
+ |
+ "\\\r\n"
+ |
+ < ~[] >
+}
+
+/* mjh - we try to just ignore the "(" whatever ")" */
+<FORMAT_FUNC> SKIP :
+{
+  ")" : DEFAULT
+}
+
+<FOAMAT_FUNC> SPECIAL_TOKEN :
+{
+  <FUNC: "(" (~[")"])* ")">
+}
+
+<FORMAT_FUNC> MORE :
+{
+ "\\\n"
+ |
+ "\\\r\n"
+ |
+ < ~[")"] >
+}
+
+/* COMMENTS */
+
+MORE :
+{
+  "/*" : IN_MULTI_LINE_COMMENT
+}
+
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")?>
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+MORE :
+{
+  < ~[] >
+}
+
+/* OPERATORS */
+
+TOKEN :
+{
+  < ASSIGN: "=" >
+| < LT: "<" >
+| < GT: ">" >
+| < BANG: "!" >
+| < TILDE: "~" >
+| < HOOK: "?" >
+| < COLON: ":" >
+| < EQ: "==" >
+| < LE: "<=" >
+| < GE: ">=" >
+| < NE: "!=" >
+| < SC_OR: "||" >
+| < SC_AND: "&&" >
+| < INCR: "++" >
+| < DECR: "--" >
+| < PLUS: "+" >
+| < MINUS: "-" >
+| < STAR: "*" >
+| < SLASH: "/" >
+| < BIT_AND: "&" >
+| < BIT_OR: "|" >
+| < XOR: "^" >
+| < REM: "%" >
+| < LSHIFT: "<<" >
+| < PLUSASSIGN: "+=" >
+| < MINUSASSIGN: "-=" >
+| < STARASSIGN: "*=" >
+| < SLASHASSIGN: "/=" >
+| < ANDASSIGN: "&=" >
+| < ORASSIGN: "|=" >
+| < XORASSIGN: "^=" >
+| < REMASSIGN: "%=" >
+| < LSHIFTASSIGN: "<<=" >
+| < RSIGNEDSHIFTASSIGN: ">>=" >
+| < RUNSIGNEDSHIFTASSIGN: ">>>=" >
+| < ELLIPSIS: "..." >
+}
+
+TOKEN :
+{
+  < ESCAPE_SEQUENCE :
+         "\\" ["'","\"","?","\\","a","b","f","n","r","t","v"]	    /* SIMPLE_ESCAPE_SEQUENCE */
+       | "\\" <OCTAL_DIGIT> (<OCTAL_DIGIT> (<OCTAL_DIGIT>)?)?       /* OCTAL_ESCAPE_SEQUENCE */
+       | "\\" "x" (<HEX_DIGIT>)+                                    /* HEX_ESCAPE_SEQUENCE */
+   >
+}
+
+TOKEN : {
+ <INTEGER_LITERAL: <DECIMAL_LITERAL> (["l","L"] | ("ul" | "UL") )? | <HEX_LITERAL> (["l","L","U"])? | <OCTAL_LITERAL> (["l","L"])?>
+|  <#DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* | (["0"])+>
+|  <#HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+>
+|  <#OCTAL_LITERAL: "0" (["0"-"7"])*>
+|  <FLOATING_POINT_LITERAL: (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])? | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])? | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])? | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]>
+|  <#EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+>
+|  <CHARACTER_LITERAL: "\'" (~["\'","\\","\n","\r"] | "\\" (["n","t","b","r","f","a","v","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"])) "\'">
+|  <STRING_LITERAL: [ "@" ] "\"" ( ~["\"","\\","\n","\r"] | "\\" ["x","X","u","U"] (["0"-"9","a"-"f","A"-"F"]) | "\\" ( ["n","t","b","r","f","a","v","\\","\'","\""] | ["0"-"7"] (["0"-"7"])?  | ["0"-"3"] ["0"-"7"] ["0"-"7"] | ( ["\n","\r"] | "\r\n")))* "\"">
+|  <CSTRING_LITERAL: "\"" ( ~["\"","\\","\n","\r"] | "\\" ["x","X","u","U"] (["0"-"9","a"-"f","A"-"F"]) | "\\" ( ["n","t","b","r","f","a","v","\\","\'","\""] | ["0"-"7"] (["0"-"7"])?  | ["0"-"3"] ["0"-"7"] ["0"-"7"] | ( ["\n","\r"] | "\r\n")))* "\"">
+}
+
+TOKEN :
+{
+  < DIGIT: ["0"-"9"] >
+|
+  < NONZERO_DIGIT : ["1"-"9"] >
+|
+  < OCTAL_DIGIT : ["1"-"7"] >
+|
+  < #HEX_DIGIT : <DIGIT> | ["a"-"f"] | ["A"-"F"] >
+|
+  < #HEX_QUAD : <HEX_DIGIT> <HEX_DIGIT> <HEX_DIGIT> <HEX_DIGIT> >
+|
+  < #UNSIGNED_SUFFIX : ["u","U"] | ("UL" | "ul") >
+|
+  < #LONG_SUFFIX : ["l","L"] | ("LL" | "ll") >
+|
+  < #INTEGER_SUFFIX : <UNSIGNED_SUFFIX> (<LONG_SUFFIX>)? | <LONG_SUFFIX> (<UNSIGNED_SUFFIX>)? >
+|
+  < DECIMAL_CONSTANT : <NONZERO_DIGIT> (<DIGIT>)* >
+|
+  < OCTAL_CONSTANT : "0" | <OCTAL_DIGIT> >
+|
+  < HEX_PREFIX : "0" ["x","X"] >
+|
+  < HEX_CONSTANT : <HEX_PREFIX> (<HEX_DIGIT>)+ >
+}
+
+TOKEN :
+{
+  < INTEGER_CONSTANT :
+       <DECIMAL_CONSTANT> (<INTEGER_SUFFIX>)?
+     | <OCTAL_CONSTANT> (<INTEGER_SUFFIX>)?
+     | <HEX_CONSTANT> (<INTEGER_SUFFIX>)?
+  >
+}
+
+TOKEN : {
+    <FIXED_NUM_TYPE : "short" | "int" | ("long")+ >
+}
+
+TOKEN : {
+  <CONTINUE: "continue"> |
+  <VOLATILE: "volatile"> |
+  <REGISTER: "register"> |
+  <UNSIGNED: "unsigned"> |
+  <UCHAR: "unsigned char"> |
+  <TYPEDEF: "typedef"> |
+  <DFLT: "default"> |
+  <DOUBLE: "double"> |
+  <BOOL: "BOOL" >    |
+  <BOOLEAN: "Boolean" > |
+  <SIZEOF: "sizeof"> |
+  <SWITCH: "switch"> |
+  <RETURN: "return"> |
+  <EXTERN: "extern"> |
+  <STRUCT: "struct"> |
+  <STATIC: "static"> |
+  <SIGNED: "signed"> |
+  <SCHAR: "signed char"> |
+  <SINT32: "SInt32"> |
+  <INT32_T: "int32_t"> |
+  <WHILE: "while"> |
+  <BREAK: "break"> |
+  <UNION: "union"> |
+  <CONST: "const"> |
+  <FLOAT: "float"> |
+  <ELSE: "else"> |
+  <CASE: "case"> |
+  <ENUM: "enum"> |
+  <AUTO: "auto"> |
+  <VOID: "void"> |
+  <CHAR: "char"> |
+  <GOTO: "goto"> |
+  <FOR: "for"> |
+  <IF: "if"> |
+  <DO: "do">
+}
+
+TOKEN : {
+    <IBACTION: "IBAction">
+  | <IBOUTLET: "IBOutlet">
+  | <ID: "id">
+  | <SEL: "SEL">
+  | <IMP: "IMP">
+  | <CLASS: "Class">
+  | <NIL: "nil">
+}
+
+/* mjh - see ProtocolQualifier
+TOKEN :
+{
+   <IN_KEYWORD : "in">
+}
+*/
+
+TOKEN :
+{
+   <PROTOCOL_QUALIFIER_EXCEPT_IN : // 'in' must be separate token
+      "out"
+    | "inout"
+    | "bycopy"
+    | "byref"
+    | "oneway"
+   >
+}
+
+TOKEN :
+{
+   <LEFT_PAREN: "(">
+ | <RIGHT_PAREN: ")">
+ | <LEFT_SQUARE: "[">
+ | <RIGHT_SQUARE: "]">
+ | <LEFT_BRACE: "{">
+ | <RIGHT_BRACE: "}">
+ | <SEMICOLON: ";">
+}
+
+TOKEN :
+{
+   <AT_IMPLEMENTATION: "@implementation">
+ | <AT_INTERFACE: "@interface">
+ | <AT_PROTOCOL: "@protocol">
+ | <AT_ENCODE: "@encode">
+ | <AT_SYNCHRONIZED: "@synchronized">
+ | <AT_SELECTOR: "@selector">
+ | <AT_END: "@end">
+ | <AT_DEFS: "@defs">
+ | <AT_CLASS: "@class">
+ |
+   <AT_TRY: "@try">
+ | <AT_THROW: "@throw">
+ | <AT_CATCH: "@catch">
+ | <AT_FINALLY: "@finally">
+ |
+   <AT_PRIVATE: "@private">
+ | <AT_PACKAGE: "@package">
+ | <AT_PUBLIC: "@public">
+ | <AT_PROTECTED: "@protected">
+ |
+   <AT_PROPERTY: "@property">
+ | <AT_SYNTHESIZE: "@synthesize">
+ | <AT_DYNAMIC: "@dynamic">
+ |
+   <AT_OPTIONAL: "@optional">
+ | <AT_REQUIRED: "@required">
+ | <AT_AUTORELEASEPOOL: "@autoreleasepool">
+ | <AT_COMPATIBILITY_ALIAS: "@compatibility_alias">
+ | <AT: "@">
+
+}
+
+TOKEN :
+{
+   <CGFLOAT:   "CGFloat">
+ | <NSINTEGER: "NSInteger">
+ | <NSRECT: "NSRect">
+ | <NSSIZE: "NSSize">
+ | <NSUINTEGER: "NSUInteger">
+}
+
+TOKEN : {
+   <POSSIBLE_COCOA_TYPE: "NS" (["a"-"z"] | ["A"-"Z"] | <DIGIT> | "_")*>
+   | <POSSIBLE_CORE_TYPE: "CF" (["a"-"z"] | ["A"-"Z"] | <DIGIT> | "_")*>
+}
+
+TOKEN : { <EXPORTED_CALLBACK : "EXPORTED_CALLBACK"> }
+
+TOKEN :
+{
+  < IDENT : <IDENT_NONDIGIT> ( <IDENT_NONDIGIT> | <DIGIT>)* >
+| <#IDENT_NONDIGIT : <NONDIGIT> | <UNIVERSAL_CHARACTER_NAME> > // "may include other implementation-defined characters"
+| <#NONDIGIT : ["a"-"z"] | ["A"-"Z"] | "_" | "$" | <NONDIGIT_UNICODE> >
+| <#NONDIGIT_UNICODE : [ /* source: http://stackoverflow.com/questions/30933785 */
+   "\u0024",
+   "\u0041"-"\u005a",
+   "\u005f",
+   "\u0061"-"\u007a",
+   "\u00c0"-"\u00d6",
+   "\u00d8"-"\u00f6",
+   "\u00f8"-"\u00ff",
+   "\u0100"-"\u1fff"
+  ] >
+| <#UNIVERSAL_CHARACTER_NAME : ("\\u" <HEX_QUAD>) | ("\\U" <HEX_QUAD> <HEX_QUAD>) >
+}
+
+TOKEN : { <BLOCK: "(^"> }
+
+/***********************************************
+ * THE OBJECTIVEC LANGUAGE GRAMMAR STARTS HERE *
+ ***********************************************/
+
+void TranslationUnit() : {}
+{
+    (ExternalDeclaration())+
+}
+
+
+
+void ExternalDeclaration() : {}
+{
+    ( LOOKAHEAD( FunctionDefinition() ) FunctionDefinition()
+  | LOOKAHEAD(3) StrippedParens()		/* mjh if we skip all but parens for something like __attribute__((__objc_exception__)) */
+  | Declaration()
+  | LOOKAHEAD(3) ClassInterface()
+  | LOOKAHEAD(3) ClassImplementation()
+  | CategoryInterface()
+  | CategoryImplementation()
+  | ProtocolDeclaration()
+  | ClassDeclarationList() )
+}
+
+void StrippedParens() : {}      /* See ExternalDeclaration above */
+{
+  <LEFT_PAREN> [ StrippedParens() ] <RIGHT_PAREN>
+}
+
+void FunctionDefinition() : {}
+{
+     [LOOKAHEAD(DeclarationSpecifiers()) DeclarationSpecifiers()] Declarator() [ DeclarationList() ]
+     CompoundStatement()
+}
+
+void Declaration() : {}
+{
+  DeclarationSpecifiers() [ InitDeclaratorList() ] [ <EXPORTED_CALLBACK> "(" ParameterTypeList() ")" "(" ParameterTypeList() ")" ] /* ugly hack for single header typedef */ ";"
+}
+
+void ClassInterface() : {}
+{
+    <AT_INTERFACE> ClassName() (ColonSuperClassName())? (ProtocolReferenceList())?
+  [ LOOKAHEAD(2) ["{"] <AT_INTERFACE> ClassName() (ColonSuperClassName())? (ProtocolReferenceList())? ]  /* dup for preprocessor #else */
+  (InstanceVariables())? (InterfaceDeclaration())* <AT_END>
+}
+
+void ClassImplementation() : {}
+{
+  <AT_IMPLEMENTATION> ClassName() (LOOKAHEAD(2) ColonSuperClassName())? (InstanceVariables())? (ImplementationDefinition())* <AT_END>
+}
+
+void CategoryInterface() : {}
+{
+  <AT_INTERFACE> ClassName() <LEFT_PAREN> (CategoryName())? <RIGHT_PAREN> (ProtocolReferenceList())? (InterfaceDeclaration())* <AT_END>
+}
+
+void CategoryImplementation() : {}
+{
+  <AT_IMPLEMENTATION> ClassName() <LEFT_PAREN> CategoryName() <RIGHT_PAREN> (ImplementationDefinition())* <AT_END>
+}
+
+void ProtocolDeclaration() : {}
+{
+  <AT_PROTOCOL> ProtocolList() (ProtocolReferenceList())? ProtocolInterfaceDeclaration() ( <AT_END> | ";" )
+}
+
+void ClassDeclarationList() : {}
+{
+  <AT_CLASS> ClassList() ";"
+}
+
+void ClassList() : {}
+{
+  ClassName() ["," ClassList()]
+}
+
+void ProtocolReferenceList() : {}
+{
+  <LT> ProtocolList() <GT> [ <LT> ProtocolList() <GT> /* if preproc #else, see AppKit NSWindow */ ]
+}
+
+void ProtocolList() : {}
+{
+  ProtocolName() ["," ProtocolList()]
+}
+
+Token ObjCIDENT() : { Token t; }
+{
+  t = <POSSIBLE_COCOA_TYPE> { return t; } | t = <POSSIBLE_CORE_TYPE> { return t; } | t = <IDENT> { return t; }
+}
+
+void ClassName() : {}
+{
+  ObjCIDENT()
+}
+
+void SuperClassName() : {}
+{
+  ObjCIDENT()
+}
+
+void ColonSuperClassName() : {}
+{
+  <COLON> SuperClassName()
+}
+
+void CategoryName() : {}
+{
+  <POSSIBLE_COCOA_TYPE> | <POSSIBLE_CORE_TYPE> | <IDENT>
+}
+
+void ProtocolName() : {}
+{
+  <POSSIBLE_COCOA_TYPE> | <POSSIBLE_CORE_TYPE> | <IDENT>
+}
+
+void InstanceVariables() : {}
+{
+  <LEFT_BRACE> (InstanceVariableDeclaration())* <RIGHT_BRACE> [ ";" ]
+}
+
+void InstanceVariableDeclaration() : {}
+{
+    VisibilitySpecification()
+  |  LOOKAHEAD(3) InstanceVariableDeclarator()
+  | StructDeclaration()
+}
+
+void InstanceVariableDeclarator() : {}
+{
+  ( LOOKAHEAD(3) [ IBOutlet() ]
+  (LOOKAHEAD(2) ClassName() "*" | <ID> [ ProtocolReferenceList() ]) <IDENT> ";"
+  |	Declaration() )
+}
+
+void VisibilitySpecification() : {}
+{
+  <AT_PRIVATE> [ ";" ]
+  | <AT_PROTECTED>
+  | <AT_PACKAGE>
+  | <AT_PUBLIC>
+}
+
+void IBOutlet() : {}			/* mjh */
+{
+  <IBOUTLET>
+}
+
+void ProtocolInterfaceDeclaration() : {}
+{
+  (InterfaceDeclaration())* (QualifiedProtocolInterfaceDeclaration())*
+}
+
+void QualifiedProtocolInterfaceDeclaration() : {}
+{
+  <AT_OPTIONAL> (InterfaceDeclaration())*
+  | <AT_REQUIRED> (InterfaceDeclaration())*
+}
+
+void InterfaceDeclaration() : {}
+{
+  Declaration()
+  | PropertyDeclaration()
+  | MethodDeclaration()
+}
+
+void PropertyDeclaration() : {}
+{
+  <AT_PROPERTY> (PropertyAttributesDeclaration())? ( LOOKAHEAD(3) StructDeclaration() | <ID> (ProtocolReferenceList())? <IDENT> ";" )
+}
+
+void PropertyAttributesDeclaration() : {}
+{
+  <LEFT_PAREN> PropertyAttributesList() <RIGHT_PAREN>
+}
+
+void PropertyAttributesList() : {}
+{
+  PropertyAttribute() ["," PropertyAttributesList()]
+}
+
+void PropertyAttribute() : {}
+{
+    LOOKAHEAD(3) <IDENT> <ASSIGN> /* prop */ <IDENT> [ <COLON> ] // setter
+//  | LOOKAHEAD(2) <IDENT> <ASSIGN> /* getter or ivar */ <IDENT>         // getter ivar
+  |	<IDENT>      // nonatomic, readwrite, readonly, retain, assign, copy
+  | <POSSIBLE_COCOA_TYPE>     /* NS_NONATOMIC_IPHONEONLY */
+}
+
+void MethodDeclaration() : {}
+{
+  ClassMethodDeclaration()
+  | InstanceMethodDeclaration()
+}
+
+void ClassMethodDeclaration() : {}
+{
+  <PLUS> (MethodType())? MethodSelector() <SEMICOLON>
+}
+
+void InstanceMethodDeclaration() : {}
+{
+  <MINUS> (MethodType())? MethodSelector() <SEMICOLON>
+}
+
+void ImplementationDefinition() : {}
+{
+    ( LOOKAHEAD( FunctionDefinition() ) FunctionDefinition()
+  | Declaration()
+  | PropertyImplementation()
+  | MethodDefinition() )
+}
+
+void PropertyImplementation() : {}
+{
+  <AT_SYNTHESIZE> PropertySynthesizeList() <SEMICOLON>
+  | <AT_DYNAMIC> PropertySynthesizeList() <SEMICOLON>
+}
+
+void PropertySynthesizeList() : {}
+{
+  PropertySynthesizeItem() ["," PropertySynthesizeList()]
+/*
+  PropertySynthesizeList() "," PropertySynthesizeItem()
+  | PropertySynthesizeItem()
+*/
+}
+
+void PropertySynthesizeItem() : {}
+{
+  LOOKAHEAD(2) <IDENT>
+  | <IDENT> <EQ> <IDENT>
+}
+
+void MethodDefinition() : {}
+{
+  ClassMethodDefinition()
+  | InstanceMethodDefinition()
+}
+
+void ClassMethodDefinition() : {}
+{
+  <PLUS> (MethodType())? MethodSelectorNoList() (Declaration())* (<SEMICOLON>)? CompoundStatement()
+}
+
+void InstanceMethodDefinition() : {}
+{
+  <MINUS> (MethodType())? MethodSelectorNoList() (Declaration())* (<SEMICOLON>)? CompoundStatement()
+}
+
+void MethodSelectorNoList() : {}
+{
+    LOOKAHEAD(3) KeywordSelector() [LOOKAHEAD(2) (",..." | "," "...")]
+  |	UnarySelector()
+}
+
+void MethodSelector() : {}
+{
+  LOOKAHEAD(3) MethodSelectorNoList()
+  | KeywordSelector() "," ParameterTypeList()     // this is correct according to objcbook, but causes conflict if followed by declaration*
+}
+
+void UnarySelector() : {}
+{
+  Selector()
+}
+
+void KeywordSelector() : {}
+{
+  (LOOKAHEAD(2) KeywordDeclarator())+
+}
+
+void KeywordDeclarator() : {}
+{
+  (Selector())? <COLON> (MethodType())? <IDENT>
+}
+
+void Selector() : {}
+{
+  <IDENT>
+}
+
+void MethodType() : {}
+{
+  <LEFT_PAREN> (LOOKAHEAD(3) Block() | TypeNameWithUnknownType()) <RIGHT_PAREN>
+}
+
+void SelectorExpression() : {}
+{
+  <AT_SELECTOR> <LEFT_PAREN> SelectorName() <RIGHT_PAREN>
+}
+
+void SelectorName() : {}
+{
+  LOOKAHEAD(2) Selector()
+  | (KeywordName())+
+}
+
+void KeywordName() : {}
+{
+  (Selector())? <COLON>
+}
+
+void ProtocolExpression() : {}
+{
+  <AT_PROTOCOL> <LEFT_PAREN> ProtocolName() <RIGHT_PAREN>
+}
+
+void EncodeExpression() : {}
+{
+  <AT_ENCODE> <LEFT_PAREN> TypeNameWithUnknownType() <RIGHT_PAREN>
+}
+
+void DeclarationList() : {}
+{
+  ( LOOKAHEAD(Declaration()) Declaration() )+
+}
+
+void DeclarationSpecifiers() : {}
+{
+     /**
+      * We enumerate the possibilities (closure?) like SpecifierQualifierList
+      * instead of the standard C grammar recursive definition
+      * Although more complex it might actually end up cleaner?
+      * (For one thing you don't keep recursively matching <ObjCIDENT> types
+      *  in TypeSpecifier(), this can muddle things or require semantic lookahead
+      *  workarounds, see the sample javacc C implementation of this nonterminal)
+      *
+      * Assumes none actually should be duplicated
+      */
+    LOOKAHEAD(3) TypeSpecifier() [ StorageClassSpecifier() ] [ TypeQualifier() ]
+  | TypeSpecifier() [ TypeQualifier() ] [ StorageClassSpecifier() ]
+  | LOOKAHEAD(3) StorageClassSpecifier() [ TypeQualifier() ] [ LOOKAHEAD(2) TypeSpecifier() ]
+  | LOOKAHEAD(3) StorageClassSpecifier() [ LOOKAHEAD(2) TypeSpecifier() ] [ TypeQualifier() ]
+  | LOOKAHEAD(3) TypeQualifier() [ StorageClassSpecifier() ] [ LOOKAHEAD(2) TypeSpecifier() ]
+  | LOOKAHEAD(2) TypeQualifier() [ LOOKAHEAD(2) TypeSpecifier() ] [ StorageClassSpecifier() ]
+}
+
+void StorageClassSpecifier() : {}
+{
+  ( <AUTO> | <REGISTER> | <STATIC> | <EXTERN> | <TYPEDEF>
+  {
+    typedefParsingStack.push(Boolean.TRUE);
+  } )
+}
+
+void TypeSpecifier() : {}
+{
+  ( GreedyFixedNumType() | <VOID> | <CHAR> | <FLOAT> | <DOUBLE> | <BOOL> |
+    <IBACTION> /* mjh - same as void */ | <ID> |    /* Cocoa additions */
+    <INT32_T> |
+    <CGFLOAT> | <NSRECT> | <NSUINTEGER> | <NSINTEGER> | <NSSIZE> | <SEL> | <CLASS> |  <IMP> | /* mjh - more cocoa additions */
+    <SINT32> | <BOOLEAN> |     /* CoreFoundation additions */
+    <SCHAR> | <UCHAR> | StructOrUnionSpecifier() | EnumSpecifier() | LOOKAHEAD( { isType(getToken(1).image) } )TypedefName() |
+    PossibleCocoaType() | PossibleCoreType() | PossibleUnknownType()
+  )
+}
+
+void GreedyFixedNumType() : {}
+{
+    LOOKAHEAD(2) [ <SIGNED> | <UNSIGNED> ] <FIXED_NUM_TYPE> [ LOOKAHEAD(2) <FIXED_NUM_TYPE> ] /* long long */ |
+    <SIGNED> |
+    <UNSIGNED>
+}
+
+void PossibleCocoaType() : { Token t; }
+{
+  t = <POSSIBLE_COCOA_TYPE>
+  {
+     if (verbose)
+        System.out.println("WARNING: Adding typedef on possible Cocoa type " + t.image + " at line number " + t.beginLine + ", column number " + t.beginColumn);
+     addType(t.image);
+  }
+}
+
+void PossibleCoreType() : { Token t; }
+{
+  t = <POSSIBLE_CORE_TYPE>
+  {
+     if (verbose)
+         System.out.println("WARNING: Adding typedef on possible CoreFoundation type " + t.image + " at line number " + t.beginLine + ", column number " + t.beginColumn);
+     addType(t.image);
+  }
+}
+
+void PossibleUnknownType() : { Token t; }
+{
+  t = <IDENT>
+  {
+     if (verbose)
+        System.out.println("WARNING: Adding typedef on unknown identifier " + t.image + " at line number " + t.beginLine + ", column number " + t.beginColumn);
+     addType(t.image);
+  }
+}
+
+void TypeSpecifierWithUnknownType() : {}
+{
+    LOOKAHEAD(2) (ObjCIDENT() | <ID>) (ProtocolReferenceList())?
+    | TypeSpecifier()
+}
+
+void TypeQualifier() : {}
+{
+  ( <CONST> | <VOLATILE> )
+}
+
+void StructOrUnionSpecifier() : {}
+{
+  {
+    typedefParsingStack.push(Boolean.FALSE);
+  }
+
+  StructOrUnion() ( LOOKAHEAD(3) [ LOOKAHEAD(2) ObjCIDENT() ] ( "{" StructDeclarationList() "}" | ObjCIDENT() ) | <IDENT> )
+
+  {
+    typedefParsingStack.pop();
+  }
+}
+
+void StructOrUnion() : {}
+{
+  ( <STRUCT> | <UNION> )
+}
+
+void StructDeclarationList() : {}
+{
+  (StructDeclaration())+
+}
+
+void InitDeclaratorList() : {}
+{
+  InitDeclarator() ("," InitDeclarator())*
+  {
+    // Finished with a typedefDeclaration??
+    if(!(typedefParsingStack.empty()) && ((Boolean)typedefParsingStack.peek()).booleanValue()){
+         typedefParsingStack.pop();
+    }
+  }
+}
+
+void InitDeclarator() : {}
+{
+  Declarator() [ "=" Initializer() ]
+}
+
+void ProtocolQualifier() : {}
+{
+  <PROTOCOL_QUALIFIER_EXCEPT_IN>
+  | /* <IN_KEYWORD> */ In()       /* Making it a IN_KEYWORD token disallows other uses */
+}
+
+void In() : {}
+{
+    LOOKAHEAD( { getToken(0).image.equals("in") } ) <IDENT>
+}
+
+void StructDeclaration() : {}
+{
+  SpecifierQualifierList() ( StructDeclaratorList() | "[" ConstantExpression() "]" ) ";"
+}
+
+void SpecifierQualifierWithUnknownType() : {}
+{
+  LOOKAHEAD(2) TypeSpecifierWithUnknownType()
+  | TypeQualifier()
+  | ProtocolQualifier()
+}
+
+void SpecifierQualifierList() : {}
+{
+    /**
+     * Since we don't know what all possible typedef's might be and end up matching any <IDENT> as a possible type
+     * we could recursively match both tokens in something like...
+     * CFIndex version;
+     * to PossibleUnknownType() in TypeSpecifier().
+     * So we don't follow the elegant C recursive definition but enumeratte the two possible combinations
+     */
+  TypeSpecifier() [ TypeQualifier() ]
+  | TypeQualifier() TypeSpecifier()
+}
+
+void StructDeclaratorList() : {}
+{
+  StructDeclarator() ( "," StructDeclarator() )*
+}
+
+void StructDeclarator() : {}
+{
+  Declarator()
+}
+
+void EnumSpecifier() : {}
+{
+  <ENUM> ( LOOKAHEAD(3) [ ObjCIDENT() ] "{" EnumeratorList() "}" | <IDENT> )
+}
+
+void EnumeratorList() : {}
+{
+  Enumerator() ("," [ Enumerator() ])*
+}
+
+void Enumerator() : {}
+{
+  ObjCIDENT() [ "=" ConstantExpression() ]
+}
+
+void Declarator() : {}
+{
+   LOOKAHEAD(3) Block()
+ | LOOKAHEAD(3) [ Pointer() ] DirectDeclarator() [ ":" ConstantExpression() ]
+ | ":" ConstantExpression()
+ | LOOKAHEAD(2) TypeSpecifier()			// trying to handle 'typedef type-spec type-spec' special case, a little ugly
+}
+
+void Block() : {}
+{
+    ( LOOKAHEAD(3) <VOID> | <BOOL> | <ID> | ObjCIDENT() [ "*" ])? <BLOCK> [ ObjCIDENT() ] <RIGHT_PAREN> <LEFT_PAREN> ParameterList() <RIGHT_PAREN>
+}
+
+void DirectDeclarator() : { Token t;}
+{
+  ( t =  ObjCIDENT()
+
+  { if(!(typedefParsingStack.empty()) && ((Boolean)typedefParsingStack.peek()).booleanValue()){
+        addType(t.image);
+    }
+  }
+   | LOOKAHEAD(3) "(" Declarator() ")" )
+
+  { typedefParsingStack.push( Boolean.FALSE ); }
+
+  ( "[" [ ConstantExpression() ] "]" |
+      LOOKAHEAD(3) "(" ParameterTypeList() ")" |
+      "(" [ IdentifierList() ] ")" )*
+      { typedefParsingStack.pop(); }
+}
+
+void Pointer() : {}
+{
+  "*" [ TypeQualifierList() ] [ Pointer() ]
+}
+
+void TypeQualifierList() : {}
+{
+  (TypeQualifier())+
+}
+
+void ParameterTypeList() : {}
+{
+  ParameterList() ["," "..." ]
+}
+
+void ParameterList() : {}
+{
+  ParameterDeclaration() (LOOKAHEAD(2) "," ParameterDeclaration())*
+}
+
+void ParameterDeclaration() : {}
+{
+  DeclarationSpecifiers() ( LOOKAHEAD(Declarator()) Declarator() | [ AbstractDeclarator() ] )
+}
+
+void IdentifierList() : {}
+{
+  <IDENT> ("," <IDENT>)*
+}
+
+void Initializer() : {}
+{
+  ( AssignmentExpression() |
+    "{" InitializerList() [","] "}" )
+}
+
+void InitializerList() : {}
+{
+  Initializer() (LOOKAHEAD(2) "," Initializer())*
+}
+
+void TypeName() : {}
+{
+  SpecifierQualifierList() [ AbstractDeclarator() ]
+}
+
+void TypeNameWithUnknownType() : {}
+{
+  (SpecifierQualifierWithUnknownType())+ (AbstractDeclarator())?
+}
+
+void AbstractDeclarator() : {}
+{
+  ( LOOKAHEAD(3) Pointer() |
+    [Pointer()] DirectAbstractDeclarator() )
+}
+
+void DirectAbstractDeclarator() : {}
+{
+  ( LOOKAHEAD(2) "(" AbstractDeclarator() ")" |
+                 "[" [ConstantExpression()] "]" |
+                 "(" [ParameterTypeList()] ")" )
+
+    ( "[" [ ConstantExpression() ] "]" | "(" [ ParameterTypeList() ] ")" )*
+}
+
+void TypedefName() : {}
+{
+  ObjCIDENT()
+}
+
+void Statement() : {}
+{
+
+  ( LOOKAHEAD(2) LabeledStatement() |
+    LOOKAHEAD(3) InitStatement() |
+    ExpressionStatement() |
+    CompoundStatement() |
+    SelectionStatement() |
+    IterationStatement() |
+    JumpStatement() )
+}
+
+void LabeledStatement() : {}
+{
+  ( <IDENT> ":" Statement() |
+    <CASE> ConstantExpression() ":" Statement() |
+    <DFLT> ":" Statement() )
+}
+
+void InitStatement() : {}      /* mjh not part of normal C grammar but works */
+{
+   [ LOOKAHEAD(2) TypeSpecifier() ] ["*"] <IDENT> ("," <IDENT>)*
+   ("=" ( LOOKAHEAD(3) MessageExpression() | PostfixExpression() ) ( ";" | "," InitStatement() )
+  | ";")			/* catch embedded variable declarations */
+}
+
+void ExpressionStatement() : {}
+{
+  [ Expression() ] ";"
+}
+
+void CompoundStatement() : {}
+{
+  "{" ( LOOKAHEAD(DeclarationList()) DeclarationList() | StatementList() )* "}"
+}
+
+void StatementList() : {}
+{
+  (LOOKAHEAD(2) Statement())+
+}
+
+void SelectionStatement() : {}
+{
+  ( <IF> "(" [ LOOKAHEAD(2) NestedLogicalExpression() ] Expression() ")" Statement() [ LOOKAHEAD(2) <ELSE> Statement() ] |
+    <SWITCH> "(" Expression() ")" Statement() )
+}
+
+void NestedLogicalExpression() : {}     /* mjh - introduced as part of nesting handling */
+{
+  "(" [ LOOKAHEAD(2) NestedLogicalExpression() ] Expression() ")" LogicalOperator()
+}
+
+void LogicalOperator() : {}		/* mjh - introduced as part of nesting handling */
+{
+  <XOR> | <EQ> | <SC_OR> | <SC_AND>
+}
+
+void IterationStatement() : {}
+{
+  ( <WHILE> "(" Expression() ")" Statement() |
+    <DO> Statement() <WHILE> "(" Expression() ")" ";" |
+    <FOR> "("
+                 ( LOOKAHEAD(3) TypeSpecifier() <IDENT> In() PrimaryExpression() |
+                 [ LOOKAHEAD(NumberTypeInit()) NumberTypeInit() ] [ Expression() ] ";" [ Expression() ] ";" [ Expression() ] )
+           ")" Statement()
+  )
+}
+
+void NumberTypeInit() : {}        /* mjh - allow number type initializers, e.g. on 'for' statement inits */
+{
+     ( <FIXED_NUM_TYPE> | <FLOAT> | <DOUBLE> )
+}
+
+void JumpStatement() : {}
+{
+  ( <GOTO> <IDENT> ";" |
+    <CONTINUE> ";" |
+    <BREAK> ";" |
+    <RETURN> [ Expression() ] ";" )
+}
+
+void Expression() : {}
+{
+   AssignmentExpression() ( "," AssignmentExpression() )*
+}
+
+void AssignmentExpression() : {}
+{
+   LOOKAHEAD(UnaryExpression() AssignmentOperator()) UnaryExpression() AssignmentOperator() AssignmentExpression() |
+   LOOKAHEAD(3) ConditionalExpression()
+}
+
+void AssignmentOperator() : {}
+{
+   ( "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | "&=" | "^=" | "|=" )
+}
+
+void ConditionalExpression() : {}
+{
+  LogicalORExpression() [ "?" Expression() ":" ConditionalExpression() ]
+}
+
+void ConstantExpression() : {}
+{
+  ConditionalExpression()
+}
+
+void LogicalORExpression() : {}
+{
+  LogicalANDExpression() [ "||" (LOOKAHEAD(3) LogicalORExpression() | NestedLogicalExpression()) ]
+}
+
+void LogicalANDExpression() : {}
+{
+  InclusiveORExpression() [ "&&" (LOOKAHEAD(3) LogicalANDExpression() | NestedLogicalExpression()) ]
+}
+
+void InclusiveORExpression() : {}
+{
+  ExclusiveORExpression() [ "|" InclusiveORExpression() ]
+}
+
+void ExclusiveORExpression() : {}
+{
+  ANDExpression() [ "^" ExclusiveORExpression() ]
+}
+
+void ANDExpression() : {}
+{
+  EqualityExpression() [ "&" ANDExpression() ]
+}
+
+void EqualityExpression() : {}
+{
+  RelationalExpression() [ ( "==" | "!=" ) EqualityExpression() ]
+}
+
+void RelationalExpression() : {}
+{
+  ShiftExpression() [ ( "<" | ">" | "<=" | ">=" ) RelationalExpression() ]
+}
+
+void ShiftExpression() : {}
+{
+  AdditiveExpression() [ ( "<<" | ">>" ) ShiftExpression() ]
+}
+
+void AdditiveExpression() : {}
+{
+  MultiplicativeExpression() [ ( "+" | "-" ) AdditiveExpression() ]
+}
+
+void MultiplicativeExpression() : {}
+{
+  CastExpression() [ ( "*" | "/" | "%" ) MultiplicativeExpression() ]
+}
+
+void CastExpression() : {}
+{
+    LOOKAHEAD("(" TypeName() ")" CastExpression() ) "(" TypeName() ")" CastExpression() |
+//	  LOOKAHEAD(3) "(" TypeSpecifier()  ")" CastExpression() |
+    UnaryExpression()
+}
+
+void UnaryExpression() : {}
+{
+   ( LOOKAHEAD(3) PostfixExpression() |
+     "++" UnaryExpression() |
+     "--" UnaryExpression() |
+     UnaryOperator() CastExpression() |
+     <SIZEOF> ( LOOKAHEAD(UnaryExpression() ) UnaryExpression() | "(" TypeName() ")" ) )
+}
+
+void UnaryOperator() : {}
+{
+   ( "&" | "*" | "+" | "-" | "~" | "!" )
+}
+
+void PostfixExpression() : {}
+{
+  <NIL> |          /* mjh */
+  PrimaryExpression() ( "[" Expression() "]" |
+                        "(" [ LOOKAHEAD(ArgumentExpressionList() ) ArgumentExpressionList() ] ")" |
+                "." <IDENT> |
+                "->" <IDENT> |
+                "++" |
+                "--" )*
+}
+
+void PrimaryExpression() : {}
+{
+   (  ObjCIDENT() |
+      Constant() |
+      "(" Expression() ")" |
+      MessageExpression() |
+      SelectorExpression() |
+      ProtocolExpression() |
+      EncodeExpression() )
+}
+
+void MessageExpression() : {}
+{
+  <LEFT_SQUARE> Receiver() MessageSelector() <RIGHT_SQUARE>
+}
+
+void Receiver() : {}
+{
+  LOOKAHEAD(2) Expression()      // catches 'self' and 'super' as ident
+  | TypeDefedIDENT()
+}
+
+void TypeDefedIDENT() : {}
+{
+  <BOOL> | <IMP> | <SEL> | <CLASS> | <ID>
+}
+
+void MessageSelector() : {}
+{
+    LOOKAHEAD(2) (KeywordArgument())+
+  |	<IDENT>
+}
+
+void KeywordArgument() : {}
+{
+    LOOKAHEAD(3) <IDENT> <COLON> Expression()
+  | <IDENT> <COLON> <NIL>
+  | LOOKAHEAD(2) <COLON> <NIL>
+  | <COLON> Expression()
+}
+
+void ArgumentExpressionList() : {}
+{
+  AssignmentExpression() ( "," AssignmentExpression() )*
+}
+
+void Constant() : {}
+{
+ <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL> | <CHARACTER_LITERAL> | <STRING_LITERAL> | <INTEGER_CONSTANT> | <CSTRING_LITERAL>
+}
+

@@ -6,389 +6,275 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTCharLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTMultiplicativeExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * This rule finds StringBuffers which may have been pre-sized incorrectly.
  *
  * @author Allan Caplan
- * @see <a href="https://sourceforge.net/p/pmd/discussion/188194/thread/aba9dae7/">Check StringBuffer sizes against usage </a>
+ * @author Andreas Dangel
+ * @see <a href="https://sourceforge.net/p/pmd/discussion/188194/thread/aba9dae7/">Check StringBuffer sizes against
+ *      usage </a>
  */
-public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
+public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulechainRule {
 
-    private static final Set<Class<? extends Node>> BLOCK_PARENTS;
 
-    static {
-        BLOCK_PARENTS = new HashSet<>(2);
-        BLOCK_PARENTS.add(ASTIfStatement.class);
-        BLOCK_PARENTS.add(ASTSwitchStatement.class);
+    private static final int DEFAULT_BUFFER_SIZE = 16;
+
+    public InsufficientStringBufferDeclarationRule() {
+        super(ASTVariableDeclaratorId.class);
     }
 
-    // as specified in StringBuffer and StringBuilder
-    public static final int DEFAULT_BUFFER_SIZE = 16;
+    private static class State {
+        ASTVariableDeclaratorId variable;
+        TypeNode rootNode;
+        int capacity;
+        int anticipatedLength;
+        Map<Node, Map<Node, Integer>> branches = new HashMap<>();
+
+        State(ASTVariableDeclaratorId variable, TypeNode rootNode, int capacity, int anticipatedLength) {
+            this.variable = variable;
+            this.rootNode = rootNode;
+            this.capacity = capacity;
+            this.anticipatedLength = anticipatedLength;
+        }
+
+
+        public void addAnticipatedLength(int length) {
+            this.anticipatedLength += length;
+        }
+
+
+        public boolean isInsufficient() {
+            processBranches();
+            return capacity >= 0 && anticipatedLength > capacity;
+        }
+
+
+        public String[] getParamsForViolation() {
+            return new String[] { getTypeName(variable), String.valueOf(capacity), String.valueOf(anticipatedLength) };
+        }
+
+
+        private String getTypeName(TypeNode node) {
+            return node.getTypeMirror().getSymbol().getSimpleName();
+        }
+
+
+        public void addBranch(Node node, int counter) {
+            Node parent = node.ancestors(ASTIfStatement.class).last();
+            if (parent == null) {
+                parent = node.ancestors(ASTSwitchStatement.class).last();
+            }
+            if (parent == null) {
+                return;
+            }
+            branches.putIfAbsent(parent, new HashMap<>());
+            Map<Node, Integer> blocks = branches.get(parent);
+            if (!blocks.containsKey(node)) {
+                blocks.put(node, counter);
+            } else {
+                blocks.put(node, blocks.get(node) + counter);
+            }
+        }
+
+
+        private void processBranches() {
+            for (Map<Node, Integer> blocks : branches.values()) {
+                int counter = 0;
+                for (Integer i : blocks.values()) {
+                    counter = Math.max(counter, i);
+                }
+                addAnticipatedLength(counter);
+            }
+            branches.clear();
+        }
+
+        @Override
+        public String toString() {
+            return "State[capacity=" + capacity + ",anticipatedLength=" + anticipatedLength + "]";
+        }
+    }
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!TypeHelper.isExactlyAny(node.getNameDeclaration(), StringBuffer.class, StringBuilder.class)) {
+        if (!TypeTestUtil.isA(StringBuilder.class, node) && !TypeTestUtil.isA(StringBuffer.class, node)) {
             return data;
         }
-        Node rootNode = node;
-        int anticipatedLength = 0;
-        int constructorLength = DEFAULT_BUFFER_SIZE;
 
-        constructorLength = getConstructorLength(node, constructorLength);
-        anticipatedLength = getInitialLength(node);
+        State state = getConstructorCapacity(node, node.getInitializer());
 
-        anticipatedLength += getConstructorAppendsLength(node);
-
-        List<NameOccurrence> usage = node.getUsages();
-        Map<Node, Map<Node, Integer>> blocks = new HashMap<>();
-        for (NameOccurrence no : usage) {
-            JavaNameOccurrence jno = (JavaNameOccurrence) no;
-            Node n = jno.getLocation();
-            if (!InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "append")) {
-
-                if (!jno.isOnLeftHandSide()
-                        && !InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "setLength")) {
-                    continue;
+        for (ASTNamedReferenceExpr usage : node.getLocalUsages()) {
+            if (usage.getParent() instanceof ASTMethodCall) {
+                Node parent = usage.getParent();
+                while (parent instanceof ASTMethodCall) {
+                    ASTMethodCall methodCall = (ASTMethodCall) parent;
+                    processMethodCall(state, methodCall);
+                    parent = parent.getParent();
                 }
-                if (constructorLength != -1 && anticipatedLength > constructorLength) {
-                    anticipatedLength += processBlocks(blocks);
-                    String[] param = { String.valueOf(constructorLength), String.valueOf(anticipatedLength) };
-                    addViolation(data, rootNode, param);
-                }
-                constructorLength = getConstructorLength(n, constructorLength);
-                rootNode = n;
-                anticipatedLength = getInitialLength(node);
-            }
-            ASTPrimaryExpression s = n.getFirstParentOfType(ASTPrimaryExpression.class);
-            int numChildren = s.jjtGetNumChildren();
-            for (int jx = 0; jx < numChildren; jx++) {
-                Node sn = s.jjtGetChild(jx);
-                if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
-                    continue;
-                }
-                int thisSize = 0;
-                Node block = getFirstParentBlock(sn);
-                if (isAdditive(sn)) {
-                    thisSize = processAdditive(sn);
+            } else if (usage.getParent() instanceof ASTAssignmentExpression) {
+                ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
+                State newState = getConstructorCapacity(node, assignment.getRightOperand());
+                
+                if (newState.rootNode != null) {
+                    if (state.isInsufficient()) {
+                        addViolation(data, state.rootNode, state.getParamsForViolation());
+                    }
+                    state = newState;
                 } else {
-                    thisSize = processNode(sn);
-                }
-                if (block != null) {
-                    storeBlockStatistics(blocks, thisSize, block);
-                } else {
-                    anticipatedLength += thisSize;
+                    state.addAnticipatedLength(newState.anticipatedLength);
                 }
             }
         }
-        anticipatedLength += processBlocks(blocks);
-        if (constructorLength != -1 && anticipatedLength > constructorLength) {
-            String[] param = { String.valueOf(constructorLength), String.valueOf(anticipatedLength) };
-            addViolation(data, rootNode, param);
+
+        if (state.isInsufficient()) {
+            addViolation(data, state.rootNode, state.getParamsForViolation());
         }
         return data;
     }
 
-    /**
-     * This rule is concerned with IF and Switch blocks. Process the block into
-     * a local Map, from which we can later determine which is the longest block
-     * inside
-     *
-     * @param blocks
-     *            The map of blocks in the method being investigated
-     * @param thisSize
-     *            The size of the current block
-     * @param block
-     *            The block in question
-     */
-    private void storeBlockStatistics(Map<Node, Map<Node, Integer>> blocks, int thisSize, Node block) {
-        Node statement = block.jjtGetParent();
-        if (block.jjtGetParent() instanceof ASTIfStatement) {
-            // Else Ifs are their own subnode in AST. So we have to
-            // look a little farther up the tree to find the IF statement
-            Node possibleStatement = statement.getFirstParentOfType(ASTIfStatement.class);
-            while (possibleStatement instanceof ASTIfStatement) {
-                statement = possibleStatement;
-                possibleStatement = possibleStatement.getFirstParentOfType(ASTIfStatement.class);
-            }
-        }
-        Map<Node, Integer> thisBranch = blocks.get(statement);
-        if (thisBranch == null) {
-            thisBranch = new HashMap<>();
-            blocks.put(statement, thisBranch);
-        }
-        Integer x = thisBranch.get(block);
-        if (x != null) {
-            thisSize += x;
-        }
-        thisBranch.put(statement, thisSize);
-    }
-
-    private int processBlocks(Map<Node, Map<Node, Integer>> blocks) {
-        int anticipatedLength = 0;
-        int ifLength = 0;
-        for (Map.Entry<Node, Map<Node, Integer>> entry : blocks.entrySet()) {
-            ifLength = 0;
-            for (Map.Entry<Node, Integer> entry2 : entry.getValue().entrySet()) {
-                Integer value = entry2.getValue();
-                ifLength = Math.max(ifLength, value.intValue());
-            }
-            anticipatedLength += ifLength;
-        }
-        return anticipatedLength;
-    }
-
-    private int processAdditive(Node sn) {
-        ASTAdditiveExpression additive = sn.getFirstDescendantOfType(ASTAdditiveExpression.class);
-        if (additive == null) {
-            return 0;
-        }
-        int anticipatedLength = 0;
-        for (int ix = 0; ix < additive.jjtGetNumChildren(); ix++) {
-            Node childNode = additive.jjtGetChild(ix);
-            ASTLiteral literal = childNode.getFirstDescendantOfType(ASTLiteral.class);
-            if (literal != null && literal.getImage() != null) {
-                anticipatedLength += literal.getImage().length() - 2;
-            }
-        }
-
-        return anticipatedLength;
-    }
-
-    private static boolean isStringOrCharLiteral(ASTLiteral literal) {
-        return literal.isStringLiteral() || literal.isCharLiteral();
-    }
-
-    private int processNode(Node sn) {
-        int anticipatedLength = 0;
-        if (sn != null) {
-            ASTPrimaryPrefix xn = sn.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-            if (xn != null) {
-                if (xn.jjtGetNumChildren() != 0 && xn.jjtGetChild(0) instanceof ASTLiteral) {
-                    ASTLiteral literal = (ASTLiteral) xn.jjtGetChild(0);
-                    String str = xn.jjtGetChild(0).getImage();
-                    if (str != null) {
-                        if (literal.isStringLiteral()) {
-                            anticipatedLength += str.length() - 2;
-                        } else if (literal.isCharLiteral()) {
-                            anticipatedLength += 1;
-                        } else if (literal.isIntLiteral()) {
-                            // but only if we are not inside a cast expression
-                            Node parentNode = literal.jjtGetParent().jjtGetParent().jjtGetParent();
-                            if (parentNode instanceof ASTCastExpression
-                                    && ((ASTCastExpression) parentNode).getType() == char.class) {
-                                anticipatedLength += 1;
-                            } else {
-                                // any number, regardless of the base will be converted to base 10
-                                // e.g. 0xdeadbeef -> will be converted to a
-                                // base 10 integer string: 3735928559
-                                anticipatedLength += String.valueOf(literal.getValueAsLong()).length();
-                            }
-                        } else {
-                            anticipatedLength += str.length();
-                        }
+    private void processMethodCall(State state, ASTMethodCall methodCall) {
+        if ("append".equals(methodCall.getMethodName())) {
+            int counter = 0;
+            Set<ASTLiteral> literals = new HashSet<>();
+            literals.addAll(methodCall.getArguments()
+                    .descendants(ASTLiteral.class)
+                    // exclude literals, that belong to different method calls
+                    .filter(n -> n.ancestors(ASTMethodCall.class).first() == methodCall).toList());
+            for (ASTLiteral literal : literals) {
+                if (literal instanceof ASTStringLiteral) {
+                    counter += ((ASTStringLiteral) literal).length();
+                } else if (literal instanceof ASTNumericLiteral) {
+                    if (literal.getParent() instanceof ASTCastExpression
+                        && TypeTestUtil.isA(char.class, (ASTCastExpression) literal.getParent())) {
+                        counter += 1;
+                    } else {
+                        counter += String.valueOf(((ASTNumericLiteral) literal).getConstValue()).length();
                     }
+                } else if (literal instanceof ASTCharLiteral) {
+                    counter += 1;
                 }
             }
-        }
-        return anticipatedLength;
-    }
-
-    private int getConstructorLength(Node node, int constructorLength) {
-        int iConstructorLength = constructorLength;
-        Node block = node.getFirstParentOfType(ASTBlockStatement.class);
-
-        if (block == null) {
-            block = node.getFirstParentOfType(ASTFieldDeclaration.class);
-        }
-        if (block == null) {
-            block = node.getFirstParentOfType(ASTFormalParameter.class);
-            if (block != null) {
-                iConstructorLength = -1;
-            } else {
-                return DEFAULT_BUFFER_SIZE;
-            }
-        }
-
-        // if there is any addition/subtraction going on then just use the
-        // default.
-        ASTAdditiveExpression exp = block.getFirstDescendantOfType(ASTAdditiveExpression.class);
-        if (exp != null) {
-            return DEFAULT_BUFFER_SIZE;
-        }
-        ASTMultiplicativeExpression mult = block.getFirstDescendantOfType(ASTMultiplicativeExpression.class);
-        if (mult != null) {
-            return DEFAULT_BUFFER_SIZE;
-        }
-
-        List<ASTLiteral> literals;
-        ASTAllocationExpression constructorCall = block.getFirstDescendantOfType(ASTAllocationExpression.class);
-        if (constructorCall != null) {
-            // if this is a constructor call, only consider the literals within
-            // it.
-            literals = constructorCall.findDescendantsOfType(ASTLiteral.class);
-        } else {
-            // otherwise it might be a setLength call...
-            literals = block.findDescendantsOfType(ASTLiteral.class);
-        }
-        if (literals.isEmpty()) {
-            List<ASTName> name = block.findDescendantsOfType(ASTName.class);
-            if (!name.isEmpty()) {
-                iConstructorLength = -1;
-            }
-        } else if (literals.size() == 1) {
-            ASTLiteral literal = literals.get(0);
-            String str = literal.getImage();
-            if (str == null) {
-                iConstructorLength = 0;
-            } else if (isStringOrCharLiteral(literal)) {
-                // since it's not taken into account
-                // anywhere. only count the extra 16
-                // characters
-                // don't add the constructor's length
-                iConstructorLength = 14 + str.length();
-            } else if (literal.isIntLiteral()) {
-                iConstructorLength = literal.getValueAsInt();
-            }
-        } else {
-            iConstructorLength = -1;
-        }
-
-        if (iConstructorLength == 0) {
-            if (constructorLength == -1) {
-                iConstructorLength = DEFAULT_BUFFER_SIZE;
-            } else {
-                iConstructorLength = constructorLength;
-            }
-        }
-
-        return iConstructorLength;
-    }
-
-    private int getInitialLength(Node node) {
-
-        Node block = node.getFirstParentOfType(ASTBlockStatement.class);
-
-        if (block == null) {
-            block = node.getFirstParentOfType(ASTFieldDeclaration.class);
-            if (block == null) {
-                block = node.getFirstParentOfType(ASTFormalParameter.class);
-            }
-        }
-        List<ASTLiteral> literals = block.findDescendantsOfType(ASTLiteral.class);
-        if (literals.size() == 1) {
-            ASTLiteral literal = literals.get(0);
-            String str = literal.getImage();
-            if (str != null && isStringOrCharLiteral(literal)) {
-                return str.length() - 2; // take off the quotes
-            }
-        }
-
-        return 0;
-    }
-
-    private int getConstructorAppendsLength(final Node node) {
-        final Node parent = node.getFirstParentOfType(ASTVariableDeclarator.class);
-        int size = 0;
-        if (parent != null) {
-            final Node initializer = parent.getFirstChildOfType(ASTVariableInitializer.class);
-            if (initializer != null) {
-                final Node primExp = initializer.getFirstDescendantOfType(ASTPrimaryExpression.class);
-                if (primExp != null) {
-                    for (int i = 0; i < primExp.jjtGetNumChildren(); i++) {
-                        final Node sn = primExp.jjtGetChild(i);
-                        if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
-                            continue;
-                        }
-                        size += processNode(sn);
-                    }
+    
+            ASTIfStatement ifStatement = methodCall.ancestors(ASTIfStatement.class).first();
+            ASTSwitchStatement switchStatement = methodCall.ancestors(ASTSwitchStatement.class).first();
+            if (ifStatement != null) {
+                if (ifStatement.getThenBranch().descendants().any(n -> n == methodCall)) {
+                    state.addBranch(ifStatement.getThenBranch(), counter);
+                } else {
+                    state.addBranch(ifStatement.getElseBranch(), counter);
                 }
+            } else if (switchStatement != null) {
+                state.addBranch(methodCall.ancestors(ASTSwitchBranch.class).first(), counter);
+            } else {
+                state.addAnticipatedLength(counter);
+            }
+        } else if ("setLength".equals(methodCall.getMethodName())) {
+            int newLength = calculateExpression(methodCall.getArguments().get(0));
+            if (newLength > state.capacity) {
+                state.capacity = newLength; // a bigger setLength increases capacity
+                state.rootNode = methodCall;
+            }
+            // setLength fills the string builder, any new append adds to this
+            state.anticipatedLength = newLength;
+        } else if ("ensureCapacity".equals(methodCall.getMethodName())) {
+            int newCapacity = calculateExpression(methodCall.getArguments().get(0));
+            if (newCapacity > state.capacity) {
+                // only a bigger new capacity changes the capacity
+                state.capacity = newCapacity;
+                state.rootNode = methodCall;
             }
         }
-        return size;
     }
 
-    private boolean isAdditive(Node n) {
-        ASTAdditiveExpression add = n.getFirstDescendantOfType(ASTAdditiveExpression.class);
-        // if the first descendant additive expression is deeper than 4 levels,
-        // it belongs to a nested method call and not anymore to the append
-        // argument.
-        return add != null && add.getNthParent(4) == n;
-    }
+    private State getConstructorCapacity(ASTVariableDeclaratorId variable, ASTExpression node) {
+        State state = new State(variable, null, -1, 0);
 
-    /**
-     * Locate the block that the given node is in, if any
-     *
-     * @param node
-     *            The node we're looking for a parent of
-     * @return Node - The node that corresponds to any block that may be a
-     *         parent of this object
-     */
-    private Node getFirstParentBlock(Node node) {
-        Node parentNode = node.jjtGetParent();
+        JavaNode possibleConstructorCall = node;
 
-        Node lastNode = node;
-        while (parentNode != null && !BLOCK_PARENTS.contains(parentNode.getClass())) {
-            lastNode = parentNode;
-            parentNode = parentNode.jjtGetParent();
+        JavaNode child = node;
+        while (child instanceof ASTMethodCall) {
+            processMethodCall(state, (ASTMethodCall) child);
+            child = child.getFirstChild();
         }
-        if (parentNode instanceof ASTIfStatement) {
-            parentNode = lastNode;
-        } else if (parentNode instanceof ASTSwitchStatement) {
-            parentNode = getSwitchParent(parentNode, lastNode);
+        possibleConstructorCall = child;
+        if (!(possibleConstructorCall instanceof ASTConstructorCall)) {
+            return state;
         }
-        return parentNode;
-    }
-
-    /**
-     * Determine which SwitchLabel we belong to inside a switch
-     *
-     * @param parentNode
-     *            The parent node we're looking at
-     * @param lastNode
-     *            The last node processed
-     * @return The parent node for the switch statement
-     */
-    private static Node getSwitchParent(Node parentNode, Node lastNode) {
-        int allChildren = parentNode.jjtGetNumChildren();
-        ASTSwitchLabel label = null;
-        for (int ix = 0; ix < allChildren; ix++) {
-            Node n = parentNode.jjtGetChild(ix);
-            if (n instanceof ASTSwitchLabel) {
-                label = (ASTSwitchLabel) n;
-            } else if (n.equals(lastNode)) {
-                parentNode = label;
-                break;
+        ASTConstructorCall constructorCall = (ASTConstructorCall) possibleConstructorCall;
+        if (constructorCall.getArguments().size() == 1) {
+            ASTExpression argument = constructorCall.getArguments().get(0);
+            if (argument instanceof ASTStringLiteral) {
+                int stringLength = ((ASTStringLiteral) argument).length();
+                return new State(variable, constructorCall, DEFAULT_BUFFER_SIZE + stringLength, stringLength + state.anticipatedLength);
+            } else {
+                return new State(variable, constructorCall, calculateExpression(argument), state.anticipatedLength);
             }
         }
-        return parentNode;
+        return new State(variable, constructorCall, DEFAULT_BUFFER_SIZE, state.anticipatedLength);
     }
 
+
+    private int calculateExpression(ASTExpression expression) {
+
+        class ExpressionVisitor extends JavaVisitorBase<MutableInt, Void> {
+
+
+            @Override
+            public Void visit(ASTInfixExpression node, MutableInt data) {
+                MutableInt temp = new MutableInt(-1);
+
+                if (BinaryOp.ADD.equals(node.getOperator())) {
+                    data.setValue(0);
+                    node.getLeftOperand().acceptVisitor(this, temp);
+                    data.add(temp.getValue());
+                    node.getRightOperand().acceptVisitor(this, temp);
+                    data.add(temp.getValue());
+                } else if (BinaryOp.MUL.equals(node.getOperator())) {
+                    node.getLeftOperand().acceptVisitor(this, temp);
+                    data.setValue(temp.getValue());
+                    node.getRightOperand().acceptVisitor(this, temp);
+                    data.setValue(data.getValue() * temp.getValue());
+                }
+
+                return null;
+            }
+
+            @Override
+            public Void visit(ASTNumericLiteral node, MutableInt data) {
+                data.setValue(node.getValueAsInt());
+                return null;
+            }
+        }
+
+        MutableInt result = new MutableInt(-1);
+        expression.acceptVisitor(new ExpressionVisitor(), result);
+        return result.getValue();
+    }
 }

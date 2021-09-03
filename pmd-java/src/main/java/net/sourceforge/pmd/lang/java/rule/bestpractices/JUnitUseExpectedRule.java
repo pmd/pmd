@@ -4,20 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.util.ArrayList;
-import java.util.List;
+import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJUnitMethod;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
 /**
  * This rule finds code like this:
@@ -41,76 +37,36 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule;
  * @author acaplan
  *
  */
-public class JUnitUseExpectedRule extends AbstractJUnitRule {
+public class JUnitUseExpectedRule extends AbstractJavaRulechainRule {
 
-    @Override
-    public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
-        boolean inAnnotation = false;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            Node child = node.jjtGetChild(i);
-            if (child instanceof ASTAnnotation) {
-                ASTName annotationName = child.getFirstDescendantOfType(ASTName.class);
-                if ("Test".equals(annotationName.getImage())) {
-                    inAnnotation = true;
-                    continue;
-                }
-            }
-            if (child instanceof ASTMethodDeclaration) {
-                boolean isJUnitMethod = isJUnitMethod((ASTMethodDeclaration) child, data);
-                if (inAnnotation || isJUnitMethod) {
-                    List<Node> found = new ArrayList<>();
-                    found.addAll((List<Node>) visit((ASTMethodDeclaration) child, data));
-                    for (Node name : found) {
-                        addViolation(data, name);
-                    }
-                }
-            }
-            inAnnotation = false;
-        }
-
-        return super.visit(node, data);
+    public JUnitUseExpectedRule() {
+        super(ASTMethodDeclaration.class);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        List<ASTTryStatement> catches = node.findDescendantsOfType(ASTTryStatement.class);
-        List<Node> found = new ArrayList<>();
-        if (catches.isEmpty()) {
-            return found;
-        }
-        for (ASTTryStatement trySt : catches) {
-            ASTCatchStatement cStatement = getCatch(trySt);
-            if (cStatement != null) {
-                ASTBlock block = (ASTBlock) cStatement.jjtGetChild(1);
-                if (block.jjtGetNumChildren() != 0) {
-                    continue;
-                }
-                List<ASTBlockStatement> blocks = trySt.jjtGetChild(0).findDescendantsOfType(ASTBlockStatement.class);
-                if (blocks.isEmpty()) {
-                    continue;
-                }
-                ASTBlockStatement st = blocks.get(blocks.size() - 1);
-                ASTName name = st.getFirstDescendantOfType(ASTName.class);
-                if (name != null && st.equals(name.getNthParent(5)) && "fail".equals(name.getImage())) {
-                    found.add(name);
-                    continue;
-                }
-                ASTThrowStatement th = st.getFirstDescendantOfType(ASTThrowStatement.class);
-                if (th != null && st.equals(th.getNthParent(2))) {
-                    found.add(th);
-                    continue;
-                }
-            }
-        }
-        return found;
-    }
-
-    private ASTCatchStatement getCatch(Node n) {
-        for (int i = 0; i < n.jjtGetNumChildren(); i++) {
-            if (n.jjtGetChild(i) instanceof ASTCatchStatement) {
-                return (ASTCatchStatement) n.jjtGetChild(i);
-            }
+        ASTBlock body = node.getBody();
+        if (body != null && isJUnitMethod(node)) {
+            body.descendants(ASTTryStatement.class)
+                .filter(this::isWeirdTry)
+                .forEach(it -> addViolation(data, it));
         }
         return null;
     }
+
+    private boolean isWeirdTry(ASTTryStatement tryStmt) {
+        ASTStatement lastStmt = tryStmt.getBody().getLastChild();
+        return (lastStmt instanceof ASTThrowStatement
+            || lastStmt instanceof ASTExpressionStatement && isFailStmt((ASTExpressionStatement) lastStmt))
+            && tryStmt.getCatchClauses().any(it -> it.getBody().size() == 0);
+    }
+
+    private boolean isFailStmt(ASTExpressionStatement stmt) {
+        if (stmt.getExpr() instanceof ASTMethodCall) {
+            ASTMethodCall expr = (ASTMethodCall) stmt.getExpr();
+            return "fail".equals(expr.getMethodName());
+        }
+        return false;
+    }
+
 }

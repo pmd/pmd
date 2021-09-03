@@ -4,191 +4,90 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.VariableIdOwner;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
 
 
 /**
- * Formal parameter node. Used in the {@link ASTFormalParameters}
- * production of {@link ASTMethodDeclarator} to represent a
- * method's formal parameter. Also used in the {@link ASTCatchStatement}
- * production to represent the declared exception variable.
- * Also used in LambdaExpressions for the LambdaParameters.
- * <pre>
- *      ( "final" | Annotation )* Type ( "|" Type )* [ "..." ] VariableDeclaratorId
+ * Formal parameter node for a {@linkplain ASTFormalParameters formal parameter list}.
+ * This is distinct from {@linkplain ASTLambdaParameter lambda parameters}.
+ *
+ * <p>The varargs ellipsis {@code "..."} is parsed as an {@linkplain ASTArrayTypeDim array dimension}
+ * in the type node.
+ *
+ * <pre class="grammar">
+ *
+ * FormalParameter ::= {@link ASTModifierList LocalVarModifierList} {@link ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ *
  * </pre>
  */
-public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Dimensionable, CanSuppressWarnings {
+public final class ASTFormalParameter extends AbstractJavaNode
+    implements FinalizableNode,
+               TypeNode,
+               Annotatable,
+               VariableIdOwner {
 
-    private boolean isVarargs;
-
-    @InternalApi
-    @Deprecated
-    public ASTFormalParameter(int id) {
+    ASTFormalParameter(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTFormalParameter(JavaParser p, int id) {
-        super(p, id);
+    @Override
+    public Visibility getVisibility() {
+        return Visibility.V_LOCAL;
     }
 
 
     /**
-     * @deprecated Will be made private in 7.0.0
+     * Returns the list of formal parameters containing this param.
      */
-    @InternalApi
-    @Deprecated
-    public void setVarargs() {
-        isVarargs = true;
+    public ASTFormalParameters getOwnerList() {
+        return (ASTFormalParameters) getParent();
     }
 
-
     /**
-     * Returns true if this node is a varargs parameter.
+     * Returns true if this node is a varargs parameter. Then, the type
+     * node is an {@link ASTArrayType ArrayType}, and its last dimension
+     * {@linkplain ASTArrayTypeDim#isVarargs() is varargs}.
      */
     public boolean isVarargs() {
-        return isVarargs;
+        ASTType tn = getTypeNode();
+        return tn instanceof ASTArrayType
+            && ((ASTArrayType) tn).getDimensions().getLastChild().isVarargs();
     }
 
-
-    /**
-     * Returns true if this node is the explicit receiver parameter,
-     * e.g. in
-     *
-     * <pre>
-     * class Foo {
-     *   abstract void foo(@Bar Foo this);
-     * }
-     * </pre>
-     */
-    public boolean isExplicitReceiverParameter() {
-        return getVariableDeclaratorId().isExplicitReceiverParameter();
-    }
-
-    /**
-     * If true, this formal parameter represents one without explit types.
-     * This can appear as part of a lambda expression with java11 using "var".
-     *
-     * @see ASTVariableDeclaratorId#isTypeInferred()
-     */
-    public boolean isTypeInferred() {
-        return getTypeNode() == null;
-    }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
     }
 
 
     /**
      * Returns the declarator ID of this formal parameter.
      */
-    public ASTVariableDeclaratorId getVariableDeclaratorId() {
-        return getFirstChildOfType(ASTVariableDeclaratorId.class);
-    }
-
     @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTAnnotation a : findChildrenOfType(ASTAnnotation.class)) {
-            if (a.suppresses(rule)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * Returns true if this formal parameter is of an array type.
-     * This includes varargs parameters.
-     */
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return isVarargs()
-            || getTypeNode() != null && getTypeNode().isArray()
-            || getVariableDeclaratorId().isArray();
-    }
-
-    @Override
-    @Deprecated
-    public int getArrayDepth() {
-        if (!isArray()) {
-            return 0;
-        }
-        return getTypeNode().getArrayDepth() + getVariableDeclaratorId().getArrayDepth() + (isVarargs() ? 1 : 0);
+    public @NonNull ASTVariableDeclaratorId getVarId() {
+        return firstChild(ASTVariableDeclaratorId.class);
     }
 
 
     /**
      * Returns the type node of this formal parameter.
-     * The type of that node is not necessarily the type
-     * of the parameter itself, see {@link ASTVariableDeclaratorId#getType()}.
      *
-     * <p>In particular, the type of the returned node
-     * doesn't take into account whether this formal
-     * parameter is varargs or not.
+     * <p>If this formal parameter is varargs, the type node is an {@link ASTArrayType}.
      */
     public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+        return firstChild(ASTType.class);
     }
 
-
-    /**
-     * @deprecated use {@link #getVariableDeclaratorId()}
-     */
-    @Deprecated
-    protected ASTVariableDeclaratorId getDecl() {
-        return getVariableDeclaratorId();
-    }
-
-    /**
-     * Returns the type of this formal parameter. That type
-     * is exactly that of the variable declarator id,
-     * which means that the declarator id's type takes into
-     * account whether this parameter is varargs or not.
-     */
-    @Override
-    public Class<?> getType() {
-        return getVariableDeclaratorId().getType();
-    }
-
+    // Honestly FormalParameter shouldn't be a TypeNode.
+    // The node that represents the variable is the variable ID.
 
     @Override
-    public JavaTypeDefinition getTypeDefinition() {
-        return getVariableDeclaratorId().getTypeDefinition();
-    }
-
-
-    /**
-     * Noop, the type of this node is defined by the type
-     * of the declarator id.
-     */
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setTypeDefinition(JavaTypeDefinition type) {
-        // see javadoc
-    }
-
-    /**
-     * Noop, the type of this node is defined by the type
-     * of the declarator id.
-     */
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setType(Class<?> type) {
-        // see javadoc
+    public @NonNull JTypeMirror getTypeMirror(TypingContext ctx) {
+        return getVarId().getTypeMirror(ctx);
     }
 }

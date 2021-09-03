@@ -3,90 +3,78 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Ok, no return
-     ]]></description>
+        <description>Ok, no return</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 function foo() {
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, 1 return w/ result
-     ]]></description>
+        <description>Ok, 1 return w/ result</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 function foo() {
-   return true;
+    return true;
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, 1 return w/o result
-     ]]></description>
+        <description>Ok, 1 return w/o result</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 function foo() {
-   return;
+    return;
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, nested function with different return result
-     ]]></description>
+        <description>Ok, nested function with different return result</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 function foo() {
-   var x = function() {
-      return true;
-   };
-   return;
+    var x = function() {
+        return true;
+    };
+    return;
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bad, mixed result
-     ]]></description>
+        <description>Bad, mixed result</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 function foo() {
-   if (true) {
-      return false;
-   }
-   return;
+    if (true) {
+        return false;
+    }
+    return;
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bad, mixed result with nested function
-     ]]></description>
+        <description>Bad, mixed result with nested function</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 function foo() {
-   var x = function() {
-      if (true) {
-          return false;
-      }
-      return;
-   };
-   if (true) {
-      return false;
-   }
-   return;
+    var x = function() {
+        if (true) {
+            return false;
+        }
+        return;
+    };
+    if (true) {
+        return false;
+    }
+    return;
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
 </test-data>

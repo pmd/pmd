@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedMap;
@@ -19,7 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Renderer to another HTML format.
@@ -28,7 +28,11 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "yahtml";
     // TODO 7.0.0 use PropertyDescriptor<Optional<File>> with a constraint that the file is an existing directory
-    public static final StringProperty OUTPUT_DIR = new StringProperty("outputDir", "Output directory.", null, 0);
+    public static final PropertyDescriptor<String> OUTPUT_DIR =
+        PropertyFactory.stringProperty("outputDir")
+                       .desc("Output directory.")
+                       .defaultValue(".")
+                       .build();
 
     private SortedMap<String, ReportNode> reportNodesByPackage = new TreeMap<>();
 
@@ -87,9 +91,8 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     public void end() throws IOException {
         String outputDir = getProperty(OUTPUT_DIR);
 
-        Iterator<RuleViolation> violations = report.iterator();
-        while (violations.hasNext()) {
-            addViolation(violations.next());
+        for (RuleViolation ruleViolation : report.getViolations()) {
+            addViolation(ruleViolation);
         }
 
         renderIndex(outputDir);

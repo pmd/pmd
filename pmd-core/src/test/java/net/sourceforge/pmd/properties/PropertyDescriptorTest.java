@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.properties;
 
+import static java.util.Collections.emptyList;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,13 +26,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.SubstringMatcher;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.FooRule;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
 
@@ -42,7 +43,7 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  */
 public class PropertyDescriptorTest {
 
-    @Rule
+    @org.junit.Rule
     public ExpectedException thrown = ExpectedException.none();
 
 
@@ -57,9 +58,9 @@ public class PropertyDescriptorTest {
         FooRule rule = new FooRule();
         rule.definePropertyDescriptor(intProperty);
         rule.setProperty(intProperty, 1000);
-        RuleSet ruleSet = new RuleSetFactory().createSingleRuleRuleSet(rule);
+        RuleSet ruleSet = RuleSet.forSingleRule(rule);
 
-        List<net.sourceforge.pmd.Rule> dysfunctional = new ArrayList<>();
+        List<Rule> dysfunctional = new ArrayList<>();
         ruleSet.removeDysfunctionalRules(dysfunctional);
 
         assertEquals(1, dysfunctional.size());
@@ -78,9 +79,9 @@ public class PropertyDescriptorTest {
         FooRule rule = new FooRule();
         rule.definePropertyDescriptor(descriptor);
         rule.setProperty(descriptor, Collections.singletonList(1000d)); // not in range
-        RuleSet ruleSet = new RuleSetFactory().createSingleRuleRuleSet(rule);
+        RuleSet ruleSet = RuleSet.forSingleRule(rule);
 
-        List<net.sourceforge.pmd.Rule> dysfunctional = new ArrayList<>();
+        List<Rule> dysfunctional = new ArrayList<>();
         ruleSet.removeDysfunctionalRules(dysfunctional);
 
         assertEquals(1, dysfunctional.size());
@@ -158,6 +159,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", descriptor.description());
         assertEquals(Integer.valueOf(1), descriptor.defaultValue());
         assertEquals(Integer.valueOf(5), descriptor.valueFrom("5"));
+        assertEquals(Integer.valueOf(5), descriptor.valueFrom(" 5 "));
 
         PropertyDescriptor<List<Integer>> listDescriptor = PropertyFactory.intListProperty("intListProp")
                 .desc("hello")
@@ -167,6 +169,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList(1, 2), listDescriptor.defaultValue());
         assertEquals(Arrays.asList(5, 7), listDescriptor.valueFrom("5,7"));
+        assertEquals(Arrays.asList(5, 7), listDescriptor.valueFrom(" 5 , 7 "));
     }
 
     @Test
@@ -190,6 +193,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", descriptor.description());
         assertEquals(Double.valueOf(1.0), descriptor.defaultValue());
         assertEquals(Double.valueOf(2.0), descriptor.valueFrom("2.0"));
+        assertEquals(Double.valueOf(2.0), descriptor.valueFrom("  2.0  "));
 
         PropertyDescriptor<List<Double>> listDescriptor = PropertyFactory.doubleListProperty("doubleListProp")
                 .desc("hello")
@@ -199,6 +203,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList(1.0, 2.0), listDescriptor.defaultValue());
         assertEquals(Arrays.asList(2.0, 3.0), listDescriptor.valueFrom("2.0,3.0"));
+        assertEquals(Arrays.asList(2.0, 3.0), listDescriptor.valueFrom(" 2.0 , 3.0 "));
     }
 
     @Test
@@ -222,6 +227,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", descriptor.description());
         assertEquals("default value", descriptor.defaultValue());
         assertEquals("foo", descriptor.valueFrom("foo"));
+        assertEquals("foo", descriptor.valueFrom("  foo   "));
 
         PropertyDescriptor<List<String>> listDescriptor = PropertyFactory.stringListProperty("stringListProp")
                 .desc("hello")
@@ -231,6 +237,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList("v1", "v2"), listDescriptor.defaultValue());
         assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("foo|bar"));
+        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("  foo |  bar  "));
     }
 
     private enum SampleEnum { A, B, C }
@@ -333,18 +340,53 @@ public class PropertyDescriptorTest {
                 .build();
     }
 
+
+    private static List<String> parseEscaped(String s, char d) {
+        return ValueParserConstants.parseListWithEscapes(s, d, ValueParserConstants.STRING_PARSER);
+    }
+
+    @Test
+    public void testStringParserEmptyString() {
+        assertEquals(emptyList(), parseEscaped("", ','));
+    }
+
+
+    @Test
+    public void testStringParserSimple() {
+        assertEquals(listOf("a", "b", "c"),
+                     parseEscaped("a,b,c", ','));
+    }
+
+    @Test
+    public void testStringParserEscapedChar() {
+        assertEquals(listOf("a", "b,c"),
+                     parseEscaped("a,b\\,c", ','));
+    }
+
+    @Test
+    public void testStringParserEscapedEscapedChar() {
+        assertEquals(listOf("a", "b\\", "c"),
+                     parseEscaped("a,b\\\\,c", ','));
+    }
+
+    @Test
+    public void testStringParserDelimIsBackslash() {
+        assertEquals(listOf("a,b", "", ",c"),
+                     parseEscaped("a,b\\\\,c", '\\'));
+    }
+
+    @Test
+    public void testStringParserTrailingBackslash() {
+        assertEquals(listOf("a", "b\\"),
+                     parseEscaped("a,b\\", ','));
+    }
+
     private static Matcher<String> containsIgnoreCase(final String substring) {
-        return new SubstringMatcher(substring) {
+        return new SubstringMatcher("containing (ignoring case)", true, substring) {
 
             @Override
             protected boolean evalSubstringOf(String string) {
                 return StringUtils.indexOfIgnoreCase(string, substring) != -1;
-            }
-
-
-            @Override
-            protected String relationship() {
-                return "containing (ignoring case)";
             }
         };
     }

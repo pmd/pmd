@@ -28,9 +28,13 @@ public class Tokens {
         return tokens.size();
     }
 
+    public TokenEntry getEndToken(TokenEntry mark, Match match) {
+        return get(mark.getIndex() + match.getTokenCount() - 1);
+    }
+
     public int getLineCount(TokenEntry mark, Match match) {
-        TokenEntry endTok = get(mark.getIndex() + match.getTokenCount() - 1);
-        if (endTok == TokenEntry.EOF) {
+        TokenEntry endTok = getEndToken(mark, match);
+        if (TokenEntry.EOF.equals(endTok)) {
             endTok = get(mark.getIndex() + match.getTokenCount() - 2);
         }
         return endTok.getBeginLine() - mark.getBeginLine() + 1;
@@ -39,5 +43,4 @@ public class Tokens {
     public List<TokenEntry> getTokens() {
         return tokens;
     }
-
 }

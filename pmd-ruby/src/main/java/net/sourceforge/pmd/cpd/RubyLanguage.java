@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.cpd;
 
 /**
- * Language implemention for Ruby.
- * 
+ * Language implementation for Ruby.
+ *
  * @author Zev Blut zb@ubit.com
  */
 public class RubyLanguage extends AbstractLanguage {
@@ -15,6 +15,6 @@ public class RubyLanguage extends AbstractLanguage {
      * Creates a new Ruby Language instance.
      */
     public RubyLanguage() {
-        super("Ruby", "ruby", new RubyTokenizer(), ".rb", ".cgi", ".class");
+        super("Ruby", "ruby", new AnyTokenizer("#"), ".rb", ".cgi", ".class");
     }
 }

@@ -19,7 +19,6 @@ BEGIN
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -42,7 +41,6 @@ BEGIN
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -65,7 +63,6 @@ BEGIN
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -86,6 +83,5 @@ BEGIN
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 </test-data>

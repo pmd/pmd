@@ -22,6 +22,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * @author Philippe T'Seyen - original implementation
@@ -76,6 +77,7 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
         try {
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
             transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -96,7 +98,7 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
         }
         return writer.toString();
     }
-    
+
     @Override
     public void render(Iterator<Match> matches, Writer writer) throws IOException {
         Document doc = createDocument();
@@ -117,19 +119,35 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
         Mark mark;
         for (Iterator<Mark> iterator = match.iterator(); iterator.hasNext();) {
             mark = iterator.next();
-            Element file = doc.createElement("file");
+            final Element file = doc.createElement("file");
             file.setAttribute("line", String.valueOf(mark.getBeginLine()));
-            file.setAttribute("path", mark.getFilename());
+            // only remove invalid characters, escaping is done by the DOM impl.
+            String filenameXml10 = StringUtil.removedInvalidXml10Characters(mark.getFilename());
+            file.setAttribute("path", filenameXml10);
+            file.setAttribute("endline", String.valueOf(mark.getEndLine()));
+            final int beginCol = mark.getBeginColumn();
+            final int endCol = mark.getEndColumn();
+            if (beginCol != -1) {
+                file.setAttribute("column", String.valueOf(beginCol));
+            }
+            if (endCol != -1) {
+                file.setAttribute("endcolumn", String.valueOf(endCol));
+            }
             duplication.appendChild(file);
         }
         return duplication;
     }
 
     private Element addCodeSnippet(Document doc, Element duplication, Match match) {
-        String codeSnipet = match.getSourceCodeSlice();
-        if (codeSnipet != null) {
+        String codeSnippet = match.getSourceCodeSlice();
+        if (codeSnippet != null) {
+            // the code snippet has normalized line endings
+            String platformSpecific = codeSnippet.replace("\n", System.lineSeparator());
             Element codefragment = doc.createElement("codefragment");
-            codefragment.appendChild(doc.createCDATASection(codeSnipet));
+            // only remove invalid characters, escaping is not necessary in CDATA.
+            // if the string contains the end marker of a CDATA section, then the DOM impl will
+            // create two cdata sections automatically.
+            codefragment.appendChild(doc.createCDATASection(StringUtil.removedInvalidXml10Characters(platformSpecific)));
             duplication.appendChild(codefragment);
         }
         return duplication;

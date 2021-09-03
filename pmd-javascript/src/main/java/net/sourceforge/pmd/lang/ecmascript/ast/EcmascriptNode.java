@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,23 +6,26 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.AstNode;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
-public interface EcmascriptNode<T extends AstNode> extends Node {
+public interface EcmascriptNode<T extends AstNode> extends GenericNode<EcmascriptNode<?>> {
 
-    /**
-     * Accept the visitor. *
-     */
-    Object jjtAccept(EcmascriptParserVisitor visitor, Object data);
 
     /**
-     * Accept the visitor. *
+     * @deprecated See {@link EcmascriptParserVisitor}
      */
-    Object childrenAccept(EcmascriptParserVisitor visitor, Object data);
+    @Deprecated
+    @DeprecatedUntil700
+    default Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+        return acceptVisitor(visitor, data);
+    }
 
     /**
      * Get the underlying Rhino AST node.
+     * @deprecated The underlying Rhino node should not be used directly.
      */
+    @Deprecated
     T getNode();
 
     /**

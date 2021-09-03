@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -21,13 +21,13 @@ public class AvoidReassigningParametersRule extends AbstractVmRule {
             final Set<String> paramNames = new HashSet<>();
             final List<ASTReference> params = node.findChildrenOfType(ASTReference.class);
             for (final ASTReference param : params) {
-                paramNames.add(param.getFirstToken().toString());
+                paramNames.add(param.getFirstToken().getImage());
             }
             final List<ASTSetDirective> assignments = node.findDescendantsOfType(ASTSetDirective.class);
             for (final ASTSetDirective assignment : assignments) {
                 final ASTReference ref = assignment.getFirstChildOfType(ASTReference.class);
-                if (ref != null && paramNames.contains(ref.getFirstToken().toString())) {
-                    addViolation(data, node, ref.getFirstToken().toString());
+                if (ref != null && paramNames.contains(ref.getFirstToken().getImage())) {
+                    addViolation(data, node, ref.getFirstToken().getImage());
                 }
             }
         }

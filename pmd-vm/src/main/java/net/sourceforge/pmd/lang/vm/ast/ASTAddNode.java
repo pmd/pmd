@@ -21,10 +21,9 @@ package net.sourceforge.pmd.lang.vm.ast;
  */
 
 /**
- * Handles number addition of nodes.<br>
- * <br>
+ * Handles number addition of nodes.
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:wglass@forio.com">Will Glass-Husain</a>
@@ -33,25 +32,14 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTAddNode.java 712887 2008-11-11 00:27:50Z nbubna $
  */
-public class ASTAddNode extends ASTMathNode {
-    /**
-     * @param id
-     */
-    public ASTAddNode(final int id) {
+public final class ASTAddNode extends ASTMathNode {
+    ASTAddNode(int id) {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
-    public ASTAddNode(final VmParser p, final int id) {
-        super(p, id);
-    }
 
-    /** Accept the visitor. **/
     @Override
-    public Object jjtAccept(VmParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVmVisitor(VmVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

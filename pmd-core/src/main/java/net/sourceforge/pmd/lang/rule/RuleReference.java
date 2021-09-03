@@ -15,8 +15,8 @@ import java.util.Objects;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -29,7 +29,6 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class RuleReference extends AbstractDelegateRule {
 
-    private Language language;
     private LanguageVersion minimumLanguageVersion;
     private LanguageVersion maximumLanguageVersion;
     private Boolean deprecated;
@@ -68,7 +67,6 @@ public class RuleReference extends AbstractDelegateRule {
     /** copy constructor */
     private RuleReference(RuleReference ref) {
 
-        this.language = ref.language;
         this.minimumLanguageVersion = ref.minimumLanguageVersion;
         this.maximumLanguageVersion = ref.maximumLanguageVersion;
         this.deprecated = ref.deprecated;
@@ -85,22 +83,6 @@ public class RuleReference extends AbstractDelegateRule {
         this.setRule(ref.getRule().deepCopy());
     }
 
-    public Language getOverriddenLanguage() {
-        return language;
-    }
-
-    // FIXME should we really allow overriding the language of a rule?
-    // I don't see any case where this wouldn't just make the rule fail during execution
-    @Override
-    public void setLanguage(Language language) {
-        // Only override if different than current value, or if already
-        // overridden.
-        if (!Objects.equals(language, super.getLanguage()) || this.language != null) {
-            this.language = language;
-            super.setLanguage(language);
-        }
-    }
-
     public LanguageVersion getOverriddenMinimumLanguageVersion() {
         return minimumLanguageVersion;
     }
@@ -110,8 +92,8 @@ public class RuleReference extends AbstractDelegateRule {
         // Only override if different than current value, or if already
         // overridden.
         if (!Objects.equals(minimumLanguageVersion, super.getMinimumLanguageVersion()) || this.minimumLanguageVersion != null) {
+            super.setMinimumLanguageVersion(minimumLanguageVersion); // might throw
             this.minimumLanguageVersion = minimumLanguageVersion;
-            super.setMinimumLanguageVersion(minimumLanguageVersion);
         }
     }
 
@@ -124,8 +106,8 @@ public class RuleReference extends AbstractDelegateRule {
         // Only override if different than current value, or if already
         // overridden.
         if (!Objects.equals(maximumLanguageVersion, super.getMaximumLanguageVersion()) || this.maximumLanguageVersion != null) {
+            super.setMaximumLanguageVersion(maximumLanguageVersion); // might throw
             this.maximumLanguageVersion = maximumLanguageVersion;
-            super.setMaximumLanguageVersion(maximumLanguageVersion);
         }
     }
 
@@ -296,6 +278,12 @@ public class RuleReference extends AbstractDelegateRule {
     }
 
 
+    @Override
+    public boolean dependsOn(AstProcessingStage<?> stage) {
+        return getRule().dependsOn(stage);
+    }
+
+
     public RuleSetReference getRuleSetReference() {
         return ruleSetReference;
     }
@@ -343,43 +331,20 @@ public class RuleReference extends AbstractDelegateRule {
     }
 
     @Override
-    @Deprecated
-    public boolean usesDefaultValues() {
-
-        List<PropertyDescriptor<?>> descriptors = getOverriddenPropertyDescriptors();
-        if (!descriptors.isEmpty()) {
-            return false;
-        }
-
-        for (PropertyDescriptor<?> desc : descriptors) {
-            if (!Objects.equals(desc.defaultValue(), getProperty(desc))) {
-                return false;
-            }
-        }
-
-        return getRule().usesDefaultValues();
-    }
-
-    @Override
-    @Deprecated
-    public void useDefaultValueFor(PropertyDescriptor<?> desc) {
-
-        // not sure if we should go all the way through to the real thing?
-        getRule().useDefaultValueFor(desc);
-
-        if (propertyValues == null) {
-            return;
-        }
-
-        propertyValues.remove(desc);
-
-        if (propertyDescriptors != null) {
-            propertyDescriptors.remove(desc);
-        }
-    }
-    
-    @Override
     public Rule deepCopy() {
         return new RuleReference(this);
+    }
+
+    /**
+     * Checks whether this rule reference explicitly overrides any of the possible
+     * attributes of the referenced rule.
+     * @return <code>true</code> if there is at least one attribute overridden. <code>false</code> if
+     *     the referenced rule is referenced without any change.
+     */
+    public boolean hasOverriddenAttributes() {
+        return deprecated != null || description != null || examples != null || externalInfoUrl != null
+                || maximumLanguageVersion != null || minimumLanguageVersion != null
+                || message != null || name != null || priority != null
+                || propertyDescriptors != null || propertyValues != null;
     }
 }

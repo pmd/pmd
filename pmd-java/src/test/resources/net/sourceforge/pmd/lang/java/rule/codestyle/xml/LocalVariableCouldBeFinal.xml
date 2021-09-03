@@ -3,116 +3,140 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description>TEST1</description>
+        <description>May be final</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-  int a = 0;
- }
+    public void test1() {
+        int a = 0;
+        System.out.println(a);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description>TEST2</description>
+        <description>Final local var</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-  final int a = 0;
- }
+    public void test1() {
+        final int a = 0;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description>TEST3</description>
+        <description>Unused, no violation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-  int a = 0;
-  a = 100;
- }
+    public void test1() {
+        int a = 0;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description>TEST4</description>
+        <description>Assigned</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-  int a = 0;
-  a += 100;
- }
+    public void test1() {
+        int a = 0;
+        a = 100;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description>TEST5</description>
+        <description>Compound assignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        int a = 0;
+        a += 100;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <!-- TODO blank local may also be final, all three should be violations -->
+        <description>Blank local var</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-  int a = 0;
-  int b = 0;
-  int c ;
-  c = a + b;
- }
+    public void test1() {
+        int a = 0;
+        int b = 0;
+        int c ;
+        c = a + b;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description>TEST6</description>
+        <description>Prefix increment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-  int a = 0;
-  ++a;
- }
+    public void test1() {
+        int a = 0;
+        ++a;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>TEST7</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-  int a = 0;
-  a+=1;
- }
+    public void test1() {
+        int a = 0;
+        a+=1;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description>TEST8</description>
+        <description>Postfix increment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-  int a = 0;
-  a++;
- }
+    public void test1() {
+        int a = 0;
+        a++;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>TEST9</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-  int a = 0;
-  int b = 0;
-  a++;
-  a+=b;
- }
+    public void test1() {
+        int a = 0;
+        int b = 0;
+        a++;
+        a+=b;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Bug 2614040 : false + if a += assignment operator is used inside a method call.</description>
         <expected-problems>0</expected-problems>
@@ -121,78 +145,153 @@ public class Foo {
  * See: https://sourceforge.net/tracker/?func=detail&aid=2614040&group_id=56262&atid=479921
  */
 public class Foo {
- public String bar() {
-    int count = 1;
-    final String wrong = String.valueOf( count += 2); // 'count' is used so it's a false + 
-    return wrong;
- }
+    public String bar() {
+        int count = 1;
+        final String wrong = String.valueOf( count += 2); // 'count' is used so it's a false +
+        return wrong;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Bug #1047 False Positive in 'for' loops for LocalVariableCouldBeFinal in 5.0.1</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  for ( final String c : strings ) {
-   System.out.println(c); // use c
-  }
- }
+    public void bar() {
+        for ( final String c : strings ) {
+            System.out.println(c); // use c
+        }
+    }
 }
         ]]></code>
     </test-code>
+
     <test-code>
        <description>Verify another case for Bug #1047 False Positive in 'for' loops for LocalVariableCouldBeFinal in 5.0.1</description>
        <expected-problems>0</expected-problems>
        <code><![CDATA[
+import org.junit.Assert;
 public class Test {
- public void bar() {
-  for (final List<Integer> list : result) {
-      Assert.assertEquals( array.size() - 1, list.size() );
-  }
- }
+    public void bar(java.util.List<java.util.List<Integer>> result) {
+        for (final java.util.List<Integer> list : result) {
+            Assert.assertEquals( list.size() - 1, list.size() );
+        }
+    }
 }
        ]]></code>
-   </test-code>
+    </test-code>
+
     <test-code>
         <description>Parameter to ignore non-final variables in for each loops (see #1513).</description>
         <rule-property name="ignoreForEachDecl">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  for ( String c : strings ) {
-   System.out.println(c); // use c
-  }
- }
+    public void bar() {
+        for ( String c : strings ) {
+            System.out.println(c); // use c
+        }
+    }
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>By default, for-each loops should be flagged (see #1513).</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  for ( String c : strings ) {
-   System.out.println(c); // use c
-  }
- }
+    public void bar() {
+        for ( String c : strings ) {
+            System.out.println(c); // use c
+        }
+    }
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Normal for-loops should not be flagged</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  for (int i = 0; i < 10; i++ ) {
-   System.out.println(i);
-  }
- }
+    public void bar() {
+        for (int i = 0; i < 10; i++ ) {
+            System.out.println(i);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3266 False negative with default methods in interfaces</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithDefaultMethod {
+    default void bar() {
+        String a = "a";
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3266 False negative with class inside interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithClass {
+    class Inner {
+        void bar() {
+            String a = "a";
+            System.out.println(a);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3266 False negative with anonymous classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithAnon {
+    void method() {
+        final ClassWithAnon anon = new ClassWithAnon() {
+            void method() {
+                String a = "a";
+                System.out.println(a);
+            }
+        };
+        final Runnable runnable = new Runnable() {
+            public void run() {
+                int a = 0; //unused so no warning
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3266 False negative with lambdas</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithLambda {
+    void method() {
+        final Runnable runnable = () -> {
+            int a = 0;
+            System.out.println(a);
+        };
+    }
 }
         ]]></code>
     </test-code>

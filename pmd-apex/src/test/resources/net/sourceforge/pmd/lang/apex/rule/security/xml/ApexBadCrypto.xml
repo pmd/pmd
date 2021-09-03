@@ -1,84 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-	<test-code>
-		<description>Apex Crypto hardcoded IV</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex Crypto hardcoded IV</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
 public class Foo {
-	public Foo() {
-		Blob exampleIv = Blob.valueOf('0000000000000000');
-		Blob key = Crypto.generateAesKey(128);
-		Blob data = Blob.valueOf('Data to be encrypted');
-		Blob encrypted = Crypto.encrypt('AES128', key, exampleIv, data);
-	}
+    public Foo() {
+        Blob exampleIv = Blob.valueOf('0000000000000000');
+        Blob key = Crypto.generateAesKey(128);
+        Blob data = Blob.valueOf('Data to be encrypted');
+        Blob encrypted = Crypto.encrypt('AES128', key, exampleIv, data);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Apex Crypto hardcoded key</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex Crypto hardcoded key</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public Foo() {
-		Blob exampleIv = Crypto.generateAesKey(128);
-		Blob key = Blob.valueOf('0000000000000000'); 
-		Blob data = Blob.valueOf('Data to be encrypted');
-		Blob encrypted = Crypto.encrypt('AES128', key, exampleIv, data);
-	}
+    public Foo() {
+        Blob exampleIv = Crypto.generateAesKey(128);
+        Blob key = Blob.valueOf('0000000000000000');
+        Blob data = Blob.valueOf('Data to be encrypted');
+        Blob encrypted = Crypto.encrypt('AES128', key, exampleIv, data);
+    }
 }
-		]]></code>
-	</test-code>
-	<test-code>
-		<description>Apex Crypto Safe Random IV</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-public class Foo {
+        ]]></code>
+    </test-code>
 
-	public test1() {
-		Blob exampleIv = Crypto.generateAesKey(128);
-		Blob key = Crypto.generateAesKey(128);
-		Blob data = Blob.valueOf('Data to be encrypted');
-		Blob encrypted = Crypto.encrypt('AES128', key, exampleIv, data);
-	}
-}
-		]]></code>
-	</test-code>
-
-	<test-code>
-		<description>Apex Crypto Safe Random IV</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex Crypto Safe Random IV</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
 
-	public test1() {
-		Blob key = Crypto.generateAesKey(128);
-		Blob data = Blob.valueOf('Data to be encrypted');
-		Blob encrypted = Crypto.encryptWithManagedIV('AES128', key, data);
-	}
+    public test1() {
+        Blob exampleIv = Crypto.generateAesKey(128);
+        Blob key = Crypto.generateAesKey(128);
+        Blob data = Blob.valueOf('Data to be encrypted');
+        Blob encrypted = Crypto.encrypt('AES128', key, exampleIv, data);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-<test-code>
-		<description>Apex Crypto Non safe Key</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex Crypto Safe Random IV</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
 
-	public test1() {
-		Blob key =  Blob.valueOf('Key to be encrypted');
-		Blob data = Blob.valueOf('Data to be encrypted');
-		Blob encrypted = Crypto.encryptWithManagedIV('AES128', key, data);
-	}
+    public test1() {
+        Blob key = Crypto.generateAesKey(128);
+        Blob data = Blob.valueOf('Data to be encrypted');
+        Blob encrypted = Crypto.encryptWithManagedIV('AES128', key, data);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
+    <test-code>
+        <description>Apex Crypto Non safe Key</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
 
+    public test1() {
+        Blob key =  Blob.valueOf('Key to be encrypted');
+        Blob data = Blob.valueOf('Data to be encrypted');
+        Blob encrypted = Crypto.encryptWithManagedIV('AES128', key, data);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Apex Crypto hardcoded IV in inner class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    class MyInnerClass {
+        public MyInnerClass() {
+            Blob exampleIv = Blob.valueOf('0000000000000000');
+            Blob key = Crypto.generateAesKey(128);
+            Blob data = Blob.valueOf('Data to be encrypted');
+            Blob encrypted = Crypto.encrypt('AES128', key, exampleIv, data);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

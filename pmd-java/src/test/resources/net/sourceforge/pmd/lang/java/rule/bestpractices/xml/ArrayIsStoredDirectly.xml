@@ -3,150 +3,138 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Clear violation
-     ]]></description>
+        <description>Clear violation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- void foo (String[] x) {arr = x;} ;
+    String [] arr;
+    void foo (String[] x) {arr = x;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Clear violation with this.
-     ]]></description>
+        <description>Clear violation with this.</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- void foo (String[] arr) {this.arr = arr;} ;
+    String [] arr;
+    void foo (String[] arr) {this.arr = arr;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assignment to an internal array
-     ]]></description>
+        <description>assignment to an internal array</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- void foo (String[] x) {this.arr = x;} ;
+    String [] arr;
+    void foo (String[] x) {this.arr = x;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assignment of param to local
-     ]]></description>
+        <description>assignment of param to local</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- void getArr(String[] arr) {String[] foo; foo = arr;} ;
+    String [] arr;
+    void getArr(String[] arr) {String[] foo; foo = arr;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip interfaces
-     ]]></description>
+        <description>skip interfaces</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- void getArr(String[] arr);
+    void getArr(String[] arr);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip abstract, native
-     ]]></description>
+        <description>skip abstract, native</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- abstract void getArr(String[] arr);
- native void getArr2(String[] arr);
+    abstract void getArr(String[] arr);
+    native void getArr2(String[] arr);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-equality expression, not assignment
-     ]]></description>
+        <description>equality expression, not assignment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar(String[] buf) {
-   x = (buf[0] == 1);
- }
+    void bar(String[] buf) {
+        x = (buf[0] == 1);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assignment of array element
-     ]]></description>
+        <description>assignment of array element</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar(String[] buf) {
-   x = buf[0];
- }
+    void bar(String[] buf) {
+        x = buf[0];
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Constructor clear violation
-     ]]></description>
+        <description>Constructor clear violation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- Foo (String[] x) {arr = x;}
+    String [] arr;
+    Foo (String[] x) {arr = x;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Constructor no violation
-     ]]></description>
+        <description>Constructor no violation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- Foo (String[] x) {arr = x.clone();}
+    String [] arr;
+    Foo (String[] x) {arr = x.clone();}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-No reassignment
-     ]]></description>
+        <description>No reassignment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- void foo() {String[] bar = {""};arr = bar;}
+    String [] arr;
+    void foo() {String[] bar = {""};arr = bar;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Trigger on Varargs
-     ]]></description>
+        <description>Trigger on Varargs</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- void foo(String... arr) {this.arr = arr;}
+    String [] arr;
+    void foo(String... arr) {this.arr = arr;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -193,7 +181,7 @@ public class NotificationPacket {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#468 False positive when qualifying with this</description>
         <expected-problems>0</expected-problems>
@@ -206,6 +194,46 @@ public class Foo {
         for (int i = 0; i < b.length; i++) {
             this.a[i] = b[i];
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly false positive with private constructor/methods #2622</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AISD {
+    private final byte[] buf;
+    private AISD(final byte[] buf) {
+        this.buf = buf;  // this is not a violation!!
+    }
+    private void set(final byte[] buf) {
+        this.buf = buf;  // this is not a violation!!
+    }
+    public AISD of(final byte[] buf) {
+        return new AISD(buf.clone());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>do not allow private methods</description>
+        <rule-property name="allowPrivate">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <code><![CDATA[
+public class AISD {
+    private final byte[] buf;
+    private AISD(final byte[] buf) {
+        this.buf = buf;
+    }
+    private void set(final byte[] buf2) {
+        this.buf = buf2;
+    }
+    public AISD of(final byte[] buf3) {
+        return new AISD(buf3.clone());
     }
 }
         ]]></code>

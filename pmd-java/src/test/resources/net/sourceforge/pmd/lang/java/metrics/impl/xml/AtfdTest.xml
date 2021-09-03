@@ -5,85 +5,91 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="full-example"><![CDATA[
-public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
+import my.Structure;
+import my.DataFlowHandler;
+import my.JavaNode;
+import my.Linker;
+import my.NodeType;
+import my.Node;
+import my.ASTStatementExpression;
+import my.ASTVariableDeclarator;
+import my.ASTExpression;
+import my.ASTWhileStatement;
+import my.ASTIfStatement;
+import my.ASTForStatement;
+import my.ASTSwitchStatement;
+import my.ASTDoStatement;
+import my.ASTAssertStatement;
+
+import java.util.logging.Logger;
+import java.util.logging.Level;
+public class StatementAndBraceFinder {
+    // total: 16 for sum of methods        + 1 for        vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    //      = 17
     private static final Logger LOGGER = Logger.getLogger(StatementAndBraceFinder.class.getName());
 
     private final DataFlowHandler dataFlowHandler;
     private Structure dataFlow;
 
-    public StatementAndBraceFinder(DataFlowHandler dataFlowHandler) {
+    public StatementAndBraceFinder(DataFlowHandler dataFlowHandler) {//0
         this.dataFlowHandler = dataFlowHandler;
     }
 
-    public void buildDataFlowFor(JavaNode node) {
-        if (!(node instanceof ASTMethodDeclaration) && !(node instanceof ASTConstructorDeclaration)) {
-            throw new RuntimeException("Can't build a data flow for anything other than a method or a constructor");
-        }
-
+    public void buildDataFlowFor(JavaNode node) {//4
         this.dataFlow = new Structure(dataFlowHandler);
-        this.dataFlow.createStartNode(node.getBeginLine());
+        this.dataFlow.createStartNode(node.getBeginLine()); // +1
         this.dataFlow.createNewNode(node);
 
         node.jjtAccept(this, dataFlow);
 
-        this.dataFlow.createEndNode(node.getEndLine());
+        this.dataFlow.createEndNode(node.getEndLine()); // +1
         if (LOGGER.isLoggable(Level.FINE)) {
             // TODO SRT Remove after development
             LOGGER.fine("DataFlow is " + this.dataFlow.dump());
         }
-        Linker linker = new Linker(dataFlowHandler, dataFlow.getBraceStack(), dataFlow.getContinueBreakReturnStack());
-        try {
-            linker.computePaths();
-        } catch (SequenceException | LinkerException e) {
-            e.printStackTrace();
-        }
+        Linker linker = new Linker(dataFlowHandler,
+                                   dataFlow.getBraceStack(), // +1
+                                   dataFlow.getContinueBreakReturnStack()); // +1
     }
 
 
-    private void tryToLog(String tag, NodeType type, Node node) {
+    private void tryToLog(String tag, NodeType type, Node node) {//2
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("pushOnStack " + tag + " " + type + ": line " + node.getBeginLine()
-                + ", column " + node.getBeginColumn());
+            LOGGER.finest("pushOnStack " + tag + " " + type + ": line " + node.getBeginLine() // +1
+                + ", column " + node.getBeginColumn());//+1
         }
     }
 
-    private void tryToLog(NodeType type, Node node) {
+    private void tryToLog(NodeType type, Node node) { //0
         tryToLog("", type, node);
     }
 
-    @Override
-    public Object visit(ASTStatementExpression node, Object data) {
+    public Object visit(ASTStatementExpression node, Object data) { //2
         if (!(data instanceof Structure)) {
             return data;
         }
         Structure dataFlow = (Structure) data;
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("createNewNode ASTStatementExpression: line " + node.getBeginLine() + ", column "
-                + node.getBeginColumn());
+            LOGGER.finest("" + node.getBeginLine() + ", column " //+1
+                + node.getBeginColumn()); //+1
         }
         dataFlow.createNewNode(node);
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(ASTVariableDeclarator node, Object data) {
-        if (!(data instanceof Structure)) {
-            return data;
-        }
+    public Object visit(ASTVariableDeclarator node, Object data) { //2
         Structure dataFlow = (Structure) data;
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("createNewNode ASTVariableDeclarator: line " + node.getBeginLine() + ", column "
-                + node.getBeginColumn());
+            LOGGER.finest("" + node.getBeginLine() + ", column " //+1
+                                  + node.getBeginColumn()); //+1
         }
         dataFlow.createNewNode(node);
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(ASTExpression node, Object data) {
-        if (!(data instanceof Structure)) {
-            return data;
-        }
+    public Object visit(ASTExpression node, Object data) {//6
         Structure dataFlow = (Structure) data;
 
         String loggerTag = "parent";
@@ -93,27 +99,27 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         // TODO what about throw stmts?
         if (parent instanceof ASTIfStatement) {
             dataFlow.createNewNode(node); // START IF
-            dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());
+            dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());    // +1
             tryToLog(loggerTag, NodeType.IF_EXPR, node);
         } else if (parent instanceof ASTWhileStatement) {
             dataFlow.createNewNode(node); // START WHILE
-            dataFlow.pushOnStack(NodeType.WHILE_EXPR, dataFlow.getLast());
+            dataFlow.pushOnStack(NodeType.WHILE_EXPR, dataFlow.getLast());    // +1
             tryToLog(loggerTag, NodeType.WHILE_EXPR, node);
         } else if (parent instanceof ASTSwitchStatement) {
             dataFlow.createNewNode(node); // START SWITCH
-            dataFlow.pushOnStack(NodeType.SWITCH_START, dataFlow.getLast());
+            dataFlow.pushOnStack(NodeType.SWITCH_START, dataFlow.getLast());    // +1
             tryToLog(loggerTag, NodeType.SWITCH_START, node);
         } else if (parent instanceof ASTForStatement) {
             dataFlow.createNewNode(node); // FOR EXPR
-            dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
+            dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());    // +1
             tryToLog(loggerTag, NodeType.FOR_EXPR, node);
         } else if (parent instanceof ASTDoStatement) {
             dataFlow.createNewNode(node); // DO EXPR
-            dataFlow.pushOnStack(NodeType.DO_EXPR, dataFlow.getLast());
+            dataFlow.pushOnStack(NodeType.DO_EXPR, dataFlow.getLast());    // +1
             tryToLog(loggerTag, NodeType.DO_EXPR, node);
         } else if (parent instanceof ASTAssertStatement) {
             dataFlow.createNewNode(node);
-            dataFlow.pushOnStack(NodeType.ASSERT_STATEMENT, dataFlow.getLast());
+            dataFlow.pushOnStack(NodeType.ASSERT_STATEMENT, dataFlow.getLast());    // +1
             tryToLog(loggerTag, NodeType.ASSERT_STATEMENT, node);
         }
 
@@ -121,21 +127,21 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
 }
-
-     ]]></code-fragment>
+    ]]></code-fragment>
 
 
     <test-code>
-        <description>Full example</description> <!-- TODO issues w/ that-->
-        <expected-problems>7</expected-problems>
+        <description>Full example</description>
+        <expected-problems>8</expected-problems>
         <expected-messages>
-            <message>'StatementAndBraceFinder' has value 10 highest 6.</message>
-            <message>'StatementAndBraceFinder#buildDataFlowFor(JavaNode)' has value 6.</message>
-            <message>'StatementAndBraceFinder#tryToLog(String, NodeType, Node)' has value 4.</message>
+            <message>'StatementAndBraceFinder' has value 17.</message>
+            <message>'StatementAndBraceFinder#StatementAndBraceFinder(DataFlowHandler)' has value 0.</message>
+            <message>'StatementAndBraceFinder#buildDataFlowFor(JavaNode)' has value 4.</message>
+            <message>'StatementAndBraceFinder#tryToLog(String, NodeType, Node)' has value 2.</message>
             <message>'StatementAndBraceFinder#tryToLog(NodeType, Node)' has value 0.</message>
-            <message>'StatementAndBraceFinder#visit(ASTStatementExpression, Object)' has value 4.</message>
-            <message>'StatementAndBraceFinder#visit(ASTVariableDeclarator, Object)' has value 4.</message>
-            <message>'StatementAndBraceFinder#visit(ASTExpression, Object)' has value 18.</message>
+            <message>'StatementAndBraceFinder#visit(ASTStatementExpression, Object)' has value 2.</message>
+            <message>'StatementAndBraceFinder#visit(ASTVariableDeclarator, Object)' has value 2.</message>
+            <message>'StatementAndBraceFinder#visit(ASTExpression, Object)' has value 6.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -148,43 +154,43 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             <message>'Foo#bar()' has value 1.</message>
         </expected-messages>
         <code><![CDATA[
-        public class Foo {
-          Type a;
-          void bar() {
-            a.b.foo();
-          }
-        }
+public class Foo {
+    Type a;
+    void bar() {
+        a.b.foo();
+    }
+}
         ]]></code>
     </test-code>
 
     <test-code>
         <description>Test empty class</description>
-
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 0 highest 0.</message>
+            <message>'Foo' has value 0.</message>
         </expected-messages>
         <code><![CDATA[
-        public class Foo {
-
-
-
-        }
+public class Foo {
+}
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>ATFD doesn't support interfaces or annotations</description>
-        <expected-problems>0</expected-problems>
+        <description>ATFD with interfaces or annotations</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 0.</message>
+            <message>'Foo$Tag' has value 0.</message>
+        </expected-messages>
         <code><![CDATA[
-        public interface Foo {
+public interface Foo {
 
-           public final int h;
+    public final int h;
 
-           @interface Tag {
-              public static final int num = 0;
-           }
-        }
+    @interface Tag {
+        public static final int num = 0;
+    }
+}
         ]]></code>
     </test-code>
 
@@ -192,10 +198,12 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         <description>ATFD without method call chains</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 2 highest 2.</message>
+            <message>'Foo' has value 2.</message>
             <message>'Foo#bar()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
+import my.JFileChooser;
+import my.FileFilter;
 public class Foo {
     public void bar() {
         JFileChooser openDialog = createOpenFileChooser();
@@ -210,10 +218,11 @@ public class Foo {
         <description>ATFD with method call chains</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 2 highest 2.</message>
+            <message>'Foo' has value 2.</message>
             <message>'Foo#bar()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
+import my.JFileChooser;
 public class Foo {
     public void bar() {
         JFileChooser openDialog = createOpenFileChooser();
@@ -221,5 +230,21 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>ATFD discounts static fields</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 0.</message>
+            <message>'Foo#bar()' has value 0.</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.logging.Level;
+            public class Foo {
+                public void bar() {
+                    Level.FINE.clone();
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

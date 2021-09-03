@@ -8,7 +8,12 @@
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
         <version>7.0.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
+
+    <properties>
+        <java.version>8</java.version>
+    </properties>
 
     <build>
         <resources>
@@ -36,17 +41,18 @@
                     <execution>
                         <id>generate-sources</id>
                         <phase>generate-sources</phase>
-                        <configuration>
-                            <target>
-                                <ant antfile="src/main/ant/alljavacc.xml">
-                                    <property name="target" value="${project.build.directory}/generated-sources/javacc" />
-                                    <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar" />
-                                </ant>
-                            </target>
-                        </configuration>
                         <goals>
                             <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <target>
+                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
+                                    <property name="javacc.jar" value="${javacc.jar}" />
+                                    <property name="lang-name" value="Vf" />
+                                    <property name="lang-terse-name" value="vf" />
+                                </ant>
+                            </target>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -72,20 +78,14 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>net.java.dev.javacc</groupId>
-            <artifactId>javacc</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-apex</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -96,6 +96,11 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-lang-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

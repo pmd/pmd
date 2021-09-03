@@ -6,50 +6,33 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.StringReader;
-
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.testframework.RuleTst;
 
 public class XPathJspRuleTest extends RuleTst {
 
     /**
      * Test matching a XPath expression against a JSP source.
-     * @throws PMDException 
      */
     @Test
-    public void testExpressionMatching() throws PMDException {
-        Rule rule = new XPathRule(XPATH_EXPRESSION);
+    public void testExpressionMatching() {
+        Rule rule = new XPathRule(XPathVersion.XPATH_3_1, XPATH_EXPRESSION);
         rule.setMessage("Test");
         rule.setLanguage(LanguageRegistry.getLanguage(JspLanguageModule.NAME));
-        RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
 
-        RuleContext ctx = new RuleContext();
-        Report report = new Report();
-        ctx.setReport(report);
-        ctx.setSourceCodeFilename("n/a");
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion());
+        Report report = JspParsingHelper.DEFAULT.executeRule(rule, MATCH);
 
-        PMD p = new PMD();
+        assertEquals("One violation expected!", 1, report.getViolations().size());
 
-        p.getSourceCodeProcessor().processSourceCode(new StringReader(MATCH), new RuleSets(rules), ctx);
-
-        assertEquals("One violation expected!", 1, report.size());
-
-        RuleViolation rv = report.iterator().next();
+        RuleViolation rv = report.getViolations().get(0);
         assertEquals(1, rv.getBeginLine());
     }
 

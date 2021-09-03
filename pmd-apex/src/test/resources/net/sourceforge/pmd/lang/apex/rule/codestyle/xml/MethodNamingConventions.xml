@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,42 +9,41 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	void Bar() {}
+    void Bar() {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>method names should not contain underscores</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	void bar_foo() {}
+    void bar_foo() {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>all is well</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	void foo() {}
-}
-		]]></code>
-    </test-code>
-    
-    <test-code>
-        <description>#1343 MethodNamingConventions for overrided methods</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class MethodNamingConventions implements SomeInterface {
-    @Override
-    public void _foo() {}
+    void foo() {}
 }
         ]]></code>
     </test-code>
-    
+
+    <test-code>
+        <description>#1343 MethodNamingConventions for overridden methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MethodNamingConventions implements SomeInterface {
+    public override void _foo() {}
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>#25 Method rules should ignore Property Getter/Setter</description>
         <expected-problems>0</expected-problems>
@@ -55,7 +53,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#26 Constructors should not trigger "Method names should not start with capital letters" issue</description>
         <expected-problems>0</expected-problems>
@@ -65,7 +63,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1573 method names should not contain underscores, but skip test methods 1</description>
         <rule-property name="skipTestMethodUnderscores">true</rule-property>
@@ -75,7 +73,7 @@ public class Foo {
     @isTest
     void test_barFoo() {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -84,9 +82,9 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void testMethod test_barFoo() {}
+    testmethod void test_barFoo() {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -98,7 +96,7 @@ public class Foo {
     @isTest
     void test_barFoo() {}
 }
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -107,7 +105,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     @isTest
-    public static void testMethod() { }
+    public static void testMethod1() { } // "testmethod" is a keyword in apex
     public static void staticMethod() { }
     public void instanceMethod() { }
 }

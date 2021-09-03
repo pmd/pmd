@@ -4,18 +4,22 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 public class TokenEntry implements Comparable<TokenEntry> {
 
     public static final TokenEntry EOF = new TokenEntry();
 
     private String tokenSrcID;
-    private int beginLine;
+    private final int beginLine;
+    private final int beginColumn;
+    private final int endColumn;
     private int index;
     private int identifier;
     private int hashCode;
@@ -36,6 +40,9 @@ public class TokenEntry implements Comparable<TokenEntry> {
     private TokenEntry() {
         this.identifier = 0;
         this.tokenSrcID = "EOFMarker";
+        this.beginLine = -1;
+        this.beginColumn = -1;
+        this.endColumn = -1;
     }
 
     /**
@@ -43,12 +50,34 @@ public class TokenEntry implements Comparable<TokenEntry> {
      * @param image
      * @param tokenSrcID
      * @param beginLine the linenumber, 1-based.
+     *
+     * @deprecated Use {@link #TokenEntry(String, String, int, int, int)}, don't be lazy
      */
+    @Deprecated
     public TokenEntry(String image, String tokenSrcID, int beginLine) {
+        this(image, tokenSrcID, beginLine, -1, -1);
+    }
+
+    /**
+     * Creates a new token entry with the given informations.
+     * @param image
+     * @param tokenSrcID
+     * @param beginLine the linenumber, 1-based.
+     * @param beginColumn the column number, 1-based
+     * @param endColumn the column number, 1-based
+     */
+    public TokenEntry(String image, String tokenSrcID, int beginLine, int beginColumn, int endColumn) {
+        assert isOk(beginLine) && isOk(beginColumn) && isOk(endColumn) : "Coordinates are 1-based";
         setImage(image);
         this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;
+        this.beginColumn = beginColumn;
+        this.endColumn = endColumn;
         this.index = TOKEN_COUNT.get().getAndIncrement();
+    }
+
+    private boolean isOk(int coord) {
+        return coord >= 1 || coord == -1;
     }
 
     public static TokenEntry getEOF() {
@@ -65,23 +94,30 @@ public class TokenEntry implements Comparable<TokenEntry> {
     /**
      * Helper class to preserve and restore the current state of the token
      * entries.
+     * 
+     * @deprecated This is internal API.
      */
+    @InternalApi
+    @Deprecated
     public static class State {
-        private int tokenCount;
-        private Map<String, Integer> tokens;
-        private List<TokenEntry> entries;
+        private final int tokenCount;
+        private final int tokensMapSize;
 
-        public State(List<TokenEntry> entries) {
+        public State() {
             this.tokenCount = TokenEntry.TOKEN_COUNT.get().intValue();
-            this.tokens = new HashMap<>(TokenEntry.TOKENS.get());
-            this.entries = new ArrayList<>(entries);
+            this.tokensMapSize = TokenEntry.TOKENS.get().size();
         }
 
-        public List<TokenEntry> restore() {
+        public void restore(Tokens tokens) {
+            final List<TokenEntry> entries = tokens.getTokens();
             TokenEntry.TOKEN_COUNT.get().set(tokenCount);
-            TOKENS.get().clear();
-            TOKENS.get().putAll(tokens);
-            return entries;
+            final Iterator<Map.Entry<String, Integer>> it = TOKENS.get().entrySet().iterator();
+            while (it.hasNext()) {
+                if (it.next().getValue() > tokensMapSize) {
+                    it.remove();
+                }
+            }
+            entries.subList(tokenCount, entries.size()).clear();
         }
     }
 
@@ -91,6 +127,24 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     public int getBeginLine() {
         return beginLine;
+    }
+
+    /**
+     * The column number where this token begins.
+     * returns -1 if not available
+     * @return the begin column number
+     */
+    public int getBeginColumn() {
+        return beginColumn; // TODO Java 1.8 make optional
+    }
+
+    /**
+     * The column number where this token ends.
+     * returns -1 if not available
+     * @return the end column number
+     */
+    public int getEndColumn() {
+        return endColumn; // TODO Java 1.8 make optional
     }
 
     public int getIdentifier() {
@@ -110,8 +164,17 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.hashCode = hashCode;
     }
 
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     @Override
     public boolean equals(Object o) {
+        // make sure to recognize EOF regardless of hashCode (hashCode is irrelevant for EOF)
+        if (this == EOF) {
+            return o == EOF;
+        }
+        if (o == EOF) {
+            return this == EOF;
+        }
+        // any token except EOF
         if (!(o instanceof TokenEntry)) {
             return false;
         }
@@ -126,7 +189,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     @Override
     public String toString() {
-        if (this == EOF) {
+        if (EOF.equals(this)) {
             return "EOF";
         }
         for (Map.Entry<String, Integer> e : TOKENS.get().entrySet()) {
@@ -134,7 +197,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
                 return e.getKey();
             }
         }
-        return "--unkown--";
+        return "--unknown--";
     }
 
     final void setImage(String image) {

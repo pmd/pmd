@@ -1,51 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-premature declaration before unrelated test
-     ]]></description>
+        <description>premature declaration before unrelated test</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Bar {
-	public int lengthSumOf(String[] strings) {
-		
-		int sum = 0;	// wasted cycles if strings have problems
-		
-		if (strings == null || strings.length == 0) return 0;
-		
-		for (int i=0; i<strings.length; i++) {
-			sum += strings[i].length();
-		}
-		
-		return sum;
-	}
+    public int lengthSumOf(String[] strings) {
+
+        int sum = 0; // premature
+
+        if (strings == null || strings.length == 0) return 0;
+
+        for (int i = 0; i < strings.length; i++) {
+            sum += strings[i].length();
+        }
+
+        return sum;
+    }
 }
-     ]]></code>
+            ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-optimal var declaration position
-     ]]></description>
+        <description>optimal var declaration position</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Bar {
-	public int lengthSumOf(String[] strings) {
-				
-		if (strings == null || strings.length == 0) return 0;
-				
-		int sum = 0;	// optimal placement
-		
-		for (int i=0; i<strings.length; i++) {
-			sum += strings[i].length();
-		}
-		
-		return sum;
-	}
+
+    public int lengthSumOf(String[] strings) {
+
+        if (strings == null || strings.length == 0) return 0;
+
+        int sum = 0;    // optimal placement
+
+        for (int i=0; i<strings.length; i++) {
+            sum += strings[i].length();
+        }
+
+        return sum;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -66,7 +65,7 @@ public class Bar {
         return sum;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -110,28 +109,29 @@ public class PrematureDeclarationLambda {
         <description>PrematureDeclaration false negative with reference that is a suffix of the variable name</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-            public class PrematureDeclarationLambda {
-                public int lengthSumOf(String[] foo) {
+public class PrematureDeclarationLambda {
+    public int lengthSumOf(String[] foo) {
 
-                    int snafoo = 0;
+        int snafoo = 0;
 
-                    if (foo == null || foo.length == 0)
-                        return 0;
+        if (foo == null || foo.length == 0)
+            return 0;
 
-                    for (String aFoo : foo) {
-                        snafoo += aFoo.length();
-                    }
+        for (String aFoo : foo) {
+            snafoo += aFoo.length();
+        }
 
-                    return snafoo;
-                }
-            }
-            ]]></code>
+        return snafoo;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>#1067 PrematureDeclaration lambda closure false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.ArrayList;
 public class PrematureDeclarationLambda {
     public boolean lengthSumOf() {
         String foo = "";
@@ -141,46 +141,356 @@ public class PrematureDeclarationLambda {
         ]]></code>
     </test-code>
 
-
     <test-code>
         <description>#1108 PrematureDeclaration lambda false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class PrematureDeclarationLambda {
-                public boolean lengthSumOf() {
-                    String signingInput = Stream.of(a, b)
-                                                .filter(Objects::nonNull)
-                                                .map(String::valueOf)
-                                                .collect(Collectors.joining(EMPTY));
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
-                    return Try.of(() -> sign(signingInput))
-                              .getOrElse(() -> null);
-                }
-            }
+public class PrematureDeclarationLambda {
+    private static <T> Optional<T> ofRunnable(Supplier<T> sup) {return Optional.of(sup.get());}
+    private static String sign(String input) {return input.toLowerCase();}
+
+    public String lengthSumOf(String a, String b) {
+        String signingInput = Stream.of(a, b)
+                                    .filter(Objects::nonNull)
+                                    .map(String::valueOf)
+                                    .collect(Collectors.joining());
+
+        return ofRunnable(() -> sign(signingInput))
+                  .orElse(null);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>PrematureDeclaration with captured lambda var</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import java.util.function.Supplier;
+
+public class PrematureDeclarationLambda {
+    private static <T> Optional<T> ofRunnable(Supplier<T> sup) {return Optional.of(sup.get());}
+    private static <T> String sign(String input) {return input.toLowerCase();}
+
+    public String lengthSumOf(String a, String b) {
+        String signingInput = Stream.of(a, b)
+                                    .filter(Objects::nonNull)
+                                    .map(String::valueOf)
+                                    .collect(Collectors.joining());
+
+        return ofRunnable(() -> {
+            return sign(signingInput);
+        }).orElse(null);
+    }
+}
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>PrematureDeclaration with captured lambda var (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import java.util.function.Supplier;
+
+public class PrematureDeclarationLambda {
+    private static <T> Optional<T> ofRunnable(Supplier<T> sup) {return Optional.of(sup);}
+    private static String sign(String input) {return input.toLowerCase();}
+
+    public boolean lengthSumOf(boolean sign) {
+        String signingInput = Stream.of(a, b)
+                                    .filter(Objects::nonNull)
+                                    .map(String::valueOf)
+                                    .collect(Collectors.joining(EMPTY));
+        if (sign)
+            return ofRunnable(() -> {
+                return sign(signingInput); // this should be recognized as a usage
+            }).orElse(false);
+
+        return signingInput;
+    }
+}
+            ]]></code>
+    </test-code>
 
     <test-code>
         <description>PrematureDeclaration should also check inside lambdas</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import java.util.function.Supplier;
+
+public class PrematureDeclarationLambda {
+    private static <T> Optional<T> ofRunnable(Supplier<T> sup) {return Optional.of(sup);}
+    public boolean lengthSumOf(String[] strings) {
+
+        return ofRunnable(() -> {
+            // Inside that lambda *is* a premature declaration of `sum`
+            int sum = 0;
+
+            if (strings == null || strings.length == 0)
+                return 0;
+
+            for (int i = 0; i < strings.length; i++) {
+                sum += strings[i].length();
+            }
+
+            return sum;
+        }).isPresent();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1429 PrematureDeclaration should try to recognize side-effects</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+            import java.util.concurrent.atomic.AtomicInteger;
+            import java.util.stream.Stream;
+            import java.util.stream.Collectors;
+            import java.util.function.Supplier;
+
             public class PrematureDeclarationLambda {
-                public boolean lengthSumOf() {
 
-                    return Try.of(() -> {
-                        // Inside that lambda *is* a premature declaration of `sum`
-                        int sum = 0;
+                final Map<String, String> cache = new HashMap<>();
+                final AtomicInteger ref = new AtomicInteger();
 
-                        if (strings == null || strings.length == 0)
-                            return 0;
+                public String doSomeThing(String uri, String cachedPath, String ref) {
+                    var prior = cache.put(uri, cachedPath); // may side-effect
 
-                        for (int i = 0; i < strings.length; i++) {
-                            sum += strings[i].length();
+                    if (ref == null) {
+                        return createRef(cachedPath, 1); // may side-effect
+                    }
+                    if (prior == null) {
+                        return ref.substring(1);
+                    }
+                    return ref;
+                }
+
+                static String createRef(String cachedPath, int refCount) {
+                    return "" + cachedPath + refCount;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1429 PrematureDeclaration side-effect of time methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclaration {
+
+                public String doSomeThing(String uri, String cachedPath, int times) {
+                    var prior = System.nanoTime(); // side effect here
+
+                    // isn't a side-effect as those look like a getter
+                    if (System.getProperties().isEmpty()) {
+                        return "";
+                    }
+
+                    return uri + prior;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1429 PrematureDeclaration side-effect in initializer (control)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclaration {
+
+                public String doSomeThing(String uri, String cachedPath, int times) {
+                    var prior = "";
+
+                    // isn't a side-effect as those look like a getter
+                    if (System.getProperties().isEmpty()) {
+                        return "";
+                    }
+
+                    return uri + prior;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FN with blank local declaration</description>
+        <!-- https://github.com/spring-projects/spring-framework/blob/v5.0.6.RELEASE/spring-context/src/main/java/org/springframework/scripting/groovy/GroovyScriptFactory.java#L224 -->
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Declaration of 'scriptClassToExecute' can be moved closer to its usages</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class PrematureDeclaration {
+
+                Class<?> scriptClass;
+                Object cachedResult;
+
+                private void doScript(Class<?> klass) {}
+
+                public Object getScriptedObject() {
+                    synchronized (this) {
+                        Class<?> scriptClassToExecute; // here
+
+                        if (this.cachedResult != null) {
+                            Object result = this.cachedResult;
+                            this.cachedResult = null;
+                            return result;
                         }
 
-                        return sum;
-                    });
+                        scriptClassToExecute = this.scriptClass; // here
+                        return doScript(scriptClassToExecute);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FN with exception ctor flagged as side-effect</description>
+        <!-- https://github.com/spring-projects/spring-framework/blob/v5.0.6.RELEASE/spring-core/src/main/java/org/springframework/util/AntPathMatcher.java#L572 -->
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Declaration of 'file2' can be moved closer to its usages</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class PrematureDeclaration {
+
+                Class<?> scriptClass;
+                Object cachedResult;
+
+                private void doScript(Class<?> klass) {}
+
+
+                public String combine(String pattern1, String pattern2) {
+                    String ext1 = pattern1.substring(starDotPos1 + 1);
+                    int dotPos2 = pattern2.indexOf('.');
+                    String file2 = dotPos2 == -1 ? pattern2 : pattern2.substring(0, dotPos2);
+                    String ext2 = dotPos2 == -1 ? "" : pattern2.substring(dotPos2);
+                    boolean ext1All = ext1.equals(".*") || ext1.equals("");
+                    boolean ext2All = ext2.equals(".*") || ext2.equals("");
+                    if (!ext1All && !ext2All) {
+                        throw new IllegalArgumentException("Cannot combine patterns: " + pattern1 + " vs " + pattern2);
+                    }
+                    String ext = ext1All ? ext2 : ext1;
+                    return file2 + ext;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FN with trivial initializers</description>
+        <!-- https://github.com/spring-projects/spring-framework/blob/v5.0.6.RELEASE/spring-core/src/main/java/org/springframework/util/AntPathMatcher.java#L572 -->
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Declaration of 'isReal' can be moved closer to its usages</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class PrematureDeclaration {
+                int pos;
+
+                void sideEffect(int pos) {
+
+                }
+
+                private void lexNumericLiteral(int start, char[] chars) {
+                    // initializer of isReal does not depend on any side-effects so it can be moved.
+                    boolean isReal = false;
+                    char ch = chars[start + 1];
+                    boolean isHex = ch == 'x' || ch == 'X';
+
+                    // do side effects
+                    if (isHex) {
+                        this.pos++;
+                        do {
+                            this.pos++;
+                        } while (advance());
+                        return;
+                    }
+
+                    // a '.' indicates this number is a real
+                    ch = chars[this.pos];
+                    if (ch == '.') {
+                        isReal = true;
+                        sideEffect(this.pos);
+                    }
+
+                    if (isReal) {
+                        this.pos++;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <!-- References to fields may be mutated through aliases, so the initializer must be considered state-dependent -->
+        <description>FP with references to fields in initializers</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclaration {
+                int pos;
+
+                void sideEffect(int pos) {
+                    this.pos = pos + pos % 3;
+                }
+
+                private void lexNumericLiteral(int start, char[] chars) {
+                    // initializer of isReal does not depend on any side-effects so it can be moved.
+                    boolean isReal = this.pos;
+                    char ch = chars[start + 1];
+                    boolean isHex = ch == 'x' || ch == 'X';
+
+                    sideEffect(pos);
+
+                    // do side effects
+                    if (isHex) {
+                        return;
+                    }
+
+                    if (isReal) {
+                        this.pos++;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with local reassignment</description>
+        <!-- https://github.com/spring-projects/spring-framework/blob/v5.0.6.RELEASE/spring-core/src/test/java/org/springframework/tests/TestGroup.java#L76 -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+            public class PrematureDeclaration {
+                enum TestGroup {
+                    A
+                }
+
+                public static Set<TestGroup> parse(String value) throws IllegalArgumentException {
+                    if (!value.isEmpty()) {
+                        return Collections.emptySet();
+                    }
+                    // obviously this cannot be reordered
+                    // We should also track side effects on locals
+                    String originalValue = value;
+                    value = value.trim();
+                    if ("ALL".equalsIgnoreCase(value)) {
+                        return EnumSet.allOf(TestGroup.class);
+                    }
+                    if (value.toUpperCase().startsWith("ALL-")) {
+                        Set<TestGroup> groups = EnumSet.allOf(TestGroup.class);
+                        groups.remove(TestGroup.A);
+                        return groups;
+                    }
+                    return parseGroups(originalValue, value);
                 }
             }
             ]]></code>

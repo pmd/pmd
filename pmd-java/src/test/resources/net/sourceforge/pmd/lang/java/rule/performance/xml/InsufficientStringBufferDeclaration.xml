@@ -3,152 +3,158 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-1, StringBuffer allocated with enough space
-     ]]></description>
+        <description>1, StringBuffer allocated with enough space</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
-   public void bar() {
-       StringBuffer sb = new StringBuffer(16);
-       sb.append("foo");
-   }
+    public void bar() {
+        StringBuffer sb = new StringBuffer(16);
+        sb.append("foo");
+    }
 
-   public void bar2() {
-       StringBuilder sb = new StringBuilder(16);
-       sb.append("foo");
-   }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder(16);
+        sb.append("foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-2, StringBuffer not allocated with enough space
-     ]]></description>
+        <description>2, StringBuffer not allocated with enough space</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,10</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 33 characters appended.</message>
+            <message>StringBuilder has been initialized with size 16, but has at least 33 characters appended.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  StringBuffer sb = new StringBuffer();
-  sb.append("Hello");
-  sb.append("World");
-  sb.append("How are you today world");
- }
+    public void bar() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Hello");
+        sb.append("World");
+        sb.append("How are you today world");
+    }
 
- public void bar2() {
-  StringBuilder sb = new StringBuilder();
-  sb.append("Hello");
-  sb.append("World");
-  sb.append("How are you today world");
- }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Hello");
+        sb.append("World");
+        sb.append("How are you today world");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-3, StringBuffer allocated with space
-     ]]></description>
+        <description>3, StringBuffer allocated with space</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
- public void bar(List l) {
-  StringBuffer sb = new StringBuffer(l.size());
-  sb.append("Hello");
-  sb.append("World");
-  sb.append("How are you today world");
- }
-
- public void bar2(List l) {
-  StringBuilder sb = new StringBuilder(l.size());
-  sb.append("Hello");
-  sb.append("World");
-  sb.append("How are you today world");
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-4, StringBuffer allocated from variable
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void bar(List l) {
-  int x = 3;
-  StringBuffer sb = new StringBuffer(x);
-  sb.append("Hello");
-  sb.append("World");
-  sb.append("How are you today world");
- }
-
- public void bar2(List l) {
-  int x = 3;
-  StringBuilder sb = new StringBuilder(x);
-  sb.append("Hello");
-  sb.append("World");
-  sb.append("How are you today world");
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-5, creating a new StringBuffer
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void bar(List l) {
-  int x = 3;
-  StringBuffer sb = new StringBuffer(5);
-  sb.append("Hello");
-  sb = new StringBuffer(23);
-  sb.append("How are you today world");
- }
-
- public void bar2(List l) {
-  int x = 3;
-  StringBuilder sb = new StringBuilder(5);
-  sb.append("Hello");
-  sb = new StringBuffer(23);
-  sb.append("How are you today world");
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-6, Initialize with a specific String
-     ]]></description>
-        <expected-problems>2</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void bar(List l) {
-  int x = 3;
-  StringBuffer sb = new StringBuffer("Initialize With A String");
-  sb.append("Hello");
-  sb.append("How are you today world");
- }
- public void bar2(List l) {
-  int x = 3;
-  StringBuilder sb = new StringBuilder("Initialize With A String");
-  sb.append("Hello");
-  sb.append("How are you today world");
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-7, appends inside if statements
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
+import java.util.List;
 public class Foo {
     public void bar(List l) {
+        StringBuffer sb = new StringBuffer(l.size());
+        sb.append("Hello");
+        sb.append("World");
+        sb.append("How are you today world");
+    }
+
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder(l.size());
+        sb.append("Hello");
+        sb.append("World");
+        sb.append("How are you today world");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>4, StringBuffer allocated from variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+    public void bar(List l) {
+        int x = 3;
+        StringBuffer sb = new StringBuffer(x);
+        sb.append("Hello");
+        sb.append("World");
+        sb.append("How are you today world");
+    }
+
+    public void bar2(List l) {
+        int x = 3;
+        StringBuilder sb = new StringBuilder(x);
+        sb.append("Hello");
+        sb.append("World");
+        sb.append("How are you today world");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>5, creating a new StringBuffer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+    public void bar(List l) {
+        int x = 3;
+        StringBuffer sb = new StringBuffer(5);
+        sb.append("Hello");
+        sb = new StringBuffer(23);
+        sb.append("How are you today world");
+    }
+
+    public void bar2(List l) {
+        int x = 3;
+        StringBuilder sb = new StringBuilder(5);
+        sb.append("Hello");
+        sb = new StringBuffer(23);
+        sb.append("How are you today world");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>6, Initialize with a specific String</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,11</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 40, but has at least 52 characters appended.</message>
+            <message>StringBuilder has been initialized with size 40, but has at least 52 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 3;
+        StringBuffer sb = new StringBuffer("Initialize With A String");
+        sb.append("Hello");
+        sb.append("How are you today world");
+    }
+
+    public void bar2() {
+        int x = 3;
+        StringBuilder sb = new StringBuilder("Initialize With A String");
+        sb.append("Hello");
+        sb.append("How are you today world");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>7, appends inside if statements</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
         StringBuffer sb = new StringBuffer();
         if(true){
             sb.append("1234567890");
@@ -157,7 +163,7 @@ public class Foo {
         }
     }
 
-    public void bar2(List l) {
+    public void bar2() {
         StringBuilder sb = new StringBuilder();
         if(true){
             sb.append("1234567890");
@@ -166,794 +172,813 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-8, Field level variable
-     ]]></description>
+        <description>8, Field level variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-  StringBuffer sb = new StringBuffer(200);
- public void bar(List l) {
-  sb.append("Hello");
-  sb.append("How are you today world");
- }
+    StringBuffer sb = new StringBuffer(200);
+    public void bar() {
+        sb.append("Hello");
+        sb.append("How are you today world");
+    }
 }
 public class Foo2 {
-  StringBuilder sb = new StringBuilder(200);
- public void bar(List l) {
-  sb.append("Hello");
-  sb.append("How are you today world");
- }
+    StringBuilder sb = new StringBuilder(200);
+    public void bar() {
+        sb.append("Hello");
+        sb.append("How are you today world");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-9, Field level variable
-     ]]></description>
+        <description>9, Field level variable</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,10</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 28 characters appended.</message>
+            <message>StringBuilder has been initialized with size 16, but has at least 28 characters appended.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
-  StringBuffer sb = new StringBuffer();
- public void bar(List l) {
-  sb.append("Hello");
-  sb.append("How are you today world");
- }
+    StringBuffer sb = new StringBuffer();
+    public void bar() {
+        sb.append("Hello");
+        sb.append("How are you today world");
+    }
 }
 
 public class Foo2 {
-  StringBuilder sb = new StringBuilder();
- public void bar(List l) {
-  sb.append("Hello");
-  sb.append("How are you today world");
- }
+    StringBuilder sb = new StringBuilder();
+    public void bar() {
+        sb.append("Hello");
+        sb.append("How are you today world");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    <test-code>
-        <description><![CDATA[
-10, Appending non-literals
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void bar(List l) {
-  StringBuffer sb = new StringBuffer(0);
-  sb.append(l.get(2));
-  sb.append(l.toString());
- }
 
- public void bar2(List l) {
-  StringBuilder sb = new StringBuilder(0);
-  sb.append(l.get(2));
-  sb.append(l.toString());
- }
-}
-     ]]></code>
-    </test-code>
     <test-code>
-        <description><![CDATA[
-11, Initialized to null
-     ]]></description>
+        <description>10, Appending non-literals</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class Foo {
- public void bar(List l) {
-  StringBuffer sb = null;
-  sb = new StringBuffer(20);
-  sb.append(l.toString());
- }
- public void bar2(List l) {
-  StringBuilder sb = null;
-  sb = new StringBuilder(20);
-  sb.append(l.toString());
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-12, Passed in as parameter
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void bar(StringBuffer param) {
-  param.append("Append something");
- }
- public void bar2(StringBuilder param) {
-  param.append("Append something");
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-13, compound append
-     ]]></description>
-        <expected-problems>2</expected-problems>
-        <code><![CDATA[
-public class Foo {
-   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
-   public void bar() {
-       StringBuffer sb = new StringBuffer();
-       sb.append("foo").append("this will make it long");
- }
-   public void bar2() {
-       StringBuilder sb = new StringBuilder();
-       sb.append("foo").append("this will make it long");
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-14, Compound append, presized just fine
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
-   public void bar() {
-       StringBuffer sb = new StringBuffer(30);
-       sb.append("foo").append("this is presized just right");
- }
-   public void bar2() {
-       StringBuilder sb = new StringBuilder(30);
-       sb.append("foo").append("this is presized just right");
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-15, Append long, incorrect presize
-     ]]></description>
-        <expected-problems>2</expected-problems>
-        <code><![CDATA[
-public class Foo {
-   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
-   public void bar() {
-       StringBuffer sb = new StringBuffer();
-       sb.append(12345678901234567890L);
- }
-   public void bar2() {
-       StringBuilder sb = new StringBuilder();
-       sb.append(12345678901234567890L);
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-16, Append int, properly presized
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
-   public void bar() {
-       StringBuffer sb = new StringBuffer();
-       sb.append(12345);
- }
+    public void bar(List l) {
+        StringBuffer sb = new StringBuffer(0);
+        sb.append(l.get(2));
+        sb.append(l.toString());
+    }
 
-  public void bar2() {
-       StringBuilder sb = new StringBuilder();
-       sb.append(12345);
- }
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder(0);
+        sb.append(l.get(2));
+        sb.append(l.toString());
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-17, Append char, incorrect presize
-     ]]></description>
-        <expected-problems>2</expected-problems>
+        <description>11, Initialized to null</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class Foo {
-   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
-   public void bar() {
-       StringBuffer sb = new StringBuffer(2);
-       sb.append('a');
-       sb.append('a');
-       sb.append('a');
- }
-   public void bar2() {
-       StringBuilder sb = new StringBuilder(2);
-       sb.append('a');
-       sb.append('a');
-       sb.append('a');
- }
+    public void bar(List l) {
+        StringBuffer sb = null;
+        sb = new StringBuffer(20);
+        sb.append(l.toString());
+    }
+    public void bar2(List l) {
+        StringBuilder sb = null;
+        sb = new StringBuilder(20);
+        sb.append(l.toString());
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-18, Append char, properly presized
-     ]]></description>
+        <description>12, Passed in as parameter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
-   public void bar() {
-       StringBuffer sb = new StringBuffer(3);
-       sb.append('a');
-       sb.append('a');
-       sb.append('a');
- }
-   public void bar2() {
-       StringBuilder sb = new StringBuilder(3);
-       sb.append('a');
-       sb.append('a');
-       sb.append('a');
- }
+    public void bar(StringBuffer param) {
+        param.append("Append something");
+    }
+    public void bar2(StringBuilder param) {
+        param.append("Append something");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-19, String concatenation, incorrect presize
-     ]]></description>
+        <description>13, compound append</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 25 characters appended.</message>
+            <message>StringBuilder has been initialized with size 16, but has at least 25 characters appended.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
-   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
-   public void bar() {
-       StringBuffer sb = new StringBuffer();
-       sb.append("This string" + " " + "isn't nice, but valid");
- }
-   public void bar2() {
-       StringBuilder sb = new StringBuilder();
-       sb.append("This string" + " " + "isn't nice, but valid");
- }
+    public void bar() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("foo").append("this will make it long");
+    }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("foo").append("this will make it long");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-20, String concatenation with non-literal, incorrect presize
-     ]]></description>
-        <expected-problems>2</expected-problems>
+        <description>14, Compound append, presized just fine</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-   private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
-   public void bar(String x) {
-       StringBuffer sb = new StringBuffer();
-       sb.append("This string" + x + "isn't nice, but valid");
- }
-   public void bar2(String x) {
-       StringBuilder sb = new StringBuilder();
-       sb.append("This string" + x + "isn't nice, but valid");
- }
+    public void bar() {
+        StringBuffer sb = new StringBuffer(30);
+        sb.append("foo").append("this is presized just right");
+    }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder(30);
+        sb.append("foo").append("this is presized just right");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-21, Incorrectly presized twice
-     ]]></description>
+        <description>15, Append long, incorrect presize</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 19 characters appended.</message>
+            <message>StringBuilder has been initialized with size 16, but has at least 19 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(1234567890123456789L);
+    }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(1234567890123456789L);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>16, Append int, properly presized</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(12345);
+    }
+
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(12345);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>17, Append char, incorrect presize</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,9</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 2, but has at least 3 characters appended.</message>
+            <message>StringBuilder has been initialized with size 2, but has at least 3 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer(2);
+        sb.append('a');
+        sb.append('a');
+        sb.append('a');
+    }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder(2);
+        sb.append('a');
+        sb.append('a');
+        sb.append('a');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>18, Append char, properly presized</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer(3);
+        sb.append('a');
+        sb.append('a');
+        sb.append('a');
+    }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder(3);
+        sb.append('a');
+        sb.append('a');
+        sb.append('a');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>19, String concatenation, incorrect presize</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 33 characters appended.</message>
+            <message>StringBuilder has been initialized with size 16, but has at least 33 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("This string" + " " + "isn't nice, but valid");
+    }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("This string" + " " + "isn't nice, but valid");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>20, String concatenation with non-literal, incorrect presize</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 32 characters appended.</message>
+            <message>StringBuilder has been initialized with size 16, but has at least 32 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String x) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("This string" + x + "isn't nice, but valid");
+    }
+    public void bar2(String x) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("This string" + x + "isn't nice, but valid");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>21, Incorrectly presized twice</description>
         <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,6,11,13</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 2, but has at least 5 characters appended.</message>
+            <message>StringBuffer has been initialized with size 5, but has at least 23 characters appended.</message>
+            <message>StringBuilder has been initialized with size 2, but has at least 5 characters appended.</message>
+            <message>StringBuilder has been initialized with size 5, but has at least 23 characters appended.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
- public void bar(List l) {
-  int x = 3;
-  StringBuffer sb = new StringBuffer(2);
-  sb.append("Hello");
-  sb = new StringBuffer(5);
-  sb.append("How are you today world");
- }
- public void bar2(List l) {
-  int x = 3;
-  StringBuilder sb = new StringBuilder(2);
-  sb.append("Hello");
-  sb = new StringBuilder(5);
-  sb.append("How are you today world");
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-22, appends inside if/else if/else statements
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    public void bar(List l) {
-        StringBuffer sb = new StringBuffer();
-        if(true){
-            sb.append("1234567890");
-        } else if( l.size() == 5){
-            sb.append("1234567890");
-        } else {
-            sb.append("1234567890");
-        }
+    public void bar() {
+        int x = 3;
+        StringBuffer sb = new StringBuffer(2);
+        sb.append("Hello");
+        sb = new StringBuffer(5);
+        sb.append("How are you today world");
     }
-    public void bar2(List l) {
-        StringBuilder sb = new StringBuilder();
-        if(true){
-            sb.append("1234567890");
-        } else if( l.size() == 5){
-            sb.append("1234567890");
-        } else {
-            sb.append("1234567890");
-        }
+    public void bar2() {
+        int x = 3;
+        StringBuilder sb = new StringBuilder(2);
+        sb.append("Hello");
+        sb = new StringBuilder(5);
+        sb.append("How are you today world");
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    <test-code>
-        <description><![CDATA[
-23, appends inside if/else if/else statements
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    public void bar(List l) {
-        StringBuffer sb = new StringBuffer();
-        if(true){
-            sb.append("12345");
-        } else if( l.size() == 5){
-            sb.append("12345");
-        } else {
-            sb.append("12345");
-        }
-        if(true){
-            sb.append("12345");
-        } else if( l.size() == 5){
-            sb.append("12345");
-        } else {
-            sb.append("12345");
-        }
-    }
-    public void bar2(List l) {
-        StringBuilder sb = new StringBuilder();
-        if(true){
-            sb.append("12345");
-        } else if( l.size() == 5){
-            sb.append("12345");
-        } else {
-            sb.append("12345");
-        }
-        if(true){
-            sb.append("12345");
-        } else if( l.size() == 5){
-            sb.append("12345");
-        } else {
-            sb.append("12345");
-        }
-    }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-24, appends inside if/else if/else statements
-     ]]></description>
-        <expected-problems>2</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    public void bar(List l) {
-        StringBuffer sb = new StringBuffer();
-        if(true){
-            sb.append("This should use");
-        } else if( l.size() == 5){
-            sb.append("The longest if");
-        } else {
-            sb.append("statement for its violation, which is this one");
-        }
-    }
-    public void bar2(List l) {
-        StringBuilder sb = new StringBuilder();
-        if(true){
-            sb.append("This should use");
-        } else if( l.size() == 5){
-            sb.append("The longest if");
-        } else {
-            sb.append("statement for its violation, which is this one");
-        }
-    }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-25, Compound ifs
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    public void bar(List l) {
-        StringBuffer sb = new StringBuffer();
-        if(true){
-           if(true){
-                sb.append("More");
-           } else if( l.size() == 5){
-                sb.append("Compound");
-           } else {
-               sb.append("If");
-           }
-       } else {
-           sb.append("A compound if");
-       }
-    }
-    public void bar2(List l) {
-        StringBuilder sb = new StringBuilder();
-        if(true){
-           if(true){
-                sb.append("More");
-           } else if( l.size() == 5){
-                sb.append("Compound");
-           } else {
-               sb.append("If");
-           }
-       } else {
-           sb.append("A compound if");
-       }
-    }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-26, Compound if, pushed over the edge
-     ]]></description>
-        <expected-problems>2</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    public void bar(List l) {
-        StringBuffer sb = new StringBuffer();
-        if(true){
-           if(true){
-                sb.append("More");
-           } else if( l.size() == 5){
-                sb.append("Compound");
-           } else {
-               sb.append("If");
-           }
-       } else {
-           sb.append("A compound if");
-       }
-       sb.append("Push");
-    }
-    public void bar2(List l) {
-        StringBuilder sb = new StringBuilder();
-        if(true){
-           if(true){
-                sb.append("More");
-           } else if( l.size() == 5){
-                sb.append("Compound");
-           } else {
-               sb.append("If");
-           }
-       } else {
-           sb.append("A compound if");
-       }
-       sb.append("Push");
-    }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-28, Compound if, pushed over the edge
-     ]]></description>
-        <expected-problems>2</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void bar(String str) {
-  StringBuffer sb = new StringBuffer();
-    switch(str.charAt(0)){
-        case 'a':
-            sb.append("Switch block");
-        break;
-        default:
-            sb.append("The default block exceeds 16 characters and will fail");
-    }
- }
- public void bar2(String str) {
-  StringBuilder sb = new StringBuilder();
-    switch(str.charAt(0)){
-        case 'a':
-            sb.append("Switch block");
-        break;
-        default:
-            sb.append("The default block exceeds 16 characters and will fail");
-    }
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-27, Switch statement doesn't exceed 16 characters
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void bar(String str) {
-  StringBuffer sb = new StringBuffer();
-    switch(str.charAt(0)){
-        case 'a':
-            sb.append("Switch block");
-        break;
-        case 'b':
-            sb.append("Doesn't exceed");
-        break;
-        default:
-            sb.append("16 chars");
-    }
- }
- public void bar2(String str) {
-  StringBuilder sb = new StringBuilder();
-    switch(str.charAt(0)){
-        case 'a':
-            sb.append("Switch block");
-        break;
-        case 'b':
-            sb.append("Doesn't exceed");
-        break;
-        default:
-            sb.append("16 chars");
-    }
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-29, Appending from a cast
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void bar() {
-  StringBuffer sb = new StringBuffer(1);
-   sb.append((char) 0x0041);
- }
- public void bar2() {
-  StringBuilder sb = new StringBuilder(1);
-   sb.append((char) 0x0041);
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-30, Appending chars
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void bar(char longnamedchar) {
-  StringBuffer sb = new StringBuffer(1);
-   sb.append(longnamedchar);
- }
- public void bar2(char longnamedchar) {
-  StringBuilder sb = new StringBuilder(1);
-   sb.append(longnamedchar);
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-31, Appending from a cast in ifs
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void bar(int i) {
-  StringBuffer sb = new StringBuffer(1);
-   if(i == 1){
-       sb.append((char) 0x0041);
-   } else if(i == 2){
-       sb.append((char) 0x0041);
-   } else if(i == 19){
-       sb.append((char) 0x0041);
-   } else {
-       sb.append((char) 0x0041);
-   }
- }
- public void bar2(int i) {
-  StringBuilder sb = new StringBuilder(1);
-   if(i == 1){
-       sb.append((char) 0x0041);
-   } else if(i == 2){
-       sb.append((char) 0x0041);
-   } else if(i == 19){
-       sb.append((char) 0x0041);
-   } else {
-       sb.append((char) 0x0041);
-   }
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-32, Constructor from math
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void bar(char longnamedchar) {
-  StringBuffer sb = new StringBuffer(132+42);
-   sb.append(
-	);
-  StringBuffer sb1 = new StringBuffer(132*42);
-   sb1.append(
-	);
- }
 
- public void bar2(char longnamedchar) {
-  StringBuilder sb = new StringBuilder(132+42);
-   sb.append(
-	);
-  StringBuilder sb1 = new StringBuilder(132*42);
-   sb1.append(
-	);
- }
-}
-     ]]></code>
-    </test-code>
     <test-code>
-        <description><![CDATA[
-33, Uses setLength
-     ]]></description>
+        <description>22, appends inside if/else if/else statements</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class Foo {
- public void bar() {
-  StringBuffer sb = new StringBuffer();
-  sb.append("Hello");
-  sb.append("World");
-  sb.setLength(0);
-  sb.append("Hello world");
- }
- public void bar2() {
-  StringBuilder sb = new StringBuilder();
-  sb.append("Hello");
-  sb.append("World");
-  sb.setLength(0);
-  sb.append("Hello world");
- }
+    public void bar(List l) {
+        StringBuffer sb = new StringBuffer();
+        if (true) {
+            sb.append("1234567890");
+        } else if( l.size() == 5){
+            sb.append("1234567890");
+        } else {
+            sb.append("1234567890");
+        }
+    }
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder();
+        if (true) {
+            sb.append("1234567890");
+        } else if( l.size() == 5){
+            sb.append("1234567890");
+        } else {
+            sb.append("1234567890");
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-34, Uses setLength incorrectly
-     ]]></description>
+        <description>23, appends inside if/else if/else statements</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+    public void bar(List l) {
+        StringBuffer sb = new StringBuffer();
+        if (true) {
+            sb.append("12345");
+        } else if( l.size() == 5){
+            sb.append("12345");
+        } else {
+            sb.append("12345");
+        }
+        if (true) {
+            sb.append("12345");
+        } else if( l.size() == 5){
+            sb.append("12345");
+        } else {
+            sb.append("12345");
+        }
+    }
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder();
+        if (true) {
+            sb.append("12345");
+        } else if( l.size() == 5){
+            sb.append("12345");
+        } else {
+            sb.append("12345");
+        }
+        if (true) {
+            sb.append("12345");
+        } else if( l.size() == 5){
+            sb.append("12345");
+        } else {
+            sb.append("12345");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>24, appends inside if/else if/else statements</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,14</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 46 characters appended.</message>
+            <message>StringBuilder has been initialized with size 16, but has at least 46 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+    public void bar(List l) {
+        StringBuffer sb = new StringBuffer();
+        if (true) {
+            sb.append("This should use");
+        } else if( l.size() == 5){
+            sb.append("The longest if");
+        } else {
+            sb.append("statement for its violation, which is this one");
+        }
+    }
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder();
+        if (true) {
+            sb.append("This should use");
+        } else if( l.size() == 5){
+            sb.append("The longest if");
+        } else {
+            sb.append("statement for its violation, which is this one");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>25, Compound ifs</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+    public void bar(List l) {
+        StringBuffer sb = new StringBuffer();
+        if (true) {
+           if (true) {
+                sb.append("More");
+           } else if( l.size() == 5){
+                sb.append("Compound");
+           } else {
+               sb.append("If");
+           }
+       } else {
+           sb.append("A compound if");
+       }
+    }
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder();
+        if (true) {
+           if (true) {
+                sb.append("More");
+           } else if( l.size() == 5){
+                sb.append("Compound");
+           } else {
+               sb.append("If");
+           }
+       } else {
+           sb.append("A compound if");
+       }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>26, Compound if, pushed over the edge</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,19</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 17 characters appended.</message>
+            <message>StringBuilder has been initialized with size 16, but has at least 17 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+    public void bar(List l) {
+        StringBuffer sb = new StringBuffer();
+        if (true) {
+           if (true) {
+                sb.append("More");
+           } else if( l.size() == 5){
+                sb.append("Compound");
+           } else {
+               sb.append("If");
+           }
+       } else {
+           sb.append("A compound if");
+       }
+       sb.append("Push");
+    }
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder();
+        if (true) {
+           if (true) {
+                sb.append("More");
+           } else if( l.size() == 5){
+                sb.append("Compound");
+           } else {
+               sb.append("If");
+           }
+       } else {
+           sb.append("A compound if");
+       }
+       sb.append("Push");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>28, Compound if, pushed over the edge</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,13</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 53 characters appended.</message>
+            <message>StringBuilder has been initialized with size 16, but has at least 53 characters appended.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  StringBuffer sb = new StringBuffer();
-  sb.append("Hello");
-  sb.append("World");
-  sb.setLength(5);
-  sb.append("Hello world");
- }
- public void bar2() {
-  StringBuilder sb = new StringBuilder();
-  sb.append("Hello");
-  sb.append("World");
-  sb.setLength(5);
-  sb.append("Hello world");
- }
+    public void bar(String str) {
+        StringBuffer sb = new StringBuffer();
+        switch (str.charAt(0)) {
+            case 'a':
+                sb.append("Switch block");
+                break;
+            default:
+                sb.append("The default block exceeds 16 characters and will fail");
+        }
+    }
+    public void bar2(String str) {
+        StringBuilder sb = new StringBuilder();
+        switch (str.charAt(0)) {
+            case 'a':
+                sb.append("Switch block");
+                break;
+            default:
+                sb.append("The default block exceeds 16 characters and will fail");
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-35, Append of 'null' literal.
-     ]]></description>
+        <description>27, Switch statement doesn't exceed 16 characters</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  StringBuffer sb = new StringBuffer();
-  sb.append((String)null);
- }
- public void bar2() {
-  StringBuilder sb = new StringBuilder();
-  sb.append((String)null);
- }
+    public void bar(String str) {
+        StringBuffer sb = new StringBuffer();
+        switch (str.charAt(0)) {
+            case 'a':
+                sb.append("Switch block");
+                break;
+            case 'b':
+                sb.append("Doesn't exceed");
+                break;
+            default:
+                sb.append("16 chars");
+        }
+    }
+    public void bar2(String str) {
+        StringBuilder sb = new StringBuilder();
+        switch (str.charAt(0)) {
+            case 'a':
+                sb.append("Switch block");
+                break;
+            case 'b':
+                sb.append("Doesn't exceed");
+                break;
+            default:
+                sb.append("16 chars");
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-36, Append of boolean literal.
-     ]]></description>
+        <description>29, Appending from a cast</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  StringBuffer sb = new StringBuffer();
-  sb.append(false);
-  sb.append(true);
- }
- public void bar2() {
-  StringBuilder sb = new StringBuilder();
-  sb.append(false);
-  sb.append(true);
- }
+    public void bar() {
+        StringBuffer sb = new StringBuffer(1);
+        sb.append((char) 0x0041);
+    }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder(1);
+        sb.append((char) 0x0041);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-37, Initialization with multiply - bug 1743938
-     ]]></description>
+        <description>30, Appending chars</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(char longnamedchar) {
+        StringBuffer sb = new StringBuffer(1);
+        sb.append(longnamedchar);
+    }
+    public void bar2(char longnamedchar) {
+        StringBuilder sb = new StringBuilder(1);
+        sb.append(longnamedchar);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>31, Appending from a cast in ifs</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int i) {
+        StringBuffer sb = new StringBuffer(1);
+        if (i == 1) {
+            sb.append((char) 0x0041);
+        } else if (i == 2) {
+            sb.append((char) 0x0041);
+        } else if (i == 19) {
+            sb.append((char) 0x0041);
+        } else {
+            sb.append((char) 0x0041);
+        }
+    }
+    public void bar2(int i) {
+        StringBuilder sb = new StringBuilder(1);
+        if (i == 1) {
+            sb.append((char) 0x0041);
+        } else if (i == 2) {
+            sb.append((char) 0x0041);
+        } else if (i == 19) {
+            sb.append((char) 0x0041);
+        } else {
+            sb.append((char) 0x0041);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>32, Constructor from math</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(char longnamedchar) {
+        StringBuffer sb = new StringBuffer(132+42);
+        sb.append();
+        StringBuffer sb1 = new StringBuffer(132*42);
+        sb1.append();
+    }
+
+    public void bar2(char longnamedchar) {
+        StringBuilder sb = new StringBuilder(132+42);
+        sb.append();
+        StringBuilder sb1 = new StringBuilder(132*42);
+        sb1.append();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>33, Uses setLength</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer(); // initial capacity: 16
+        sb.append("Hello"); // length = 5
+        sb.append("World"); // length = 10
+        sb.setLength(0);    // length = 0, capacity = 16
+        sb.append("Hello world"); // length = 11
+    }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Hello");
+        sb.append("World");
+        sb.setLength(0);
+        sb.append("Hello world");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>34, Uses setLength incorrectly</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,10</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 17 characters appended.</message>
+            <message>StringBuilder has been initialized with size 16, but has at least 17 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer(); // initial capacity: 16
+        sb.append("Hello"); // length = 5
+        sb.append("World"); // length = 10
+        sb.setLength(6); // length = 6, capacity = 16
+        sb.append("Hello world"); // length = 17
+    }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Hello");
+        sb.append("World");
+        sb.setLength(6);
+        sb.append("Hello world");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>35, Append of 'null' literal.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer();
+        sb.append((String)null);
+    }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append((String)null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>36, Append of boolean literal.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(false);
+        sb.append(true);
+    }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(false);
+        sb.append(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>37, Initialization with multiply - bug 1743938</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public static void testStringBufferSizeBug() {
-		final String temp = "Hello world!";
-		final StringBuffer sb = new StringBuffer(temp.length() * 2);
-		sb.append(temp);
-		sb.append("abc");
-	}
+        final String temp = "Hello world!";
+        final StringBuffer sb = new StringBuffer(temp.length() * 2);
+        sb.append(temp);
+        sb.append("abc");
+    }
     public static void testStringBufferSizeBug2() {
-		final String temp = "Hello world!";
-		final StringBuilder sb = new StringBuilder(temp.length() * 2);
-		sb.append(temp);
-		sb.append("abc");
-	}
+        final String temp = "Hello world!";
+        final StringBuilder sb = new StringBuilder(temp.length() * 2);
+        sb.append(temp);
+        sb.append("abc");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-38, Uses setLength 0 with subsequently more than 16, but less than initial
-     ]]></description>
+        <description>38, Uses setLength 0 with subsequently more than 16, but less than initial</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() {
-  StringBuffer sb = new StringBuffer(100);
-  sb.append("Hello");
-  sb.append("World");
-  sb.setLength(0);
-  sb.append("Hello world");
-  sb.append("Hello world");
-  sb.append("Hello world");
- }
- public void bar2() {
-  StringBuilder sb = new StringBuilder(100);
-  sb.append("Hello");
-  sb.append("World");
-  sb.setLength(0);
-  sb.append("Hello world");
-  sb.append("Hello world");
-  sb.append("Hello world");
- }
+    public void bar() {
+        StringBuffer sb = new StringBuffer(100);
+        sb.append("Hello");
+        sb.append("World");
+        sb.setLength(0);
+        sb.append("Hello world");
+        sb.append("Hello world");
+        sb.append("Hello world");
+    }
+    public void bar2() {
+        StringBuilder sb = new StringBuilder(100);
+        sb.append("Hello");
+        sb.append("World");
+        sb.setLength(0);
+        sb.append("Hello world");
+        sb.append("Hello world");
+        sb.append("Hello world");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-3175710: NPE in InsufficientStringBufferDeclaration
-     ]]></description>
+        <description>3175710: NPE in InsufficientStringBufferDeclaration</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-  public void test() {
-    StringBuffer sbLegend = new StringBuffer();
-    sbLegend.append("foo").toString();
-  }
+    public void test() {
+        StringBuffer sbLegend = new StringBuffer();
+        sbLegend.append("foo").toString();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description>
-3516101: InsufficientStringBufferDeclaration fails to parse hex
-        </description>
+        <description>3516101: InsufficientStringBufferDeclaration fails to parse hex</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Test {
@@ -964,11 +989,15 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
-        <description>
-Append a hex int
-        </description>
+        <description>Append a hex int</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,9</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 20 characters appended.</message>
+            <message>StringBuilder has been initialized with size 16, but has at least 20 characters appended.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Test {
     public void testStringBufferWithHexInt() {
@@ -985,20 +1014,29 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
-        <description>
-#1371 InsufficientStringBufferDeclaration not detected properly on StringBuffer
-        </description>
-        <expected-problems>1</expected-problems>
+        <description>#1371 InsufficientStringBufferDeclaration not detected properly on StringBuffer</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 41 characters appended.</message>
+            <message>StringBuffer has been initialized with size 16, but has at least 52 characters appended.</message>
+        </expected-messages>
         <code><![CDATA[
 public class StringBufferTest {
     public void test() {
         final StringBuffer stringBuffer = new StringBuffer().append("Added ").append(" a ");
         stringBuffer.append("string longer than 16 characters");
+
+        // reassignment with chaining
+        stringBuffer = new StringBuffer().append("Added ").append(" a ");
+        stringBuffer.append("string longer than 16 characters and longer");
     }
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1380 InsufficientStringBufferDeclaration false positive when literal string passed to a lookup service</description>
         <expected-problems>0</expected-problems>
@@ -1062,7 +1100,7 @@ public final class test {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#841 InsufficientStringBufferDeclaration NumberFormatException</description>
         <expected-problems>0</expected-problems>
@@ -1071,6 +1109,205 @@ public class Test {
 
     public static void main(final String ... args) {
         StringBuilder report = new StringBuilder(10_000).append("test");
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] StringBuilder/Buffer false negatives with typeres #2881</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 17 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+            package net.sourceforge.pmd.lang.java.types.testdata;
+
+            public class DummyCompiledClass {
+                public String toString() {
+
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("test ");
+                    sb.append("test2 ").append("test3 ");
+                    appendToSpringBuffer(sb, "test4");
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] StringBuilder/Buffer false negatives with typeres #2881  (countertest, no classpath)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer has been initialized with size 16, but has at least 17 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class NoCompiledClass {
+                public String toString(){
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("test ");
+                    sb.append("test2 ").append("test3 ");
+                    appendToSpringBuffer(sb, "test4");
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] ConsecutiveLiteralAppends and InsufficientStringBufferDeclaration: FP with switch expressions #3152</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FalsePositive {
+
+    public static String escapeHTML(String text) {
+        int length = text.length();
+        int index = findHTMLReservedChar(text);
+        if (index == length) return text;
+        var builder = new StringBuilder(length * 2); // Rule:InsufficientStringBufferDeclaration Priority:3 StringBuffer constructor is initialized with size 16, but has at least 29 characters appended..
+        for (int i = 0; i < index; i++) builder.append(text.charAt(i));
+        for (; index < length; index++) {
+            char ch = text.charAt(index);
+            switch (ch) {
+                case '<' -> { builder.append("&lt;"); } // Rule:ConsecutiveLiteralAppends Priority:3 StringBuffer (or StringBuilder).append is called 6 consecutive times with literals. Use a single append with a single combined String..
+                case '>' -> builder.append("&gt;");
+                case '"' -> builder.append("&quot;");
+                case '&' -> builder.append("&amp;");
+                case '\'' -> builder.append("&#39;");
+                case '/' -> builder.append("&#47;");
+                default -> builder.append(ch);
+            }
+        }
+        return builder.toString();
+    }
+
+    private static int findHTMLReservedChar(String text) {
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] InsufficientStringBufferDeclaration false positive for initial calculated StringBuilder size #1438</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+public class FalsePositive {
+    public String foo(final String x, final String y, final double z, final Date d, final double v) {
+        final StringBuilder sb = new StringBuilder(20 + 9*2 + 16 + 2 * x.length() + y.length());
+        final DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.GERMAN);
+        df.applyPattern("#,##0.000");
+        final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+        sb.append("foobar")
+            .append(df.format(z))
+            .append(' ')
+            .append(x)
+            .append(y)
+            .append("foobar")
+            .append(sdf.format(d))
+            .append("foobar")
+            .append(df.format(v))
+            .append(' ')
+            .append(x);
+        return sb.toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Calculated initial size in constructor</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>10,34,44,61</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuilder has been initialized with size 4, but has at least 5 characters appended.</message>
+            <message>StringBuilder has been initialized with size 5, but has at least 6 characters appended.</message>
+            <message>StringBuilder has been initialized with size 8, but has at least 10 characters appended.</message>
+            <message>StringBuilder has been initialized with size 8, but has at least 9 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class InsufficientStringBufferDeclaration {
+    public String case1_ok() {
+        StringBuilder sb = new StringBuilder(2 + 2); // 4
+        sb.append("aa");
+        sb.append("bb");
+        return sb.toString();
+    }
+
+    public String case2_insufficient() {
+        StringBuilder sb = new StringBuilder(2 + 2); // line 10 - violation here, initial capacity 4
+        sb.append("aa");
+        sb.append("bb");
+        sb.append('c');
+        return sb.toString();
+    }
+
+    public String case3_unknown(String in) {
+        StringBuilder sb = new StringBuilder(in.length()); // unknown
+        sb.append("aa");
+        sb.append("bb");
+        sb.append('c');
+        return sb.toString();
+    }
+
+    public String case4_unknown_calculation(String in) {
+        StringBuilder sb = new StringBuilder(in.length() * 2); // unknown
+        sb.append("aa");
+        sb.append("bb");
+        sb.append('c');
+        return sb.toString();
+    }
+
+    public String case5_insufficient_setLength() {
+        StringBuilder sb = new StringBuilder(5); // line 34 - violation here, initial capacity 5
+        sb.append("xx");
+        sb.setLength(2 + 2); // new length is 4
+        sb.append("aa"); // appending 2 chars -> insufficient capacity
+        return sb.toString();
+    }
+
+    public String case6_insufficient_setLength() {
+        StringBuilder sb = new StringBuilder(5);
+        sb.append("xx");
+        sb.setLength(2 + 2 * 3); // line 44 - new length is 8, new capacity now 8  -> violation here
+        sb.append("aa"); // appending 2 chars -> insufficient capacity
+        return sb.toString();
+    }
+
+    public String case7_sufficient_ensureCapacity() {
+        StringBuilder sb = new StringBuilder(5);
+        sb.append("xx");
+        sb.ensureCapacity(2 + 2 * 3); // length is still 2, new capacity now at least 8
+        sb.append("aa"); // length is 4
+        sb.append("bb"); // length is 6
+        return sb.toString();
+    }
+
+    public String case8_insufficient_ensureCapacity() {
+        StringBuilder sb = new StringBuilder(5);
+        sb.append("xx");
+        sb.ensureCapacity(2 + 2 * 3); // line 61 - length is still 2, new capacity now at least 8 -> violation here
+        sb.append("aa"); // length is 4
+        sb.append("bb"); // length is 6
+        sb.append("cc"); // length is 8
+        sb.append('d'); // length is now 9
+        return sb.toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with method formal parameter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class InsufficientStringBufferDeclaration {
+    protected void appendHintMessage(StringBuilder msg) {
+        msg.append("A very long text");
+        msg.append("that is longer than 16 characters");
     }
 }
         ]]></code>

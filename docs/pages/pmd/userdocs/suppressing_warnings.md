@@ -32,7 +32,7 @@ for you:
     changing the Rule, but you do not need to submit a patch back to the
     PMD project.
 
-If you need to modify the Rule, see [How to write a rule](pmd_userdocs_extending_writing_pmd_rules.html).
+If you need to modify the Rule, see [How to write a rule](pmd_userdocs_extending_writing_rules_intro.html).
 Otherwise, the other suppression methods are explained in the following sections.
 
 ## Annotations

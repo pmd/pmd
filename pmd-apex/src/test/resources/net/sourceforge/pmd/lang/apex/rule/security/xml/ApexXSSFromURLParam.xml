@@ -1,454 +1,424 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-	<test-code>
-		<description>URL parameter in return statement</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+
+    <test-code>
+        <description>URL parameter in return statement</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public String test1() {
-		return ApexPages.currentPage().getParameters().get('foo');
-	}		
+    public String test1() {
+        return ApexPages.currentPage().getParameters().get('foo');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Safe cast to ID</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe cast to ID</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public ID test1() {
-		return ApexPages.currentPage().getParameters().get('foo');
-	}		
+    public ID test1() {
+        return ApexPages.currentPage().getParameters().get('foo');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-
-	<test-code>
-		<description>Safe ID concatenation
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe ID concatenation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public String test1() {
-		ID bas = ApexPages.currentPage().getParameters().get('foo');
-		return 'text' + bas;
-	}		
+    public String test1() {
+        ID bas = ApexPages.currentPage().getParameters().get('foo');
+        return 'text' + bas;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-
-	<test-code>
-		<description>Safe ID
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe ID</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		ID bas = yoyo(ApexPages.currentPage().getParameters().get('foo'));
-	}		
+    public void test1() {
+        ID bas = yoyo(ApexPages.currentPage().getParameters().get('foo'));
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter in return statement concatenation
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter in return statement concatenation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public String test1() {
-		return 'text' + ApexPages.currentPage().getParameters().get('foo');
-	}		
+    public String test1() {
+        return 'text' + ApexPages.currentPage().getParameters().get('foo');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter used without being escaped in return
-			statement
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter used without being escaped in return statement</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public String test1() {
-		String bas = ApexPages.currentPage().getParameters().get('foo');
-		return bas;
-	}		
+    public String test1() {
+        String bas = ApexPages.currentPage().getParameters().get('foo');
+        return bas;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter used without being escaped in return
-			statement concatenation
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter used without being escaped in return statement concatenation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public String test1() {
-		String bas = ApexPages.currentPage().getParameters().get('foo');
-		return 'text' + bas;
-	}		
+    public String test1() {
+        String bas = ApexPages.currentPage().getParameters().get('foo');
+        return 'text' + bas;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter used without being escaped in return
-			statement concatenation 2
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter used without being escaped in return statement concatenation 2</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public String test1() {
-		String bas = ApexPages.currentPage().getParameters().get('foo');
-		return 'text' + bas + 'ttt';
-	}		
+    public String test1() {
+        String bas = ApexPages.currentPage().getParameters().get('foo');
+        return 'text' + bas + 'ttt';
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Safe URL parameter cast to Integer
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe URL parameter cast to Integer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public Integer test1() {
-		return Integer.valueOf(ApexPages.currentPage().getParameters().get('foo'));
-	}		
+    public Integer test1() {
+        return Integer.valueOf(ApexPages.currentPage().getParameters().get('foo'));
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter used without being escaped 1</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter used without being escaped 1</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz, bas;
-		bas = ApexPages.currentPage().getParameters().get('foo');
-		baz = bas;
-	}		
+    public void test1() {
+        String baz, bas;
+        bas = ApexPages.currentPage().getParameters().get('foo');
+        baz = bas;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter passed to escaping function</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter passed to escaping function</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz, bas;
-		bas = ApexPages.currentPage().getParameters().get('foo');
-		ESAPI.encoder().SFDC_HTMLENCODE(bas);
-	}		
+    public void test1() {
+        String baz, bas;
+        bas = ApexPages.currentPage().getParameters().get('foo');
+        ESAPI.encoder().SFDC_HTMLENCODE(bas);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter passed to a function without being escaped
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter passed to a function without being escaped</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz, bas;
-		bas = ApexPages.currentPage().getParameters().get('foo');
-		foo(bas);
-	}		
+    public void test1() {
+        String baz, bas;
+        bas = ApexPages.currentPage().getParameters().get('foo');
+        foo(bas);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter passed to escaping function and then
-			assigned
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter passed to escaping function and then assigned</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz, bas;
-		bas = ApexPages.currentPage().getParameters().get('foo');
-		baz = ESAPI.encoder().SFDC_HTMLENCODE(bas);
-	}		
+    public void test1() {
+        String baz, bas;
+        bas = ApexPages.currentPage().getParameters().get('foo');
+        baz = ESAPI.encoder().SFDC_HTMLENCODE(bas);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter passed to a function and then assigned
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter passed to a function and then assigned</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz, bas;
-		bas = ApexPages.currentPage().getParameters().get('foo');
-		baz = foo(bas);
-	}		
+    public void test1() {
+        String baz, bas;
+        bas = ApexPages.currentPage().getParameters().get('foo');
+        baz = foo(bas);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter used without being escaped 2</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter used without being escaped 2</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String foo = ApexPages.currentPage().getParameters().get('foo');
-		String bar = foo;
-
-	}		
+    public void test1() {
+        String foo = ApexPages.currentPage().getParameters().get('foo');
+        String bar = foo;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter concatenation used without being escaped
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter concatenation used without being escaped</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz = 'baz';
-		String foo = ApexPages.currentPage().getParameters().get('foo');
-		String bar = foo + baz;
-	}		
+    public void test1() {
+        String baz = 'baz';
+        String foo = ApexPages.currentPage().getParameters().get('foo');
+        String bar = foo + baz;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter concatenation used without being escaped
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter concatenation used without being escaped</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String foo = ApexPages.currentPage().getParameters().get('foo');
-		String bar = 'baz' + foo;
-	}		
+    public void test1() {
+        String foo = ApexPages.currentPage().getParameters().get('foo');
+        String bar = 'baz' + foo;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter passed to a function</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter passed to a function</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		foo(ApexPages.currentPage().getParameters().get('foo'));
-	}		
+    public void test1() {
+        foo(ApexPages.currentPage().getParameters().get('foo'));
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Safe URL parameter passed to a function</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe URL parameter passed to a function</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		foo(ESAPI.encoder().SFDC_HTMLENCODE(ApexPages.currentPage().getParameters().get('foo')));
-	}		
+    public void test1() {
+        foo(ESAPI.encoder().SFDC_HTMLENCODE(ApexPages.currentPage().getParameters().get('foo')));
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter passed to a function with variable
-			declaration
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter passed to a function with variable declaration</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz = foo(ApexPages.currentPage().getParameters().get('foo'));
-	}		
+    public void test1() {
+        String baz = foo(ApexPages.currentPage().getParameters().get('foo'));
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Safe URL parameter passed to a function with variable
-			declaration
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe URL parameter passed to a function with variable declaration</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz = foo(ESAPI.encoder().SFDC_HTMLENCODE(ApexPages.currentPage().getParameters().get('foo')));
-	}		
+    public void test1() {
+        String baz = foo(ESAPI.encoder().SFDC_HTMLENCODE(ApexPages.currentPage().getParameters().get('foo')));
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter concatenated with variable
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter concatenated with variable</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String bar = 'foo' + ApexPages.currentPage().getParameters().get('foo');
-	}		
+    public void test1() {
+        String bar = 'foo' + ApexPages.currentPage().getParameters().get('foo');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Safe URL parameter concatenated with variable
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe URL parameter concatenated with variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String bar = 'foo' + ESAPI.encoder().SFDC_HTMLENCODE(ApexPages.currentPage().getParameters().get('foo'));
-	}		
+    public void test1() {
+        String bar = 'foo' + ESAPI.encoder().SFDC_HTMLENCODE(ApexPages.currentPage().getParameters().get('foo'));
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter type casting is a safety check
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter type casting is a safety check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz, bas;
-		bas = ApexPages.currentPage().getParameters().get('foo');
-		baz = Integer.valueOf(bas);
-	}		
+    public void test1() {
+        String baz, bas;
+        bas = ApexPages.currentPage().getParameters().get('foo');
+        baz = Integer.valueOf(bas);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>IsNotBlank check</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>IsNotBlank check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz, bas;
-		bas = ApexPages.currentPage().getParameters().get('foo');
-		boolean isNotBlank = String.isNotBlank(bas);
-	}		
+    public void test1() {
+        String baz, bas;
+        bas = ApexPages.currentPage().getParameters().get('foo');
+        boolean isNotBlank = String.isNotBlank(bas);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter type empty check</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter type empty check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz, bas;
-		bas = ApexPages.currentPage().getParameters().get('foo');
-		boolean isEmpty = String.isEmpty(bas);
-	}		
+    public void test1() {
+        String baz, bas;
+        bas = ApexPages.currentPage().getParameters().get('foo');
+        boolean isEmpty = String.isEmpty(bas);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter type empty check</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter type empty check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		boolean isEmpty = String.isEmpty(ApexPages.currentPage().getParameters().get('foo'));
-	}		
+    public void test1() {
+        boolean isEmpty = String.isEmpty(ApexPages.currentPage().getParameters().get('foo'));
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter method passing</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter method passing</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz, bas;
-		bas = ApexPages.currentPage().getParameters().get('foo');
-		baz = incorrectEscaping(bas);
-	}		
+    public void test1() {
+        String baz, bas;
+        bas = ApexPages.currentPage().getParameters().get('foo');
+        baz = incorrectEscaping(bas);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter var not getting confused with member var
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter var not getting confused with member var</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1(Object obj) {
-		String baz, bas;
-		bas = ApexPages.currentPage().getParameters().get('foo');
-		baz = obj.bas;
-	}		
+    public void test1(Object obj) {
+        String baz, bas;
+        bas = ApexPages.currentPage().getParameters().get('foo');
+        baz = obj.bas;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Casting applied to a variable
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Casting applied to a variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String bas;
-		bas = ApexPages.currentPage().getParameters().get('foo');
-		ID baz = ID.valueOf(bas);
-		Boolean jj = Boolean.valueOf(bas);
-	}		
+    public void test1() {
+        String bas;
+        bas = ApexPages.currentPage().getParameters().get('foo');
+        ID baz = ID.valueOf(bas);
+        Boolean jj = Boolean.valueOf(bas);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Casting applied to a method call
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Casting applied to a method call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		ID baz = ID.valueOf(ApexPages.currentPage().getParameters().get('foo'));
-		Boolean jj = Boolean.valueOf(ApexPages.currentPage().getParameters().get('foo'));
-	}		
+    public void test1() {
+        ID baz = ID.valueOf(ApexPages.currentPage().getParameters().get('foo'));
+        Boolean jj = Boolean.valueOf(ApexPages.currentPage().getParameters().get('foo'));
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>URL parameter method passing</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>URL parameter method passing</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		String baz, bas;
-		bas = ApexPages.currentPage().getParameters().get('foo');
-		baz = String.escapeHtml4(bas);
-	}		
+    public void test1() {
+        String baz, bas;
+        bas = ApexPages.currentPage().getParameters().get('foo');
+        baz = String.escapeHtml4(bas);
+    }
 }
-		]]></code>
-	</test-code>
-
+        ]]></code>
+    </test-code>
 </test-data>

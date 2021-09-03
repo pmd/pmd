@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,21 +6,18 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.NewExpression;
 
-public class ASTNewExpression extends AbstractEcmascriptNode<NewExpression> {
-    public ASTNewExpression(NewExpression newExpression) {
+public final class ASTNewExpression extends AbstractEcmascriptNode<NewExpression> {
+    ASTNewExpression(NewExpression newExpression) {
         super(newExpression);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     public EcmascriptNode<?> getTarget() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public int getNumArguments() {
@@ -28,7 +25,7 @@ public class ASTNewExpression extends AbstractEcmascriptNode<NewExpression> {
     }
 
     public EcmascriptNode<?> getArgument(int index) {
-        return (EcmascriptNode<?>) jjtGetChild(index + 1);
+        return (EcmascriptNode<?>) getChild(index + 1);
     }
 
     public boolean hasArguments() {
@@ -40,6 +37,6 @@ public class ASTNewExpression extends AbstractEcmascriptNode<NewExpression> {
     }
 
     public ASTObjectLiteral getInitializer() {
-        return (ASTObjectLiteral) jjtGetChild(jjtGetNumChildren() - 1);
+        return (ASTObjectLiteral) getChild(getNumChildren() - 1);
     }
 }

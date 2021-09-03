@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.junit;
 
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
@@ -12,7 +13,7 @@ import org.junit.rules.ExternalResource;
 
 /**
  * Junit Rule, to check for java util logging statements.
- * 
+ *
  * @author Andreas Dangel
  * @see <a href="http://blog.diabol.se/?p=474">Testing the presence of log messages with java.util.logging</a>
  */
@@ -54,7 +55,7 @@ public class JavaUtilLoggingRule extends ExternalResource {
      */
     public String getLog() {
         customLogHandler.flush();
-        return stream.toString();
+        return stream.toString(StandardCharsets.UTF_8);
     }
 
     /**

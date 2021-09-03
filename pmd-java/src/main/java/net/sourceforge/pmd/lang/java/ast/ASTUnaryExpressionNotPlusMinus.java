@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a boolean negation or bitwise inverse operation.
  * This has the same precedence as {@linkplain ASTUnaryExpression UnaryExpression}
@@ -14,35 +12,24 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * <p>Note that the child of this node is not necessarily an {@link ASTUnaryExpression},
  * rather, it can be an expression with an operator precedence greater or equal to a UnaryExpression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * UnaryExpressionNotPlusMinus ::=  ( "~" | "!" ) {@linkplain ASTUnaryExpression UnaryExpression}
  *
  * </pre>
+ * @deprecated Merged into {@link ASTUnaryExpression}
  */
-public class ASTUnaryExpressionNotPlusMinus extends AbstractJavaTypeNode {
+@Deprecated
+public final class ASTUnaryExpressionNotPlusMinus extends AbstractJavaTypeNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTUnaryExpressionNotPlusMinus(int id) {
+    ASTUnaryExpressionNotPlusMinus(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTUnaryExpressionNotPlusMinus(JavaParser p, int id) {
-        super(p, id);
-    }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 
 

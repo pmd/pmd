@@ -3,50 +3,68 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Basic use case
-     ]]></description>
+        <description>Basic use case</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
-     private Map _map = new TreeMap();
+    private Map _map = new TreeMap();
 
-      public void m() {
-         Map m = new HashMap();
-      }
+    public void m() {
+        Map m = new HashMap();
+    }
 
-      public Map contructMap() {
-         return new HashMap(); //not detected
-      }
+    public Map contructMap() {
+        return new HashMap(); //not detected
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1034 UseConcurrentHashMap flags calls to methods that return Map</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
     public void m() {
-        final Map myMap = myObject.methodThatReturnMap();
+        final Map myMap = new Foo().methodThatReturnMap();
+    }
+
+    Map methodThatReturnMap() { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1342 UseConcurrentHashMap false positive (with documentation example)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+import java.util.concurrent.*;
+public class ConcurrentApp {
+    public void getMyInstance() {
+        Map map1 = new HashMap();   // fine for single-threaded access --- violation on this line
+        Map map2 = new ConcurrentHashMap();  // preferred for use with multiple threads
     }
 }
         ]]></code>
     </test-code>
     <test-code>
-        <description>#1342 UseConcurrentHashMap false positive (with documentation example)</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <description>FP with Properties</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Properties;
+import java.util.concurrent.*;
 public class ConcurrentApp {
-  public void getMyInstance() {
-    Map map1 = new HashMap();   // fine for single-threaded access --- violation on this line
-    Map map2 = new ConcurrentHashMap();  // preferred for use with multiple threads
+    public void getMyInstance() {
+        final Properties pr = new Properties();
+    }
+ }
+         ]]></code>
+     </test-code>
 
-    // the following case will be ignored by this rule
-    Map map3 = someModule.methodThatReturnMap(); // might be OK, if the returned map is already thread-safe
-  }
-}
-        ]]></code>
-    </test-code>
 </test-data>

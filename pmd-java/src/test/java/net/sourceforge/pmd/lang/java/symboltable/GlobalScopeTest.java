@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -17,13 +18,13 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-public class GlobalScopeTest extends STBBaseTst {
+@Ignore
+public class GlobalScopeTest extends BaseNonParserTest {
 
     @Test
     public void testClassDeclAppears() {
-        parseCode(TEST1);
-        ASTCompilationUnit decl = acu;
-        Scope scope = decl.getScope();
+        ASTCompilationUnit acu = parseCode(TEST1);
+        Scope scope = acu.getScope();
         Map<NameDeclaration, List<NameOccurrence>> m = scope.getDeclarations();
         ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration) m.keySet().iterator().next();
         assertEquals(classNameDeclaration.getImage(), "Foo");
@@ -31,7 +32,7 @@ public class GlobalScopeTest extends STBBaseTst {
 
     @Test
     public void testEnums() {
-        parseCode15(TEST2);
+        java5.parse(TEST2);
     }
 
     private static final String TEST1 = "public class Foo {}" + PMD.EOL;

@@ -4,39 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTModuleDeclaration extends AbstractJavaNode {
+public final class ASTModuleDeclaration extends AbstractJavaNode {
 
     private boolean open;
 
-    @InternalApi
-    @Deprecated
-    public ASTModuleDeclaration(int id) {
+    ASTModuleDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTModuleDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
 
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    @InternalApi
-    @Deprecated
-    public void setOpen(boolean open) {
+    void setOpen(boolean open) {
         this.open = open;
     }
 

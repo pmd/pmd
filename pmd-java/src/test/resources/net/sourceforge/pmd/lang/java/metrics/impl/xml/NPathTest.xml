@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="full-example"><![CDATA[
+import java.util.*;
 public class Foo {
-  public static void bar() {
-    boolean a, b = true;
-    try { // total 8
-      if (true) { // 2
-        List buz = new ArrayList();
-      }
+    public static void bar() {
+        boolean a, b = true;
+        try { // total 8
+            if (true) { // 2
+                List buz = new ArrayList();
+            }
 
-      for(int i = 0; i < 19; i++) { // 3
-        List buz = a ? new ArrayList() : null;
-      }
-    } catch(Exception e) {
-      if (true) { // 2
-        e.printStackTrace();
-      }
+            for(int i = 0; i < 19; i++) { // 3
+                List buz = a ? new ArrayList() : null;
+            }
+        } catch(Exception e) {
+            if (true) { // 2
+                e.printStackTrace();
+            }
+        }
+
+        int j = 0;
+        if (true || a && b) { // 4
+            j = 10;
+            return;
+        } else {
+            j = 12;
+        }
+
+        j = a || b ? j + 1 : j; // 3
+
+        while (j++ < 20) { // 2
+            List buz = new ArrayList();
+        }
+
+        switch(j) { // 7
+            case 1:
+            case 2: break;
+            case 3: j = 5; break;
+            case 4: if (b && a) { bar(); } break;
+            default: break;
+        }
+
+        do { // 3
+            List buz = new ArrayList();
+        } while (a && j++ < 30);
+
+        if (b) { // 2
+            return;
+        }
     }
-
-    int j = 0;
-    if (true || a && b) { // 4
-      j = 10;
-      return;
-    } else {
-      j = 12;
-    }
-
-    j = a || b ? j + 1 : j; // 3
-
-    while (j++ < 20) { // 2
-      List buz = new ArrayList();
-    }
-
-    switch(j) { // 7
-      case 1:
-      case 2: break;
-      case 3: j = 5; break;
-      case 4: if (b && a) { bar(); } break;
-      default: break;
-    }
-
-    do { // 3
-        List buz = new ArrayList();
-    } while (a && j++ < 30);
-
-    if (b) { // 2
-      return;
-    }
-  }
 }
-     ]]></code-fragment>
-
+    ]]></code-fragment>
 
     <test-code>
         <description>Full example</description>
@@ -72,14 +72,14 @@ public class Foo {
             <message>'Foo#bar()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
-        class Foo {
-          void bar() {
-            boolean a;
-            if (a) {
-              bar();
-            }
-          }
+class Foo {
+    void bar() {
+        boolean a;
+        if (a) {
+            bar();
         }
+    }
+}
         ]]></code>
     </test-code>
 
@@ -90,18 +90,18 @@ public class Foo {
             <message>'Foo#bar()' has value 3.</message>
         </expected-messages>
         <code><![CDATA[
-        class Foo {
-          void bar() {
-            boolean a, b;
-            if (a) {
-              if (b) {
+class Foo {
+    void bar() {
+        boolean a, b;
+        if (a) {
+            if (b) {
                 bar();
-              } else {
+            } else {
                 a = true;
-              }
             }
-          }
         }
+    }
+}
         ]]></code>
     </test-code>
 
@@ -112,24 +112,24 @@ public class Foo {
             <message>'Foo#bar()' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
-        class Foo {
-          void bar() {
-            boolean a, b;
-            if (a) {
-              if (b) {
+class Foo {
+    void bar() {
+        boolean a, b;
+        if (a) {
+            if (b) {
                 bar();
-              } else {
-                a = true;
-              }
             } else {
-              if (b) {
-                b = false;
-              } else {
                 a = true;
-              }
             }
-          }
+        } else {
+            if (b) {
+                b = false;
+            } else {
+                a = true;
+            }
         }
+    }
+}
         ]]></code>
     </test-code>
 
@@ -140,16 +140,16 @@ public class Foo {
             <message>'Foo#bar()' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
-        class Foo {
-          void bar() {
-            boolean a, b;
-            if (a) {}
-            else {}
+class Foo {
+    void bar() {
+        boolean a, b;
+        if (a) {}
+        else {}
 
-            if (b) {}
-            else {}
-          }
-        }
+        if (b) {}
+        else {}
+    }
+}
         ]]></code>
     </test-code>
 
@@ -160,15 +160,15 @@ public class Foo {
             <message>'Foo#bar()' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
-        class Foo {
-          void bar() {
-            boolean a, b;
-            if (a) {}
-            else {}
+class Foo {
+    void bar() {
+        boolean a, b;
+        if (a) {}
+        else {}
 
-            if (b) {}
-          }
-        }
+        if (b) {}
+    }
+}
         ]]></code>
     </test-code>
 
@@ -179,20 +179,19 @@ public class Foo {
             <message>'Foo#bar()' has value 6.</message>
         </expected-messages>
         <code><![CDATA[
-        class Foo {
-          void bar() {
-            boolean a, b;
-            if (a) {
-              if (b) {}
-            } else {}
-
+class Foo {
+    void bar() {
+        boolean a, b;
+        if (a) {
             if (b) {}
-            else {}
-          }
-        }
+        } else {}
+
+        if (b) {}
+        else {}
+    }
+}
         ]]></code>
     </test-code>
-
 
     <test-code>
         <description>Full switch</description>
@@ -201,19 +200,19 @@ public class Foo {
             <message>'Foo#bar()' has value 7.</message>
         </expected-messages>
         <code><![CDATA[
-        class Foo {
-          void bar() {
-            boolean a, b;
-            int j = 23;
-            switch(j) {
-              case 1:
-              case 2: break;
-              case 3: j = 5; break;
-              case 4: if (b && a) { bar(); } break;
-              default: break;
-            }
-          }
+class Foo {
+    void bar() {
+        boolean a, b;
+        int j = 23;
+        switch(j) {
+            case 1:
+            case 2: break;
+            case 3: j = 5; break;
+            case 4: if (b && a) { bar(); } break;
+            default: break;
         }
+    }
+}
         ]]></code>
     </test-code>
 
@@ -224,21 +223,80 @@ public class Foo {
             <message>'Foo#bar()' has value 7.</message>
         </expected-messages>
         <code><![CDATA[
-        class Foo {
-          void bar() {
-            boolean a, b;
-            int j = 23;
-            if (j == 1 || j == 2) {
-            } else if (j == 3) {
-              j = 5;
-            } else if (j == 4) {
-              if (b && a) { bar(); }
-            }
-          }
+class Foo {
+    void bar() {
+        boolean a, b;
+        int j = 23;
+        if (j == 1 || j == 2) {
+        } else if (j == 3) {
+            j = 5;
+        } else if (j == 4) {
+            if (b && a) { bar(); }
         }
+    }
+}
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Ensure switch labeled blocks has same complexity as equivalent ifs and switch statements</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 7.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void bar() {
+        boolean a, b;
+        int j = 23;
+        switch(j) {
+            case 1, 2 -> { }
+            case 3 -> { j = 5; }
+            case 4 -> { if (b && a) { bar(); } }
+            default -> { }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test switch expressions</description>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 5.</message>
+            <message>'Foo#set(int)' has value 1.</message>
+            <message>'Foo#test()' has value 3.</message>
+            <message>'Foo#nothing()' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    int j = 23;
+    boolean a, b;
+
+    void bar() {
+        switch(j) {
+            case 1, 2 -> nothing();
+            case 3 -> set(5);
+            case 4 -> test();
+            default -> nothing();
+        }
+    }
+
+    void set(int v) {
+        j = v;
+    }
+
+    void test() {
+        if (b && a) {
+            bar();
+        }
+    }
+
+    void nothing() { }
+}
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>Boolean operators</description>
@@ -247,28 +305,27 @@ public class Foo {
             <message>'Foo#bar()' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
-        class Foo {
-          void bar() {
-            if (a && b || c);
-          }
-        }
+class Foo {
+    void bar() {
+        if (a && b || c);
+    }
+}
         ]]></code>
     </test-code>
 
-
     <code-fragment id="bug3484404"><![CDATA[
 class Bar {
-  public void x(boolean x, boolean y) {
-    z((x ? 1 : 2), (y ? 3 : 4));
-  }
+    public void x(boolean x, boolean y) {
+        z((x ? 1 : 2), (y ? 3 : 4));
+    }
 
-  public int y(boolean x, boolean y) {
-    return z((x ? 1 : 2), (y ? 3 : 4));
-  }
+    public int y(boolean x, boolean y) {
+        return z((x ? 1 : 2), (y ? 3 : 4));
+    }
 
-  public int z(int x, int y) {
-    return x + y;
-  }
+    public int z(int x, int y) {
+        return x + y;
+    }
 }
     ]]></code-fragment>
 
@@ -283,7 +340,6 @@ class Bar {
         <code-ref id="bug3484404"/>
     </test-code>
 
-
     <test-code>
         <description>NPath supports constructors</description>
         <expected-problems>1</expected-problems>
@@ -291,19 +347,19 @@ class Bar {
             <message>'Foo#Foo()' has value 7.</message>
         </expected-messages>
         <code><![CDATA[
-        class Foo {
-          Foo() {
-            boolean a, b;
-            int j = 23;
-            switch(j) {
-              case 1:
-              case 2: break;
-              case 3: j = 5; break;
-              case 4: if (b && a) { bar(); } break;
-              default: break;
-            }
-          }
+class Foo {
+    Foo() {
+        boolean a, b;
+        int j = 23;
+        switch(j) {
+            case 1:
+            case 2: break;
+            case 3: j = 5; break;
+            case 4: if (b && a) { bar(); } break;
+            default: break;
         }
+    }
+}
         ]]></code>
     </test-code>
 
@@ -314,11 +370,12 @@ class Bar {
             <message>'Test#method(Date)' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
-        public class Test {
-          public void method(Date a) {
-            final long aTime = (a == null && a || b) ? 0L : a.getTime();
-          }
-        }
+import java.util.Date;
+public class Test {
+    public void method(Date a) {
+        final long aTime = (a == null && a || b) ? 0L : a.getTime();
+    }
+}
         ]]></code>
     </test-code>
 
@@ -329,19 +386,20 @@ class Bar {
             <message>'Test#method(Date)' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
-        public class Test {
-          private static final long UNKNOWN = -1;
+import java.util.Date;
+public class Test {
+    private static final long UNKNOWN = -1;
 
-          public void method(Date a) {
-            long aTime;
+    public void method(Date a) {
+        long aTime;
 
-            if (a == null) {
-              aTime = UNKNOWN;
-            } else {
-              aTime = a.getTime();
-            }
-          }
+        if (a == null) {
+            aTime = UNKNOWN;
+        } else {
+            aTime = a.getTime();
         }
+    }
+}
         ]]></code>
     </test-code>
 
@@ -352,14 +410,15 @@ class Bar {
             <message>'Test#method(Date)' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
-        public class Test {
+import java.util.Date;
+public class Test {
 
-          private static final long UNKNOWN = -1;
+    private static final long UNKNOWN = -1;
 
-          public void method(Date a) {
-            final long aTime = a == null ? UNKNOWN : a.getTime();
-          }
-        }
+    public void method(Date a) {
+        final long aTime = a == null ? UNKNOWN : a.getTime();
+    }
+}
         ]]></code>
     </test-code>
 
@@ -368,36 +427,31 @@ class Bar {
         <rule-property name="reportLevel">6</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'SOFExample#usefulMethod(List)' has value 272.</message>
+            <message>'SOFExample#usefulMethod(List&lt;MyCal&gt;)' has value 16.</message>
         </expected-messages>
         <code><![CDATA[
-        public class SOFExample {
+import java.util.*;
+public class SOFExample {
 
-          private final Map<String, Date> magicMap = new HashMap<String, Date>();
-          protected static final long UNKNOWN = 0L;
-          private static final class MyCal { long aTime; long bTime; long cTime; long dTime;}
+    private final Map<String, Date> magicMap = new HashMap<String, Date>();
+    protected static final long UNKNOWN = 0L;
+    private static final class MyCal { long aTime; long bTime; long cTime; long dTime;}
 
-          public void usefulMethod(final List<MyCal> myCals) {
+    public void usefulMethod(final List<MyCal> myCals) {
 
-            final Date a = magicMap.get("a");
-            final Date b = magicMap.get("b");
-            final Date c = magicMap.get("c");
-            final Date d = magicMap.get("d");
+        final Date a = magicMap.get("a");
+        final Date b = magicMap.get("b");
+        final Date c = magicMap.get("c");
+        final Date d = magicMap.get("d");
 
-            final long aTime = a == null ? UNKNOWN : a.getTime();
-            final long bTime = b == null ? UNKNOWN : b.getTime();
-            final long cTime = c == null ? UNKNOWN : c.getTime();
-            final long dTime = d == null ? UNKNOWN : d.getTime();
+        final long aTime = a == null ? UNKNOWN : a.getTime();
+        final long bTime = b == null ? UNKNOWN : b.getTime();
+        final long cTime = c == null ? UNKNOWN : c.getTime();
+        final long dTime = d == null ? UNKNOWN : d.getTime();
 
-            for (MyCal myCal : myCals) {
-              if(myCal.aTime == UNKNOWN) myCal.aTime = aTime;
-              if(myCal.bTime == UNKNOWN) myCal.bTime = bTime;
-              if(myCal.cTime == UNKNOWN) myCal.cTime = cTime;
-              if(myCal.dTime == UNKNOWN) myCal.dTime = dTime;
-            }
-          }
-        }
-        ]]></code>
+    }
+}
+            ]]></code>
     </test-code>
 
     <test-code>
@@ -405,59 +459,124 @@ class Bar {
         <rule-property name="reportLevel">6</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'SOFExample#usefulMethod(List)' has value 272.</message>
+            <message>'SOFExample#usefulMethod(List&lt;MyCal&gt;)' has value 16.</message>
         </expected-messages>
         <code><![CDATA[
-        public class SOFExample {
+import java.util.*;
+public class SOFExample {
 
-          private final Map<String, Date> magicMap = new HashMap<String, Date>();
-          protected static final long UNKNOWN = 0L;
-          private static final class MyCal { long aTime; long bTime; long cTime; long dTime;}
+    private final Map<String, Date> magicMap = new HashMap<String, Date>();
+    protected static final long UNKNOWN = 0L;
+    private static final class MyCal { long aTime; long bTime; long cTime; long dTime;}
 
-          public void usefulMethod(final List<MyCal> myCals) {
+    public void usefulMethod(final List<MyCal> myCals) {
 
-            final Date a = magicMap.get("a");
-            final Date b = magicMap.get("b");
-            final Date c = magicMap.get("c");
-            final Date d = magicMap.get("d");
+        final Date a = magicMap.get("a");
+        final Date b = magicMap.get("b");
+        final Date c = magicMap.get("c");
+        final Date d = magicMap.get("d");
 
-            final long aTime;
-            if (a == null) {
-             aTime = a.getTime();
-            } else {
-             aTime = UNKNOWN;
-            }
-
-            final long bTime;
-            if (b == null) {
-             bTime = b.getTime();
-            } else {
-             bTime = UNKNOWN;
-            }
-
-            final long cTime;
-            if (c == null) {
-             cTime = c.getTime();
-            } else {
-             cTime = UNKNOWN;
-            }
-
-            final long dTime;
-            if (d == null) {
-             dTime = d.getTime();
-            } else {
-             dTime = UNKNOWN;
-            }
-
-            for (MyCal myCal : myCals) {
-              if(myCal.aTime == UNKNOWN) myCal.aTime = aTime;
-              if(myCal.bTime == UNKNOWN) myCal.bTime = bTime;
-              if(myCal.cTime == UNKNOWN) myCal.cTime = cTime;
-              if(myCal.dTime == UNKNOWN) myCal.dTime = dTime;
-            }
-          }
+        final long aTime;
+        if (a == null) {
+            aTime = a.getTime();
+        } else {
+            aTime = UNKNOWN;
         }
+
+        final long bTime;
+        if (b == null) {
+            bTime = b.getTime();
+        } else {
+            bTime = UNKNOWN;
+        }
+
+        final long cTime;
+        if (c == null) {
+            cTime = c.getTime();
+        } else {
+            cTime = UNKNOWN;
+        }
+
+        final long dTime;
+        if (d == null) {
+            dTime = d.getTime();
+        } else {
+            dTime = UNKNOWN;
+        }
+    }
+}
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Some foreach</description>
+        <rule-property name="reportLevel">6</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'SOFExample#usefulMethod(List&lt;MyCal&gt;)' has value 17.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.*;
+public class SOFExample {
+    private static final class MyCal { long aTime; long bTime; long cTime; long dTime;}
+
+    public void usefulMethod(final List<MyCal> myCals) {
+
+        for (MyCal myCal : myCals) {
+            if(myCal.aTime == UNKNOWN) myCal.aTime = aTime;
+            if(myCal.bTime == UNKNOWN) myCal.bTime = bTime;
+            if(myCal.cTime == UNKNOWN) myCal.cTime = cTime;
+            if(myCal.dTime == UNKNOWN) myCal.dTime = dTime;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPath foreach times other construct</description>
+        <rule-property name="reportLevel">6</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'SOFExample#usefulMethod(List&lt;MyCal&gt;)' has value 272.</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.*;
+            public class SOFExample {
+
+                private final Map<String, Date> magicMap = new HashMap<String, Date>();
+                protected static final long UNKNOWN = 0L;
+
+                private static final class MyCal {
+
+                    long aTime;
+                    long bTime;
+                    long cTime;
+                    long dTime;
+                }
+
+                public void usefulMethod(final List<MyCal> myCals) {
+
+                    final Date a = magicMap.get("a");
+                    final Date b = magicMap.get("b");
+                    final Date c = magicMap.get("c");
+                    final Date d = magicMap.get("d");
+
+                    final long aTime = a == null ? UNKNOWN : a.getTime();
+                    final long bTime = b == null ? UNKNOWN : b.getTime();
+                    final long cTime = c == null ? UNKNOWN : c.getTime();
+                    final long dTime = d == null ? UNKNOWN : d.getTime();
+
+                    for (MyCal myCal : myCals) {
+                        if(myCal.aTime == UNKNOWN) myCal.aTime = aTime;
+                        if(myCal.bTime == UNKNOWN) myCal.bTime = bTime;
+                        if(myCal.cTime == UNKNOWN) myCal.cTime = cTime;
+                        if(myCal.dTime == UNKNOWN) myCal.dTime = dTime;
+                    }
+
+                }
+            }
+            ]]></code>
     </test-code>
 
     <test-code>
@@ -465,45 +584,161 @@ class Bar {
         <rule-property name="reportLevel">0</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'NPathComplexityOverflow#complexMethod()' has value 2147483647.</message>
+            <message>'NPathComplexityOverflow#complexMethod()' has value 2147483648.</message>
         </expected-messages>
         <code><![CDATA[
-        public class NPathComplexityOverflow {
-            public void complexMethod() {
-                boolean b = true;
-                if (b); // 2
-                if (b); // 4
-                if (b); // 8
-                if (b); // 16
-                if (b); // 32
-                if (b); // 64
-                if (b); // 128
-                if (b); // 256
-                if (b); // 512
-                if (b); // 1024
-                if (b); // 2048
-                if (b); // 4096
-                if (b); // 8192
-                if (b); // 16384
-                if (b); // 32768
-                if (b); // 65536
-                if (b); // 131072
-                if (b); // 262144
-                if (b); // 524288
-                if (b); // 1048576
-                if (b); // 2097152
-                if (b); // 4194304
-                if (b); // 8388608
-                if (b); // 16777216
-                if (b); // 33554432
-                if (b); // 67108864
-                if (b); // 134217728
-                if (b); // 268435456
-                if (b); // 536870912
-                if (b); // 1073741824
-                if (b); // 2147483648 // overflow is happening here...
-            }
-        }
+public class NPathComplexityOverflow {
+    public void complexMethod() {
+        boolean b = true;
+        if (b); // 2
+        if (b); // 4
+        if (b); // 8
+        if (b); // 16
+        if (b); // 32
+        if (b); // 64
+        if (b); // 128
+        if (b); // 256
+        if (b); // 512
+        if (b); // 1024
+        if (b); // 2048
+        if (b); // 4096
+        if (b); // 8192
+        if (b); // 16384
+        if (b); // 32768
+        if (b); // 65536
+        if (b); // 131072
+        if (b); // 262144
+        if (b); // 524288
+        if (b); // 1048576
+        if (b); // 2097152
+        if (b); // 4194304
+        if (b); // 8388608
+        if (b); // 16777216
+        if (b); // 33554432
+        if (b); // 67108864
+        if (b); // 134217728
+        if (b); // 268435456
+        if (b); // 536870912
+        if (b); // 1073741824
+        if (b); // 2147483648 // overflow is happening here...
+    }
+}
         ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Switch arrow branches (#2625)</description>
+        <rule-property name="reportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Product#buildProduct(String, Language)' has value 12.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Product {
+
+                Product buildProduct(String title, Language language) {
+                    if (title.length() > 100 || title.length() == 0) {
+                        throw new IllegalArgumentException("Invalid title length (1-100 chars): " + title);
+                    }
+                    var product = new Product();
+                    var description = new MultiLangString();
+                    switch (language) {
+                    case FR -> description.set1(title);
+                    case IT -> description.set1(title);
+                    case EN -> description.set2(title);
+                    default -> description.set2(title);
+                    }
+                    product.setDescription(description);
+                    product.setMagicNumber(3);
+                    return product;
+                }
+                void setDescription(MultiLangString s) {}
+                void setMagicNumber(int s) {}
+                enum Language {FR,IT,EN}
+                class MultiLangString { void set1(String s) {} void set2(String s) {}}
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch expressions (#2625)</description>
+        <rule-property name="reportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Product#buildProduct(String, Language)' has value 12.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Product {
+
+                Product buildProduct(String title, Language language) {
+                    if (title.length() > 100 || title.length() == 0) {
+                        throw new IllegalArgumentException("Invalid title length (1-100 chars): " + title);
+                    }
+                    var product = new Product();
+                    var description = switch (language) {
+                        case FR -> new Description.Fr(title);
+                        case IT -> new Description.Fr(title);
+                        case EN -> new Description.En(title);
+                        default -> new Description.En(title);
+                    };
+                    product.setDescription(description);
+                    product.setMagicNumber(3);
+                    return product;
+                }
+                void setDescription(Description s) {}
+                void setMagicNumber(int s) {}
+                enum Language {FR,IT,EN}
+                static class Description { static class Fr{ Fr(String s){} } static class En{ En(String s){} }}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch expressions (#2625) (control test, no switch)</description>
+        <rule-property name="reportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Product#buildProduct(String, Language)' has value 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Product {
+
+                Product buildProduct(String title, Language language) {
+                    if (title.length() > 100 || title.length() == 0) {
+                        throw new IllegalArgumentException("Invalid title length (1-100 chars): " + title);
+                    }
+                    var product = new Product();
+                    var description = fr(title);
+                    product.setDescription(description);
+                    product.setMagicNumber(3);
+                    return product;
+                }
+                void setDescription(Description s) {}
+                void setMagicNumber(int s) {}
+                enum Language {FR,IT,EN}
+                static class Description { static class Fr{ Fr(String s){} } static class En{ En(String s){} }}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch expressions (simpler)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Product#buildProduct(String, Language)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Product {
+
+                Product buildProduct(String title, Language language) {
+                    var product = new Product();
+                    var description = switch (language) {
+                        case FR -> fr(title);
+                        default -> de(title);
+                    };
+                    return product;
+                }
+                enum Language {FR,IT,EN}
+            }
+            ]]></code>
     </test-code>
 </test-data>

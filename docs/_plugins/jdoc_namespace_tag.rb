@@ -86,17 +86,24 @@ class JDocNamespaceDeclaration < Liquid::Tag
       expanded_fqcn += "." + fqcn_suffix
     end
 
+    artifactId = resolved_nspace.first
+
+    if artifactId =~ /scala/
+      artifactId = "pmd-scala_2.13"
+    end
 
     # Return the resolved artifactId + the expanded FQCN
-    [resolved_nspace.first, expanded_fqcn]
+    [artifactId, expanded_fqcn]
   end
 
   private
 
   JDOC_NAMESPACE_MAP = "jdoc_nspaces"
-  RESERVED_NSPACES = ['apex', 'core', 'cpp', 'cs', 'dist', 'doc', 'fortran', 'go', 'groovy', 'java', 'javascript', 'jsp',
-    'kotlin', 'matlab', 'objectivec', 'perl', 'php', 'plsql', 'python', 'ruby', 'scala', 'swift', 'test', 'ui',
-    'visualforce', 'vm', 'xml'].flat_map {|m| [m, "pmd-" + m]}
+  RESERVED_NSPACES = ['apex', 'core', 'cpp', 'cs', 'dart', 'dist', 'doc', 'fortran', 'go', 'groovy', 'java',
+    'javascript', 'jsp',
+    'kotlin', 'lua', 'matlab', 'objectivec', 'perl', 'php', 'plsql', 'python', 'ruby', 'scala', 'swift',
+    'test', 'ui',
+    'modelica', 'visualforce', 'vm', 'xml'].flat_map {|m| [m, "pmd-" + m]}
 
   def self.make_base_namespaces
     res = {}

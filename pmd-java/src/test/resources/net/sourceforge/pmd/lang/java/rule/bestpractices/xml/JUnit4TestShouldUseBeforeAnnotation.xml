@@ -3,12 +3,12 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Contains setUp
-     ]]></description>
+        <description>Contains setUp</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
 public class Foo {
     public void setUp() {
     }
@@ -16,14 +16,15 @@ public class Foo {
     public void foo() {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Contains @setUp
-     ]]></description>
+        <description>Contains @setUp</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Before;
+import org.junit.Test;
 public class Foo {
     @Before
     public void setUp() {
@@ -32,14 +33,15 @@ public class Foo {
     public void foo() {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Renamed setup
-     ]]></description>
+        <description>Renamed setup</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Before;
+import org.junit.Test;
 public class Foo {
     @Before
     public void configure() {
@@ -48,60 +50,107 @@ public class Foo {
     public void foo() {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1400 False positive with JUnit4TestShouldUseBeforeAnnotation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.junit.Before;
+import org.junit.Test;
+import my.EsSetup;
 public class Foo {
+    EsSetup esSetup;
     @Before("@ResetEsSetup")
     public void setUp() {
         esSetup.execute(EsSetup.deleteAll());
     }
+    @Test
+    public void someTest() {}
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1446 False positive with JUnit4TestShouldUseBeforeAnnotation when TestNG is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import java.lang.reflect.Method;
 
 public class Foo {
     @BeforeMethod
     public void setUp(Method m) {
       //...
     }
+    @Test
+    public void someTest() {}
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#940 False positive with JUnit4TestShouldUseBeforeAnnotation when JUnit5's 'BeforeEach' is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 
 public class Foo {
     @BeforeEach
     public void setUp() {
       //...
     }
+    @Test
+    public void someTest() {}
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#940 False positive with JUnit4TestShouldUseBeforeAnnotation when JUnit5's 'BeforeAll' is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.*;
 
 public class Foo {
     @BeforeAll
     public void setUp() {
       //...
     }
+    @Test
+    public void someTest() {}
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Contains setUp, not a junit 4 test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void setUp() {
+                }
+                public void foo() {
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Contains setUp with different signature</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.junit.Test;
+
+            public class Foo {
+
+                public void setUp(int something) {
+                }
+
+                @Test
+                public void foo() {
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

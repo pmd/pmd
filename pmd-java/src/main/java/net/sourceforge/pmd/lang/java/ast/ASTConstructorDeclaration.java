@@ -4,67 +4,56 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
-public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration {
+/**
+ * A constructor of a {@linkplain ASTConstructorDeclaration class} or
+ * {@linkplain ASTEnumDeclaration enum} declaration.
+ *
+ * <pre class="grammar">
+ *
+ * ConstructorDeclaration ::= {@link ASTModifierList ModifierList}
+ *                            {@link ASTTypeParameters TypeParameters}?
+ *                            &lt;IDENTIFIER&gt;
+ *                            {@link ASTFormalParameters FormalParameters}
+ *                            ({@link ASTThrowsList ThrowsList})?
+ *                            {@link ASTBlock Block}
+ *
+ * </pre>
+ */
+public final class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration<JConstructorSymbol> {
 
-    private boolean containsComment;
-
-    @InternalApi
-    @Deprecated
-    public ASTConstructorDeclaration(int id) {
+    ASTConstructorDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTConstructorDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
-    public MethodLikeKind getKind() {
-        return MethodLikeKind.CONSTRUCTOR;
+    public String getName() {
+        return getImage();
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected @Nullable JavaccToken getPreferredReportLocation() {
+        return getModifiers().getLastToken().getNext();
+    }
+
+    @Override
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
 
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
     public boolean containsComment() {
-        return this.containsComment;
+        return getBody().containsComment();
     }
 
-    @InternalApi
-    @Deprecated
-    public void setContainsComment() {
-        this.containsComment = true;
+    @Override
+    public @NonNull ASTBlock getBody() {
+        return (ASTBlock) getLastChild();
     }
 
-    /**
-     * @deprecated to be removed with PMD 7.0.0 - use getFormalParameters() instead
-     */
-    @Deprecated
-    public ASTFormalParameters getParameters() {
-        return getFormalParameters();
-    }
-
-    public int getParameterCount() {
-        return getFormalParameters().getParameterCount();
-    }
-
-    //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration
-    public ASTFormalParameters getFormalParameters() {
-        return getFirstChildOfType(ASTFormalParameters.class);
-    }
 }

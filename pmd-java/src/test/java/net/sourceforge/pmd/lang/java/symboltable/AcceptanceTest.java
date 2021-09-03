@@ -12,13 +12,15 @@ import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -27,7 +29,8 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-public class AcceptanceTest extends STBBaseTst {
+@Ignore
+public class AcceptanceTest extends BaseNonParserTest {
 
     @Test
     public void testClashingSymbols() {
@@ -36,7 +39,7 @@ public class AcceptanceTest extends STBBaseTst {
 
     @Test
     public void testInitializer() {
-        parseCode(TEST_INITIALIZERS);
+        ASTCompilationUnit acu = parseCode(TEST_INITIALIZERS);
         ASTInitializer a = acu.findDescendantsOfType(ASTInitializer.class).get(0);
         assertFalse(a.isStatic());
         a = acu.findDescendantsOfType(ASTInitializer.class).get(1);
@@ -45,8 +48,8 @@ public class AcceptanceTest extends STBBaseTst {
 
     @Test
     public void testCatchBlocks() {
-        parseCode(TEST_CATCH_BLOCKS);
-        ASTCatchStatement c = acu.findDescendantsOfType(ASTCatchStatement.class).get(0);
+        ASTCompilationUnit acu = parseCode(TEST_CATCH_BLOCKS);
+        ASTCatchClause c = acu.findDescendantsOfType(ASTCatchClause.class).get(0);
         ASTBlock a = c.findDescendantsOfType(ASTBlock.class).get(0);
         Scope s = a.getScope();
         Map<NameDeclaration, List<NameOccurrence>> vars = s.getDeclarations();
@@ -58,7 +61,7 @@ public class AcceptanceTest extends STBBaseTst {
 
     @Test
     public void testEq() {
-        parseCode(TEST_EQ);
+        ASTCompilationUnit acu = parseCode(TEST_EQ);
         ASTEqualityExpression e = acu.findDescendantsOfType(ASTEqualityExpression.class).get(0);
         ASTMethodDeclaration method = e.getFirstParentOfType(ASTMethodDeclaration.class);
         Scope s = method.getScope();
@@ -72,14 +75,14 @@ public class AcceptanceTest extends STBBaseTst {
                 assertEquals(1, usages.size());
                 assertEquals(3, usages.get(0).getLocation().getBeginLine());
             } else {
-                fail("Unkown variable " + vnd);
+                fail("Unknown variable " + vnd);
             }
         }
     }
 
     @Test
     public void testFieldFinder() {
-        parseCode(TEST_FIELD);
+        ASTCompilationUnit acu = parseCode(TEST_FIELD);
         // System.out.println(TEST_FIELD);
 
         ASTVariableDeclaratorId declaration = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(1);
@@ -95,7 +98,7 @@ public class AcceptanceTest extends STBBaseTst {
 
     @Test
     public void testDemo() {
-        parseCode(TEST_DEMO);
+        ASTCompilationUnit acu = parseCode(TEST_DEMO);
         // System.out.println(TEST_DEMO);
         ASTMethodDeclaration node = acu.findDescendantsOfType(ASTMethodDeclaration.class).get(0);
         Scope s = node.getScope();
@@ -118,7 +121,7 @@ public class AcceptanceTest extends STBBaseTst {
 
     @Test
     public void testEnum() {
-        parseCode(NameOccurrencesTest.TEST_ENUM);
+        ASTCompilationUnit acu = parseCode(NameOccurrencesTest.TEST_ENUM);
 
         ASTVariableDeclaratorId vdi = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
         List<NameOccurrence> usages = vdi.getUsages();
@@ -129,7 +132,7 @@ public class AcceptanceTest extends STBBaseTst {
 
     @Test
     public void testInnerOuterClass() {
-        parseCode(TEST_INNER_CLASS);
+        ASTCompilationUnit acu = parseCode(TEST_INNER_CLASS);
         ASTVariableDeclaratorId vdi = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(1) // get inner class
                 .getFirstDescendantOfType(ASTVariableDeclaratorId.class); // get first declaration
         List<NameOccurrence> usages = vdi.getUsages();
@@ -146,7 +149,7 @@ public class AcceptanceTest extends STBBaseTst {
      */
     @Test
     public void testNullPointerEnumValueOfOverloaded() {
-        parseCode("public enum EsmDcVoltageSensor {\n" + "    A;\n" + "    void bar(int ... args) {\n"
+        ASTCompilationUnit acu = parseCode("public enum EsmDcVoltageSensor {\n" + "    A;\n" + "    void bar(int ... args) {\n"
                 + "        int idx;\n" + "        int startIdx;\n"
                 + "        String name = EsmDcVoltageSensor.valueOf((byte) (idx - startIdx)).getName();\n" + "    }\n"
                 // that's the overloaded method

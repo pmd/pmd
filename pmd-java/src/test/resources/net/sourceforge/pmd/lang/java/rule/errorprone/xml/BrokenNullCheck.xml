@@ -3,201 +3,365 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-should be &&
-        ]]></description>
+        <description>should be &amp;&amp;</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+
 public class Foo {
- List bar(List list) {
-  if (list != null || !list.equals(buz)) {
-   return list;
-  }
- }
+    Object buz;
+    Object bar(Object list) {
+        if (list != null || !list.equals(buz)) {
+            return list;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
      </test-code>
+
      <test-code>
-        <description><![CDATA[
-Ok, is &&
-        ]]></description>
+        <description>Ok, is &amp;&amp;</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- List bar(List list) {
-  if (list != null && !list.equals(buz)) {
-   return list;
-  }
- }
+    Object buz;
+    Object bar(Object list) {
+        if (list != null && !list.equals(buz)) {
+            return list;
+        }
+    }
 }
-     ]]></code>
-     </test-code>
+        ]]></code>
+    </test-code>
+
     <test-code>
-        <description><![CDATA[
-should be &&, but now with a longer expression
-        ]]></description>
+        <description>should be &amp;&amp;, but now with a longer expression</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-class Foo {
- void bar() {
-  if (books.getJane()!= null || !books.getJane().equals("")) { }
- }
+class Books {
+    String getJane() { return null; }
+    void bar(Books books) {
+        if (books.getJane()!= null || !books.getJane().equals("")) { }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-should be ||
-        ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- List bar(List list) {
-  if (list == null && list.equals(buz)) {
-   return list;
-  }
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Ok, is ||
-        ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- List bar(List list) {
-  if (list == null || list.equals(buz)) {
-   return list;
-  }
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Arrays are Ok
-        ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar() {
-  if (index >= 0 && books[index] == null) { }
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Different method is Ok
-        ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar() {
-  if (books[i].getJane() == null &&
-        books[i].getEyre() == null) { }
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Using a shorter expression with the same variable in the second check should not crash the test
-        ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar() {
-  if (books.getJane() == null &&
-        books == eyre) { }
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-1633683, should be ||, but now with another compare
-        ]]></description>
+        <description>should be ||</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (str == null && str.length() == 0) { }
- }
+    Object buz;
+    Object bar(Object list) {
+        if (list == null && list.equals(buz)) {
+            return list;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, is ||</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Object buz;
+    Object bar(Object list) {
+        if (list == null || list.equals(buz)) {
+            return list;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Arrays are Ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String[] books;
+    void bar(int index) {
+        if (index >= 0 && books[index] == null) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Different method is Ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Book {
+    Book[] books;
+    String getJane() { return null; }
+    String getEyre() { return null; }
+    void bar(int i) {
+        if (books[i].getJane() == null &&
+            books[i].getEyre() == null) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using a shorter expression with the same variable in the second check should not crash the test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Book {
+    Book[] books;
+    String getJane() { return null; }
+    void bar(String eyre) {
+        if (books.getJane() == null &&
+            books == eyre) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1633683, should be ||, but now with another compare</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(String str) {
+        if (str == null && str.length() == 0) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1633683, Arrays are Ok II</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(String[] p) {
+        if (p.length > 1 && p[0] == null) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Different literals in variables should not match</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String getJane() { return null; }
+    void bar(Foo[] p) {
+        if (p[0] == null && p[1].getJane()) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignments in checks are OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Book {
+    Book[] books;
+    Book[] getBook(int i) {return books;}
+    void bar(int janeEyre) {
+        if (books == null &&
+            (books = getBook(janeEyre)) == null) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Useless code, but it will not throw a NullPointerException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Family {
+    String plain, bold;
+    void bar(Family family) {
+        if (family.plain == null && family.bold == null &&
+           family.plain == null && family.bold == null) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Similar method calls with different arguments are OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import my.Jane;
+import my.Eyre;
+public class Library {
+    String[] getBook(Class<?> i) {return null;}
+    void bar(Library library) {
+        if (library.getBooks(Jane.class) != null ||
+            library.getBooks(Eyre.class) != null) { }
+    }
+}
+        ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-1633683, Arrays are Ok II
-        ]]></description>
+        <description>#3071 BrokenNullCheck FP</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
- void bar() {
-  if (p.length > 1 && p[0] == null) { }
- }
-}
-     ]]></code>
+            class Test{
+                Object obj = new Object(), objectWithDifferentName = obj;
+
+                public void testPMD(){
+                    Object obj = new Object();
+                    String str = "str";
+
+                    //Case 1. : An Alarm is generated
+                    if(obj == null && !(obj instanceof String));
+
+                    //Case 3.
+                    if(obj == null && this.obj == null); //An Alarm is generated
+                    if(obj == null && this.objectWithDifferentName); //An Alarm isn't generated
+                    if(obj == null && objectWithDifferentName); //An Alarm isn't generated
+                }
+            }
+            ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Different literals in variables should not match
-        ]]></description>
-        <expected-problems>0</expected-problems>
+        <description>BrokenNullCheck with Boolean variable</description>
+        <expected-problems>9</expected-problems>
+        <expected-linenumbers>6,7,8,9,21,22,23,24,26</expected-linenumbers>
         <code><![CDATA[
-public class Foo {
- void bar() {
-  if (p[0] == null && p[1].getJane()) { }
- }
-}
-     ]]></code>
+            class Test{
+                public void testPMD(){
+                    Boolean boo = null;
+
+                    boolean result;
+                    result = boo == null && boo != true;  // boo != true would throw NPE because of unboxing
+                    result = boo == null && boo != false; // same
+                    result = boo == null && boo == true;  // same
+                    result = boo == null && boo == false; // same
+
+                    result = boo != null && boo != true;  // ok
+                    result = boo != null && boo != false; // ok
+                    result = boo != null && boo == true;  // ok
+                    result = boo != null && boo == false; // ok
+
+                    result = boo == null || boo != true;  // ok
+                    result = boo == null || boo != false; // ok
+                    result = boo == null || boo == true;  // ok
+                    result = boo == null || boo == false; // ok
+
+                    result = boo != null || boo != true;  // second expression will throw
+                    result = boo != null || boo != false; // second expression will throw
+                    result = boo != null || boo == true;  // second expression will throw
+                    result = boo != null || boo == false; // second expression will throw
+
+                    result = boo == null && boo;          // same
+                }
+            }
+            ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Assignments in checks are OK
-        ]]></description>
-        <expected-problems>0</expected-problems>
+        <description>BrokenNullCheck with other kinds of NPEs (see QualifiableExpression)</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>10,11,12,13,17</expected-linenumbers>
         <code><![CDATA[
-public class Foo {
- void bar() {
-  if (books == null &&
-   (books = getBook(janeEyre)) == null) { }
- }
-}
-     ]]></code>
+            class Test {
+                interface FunctionalItf { String describe(); }
+                boolean handle(FunctionalItf obj) {}
+                Test field;
+                class Inner {boolean isEmpty();}
+                public void testPMD(){
+                    Test boo = null;
+
+                    boolean result;
+                    result = boo == null && handle(boo::toString);           // method reference
+                    result = boo == null && boo.toString();                  // method call
+                    result = boo == null && boo.field.field.hashCode() == 0; // field access
+                    result = boo == null && boo.new Inner().isEmpty();       // qualified ctor call
+
+                    int[] arr = null;
+
+                    result = arr == null && arr[i] == 0;                     // array access
+                }
+            }
+            ]]></code>
     </test-code>
-    <!-- A rare edge case that is technically a false positive, 
-    although the code is senseless. Will not fix. -->
-<!--<test-code>
-        <description><![CDATA[
-Useless code, but it will not throw a NullPointerException
-        ]]></description>
+    <test-code>
+        <description>#3071 BrokenNullCheck FPs (2)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
- void bar() {
-  if (family.plain == null && family.bold == null &&
-	    family.plain == null && family.bold == null) {
- }
-}
-     ]]></code>
-    </test-code> -->
-        <test-code>
-        <description><![CDATA[
-Similar method calls with different arguments are OK
-        ]]></description>
+            import java.util.*;
+
+            class Test {
+
+                Test foo = new Test(), another = new Test();
+                Map<String, String> map;
+                String field;
+                int idx;
+                String[] arr, anotherArr;
+
+                Object foo(Object o) {}
+
+                public void testPMD() {
+                    //Case 1.
+                    if ((foo == null) != (another == null) || foo != null && !foo.equals(another)) {
+                        ;
+                    }
+
+                    //Case 2.
+                    if (map.remove(null) != null || map.remove("") != null) {
+                        ;
+                    }
+                    if (foo(foo) != null || foo(foo.field) != null) {
+                        ;
+                    }
+
+                    //Case 3.
+                    if (foo != null || foo == null && another != null && another.hashCode() == 0) {
+                        ;
+                    }
+
+                    //Case 4.
+                    if (null != arr[idx] || null == arr[idx] && !anotherArr[idx].isEmpty()) {
+                        ;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>BrokenNullCheck with unboxing</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,5,6,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unboxing this operand will throw a NullPointerException</message>
+            <message>Unboxing this operand will throw a NullPointerException</message>
+            <message>Unboxing this operand will throw a NullPointerException</message>
+            <message>Unboxing this operand will throw a NullPointerException</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Test {
+                public void testPMD(Integer i){
+                    boolean result;
+                    result = i == null && i == 0;
+                    result = i == null && i << 1;
+                    result = i == null && i + 0;
+                    result = i == null && i == 0.d;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Comparing two boxed things does not unbox</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
- void bar() {
-   if (library.getBooks(Jane.class) != null ||
-      library.getBooks(Eyre.class) != null) { }
- }
-}
-     ]]></code>
+            class Test {
+                public void testPMD(Integer i, Integer d){
+                    boolean result;
+                    result = i == null && i == d;
+                    result = i == null && i != d;
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

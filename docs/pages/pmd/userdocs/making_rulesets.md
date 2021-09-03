@@ -18,7 +18,7 @@ author: Tom Copeland <tomcopeland@users.sourceforge.net>, Clément Fournier <cle
 
 The first step is to create a new empty ruleset. You can use the following template:
 
-``` xml
+```xml
 <?xml version="1.0"?>
 
 <ruleset name="Custom Rules"
@@ -44,7 +44,7 @@ To use the built-in rules PMD provides, you need to add some *references* to the
 basic rule reference:
 
 ```xml
-    <rule ref="category/java/errorprone.xml/EmptyCatchBlock" />
+<rule ref="category/java/errorprone.xml/EmptyCatchBlock" />
 ```
 
 Adding that element into the `ruleset` element adds the rule [EmptyCatchBlock](pmd_rules_java_errorprone.html#emptycatchblock)
@@ -73,20 +73,30 @@ How to read the `ref` attribute?
 
 #### [Configuring individual rules](pmd_userdocs_configuring_rules.html)
 
+How you can configure individual rules is described on [Configuring Rules](pmd_userdocs_configuring_rules.html).
+
 ### Bulk-adding rules
 
 You can also reference rules in bulk by referencing a complete category or ruleset, possibly excluding certain rules, like in the following:
 
 ```xml
-  <rule ref="category/java/codestyle.xml">
+<rule ref="category/java/codestyle.xml">
     <exclude name="WhileLoopsMustUseBraces"/>
     <exclude name="IfElseStmtsMustUseBraces"/>
-  </rule>
+</rule>
 ```
 
 Here, the `ref` attribute references a whole category. You can also use a file system path or classpath relative path. In any case, the path must address an accessible ruleset XML file.
 
 {% include note.html content="Path separators in the source file path are normalized to be the `/` character within PMD, so the same ruleset can be used on multiple platforms transparently." %}
+
+{% include note.html content="Referencing a complete category or ruleset means, you'll also get automatically any
+changes for this ruleset. If new rules are added, then these are automatically activated for you. If rules
+are deprecated, then these rules are automatically deactivated. This might or
+not might be, what you want. This can happen, if a new version of PMD provides a new rule and or deprecates
+existing rules. If you want to have
+complete control over the rules, that you are using, then it is recommended to add each rule separately via
+a single rule reference." %}
 
 ### Filtering the processed files
 
@@ -98,13 +108,13 @@ You can exclude some files from being processed by a ruleset using **exclude pat
 		xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
-	<description>My ruleset</description>
+    <description>My ruleset</description>
 
-	<exclude-pattern>.*/some/package/.*</exclude-pattern>
-	<exclude-pattern>.*/some/other/package/FunkyClassNamePrefix.*</exclude-pattern>
-	<include-pattern>.*/some/package/ButNotThisClass.*</include-pattern>
+    <exclude-pattern>.*/some/package/.*</exclude-pattern>
+    <exclude-pattern>.*/some/other/package/FunkyClassNamePrefix.*</exclude-pattern>
+    <include-pattern>.*/some/package/ButNotThisClass.*</include-pattern>
 
-	<!-- Rules here ... -->
+    <!-- Rules here ... -->
 
 </ruleset>
 ```

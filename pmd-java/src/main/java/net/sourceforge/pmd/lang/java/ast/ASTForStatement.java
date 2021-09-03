@@ -4,77 +4,53 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Represents a {@code for}-loop, or a foreach loop.
+ * Represents a {@code for} loop (distinct from {@linkplain ASTForeachStatement foreach loops}).
  *
- * <pre>
+ * <pre class="grammar">
  *
- * ForStatement ::= "for" "(" {@linkplain ASTLocalVariableDeclaration LocalVariableDeclaration} ":" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
- *                | "for" "(" {@linkplain ASTForInit ForInit}? ";" {@linkplain ASTExpression Expression}? ";" {@linkplain ASTForUpdate ForUpdate}? ")" {@linkplain ASTStatement Statement}
+ * ForStatement ::= "for" "(" {@linkplain ASTForInit ForInit}? ";" {@linkplain ASTExpression Expression}? ";" {@linkplain ASTForUpdate ForUpdate}? ")"
+ *                      {@linkplain ASTStatement Statement}
  *
  * </pre>
  */
-// TODO this should be split into two different nodes, otherwise
-// we can't enrich the API without returning null half the time
-public class ASTForStatement extends AbstractJavaNode {
+public final class ASTForStatement extends AbstractStatement implements ASTLoopStatement {
 
-    @InternalApi
-    @Deprecated
-    public ASTForStatement(int id) {
+    ASTForStatement(int id) {
         super(id);
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTForStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
 
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    /**
-     * Returns the node that represents the guard of this loop.
-     * This may be any expression of type boolean.
-     *
-     * <p>If this node represents a foreach loop, or if there is
-     * no specified guard, then returns null.
-     */
-    public ASTExpression getGuardExpressionNode() {
-        if (isForeach()) {
-            return null;
-        }
+    public ASTExpression getCondition() {
         return getFirstChildOfType(ASTExpression.class);
     }
 
-
     /**
-     * Returns true if this node represents a foreach loop.
+     * Returns the statement nested within the {@linkplain ASTForInit init clause}, if it exists.
+     * This is either a {@linkplain ASTLocalVariableDeclaration local variable declaration} or a
+     * {@linkplain ASTStatementExpressionList statement expression list}.
      */
-    public boolean isForeach() {
-        return jjtGetChild(0) instanceof ASTLocalVariableDeclaration;
+    public @Nullable ASTStatement getInit() {
+        ASTForInit init = AstImplUtil.getChildAs(this, 0, ASTForInit.class);
+        return init == null ? null : init.getStatement();
     }
 
-
     /**
-     * Returns the statement that represents the body of this
-     * loop.
+     * Returns the statement nested within the update clause, if it exists.
      */
-    public ASTStatement getBody() {
-        return (ASTStatement) jjtGetChild(jjtGetNumChildren() - 1);
+    public @Nullable ASTStatementExpressionList getUpdate() {
+        ASTForUpdate update = getFirstChildOfType(ASTForUpdate.class);
+        return update == null ? null : update.getExprList();
     }
+
 
 }

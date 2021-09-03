@@ -3,6 +3,7 @@
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Test property defaults</description>
         <expected-problems>4</expected-problems>
@@ -13,14 +14,14 @@
             <message>The constant name 'BOLGaaa_FIELD' doesn't match '[A-Z][A-Z_0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
-            public class Bar {
+public class Bar {
 
-                int Foo;
-                final int Hoo;
-                static int Bar;
-                static final int BOLGaaa_FIELD;
-            }
-            ]]></code>
+    int Foo;
+    final int Hoo;
+    static int Bar;
+    static final int BOLGaaa_FIELD;
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -33,15 +34,15 @@
             <message>The static field name 'Bar' doesn't match '[a-z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
-            public class Bar {
+public class Bar {
 
-                int Foo;
-                final int Hoo;
-                static int Bar;
-                static final int BOLG_FIELD;
+    int Foo;
+    final int Hoo;
+    static int Bar;
+    static final int BOLG_FIELD;
 
-            }
-            ]]></code>
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -54,14 +55,14 @@
             <message>The static field name 'Bar' doesn't match '[a-z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
-            public class Bar {
+public class Bar {
 
-                int Foo;
-                final int Hoo;
-                static int Bar;
-                static final int BOLG_FIELD;
-            }
-            ]]></code>
+    int Foo;
+    final int Hoo;
+    static int Bar;
+    static final int BOLG_FIELD;
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -74,14 +75,14 @@
             <message>The static field name 'Bar' doesn't match '[A-Z][A-Z0-9]+'</message>
         </expected-messages>
         <code><![CDATA[
-            public class Bar {
+public class Bar {
 
-                int Foo;
-                final int Hoo;
-                static int Bar;
-                static final int BOLG_FIELD;
-            }
-            ]]></code>
+    int Foo;
+    final int Hoo;
+    static int Bar;
+    static final int BOLG_FIELD;
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -95,14 +96,14 @@
             <message>The constant name 'BOLG_FIELD' doesn't match 'cons_[A-Z][A-Z0-9]+'</message>
         </expected-messages>
         <code><![CDATA[
-            public class Bar {
+public class Bar {
 
-                int Foo;
-                final int Hoo;
-                static int Bar;
-                static final int BOLG_FIELD;
-            }
-            ]]></code>
+    int Foo;
+    final int Hoo;
+    static int Bar;
+    static final int BOLG_FIELD;
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -110,20 +111,19 @@
         <rule-property name="enumConstantPattern">cons_[A-Z][A-Z0-9]+</rule-property>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>The enum constant name 'NET' doesn't match 'cons_[A-Z][A-Z0-9]+'</message>
             <message>The enum constant name 'ORG' doesn't match 'cons_[A-Z][A-Z0-9]+'</message>
+            <message>The enum constant name 'NET' doesn't match 'cons_[A-Z][A-Z0-9]+'</message>
         </expected-messages>
         <code><![CDATA[
-            public class Bar {
+public class Bar {
 
-                enum AnEnum {
-                    ORG, NET, cons_COM;
-                }
+    enum AnEnum {
+        ORG, NET, cons_COM;
+    }
 
-            }
-            ]]></code>
+}
+        ]]></code>
     </test-code>
-
 
     <test-code>
         <description>Test public constant property</description>
@@ -137,18 +137,16 @@
             <message>The public constant name 'DDD' doesn't match 'cons_[A-Z][A-Z0-9]+'</message>
         </expected-messages>
         <code><![CDATA[
-            public class Bar {
+public class Bar {
 
-                int Foo;
-                final int Hoo;
-                static int Bar;
-                static final int cons_BOLG_FIELD;
-                public static final int DDD;
-            }
-            ]]></code>
+    int Foo;
+    final int Hoo;
+    static int Bar;
+    static final int cons_BOLG_FIELD;
+    public static final int DDD;
+}
+        ]]></code>
     </test-code>
-
-
 
     <test-code>
         <description>Interface fields should be treated like public constants</description>
@@ -159,52 +157,52 @@
             <message>The public constant name 'Bar' doesn't match '[A-Z][A-Z_0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
-            public interface Bar {
+public interface Bar {
 
-                int Foo;
-                final int Hoo;
-                static int Bar;
-                static final int BOLG_FIELD;
-            }
-            ]]></code>
+    int Foo;
+    final int Hoo;
+    static int Bar;
+    static final int BOLG_FIELD;
+}
+        ]]></code>
     </test-code>
-
-
 
     <test-code>
         <description>Exclude serialVersionUID by default</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class MyException extends RuntimeException {
+public class MyException extends RuntimeException {
 
-                private static final long serialVersionUID = -8134636876462178354L;
-
-
-                public MyException(String message, Throwable cause) {
-                    super(message, cause);
-                }
+    private static final long serialVersionUID = -8134636876462178354L;
 
 
-                public MyException(String message) {
-                    super(message);
-                }
+    public MyException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-            }
-            ]]></code>
+
+    public MyException(String message) {
+        super(message);
+    }
+
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Exclude serialPersistentFields by default</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class Foo implements Serializable {
+import java.io.*;
+import java.util.*;
+public class Foo implements Serializable {
 
-                List next;
+    List next;
 
-                private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("next", List.class)};
+    private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("next", List.class)};
 
-            }
-            ]]></code>
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -212,12 +210,11 @@
         <rule-property name="exclusions">m$mangled|serialVersionUID</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class MyException {
-                private static final long serialVersionUID = -8134636876462178354L;
-                private static final long m$mangled = -8134636876462178354L;
+public class MyException {
+    private static final long serialVersionUID = -8134636876462178354L;
+    private static final long m$mangled = -8134636876462178354L;
 
-            }
-            ]]></code>
+}
+        ]]></code>
     </test-code>
-
 </test-data>

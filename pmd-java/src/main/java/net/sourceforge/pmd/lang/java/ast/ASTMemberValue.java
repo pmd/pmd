@@ -4,45 +4,32 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents the value of a member of an annotation.
  * This can appear in a {@linkplain ASTMemberValuePair member-value pair},
- * or in a {@linkplain ASTSingleMemberAnnotation single-member annotation}.
+ * or in the {@linkplain ASTDefaultValue default clause} of an annotation
+ * method.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * MemberValue ::= {@linkplain ASTAnnotation Annotation}
- *               | {@linkplain ASTMemberValueArrayInitializer MemberValueArrayInitializer}
- *               | &lt; any expression, excluding assignment expressions and lambda expressions &gt;
+ * MemberValue ::= {@link ASTAnnotation Annotation}
+ *               | {@link ASTMemberValueArrayInitializer MemberValueArrayInitializer}
+ *               | {@link ASTExpression &lt; any constant expression &gt;}
  *
  * </pre>
  */
-public class ASTMemberValue extends AbstractJavaNode {
+public interface ASTMemberValue extends JavaNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTMemberValue(int id) {
-        super(id);
-    }
-
-
-    @InternalApi
-    @Deprecated
-    public ASTMemberValue(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    /**
+     * Returns the constant value of this node, if this is a constant
+     * expression. Otherwise, or if some references couldn't be resolved,
+     * returns null. Note that {@link ASTNullLiteral null} is not a constant
+     * value, so this method's returning null is not a problem. Note that
+     * annotations are not given a constant value by this implementation.
+     */
+    default @Nullable Object getConstValue() {
+        return null;
     }
 }

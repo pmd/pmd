@@ -3,15 +3,13 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Single Value Element in Class Annotation
-     ]]></description>
+        <description>Single Value Element in Class Annotation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 @TestClassAnnotation(value = "TEST")
 public class Foo {
-
     private String y;
 
     public void bar() {
@@ -19,17 +17,15 @@ public class Foo {
         return;
     }
 }
-     ]]></code>
+@interface TestClassAnnotation { String value(); }
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-Single Value Element in Member Annotation
-     ]]></description>
+        <description>Single Value Element in Member Annotation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-
     @TestMemberAnnotation(value = "TEST")
     private String y;
 
@@ -38,17 +34,15 @@ public class Foo {
         return;
     }
 }
-     ]]></code>
+@interface TestMemberAnnotation { String value(); }
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-Single Value Element in Method Annotation
-     ]]></description>
+        <description>Single Value Element in Method Annotation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-
     private String y;
 
     @TestMethodAnnotation(value = "TEST")
@@ -57,18 +51,15 @@ public class Foo {
         return;
     }
 }
-     ]]></code>
+@interface TestMethodAnnotation { String value(); }
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-Two Elements in Method Annotation
-     ]]></description>
+        <description>Two Elements in Method Annotation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-
-
     private String y;
 
     @TestMethodAnnotation(value = "TEST", other = "TEST1")
@@ -77,17 +68,15 @@ public class Foo {
         return;
     }
 }
-     ]]></code>
+@interface TestMethodAnnotation { String value(); }
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-Single Element in Method Annotation
-     ]]></description>
+        <description>Single Element in Method Annotation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-
     private String y;
 
     @TestMethodAnnotation("TEST")
@@ -96,17 +85,15 @@ public class Foo {
         return;
     }
 }
-     ]]></code>
+@interface TestMethodAnnotation { String value(); }
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-Single non Value Element in Method Annotation
-     ]]></description>
+        <description>Single non Value Element in Method Annotation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-
     private String y;
 
     @TestMethodAnnotation(other = "TEST")
@@ -115,6 +102,7 @@ public class Foo {
         return;
     }
 }
-     ]]></code>
+@interface TestMethodAnnotation { String value(); }
+        ]]></code>
     </test-code>
 </test-data>

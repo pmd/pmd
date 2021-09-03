@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -8,8 +8,8 @@ import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.UnaryExpression;
 
-public class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> {
-    public ASTUnaryExpression(UnaryExpression unaryExpression) {
+public final class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> {
+    ASTUnaryExpression(UnaryExpression unaryExpression) {
         super(unaryExpression);
         if (unaryExpression.getOperator() == Token.VOID) {
             super.setImage("void");
@@ -18,16 +18,13 @@ public class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> 
         }
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     public EcmascriptNode<?> getOperand() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public boolean isPrefix() {

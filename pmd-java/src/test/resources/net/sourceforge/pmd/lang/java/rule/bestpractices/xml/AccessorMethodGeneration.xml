@@ -3,64 +3,71 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>inner class accesses private field from outer class</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Consider giving this member package visibility to access it from Foo.InnerClass without a synthetic accessor method</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
- private int field;
- 
- public class InnerClass {
-   private long innerField;
-   
-   InnerClass() {
-     innerField = Foo.this.field; // violation, accesing a private field
-   }
- }
+    private int field;
+
+    public class InnerClass {
+        private long innerField;
+
+        InnerClass() {
+            innerField = Foo.this.field; // violation, accessing a private field
+        }
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
         <description>inner class accesses private field from outer class unqualified</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- private int field;
- 
- public class InnerClass {
-   private long innerField;
-   
-   InnerClass() {
-     innerField = field; // violation, accesing a private field
-   }
- }
+    private int field;
+
+    public class InnerClass {
+        private long innerField;
+
+        InnerClass() {
+            innerField = field; // violation, accessing a private field
+        }
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
         <description>outer class accesses private field from inner class</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>9</expected-linenumbers>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Consider giving this member package visibility to access it from Foo without a synthetic accessor method</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
- private int field;
- 
- public class InnerClass {
-   private long innerField;
- }
- 
- long method() {
-   return new InnerClass().innerField; // violation, accesing a private field
- }
+    private int field;
+
+    public class InnerClass {
+        private long innerField;
+    }
+
+    long method() {
+        return new InnerClass().innerField; // violation, accessing a private field
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -68,104 +75,126 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public int publicField;
- protected int protectedField;
- /* package */ int packageField;
- 
- public class InnerClass {
-   private long innerField;
-   
-   InnerClass() {
-     innerField = Foo.this.publicField; // this is ok
-     innerField += Foo.this.protectedField; // this is ok
-     innerField += Foo.this.packageField; // this is ok
-   }
- }
+    public int publicField;
+    protected int protectedField;
+    /* package */ int packageField;
+
+    public class InnerClass {
+        private long innerField;
+
+        InnerClass() {
+            innerField = Foo.this.publicField; // this is ok
+            innerField += Foo.this.protectedField; // this is ok
+            innerField += Foo.this.packageField; // this is ok
+        }
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
         <description>inner class accesses private method of outer class, unqualified</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public class InnerClass {
-   private void secret() {
-     outerSecret(); // violation, accesing a private method
-   }
- }
- 
- private void outerSecret() {
- }
+    public class InnerClass {
+        private void secret() {
+            outerSecret(); // violation, accessing a private method
+        }
+    }
+
+    private void outerSecret() {
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
         <description>inner class accesses private method of outer class, qualified</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public class InnerClass {
-   private void secret() {
-     Foo.this.outerSecret(); // violation, accesing a private method
-   }
- }
- 
- private void outerSecret() {
- }
+    public class InnerClass {
+        private void secret() {
+            Foo.this.outerSecret(); // violation, accessing a private method
+        }
+    }
+
+    private void outerSecret() {
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
         <description>outer class accesses private method of inner class</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public class InnerClass {
-   private void secret() {
-   }
- }
- 
- private void outerSecret() {
-   new InnerClass().secret(); // violation, accesing a private method
- }
+    public class InnerClass {
+        private void secret() {
+        }
+    }
+
+    private void outerSecret() {
+        new InnerClass().secret(); // violation, accessing a private method
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
+
+    <test-code>
+        <description>check violations are not duplicated</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public class InnerClass {
+        private void secret() {
+        }
+    }
+
+    private void outerSecret() {
+        // two different usages should be reported once
+        new InnerClass().secret();
+        new InnerClass().secret();
+    }
+}
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+
     <test-code>
         <description>inner class accesses non-private methods of outer class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public class InnerClass {
-   private void secret() {
-     outerPublic(); // this is ok
-     outerProtected(); // this is ok
-     outerPackage(); // this is ok
-   }
- }
- 
- public void outerPublic() {
- }
- 
- protected void outerProtected() {
- }
- 
- /* package */ void outerPackage() {
- }
+    public class InnerClass {
+        private void secret() {
+            outerPublic(); // this is ok
+            outerProtected(); // this is ok
+            outerPackage(); // this is ok
+        }
+    }
+
+    public void outerPublic() {
+    }
+
+    protected void outerProtected() {
+    }
+
+    /* package */ void outerPackage() {
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 
     <test-code>
@@ -191,47 +220,121 @@ public class Foo implements Parcelable {
         }
     };
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
+
     <test-code>
         <description>#808 - [java] AccessorMethodGeneration false positives with compile time constants</description>
         <expected-problems>4</expected-problems>
-        <expected-linenumbers>25,26,27,28</expected-linenumbers>
+        <expected-linenumbers>8,9,10,11</expected-linenumbers>
         <code><![CDATA[
-@SuppressWarnings("unused")
 class Outer {
-  private static final String CONST_STRING = "value";
-  private static final String CALCULATED_STRING = "value" + 0;
-  private static final int LITERAL = 0;
-  private static final int CALCULATED = LITERAL * 2;
-  private static final int CAST = (int) 0L;
-  private static final long NON_CONSTANT = java.util.concurrent.TimeUnit.SECONDS.toMillis(10);
-  private static final String NON_CONSTANT_STR = NON_CONSTANT + "foo";
-  private static final int LATE_INIT;
-  private static String STATIC_STRING = "value";
-  static {
-  	LATE_INIT = 0;
-  }
-
-  class Inner {
-    @Override
-    public String toString() {
-      return "" // separate lines so the rule violations show up better
-           + CONST_STRING
-           + CALCULATED_STRING
-           + LITERAL
-           + CALCULATED
-           + CAST
-           + NON_CONSTANT     // valid violation
-           + NON_CONSTANT_STR // valid violation
-           + LATE_INIT        // valid violation
-           + STATIC_STRING    // valid violation
-      ;
+    private static final String CONST_STRING = "value";
+    private static final String CALCULATED_STRING = "value" + 0;
+    private static final int LITERAL = 0;
+    private static final int CALCULATED = LITERAL * 2;
+    private static final int CAST = (int) 0L;
+    // these are violations
+    private static final long NON_CONSTANT = java.util.concurrent.TimeUnit.SECONDS.toMillis(10);
+    private static final String NON_CONSTANT_STR = NON_CONSTANT + "foo";
+    private static final int LATE_INIT;
+    private static String STATIC_STRING = "value";
+    static {
+        LATE_INIT = 0;
     }
-  }
+
+    class Inner {
+        @Override
+        public String toString() {
+        return "" // separate lines so the rule violations show up better
+               + CONST_STRING
+               + CALCULATED_STRING
+               + LITERAL
+               + CALCULATED
+               + CAST
+               + NON_CONSTANT     // valid violation
+               + NON_CONSTANT_STR // valid violation
+               + LATE_INIT        // valid violation
+               + STATIC_STRING    // valid violation
+            ;
+        }
+    }
 }
-     ]]></code>
-     <source-type>java 10</source-type>
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+    <test-code>
+        <description>AccessorMethodGeneration false positive with overloads #807</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Outer {
+
+                static void outerMethod(int i) {
+                    // package private method, safe to call, and is called from Inner.f()
+                }
+
+                private static void outerMethod(String s) {
+                    // private method, not used anywhere, yet triggers AccessorMethodGeneration
+                }
+
+                static class Inner {
+                    void f() {
+                        outerMethod(0);
+                    }
+                }
+            }
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+    <test-code>
+        <description>AccessorMethodGeneration false positive with overloads #807 (control test)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Outer {
+
+                static void outerMethod(int i) {
+                    // package private method, safe to call, and is called from Inner.f()
+                }
+
+                private static void outerMethod(String s) {
+                    // private method, not used anywhere, yet triggers AccessorMethodGeneration
+                }
+
+                static class Inner {
+                    void f() {
+                        outerMethod("0");
+                    }
+                }
+            }
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+    <test-code>
+        <description>AccessorMethodGeneration: Name clash with another public field not properly handled #342</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class ClassA {
+
+                public String field;
+
+            }
+
+            public class ClassB {
+
+                private String field;
+
+                private class ClassC {
+
+                    public void doSomething() {
+                        ClassA a = new ClassA();
+                        a.field = "abcd"; // should not be a violation here but reported as one
+                    }
+
+                }
+
+            }
+        ]]></code>
+        <source-type>java 10</source-type>
     </test-code>
 </test-data>

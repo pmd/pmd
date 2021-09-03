@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- {}
+    {}
 }
         ]]></code>
     </test-code>
@@ -17,7 +19,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- static {}
+    static {}
 }
         ]]></code>
     </test-code>
@@ -27,8 +29,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-       public Animation getStatusTransition() {
-          return new Transition() {
+    public Animation getStatusTransition() {
+        return new Transition() {
 
             {
                 setCycleDuration(Duration.millis(1200));
@@ -36,10 +38,10 @@ public class Foo {
 
             @Override
             protected void interpolate(double frac) {
-               // magic
+                // magic
             }
         };
-     }
+    }
 }
         ]]></code>
     </test-code>
@@ -50,9 +52,9 @@ public class Foo {
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- static {
-     class Local {{}}
- }
+    static {
+        class Local {{}}
+    }
 }
         ]]></code>
     </test-code>
@@ -63,12 +65,12 @@ public class Foo {
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 public enum Foo {
-       A {
-         { setCycleDuration(Duration.millis(1200)); }
-       };
+    A {
+        { setCycleDuration(Duration.millis(1200)); }
+    };
 
 
-	{ setCycleDuration(Duration.millis(1200)); }
+    { setCycleDuration(Duration.millis(1200)); }
 
 }
         ]]></code>
@@ -80,8 +82,8 @@ public enum Foo {
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
-       public Animation getStatusTransition() {
-          return new Transition() {
+    public Animation getStatusTransition() {
+        return new Transition() {
 
             {
                 setCycleDuration(Duration.millis(1200));
@@ -90,12 +92,11 @@ public class Foo {
 
             @Override
             protected void interpolate(double frac) {
-               // magic
+                // magic
             }
         };
      }
 }
         ]]></code>
     </test-code>
-
 </test-data>

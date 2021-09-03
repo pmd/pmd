@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaratorId;
+import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -63,7 +64,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     private void addScope(Scope newScope, PLSQLNode node) {
         newScope.setParent(scopes.peek());
         scopes.push(newScope);
-        node.setScope(newScope);
+        InternalApiBridge.setScope(node, newScope);
     }
 
     /**
@@ -123,16 +124,16 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
         // When we do full symbol resolution, we'll need to add a truly
         // top-level GlobalScope.
         Scope scope;
-        // %TODO generate a SchemaScope, based on inferred or explcitly
+        // %TODO generate a SchemaScope, based on inferred or explicitly
         // specified SchemaName
         ASTObjectDeclaration n = null; // node.getPackageDeclaration();
         if (n != null) {
-            scope = new SourceFileScope(n.jjtGetChild(0).getImage());
+            scope = new SourceFileScope(n.getChild(0).getImage());
         } else {
             scope = new SourceFileScope();
         }
         scopes.push(scope);
-        node.setScope(scope);
+        InternalApiBridge.setScope(node, scope);
     }
 
     @Override
@@ -145,7 +146,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     @Override
     public Object visit(ASTPackageSpecification node, Object data) {
         createClassScope(node);
-        Scope s = ((PLSQLNode) node.jjtGetParent()).getScope();
+        Scope s = ((PLSQLNode) node.getParent()).getScope();
         s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;
@@ -154,7 +155,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     @Override
     public Object visit(ASTPackageBody node, Object data) {
         createClassScope(node);
-        Scope s = ((PLSQLNode) node.jjtGetParent()).getScope();
+        Scope s = ((PLSQLNode) node.getParent()).getScope();
         s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;
@@ -163,7 +164,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     @Override
     public Object visit(ASTTypeSpecification node, Object data) {
         createClassScope(node);
-        Scope s = ((PLSQLNode) node.jjtGetParent()).getScope();
+        Scope s = ((PLSQLNode) node.getParent()).getScope();
         s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;
@@ -172,7 +173,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     @Override
     public Object visit(ASTTriggerUnit node, Object data) {
         createClassScope(node);
-        Scope s = ((PLSQLNode) node.jjtGetParent()).getScope();
+        Scope s = ((PLSQLNode) node.getParent()).getScope();
         s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;
@@ -234,7 +235,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
      * ASTMethodDeclarator md = methodDeclarators.get(0);
      * LOGGER.finest("ClassScope skipped for Schema-level method: methodName=" +
      * node.getMethodName() + "; Image=" + node.getImage() );
-     * 
+     *
      * } //ASTMethodDeclarator md =
      * node.getFirstChildOfType(ASTMethodDeclarator.class); // A PLSQL Method
      * (FUNCTION|PROCEDURE) may be schema-level try {
@@ -247,16 +248,16 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
      * getMessage())) {
      * LOGGER.finest("ClassScope skipped for Schema-level method: methodName=" +
      * node.getMethodName() + "; Image=" + node.getImage() );
-     * 
+     *
      * //A File-level/Schema-level object may have a Schema-name explicitly
      * specified in the declaration ASTObjectNameDeclaration on =
      * md.getFirstChildOfType(ASTObjectNameDeclaration.class); if( 1 <
-     * on.jjtGetNumChildren()) { ASTID schemaName =
+     * on.getNumChildren()) { ASTID schemaName =
      * on.getFirstChildOfType(ASTID.class);
      * LOGGER.finest("SchemaName for Schema-level method: methodName=" +
      * node.getMethodName() + "; Image=" + node.getImage() + "is " +
      * schemaName.getImage() );
-     * 
+     *
      * } } } cont(node); return data; }
      */
 
@@ -282,7 +283,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
                 // A File-level/Schema-level object may have a Schema-name
                 // explicitly specified in the declaration
                 ASTObjectNameDeclaration on = md.getFirstChildOfType(ASTObjectNameDeclaration.class);
-                if (1 < on.jjtGetNumChildren()) {
+                if (1 < on.getNumChildren()) {
                     ASTID schemaName = on.getFirstChildOfType(ASTID.class);
                     if (LOGGER.isLoggable(Level.FINEST)) {
                         LOGGER.finest("SchemaName for Schema-level method: methodName=" + node.getMethodName()
@@ -318,7 +319,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
                 // A File-level/Schema-level object may have a Schema-name
                 // explicitly specified in the declaration
                 ASTObjectNameDeclaration on = md.getFirstChildOfType(ASTObjectNameDeclaration.class);
-                if (1 < on.jjtGetNumChildren()) {
+                if (1 < on.getNumChildren()) {
                     ASTID schemaName = on.getFirstChildOfType(ASTID.class);
                     if (LOGGER.isLoggable(Level.FINEST)) {
                         LOGGER.finest("SchemaName for Schema-level method: methodName=" + node.getMethodName()
@@ -351,7 +352,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     public Object visit(ASTVariableOrConstantDeclaratorId node, Object data) {
         VariableNameDeclaration decl = new VariableNameDeclaration(node);
         node.getScope().addDeclaration(decl);
-        node.setNameDeclaration(decl);
+        InternalApiBridge.setNameDeclaration(node, decl);
         return super.visit(node, data);
     }
 
@@ -363,7 +364,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     // }
 
     private void cont(PLSQLNode node) {
-        super.visit(node, null);
+        super.visitPlsqlNode(node, null);
         scopes.pop();
     }
 }

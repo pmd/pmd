@@ -4,325 +4,252 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
 
-import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
+public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule {
 
-    private List<ASTImportDeclaration> imports = new ArrayList<>();
-    private String currentPackage;
+    private static final PropertyDescriptor<Boolean> REPORT_METHODS =
+        booleanProperty("reportStaticMethods")
+            .desc("Report unnecessary static method qualifiers like in `Collections.emptyList()`, if the method is imported or inherited.")
+            .defaultValue(true)
+            .build();
+
+    private static final PropertyDescriptor<Boolean> REPORT_FIELDS =
+        booleanProperty("reportStaticFields")
+            .desc("Report unnecessary static field qualifiers like in `Math.PI`, if the field is imported or inherited.")
+            .defaultValue(true)
+            .build();
 
     public UnnecessaryFullyQualifiedNameRule() {
-        super.addRuleChainVisit(ASTCompilationUnit.class);
-        super.addRuleChainVisit(ASTPackageDeclaration.class);
-        super.addRuleChainVisit(ASTImportDeclaration.class);
-        super.addRuleChainVisit(ASTClassOrInterfaceType.class);
-        super.addRuleChainVisit(ASTName.class);
+        super(ASTClassOrInterfaceType.class);
+        definePropertyDescriptor(REPORT_METHODS);
+        definePropertyDescriptor(REPORT_FIELDS);
     }
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
-        imports.clear();
-        currentPackage = null;
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTPackageDeclaration node, Object data) {
-        currentPackage = node.getPackageNameImage();
-        return data;
-    }
-    
-    @Override
-    public Object visit(ASTImportDeclaration node, Object data) {
-        imports.add(node);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTClassOrInterfaceType node, Object data) {
-        // This name has no qualification, it can't be unnecessarily qualified
-        if (node.getImage().indexOf('.') < 0) {
+    public Object visit(final ASTClassOrInterfaceType deepest, Object data) {
+        if (deepest.getQualifier() != null) {
+            // the child will be visited instead
             return data;
         }
-        checkImports(node, data);
-        return data;
-    }
 
-    @Override
-    public Object visit(ASTName node, Object data) {
-        if (!(node.jjtGetParent() instanceof ASTImportDeclaration)
-                && !(node.jjtGetParent() instanceof ASTPackageDeclaration)) {
-            // This name has no qualification, it can't be unnecessarily qualified
-            if (node.getImage().indexOf('.') < 0) {
-                return data;
-            }
-            checkImports(node, data);
+        ASTClassOrInterfaceType next = deepest;
+        ScopeInfo bestReason = null;
+        if (next.isFullyQualified()) {
+            bestReason = typeMeansSame(next);
         }
-        return data;
+
+        // try to find the longest prefix that can be removed
+        while (bestReason != null && segmentIsIrrelevant(next) && next.getParent() instanceof ASTClassOrInterfaceType) {
+            ASTClassOrInterfaceType nextParent = (ASTClassOrInterfaceType) next.getParent();
+            ScopeInfo newBestReason = typeMeansSame(nextParent);
+            if (newBestReason == null) {
+                break;
+            } else {
+                bestReason = newBestReason;
+                next = nextParent;
+            }
+        }
+
+        // maybe a method call/field can still take precedence
+        if (next.getParent() instanceof ASTTypeExpression) {
+
+            JavaNode opa = next.getParent().getParent();
+            if (getProperty(REPORT_METHODS) && opa instanceof ASTMethodCall) {
+                ASTMethodCall methodCall = (ASTMethodCall) opa;
+                if (methodCall.getExplicitTypeArguments() == null
+                    && methodProbablyMeansSame(methodCall)) {
+                    // we don't actually know where the method came from
+                    String simpleName = formatMemberName(next, methodCall.getMethodType().getSymbol());
+                    String unnecessary = produceQualifier(deepest, next, true);
+                    addViolation(data, next, new Object[] {unnecessary, simpleName, ""});
+                    return null;
+                }
+            } else if (getProperty(REPORT_FIELDS) && opa instanceof ASTFieldAccess) {
+                ASTFieldAccess fieldAccess = (ASTFieldAccess) opa;
+                ScopeInfo reasonForFieldInScope = fieldMeansSame(fieldAccess);
+                if (reasonForFieldInScope != null) {
+                    String simpleName = formatMemberName(next, fieldAccess.getReferencedSym());
+                    String reasonToString = unnecessaryReasonWrapper(reasonForFieldInScope);
+                    String unnecessary = produceQualifier(deepest, next, true);
+                    addViolation(data, next, new Object[] {unnecessary, simpleName, reasonToString});
+                    return null;
+                }
+            }
+        }
+
+        if (bestReason != null) {
+            String simpleName = next.getSimpleName();
+            String reasonToString = unnecessaryReasonWrapper(bestReason);
+            String unnecessary = produceQualifier(deepest, next, false);
+            addViolation(data, next, new Object[] {unnecessary, simpleName, reasonToString});
+        }
+        return null;
     }
 
+
+    private String produceQualifier(ASTClassOrInterfaceType startIncluded, ASTClassOrInterfaceType stopExcluded, boolean includeLast) {
+        StringBuilder sb = new StringBuilder();
+        if (startIncluded.isFullyQualified()) {
+            sb.append(startIncluded.getTypeMirror().getSymbol().getPackageName());
+        }
+        ASTClassOrInterfaceType nextSimpleName = startIncluded;
+        while (nextSimpleName != stopExcluded) { // NOPMD we want identity comparison
+            sb.append('.').append(nextSimpleName.getSimpleName());
+            nextSimpleName = (ASTClassOrInterfaceType) nextSimpleName.getParent();
+        }
+        if (includeLast) {
+            if (sb.length() == 0) {
+                return nextSimpleName.getSimpleName();
+            }
+            sb.append('.').append(nextSimpleName.getSimpleName());
+        }
+        return sb.toString();
+    }
+
+    private boolean segmentIsIrrelevant(ASTClassOrInterfaceType type) {
+        return type.getTypeArguments() == null && type.getDeclaredAnnotations().isEmpty();
+    }
 
     /**
-     * Returns true if the name could be imported by this declaration.
-     * The name must be fully qualified, the import is either on-demand
-     * or static, that is its {@link ASTImportDeclaration#getImportedName()}
-     * is the enclosing package or type name of the imported type or static member.
+     * Checks that the type name can be referred to by simple name in the
+     * given scope, which means, that the qualification can be dropped.
+     * If the symbol table for types yields the same symbol when referred
+     * to by simple name, then this is true.
+     *
+     * @return The reason why the type is in scope. Null if it's not in scope.
      */
-    private boolean declarationMatches(ASTImportDeclaration decl, String name) {
-        return name.startsWith(decl.getImportedName())
-                && name.lastIndexOf('.') == decl.getImportedName().length();
+    private static @Nullable ScopeInfo typeMeansSame(@NonNull ASTClassOrInterfaceType typeNode) {
+        JTypeDeclSymbol sym = typeNode.getTypeMirror().getSymbol();
+        if (sym == null || sym.isUnresolved()) {
+            return null;
+        }
+
+        JSymbolTable symTable = typeNode.getSymbolTable();
+        if (symTable.variables().resolveFirst(sym.getSimpleName()) != null) {
+            return null; //name is obscured: https://docs.oracle.com/javase/specs/jls/se15/html/jls-6.html#jls-6.4.2
+        }
+
+        return fieldOrTypeMeansSame(
+            sym,
+            typeNode.getSymbolTable(),
+            JSymbolTable::types,
+            (s, t) -> s.equals(t.getSymbol())
+        );
     }
 
-    private boolean couldBeMethodCall(JavaNode node) {
-        if (node.getNthParent(2) instanceof ASTPrimaryExpression && node.getNthParent(1) instanceof ASTPrimaryPrefix) {
-            int nextSibling = node.jjtGetParent().jjtGetChildIndex() + 1;
-            if (node.getNthParent(2).jjtGetNumChildren() > nextSibling) {
-                return node.getNthParent(2).jjtGetChild(nextSibling) instanceof ASTPrimarySuffix;
+    private static boolean methodProbablyMeansSame(ASTMethodCall call) {
+
+        // todo at least filter by potential applicability
+        //  (ideally, do a complete inference run)
+        //  this may have false negatives
+        List<JMethodSig> accessibleMethods = call.getSymbolTable().methods().resolve(call.getMethodName());
+        if (accessibleMethods.isEmpty() || call.getOverloadSelectionInfo().isFailed()) {
+            return false;
+        }
+
+        JClassSymbol methodOwner = call.getMethodType().getSymbol().getEnclosingClass();
+
+        for (JMethodSig m : accessibleMethods) {
+            if (!m.getSymbol().getEnclosingClass().equals(methodOwner)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
-    private void checkImports(AbstractJavaTypeNode node, Object data) {
-        String name = node.getImage();
-        List<ASTImportDeclaration> matches = new ArrayList<>();
+    private static ScopeInfo fieldMeansSame(ASTFieldAccess field) {
+        JFieldSymbol sym = field.getReferencedSym();
+        if (sym == null || sym.isUnresolved()) {
+            return null;
+        }
 
-        // Find all "matching" import declarations
-        for (ASTImportDeclaration importDeclaration : imports) {
-            if (!importDeclaration.isImportOnDemand()) {
-                // Exact match of imported class
-                if (name.equals(importDeclaration.getImportedName())) {
-                    matches.add(importDeclaration);
-                    continue;
+        return fieldOrTypeMeansSame(
+            sym,
+            field.getSymbolTable(),
+            JSymbolTable::variables,
+            (s, t) -> s.equals(t.getSymbol())
+        );
+    }
+
+    private static <S extends JElementSymbol, T> ScopeInfo fieldOrTypeMeansSame(@NonNull S originalSym,
+                                                                                JSymbolTable symTable,
+                                                                                Function<JSymbolTable, ShadowChain<T, ScopeInfo>> shadowChainGetter,
+                                                                                BiPredicate<S, T> areEqual) {
+
+        ShadowChainIterator<T, ScopeInfo> iter =
+            shadowChainGetter.apply(symTable).iterateResults(originalSym.getSimpleName());
+
+        if (iter.hasNext()) {
+            iter.next();
+            List<T> results = iter.getResults();
+            if (results.size() == 1) { // otherwise ambiguous
+                if (areEqual.test(originalSym, results.get(0))) {
+                    return iter.getScopeTag();
                 }
             }
-            // On demand import exactly matches the package of the type
-            // Or match of static method call on imported class
-            if (declarationMatches(importDeclaration, name)) {
-                matches.add(importDeclaration);
-            }
+            // not unnecessary
+            return null;
         }
-
-        // If there is no direct match, consider if we match the tail end of a
-        // direct static import, but also a static method on a class import.
-        // For example:
-        //
-        // import java.util.Arrays;
-        // import static java.util.Arrays.asList;
-        // static {
-        // List list1 = Arrays.asList("foo"); // Array class name not needed!
-        // List list2 = asList("foo"); // Preferred, used static import
-        // }
-        //
-        // Or: The usage of a FQN is correct, if there is another import with the same class.
-        // Example
-        // import foo.String;
-        // static {
-        // java.lang.String s = "a";
-        // }
-        if (matches.isEmpty()) {
-            for (ASTImportDeclaration importDeclaration : imports) {
-                String[] importParts = importDeclaration.getImportedName().split("\\.");
-                String[] nameParts = name.split("\\.");
-                if (importDeclaration.isStatic()) {
-                    if (importDeclaration.isImportOnDemand()) {
-                        // Name class part matches class part of static import?
-                        if (nameParts[nameParts.length - 2].equals(importParts[importParts.length - 1])) {
-                            matches.add(importDeclaration);
-                        }
-                    } else {
-                        // Last 2 parts match? Class + Method name
-                        if (nameParts[nameParts.length - 1].equals(importParts[importParts.length - 1])
-                                && nameParts[nameParts.length - 2].equals(importParts[importParts.length - 2])) {
-                            matches.add(importDeclaration);
-                        }
-                    }
-                } else if (!importDeclaration.isImportOnDemand()) {
-                    // last part matches?
-                    if (nameParts[nameParts.length - 1].equals(importParts[importParts.length - 1])) {
-                        matches.add(importDeclaration);
-                    } else if (couldBeMethodCall(node)
-                            && nameParts.length > 1 && nameParts[nameParts.length - 2].equals(importParts[importParts.length - 1])) {
-                        // maybe the Name is part of a method call, then the second two last part needs to match
-                        matches.add(importDeclaration);
-                    }
-                }
-            }
-        }
-
-        if (matches.isEmpty()) {
-            if (isJavaLangImplicit(node)) {
-                addViolation(data, node, new Object[] { node.getImage(), "java.lang.*", "implicit "});
-            } else if (isSamePackage(node)) {
-                addViolation(data, node, new Object[] { node.getImage(), currentPackage + ".*", "same package "});
-            }
-        } else {
-            ASTImportDeclaration firstMatch = findFirstMatch(matches);
-
-            // Could this done to avoid a conflict?
-            if (!isAvoidingConflict(node, name, firstMatch)) {
-                String importStr = firstMatch.getImportedName() + (firstMatch.isImportOnDemand() ? ".*" : "");
-                String type = firstMatch.isStatic() ? "static " : "";
-
-                addViolation(data, node, new Object[] { node.getImage(), importStr, type });
-            }
-        }
+        // unknown symbol
+        return null;
     }
 
-    private ASTImportDeclaration findFirstMatch(List<ASTImportDeclaration> imports) {
-        // first search only static imports
-        ASTImportDeclaration result = null;
-        for (ASTImportDeclaration importDeclaration : imports) {
-            if (importDeclaration.isStatic()) {
-                result = importDeclaration;
-                break;
-            }
+    private static String formatMemberName(ASTClassOrInterfaceType qualifier, JAccessibleElementSymbol call) {
+        JClassSymbol methodOwner = call.getEnclosingClass();
+        if (methodOwner != null && !methodOwner.equals(qualifier.getTypeMirror().getSymbol())) {
+            return methodOwner.getSimpleName() + "::" + call.getSimpleName();
         }
-
-        // then search all non-static, if needed
-        if (result == null) {
-            for (ASTImportDeclaration importDeclaration : imports) {
-                if (!importDeclaration.isStatic()) {
-                    result = importDeclaration;
-                    break;
-                }
-            }
-        }
-
-        return result;
+        return call.getSimpleName();
     }
 
-    private boolean isSamePackage(AbstractJavaTypeNode node) {
-        String name = node.getImage();
-        return name.substring(0, name.lastIndexOf('.')).equals(currentPackage);
-    }
-    
-    private boolean isJavaLangImplicit(AbstractJavaTypeNode node) {
-        String name = node.getImage();
-        boolean isJavaLang = name != null && name.startsWith("java.lang.");
-
-        if (isJavaLang && node.getType() != null && node.getType().getPackage() != null) {
-            // valid would be ProcessBuilder.Redirect.PIPE but not java.lang.ProcessBuilder.Redirect.PIPE
-            String packageName = node.getType().getPackage() // package might be null, if type is an array type...
-                    .getName();
-            return "java.lang".equals(packageName);
-        } else if (isJavaLang) {
-            // only java.lang.* is implicitly imported, but not e.g. java.lang.reflection.*
-            return StringUtils.countMatches(name, '.') == 2;
-        }
-        return false;
+    private static String unnecessaryReasonWrapper(ScopeInfo scopeInfo) {
+        return " because it is " + unnecessaryReason(scopeInfo);
     }
 
-    private boolean isAvoidingConflict(final AbstractJavaTypeNode node, final String name,
-            final ASTImportDeclaration firstMatch) {
-        // is it a conflict between different imports?
-        if (firstMatch.isImportOnDemand() && firstMatch.isStatic()) {
-            final String methodCalled = name.substring(name.indexOf('.') + 1);
-
-            // Is there any other static import conflictive?
-            for (final ASTImportDeclaration importDeclaration : imports) {
-                if (!Objects.equals(importDeclaration, firstMatch) && importDeclaration.isStatic()) {
-                    if (declarationMatches(firstMatch, importDeclaration.getImportedName())) {
-                        // A conflict against the same class is not an excuse,
-                        // ie:
-                        // import java.util.Arrays;
-                        // import static java.util.Arrays.asList;
-                        continue;
-                    }
-
-                    if (importDeclaration.isImportOnDemand()) {
-                        // We need type resolution to make sure there is a
-                        // conflicting method
-                        if (importDeclaration.getType() != null) {
-                            for (final Method m : importDeclaration.getType().getMethods()) {
-                                if (m.getName().equals(methodCalled)) {
-                                    return true;
-                                }
-                            }
-                        }
-                    } else if (importDeclaration.getImportedName().endsWith(methodCalled)) {
-                        return true;
-                    }
-                }
-            }
+    private static String unnecessaryReason(ScopeInfo scopeInfo) {
+        switch (scopeInfo) {
+        case JAVA_LANG:
+            return "declared in java.lang";
+        case SAME_PACKAGE:
+        case SAME_FILE:
+            return "declared in the same package";
+        case SINGLE_IMPORT:
+        case IMPORT_ON_DEMAND:
+            return "imported in this file";
+        case INHERITED:
+            return "inherited by an enclosing type";
+        case ENCLOSING_TYPE_MEMBER:
+        case ENCLOSING_TYPE:
+            return "declared in an enclosing type";
+        default:
+            throw AssertionUtil.shouldNotReachHere("unknown constant" + scopeInfo);
         }
-
-        final String unqualifiedName = name.substring(name.lastIndexOf('.') + 1);
-        final int unqualifiedNameLength = unqualifiedName.length();
-
-        // There could be a conflict between an import on demand and another import, e.g.
-        // import One.*;
-        // import Two.Problem;
-        // Where One.Problem is a legitimate qualification
-        if (firstMatch.isImportOnDemand() && !firstMatch.isStatic()) {
-            for (ASTImportDeclaration importDeclaration : imports) {
-                if (importDeclaration != firstMatch     // NOPMD
-                        && !importDeclaration.isStatic()
-                        && !importDeclaration.isImportOnDemand()) {
-
-                    // Duplicate imports are legal
-                    if (!importDeclaration.getPackageName().equals(firstMatch.getPackageName())
-                            && importDeclaration.getImportedSimpleName().equals(unqualifiedName)) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        // There could be a conflict between an import of a class with the same name as the FQN
-        String importName = firstMatch.getImportedName();
-        String importUnqualified = importName.substring(importName.lastIndexOf('.') + 1);
-        if (!firstMatch.isImportOnDemand() && !firstMatch.isStatic()) {
-            // the package is different, but the unqualified name is same
-            if (!firstMatch.getImportedName().equals(name) && importUnqualified.equals(unqualifiedName)) {
-                return true;
-            }
-        }
-
-        // There could be a conflict between an import of a class with the same name as the FQN, which
-        // could be a method call:
-        // import x.y.Thread;
-        // valid qualification (node): java.util.Thread.currentThread()
-        if (couldBeMethodCall(node)) {
-            String[] nameParts = name.split("\\.");
-            String fqnName = name.substring(0, name.lastIndexOf('.'));
-            // seems to be a static method call on a different FQN
-            if (!fqnName.equals(importName) && !firstMatch.isStatic() && !firstMatch.isImportOnDemand()
-                    && nameParts.length > 1 && nameParts[nameParts.length - 2].equals(importUnqualified)) {
-                return true;
-            }
-        }
-
-        // Is it a conflict with a class in the same file?
-        final Set<String> qualifiedTypes = node.getScope().getEnclosingScope(SourceFileScope.class)
-                                               .getQualifiedTypeNames().keySet();
-        for (final String qualified : qualifiedTypes) {
-            int fullLength = qualified.length();
-            if (qualified.endsWith(unqualifiedName)
-                    && (fullLength == unqualifiedNameLength || qualified.charAt(fullLength - unqualifiedNameLength - 1) == '.')) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

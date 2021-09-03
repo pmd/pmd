@@ -150,13 +150,13 @@ In case you have loops please name the loop variables more meaningful.
                 <value>
 <![CDATA[
 //CursorForLoopStatement[
-    $allowSimpleLoops = 'false' or
+    $allowSimpleLoops = false() or
     (Statement//CursorForLoopStatement or ancestor::CursorForLoopStatement)
 ]
 /ForIndex[not(matches(@Image, $cursorPattern))]
 |
 //ForStatement[
-    $allowSimpleLoops = 'false' or
+    $allowSimpleLoops = false() or
     (Statement//ForStatement or ancestor::ForStatement)
 ]
 /ForIndex[not(matches(@Image, $indexPattern))]

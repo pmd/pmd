@@ -6,10 +6,11 @@ package net.sourceforge.pmd.cpd;
 
 import org.antlr.v4.runtime.CharStream;
 
-import net.sourceforge.pmd.cpd.token.AntlrToken;
+import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
-import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
-import net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinLexer;
 
 /**
  * The Kotlin Tokenizer
@@ -19,7 +20,7 @@ public class KotlinTokenizer extends AntlrTokenizer {
     @Override
     protected AntlrTokenManager getLexerForSource(SourceCode sourceCode) {
         CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);
-        return new AntlrTokenManager(new Kotlin(charStream), sourceCode.getFileName());
+        return new AntlrTokenManager(new KotlinLexer(charStream), sourceCode.getFileName());
     }
 
     @Override
@@ -50,16 +51,16 @@ public class KotlinTokenizer extends AntlrTokenizer {
         }
 
         private void skipPackageAndImport(final AntlrToken currentToken) {
-            final int type = currentToken.getType();
-            if (type == Kotlin.PACKAGE || type == Kotlin.IMPORT) {
+            final int type = currentToken.getKind();
+            if (type == KotlinLexer.PACKAGE || type == KotlinLexer.IMPORT) {
                 discardingPackageAndImport = true;
-            } else if (discardingPackageAndImport && (type == Kotlin.SEMICOLON || type == Kotlin.NL)) {
+            } else if (discardingPackageAndImport && (type == KotlinLexer.SEMICOLON || type == KotlinLexer.NL)) {
                 discardingPackageAndImport = false;
             }
         }
 
         private void skipNewLines(final AntlrToken currentToken) {
-            discardingNL = currentToken.getType() == Kotlin.NL;
+            discardingNL = currentToken.getKind() == KotlinLexer.NL;
         }
 
         @Override

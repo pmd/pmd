@@ -3,37 +3,33 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-    <test-code>
-        <description><![CDATA[
-unused local with assignment
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void foo() {
-   String fr = new String();
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-unused local w/o assignment
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void foo() {
-  int x;
- }
-}
 
-     ]]></code>
-    </test-code>
     <test-code>
-        <description><![CDATA[
-unused local in constructor
-     ]]></description>
+        <description>unused local with assignment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        String fr = new String();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>unused local w/o assignment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>unused local in constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.*;
@@ -42,13 +38,11 @@ public class Foo {
        List a = new ArrayList();
     }
 }
-
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-local used on rhs
-     ]]></description>
+        <description>local used on rhs</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.*;
@@ -60,293 +54,277 @@ public class Foo {
        }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-unused local in static initializer
-     ]]></description>
+        <description>unused local in static initializer</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.*;
 public class Foo {
- static {
-  String x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-unused field
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public int x;
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-loop indexes are not unused locals
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void foo() {
-  for (int i=0;i<10; i++);
-  for (int i=0;i<10; i++);
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-local used in anonymous inner class
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void foo() {
-  final int x = 2;
-   new Runnable() {
-    public void run() {
-     System.out.println(x);
+    static {
+        String x;
     }
-   };  
- }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-two unused locals of same name, one in nested class
-     ]]></description>
+        <description>unused field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>loop indexes are not unused locals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        for (int i=0;i<10; i++);
+        for (int i=0;i<10; i++);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>local used in anonymous inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        final int x = 2;
+        new Runnable() {
+            public void run() {
+                System.out.println(x);
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>two unused locals of same name, one in nested class</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  int x = 2;
-  class Bar {
-   void buz() {
-    int x = 4;
-   }
-  }
- }
+    void foo() {
+        int x = 2;
+        class Bar {
+            void buz() {
+                int x = 4;
+            }
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-two locals declared on same line
-     ]]></description>
+        <description>two locals declared on same line</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  int x,y=0;
- }
+    void foo() {
+        int x,y=0;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-an assignment does not a usage make
-     ]]></description>
+        <description>an assignment does not a usage make</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-   int x;
-   x = 4;
- }
+    void bar() {
+        int x;
+        x = 4;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-a compound assignment operator doth a usage make
-     ]]></description>
+        <description>a compound assignment operator does not a usage make</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int x = 0;
+        x += 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assignment to a member field means used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-   int x = 0;
-   x += 2;
- }
+    int buz;
+    void bar() {
+        Foo b = new Foo();
+        b.buz = 2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assignment to a member field means used
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar() {
-   Bar b = new Bar();
-   b.buz = 2;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-make sure scopes are working
-     ]]></description>
+        <description>make sure scopes are working</description>
         <expected-problems>3</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-   int x = 2;
-   if (true) {int y =2;int j =3;} 
- }
+    void bar() {
+        int x = 2;
+        if (true) {int y =2;int j =3;}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-another scope test
-     ]]></description>
+        <description>another scope test</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-   int x = 2;
-   if (true) {int y =2;foo(y);int j =3;foo(j);} 
- }
- void bar2() {
-   int x = 2;
-   fiddle(x);
- }
+    void bar() {
+        int x = 2;
+        if (true) {int y =2;foo(y);int j =3;foo(j);}
+    }
+    void bar2() {
+        int x = 2;
+        fiddle(x);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assignment to an array member will be treated as a usage
-     ]]></description>
+        <description>assignment to an array member will be treated as a usage</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-   int[] x = {2};
-   x[1] = 2; 
- }
+    void bar() {
+        int[] x = {2};
+        x[1] = 2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-local variable used in postfix expression as child of StatementExpression
-     ]]></description>
+        <description>local variable used in postfix expression as child of StatementExpression</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-   int x = 2;
-   x++; 
- }
+    void bar() {
+        int x = 2;
+        x++;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-local variable used in postfix expression on right hand side
-     ]]></description>
+        <description>local variable used in postfix expression on right hand side</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-   int x = 2;
-   foo(x++); 
- }
+    void bar() {
+        int x = 2;
+        foo(x++);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-local variable, object ref, public field of which is incremented via in postfix expression
-     ]]></description>
+        <description>local variable, object ref, public field of which is incremented via in postfix expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-   Baz b = getBaz();
-   b.x++; 
- }
+    int x; Foo getBaz() { return this; }
+    void bar() {
+        Foo b = getBaz();
+        b.x++;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-local used in right shift
-     ]]></description>
+        <description>local used in right shift</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-   int x = 2;
-   int y = 4 >> x;
-   foo(y);
- }
+    void bar() {
+        int x = 2;
+        int y = 4 >> x;
+        foo(y);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-unused local with assignment - Suppressed
-     ]]></description>
+        <description>unused local with assignment - Suppressed</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 @SuppressWarnings("unused")
 public class Foo {
- void foo() {
-   String fr = new String();
- }
+    void foo() {
+        String fr = new String();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[
-Reproducing bug #1955852: false positives for UnusedPrivateMethod & UnusedLocalField
-     ]]></description>
+        <description>Reproducing bug #1955852: false positives for UnusedPrivateMethod and UnusedLocalField</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-
 public class PMDFalsePositiveTest {
-	private <T> T doSomething(Object param){
-		return (T) param;
-	}
+    private <T> T doSomething(Object param){
+        return (T) param;
+    }
 
-	public static void main(String[] args) {
-		PMDFalsePositiveTest test = new PMDFalsePositiveTest();
-		Object o = "Awesome!";
-		String result = test.<String>doSomething(o);
-		System.out.println(result);
-	}
+    public static void main(String[] args) {
+        PMDFalsePositiveTest test = new PMDFalsePositiveTest();
+        Object o = "Awesome!";
+        String result = test.<String>doSomething(o);
+        System.out.println(result);
+    }
 }
-
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1247 Not able to recognize JDK 8 Static Method References</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
-        KeyMap keymap = maps.getKeyMap();
-        if (obj.getParamTypes().stream().allMatch(keymap::booleanFunc))
+    public void bar(java.util.List<Object> objs) {
+        KeyMap keymap = new KeyMap();
+        if (objs.stream().allMatch(keymap::booleanFunc))
         {
             // do something
         }
     }
+    static class KeyMap {
+        boolean booleanFunc(Object o) {return o!=null;}
+    }
 }
         ]]></code>
-        <source-type>java 1.8</source-type>
     </test-code>
 
     <test-code>
@@ -374,7 +352,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#257 UnusedLocalVariable - false positive - parenthesis</description>
         <expected-problems>0</expected-problems>
@@ -389,7 +367,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1190 [java] UnusedLocalVariable/UnusedPrivateField false-positive</description>
         <expected-problems>0</expected-problems>
@@ -400,12 +378,46 @@ public class UnusedLocalVariable {
 
     public void testSomething() {
         InputStream is = new InputStream();
-        
+
         try (is) {
             System.out.println("foo!");
         }
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2957 Unused rules should ignore some names</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class UnusedLocalVariable {
+    public void testSomething() {
+        int ignored, unused = 0;
+        int notok = 0;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2130 [java] UnusedLocalVariable: false-negative with array</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            package pmdtests;
+
+            import java.lang.reflect.Constructor;
+
+            public final class Construct {
+
+                private Construct() {
+                    throw new IllegalStateException("Private constructor.");
+                }
+
+                public static void main(String... args) {
+                    // get all visible constructors
+                    Constructor<?>[] constructors = String.class.getConstructors();
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

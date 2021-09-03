@@ -9,19 +9,69 @@
 Rules that flag suboptimal code.
     </description>
 
+    <rule name="AvoidDebugStatements"
+          language="apex"
+          since="6.36.0"
+          message="Avoid debug statements since they impact on performance"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoiddebugstatements">
+        <description>
+Debug statements contribute to longer transactions and consume Apex CPU time even when debug logs are not being captured.
+
+When possible make use of other debugging techniques such as the Apex Replay Debugger and Checkpoints that could cover *most* use cases.
+
+For other valid use cases that the statement is in fact valid make use of the `@SuppressWarnings` annotation or the `//NOPMD` comment.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCallExpression[lower-case(@FullMethodName)='system.debug']
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    public void bar() {
+        Account acc = [SELECT Name, Owner.Name FROM Account LIMIT 1];
+        System.debug(accs); // will get reported
+    }
+
+    @SuppressWarnings('PMD.AvoidDebugStatements')
+    public void baz() {
+        try {
+            Account myAccount = bar();
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, e.getMessage()); // good to go
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidDmlStatementsInLoops"
+          language="apex"
           since="5.5.0"
+          deprecated="true"
           message="Avoid DML statements inside loops"
           class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidDmlStatementsInLoopsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoiddmlstatementsinloops">
         <description>
 Avoid DML statements inside loops to avoid hitting the DML governor limit. Instead, try to batch up the data into a list and invoke your DML once on that list of data outside the loop.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule "apex/performance/OperationWithLimitsInLoop" %}.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
 public class Something {
-    public void foo() {  
+    public void foo() {
         for (Integer i = 0; i < 151; i++) {
             Account account;
             // ...
@@ -34,12 +84,17 @@ public class Something {
     </rule>
 
     <rule name="AvoidSoqlInLoops"
+          language="apex"
           since="5.5.0"
+          deprecated="true"
           message="Avoid Soql queries inside loops"
           class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoqlInLoopsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoidsoqlinloops">
         <description>
 New objects created within loops should be checked to see if they can created outside them and reused.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule "apex/performance/OperationWithLimitsInLoop" %}.
         </description>
         <priority>3</priority>
         <example>
@@ -56,12 +111,17 @@ public class Something {
     </rule>
 
     <rule name="AvoidSoslInLoops"
+          language="apex"
           since="6.0.0"
+          deprecated="true"
           message="Avoid Sosl queries inside loops"
           class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoslInLoopsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoidsoslinloops">
         <description>
 Sosl calls within loops can cause governor limit exceptions.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule "apex/performance/OperationWithLimitsInLoop" %}.
         </description>
         <priority>3</priority>
         <example>
@@ -77,4 +137,72 @@ public class Something {
         </example>
     </rule>
 
+    <rule name="OperationWithLimitsInLoop"
+          language="apex"
+          since="6.29.0"
+          message="Avoid operations in loops that may hit governor limits"
+          class="net.sourceforge.pmd.lang.apex.rule.performance.OperationWithLimitsInLoopRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#operationwithlimitsinloop">
+        <description>
+            Database class methods, DML operations, SOQL queries, SOSL queries, Approval class methods, Email sending, async scheduling or queueing within loops can cause governor limit exceptions. Instead, try to batch up the data into a list and invoke the operation once on that list of data outside the loop.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Something {
+    public void databaseMethodInsideOfLoop(List<Account> accounts) {
+        for (Account a : accounts) {
+            Database.insert(a);
+        }
+    }
+
+    public void dmlInsideOfLoop() {
+        for (Integer i = 0; i < 151; i++) {
+            Account account;
+            // ...
+            insert account;
+        }
+    }
+
+    public void soqlInsideOfLoop() {
+        for (Integer i = 0; i < 10; i++) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+    }
+
+    public void soslInsideOfLoop() {
+        for (Integer i = 0; i < 10; i++) {
+            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+        }
+    }
+
+    public void messageInsideOfLoop() {
+        for (Integer i = 0; i < 10; i++) {
+            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+            Messaging.sendEmail(new Messaging.SingleEmailMessage[]{email});
+        }
+    }
+
+    public void approvalInsideOfLoop(Account[] accs) {
+        for (Integer i = 0; i < 10; i++) {
+            Account acc = accs[i];
+            Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+            req.setObjectId(acc.Id);
+            Approval.process(req);
+            Approval.lock(acc);
+            Approval.unlock(acc);
+        }
+    }
+
+    public void asyncInsideOfLoop() {
+        for (Integer i = 0; i < 10; i++) {
+            System.enqueueJob(new MyQueueable());
+            System.schedule('x', '0 0 0 1 1 ?', new MySchedule());
+            System.scheduleBatch(new MyBatch(), 'x', 1);
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
 </ruleset>

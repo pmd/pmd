@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,15 +6,16 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.modifier.AnnotationParameter;
 
-public class ASTAnnotationParameter extends AbstractApexNode<AnnotationParameter> {
+public final class ASTAnnotationParameter extends AbstractApexNode<AnnotationParameter> {
     public static final String SEE_ALL_DATA = "seeAllData";
 
-    public ASTAnnotationParameter(AnnotationParameter annotationParameter) {
+    ASTAnnotationParameter(AnnotationParameter annotationParameter) {
         super(annotationParameter);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

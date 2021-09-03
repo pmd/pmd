@@ -1,29 +1,37 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.AstNode;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
+
+import apex.jorje.semantic.ast.compilation.Compilation;
 
 /**
+ * An Apex type declaration.
+ *
  * @author Clément Fournier
  */
-public interface ASTUserClassOrInterface<T extends AstNode> extends ApexQualifiableNode, ApexNode<T> {
+public interface ASTUserClassOrInterface<T extends Compilation> extends ApexQualifiableNode, ApexNode<T> {
+
+    /** Return the simple name of the type defined by this node. */
+    String getSimpleName();
 
     /**
-     * Finds the type kind of this declaration.
-     *
-     * @return The type kind of this declaration.
+     * Return the modifier node for this type declaration.
      */
-    TypeKind getTypeKind();
-
+    default ASTModifierNode getModifiers() {
+        return firstChild(ASTModifierNode.class);
+    }
 
     /**
-     * The kind of type this node declares.
+     * Returns the (non-synthetic) methods defined in this type.
      */
-    enum TypeKind {
-        CLASS, INTERFACE
+    default @NonNull NodeStream<ASTMethod> getMethods() {
+        return children(ASTMethod.class).filterNot(it -> it.getImage().matches("(<clinit>|<init>|clone)"));
     }
 
 

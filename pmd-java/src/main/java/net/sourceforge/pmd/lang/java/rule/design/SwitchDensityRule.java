@@ -4,11 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule;
-import net.sourceforge.pmd.stat.DataPoint;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Switch Density - This is the number of statements over the number of
@@ -19,85 +24,45 @@ import net.sourceforge.pmd.stat.DataPoint;
  * looking at Subclasses or State Pattern to alleviate the problem.</p>
  *
  * @author David Dixon-Peugh
+ * @author Clément Fournier
  */
-public class SwitchDensityRule extends AbstractStatisticalJavaRule {
+public class SwitchDensityRule extends AbstractJavaRulechainRule {
 
-    private static class SwitchDensity {
-        private int labels = 0;
-        private int stmts = 0;
-
-        public void addSwitchLabel() {
-            labels++;
-        }
-
-        public void addStatement() {
-            stmts++;
-        }
-
-        public void addStatements(int stmtCount) {
-            stmts += stmtCount;
-        }
-
-        public int getStatementCount() {
-            return stmts;
-        }
-
-        public double getDensity() {
-            if (labels == 0) {
-                return 0;
-            }
-            return (double) stmts / (double) labels;
-        }
-    }
+    private static final PropertyDescriptor<Double> REPORT_LEVEL =
+        // can't use CommonPropertyDescriptors because we need a double property
+        PropertyFactory.doubleProperty("minimum")
+                       .desc("Threshold above which a node is reported")
+                       .require(positive())
+                       .defaultValue(10d)
+                       .build();
 
     public SwitchDensityRule() {
-        super();
-        setProperty(MINIMUM_DESCRIPTOR, 10d);
+        super(ASTSwitchStatement.class, ASTSwitchExpression.class);
+        definePropertyDescriptor(REPORT_LEVEL);
     }
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
-        SwitchDensity oldData = null;
-
-        if (data instanceof SwitchDensity) {
-            oldData = (SwitchDensity) data;
-        }
-
-        SwitchDensity density = new SwitchDensity();
-
-        node.childrenAccept(this, density);
-
-        DataPoint point = new DataPoint();
-        point.setNode(node);
-        point.setScore(density.getDensity());
-        point.setMessage(getMessage());
-
-        addDataPoint(point);
-
-        if (data instanceof SwitchDensity) {
-            ((SwitchDensity) data).addStatements(density.getStatementCount());
-        }
-        return oldData;
+        return visitSwitchLike(node, data);
     }
 
     @Override
-    public Object visit(ASTStatement statement, Object data) {
-        if (data instanceof SwitchDensity) {
-            ((SwitchDensity) data).addStatement();
-        }
-
-        statement.childrenAccept(this, data);
-
-        return data;
+    public Object visit(ASTSwitchExpression node, Object data) {
+        return visitSwitchLike(node, data);
     }
 
-    @Override
-    public Object visit(ASTSwitchLabel switchLabel, Object data) {
-        if (data instanceof SwitchDensity) {
-            ((SwitchDensity) data).addSwitchLabel();
-        }
+    public Void visitSwitchLike(ASTSwitchLike node, Object data) {
+        // note: this does not cross find boundaries.
+        int stmtCount = node.descendants(ASTStatement.class).count();
+        int labelCount = node.getBranches()
+                .map(ASTSwitchBranch::getLabel)
+                .sumBy(label -> label.isDefault() ? 1 : label.getExprList().count());
 
-        switchLabel.childrenAccept(this, data);
-        return data;
+        // note: if labelCount is zero, double division will produce +Infinity or NaN, not ArithmeticException
+        double density = stmtCount / (double) labelCount;
+        if (density >= getProperty(REPORT_LEVEL)) {
+            addViolation(data, node);
+        }
+        return null;
     }
 }

@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.lang;
 
+import net.sourceforge.pmd.lang.ast.GenericToken;
+
 /**
  * Common interface for interacting with parser Token Managers.
  */
-public interface TokenManager {
-    // TODO : Change the return to GenericToken in 7.0.0 - maybe even use generics TokenManager<T extends GenericToken>
-    Object getNextToken();
+public interface TokenManager<T extends GenericToken<T>> {
 
-    void setFileName(String fileName);
+    T getNextToken();
+
 }

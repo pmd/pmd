@@ -7,13 +7,13 @@ package net.sourceforge.pmd.testframework;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -25,6 +25,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,10 +40,11 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetLoadException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -98,14 +100,14 @@ public abstract class RuleTst {
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
-            Rule rule = new RuleSetFactory().createRuleSets(ruleSet).getRuleByName(ruleName);
+            Rule rule = new RuleSetLoader().warnDeprecated(false).loadFromResource(ruleSet).getRuleByName(ruleName);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             } else {
                 rule.setRuleSetName(ruleSet);
             }
             return rule;
-        } catch (RuleSetNotFoundException e) {
+        } catch (RuleSetLoadException e) {
             e.printStackTrace();
             fail("Couldn't find ruleset " + ruleSet);
             return null;
@@ -145,7 +147,7 @@ public abstract class RuleTst {
                 }
 
                 report = processUsingStringReader(test, rule);
-                res = report.size();
+                res = report.getViolations().size();
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException('"' + test.getDescription() + "\" failed", e);
@@ -184,15 +186,13 @@ public abstract class RuleTst {
         }
 
         List<String> expectedMessages = test.getExpectedMessages();
-        if (report.size() != expectedMessages.size()) {
+        if (report.getViolations().size() != expectedMessages.size()) {
             throw new RuntimeException("Test setup error: number of expected messages doesn't match "
                     + "number of violations for test case '" + test.getDescription() + "'");
         }
 
-        Iterator<RuleViolation> it = report.iterator();
         int index = 0;
-        while (it.hasNext()) {
-            RuleViolation violation = it.next();
+        for (RuleViolation violation : report.getViolations()) {
             String actual = violation.getDescription();
             if (!expectedMessages.get(index).equals(actual)) {
                 printReport(test, report);
@@ -210,15 +210,14 @@ public abstract class RuleTst {
         }
 
         List<Integer> expected = test.getExpectedLineNumbers();
-        if (report.size() != expected.size()) {
-            throw new RuntimeException("Test setup error: number of execpted line numbers doesn't match "
-                    + "number of violations for test case '" + test.getDescription() + "'");
+        if (report.getViolations().size() != expected.size()) {
+            throw new RuntimeException("Test setup error: number of expected line numbers " + expected.size()
+                    + " doesn't match number of violations " + report.getViolations().size() + " for test case '"
+                    + test.getDescription() + "'");
         }
 
-        Iterator<RuleViolation> it = report.iterator();
         int index = 0;
-        while (it.hasNext()) {
-            RuleViolation violation = it.next();
+        for (RuleViolation violation : report.getViolations()) {
             Integer actual = violation.getBeginLine();
             if (expected.get(index) != actual.intValue()) {
                 printReport(test, report);
@@ -232,7 +231,7 @@ public abstract class RuleTst {
     private void printReport(TestDescriptor test, Report report) {
         System.out.println("--------------------------------------------------------------");
         System.out.println("Test Failure: " + test.getDescription());
-        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), " + report.size()
+        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), " + report.getViolations().size()
                 + " problem(s) found.");
         System.out.println(" -> Expected messages: " + test.getExpectedMessages());
         System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());
@@ -251,20 +250,11 @@ public abstract class RuleTst {
     }
 
     private Report processUsingStringReader(TestDescriptor test, Rule rule) throws PMDException {
+        return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
+    }
+
+    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
         Report report = new Report();
-        runTestFromString(test, rule, report);
-        return report;
-    }
-
-    /**
-     * Run the rule on the given code and put the violations in the report.
-     */
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) {
-        runTestFromString(code, rule, report, languageVersion, true);
-    }
-
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
-            boolean isUseAuxClasspath) {
         try {
             PMD p = new PMD();
             p.getConfiguration().setDefaultLanguageVersion(languageVersion);
@@ -272,21 +262,32 @@ public abstract class RuleTst {
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
                 p.getConfiguration().prependClasspath(".");
+            } else {
+                // simple class loader, that doesn't delegate to parent.
+                // this allows us in the tests to simulate PMD run without
+                // auxclasspath, not even the classes from the test dependencies
+                // will be found.
+                p.getConfiguration().setClassLoader(new ClassLoader() {
+                    @Override
+                    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+                        if (name.startsWith("java.") || name.startsWith("javax.")) {
+                            return super.loadClass(name, resolve);
+                        }
+                        throw new ClassNotFoundException(name);
+                    }
+                });
             }
             RuleContext ctx = new RuleContext();
             ctx.setReport(report);
-            ctx.setSourceCodeFilename("n/a");
+            ctx.setSourceCodeFile(new File("n/a"));
             ctx.setLanguageVersion(languageVersion);
             ctx.setIgnoreExceptions(false);
-            RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
+            RuleSet rules = RuleSet.forSingleRule(rule);
             p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
+            return report;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void runTestFromString(TestDescriptor test, Rule rule, Report report) {
-        runTestFromString(test.getCode(), rule, report, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
     /**
@@ -363,8 +364,8 @@ public abstract class RuleTst {
      * Run a set of tests of a certain sourceType.
      */
     public void runTests(TestDescriptor[] tests) {
-        for (int i = 0; i < tests.length; i++) {
-            runTest(tests[i]);
+        for (TestDescriptor test : tests) {
+            runTest(test);
         }
     }
 
@@ -461,8 +462,8 @@ public abstract class RuleTst {
             if (languageVersionString == null) {
                 tests[i] = new TestDescriptor(code, description, expectedProblems, rule);
             } else {
-                LanguageVersion languageVersion = LanguageRegistry
-                        .findLanguageVersionByTerseName(languageVersionString);
+
+                LanguageVersion languageVersion = parseSourceType(languageVersionString);
                 if (languageVersion != null) {
                     tests[i] = new TestDescriptor(code, description, expectedProblems, rule, languageVersion);
                 } else {
@@ -480,6 +481,28 @@ public abstract class RuleTst {
         return tests;
     }
 
+    /** FIXME this is stupid, the language version may be of a different language than the Rule... */
+    private static LanguageVersion parseSourceType(String terseNameAndVersion) {
+        final String version;
+        final String terseName;
+        if (terseNameAndVersion.contains(" ")) {
+            version = StringUtils.trimToNull(terseNameAndVersion.substring(terseNameAndVersion.lastIndexOf(' ') + 1));
+            terseName = terseNameAndVersion.substring(0, terseNameAndVersion.lastIndexOf(' '));
+        } else {
+            version = null;
+            terseName = terseNameAndVersion;
+        }
+        Language language = LanguageRegistry.findLanguageByTerseName(terseName);
+        if (language != null) {
+            if (version == null) {
+                return language.getDefaultVersion();
+            } else {
+                return language.getVersion(version);
+            }
+        }
+        return null;
+    }
+
     private String getNodeValue(Element parentElm, String nodeName, boolean required) {
         NodeList nodes = parentElm.getElementsByTagName(nodeName);
         if (nodes == null || nodes.getLength() == 0) {
@@ -494,7 +517,7 @@ public abstract class RuleTst {
     }
 
     private static String parseTextNode(Node exampleNode) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < exampleNode.getChildNodes().getLength(); i++) {
             Node node = exampleNode.getChildNodes().item(i);
             if (node.getNodeType() == Node.CDATA_SECTION_NODE || node.getNodeType() == Node.TEXT_NODE) {

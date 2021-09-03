@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Problematic apex debug statements - System.debug should have two arguments.</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+@isTest
+public class Foo {
+    @isTest
+    static void methodATest() {
+        System.debug('I am a bad debug!'); // not good
+        System.debug(LoggingLevel.WARN, 'I am a good warning.'); // good
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>When using strict mode, one should not use the DEBUG LoggingLevel.</description>
+        <rule-property name="strictMode">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+@isTest
+public class Foo {
+    @isTest
+    static void methodATest() {
+        System.debug(LoggingLevel.DEBUG, 'I am a bad debug.'); // not good
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>When not using strict mode (default), one can use the DEBUG LoggingLevel.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+public class Foo {
+    @isTest
+    static void methodATest() {
+        System.debug(LoggingLevel.DEBUG, 'I am a good debug.'); // good
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Any other method of System is allowed - avoiding false positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        System.otherMethod();
+        System.otherMethod('test');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case insensitivity</description>
+        <rule-property name="strictMode">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        SyStEm.DeBuG('test');
+        SyStEm.DeBuG(LoGiNgLeVeL.dEbUg, 'test');
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

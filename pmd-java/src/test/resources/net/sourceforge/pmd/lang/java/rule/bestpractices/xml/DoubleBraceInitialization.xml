@@ -2,18 +2,17 @@
 <test-data xmlns="http://pmd.sourceforge.net/rule-tests"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Pos in return</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import java.util.*;
 class Foo {
-
- List<String> bar() {
-    return new ArrayList<String>(){{addAll("a","b","c");}};
- }
-
-
+    List<String> bar() {
+        return new ArrayList<String>(){{addAll("a","b","c");}};
+    }
 }
         ]]></code>
     </test-code>
@@ -22,20 +21,17 @@ class Foo {
         <description>Neg, override</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 class Foo {
+    List<String> bar() {
+        return new ArrayList<String>() {
+            {addAll("a","b","c");}
 
- List<String> bar() {
-    return new ArrayList<String>(){
-
-        {addAll("a","b","c");}
-
-        void add(String x) {
-            throw new UnsupportedOperationException();
-        }
-    };
- }
-
-
+            void add(String x) {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
 }
         ]]></code>
     </test-code>
@@ -44,18 +40,16 @@ class Foo {
         <description>Neg, new field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 class Foo {
+    List<String> bar() {
+        return new ArrayList<String>(){
 
- List<String> bar() {
-    return new ArrayList<String>(){
+            {addAll("a","b","c");}
 
-        {addAll("a","b","c");}
-
-        int field;
-    };
- }
-
-
+            int field;
+        };
+    }
 }
         ]]></code>
     </test-code>
@@ -64,16 +58,12 @@ class Foo {
         <description>Neg, enum constant</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-enum Foo {
-
- A {
-    // neg in enum cons
-    {addAll("a","b","c");}
-
-
- };
-
-
+import java.util.*;
+enum Foo implements List<String> {
+    A {
+        // neg in enum cons
+        {addAll(Arrays.asList("a","b","c"));}
+    };
 }
         ]]></code>
     </test-code>
@@ -83,15 +73,9 @@ enum Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
-
     // neg in regular class
     {addAll("a","b","c");}
-
-
-
-
 }
         ]]></code>
     </test-code>
-
 </test-data>

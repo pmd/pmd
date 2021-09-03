@@ -4,19 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import static net.sourceforge.pmd.lang.apex.ast.ApexParserTestHelpers.parse;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
-public class ASTFieldTest {
+public class ASTFieldTest extends ApexParserTestBase {
 
     @Test
     public void testGetType() {
-        ApexNode<Compilation> node = parse("public class Foo { private String myField = 'a'; }");
-        ASTField field = node.getFirstDescendantOfType(ASTField.class);
+        ASTField field = parse("public class Foo { private String myField = 'a'; }")
+            .descendants(ASTField.class).firstOrThrow();
 
         Assert.assertEquals("myField", field.getImage());
         Assert.assertEquals("String", field.getType());
@@ -25,16 +21,16 @@ public class ASTFieldTest {
 
     @Test
     public void testGetValue() {
-        ApexNode<Compilation> node = parse("public class Foo { private String myField = 'a'; }");
-        ASTField field = node.getFirstDescendantOfType(ASTField.class);
+        ASTField field = parse("public class Foo { private String myField = 'a'; }")
+            .descendants(ASTField.class).firstOrThrow();
 
         Assert.assertEquals("a", field.getValue());
     }
 
     @Test
     public void testGetNoValue() {
-        ApexNode<Compilation> node = parse("public class Foo { private String myField; }");
-        ASTField field = node.getFirstDescendantOfType(ASTField.class);
+        ASTField field = parse("public class Foo { private String myField; }")
+            .descendants(ASTField.class).firstOrThrow();
 
         Assert.assertNull(field.getValue());
     }

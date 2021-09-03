@@ -3,159 +3,152 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Clear violation
-     ]]></description>
+        <description>Clear violation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- String [] getArr() {return arr;} ;
+    String [] arr;
+    String [] getArr() {return arr;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Clear violation with this.
-     ]]></description>
+        <description>Clear violation with this.</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- String [] getArr() {return this.arr;} ;
+    String [] arr;
+    String [] getArr() {return this.arr;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- String [] getArr() {String[] foo; return foo;} ;
+    String [] arr;
+    String [] getArr() {String[] foo; return foo;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-tricky field hiding
-     ]]></description>
+        <description>tricky field hiding</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- String [] getArr() {String[] arr; return arr;} ;
+    String [] arr;
+    String [] getArr() {String[] arr; return arr;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-really sick code
-     ]]></description>
+        <description>really sick code</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- String [] getArr() {String[] arr; return this.arr;} ;
+    String [] arr;
+    String [] getArr() {String[] arr; return this.arr;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-returning a local array is ok
-     ]]></description>
+        <description>returning a local array is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- int[] getArr() {
-  int[] x = new int[] {1,2,3};
-  return x;
- } ;
+    int[] getArr() {
+        int[] x = new int[] {1,2,3};
+        return x;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-returning a local array is ok part deux
-     ]]></description>
+        <description>returning a local array is ok part deux</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- Object[] getArr() {
-  return new Object[] {foo,bar};
- } ;
+    Object[] getArr() {
+        return new Object[] {foo,bar};
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-returning a cloned field
-     ]]></description>
+        <description>returning a cloned field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private Object[] x;
- Object[] getArr() {
-  return this.x.clone();
- } ;
+    private Object[] x;
+    Object[] getArr() {
+        return this.x.clone();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-returning a new array
-     ]]></description>
+        <description>returning a new array</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private Object x;
- Object[] getArr() {
-  return new Object[] {x};
- } ;
+    private Object x;
+    Object[] getArr() {
+        return new Object[] {x};
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Doesn't return array
-     ]]></description>
+        <description>Doesn't return array</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- String [] arr;
- String getArr() {return arr[0];} ;
+    String [] arr;
+    String getArr() {return arr[0];}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Interface with array declaration
-     ]]></description>
+        <description>Interface with array declaration</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- public String[] getArr();
+    public String[] getArr();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#962 MethodReturnsInternalArray: False positive using a ternary operator</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Test {
+    byte[] content;
     public byte[] getContent() {
         return this.content == null ? null : content.clone();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1299 MethodReturnsInternalArray false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Arrays;
 public class WebServiceResponseMessage {
     private Object[] responseObjects;
     public Object[] getResponseObjects() {
@@ -164,6 +157,7 @@ public class WebServiceResponseMessage {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1324 MethodReturnsInternalArray false positive with clone()</description>
         <expected-problems>0</expected-problems>
@@ -173,10 +167,11 @@ public class Test {
     public Hit[] getHits() {
         return hits == null ? null : hits.clone();
     }
+    static class Hit {}
 }
-]]>
-        </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1322 MethodReturnsInternalArray on private methods</description>
         <expected-problems>0</expected-problems>
@@ -222,19 +217,60 @@ public class MethodReturnsInternalArrayCase {
     </test-code>
 
     <test-code>
+        <description>#3160 nonempty static final fields</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class MyClass {
+                private static final String[] FOO_BAR = new String[] { "foo", "bar" };
+                public final String[] call() { return FOO_BAR; }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3160 empty non-final fields</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+            public class MyClass {
+                private String[] foobar1 = new String[0];
+                private String[] foobar2 = {};
+                private static String[] FOO_BAR_3 = new String[0];
+                private static String[] FOO_BAR_4 = {};
+                public final String[] call1() { return foobar1; }
+                public final String[] call2() { return foobar2; }
+                public final String[] call3() { return FOO_BAR_3; }
+                public final String[] call4() { return FOO_BAR_4; }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unresolved array: assume public</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class MethodReturnsInternalArrayCase {
+                protected final byte[] getData() {
+                    return SomeClass.UNRESOLVED;
+                }
+            }
+            class SomeClass {
+                // unresolved field, should assume public
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description> #1738 MethodReturnsInternalArray in inner classes</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Outer {
+    public static class Inner {
+        private int[] arr2;
 
-	public static class Inner {
-		private int[] arr2;
-
-		public int[] getArr2() {
-			return arr2;
-		}
-
-	}
+        public int[] getArr2() {
+            return arr2;
+        }
+    }
 }
         ]]></code>
     </test-code>
@@ -292,10 +328,9 @@ public final class I {
         String[] value();
     }
 }
-        ]]>
-        </code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Top-level annotation</description>
         <expected-problems>0</expected-problems>
@@ -381,4 +416,49 @@ public class OuterClass {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Nested methods and local class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OuterClass {
+    public int[] arrayReturningMethod() {
+        class LocalClass {
+            private String s;
+            public String getString() {
+                return this.s;
+            }
+        }
+        LocalClass c = new LocalClass();
+        return new int[0];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Detect returned static arrays</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,16</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class MyClass {
+    private static final String[] FOO_BAR = new String[] { "foo", "bar" };
+    private final Callable<String[]> returnsFooBar = new Callable<String[]>() {
+        @Override
+        public String[] call() {
+            return FOO_BAR;
+        }
+    };
+
+    private static String[] fooBarNonFinal = new String[] { "foo", "bar" };
+    private final Callable<String[]> returnsFooBarNonFinal = new Callable<String[]>() {
+        @Override
+        public String[] call() {
+            return fooBarNonFinal; // violation
+        }
+    };
+}
+        ]]></code>
+    </test-code>
 </test-data>

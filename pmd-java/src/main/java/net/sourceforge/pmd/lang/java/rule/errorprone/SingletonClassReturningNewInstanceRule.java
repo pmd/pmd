@@ -27,11 +27,11 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
         String localVarName = null;
         String returnVariableName = null;
 
-        if (node.getResultType().isVoid()) {
+        if (node.isVoid()) {
             return super.visit(node, data);
         }
 
-        if ("getInstance".equals(node.getMethodName())) {
+        if ("getInstance".equals(node.getName())) {
             List<ASTReturnStatement> rsl = node.findDescendantsOfType(ASTReturnStatement.class);
             if (rsl.isEmpty()) {
                 return super.visit(node, data);
@@ -49,13 +49,13 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
 
             /*
              * public class Singleton {
-             * 
+             *
              * private static Singleton m_instance=null;
-             * 
+             *
              * public static Singleton getInstance() {
-             * 
+             *
              * Singleton m_instance=null;
-             * 
+             *
              * if ( m_instance == null ) { synchronized(Singleton.class) {
              * if(m_instance == null) { m_instance = new Singleton(); } } }
              * return m_instance; } }
@@ -95,7 +95,7 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
         ASTReturnStatement rs = rsl.get(0);
         List<ASTPrimaryExpression> pel = rs.findDescendantsOfType(ASTPrimaryExpression.class);
         ASTPrimaryExpression ape = pel.get(0);
-        Node lastChild = ape.jjtGetChild(0);
+        Node lastChild = ape.getChild(0);
         String returnVariableName = null;
         if (lastChild instanceof ASTPrimaryPrefix) {
             returnVariableName = getNameFromPrimaryPrefix((ASTPrimaryPrefix) lastChild);
@@ -109,8 +109,8 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
     }
 
     private String getNameFromPrimaryPrefix(ASTPrimaryPrefix pp) {
-        if (pp.jjtGetNumChildren() == 1 && pp.jjtGetChild(0) instanceof ASTName) {
-            return ((ASTName) pp.jjtGetChild(0)).getImage();
+        if (pp.getNumChildren() == 1 && pp.getChild(0) instanceof ASTName) {
+            return ((ASTName) pp.getChild(0)).getImage();
         }
         return null;
     }

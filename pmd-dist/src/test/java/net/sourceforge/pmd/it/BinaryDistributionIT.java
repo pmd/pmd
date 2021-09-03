@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,46 +9,25 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMDVersion;
 
-public class BinaryDistributionIT {
+public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
-    private static File getBinaryDistribution() {
-        return new File(".", "target/pmd-bin-" + PMDVersion.VERSION + ".zip");
-    }
+    private static final String SUPPORTED_LANGUAGES_CPD;
+    private static final String SUPPORTED_LANGUAGES_PMD;
 
-    /**
-     * The temporary directory, to which the binary distribution will be extracted.
-     * It will be deleted again after the test.
-     */
-    private static Path tempDir;
-
-    @BeforeClass
-    public static void setupTempDirectory() throws Exception {
-        tempDir = Files.createTempDirectory("pmd-it-test-");
-        if (getBinaryDistribution().exists()) {
-            ZipFileExtractor.extractZipFile(getBinaryDistribution().toPath(), tempDir);
-        }
-    }
-
-    @AfterClass
-    public static void cleanupTempDirectory() throws IOException {
-        if (tempDir != null && tempDir.toFile().exists()) {
-            FileUtils.forceDelete(tempDir.toFile());
-        }
+    static {
+        SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, vf, xml]";
+        SUPPORTED_LANGUAGES_PMD = "apex, ecmascript, java, jsp, modelica, plsql, pom, scala, swift, vf, vm, wsdl, xml, xsl";
     }
 
     @Test
@@ -64,6 +43,7 @@ public class BinaryDistributionIT {
         result.add(basedir + "bin/run.sh");
         result.add(basedir + "bin/pmd.bat");
         result.add(basedir + "bin/cpd.bat");
+        result.add(basedir + "bin/ast-dump.bat");
         result.add(basedir + "lib/pmd-core-" + PMDVersion.VERSION + ".jar");
         result.add(basedir + "lib/pmd-java-" + PMDVersion.VERSION + ".jar");
         return result;
@@ -89,18 +69,27 @@ public class BinaryDistributionIT {
     }
 
     @Test
+    @Ignore("Java rules have not been updated yet")
     public void runPMD() throws Exception {
-        String srcDir = new File(".", "src/test/resources/sample-source/").getAbsolutePath();
+        String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
 
         ExecutionResult result;
 
+        result = PMDExecutor.runPMD(tempDir); // without any argument, display usage help and error
+        result.assertExecutionResult(1, SUPPORTED_LANGUAGES_PMD);
+
         result = PMDExecutor.runPMD(tempDir, "-h");
-        result.assertExecutionResult(0, "apex, ecmascript, java, jsp, plsql, pom, vf, vm, wsdl, xml, xsl");
+        result.assertExecutionResult(0, SUPPORTED_LANGUAGES_PMD);
 
-        result = PMDExecutor.runPMDRules(tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml");
-        result.assertExecutionResult(4, "JumbledIncrementer.java:8:");
+        result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml");
+        result.assertExecutionResult(4, "", "JumbledIncrementer.java:8:");
 
-        result = PMDExecutor.runPMDRules(tempDir, srcDir, "rulesets/java/quickstart.xml");
+        // also test XML format
+        result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml", "xml");
+        result.assertExecutionResult(4, "", "JumbledIncrementer.java\">");
+        result.assertExecutionResult(4, "", "<violation beginline=\"8\" endline=\"10\" begincolumn=\"13\" endcolumn=\"14\" rule=\"JumbledIncrementer\"");
+
+        result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir, "rulesets/java/quickstart.xml");
         result.assertExecutionResult(4, "");
     }
 
@@ -110,15 +99,23 @@ public class BinaryDistributionIT {
 
         ExecutionResult result;
 
+        result = CpdExecutor.runCpd(tempDir); // without any argument, display usage help and error
+        result.assertExecutionResult(1, SUPPORTED_LANGUAGES_CPD);
+
         result = CpdExecutor.runCpd(tempDir, "-h");
-        result.assertExecutionResult(0, "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, go, groovy, java, jsp, kotlin, lua, matlab, objectivec, perl, php, plsql, python, ruby, scala, swift, vf]");
+        result.assertExecutionResult(0, SUPPORTED_LANGUAGES_CPD);
 
         result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "text", "--files", srcDir);
         result.assertExecutionResult(4, "Found a 10 line (55 tokens) duplication in the following files:");
         result.assertExecutionResult(4, "Class1.java");
         result.assertExecutionResult(4, "Class2.java");
 
+        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "xml", "--files", srcDir);
+        result.assertExecutionResult(4, "<duplication lines=\"10\" tokens=\"55\">");
+        result.assertExecutionResult(4, "Class1.java\"/>");
+        result.assertExecutionResult(4, "Class2.java\"/>");
+
         result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "1000", "--format", "text", "--files", srcDir);
-        result.assertExecutionResult(0, "");
+        result.assertExecutionResult(0);
     }
 }

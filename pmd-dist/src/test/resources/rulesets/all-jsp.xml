@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<ruleset name="All JSP Rules" 
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>Every JSP Rule in PMD</description>
+
+    <rule ref="category/jsp/bestpractices.xml" />
+    <rule ref="category/jsp/codestyle.xml" />
+    <rule ref="category/jsp/design.xml" />
+    <rule ref="category/jsp/documentation.xml" />
+    <rule ref="category/jsp/errorprone.xml" />
+    <rule ref="category/jsp/multithreading.xml" />
+    <rule ref="category/jsp/performance.xml" />
+    <rule ref="category/jsp/security.xml" />
+
+</ruleset>

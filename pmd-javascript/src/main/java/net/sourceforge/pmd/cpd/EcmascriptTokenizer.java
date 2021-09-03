@@ -1,18 +1,14 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.StringReader;
-
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.ecmascript5.Ecmascript5TokenManager;
-import net.sourceforge.pmd.lang.ecmascript5.ast.Ecmascript5ParserConstants;
-import net.sourceforge.pmd.lang.ecmascript5.ast.Token;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ecmascript5.ast.Ecmascript5TokenKinds;
 
 /**
  * The Ecmascript Tokenizer
@@ -20,23 +16,17 @@ import net.sourceforge.pmd.util.IOUtil;
 public class EcmascriptTokenizer extends JavaCCTokenizer {
 
     @Override
-    protected TokenManager getLexerForSource(SourceCode sourceCode) {
-        StringBuilder buffer = sourceCode.getCodeBuffer();
-        return new Ecmascript5TokenManager(IOUtil.skipBOM(new StringReader(buffer.toString())));
+    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
+        return Ecmascript5TokenKinds.newTokenManager(sourceCode);
     }
 
     @Override
-    protected TokenEntry processToken(Tokens tokenEntries, GenericToken currentToken, String filename) {
-        return new TokenEntry(getTokenImage(currentToken), filename, currentToken.getBeginLine());
-    }
-
-    private String getTokenImage(GenericToken token) {
-        Token jsToken = (Token) token;
+    protected String getImage(JavaccToken jsToken) {
         // Remove line continuation characters from string literals
-        if (jsToken.kind == Ecmascript5ParserConstants.STRING_LITERAL
-                || jsToken.kind == Ecmascript5ParserConstants.UNTERMINATED_STRING_LITERAL) {
-            return token.getImage().replaceAll("(?<!\\\\)\\\\(\\r\\n|\\r|\\n)", "");
+        if (jsToken.kind == Ecmascript5TokenKinds.STRING_LITERAL
+            || jsToken.kind == Ecmascript5TokenKinds.UNTERMINATED_STRING_LITERAL) {
+            return jsToken.getImage().replaceAll("(?<!\\\\)\\\\(\\r\\n|\\r|\\n)", "");
         }
-        return token.getImage();
+        return jsToken.getImage();
     }
 }

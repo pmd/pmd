@@ -3,93 +3,139 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-  <test-code>
-    <description>basic test</description>
-    <expected-problems>1</expected-problems>
-    <code><![CDATA[
+
+    <test-code>
+        <description>basic test</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class PrimitiveType {
-  public void downCastPrimitiveType() {
-    if(i==1) {
+    public void downCastPrimitiveType() {
+        if(i==1) {
+        }
     }
-  }
 }
-    ]]></code>
-  </test-code>
-  <test-code>
-    <description>basic test, part2</description>
-    <expected-problems>0</expected-problems>
-    <code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>basic test, part2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class PrimitiveType {
-  public static final int PRIMITIVE_TYPE = 1;
-  public void downCastPrimitiveType() {
-    if(i==PRIMITIVE_TYPE) {
+    public static final int PRIMITIVE_TYPE = 1;
+    public void downCastPrimitiveType() {
+        if(i==PRIMITIVE_TYPE) {
+        }
     }
-  }
 }
-    ]]></code>
-  </test-code>
-  <test-code>
-    <description>allow null literal</description>
-    <expected-problems>0</expected-problems>
-    <code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>allow null literal</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class MyClass {
-  public void myMethod(Object foo) {
-    if(foo != null) {
+    public void myMethod(Object foo) {
+        if(foo != null) {
+        }
     }
-  }
 }
-    ]]></code>
-  </test-code>
-  <test-code>
-    <description>#1213 AvoidLiteralsInIfCondition -- switch for integer comparison with 0</description>
-    <expected-problems>0</expected-problems>
-    <code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1213 AvoidLiteralsInIfCondition -- switch for integer comparison with 0</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
     public void bar() {
         if( ( flags & Flag.IMPORTANT ) != 0 ) {}
-        if (aString.indexOf('.') != -1) {}     // magic number -1, by default ignored
+        if (aString.indexOf(DOT) != -1) {}     // magic number -1, by default ignored
     }
 }
-    ]]></code>
-  </test-code>
-  <test-code>
-    <description>#1213 AvoidLiteralsInIfCondition -- switch for integer comparison with 0.0</description>
-    <rule-property name="ignoreMagicNumbers">-1,0,0.0</rule-property>
-    <expected-problems>0</expected-problems>
-    <code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1213 AvoidLiteralsInIfCondition -- switch for integer comparison with 0.0</description>
+        <rule-property name="ignoreMagicNumbers">-1,0,0.0</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
     public void bar() {
         if (aDouble > 0.0) {}                  // magic number 0.0
         if (aDouble >= Double.MIN_VALUE) {}    // preferred approach
     }
 }
-    ]]></code>
-  </test-code>
-  <test-code>
-    <description>XPath error: An empty sequence is not allowed as the second argument of index-of()</description>
-    <expected-problems>0</expected-problems>
-    <code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>XPath error: An empty sequence is not allowed as the second argument of index-of()</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
     public void bar() {
-        if (true && aDouble > 0.0) {
+        if (true && aDouble > 0) {
         }
     }
 }
-      ]]></code>
-  </test-code>
-  <test-code>
-    <description>#388 False positive due to space in property list</description>
-    <rule-property name="ignoreMagicNumbers"><![CDATA[-1,0,1, 0.0]]></rule-property>
-    <expected-problems>0</expected-problems>
-    <code><![CDATA[
-    class Foo {
-      void bar() {
-        if (num == 0.0) {
-	        return MathExtItg.sgn0raw(num) == 1 ? IEEEclass.PositiveZero : IEEEclass.NegativeZero;
-	      }
-      }
-    }
-    ]]></code>
-  </test-code>
+        ]]></code>
+    </test-code>
 
+    <test-code>
+        <description>#388 False positive due to space in property list</description>
+        <rule-property name="ignoreMagicNumbers"><![CDATA[-1,0,1, 0.0]]></rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    void bar() {
+        if (num == 0.0) {
+            return MathExtItg.sgn0raw(num) == 1 ? IEEEclass.PositiveZero : IEEEclass.NegativeZero;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2140 [java] AvoidLiteralsInIfCondition: false negative for expressions</description>
+        <rule-property name="ignoreExpressions">false</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,3,4,5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int a) {
+        if (a > 3 + 5) {}
+        if (b == -5) {}
+        if (true && b == -5) {}
+        if (c == -1) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>More tests with expressions (see #2150)</description>
+        <rule-property name="ignoreExpressions">false</rule-property>
+        <rule-property name="ignoreMagicNumbers">-1,0,1</rule-property>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>4,7,7,8,9,10,11,11</expected-linenumbers>
+        <code><![CDATA[
+public class AvoidLiteralsInIfConditionWithExpressions {
+    public void test() {
+        if (1) {}    // ok, "1" is in ignoreMagicNumbers
+        if (1+1) {}  // not ok! multiple literals in expression
+        if (a+1) {}  // ok, single literal, whitelisted
+        if (bodyStart >= 0 && bodyStart != (currentToken.length() - 1)) {} // ok, single literal per expression, both whitelisted
+        if (1 * 5) {} // not ok - literal 5 and also a expression with two literals
+        if (a + 5) {} // not ok
+        if (i == a + 5) {} // not ok - literal 5
+        if (i == 1 + 5) {} // not ok - expression with two literals
+        if (s.equals("Prefix" + "Suffix")) {}
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

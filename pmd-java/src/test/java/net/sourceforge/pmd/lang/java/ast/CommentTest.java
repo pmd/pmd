@@ -9,8 +9,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
-public class CommentTest {
+public class CommentTest extends BaseNonParserTest {
     @Test
     public void testMultiLinesInSingleLine() {
         String comment = "/* single line. */";
@@ -97,15 +98,7 @@ public class CommentTest {
     }
 
     private String filter(String comment) {
-        Token t = new Token();
-        t.image = comment;
-        Comment node = new Comment(t) {
-            @Override
-            public String getXPathNodeName() {
-                return "DummyComment";
-            }
-        };
-        return node.getFilteredComment();
+        return java.parse(comment).getComments().get(0).getFilteredComment();
     }
 
     private int lineCount(String filtered) {

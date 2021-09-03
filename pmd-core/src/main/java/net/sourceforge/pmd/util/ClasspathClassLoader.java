@@ -19,17 +19,22 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Create a ClassLoader which loads classes using a CLASSPATH like String. If
  * the String looks like a URL to a file (e.g. starts with <code>file://</code>)
  * the file will be read with each line representing an path on the classpath.
  *
  * @author Edwin Chan
+ * @deprecated Is internal API
  */
+@InternalApi
+@Deprecated
 public class ClasspathClassLoader extends URLClassLoader {
 
     private static final Logger LOG = Logger.getLogger(ClasspathClassLoader.class.getName());
-    
+
     static {
         registerAsParallelCapable();
     }
@@ -57,7 +62,7 @@ public class ClasspathClassLoader extends URLClassLoader {
             throw new IllegalArgumentException("classpath argument cannot be null");
         }
         final List<URL> urls = new ArrayList<>();
-        if (classpath.startsWith("file://")) {
+        if (classpath.startsWith("file:")) {
             // Treat as file URL
             addFileURLs(urls, new URL(classpath));
         } else {
@@ -82,7 +87,7 @@ public class ClasspathClassLoader extends URLClassLoader {
             while ((line = in.readLine()) != null) {
                 LOG.log(Level.FINE, "Read classpath entry line: <{0}>", line);
                 line = line.trim();
-                if (line.length() > 0) {
+                if (line.length() > 0 && line.charAt(0) != '#') {
                     LOG.log(Level.FINE, "Adding classpath entry: <{0}>", line);
                     urls.add(createURLFromPath(line));
                 }
@@ -92,7 +97,7 @@ public class ClasspathClassLoader extends URLClassLoader {
 
     private static URL createURLFromPath(String path) throws MalformedURLException {
         File file = new File(path);
-        return file.getAbsoluteFile().toURI().toURL();
+        return file.getAbsoluteFile().toURI().normalize().toURL();
     }
 
     @Override
@@ -102,7 +107,7 @@ public class ClasspathClassLoader extends URLClassLoader {
                 .append(StringUtils.join(getURLs(), ":"))
                 .append("] parent: ").append(getParent()).append(']').toString();
     }
-    
+
     @Override
     protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
         synchronized (getClassLoadingLock(name)) {
@@ -118,7 +123,7 @@ public class ClasspathClassLoader extends URLClassLoader {
                     c = super.loadClass(name, resolve);
                 }
             }
-    
+
             if (resolve) {
                 resolveClass(c);
             }

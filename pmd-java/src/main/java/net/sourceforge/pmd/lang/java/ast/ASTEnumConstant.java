@@ -4,77 +4,98 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
 /**
- * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum declaration}.
+ * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum type declaration}.
  *
- * <p>TODO since there's no VariableDeclaratorId, this might not play well with the symbol table!
+ * <pre class="grammar">
  *
- * <pre>
- *
- * EnumConstant ::= &lt;IDENTIFIER&gt; {@linkplain ASTArguments Arguments}? {@linkplain ASTClassOrInterfaceBody ClassOrInterfaceBody}?
+ * EnumConstant ::= {@link ASTModifierList AnnotationList} {@link ASTVariableDeclaratorId VariableDeclaratorId} {@linkplain ASTArgumentList ArgumentList}? {@linkplain ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
  *
  * </pre>
  */
-public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiableNode {
+public final class ASTEnumConstant extends AbstractJavaTypeNode
+    implements Annotatable,
+               InvocationNode,
+               AccessNode,
+               ASTBodyDeclaration,
+               InternalInterfaces.VariableIdOwner,
+               JavadocCommentOwner {
 
-    private JavaTypeQualifiedName qualifiedName;
+    private OverloadSelectionResult result;
 
-    @InternalApi
-    @Deprecated
-    public ASTEnumConstant(int id) {
+    ASTEnumConstant(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTEnumConstant(JavaParser p, int id) {
-        super(p, id);
+    @Override
+    protected @Nullable JavaccToken getPreferredReportLocation() {
+        return getVarId().getFirstToken();
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
 
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    public ASTVariableDeclaratorId getVarId() {
+        return getFirstChildOfType(ASTVariableDeclaratorId.class);
     }
 
+    @Override
+    public String getImage() {
+        return getVarId().getImage();
+    }
+
+    @Override
+    @Nullable
+    public ASTArgumentList getArguments() {
+        return getFirstChildOfType(ASTArgumentList.class);
+    }
 
     /**
-     * Gets the qualified name of the anonymous class
-     * declared by this node, or null if this node
-     * doesn't declare any.
-     *
-     * @see #isAnonymousClass()
+     * Returns the name of the enum constant.
      */
-    @Override
-    public JavaTypeQualifiedName getQualifiedName() {
-        return qualifiedName;
+    public String getName() {
+        return getImage();
     }
-
-
-    @InternalApi
-    @Deprecated
-    public void setQualifiedName(JavaTypeQualifiedName qname) {
-        this.qualifiedName = qname;
-    }
-
 
     /**
      * Returns true if this enum constant defines a body,
-     * which is compiled like an anonymous class. If this
-     * method returns false, then {@link #getQualifiedName()}
-     * returns {@code null}.
+     * which is compiled like an anonymous class.
      */
     public boolean isAnonymousClass() {
-        return getFirstChildOfType(ASTClassOrInterfaceBody.class) != null;
+        return getLastChild() instanceof ASTAnonymousClassDeclaration;
     }
 
+    /**
+     * Returns the anonymous class declaration, or null if
+     * there is none.
+     */
+    public ASTAnonymousClassDeclaration getAnonymousClass() {
+        return AstImplUtil.getChildAs(this, getNumChildren() - 1, ASTAnonymousClassDeclaration.class);
+    }
+
+    @Override
+    public @Nullable ASTTypeArguments getExplicitTypeArguments() {
+        // no syntax for that
+        return null;
+    }
+
+    void setOverload(OverloadSelectionResult result) {
+        assert result != null;
+        this.result = result;
+    }
+
+    @Override
+    public OverloadSelectionResult getOverloadSelectionInfo() {
+        forceTypeResolution();
+        return assertNonNullAfterTypeRes(result);
+    }
 }

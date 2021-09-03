@@ -4,53 +4,30 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import java.util.List;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class StringInstantiationRule extends AbstractJavaRule {
 
     @Override
-    public Object visit(ASTAllocationExpression node, Object data) {
-        if (!(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {
-            return data;
-        }
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTConstructorCall.class);
+    }
 
-        if (!TypeHelper.isA((ASTClassOrInterfaceType) node.jjtGetChild(0), String.class)) {
-            return data;
-        }
-
-        List<ASTExpression> exp = node.findDescendantsOfType(ASTExpression.class);
-        if (exp.size() >= 2) {
-            return data;
-        }
-
-        if (node.hasDescendantOfAnyType(ASTArrayDimsAndInits.class, ASTAdditiveExpression.class)) {
-            return data;
-        }
-
-        ASTName name = node.getFirstDescendantOfType(ASTName.class);
-        // Literal, i.e., new String("foo")
-        if (name == null) {
-            addViolation(data, node);
-            return data;
-        }
-
-        NameDeclaration nd = name.getNameDeclaration();
-        if (nd == null) {
-            return data;
-        }
-
-        if (nd instanceof TypedNameDeclaration && TypeHelper.isExactlyAny((TypedNameDeclaration) nd, String.class)) {
+    @Override
+    public Object visit(ASTConstructorCall node, Object data) {
+        ASTArgumentList args = node.getArguments();
+        if (args.size() <= 1
+            && TypeTestUtil.isExactlyA(String.class, node.getTypeNode())) {
+            if (args.size() == 1 && TypeTestUtil.isExactlyA(byte[].class, args.get(0))) {
+                // byte array ctor is ok
+                return data;
+            }
             addViolation(data, node);
         }
         return data;

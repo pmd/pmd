@@ -3,63 +3,75 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-TEST1
-     ]]></description>
+        <description>TEST1</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   int foo;
-} 
-     ]]></code>
+    int foo;
+}
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST2
-     ]]></description>
+        <description>TEST2</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   String foo;
-} 
-     ]]></code>
+    String foo;
+}
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST3
-     ]]></description>
+        <description>TEST3</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-   class Bar {
-		Foo foo;
-   }
-} 
-     ]]></code>
+    class Bar {
+        Foo foo;
+    }
+}
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST4
-     ]]></description>
+        <description>TEST4</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   class Bar {
-		String bar;
-   }
-} 
-     ]]></code>
+    class Bar {
+        String bar;
+    }
+}
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-interface
-     ]]></description>
+        <description>interface</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
-   public String foo();
-} 
-     ]]></code>
+    public String foo();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false negative with fields in interfaces and nested classes</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <code><![CDATA[
+interface Operation {
+    Object apply();
+
+    final Operation OPERATION = () -> { return null; };
+
+    class Inner {
+        int inner;
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

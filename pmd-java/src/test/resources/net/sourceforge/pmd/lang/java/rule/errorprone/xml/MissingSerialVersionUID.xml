@@ -3,69 +3,66 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Happy case
-     ]]></description>
+        <description>Happy case</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Simple failure case
-     ]]></description>
+        <description>Simple failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.io.Serializable;
+
 public class Foo implements Serializable {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure using java.io.Serializable
-     ]]></description>
+        <description>failure using java.io.Serializable</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo implements java.io.Serializable {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-implements Serializable and provides a serialVersionUID
-     ]]></description>
+        <description>implements Serializable and provides a serialVersionUID</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo implements Serializable {
-public static final long serialVersionUID = 43L;
+    public static final long serialVersionUID = 43L;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST5
-     ]]></description>
+        <description>TEST5</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo implements java.io.Serializable {
-public static final long serialVersionUID = 43L;
+    public static final long serialVersionUID = 43L;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-interface
-     ]]></description>
+        <description>interface</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo implements Bar{
- void getName();
+    void getName();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>abstract case, see #1352</description>
         <expected-problems>1</expected-problems>
@@ -73,8 +70,9 @@ public interface Foo implements Bar{
 import java.io.Serializable;
 public abstract class Foo implements Serializable {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>inherited abstract case</description>
         <expected-problems>1</expected-problems>
@@ -85,16 +83,15 @@ public abstract class AbstractMissingSerialVersionUIDTest extends MissingSerialV
 }
         ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-@SuppressWarnings("serial")
-     ]]></description>
+        <description>@SuppressWarnings("serial")</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 @SuppressWarnings("serial")
 public class Foo implements Serializable {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>

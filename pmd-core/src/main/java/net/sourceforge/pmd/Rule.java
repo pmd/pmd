@@ -9,9 +9,9 @@ import java.util.List;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
 
@@ -30,7 +30,7 @@ public interface Rule extends PropertySource {
      * The property descriptor to universally suppress violations with messages
      * matching a regular expression.
      */
-    // TODO 7.0.0 use PropertyDescriptor<Pattern>
+    // TODO 7.0.0 use PropertyDescriptor<Optional<Pattern>>
     StringProperty VIOLATION_SUPPRESS_REGEX_DESCRIPTOR = new StringProperty("violationSuppressRegex",
             "Suppress violations with messages matching a regular expression", null, Integer.MAX_VALUE - 1);
 
@@ -38,7 +38,7 @@ public interface Rule extends PropertySource {
      * Name of the property to universally suppress violations on nodes which
      * match a given relative XPath expression.
      */
-    // TODO 7.0.0 use PropertyDescriptor<String>
+    // TODO 7.0.0 use PropertyDescriptor<Optional<String>>
     StringProperty VIOLATION_SUPPRESS_XPATH_DESCRIPTOR = new StringProperty("violationSuppressXPath",
             "Suppress violations on nodes which match a given relative XPath expression.", null, Integer.MAX_VALUE - 2);
 
@@ -250,16 +250,6 @@ public interface Rule extends PropertySource {
      */
     void setPriority(RulePriority priority);
 
-    /**
-     * Get the parser options for this Rule. Parser options are used to
-     * configure the {@link net.sourceforge.pmd.lang.Parser} to create an AST in
-     * the form the Rule is expecting. Because ParserOptions are mutable, a Rule
-     * should return a new instance on each call.
-     *
-     * @return the parser options
-     */
-    ParserOptions getParserOptions();
-
 
     /**
      * Returns true if this rule depends on the given processing stage
@@ -282,170 +272,33 @@ public interface Rule extends PropertySource {
      */
     @Experimental
     default boolean dependsOn(AstProcessingStage<?> stage) {
-        return false;
+        return true;
     }
 
 
     /**
-     * Sets whether this Rule uses Data Flow Analysis.
-     * @deprecated See {@link #isDfa()}
+     * Returns the object that selects the nodes to which this rule applies.
+     * The selected nodes will be handed to {@link #apply(Node, RuleContext)}.
      */
-    @Deprecated // To be removed in PMD 7.0.0
-    void setUsesDFA();
+    RuleTargetSelector getTargetSelector();
 
-    /**
-     * Sets whether this Rule uses Data Flow Analysis.
-     * @deprecated See {@link #isDfa()}
-     */
-    @Deprecated
-    void setDfa(boolean isDfa);
-
-    /**
-     * Gets whether this Rule uses Data Flow Analysis.
-     *
-     * @return <code>true</code> if Data Flow Analysis is used.
-     * @deprecated See {@link #isDfa()}
-     */
-    @Deprecated // To be removed in PMD 7.0.0
-    boolean usesDFA();
-
-    /**
-     * Gets whether this Rule uses Data Flow Analysis.
-     *
-     * @return <code>true</code> if Data Flow Analysis is used.
-     * @deprecated Optional AST processing stages will be reified in 7.0.0 to factorise common logic.
-     *             This method and the similar methods will be removed.
-     */
-    @Deprecated
-    boolean isDfa();
-
-    /**
-     * Sets whether this Rule uses Type Resolution.
-     * @deprecated See {@link #isTypeResolution()}
-     */
-    @Deprecated // To be removed in PMD 7.0.0
-    void setUsesTypeResolution();
-
-    /**
-     * Sets whether this Rule uses Type Resolution.
-     * @deprecated See {@link #isTypeResolution()}
-     */
-    @Deprecated
-    void setTypeResolution(boolean usingTypeResolution);
-
-    /**
-     * Gets whether this Rule uses Type Resolution.
-     *
-     * @return <code>true</code> if Type Resolution is used.
-     *
-     * @deprecated See {@link #isTypeResolution()}
-     */
-    @Deprecated // To be removed in PMD 7.0.0
-    boolean usesTypeResolution();
-
-    /**
-     * Gets whether this Rule uses Type Resolution.
-     *
-     * @return <code>true</code> if Type Resolution is used.
-     * @deprecated Optional AST processing stages will be reified in 7.0.0 to factorise common logic.
-     *             This method and the similar methods will be removed.
-     */
-    @Deprecated
-    boolean isTypeResolution();
-
-    /**
-     * Sets whether this Rule uses multi-file analysis.
-     * @deprecated See {@link #isMultifile()}
-     */
-    @Deprecated // To be removed in PMD 7.0.0
-    void setUsesMultifile();
-
-    /**
-     * Sets whether this Rule uses multi-file analysis.
-     * @deprecated See {@link #isMultifile()}
-     */
-    @Deprecated
-    void setMultifile(boolean multifile);
-
-    /**
-     * Gets whether this Rule uses multi-file analysis.
-     *
-     * @return <code>true</code> if the multi file analysis is used.
-     *
-     * @deprecated See {@link #isMultifile()}
-     */
-    @Deprecated // To be removed in PMD 7.0.0
-    boolean usesMultifile();
-
-    /**
-     * Gets whether this Rule uses multi-file analysis.
-     *
-     * @return <code>true</code> if the multi file analysis is used.
-     * @deprecated Logic for multifile analysis is not implemented yet and probably
-     *             won't be implemented this way. Will be removed in 7.0.0.
-     */
-    @Deprecated
-    boolean isMultifile();
-
-    /**
-     * Gets whether this Rule uses the RuleChain.
-     *
-     * @return <code>true</code> if RuleChain is used.
-     *
-     * @deprecated USe {@link #isRuleChain()} instead.
-     */
-    @Deprecated // To be removed in PMD 7.0.0
-    boolean usesRuleChain();
-
-    /**
-     * Gets whether this Rule uses the RuleChain.
-     *
-     * @return <code>true</code> if RuleChain is used.
-     */
-    boolean isRuleChain();
-
-    /**
-     * Gets the collection of AST node names visited by the Rule on the
-     * RuleChain.
-     *
-     * @return the list of AST node names
-     */
-    List<String> getRuleChainVisits();
-
-    /**
-     * Adds an AST node by class to be visited by the Rule on the RuleChain.
-     *
-     * @param nodeClass
-     *            the AST node to add to the RuleChain visit list
-     */
-    void addRuleChainVisit(Class<? extends Node> nodeClass);
-
-    /**
-     * Adds an AST node by name to be visited by the Rule on the RuleChain.
-     *
-     * @param astNodeName
-     *            the AST node to add to the RuleChain visit list as string
-     */
-    void addRuleChainVisit(String astNodeName);
 
     /**
      * Start processing. Called once, before apply() is first called.
      *
-     * @param ctx
-     *            the rule context
+     * @param ctx the rule context
      */
     void start(RuleContext ctx);
 
+
     /**
-     * Apply this rule to the given collection of nodes, using the given
-     * context.
+     * Process the given node. The nodes that are fed to this method
+     * are the nodes selected by {@link #getTargetSelector()}.
      *
-     * @param nodes
-     *            the nodes
-     * @param ctx
-     *            the rule context
+     * @param target Node on which to apply the rule
+     * @param ctx    Rule context, handling violations
      */
-    void apply(List<? extends Node> nodes, RuleContext ctx);
+    void apply(Node target, RuleContext ctx);
 
     /**
      * End processing. Called once, after apply() is last called.
@@ -460,4 +313,6 @@ public interface Rule extends PropertySource {
      * @return A new exact copy of this rule
      */
     Rule deepCopy();
+
+
 }

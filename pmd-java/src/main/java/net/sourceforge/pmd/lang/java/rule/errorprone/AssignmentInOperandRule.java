@@ -6,34 +6,34 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  *
- *
  */
-public class AssignmentInOperandRule extends AbstractJavaRule {
+public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> ALLOW_IF_DESCRIPTOR =
-            booleanProperty("allowIf")
-                    .desc("Allow assignment within the conditional expression of an if statement")
-                    .defaultValue(false).build();
+        booleanProperty("allowIf")
+            .desc("Allow assignment within the conditional expression of an if statement")
+            .defaultValue(false).build();
 
     private static final PropertyDescriptor<Boolean> ALLOW_FOR_DESCRIPTOR =
-            booleanProperty("allowFor")
-                    .desc("Allow assignment within the conditional expression of a for statement")
-                    .defaultValue(false).build();
+        booleanProperty("allowFor")
+            .desc("Allow assignment within the conditional expression of a for statement")
+            .defaultValue(false).build();
 
     private static final PropertyDescriptor<Boolean> ALLOW_WHILE_DESCRIPTOR =
             booleanProperty("allowWhile")
@@ -47,6 +47,7 @@ public class AssignmentInOperandRule extends AbstractJavaRule {
 
 
     public AssignmentInOperandRule() {
+        super(ASTAssignmentExpression.class, ASTUnaryExpression.class);
         definePropertyDescriptor(ALLOW_IF_DESCRIPTOR);
         definePropertyDescriptor(ALLOW_FOR_DESCRIPTOR);
         definePropertyDescriptor(ALLOW_WHILE_DESCRIPTOR);
@@ -54,21 +55,32 @@ public class AssignmentInOperandRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTExpression node, Object data) {
-        Node parent = node.jjtGetParent();
-        if ((parent instanceof ASTIfStatement && !getProperty(ALLOW_IF_DESCRIPTOR)
-                || parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)
-                || parent instanceof ASTForStatement && parent.jjtGetChild(1) == node
-                        && !getProperty(ALLOW_FOR_DESCRIPTOR))
-                && (node.hasDescendantOfType(ASTAssignmentOperator.class)
-                        || !getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR)
-                                && (node.hasDescendantOfAnyType(ASTPreIncrementExpression.class,
-                                                                ASTPreDecrementExpression.class, ASTPostfixExpression.class)))) {
+    public Object visit(ASTAssignmentExpression node, Object data) {
+        checkAssignment(node, (RuleContext) data);
+        return null;
+    }
 
-            addViolation(data, node);
-            return data;
+    @Override
+    public Object visit(ASTUnaryExpression node, Object data) {
+        if (!getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR) && !node.getOperator().isPure()) {
+            checkAssignment(node, (RuleContext) data);
         }
-        return super.visit(node, data);
+        return null;
+    }
+
+    private void checkAssignment(ASTExpression impureExpr, RuleContext ctx) {
+        ASTExpression toplevel = JavaRuleUtil.getTopLevelExpr(impureExpr);
+        JavaNode parent = toplevel.getParent();
+        if (parent instanceof ASTExpressionStatement) {
+            // that's ok
+            return;
+        }
+        if (parent instanceof ASTIfStatement && !getProperty(ALLOW_IF_DESCRIPTOR)
+            || parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)
+            || parent instanceof ASTForStatement && ((ASTForStatement) parent).getCondition() == toplevel && !getProperty(ALLOW_FOR_DESCRIPTOR)) {
+
+            addViolation(ctx, impureExpr);
+        }
     }
 
     public boolean allowsAllAssignments() {

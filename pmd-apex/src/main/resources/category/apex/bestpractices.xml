@@ -10,6 +10,7 @@ Rules which enforce generally accepted best practices.
     </description>
 
     <rule name="ApexAssertionsShouldIncludeMessage"
+          language="apex"
           since="6.13.0"
           message="Apex test assert statement should make use of the message parameter."
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageRule"
@@ -24,7 +25,7 @@ improves the readability of test output.
             <![CDATA[
 @isTest
 public class Foo {
-     @isTest
+    @isTest
     static void methodATest() {
         System.assertNotEquals('123', o.StageName); // not good
         System.assertEquals('123', o.StageName, 'Opportunity stageName is wrong.'); // good
@@ -37,6 +38,7 @@ public class Foo {
     </rule>
 
     <rule name="ApexUnitTestClassShouldHaveAsserts"
+          language="apex"
           since="5.5.1"
           message="Apex unit tests should System.assert() or assertEquals() or assertNotEquals()"
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveAssertsRule"
@@ -50,12 +52,12 @@ with messages provide the developer a clearer idea of what the test does.
 <![CDATA[
 @isTest
 public class Foo {
-   public static testMethod void testSomething() {
-      Account a = null;
-   // This is better than having a NullPointerException
-   // System.assertNotEquals(a, null, 'account not found');
-   a.toString();
-   }
+    public static testMethod void testSomething() {
+        Account a = null;
+        // This is better than having a NullPointerException
+        // System.assertNotEquals(a, null, 'account not found');
+        a.toString();
+    }
 }
 ]]>
         </example>
@@ -63,14 +65,27 @@ public class Foo {
 
     <rule name="ApexUnitTestMethodShouldHaveIsTestAnnotation"
           since="6.13.0"
+          language="apex"
           message="Apex test methods should have @isTest annotation."
-          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestMethodShouldHaveIsTestAnnotationRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation">
         <description>
-Apex test methods should have @isTest annotation.
-As testMethod keyword is deprecated, Salesforce advices to use @isTest annotation for test class/methods.
+Apex test methods should have `@isTest` annotation instead of the `testMethod` keyword,
+as `testMethod` is deprecated.
+Salesforce advices to use [@isTest](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation_isTest.htm)
+annotation for test classes and methods.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Method[ModifierNode[@DeprecatedTestMethod = true()]]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
             <![CDATA[
 @isTest
@@ -83,7 +98,7 @@ private class ATest {
     @isTest static void methodCTest() {
         System.assert(1==2);
     }
-    @isTest static void methodCTest() {
+    static testmethod void methodCTest() {
         System.debug('I am a debug statement');
     }
     private void fetchData() {
@@ -91,9 +106,11 @@ private class ATest {
 }
 ]]>
         </example>
+
     </rule>
 
     <rule name="ApexUnitTestShouldNotUseSeeAllDataTrue"
+          language="apex"
           since="5.5.1"
           message="Apex unit tests should not use @isTest(seeAllData = true)"
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestShouldNotUseSeeAllDataTrueRule"
@@ -106,18 +123,19 @@ Apex unit tests should not use @isTest(seeAllData=true) because it opens up the 
 <![CDATA[
 @isTest(seeAllData = true)
 public class Foo {
-   public static testMethod void testSomething() {
-      Account a = null;
-   // This is better than having a NullPointerException
-   // System.assertNotEquals(a, null, 'account not found');
-   a.toString();
-   }
+    public static testMethod void testSomething() {
+        Account a = null;
+        // This is better than having a NullPointerException
+        // System.assertNotEquals(a, null, 'account not found');
+        a.toString();
+    }
 }
 ]]>
         </example>
     </rule>
 
     <rule name="AvoidGlobalModifier"
+          language="apex"
           since="5.5.0"
           message="Avoid using global modifier"
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidGlobalModifierRule"
@@ -139,6 +157,7 @@ global class Unchangeable {
     </rule>
 
     <rule name="AvoidLogicInTrigger"
+          language="apex"
           since="5.5.0"
           message="Avoid logic in triggers"
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidLogicInTriggerRule"
@@ -147,7 +166,7 @@ global class Unchangeable {
 As triggers do not allow methods like regular classes they are less flexible and suited to apply good encapsulation style.
 Therefore delegate the triggers work to a regular class (often called Trigger handler class).
 
-See more here: https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices
+See more here: &lt;https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices&gt;
         </description>
         <priority>3</priority>
         <example>
@@ -168,4 +187,64 @@ trigger Accounts on Account (before insert, before update, before delete, after 
 ]]>
         </example>
     </rule>
+
+    <rule name="DebugsShouldUseLoggingLevel"
+          since="6.18.0"
+          language="apex"
+          message="Calls to System.debug should specify a logging level."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel">
+       <description>
+The first parameter of System.debug, when using the signature with two parameters, is a LoggingLevel enum.
+
+Having the Logging Level specified provides a cleaner log, and improves readability of it.
+       </description>
+       <priority>3</priority>
+       <properties>
+          <property name="strictMode" type="Boolean" value="false" description="If true, mark statements that use the DEBUG enum of LoggingLevel."/>
+          <property name="xpath">
+             <value>
+<![CDATA[
+//MethodCallExpression[lower-case(@FullMethodName)='system.debug'][count(*)=2
+    or ($strictMode=true() and count(*)=3 and lower-case(VariableExpression/@Image)='debug')]
+]]>
+             </value>
+          </property>
+       </properties>
+       <example>
+<![CDATA[
+@isTest
+public class Foo {
+    @isTest
+    static void bar() {
+        System.debug('Hey this code executed.'); // not good
+        System.debug(LoggingLevel.WARN, 'Hey, something might be wrong.'); // good
+        System.debug(LoggingLevel.DEBUG, 'Hey, something happened.'); // not good when on strict mode
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnusedLocalVariable"
+          since="6.23.0"
+          language="apex"
+          message="Variable ''{0}'' defined but not used"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.UnusedLocalVariableRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#unusedlocalvariable">
+        <description>
+Detects when a local variable is declared and/or assigned but not used.
+        </description>
+        <example>
+<![CDATA[
+    public Boolean bar(String z) {
+        String x = 'some string'; // not used
+
+        String y = 'some other string'; // used in the next line
+        return z.equals(y);
+    }
+]]>
+        </example>
+    </rule>
+
 </ruleset>

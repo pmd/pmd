@@ -4,122 +4,124 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-    <code-fragment id="full-example">
-        <![CDATA[
-          package com
-                     .company
-                             .money;
+    <code-fragment id="full-example"><![CDATA[
+package com
+         .company
+                 .money;
 
-          import com
-                     .company
-                             .money.Bar;
-          import com.company.Carrot;
+import com
+         .company
+                 .money.Bar;
+import com.company.Carrot;
+import com.company.ScaryException;
+import com.company.ThemAll;
+import java.util.Random;
 
-          public class Foo extends Bar {
-            int y, z, t;
-            String q;
+public class Foo extends Bar {
+    int y, z, t;
+    String q;
 
-            {
-              bar();
-              int x;
-              switch
-                (x) {
-              case 1: foo(); break;
-              case 2:
-              case 3: bar();
-                      break;
-              default: break;
-              }
+    {
+        bar();
+        int x;
+        switch
+            (x) {
+            case 1: foo(); break;
+            case 2:
+            case 3: bar();
+                break;
+            default: break;
             }
+    }
 
-            public Foo() {
-              this(2);
-            }
+    public Foo() {
+        this(2);
+    }
 
-            public Foo(int z) {
+    public Foo(int z) {
 
-              Random r = new Random();
-              label: for (int j = -12; i < z; i++) {
-                theNonsense: for (int k = -20; k < 20; k += j) {
-                  if (r.nextInt() == 42) {
+        Random r = new Random();
+        label: for (int j = -12; i < z; i++) {
+            theNonsense: for (int k = -20; k < 20; k += j) {
+                if (r.nextInt() == 42) {
                     System
-                      .out
-                      .println("Bye");
+                        .out
+                        .println("Bye");
                     break label;
-                  } else if (k > 12) {
+                } else if (k > 12) {
                     continue theNonsense;
-                  }
                 }
-              }
-
-              super(z);
             }
+        }
 
-            public void foo() {
-              int x = 0;
-              synchronized (x) {
-                x++;
-              }
+        super.f(z);
+    }
 
-              do {
-                if (x == 0) {
-                  synchronized (x) {
+    public void foo() {
+        int x = 0;
+        synchronized (x) {
+            x++;
+        }
+
+        do {
+            if (x == 0) {
+                synchronized (x) {
                     x++;
-                  }
-                } else if (x == 1) {
-                  x = 0;
-                } else {
-                  System.out.println("Bonjour");
-                  throw new ScaryException("Surprise!");
                 }
-              } while (x != 2);
+            } else if (x == 1) {
+                x = 0;
+            } else {
+                System.out.println("Bonjour");
+                throw new ScaryException("Surprise!");
             }
+        } while (x != 2);
+    }
 
-            public static void main(String args[]) throws RadioactiveException {
-              String k, l, m;
+    public static void main(String args[]) throws ScaryException {
+        String k, l, m;
+        int x;
 
-              bar();
+        bar();
 
-              do {
-                x++;
-              } while (x < 2);
+        do {
+            x++;
+        } while (x < 2);
 
-              while (x < 4) {
-                x++;
-              }
+        while (x < 4) {
+            x++;
+        }
 
-              for (int i = 1; x < 6; ) {
-                x += i;
-              }
+        for (int i = 1; x < 6; ) {
+            x += i;
+        }
 
-              {
-                x++;;;;;
-              }
+        {
+            x++;;;;;
+        }
 
-              int p =
-                2 + 4 + 5;
+        int p =
+            2 + 4 + 5;
 
-              try {
-                x++;
-              } catch (ArrayIndexOutOfBoundsException e) {
-                e.printStackTrace();
-              } catch (ThemAll pokemon) {
-                pokemon.train();
-              } finally {
-                // Do nothing
-              }
+        try {
+            x++;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        } catch (ThemAll pokemon) {
+            pokemon.train();
+        } finally {
+            // Do nothing
+        }
 
-              bar();
-              x = (int) bar();
-              /*
-               * This is
-               * a comment
-               */
-              x.foobar();
-            }
-          }
-        ]]>
-    </code-fragment>
+        bar();
+        x = (int) bar();
+        /*
+         * This is
+         * a comment
+         */
+        x.foobar();
+    }
+}
+    ]]></code-fragment>
 
     <test-code>
         <description>Full example - Standard version</description>
@@ -127,10 +129,10 @@
         <rule-property name="methodReportLevel">10</rule-property>
         <expected-problems>4</expected-problems>
         <expected-messages>
-            <message>The class 'Foo' has a NCSS line count of 65 (Highest = 20).</message>
+            <message>The class 'Foo' has a NCSS line count of 66 (Highest = 21).</message>
             <message>The constructor 'Foo(int)' has a NCSS line count of 13.</message>
             <message>The method 'foo()' has a NCSS line count of 14.</message>
-            <message>The method 'main(String)' has a NCSS line count of 20.</message>
+            <message>The method 'main(String[])' has a NCSS line count of 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -142,10 +144,10 @@
         <rule-property name="ncssOptions">countImports</rule-property>
         <expected-problems>4</expected-problems>
         <expected-messages>
-            <message>The class 'Foo' has a NCSS line count of 68 (Highest = 20).</message>
+            <message>The class 'Foo' has a NCSS line count of 72 (Highest = 21).</message>
             <message>The constructor 'Foo(int)' has a NCSS line count of 13.</message>
             <message>The method 'foo()' has a NCSS line count of 14.</message>
-            <message>The method 'main(String)' has a NCSS line count of 20.</message>
+            <message>The method 'main(String[])' has a NCSS line count of 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -157,10 +159,10 @@
         <code><![CDATA[
 public class Foo {
     public static void main(String args[]) {
-     bar();
+        bar();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -170,38 +172,39 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public static void main(String args[]) {
-     //nothing to see here
-     //nothing to see here
-     //nothing to see here
-     //nothing to see here
-     bar();
-     //nothing to see here
-     //nothing to see here
-     //nothing to see here
-     //nothing to see here
-     foo();
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        bar();
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        foo();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <code-fragment id="complicated-method"><![CDATA[
+import java.util.Random;
 public class Foo {
-  public static void main(String args[]) {
-    Random r = new Random();
-    label: for (int j = -12; i < z; i++) {
-      theNonsense: for (int k = -20; k < 20; k += j) {
-        if (r.nextInt() == 42) {
-          System.out.println("Bye");
-          break label;
-        } else if (k > 12) {
-          continue theNonsense;
+    public static void main(String args[]) {
+        Random r = new Random();
+        label: for (int j = -12; i < z; i++) {
+            theNonsense: for (int k = -20; k < 20; k += j) {
+                if (r.nextInt() == 42) {
+                    System.out.println("Bye");
+                    break label;
+                } else if (k > 12) {
+                    continue theNonsense;
+                }
+            }
         }
-      }
     }
-  }
 }
-     ]]></code-fragment>
+    ]]></code-fragment>
 
     <test-code>
         <description>Test high class report level</description>
@@ -230,10 +233,10 @@ public enum EnumWithAnonymousInnerClass {
         }
     },
     B;
-    
+
     public void foo() {
     }
-    
+
     interface Inner {
         int get();
     }

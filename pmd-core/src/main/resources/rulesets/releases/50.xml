@@ -25,7 +25,7 @@ This ruleset contains links to rules that are new in PMD v5.0
 	<rule ref="rulesets/java/android.xml/CallSuperLast"/>
 	<rule ref="rulesets/java/basic.xml/CheckSkipResult"/>
 	<rule ref="rulesets/java/basic.xml/ExtendsObject"/>
-	<rule ref="rulesets/java/controversial.xml/AvoidPrefixingMethodParameters"/>
+<!-- Removed with 7.0.0 <rule ref="rulesets/java/controversial.xml/AvoidPrefixingMethodParameters"/>-->
 	<rule ref="rulesets/java/controversial.xml/AvoidLiteralsInIfCondition"/>
 	<rule ref="rulesets/java/controversial.xml/OneDeclarationPerLine"/>
   	<rule ref="rulesets/java/coupling.xml/LoosePackageCoupling"/>
@@ -38,7 +38,7 @@ This ruleset contains links to rules that are new in PMD v5.0
 	<rule ref="rulesets/java/empty.xml/EmptyStatementBlock"/>
 	<rule ref="rulesets/java/imports.xml/UnnecessaryFullyQualifiedName"/>
 	<rule ref="rulesets/java/junit.xml/JUnitTestContainsTooManyAsserts"/>
-	<rule ref="rulesets/java/junit.xml/UseAssertTrueInsteadOfAssertEquals"/>
+<!--	<rule ref="rulesets/java/junit.xml/UseAssertTrueInsteadOfAssertEquals"/>-->
     <rule ref="rulesets/java/logging-jakarta-commons.xml/GuardDebugLogging"/>
 	<rule ref="rulesets/java/naming.xml/ShortClassName"/>
 	<rule ref="rulesets/java/optimizations.xml/RedundantFieldInitializer"/>

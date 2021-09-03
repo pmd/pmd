@@ -13,17 +13,15 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
 
 /**
  * Cyclomatic complexity rule using metrics. Uses Wmc to report classes.
- * 
+ *
  * @author Clément Fournier
  */
 public class CyclomaticComplexityRule extends AbstractApexRule {
@@ -68,11 +66,11 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
         super.visit(node, data);
         classNames.pop();
 
-        if (ApexClassMetricKey.WMC.supports(node)) {
-            int classWmc = (int) ApexMetrics.get(ApexClassMetricKey.WMC, node);
+        if (ApexMetrics.WEIGHED_METHOD_COUNT.supports(node)) {
+            int classWmc = MetricsUtil.computeMetric(ApexMetrics.WEIGHED_METHOD_COUNT, node);
 
             if (classWmc >= getProperty(CLASS_LEVEL_DESCRIPTOR)) {
-                int classHighest = (int) ApexMetrics.get(ApexOperationMetricKey.CYCLO, node, ResultOption.HIGHEST);
+                int classHighest = (int) MetricsUtil.computeStatistics(ApexMetrics.CYCLO, node.getMethods()).getMax();
 
                 String[] messageParams = {"class",
                                           node.getImage(),
@@ -89,16 +87,18 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
     @Override
     public final Object visit(ASTMethod node, Object data) {
 
-        int cyclo = (int) ApexMetrics.get(ApexOperationMetricKey.CYCLO, node);
-        if (cyclo >= getProperty(METHOD_LEVEL_DESCRIPTOR)) {
-            String opType = inTrigger ? "trigger"
-                                      : node.getImage().equals(classNames.peek()) ? "constructor"
-                                                                                  : "method";
+        if (ApexMetrics.CYCLO.supports(node)) {
+            int cyclo = MetricsUtil.computeMetric(ApexMetrics.CYCLO, node);
+            if (cyclo >= getProperty(METHOD_LEVEL_DESCRIPTOR)) {
+                String opType = inTrigger ? "trigger"
+                                          : node.getImage().equals(classNames.peek()) ? "constructor"
+                                                                                      : "method";
 
-            addViolation(data, node, new String[]{opType,
-                                                  node.getQualifiedName().getOperation(),
-                                                  "",
-                                                  "" + cyclo, });
+                addViolation(data, node, new String[] {opType,
+                                                       node.getQualifiedName().getOperation(),
+                                                       "",
+                                                       "" + cyclo, });
+            }
         }
 
         return data;

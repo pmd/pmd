@@ -3,104 +3,95 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
+        <description>failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-test method should be public 
-     ]]></description>
+        <description>test method should be public</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
-   void testX(){}
+    void testX(){}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-inner class should get checked
-     ]]></description>
+        <description>inner class should get checked</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
-   class Bar { void testX(){} } 
+    class Bar { void testX(){} }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-test method in inner class not valid
-     ]]></description>
+        <description>test method in inner class not valid</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
-   class BarTest { void testX(){} } 
+    class BarTest { void testX(){} }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-abstract classes are ok
-     ]]></description>
+        <description>abstract classes are ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public abstract class FooTest extends TestCase {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ditto interfaces
-     ]]></description>
+        <description>ditto interfaces</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface FooTest {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ditto enum
-     ]]></description>
+        <description>ditto enum</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public enum FooTest {
-	ONE, TWO;
+    ONE, TWO;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ditto annotation
-     ]]></description>
+        <description>ditto annotation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public @interface FooTest {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case does not extend TestCase
-     ]]></description>
+        <description>failure case does not extend TestCase</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class FooTest {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -110,6 +101,7 @@ public class FooTest {
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+class YourTest {}
 public class MyTest extends YourTest {
 
     @Test
@@ -117,7 +109,7 @@ public class MyTest extends YourTest {
         assertFalse(0 == 1);
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -127,9 +119,9 @@ public class MyTest extends YourTest {
 import org.junit.jupiter.api.Test;
 
 class JUnit5Test {
-  @Test
-  void myTest() {
-  }
+    @Test
+    void myTest() {
+    }
 }
         ]]></code>
     </test-code>

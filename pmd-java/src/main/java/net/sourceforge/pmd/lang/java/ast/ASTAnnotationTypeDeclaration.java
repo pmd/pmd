@@ -4,46 +4,38 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
+/**
+ * The declaration of an annotation type.
+ *
+ * <p>Note that in contrast to interface types, no {@linkplain ASTExtendsList extends clause}
+ * is permitted, and an annotation type cannot be generic.
+ *
+ * <pre class="grammar">
+ *
+ * AnnotationTypeDeclaration ::= {@link ASTModifierList ModifierList}
+ *                               "@" "interface"
+ *                               &lt;IDENTIFIER&gt;
+ *                               {@link ASTAnnotationTypeBody AnnotationTypeBody}
+ *
+ * </pre>
+ *
+ */
+public final class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
 
-import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
-
-
-    @InternalApi
-    @Deprecated
-    public ASTAnnotationTypeDeclaration(int id) {
+    ASTAnnotationTypeDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTAnnotationTypeDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
 
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    @Override
-    public TypeKind getTypeKind() {
-        return TypeKind.ANNOTATION;
-    }
-
-
-    @Override
-    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return getFirstChildOfType(ASTAnnotationTypeBody.class)
-            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
+    public boolean isInterface() {
+        return true;
     }
 }

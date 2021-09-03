@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,14 +9,15 @@ import java.util.Iterator;
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
 
-public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
 
-    public ASTMethodCallExpression(MethodCallExpression methodCallExpression) {
+public final class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
+    ASTMethodCallExpression(MethodCallExpression methodCallExpression) {
         super(methodCallExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -31,5 +32,9 @@ public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpressi
             typeName.append(it.next().getValue()).append('.');
         }
         return typeName.toString() + methodName;
+    }
+
+    public int getInputParametersSize() {
+        return node.getInputParameters().size();
     }
 }

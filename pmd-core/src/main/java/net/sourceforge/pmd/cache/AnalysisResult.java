@@ -16,11 +16,15 @@ import java.util.zip.CheckedInputStream;
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * The result of a single file analysis.
  * Includes a checksum of the file and the complete list of violations detected.
+ * @deprecated This is internal API, will be hidden with 7.0.0
  */
+@Deprecated
+@InternalApi
 public class AnalysisResult {
 
     private final long fileChecksum;
@@ -49,7 +53,10 @@ public class AnalysisResult {
             // the analysis will fail and report the error on it's own since the checksum won't match
         }
 
-        return 0;
+        // we couldn't read the file, maybe the file doesn't exist
+        // in any case, we can't use the cache. Returning here the timestamp should make
+        // sure, we see that the file changed every time we analyze it.
+        return System.currentTimeMillis();
     }
 
     public long getFileChecksum() {

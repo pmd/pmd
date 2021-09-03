@@ -5,13 +5,15 @@
 package net.sourceforge.pmd.ant;
 
 import static java.io.File.separator;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.tools.ant.BuildFileRule;
 import org.apache.tools.ant.Project;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
@@ -29,7 +31,7 @@ public abstract class AbstractAntTestHelper {
 
     @Rule
     public final TemporaryFolder tempFolder = new TemporaryFolder();
-    
+
     @Rule
     public final BuildFileRule buildRule = new BuildFileRule();
 
@@ -88,18 +90,16 @@ public abstract class AbstractAntTestHelper {
     }
 
     public void assertOutputContaining(String text) {
-        assertContains(buildRule.getOutput(), text);
+        assertThat(buildRule.getOutput(), containsString(text));
     }
 
 
     public void assertContains(String text, String toFind) {
-        Assert.assertTrue("Expected to find \"" + toFind + "\", but it's missing",
-                          text.contains(toFind));
+        assertThat(text, containsString(toFind));
     }
 
 
     public void assertDoesntContain(String text, String toFind) {
-        Assert.assertTrue("Expected no occurrence of \"" + toFind + "\", but found at least one",
-                          !text.contains(toFind));
+        assertThat(text, not(containsString(toFind)));
     }
 }

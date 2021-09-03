@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-void return method, with no return statement.
-     ]]></description>
+        <description>void return method, with no return statement.</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public abstract class ShouldBeAbstract
@@ -15,54 +14,50 @@ public abstract class ShouldBeAbstract
     {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-non-void return method, with just a, most likely, dummy return statement.
-     ]]></description>
+        <description>non-void return method, with just a, most likely, dummy return statement.</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public abstract class ShouldBeAbstract
 {
     public Object couldBeAbstract()
     {
-	// Should be abstract method ?
-	return null;
+        // Should be abstract method ?
+        return null;
    }
-
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-A method with just a return statement, but a meaningful one.
-     ]]></description>
+        <description>A method with just a return statement, but a meaningful one.</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public abstract class ShouldBeAbstract
 {
     public int isUseful(int i)
     {
-	return (i +4 ) * 12;
+        return (i +4 ) * 12;
    }
 
     public int anotherUseful(int i)
     {
-	return i++;
+        return i++;
    }
 
     public int anotherUseful(int i)
     {
-	return i;
+        return i;
    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Other valid methods.
-     ]]></description>
+        <description>Other valid methods.</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public abstract class ShouldBeAbstract
@@ -80,14 +75,12 @@ public abstract class ShouldBeAbstract
       i = j;
       return null;
    }
-
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-nested abstract class
-     ]]></description>
+        <description>nested abstract class</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class NotAbstract
@@ -99,12 +92,11 @@ public class NotAbstract
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-nested class in abstract class
-     ]]></description>
+        <description>nested class in abstract class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public abstract class ShouldBeAbstract
@@ -116,88 +108,80 @@ public abstract class ShouldBeAbstract
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bug 1888967 : Detection of dummy method
-     ]]></description>
+        <description>Bug 1888967 : Detection of dummy method</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public abstract class ShouldBeAbstract
 {
-   	public int couldBeAbstract()
+    public int couldBeAbstract()
     {
-    	return 0;
+        return 0;
     }
 
     public String couldBeAbstract()
     {
-    	return "";
+        return "";
     }
-
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bug 1888967 : Those methods should not be detected as a violation.
-     ]]></description>
+        <description>Bug 1888967 : Those methods should not be detected as a violation.</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public abstract class ShouldBeAbstract
 {
-	public boolean notAbstract(String str)
+    public boolean notAbstract(String str)
     {
-    	return Boolean.valueOf(str);
+        return Boolean.valueOf(str);
     }
 
-	public int neitherThisOne(int i)
-	{
-		return i + 3;
-	}
+    public int neitherThisOne(int i)
+    {
+        return i + 3;
+    }
 
-	public int neitherThisOne(String str)
-	{
-		return Integer.valueOf(str);
-	}
-
-
+    public int neitherThisOne(String str)
+    {
+        return Integer.valueOf(str);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-        <test-code>
-        <description><![CDATA[
-Bug 1888967 : This method should not be detected as a violation.
-     ]]></description>
+
+    <test-code>
+        <description>Bug 1888967 : This method should not be detected as a violation.</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public abstract class ShouldBeAbstract
 {
-	public boolean couldBeAbstract(String str)
+    public boolean couldBeAbstract(String str)
     {
-    	return Boolean.valueOf(str);
+        return Boolean.valueOf(str);
     }
-
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-    	<description><![CDATA[
-    	Bug 1932242 : False +, returning a String does not count as an Empty Method
-    	]]></description>
-    	<expected-problems>0</expected-problems>
-    	<code><![CDATA[
+        <description>Bug 1932242 : False +, returning a String does not count as an Empty Method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public abstract class Foo
 {
-	protected String bar()
-	{
-		return "A valid, not null, string";
-	}
-
+    protected String bar()
+    {
+        return "A valid, not null, string";
+    }
 }
-    	]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1147 EmptyMethodInAbstractClassShouldBeAbstract false positives</description>
         <expected-problems>0</expected-problems>
@@ -209,6 +193,7 @@ public abstract class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Detect empty statements</description>
         <expected-problems>1</expected-problems>
@@ -216,6 +201,17 @@ public abstract class Foo {
 public abstract class Foo {
     public void isVisible() {
         ;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Dont flag default methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+    default void isVisible() {
+
     }
 }
         ]]></code>

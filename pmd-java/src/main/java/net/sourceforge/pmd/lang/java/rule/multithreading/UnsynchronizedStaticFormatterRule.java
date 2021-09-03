@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * unexpected results when used in a multi-threaded environment. This rule will
  * find static Formatters which are used in an unsynchronized
  * manner.
- * 
+ *
  * @author Allan Caplan
  * @see <a href="https://sourceforge.net/p/pmd/feature-requests/226/">feature #226 Check for SimpleDateFormat as singleton?</a>
  */
@@ -60,13 +60,13 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
             return data;
         }
         ASTClassOrInterfaceType cit = node.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        if (cit == null || !TypeHelper.isA(cit, formatterClassToCheck)) {
+        if (cit == null || !TypeTestUtil.isA(formatterClassToCheck, cit)) {
             return data;
         }
 
         ASTVariableDeclaratorId var = node.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         for (String formatter: THREAD_SAFE_FORMATTER) {
-            if (TypeHelper.isA(var, formatter)) {
+            if (TypeTestUtil.isA(formatter, var)) {
                 return data;
             }
         }
@@ -83,12 +83,12 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
                 ASTExpression expression = syncStatement.getFirstChildOfType(ASTExpression.class);
                 if (expression != null) {
                     ASTName name = expression.getFirstDescendantOfType(ASTName.class);
-                    if (name != null && name.hasImageEqualTo(var.getVariableName())) {
+                    if (name != null && name.hasImageEqualTo(var.getName())) {
                         continue;
                     }
                 }
             }
-            
+
             // method level synch enabled and used?
             if (getProperty(ALLOW_METHOD_LEVEL_SYNC)) {
                 ASTMethodDeclaration method = n.getFirstParentOfType(ASTMethodDeclaration.class);
@@ -96,7 +96,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
                     continue;
                 }
             }
-            
+
             addViolation(data, n);
         }
         return data;

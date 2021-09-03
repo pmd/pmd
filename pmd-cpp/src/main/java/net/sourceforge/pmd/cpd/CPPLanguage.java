@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -24,12 +24,6 @@ public class CPPLanguage extends AbstractLanguage {
         setProperties(properties);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sourceforge.pmd.cpd.AbstractLanguage#setProperties(java.util.
-     * Properties)
-     */
     @Override
     public void setProperties(Properties properties) {
         super.setProperties(properties);

@@ -4,307 +4,225 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.BufferedReader;
-import java.io.CharArrayReader;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.PushbackReader;
 import java.util.Properties;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.antlr.v4.runtime.CharStream;
+
+import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
+import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
+import net.sourceforge.pmd.lang.cs.ast.CSharpLexer;
 
 /**
- * This class does a best-guess try-anything tokenization.
- *
- * @author jheintz
+ * The C# tokenizer.
  */
-public class CsTokenizer implements Tokenizer {
+public class CsTokenizer extends AntlrTokenizer {
 
     private boolean ignoreUsings = false;
+    private boolean ignoreLiteralSequences = false;
 
+    /**
+     * Sets the possible options for the C# tokenizer.
+     *
+     * @param properties the properties
+     * @see #IGNORE_USINGS
+     * @see #OPTION_IGNORE_LITERAL_SEQUENCES
+     */
     public void setProperties(Properties properties) {
-        if (properties.containsKey(IGNORE_USINGS)) {
-            ignoreUsings = Boolean.parseBoolean(properties.getProperty(IGNORE_USINGS, "false"));
-        }
-    }
-
-    @Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        try (Tokenizer tokenizer = new Tokenizer(sourceCode.getCodeBuffer().toString())) {
-            Token token = tokenizer.getNextToken();
-
-            while (!token.equals(Token.EOF)) {
-                Token lookAhead = tokenizer.getNextToken();
-
-                // Ignore using directives
-                // Only using directives should be ignored, because these are used
-                // to import namespaces
-                //
-                // Using directive: 'using System.Math;'
-                // Using statement: 'using (Font font1 = new Font(..)) { .. }'
-                if (ignoreUsings && "using".equals(token.image) && !"(".equals(lookAhead.image)) {
-                    // We replace the 'using' token by a random token, because it
-                    // should not be part of
-                    // any duplication block. When we omit it from the token stream,
-                    // there is a change that
-                    // we get a duplication block that starts before the 'using'
-                    // directives and ends afterwards.
-                    String randomTokenText = RandomStringUtils.randomAlphanumeric(20);
-
-                    token = new Token(randomTokenText, token.lineNumber);
-                    // Skip all other tokens of the using directive to prevent a
-                    // partial matching
-                    while (!";".equals(lookAhead.image) && !lookAhead.equals(Token.EOF)) {
-                        lookAhead = tokenizer.getNextToken();
-                    }
-                }
-                if (!";".equals(token.image)) {
-                    tokenEntries.add(new TokenEntry(token.image, sourceCode.getFileName(), token.lineNumber));
-                }
-                token = lookAhead;
-            }
-            tokenEntries.add(TokenEntry.getEOF());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ignoreUsings = Boolean.parseBoolean(properties.getProperty(IGNORE_USINGS, Boolean.FALSE.toString()));
+        ignoreLiteralSequences = Boolean.parseBoolean(properties.getProperty(OPTION_IGNORE_LITERAL_SEQUENCES,
+            Boolean.FALSE.toString()));
     }
 
     public void setIgnoreUsings(boolean ignoreUsings) {
         this.ignoreUsings = ignoreUsings;
     }
 
-    private static class Tokenizer implements Closeable {
-        private boolean endOfFile;
-        private int line;
-        private final PushbackReader reader;
+    public void setIgnoreLiteralSequences(boolean ignoreLiteralSequences) {
+        this.ignoreLiteralSequences = ignoreLiteralSequences;
+    }
 
-        Tokenizer(String sourceCode) {
-            endOfFile = false;
-            line = 1;
-            reader = new PushbackReader(new BufferedReader(new CharArrayReader(sourceCode.toCharArray())));
+    @Override
+    protected AntlrTokenManager getLexerForSource(final SourceCode sourceCode) {
+        final CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);
+        return new AntlrTokenManager(new CSharpLexer(charStream), sourceCode.getFileName());
+    }
+
+    @Override
+    protected AntlrTokenFilter getTokenFilter(final AntlrTokenManager tokenManager) {
+        return new CsTokenFilter(tokenManager, ignoreUsings, ignoreLiteralSequences);
+    }
+
+    /**
+     * The {@link CsTokenFilter} extends the {@link AntlrTokenFilter} to discard
+     * C#-specific tokens.
+     * <p>
+     * By default, it enables annotation-based CPD suppression.
+     * If the --ignoreUsings flag is provided, using directives are filtered out.
+     * </p>
+     */
+    private static class CsTokenFilter extends AntlrTokenFilter {
+        private enum UsingState {
+            KEYWORD, // just encountered the using keyword
+            IDENTIFIER, // just encountered an identifier or var keyword
         }
 
-        public Token getNextToken() {
-            if (endOfFile) {
-                return Token.EOF;
-            }
+        private final boolean ignoreUsings;
+        private final boolean ignoreLiteralSequences;
+        private boolean discardingUsings = false;
+        private boolean discardingNL = false;
+        private AntlrToken discardingLiteralsUntil = null;
+        private boolean discardCurrent = false;
 
-            try {
-                int ic = reader.read();
-                char c;
-                StringBuilder b;
-                while (ic != -1) {
-                    c = (char) ic;
-                    switch (c) {
-                    // new line
-                    case '\n':
-                        line++;
-                        ic = reader.read();
-                        break;
-
-                    // white space
-                    case ' ':
-                    case '\t':
-                    case '\r':
-                        ic = reader.read();
-                        break;
-
-                    case ';':
-                        return new Token(";", line);
-
-                    // < << <= <<= > >> >= >>=
-                    case '<':
-                    case '>':
-                        ic = reader.read();
-                        if (ic == '=') {
-                            return new Token(c + "=", line);
-                        } else if (ic == c) {
-                            ic = reader.read();
-                            if (ic == '=') {
-                                return new Token(c + c + "=", line);
-                            } else {
-                                reader.unread(ic);
-                                return new Token(String.valueOf(c) + c, line);
-                            }
-                        } else {
-                            reader.unread(ic);
-                            return new Token(String.valueOf(c), line);
-                        }
-
-                        // = == & &= && | |= || + += ++ - -= --
-                    case '=':
-                    case '&':
-                    case '|':
-                    case '+':
-                    case '-':
-                        ic = reader.read();
-                        if (ic == '=' || ic == c) {
-                            return new Token(c + String.valueOf((char) ic), line);
-                        } else {
-                            reader.unread(ic);
-                            return new Token(String.valueOf(c), line);
-                        }
-
-                        // ! != * *= % %= ^ ^= ~ ~=
-                    case '!':
-                    case '*':
-                    case '%':
-                    case '^':
-                    case '~':
-                        ic = reader.read();
-                        if (ic == '=') {
-                            return new Token(c + "=", line);
-                        } else {
-                            reader.unread(ic);
-                            return new Token(String.valueOf(c), line);
-                        }
-
-                        // strings & chars
-                    case '"':
-                    case '\'':
-                        int beginLine = line;
-                        b = new StringBuilder();
-                        b.append(c);
-                        while ((ic = reader.read()) != c) {
-                            if (ic == -1) {
-                                break;
-                            }
-                            b.append((char) ic);
-                            if (ic == '\\') {
-                                int next = reader.read();
-                                if (next != -1) {
-                                    b.append((char) next);
-
-                                    if (next == '\n') {
-                                        line++;
-                                    }
-                                }
-                            } else if (ic == '\n') {
-                                line++;
-                            }
-                        }
-                        if (ic != -1) {
-                            b.append((char) ic);
-                        }
-                        return new Token(b.toString(), beginLine);
-
-                    // / /= /*...*/ //...
-                    case '/':
-                        ic = reader.read();
-                        c = (char) ic;
-                        switch (c) {
-                        case '*':
-                            // int beginLine = line;
-                            int state = 1;
-                            b = new StringBuilder();
-                            b.append("/*");
-
-                            while ((ic = reader.read()) != -1) {
-                                c = (char) ic;
-                                b.append(c);
-
-                                if (c == '\n') {
-                                    line++;
-                                }
-
-                                if (state == 1) {
-                                    if (c == '*') {
-                                        state = 2;
-                                    }
-                                } else {
-                                    if (c == '/') {
-                                        ic = reader.read();
-                                        break;
-                                    } else if (c != '*') {
-                                        state = 1;
-                                    }
-                                }
-                            }
-                            // ignore the /* comment
-                            // tokenEntries.add(new TokenEntry(b.toString(),
-                            // sourceCode.getFileName(), beginLine));
-                            break;
-
-                        case '/':
-                            b = new StringBuilder();
-                            b.append("//");
-                            while ((ic = reader.read()) != '\n') {
-                                if (ic == -1) {
-                                    break;
-                                }
-                                b.append((char) ic);
-                            }
-                            // ignore the // comment
-                            // tokenEntries.add(new TokenEntry(b.toString(),
-                            // sourceCode.getFileName(), line));
-                            break;
-
-                        case '=':
-                            return new Token("/=", line);
-
-                        default:
-                            reader.unread(ic);
-                            return new Token("/", line);
-                        }
-                        break;
-
-                    default:
-                        // [a-zA-Z_][a-zA-Z_0-9]*
-                        if (Character.isJavaIdentifierStart(c)) {
-                            b = new StringBuilder();
-                            do {
-                                b.append(c);
-                                ic = reader.read();
-                                c = (char) ic;
-                            } while (Character.isJavaIdentifierPart(c));
-                            reader.unread(ic);
-                            return new Token(b.toString(), line);
-                        } else if (Character.isDigit(c) || c == '.') {
-                            // numbers
-                            b = new StringBuilder();
-                            do {
-                                b.append(c);
-                                if (c == 'e' || c == 'E') {
-                                    ic = reader.read();
-                                    c = (char) ic;
-                                    if ("1234567890-".indexOf(c) == -1) {
-                                        break;
-                                    }
-                                    b.append(c);
-                                }
-                                ic = reader.read();
-                                c = (char) ic;
-                            } while ("1234567890.iIlLfFdDsSuUeExX".indexOf(c) != -1);
-                            reader.unread(ic);
-                            return new Token(b.toString(), line);
-                        } else {
-                            // anything else
-                            return new Token(String.valueOf(c), line);
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            endOfFile = true;
-            return Token.EOF;
+        CsTokenFilter(final AntlrTokenManager tokenManager, boolean ignoreUsings, boolean ignoreLiteralSequences) {
+            super(tokenManager);
+            this.ignoreUsings = ignoreUsings;
+            this.ignoreLiteralSequences = ignoreLiteralSequences;
         }
 
         @Override
-        public void close() throws IOException {
-            reader.close();
+        protected void analyzeToken(final AntlrToken currentToken) {
+            skipNewLines(currentToken);
         }
-    }
 
-    private static class Token {
-        public static final Token EOF = new Token("EOF", -1);
+        @Override
+        protected void analyzeTokens(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
+            discardCurrent = false;
+            skipUsingDirectives(currentToken, remainingTokens);
+            skipLiteralSequences(currentToken, remainingTokens);
+        }
 
-        public final String image;
-        public final int lineNumber;
+        private void skipUsingDirectives(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
+            if (ignoreUsings) {
+                final int type = currentToken.getKind();
+                if (type == CSharpLexer.USING && isUsingDirective(remainingTokens)) {
+                    discardingUsings = true;
+                } else if (type == CSharpLexer.SEMICOLON && discardingUsings) {
+                    discardingUsings = false;
+                    discardCurrent = true;
+                }
+            }
+        }
 
-        Token(String image, int lineNumber) {
-            this.image = image;
-            this.lineNumber = lineNumber;
+        private boolean isUsingDirective(final Iterable<AntlrToken> remainingTokens) {
+            UsingState usingState = UsingState.KEYWORD;
+            for (final AntlrToken token : remainingTokens) {
+                final int type = token.getKind();
+                if (usingState == UsingState.KEYWORD) {
+                    // The previous token was a using keyword.
+                    switch (type) {
+                    case CSharpLexer.STATIC:
+                        // Definitely a using directive.
+                        // Example: using static System.Math;
+                        return true;
+                    case CSharpLexer.VAR:
+                        // Definitely a using statement.
+                        // Example: using var font1 = new Font("Arial", 10.0f);
+                        return false;
+                    case CSharpLexer.OPEN_PARENS:
+                        // Definitely a using statement.
+                        // Example: using (var font1 = new Font("Arial", 10.0f);
+                        return false;
+                    case CSharpLexer.IDENTIFIER:
+                        // This is either a type for a using statement or an alias for a using directive.
+                        // Example (directive): using Project = PC.MyCompany.Project;
+                        // Example (statement): using Font font1 = new Font("Arial", 10.0f);
+                        usingState = UsingState.IDENTIFIER;
+                        break;
+                    default:
+                        // Some unknown construct?
+                        return false;
+                    }
+                } else if (usingState == UsingState.IDENTIFIER) {
+                    // The previous token was an identifier.
+                    switch (type) {
+                    case CSharpLexer.ASSIGNMENT:
+                        // Definitely a using directive.
+                        // Example: using Project = PC.MyCompany.Project;
+                        return true;
+                    case CSharpLexer.IDENTIFIER:
+                        // Definitely a using statement.
+                        // Example: using Font font1 = new Font("Arial", 10.0f);
+                        return false;
+                    case CSharpLexer.DOT:
+                        // This should be considered part of the same type; revert to previous state.
+                        // Example (directive): using System.Text;
+                        // Example (statement): using System.Drawing.Font font1 = new Font("Arial", 10.0f);
+                        usingState = UsingState.KEYWORD;
+                        break;
+                    case CSharpLexer.SEMICOLON:
+                        // End of using directive.
+                        return true;
+                    default:
+                        // Some unknown construct?
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void skipNewLines(final AntlrToken currentToken) {
+            discardingNL = currentToken.getKind() == CSharpLexer.NL;
+        }
+
+        private void skipLiteralSequences(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
+            if (ignoreLiteralSequences) {
+                final int type = currentToken.getKind();
+                if (isDiscardingLiterals()) {
+                    if (currentToken == discardingLiteralsUntil) { // NOPMD - intentional check for reference equality
+                        discardingLiteralsUntil = null;
+                        discardCurrent = true;
+                    }
+                } else if (type == CSharpLexer.OPEN_BRACE) {
+                    final AntlrToken finalToken = findEndOfSequenceOfLiterals(remainingTokens);
+                    discardingLiteralsUntil = finalToken;
+                }
+            }
+        }
+
+        private AntlrToken findEndOfSequenceOfLiterals(final Iterable<AntlrToken> remainingTokens) {
+            boolean seenLiteral = false;
+            int braceCount = 0;
+            for (final AntlrToken token : remainingTokens) {
+                switch (token.getKind()) {
+                case CSharpLexer.BIN_INTEGER_LITERAL:
+                case CSharpLexer.CHARACTER_LITERAL:
+                case CSharpLexer.HEX_INTEGER_LITERAL:
+                case CSharpLexer.INTEGER_LITERAL:
+                case CSharpLexer.REAL_LITERAL:
+                    seenLiteral = true;
+                    break; // can be skipped; continue to the next token
+                case CSharpLexer.COMMA:
+                    break; // can be skipped; continue to the next token
+                case CSharpLexer.OPEN_BRACE:
+                    braceCount++;
+                    break; // curly braces are allowed, as long as they're balanced
+                case CSharpLexer.CLOSE_BRACE:
+                    braceCount--;
+                    if (braceCount < 0) {
+                        // end of the list; skip all contents
+                        return seenLiteral ? token : null;
+                    } else {
+                        // curly braces are not yet balanced; continue to the next token
+                        break;
+                    }
+                default:
+                    // some other token than the expected ones; this is not a sequence of literals
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        public boolean isDiscardingLiterals() {
+            return discardingLiteralsUntil != null;
+        }
+
+        @Override
+        protected boolean isLanguageSpecificDiscarding() {
+            return discardingUsings || discardingNL || isDiscardingLiterals() || discardCurrent;
         }
     }
 }

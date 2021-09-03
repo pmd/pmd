@@ -16,7 +16,7 @@ import net.sourceforge.pmd.util.FileUtil;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
- * 
+ *
  */
 public class CLITest extends BaseCLITest {
     @Test
@@ -70,7 +70,7 @@ public class CLITest extends BaseCLITest {
      * See https://sourceforge.net/p/pmd/bugs/1231/
      */
     @Test
-    public void testWrongRuleset() throws Exception {
+    public void testWrongRuleset() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml", };
         String filename = TEST_OUPUT_DIRECTORY + "testWrongRuleset.txt";
         createTestOutputFile(filename);
@@ -84,7 +84,7 @@ public class CLITest extends BaseCLITest {
      * See https://sourceforge.net/p/pmd/bugs/1231/
      */
     @Test
-    public void testWrongRulesetWithRulename() throws Exception {
+    public void testWrongRulesetWithRulename() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml/UseCollectionIsEmpty", };
         String filename = TEST_OUPUT_DIRECTORY + "testWrongRuleset.txt";
         createTestOutputFile(filename);
@@ -98,13 +98,13 @@ public class CLITest extends BaseCLITest {
      * See https://sourceforge.net/p/pmd/bugs/1231/
      */
     @Test
-    public void testWrongRulename() throws Exception {
+    public void testWrongRulename() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml/ThisRuleDoesNotExist", };
         String filename = TEST_OUPUT_DIRECTORY + "testWrongRuleset.txt";
         createTestOutputFile(filename);
         runPMDWith(args);
         Assert.assertEquals(1, getStatusCode());
         assertTrue(FileUtil.findPatternInFile(new File(filename), Pattern
-                .quote("No rules found. Maybe you mispelled a rule name?" + " (category/java/design.xml/ThisRuleDoesNotExist)")));
+                .quote("No rules found. Maybe you misspelled a rule name?" + " (category/java/design.xml/ThisRuleDoesNotExist)")));
     }
 }

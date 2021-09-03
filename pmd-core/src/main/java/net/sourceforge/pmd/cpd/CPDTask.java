@@ -27,9 +27,9 @@ import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
 /**
  * CPDTask
- * 
+ *
  * <p>Runs the CPD utility via ant. The ant task looks like this:</p>
- * 
+ *
  * <pre>
  * &lt;project name="CPDProj" default="main" basedir="."&gt;
  *   &lt;taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" /&gt;
@@ -44,7 +44,7 @@ import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
  *   &lt;/target&gt;
  * &lt;/project&gt;
  * </pre>
- * 
+ *
  * <p>Required: minimumTokenCount, outputFile, and at least one file</p>
  */
 public class CPDTask extends Task {
@@ -131,8 +131,9 @@ public class CPDTask extends Task {
             log("No duplicates over " + minimumTokenCount + " tokens found", Project.MSG_INFO);
         }
         CPDRenderer renderer = createRenderer();
-        
+
         try {
+            // will be closed via BufferedWriter/OutputStreamWriter chain down below
             final OutputStream os;
             if (outputFile == null) {
                 os = System.out;
@@ -141,11 +142,11 @@ public class CPDTask extends Task {
             } else {
                 os = Files.newOutputStream(new File(getProject().getBaseDir(), outputFile.toString()).toPath());
             }
-            
+
             if (encoding == null) {
                 encoding = System.getProperty("file.encoding");
             }
-            
+
             try (Writer writer = new BufferedWriter(new OutputStreamWriter(os, encoding))) {
                 renderer.render(cpd.getMatches(), writer);
             }
@@ -175,9 +176,9 @@ public class CPDTask extends Task {
     }
 
     private CPDRenderer createRenderer() {
-        if (format.equals(TEXT_FORMAT)) {
+        if (TEXT_FORMAT.equals(format)) {
             return new SimpleRenderer();
-        } else if (format.equals(CSV_FORMAT)) {
+        } else if (CSV_FORMAT.equals(format)) {
             return new CSVRenderer();
         }
         return new XMLRenderer();

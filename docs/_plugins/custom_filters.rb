@@ -1,3 +1,5 @@
+require 'kramdown'
+
 module CustomFilters
 
   # set intersection
@@ -44,16 +46,27 @@ module CustomFilters
 
   end
 
+  def render_markdown(text)
+    Kramdown::Document.new(text).to_html
+  end
+
+  def xpath_fun_type(fun_yaml)
+
+    res = '('
+
+    params = fun_yaml['parameters']
+
+    res += params.map {|it| it['type']}.join(', ') if params
+
+    res + ') as ' + fun_yaml['returnType']
+  end
+
   def regex_replace(str, regex, subst)
-    if str && regex
-      str.gsub(Regexp::new(regex), subst || "")
-    end
+    str.gsub(Regexp.new(regex), subst || '') if str && regex
   end
 
   def regex_split(str, regex = nil)
-    if str
-      str.split(regex && Regexp::new(regex))
-    end
+    str.split(regex && Regexp.new(regex)) if str
   end
 
   # Takes an array of strings and maps every element x to {{ x | append: suffix }}
@@ -63,9 +76,7 @@ module CustomFilters
 
   # Returns the initial argument only if the second argument is truthy
   def keep_if(any, test)
-    if test
-      any
-    end
+    any if test
   end
 
   # Append the suffix only if the condition argument is truthy
@@ -91,14 +102,18 @@ module CustomFilters
     end
   end
 
+  def random_alphabetic(length)
+    ('a'..'z').to_a.shuffle[0, length].join
+  end
+
 
   private
 
   def flatten_rec(seq)
     seq.map {|h|
-      if (subs = h["folderitems"] || h["subfolderitems"] || h["subfolders"])
+      if (subs = h['folderitems'] || h['subfolderitems'] || h['subfolders'])
         flatten_rec(subs).flatten
-      elsif (page = h["url"])
+      elsif (page = h['url'])
         page
       end
     }.flatten
@@ -106,10 +121,10 @@ module CustomFilters
 
   def rank_lookup_from_sidebar(sidebar)
 
-    folders = sidebar["entries"][0]["folders"]
+    folders = sidebar['entries'][0]['folders']
 
     ordered = flatten_rec(folders).select {|url|
-      url && url.end_with?(".html")
+      url && url.end_with?('.html')
     }
 
     Hash[ordered.zip (0...ordered.size)]

@@ -4,42 +4,19 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
-
-import net.sourceforge.pmd.lang.AbstractParser;
-import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl;
+import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 
 /**
  * Adapter for the XmlParser.
  */
-public class XmlParser extends AbstractParser {
-
-    public XmlParser(ParserOptions parserOptions) {
-        super(parserOptions);
-    }
+public class XmlParser implements Parser {
 
     @Override
-    public TokenManager createTokenManager(Reader source) {
-        return null;
+    public RootXmlNode parse(ParserTask task) throws ParseException {
+        return new XmlParserImpl().parse(task);
     }
 
-    @Override
-    public boolean canParse() {
-        return true;
-    }
-
-    @Override
-    public Node parse(String fileName, Reader source) throws ParseException {
-        return new net.sourceforge.pmd.lang.xml.ast.XmlParser((XmlParserOptions) parserOptions).parse(source);
-    }
-
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return new HashMap<>(); // FIXME
-    }
 }

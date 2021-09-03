@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,7 +49,7 @@ public class DeadLinksChecker {
     private static final boolean CHECK_EXTERNAL_LINKS = Boolean.parseBoolean(System.getProperty(CHECK_EXTERNAL_LINKS_PROPERTY));
 
     // Markdown-Link: something in []'s followed by something in ()'s
-    private static final Pattern LOCAL_LINK_PATTERN = Pattern.compile("\\[.*?\\]\\((.*?)\\)");
+    private static final Pattern LOCAL_LINK_PATTERN = Pattern.compile("(!)?\\[.*?]\\((.*?)\\)");
 
     // Markdown permalink-header and captions
     private static final Pattern MD_HEADER_PERMALINK = Pattern.compile("permalink:\\s*(.*)");
@@ -78,8 +78,10 @@ public class DeadLinksChecker {
 
     public void checkDeadLinks(Path rootDirectory) {
         final Path pagesDirectory = rootDirectory.resolve("docs/pages");
+        final Path docsDirectory = rootDirectory.resolve("docs");
 
         if (!Files.isDirectory(pagesDirectory)) {
+            // docsDirectory is implicitly checked by this statement too
             LOG.severe("can't check for dead links, didn't find \"pages\" directory at: " + pagesDirectory);
             System.exit(1);
         }
@@ -111,7 +113,8 @@ public class DeadLinksChecker {
                 linkCheck:
                 while (matcher.find()) {
                     final String linkText = matcher.group();
-                    final String linkTarget = matcher.group(1);
+                    final boolean isImageLink = matcher.group(1) != null;
+                    final String linkTarget = matcher.group(2);
                     boolean linkOk;
 
                     if (linkTarget.charAt(0) == '/') {
@@ -168,7 +171,18 @@ public class DeadLinksChecker {
                             continue;
                         }
 
-                        linkOk = linkTarget.isEmpty() || htmlPages.contains(linkTarget);
+                        if (isImageLink) {
+                            Path localResource = docsDirectory.resolve(linkTarget);
+                            linkOk = Files.exists(localResource);
+                        } else {
+                            linkOk = linkTarget.isEmpty() || htmlPages.contains(linkTarget);
+                        }
+
+                        // maybe a local file
+                        if (!linkOk) {
+                            Path localResource = docsDirectory.resolve(linkTarget);
+                            linkOk = Files.exists(localResource);
+                        }
                     }
 
                     if (!linkOk) {
@@ -283,7 +297,7 @@ public class DeadLinksChecker {
 
     private String fileToString(Path mdFile) {
         try (InputStream inputStream = Files.newInputStream(mdFile)) {
-            return IOUtils.toString(inputStream, Charset.forName("UTF-8"));
+            return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
         } catch (IOException ex) {
             throw new RuntimeException("error reading " + mdFile, ex);
         }

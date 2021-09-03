@@ -10,20 +10,19 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.stat.Metric;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
- * A NOOP analysis cache. Easier / safer than null-checking. 
+ * A NOOP analysis cache. Easier / safer than null-checking.
+ *
+ * @deprecated This is internal API, will be hidden with 7.0.0
  */
+@Deprecated
+@InternalApi
 public class NoopAnalysisCache implements AnalysisCache {
-    
-    @Override
-    public void ruleViolationAdded(final RuleViolation ruleViolation) {
-        // noop
-    }
 
     @Override
-    public void metricAdded(final Metric metric) {
+    public void ruleViolationAdded(final RuleViolation ruleViolation) {
         // noop
     }
 

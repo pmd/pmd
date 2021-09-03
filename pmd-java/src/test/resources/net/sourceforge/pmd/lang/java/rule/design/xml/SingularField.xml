@@ -3,315 +3,297 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-    <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private int x;
- int bar(int y) {
-  x = y + 5; 
-  return x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Ok, used for control flow
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private int x;
- int bar(int y) {
-  if (y = 5)
-    x = y + 5; 
-  return x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private int x;
- void setX(int x) {
-  this.x = x;
- }
- int getX() {
-  return x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-second method uses 'this'
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private int x;
- void setX(int x) {
-  this.x = x;
- }
- int getX() {
-  return this.x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-skip publics
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public int x;
- int bar(int y) {
-  x = y + 5; 
-  return x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-skip statics
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private static int x;
- int bar(int y) {
-  x = y + 5; 
-  return x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-unused fields shouldn't show up
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- int a = 3;
- int b = 3;
- void bar() {
-  foo(b); 
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-inner class
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private int a;
- void bar() {
-  Object o = new FooAdapter() {
-   public void bar(Event e) {
-    a = e.GetInt();
-   }
-  }; 
- }
- int baz() {
-  return a; 
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-initialized in constructor
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private int x;
- public Foo(int y) {
-  x = y; 
- }
- int bar(int y) {
-  x = y + 5; 
-  return x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-ok case with Object
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private Integer x = null;
- private Integer getFoo() {
-  if(x == null){
-      x = new Integer(1);
-  }
-  return x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-ok, shouldn't catch unused variable
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private int x;
- void bar(int y) {
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-ok case with self-instantiation
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private Integer x = new Integer(1);
- private Integer getFoo() {
-  return x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Reuse variable name as params in method calls
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private Integer x = new Integer(1);
- public Foo(Integer x) {
- }
- private void getFoo(Integer x) {
-  this.x = x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Ok, instantiates own self internally
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private int x;
- int bar(int y) {
-  x = y + 5; 
-  return x;
- }
- private void bar() {
-  Foo foo = new Foo();
-  foo.x = new Integer(5);
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-ok, variable accessed twice in same method
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private Map map = new SomeMap();
- private boolean bar(Object o) {
-     boolean ret = true;
-     if(super.isTrue) {
-     if(map.get(o) != null) {
-         ret = false; 
-     } else {
-         map.put(o,o); 
-     } 
-     } 
-     return ret; 
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-failure, static
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private int x;
- static {
-  x = 5; 
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-failure, second method re-uses class level name
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private int x;
- void setX(int x) {
-  this.x = x;
- }
- int doX() {
-  int x = 5;
-  return x*3;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-initialized in static initialization block
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private static Foo FOO = new Foo();
- private int x;
- static {
-  FOO.x = 5; 
- }
- int bar(int y) {
-  x = y + 5; 
-  return x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-1409944, fields used to synchronize should not trigger
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
 
+    <test-code>
+        <description>failure case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                private int x;
+
+                int bar(int y) {
+        x = y + 5;
+        return x;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, used for control flow</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    int bar(int y) {
+        if (y = 5)
+        x = y + 5;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    void setX(int x) {
+        this.x = x;
+    }
+    int getX() {
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>second method uses 'this'</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    void setX(int x) {
+        this.x = x;
+    }
+    int getX() {
+        return this.x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip publics</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int x;
+    int bar(int y) {
+        x = y + 5;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip statics</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static int x;
+    int bar(int y) {
+        x = y + 5;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>unused fields shouldn't show up</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int a = 3;
+    int b = 3;
+    void bar() {
+        foo(b);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int a;
+    void bar() {
+        Object o = new FooAdapter() {
+            public void bar(Event e) {
+                a = e.GetInt();
+            }
+        };
+    }
+    int baz() {
+        return a;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>initialized in constructor, but the field is useless</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    public Foo(int y) {
+        x = y;
+    }
+    int bar(int y) {
+        x = y + 5;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok case with Object</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Integer x = null;
+    private Integer getFoo() {
+        if (x == null) {
+            x = new Integer(1);
+        }
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, shouldn't catch unused variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    void bar(int y) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok case with self-instantiation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Integer x = new Integer(1);
+    private Integer getFoo() {
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, field has no read access</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Integer x = new Integer(1);
+    public Foo(Integer x) {
+    }
+    private void getFoo(Integer x) {
+        this.x = x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, instantiates own self internally</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    int bar(int y) {
+        x = y + 5;
+        return x;
+    }
+    private void bar() {
+        Foo foo = new Foo();
+        foo.x = new Integer(5);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, variable accessed twice in same method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Map map = new SomeMap();
+    private boolean bar(Object o) {
+        boolean ret = true;
+        if(super.isTrue) {
+            if(map.get(o) != null) {
+                ret = false;
+            } else {
+                map.put(o,o);
+            }
+        }
+        return ret;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, static is ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static int x;
+    static {
+        x = 5;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, field has no read access (shadowing)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    void setX(int x) {
+        this.x = x;
+    }
+    int doX() {
+        int x = 5;
+        return x*3;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>initialized in static initialization block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static Foo FOO = new Foo();
+    private int x;
+    static {
+        FOO.x = 5;
+    }
+    int bar(int y) {
+        x = y + 5;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1409944, fields used to synchronize should not trigger</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
     private final Object oSync = new Object();
 
     public void foo() {
@@ -320,17 +302,16 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-1409944, fields not used to synchronize should trigger
-     ]]></description>
+        <description>1409944, fields not used to synchronize should trigger</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     private final Object sync = new Object();
-    private final Object noSync;
+    private Object noSync;
 
     public void foo() {
         synchronized (sync) {
@@ -339,12 +320,11 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-1409944, field is used to change the flow of different calls
-     ]]></description>
+        <description>1409944, field is used to change the flow of different calls</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -357,137 +337,151 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, used in outer class
-     ]]></description>
+        <description>Ok, used in outer class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     private class Bar {
         private int bar;
-        
+
         private Bar(int barry) {
             bar = barry;
-        }    
+        }
     }
-    
+
     public int foo() {
         Bar bart = new Bar(5);
         return bart.bar;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Not ok, since inner classes are checked
-     ]]></description>
-        <rule-property name="checkInnerClasses">true</rule-property>
-        <expected-problems>1</expected-problems>
+        <description>Ok, field is used by outer class</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     private class Bar {
         private int bar;
-        
+
         private Bar(int barry) {
             bar = barry;
-        }    
+        }
     }
-    
+
     public int foo() {
         Bar bart = new Bar(5);
         return bart.bar;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Not ok, violation with first usage = non-assignment
-     ]]></description>
-        <rule-property name="disallowNotAssignment">true</rule-property>
+        <description>Ok, violation with first usage != non-assignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    int bar(int y) {
+        if (x > y) x = y + 5;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, field used to aggregate values</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    int bar(int y) {
+        x = x + y;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, the field is unused</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Person p = new Person();
+
+    //ctor
+    public Foo(String name) {
+        p.name = name;
+    }
+
+    public void foo(String name) {
+        p.name = name;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation, in ctor it's used only once</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private int x;
- int bar(int y) {
-  x.snafu();
-  x = y + 5; 
-  return x;
- }
+    private Person p = new Person();
+
+    //ctor
+    public Foo(String name) {
+        p.name = name;
+    }
+
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, field used to aggregate values
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private int x;
- int bar(int y) {
-  x = x + y;
-  return x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Ok, setting values
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- private Person p = new Person();
- public Foo(String name) {
-  p.name = name;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-multiple fields on same line
-     ]]></description>
+        <description>multiple fields on same line</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private int x, foo;
- int bar(int y) {
-  foo = y + 5; 
-  return foo;
- }
- void setX(int x) {
-  this.x = x;
- }
- int getX() {
-  return x;
- }
+    private int x, foo;
+    int bar(int y) {
+        foo = y + 5;
+        return foo;
+    }
+    void setX(int x) {
+        this.x = x;
+    }
+    int getX() {
+        return x;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-field in inner class
-     ]]></description>
+        <description>field in inner class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private final Object bufferFilter = new Object() {
-  public String toString() {
-   final Object[] candidates;
-   candidates = new Object[2];
-   return null;
-  }
- };
+    private final Object bufferFilter = new Object() {
+        public String toString() {
+            final Object[] candidates;
+            candidates = new Object[2];
+            return null;
+        }
+    };
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>bug 3574133 - false + with enums</description>
         <expected-problems>0</expected-problems>
@@ -511,8 +505,9 @@ public enum MyEnum {
         return null;
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1307 False positive: SingularField and lambda-expression</description>
         <expected-problems>0</expected-problems>
@@ -611,6 +606,11 @@ public class Outer {
     public Outer(String outerField) {
         this.outerField = outerField;
     }
+
+    void useField() {
+        outerField = "";
+        System.out.println(outerField);
+    }
 }
         ]]></code>
     </test-code>
@@ -621,31 +621,31 @@ public class Outer {
         <code><![CDATA[
 /** Dummy class. */
 public final class Test {
-  private Timer timer1;
-  private Timer timer2;
+    private Timer timer1;
+    private Timer timer2;
 
-  /** Dummy constructor. */
-  public Timer() {
-    this.timer1 = new Timer(0, e -> {
-      // do nothing for now
-    });
-    this.timer2 = new Timer(0, e -> {
-      // do nothing for now
-    });
-  }
-
-  /** Use a lambda expression to reference timer1 -- triggers SingularField error. */
-  private final Runnable play1 = () -> {
-    this.timer1.start();
-  };
-
-  /** Use an anonymous class to reference timer2 -- no error. */
-  private final Runnable play2 = new Runnable() {
-    @Override
-    public void run() {
-      this.timer2.start();
+    /** Dummy constructor. */
+    public Timer() {
+        this.timer1 = new Timer(0, e -> {
+            // do nothing for now
+        });
+        this.timer2 = new Timer(0, e -> {
+            // do nothing for now
+        });
     }
-  };
+
+    /** Use a lambda expression to reference timer1 -- triggers SingularField error. */
+    private final Runnable play1 = () -> {
+        this.timer1.start();
+    };
+
+    /** Use an anonymous class to reference timer2 -- no error. */
+    private final Runnable play2 = new Runnable() {
+        @Override
+        public void run() {
+            timer2.start();
+        }
+    };
 }
         ]]></code>
     </test-code>
@@ -700,5 +700,62 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2673 SingularField false positive with lombok annotation EqualsAndHashCode</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
+public class Foo {
+    private String bar;
+
+    public void set(String s) {
+        bar = s;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3006 [java] NPE in SingularFieldRule with concise resource syntax</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package oo;
+
+            public class IPA {
+
+                private final LocalModel model;
+
+                public InternalAggregation reduce(String s) {
+                    try (model) {
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3303 [java] NPE Exception applying rule SingularField on file</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.design.singularfield;
+
+            public class Issue3303 {
+
+                // "private" is a must for reproducing the problem
+                private final NoThrowingCloseable first;
+
+                Issue3303(NoThrowingCloseable first) {
+                    this.first = first;
+                }
+
+                public void performClosing() {
+                    try (first) {
+                        // this block can be empty or not
+                    }
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

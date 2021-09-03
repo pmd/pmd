@@ -21,6 +21,8 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
+
 /**
  * Implementation that handles a Document as a file in the filesystem and receives operations in a sorted manner
  * (i.e. the regions are sorted). This improves the efficiency of reading the file by only scanning it once while
@@ -157,11 +159,7 @@ public class DocumentFile implements Document, Closeable {
     }
 
     private void writeUntilEOF() throws IOException {
-        String line;
-
-        while ((line = reader.readLine()) != null) {
-            writer.write(line);
-        }
+        IOUtils.copy(reader, writer);
     }
 
     /* package-private */ List<Integer> getLineToOffset() {

@@ -5,20 +5,8 @@
 package net.sourceforge.pmd.lang.plsql;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
-import net.sourceforge.pmd.lang.DataFlowHandler;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.XPathHandler;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
-import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
-import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
-import net.sourceforge.pmd.lang.plsql.dfa.DFAPLSQLGraphRule;
-import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
-import net.sourceforge.pmd.lang.plsql.rule.PLSQLRuleViolationFactory;
-import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLParser;
 
 /**
  * Implementation of LanguageVersionHandler for the PLSQL AST. It uses anonymous
@@ -34,50 +22,8 @@ public class PLSQLHandler extends AbstractPmdLanguageVersionHandler {
     }
 
     @Override
-    public Parser getParser(ParserOptions parserOptions) {
-        return new PLSQLParser(parserOptions);
+    public Parser getParser() {
+        return new PLSQLParser();
     }
 
-    @Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        return PLSQLRuleViolationFactory.INSTANCE;
-    }
-
-    @Override
-    public DFAGraphRule getDFAGraphRule() {
-        return new DFAPLSQLGraphRule();
-    }
-
-    @Override
-    public DataFlowHandler getDataFlowHandler() {
-        return new PLSQLDataFlowHandler();
-    }
-
-    @Override
-    public VisitorStarter getDataFlowFacade() {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new DataFlowFacade().initializeWith(getDataFlowHandler(), (ASTInput) rootNode);
-            }
-        };
-    }
-
-    @Override
-    public VisitorStarter getSymbolFacade() {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new SymbolFacade().initializeWith((ASTInput) rootNode);
-            }
-        };
-    }
-
-    /**
-     * Return minimal XPathHandler to cope with Jaxen XPath Rules.
-     */
-    @Override
-    public XPathHandler getXPathHandler() {
-        return new DefaultASTXPathHandler();
-    }
 }

@@ -3,266 +3,237 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
+        <description>failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 class Foo {
- private void bar(String x) {}
+    private void bar(String x) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Explicit receiver parameters are ignored
-     ]]></description>
+        <description>Explicit receiver parameters are ignored</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
-  private void test(@AnnotatedUsage Foo this) {
-  }
+    private void test(@AnnotatedUsage Foo this) {
+    }
 }
-     ]]></code>
+@interface AnnotatedUsage {}
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-method called on param
-     ]]></description>
+        <description>method called on param</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
- private void foo (String s) {
-  String str = s.toString();
- }
+    private void foo (String s) {
+        String str = s.toString();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assignment to param
-     ]]></description>
+        <description>assignment to param</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 class Foo {
- private void bar(int s) {
-  s = 2;
- }
+    private void bar(int s) {
+        s = 2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-interface
-     ]]></description>
+        <description>interface</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- void foo(int x);
+    void foo(int x);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <code-fragment id="public-methods"><![CDATA[
 class Foo {
- public void bar(int s) {}
+    public void bar(int s) {}
 }
-     ]]></code-fragment>
+    ]]></code-fragment>
+
     <test-code>
-        <description><![CDATA[
-don't flag public methods by default
-     ]]></description>
+        <description>don't flag public methods by default</description>
         <expected-problems>0</expected-problems>
         <code-ref id="public-methods"/>
     </test-code>
-        <test-code>
-        <description><![CDATA[
-flag public methods if checkall property is set
-     ]]></description>
+
+    <test-code>
+        <description>flag public methods if checkall property is set</description>
         <rule-property name="checkAll">true</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="public-methods"/>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip native/abstract methods
-     ]]></description>
+        <description>skip native/abstract methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
- public native void bar(int s);
- protected abstract void foo(Long s);
+    public native void bar(int s);
+    protected abstract void foo(Long s);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-anonymous inner class npe
-     ]]></description>
+        <description>anonymous inner class npe</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
- void bar() {
-  ActionListener a  = new ActionListener() {
-   public void event(Event e) {}
-  };
- }
+    void bar() {
+        Runnable a  = new Runnable() {
+            public void run() {}
+        };
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-unused constructor param
-     ]]></description>
+        <description>unused constructor param</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 class Foo {
- public Foo(int s) {}
+    public Foo(int s) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assigned but not used
-     ]]></description>
+        <description>assigned but not used</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 class Foo {
- private void foo (String s) {
-  s = "hello";
- }
+    private void foo (String s) {
+        s = "hello";
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-array element is set
-     ]]></description>
+        <description>array element is set</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
- private void foo (String[] s) {
-  s[2] = "hello";
- }
+    private void foo (String[] s) {
+        s[2] = "hello";
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-unused array in constructor
-     ]]></description>
+        <description>unused array in constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 class Foo {
- int type;
- public Foo (int type, String[] s) {
-  this.type = type;
- }
+    int type;
+    public Foo (int type, String[] s) {
+        this.type = type;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-unused array in method
-     ]]></description>
+        <description>unused array in method</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 class Foo {
- private final void setLang(final String lang[]){
- }
+    private final void setLang(final String lang[]){
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-	<description>
-		<![CDATA[
-			False - ! if "checkAll" property is not set
-		]]>
-	</description>
-	<rule-property name="checkAll">true</rule-property>
-	<expected-problems>1</expected-problems>
-	<code>
-	<![CDATA[
-	public class Foo {
-		public void bar2(Object paramA, Object paramB)
-		{
-			paramA.hashCode();
-		}
-	}
-	]]>
-	</code>
-	</test-code>
+        <description>False - ! if "checkAll" property is not set</description>
+        <rule-property name="checkAll">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar2(Object paramA, Object paramB)
+    {
+        paramA.hashCode();
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
-	<description>
-		<![CDATA[
-			violation suppression regex works
-		]]>
-	</description>
-	<rule-property name="violationSuppressRegex">.*'paramB'.*</rule-property>
-	<expected-problems>0</expected-problems>
-	<code>
-	<![CDATA[
-	public class Foo {
-		private void bar2(Object paramA, Object paramB)
-		{
-			paramA.hashCode();
-		}
-	}
-	]]>
-	</code>
-	</test-code>
+        <description>violation suppression regex works</description>
+        <rule-property name="violationSuppressRegex">.*'paramB'.*</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar2(Object paramA, Object paramB)
+    {
+        paramA.hashCode();
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
-	<description>
-		<![CDATA[
-			violation suppression xpath works, by name
-		]]>
-	</description>
-	<rule-property name="violationSuppressXPath">.[@Image = 'paramB']</rule-property>
-	<expected-problems>0</expected-problems>
-	<code>
-	<![CDATA[
-	public class Foo {
-		private void bar2(Object paramA, Object paramB)
-		{
-			paramA.hashCode();
-		}
-	}
-	]]>
-	</code>
-	</test-code>
+        <description>violation suppression xpath works, by name</description>
+        <rule-property name="violationSuppressXPath">.[@Name = 'paramB']</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar2(Object paramA, Object paramB)
+    {
+        paramA.hashCode();
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
-	<description>
-		<![CDATA[
-			violation suppression xpath works, by type
-		]]>
-	</description>
-	<rule-property name="violationSuppressXPath">.[typeIs('java.lang.String')]</rule-property>
-	<expected-problems>0</expected-problems>
-	<code>
-	<![CDATA[
-	public class Foo {
-		private void bar2(Object paramA, String paramB)
-		{
-			paramA.hashCode();
-		}
-	}
-	]]>
-	</code>
-	</test-code>
-	<test-code>
-		<description>#878 don't flag abstract methods even if checkall property is set when checking an abstract class</description>
-		<rule-property name="checkAll">true</rule-property>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+        <description>violation suppression xpath works, by type</description>
+        <rule-property name="violationSuppressXPath">.[pmd-java:typeIs('java.lang.String')]</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar2(Object paramA, String paramB)
+    {
+        paramA.hashCode();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#878 don't flag abstract methods even if checkall property is set when checking an abstract class</description>
+        <rule-property name="checkAll">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 abstract class Foo {
     protected abstract void foo(Long s);
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>#1159 false positive UnusedFormalParameter readObject(ObjectInputStream) if not used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.*;
 public class Foo {
     private void readObject(ObjectInputStream stream) throws InvalidObjectException{
        throw new InvalidObjectException("Proxy required");
@@ -270,11 +241,13 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1159 correct UnusedFormalParameter for readObject(foo) if not used</description>
         <rule-property name="checkAll">true</rule-property>
         <expected-problems>5</expected-problems>
-        <code><![CDATA[
+        <code><![CDATA[import java.io.*;
+
 public class Foo {
     // throws declaration is missing - so not the serialization readObject method
     private void readObject(ObjectInputStream stream) {
@@ -288,9 +261,11 @@ public class Foo {
     private void readObject(ObjectInputStream stream, Object o) throws InvalidObjectException{
        throw new InvalidObjectException("Proxy required");
     }
+}
+class Other {
     // it's public
-    public void readObject(ObjectInputStream stream) throws InvalidObjectException{
-       throw new InvalidObjectException("Proxy required");
+    public void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException("Proxy required");
     }
 }
         ]]></code>
@@ -317,6 +292,21 @@ class Imp2 extends Base {
   public int badMethod(int arg1, String arg2) {
     return arg2.length() + arg1;
   }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2957 Unused rules should ignore some names</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+class Imp1 {
+  private void m(int arg1,
+                String arg2,
+                int unusedArg1,
+                int ignoredArg2,
+                int unused,
+                String ignored) {}
 }
         ]]></code>
     </test-code>

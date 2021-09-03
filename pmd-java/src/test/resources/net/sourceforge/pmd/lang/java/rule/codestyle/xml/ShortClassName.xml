@@ -3,52 +3,43 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-ShortClassName basic test case
-     ]]></description>
+        <description>ShortClassName basic test case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-ShortClassName basic test case 2 : More code and other declarations
-     ]]></description>
+        <description>ShortClassName basic test case 2 : More code and other declarations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class NotFoo {
+    public void m() {
+        String bar;
+        int x;
+    }
 
-	public void m() {
-		String bar;
-		int x;
-	}
-	
-	private class ValidName {
-	
-	}
+    private class ValidName {
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
-        <description><![CDATA[
-ShortClassName works with private classes.
-     ]]></description>
+        <description>ShortClassName works with private classes.</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class YetAnotherFoo {
-	
-	private class bar {
-	
-	}
+    private class bar {
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1143 ShortClassName fires with a 5-letter class name</description>
         <expected-problems>0</expected-problems>
@@ -57,6 +48,7 @@ public class Timer {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1232 Make ShortClassName configurable (default = 5)</description>
         <expected-problems>1</expected-problems>
@@ -69,6 +61,7 @@ public class ThisIsALongName { }
 class Bar { }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1232 Make ShortClassName configurable (minimum length = 2)</description>
         <rule-property name="minimum">2</rule-property>
@@ -78,6 +71,7 @@ public class ThisIsALongName { }
 class Bar { }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1232 Make ShortClassName configurable (minimum length = 4)</description>
         <rule-property name="minimum">4</rule-property>

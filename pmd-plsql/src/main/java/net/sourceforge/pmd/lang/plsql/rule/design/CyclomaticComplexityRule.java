@@ -31,7 +31,6 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -52,11 +51,15 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
                              .desc("Cyclomatic Complexity reporting threshold")
                              .require(positive()).defaultValue(10).build();
 
-    public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
-            "showClassesComplexity", "Add class average violations to the report", true, 2.0f);
+    public static final PropertyDescriptor<Boolean> SHOW_CLASSES_COMPLEXITY_DESCRIPTOR =
+        PropertyFactory.booleanProperty("showClassesComplexity")
+                       .desc("Add class average violations to the report")
+                       .defaultValue(true).build();
 
-    public static final BooleanProperty SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
-            "showMethodsComplexity", "Add method average violations to the report", true, 3.0f);
+    public static final PropertyDescriptor<Boolean> SHOW_METHODS_COMPLEXITY_DESCRIPTOR =
+        PropertyFactory.booleanProperty("showMethodsComplexity")
+                       .desc("Add method average violations to the report")
+                       .defaultValue(true).build();
 
     private int reportLevel;
     private boolean showClassesComplexity = true;
@@ -292,7 +295,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
                  * TODO This does not cope with nested methods We need the
                  * outer most ASTPackageBody ASTTriggerUni ASTProgramUnit
                  * ASTTypeMethod
-                 * 
+                 *
                  */
                 Entry classEntry = entryStack.peek();
                 classEntry.methodCount++;
@@ -304,8 +307,8 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             }
 
             ASTMethodDeclarator methodDeclarator = null;
-            for (int n = 0; n < node.jjtGetNumChildren(); n++) {
-                Node childNode = node.jjtGetChild(n);
+            for (int n = 0; n < node.getNumChildren(); n++) {
+                Node childNode = node.getChild(n);
                 if (childNode instanceof ASTMethodDeclarator) {
                     methodDeclarator = (ASTMethodDeclarator) childNode;
                     break;
@@ -351,8 +354,8 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             }
 
             ASTMethodDeclarator methodDeclarator = null;
-            for (int n = 0; n < node.jjtGetNumChildren(); n++) {
-                Node childNode = node.jjtGetChild(n);
+            for (int n = 0; n < node.getNumChildren(); n++) {
+                Node childNode = node.getChild(n);
                 if (childNode instanceof ASTMethodDeclarator) {
                     methodDeclarator = (ASTMethodDeclarator) childNode;
                     break;
@@ -390,8 +393,8 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             }
 
             ASTMethodDeclarator methodDeclarator = null;
-            for (int n = 0; n < node.jjtGetNumChildren(); n++) {
-                Node childNode = node.jjtGetChild(n);
+            for (int n = 0; n < node.getNumChildren(); n++) {
+                Node childNode = node.getChild(n);
                 if (childNode instanceof ASTMethodDeclarator) {
                     methodDeclarator = (ASTMethodDeclarator) childNode;
                     break;

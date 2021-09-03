@@ -3,90 +3,65 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description>
-            <![CDATA[
-condition ? true : foo
-            ]]>
-        </description>
+        <description>condition ? true : foo</description>
         <expected-problems>1</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class Foo {
-    public boolean test() {
+    public boolean test(boolean condition) {
         return condition ? true : something();
     }
 }
-            ]]>
-        </code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description>
-            <![CDATA[
-condition ? false : foo
-            ]]>
-        </description>
+        <description>condition ? false : foo</description>
         <expected-problems>1</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class Foo {
-    public void test() {
+    public void test(boolean condition) {
         final boolean value = condition ? false : something();
     }
 }
-            ]]>
-        </code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description>
-            <![CDATA[
-condition ? foo : true
-            ]]>
-        </description>
+        <description>condition ? foo : true</description>
         <expected-problems>1</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class Foo {
-    public boolean test() {
+    public boolean test(boolean condition) {
         return condition ? something() : true;
     }
 }
-            ]]>
-        </code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description>
-            <![CDATA[
-condition ? foo : false
-            ]]>
-        </description>
+        <description>condition ? foo : false</description>
         <expected-problems>1</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class Foo {
-    public void test() {
+    public void test(boolean condition) {
         final boolean otherValue = condition ? something() : false;
     }
 }
-            ]]>
-        </code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description>
-            <![CDATA[
-condition ? true : false
-            ]]>
-        </description>
-        <expected-problems>0</expected-problems>
-        <code>
-            <![CDATA[
+        <description>condition ? true : false</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-    public boolean test() {
-        return condition ? true : false; // Existing rule
+    public boolean test(boolean condition) {
+        return condition ? true : false;
     }
 }
-            ]]>
-        </code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -94,8 +69,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class SimplifiedTernary {
-    private SomeValue doStuff(SomeValue someValue) {
-        return THE_VALUE.equals(rangeValue.to) ? new SomeValue(someValue.from, null, true) : someValue;
+    private SimplifiedTernary doStuff(SimplifiedTernary someValue, boolean condition) {
+        return condition ? something(true) : someValue;
     }
 }
         ]]></code>
@@ -106,7 +81,7 @@ public class SimplifiedTernary {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class SimplifiedTernary {
-    public Boolean getHasCustomName() {
+    public Boolean getHasCustomName(boolean mHasCustomName) {
         return mHasCustomName ? true : null;
     }
 }

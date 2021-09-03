@@ -3,17 +3,131 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-throwing various types
-     ]]></description>
+        <description>throwing various types</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  throw new NullPointerException();
- }
+    void bar() {
+        throw new NullPointerException();
+    }
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no problems if NullPointerException is only instantiated but not thrown</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Exception e = new NullPointerException("Test message");
+        String msg = e.getMessage();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>problem should be detected even if NullPointerException is stored in some intermediate variable</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Exception e = new NullPointerException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>variables with same name false positive test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        Exception e = new NullPointerException();
+        e.printStackTrace();
+    }
+
+    void bar() {
+        Exception e = new RuntimeException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, variable has been reassigned to RuntimeException before thrown</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Exception e = new NullPointerException();
+        e = new RuntimeException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, variable is reassigned with NullPointerException after thrown</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(String s) {
+        Exception e = new RuntimeException();
+        if (s.equals("throw")) {
+            throw e;
+        }
+        e = new NullPointerException();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, variable had been reassigned with NullPointerException before thrown</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Exception e = new RuntimeException();
+        e = new NullPointerException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>variable is not necessarily an NPE</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Exception e = new RuntimeException();
+        if (e.toString().isEmpty())
+            e = new NullPointerException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>variable is not necessarily an NPE 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Exception e) {
+        if (e.toString().isEmpty())
+            e = new NullPointerException();
+        throw e;
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

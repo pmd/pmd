@@ -4,58 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
-
-
 /**
- * Represents a conditional expression, aka ternary expression. This operation has
- * a greater precedence as {@linkplain ASTExpression assignment expressions},
- * and lower as {@link ASTConditionalOrExpression}.
+ * Represents a conditional expression, aka ternary expression.
  *
- * <p>Note that the children of this node are not necessarily {@link ASTConditionalOrExpression},
- * rather, they are expressions with an operator precedence greater or equal to ConditionalOrExpression.
+ * <pre class="grammar">
  *
- * <pre>
- *
- * ConditionalExpression ::= {@linkplain ASTConditionalOrExpression ConditionalOrExpression} "?"  {@linkplain ASTExpression Expression} ":" {@linkplain ASTConditionalExpression ConditionalExpression}
+ * ConditionalExpression ::= {@linkplain ASTExpression Expression} "?"  {@linkplain ASTExpression Expression} ":" {@linkplain ASTExpression Expression}
  *
  * </pre>
  */
-public class ASTConditionalExpression extends AbstractJavaTypeNode {
+public final class ASTConditionalExpression extends AbstractJavaExpr {
 
 
-    @InternalApi
-    @Deprecated
-    public ASTConditionalExpression(int id) {
+    private boolean isStandalone;
+
+    ASTConditionalExpression(int id) {
         super(id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public ASTConditionalExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
-    /**
-     * @deprecated To be removed in 7.0.0
-     */
-    @InternalApi
-    @Deprecated
-    public void setTernary() {
-        // noop
-    }
-
-
-    /**
-     * This method always returns true.
-     *
-     * @deprecated To be removed in 7.0.0
-     */
-    @Deprecated
-    public boolean isTernary() {
-        return true;
     }
 
 
@@ -63,8 +27,8 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
      * Returns the node that represents the guard of this conditional.
      * That is the expression before the '?'.
      */
-    public Node getGuardExpressionNode() {
-        return jjtGetChild(0);
+    public ASTExpression getCondition() {
+        return (ASTExpression) getChild(0);
     }
 
 
@@ -72,8 +36,8 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
      * Returns the node that represents the expression that will be evaluated
      * if the guard evaluates to true.
      */
-    public ASTExpression getTrueAlternative() {
-        return (ASTExpression) jjtGetChild(1);
+    public ASTExpression getThenBranch() {
+        return (ASTExpression) getChild(1);
     }
 
 
@@ -81,19 +45,29 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
      * Returns the node that represents the expression that will be evaluated
      * if the guard evaluates to false.
      */
-    public Node getFalseAlternative() {
-        return jjtGetChild(2);
+    public ASTExpression getElseBranch() {
+        return (ASTExpression) getChild(2);
     }
 
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
+    /**
+     * Note: this method is not used at all in pre-Java 8 analysis,
+     * because standalone/poly exprs weren't formalized before java 8.
+     * Calling this method then is undefined.
+     */
+    // very internal
+    boolean isStandalone() {
+        assert getAstInfo().getLanguageVersion().compareToVersion("8") >= 0
+            : "This method's result is undefined in pre java 8 code";
+        return this.isStandalone;
+    }
 
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    void setStandaloneTernary() {
+        this.isStandalone = true;
     }
 }

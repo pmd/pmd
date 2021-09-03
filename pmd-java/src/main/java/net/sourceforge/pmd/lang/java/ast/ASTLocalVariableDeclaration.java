@@ -4,64 +4,50 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
-
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 /**
- * Represents a local variable declaration. This is a {@linkplain ASTBlockStatement block statement},
+ * Represents a local variable declaration. This is a {@linkplain ASTStatement statement},
  * but the node is also used in {@linkplain ASTForInit for-loop initialisers} and
  * {@linkplain ASTForStatement foreach statements}.
  *
- * <p>This statement may define several variables, possibly of different types (see {@link
- * ASTVariableDeclaratorId#getType()}).
- * The nodes corresponding to the declared variables are accessible through {@link #iterator()}.
+ * <p>This statement may define several variables, possibly of different types
+ * (see {@link ASTVariableDeclaratorId#getType()}). The nodes corresponding to
+ * the declared variables are accessible through {@link #getVarIds()}.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * LocalVariableDeclaration ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
+ * LocalVariableDeclaration ::= {@link ASTModifierList LocalVarModifierList} {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
  *
  * </pre>
  */
-public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, CanSuppressWarnings, Iterable<ASTVariableDeclaratorId> {
+// TODO extend AbstractStatement
+public final class ASTLocalVariableDeclaration extends AbstractJavaNode
+    implements Iterable<ASTVariableDeclaratorId>,
+               ASTStatement,
+               FinalizableNode,
+               LeftRecursiveNode, // ModifierList is parsed separately in BlockStatement
+               InternalInterfaces.MultiVariableIdOwner {
 
-    @InternalApi
-    @Deprecated
-    public ASTLocalVariableDeclaration(int id) {
+    ASTLocalVariableDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTLocalVariableDeclaration(JavaParser p, int id) {
-        super(p, id);
+    @Override
+    protected @Nullable JavaccToken getPreferredReportLocation() {
+        return getVarIds().firstOrThrow().getFirstToken();
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-
     @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public Visibility getVisibility() {
+        return Visibility.V_LOCAL;
     }
 
     /**
@@ -75,18 +61,6 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
         return getTypeNode() == null;
     }
 
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return getArrayDepth() > 0;
-    }
-
-    @Override
-    @Deprecated
-    public int getArrayDepth() {
-        return getArrayDimensionOnType() + getArrayDimensionOnDeclaratorId();
-    }
-
     /**
      * Gets the type node for this variable declaration statement.
      * With Java10 and local variable type inference, there might be
@@ -96,54 +70,10 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
      *
      * @see #isTypeInferred()
      */
+    @Override
     public ASTType getTypeNode() {
         return getFirstChildOfType(ASTType.class);
     }
 
-    private int getArrayDimensionOnType() {
-        ASTType typeNode = getTypeNode();
-        if (typeNode != null) {
-            return typeNode.getArrayDepth();
-        }
-        return 0;
-    }
 
-    private ASTVariableDeclaratorId getDecl() {
-        return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren() - 1).jjtGetChild(0);
-    }
-
-    private int getArrayDimensionOnDeclaratorId() {
-        return getDecl().getArrayDepth();
-    }
-
-    /**
-     * Gets the variable name of this declaration. This method searches the first
-     * VariableDeclartorId node and returns it's image or <code>null</code> if
-     * the child node is not found.
-     *
-     * @return a String representing the name of the variable
-     *
-     * @deprecated LocalVariableDeclaration may declare several variables, so this is not exhaustive
-     *     Iterate on the {@linkplain ASTVariableDeclaratorId VariableDeclaratorIds} instead
-     */
-    // It would be nice to have a way to inform XPath users of the intended replacement
-    // for a deprecated attribute. We may use another annotation for that.
-    @Deprecated
-    public String getVariableName() {
-        ASTVariableDeclaratorId decl = getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        if (decl != null) {
-            return decl.getImage();
-        }
-        return null;
-    }
-
-
-    /**
-     * Returns an iterator over the ids of the variables
-     * declared in this statement.
-     */
-    @Override
-    public Iterator<ASTVariableDeclaratorId> iterator() {
-        return ASTVariableDeclarator.iterateIds(this);
-    }
 }

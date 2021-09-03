@@ -6,35 +6,24 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
-import java.util.List;
-import java.util.Map;
-
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTNameList;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
-public class UnusedFormalParameterRule extends AbstractJavaRule {
+public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> CHECKALL_DESCRIPTOR = booleanProperty("checkAll").desc("Check all methods, including non-private ones").defaultValue(false).build();
 
     public UnusedFormalParameterRule() {
+        super(ASTConstructorDeclaration.class, ASTMethodDeclaration.class);
         definePropertyDescriptor(CHECKALL_DESCRIPTOR);
     }
 
@@ -46,93 +35,25 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (!node.isPrivate() && !getProperty(CHECKALL_DESCRIPTOR)) {
+        if (node.getVisibility() != Visibility.V_PRIVATE && !getProperty(CHECKALL_DESCRIPTOR)) {
             return data;
         }
-        if (!node.isNative() && !node.isAbstract() && !isSerializationMethod(node) && !hasOverrideAnnotation(node)) {
+        if (node.getBody() != null
+            && !node.hasModifiers(JModifier.DEFAULT)
+            && !JavaRuleUtil.isSerializationReadObject(node)
+            && !node.isOverridden()) {
             check(node, data);
         }
         return data;
     }
 
-    private boolean isSerializationMethod(ASTMethodDeclaration node) {
-        ASTMethodDeclarator declarator = node.getFirstDescendantOfType(ASTMethodDeclarator.class);
-        List<ASTFormalParameter> parameters = declarator.findDescendantsOfType(ASTFormalParameter.class);
-        if (node.isPrivate() && "readObject".equals(node.getMethodName()) && parameters.size() == 1
-                && throwsOneException(node, InvalidObjectException.class)) {
-            ASTType type = parameters.get(0).getTypeNode();
-            if (type.getType() == ObjectInputStream.class
-                    || ObjectInputStream.class.getSimpleName().equals(type.getTypeImage())
-                    || ObjectInputStream.class.getName().equals(type.getTypeImage())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean throwsOneException(ASTMethodDeclaration node, Class<? extends Throwable> exception) {
-        ASTNameList throwsList = node.getThrows();
-        if (throwsList != null && throwsList.jjtGetNumChildren() == 1) {
-            ASTName n = (ASTName) throwsList.jjtGetChild(0);
-            if (n.getType() == exception || exception.getSimpleName().equals(n.getImage())
-                    || exception.getName().equals(n.getImage())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void check(Node node, Object data) {
-        Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
-        if (parent instanceof ASTClassOrInterfaceDeclaration
-                && !((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
-            Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((JavaNode) node).getScope()
-                    .getDeclarations(VariableNameDeclaration.class);
-            for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
-                VariableNameDeclaration nameDecl = entry.getKey();
-
-                ASTVariableDeclaratorId declNode = nameDecl.getDeclaratorId();
-                if (!declNode.isFormalParameter() || declNode.isExplicitReceiverParameter()) {
-                    continue;
-                }
-
-                if (actuallyUsed(nameDecl, entry.getValue())) {
-                    continue;
-                }
-                addViolation(data, nameDecl.getNode(), new Object[] {
-                    node instanceof ASTMethodDeclaration ? "method" : "constructor", nameDecl.getImage(), });
+    private void check(ASTMethodOrConstructorDeclaration node, Object data) {
+        for (ASTFormalParameter formal : node.getFormalParameters()) {
+            ASTVariableDeclaratorId varId = formal.getVarId();
+            if (JavaRuleUtil.isNeverUsed(varId) && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
+                addViolation(data, varId, new Object[] { node instanceof ASTMethodDeclaration ? "method" : "constructor", varId.getName(), });
             }
         }
     }
 
-    private boolean actuallyUsed(VariableNameDeclaration nameDecl, List<NameOccurrence> usages) {
-        for (NameOccurrence occ : usages) {
-            JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
-            if (jocc.isOnLeftHandSide()) {
-                if (nameDecl.isArray() && jocc.getLocation().jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
-                    // array element access
-                    return true;
-                }
-                continue;
-            } else {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasOverrideAnnotation(ASTMethodDeclaration node) {
-        int childIndex = node.jjtGetChildIndex();
-        for (int i = 0; i < childIndex; i++) {
-            Node previousSibling = node.jjtGetParent().jjtGetChild(i);
-            List<ASTMarkerAnnotation> annotations = previousSibling.findDescendantsOfType(ASTMarkerAnnotation.class);
-            for (ASTMarkerAnnotation annotation : annotations) {
-                ASTName name = annotation.getFirstChildOfType(ASTName.class);
-                if (name != null && (name.hasImageEqualTo("Override") || name.hasImageEqualTo("java.lang.Override"))) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,21 +6,18 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.TryStatement;
 
-public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
-    public ASTTryStatement(TryStatement tryStatement) {
+public final class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
+    ASTTryStatement(TryStatement tryStatement) {
         super(tryStatement);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     public EcmascriptNode<?> getTryBlock() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     @Deprecated // use hasCatch() instead
@@ -40,7 +37,7 @@ public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
         if (index >= getNumCatchClause()) {
             return null;
         }
-        return (ASTCatchClause) jjtGetChild(index + 1);
+        return (ASTCatchClause) getChild(index + 1);
     }
 
     @Deprecated // use hasFinally() instead
@@ -56,6 +53,6 @@ public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
         if (!hasFinally()) {
             return null;
         }
-        return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
+        return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
     }
 }

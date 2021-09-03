@@ -1,0 +1,24 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L3
+    [int]                                   1         4
+    [main]                                  5         9
+    [(]                                     9         10
+    [)]                                     10        11
+L4
+    [{]                                     1         2
+L5
+    [std]                                   4         7
+    [::]                                    7         9
+    [cout]                                  9         13
+    [<<]                                    14        16
+    ["Hello, "]                             17        26
+L6
+    ["world!\\n"]                           17        27
+    [;]                                     27        28
+L7
+    [return]                                4         10
+    [0]                                     11        12
+    [;]                                     12        13
+L8
+    [}]                                     1         2
+EOF

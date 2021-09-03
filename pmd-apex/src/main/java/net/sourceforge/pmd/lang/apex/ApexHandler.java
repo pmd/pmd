@@ -4,42 +4,26 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import java.util.Arrays;
-import java.util.List;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
+import java.util.Set;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.XPathHandler;
-import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.metrics.ApexMetricsComputer;
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
-import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileVisitorFacade;
-import net.sourceforge.pmd.lang.apex.rule.ApexRuleViolationFactory;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
+import net.sourceforge.pmd.lang.apex.ast.ApexParser;
+import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
+import net.sourceforge.pmd.lang.apex.rule.internal.ApexRuleViolationFactory;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
-import net.sourceforge.pmd.lang.metrics.internal.AbstractLanguageMetricsProvider;
+import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.properties.PropertySource;
 
+@InternalApi
 public class ApexHandler extends AbstractPmdLanguageVersionHandler {
 
     private final ApexMetricsProvider myMetricsProvider = new ApexMetricsProvider();
 
-
-    @Override
-    public VisitorStarter getMultifileFacade() {
-        return rootNode -> new ApexMultifileVisitorFacade().initializeWith((ApexNode<?>) rootNode);
-    }
-
-
-    @Override
-    public XPathHandler getXPathHandler() {
-        return new DefaultASTXPathHandler();
-    }
 
     @Override
     public RuleViolationFactory getRuleViolationFactory() {
@@ -47,40 +31,32 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
     }
 
     @Override
-    public ParserOptions getDefaultParserOptions() {
-        return new ApexParserOptions();
+    public Parser getParser() {
+        return new ApexParser();
     }
 
     @Override
-    public Parser getParser(ParserOptions parserOptions) {
-        return new ApexParser(parserOptions);
+    public void declareParserTaskProperties(PropertySource source) {
+        source.definePropertyDescriptor(ApexParser.MULTIFILE_DIRECTORY);
+        overridePropertiesFromEnv(ApexLanguageModule.TERSE_NAME, source);
     }
 
-
     @Override
-    public LanguageMetricsProvider<ASTUserClassOrInterface<?>, ASTMethod> getLanguageMetricsProvider() {
+    public LanguageMetricsProvider getLanguageMetricsProvider() {
         return myMetricsProvider;
     }
 
+    private static class ApexMetricsProvider implements LanguageMetricsProvider {
 
-    private static class ApexMetricsProvider extends AbstractLanguageMetricsProvider<ASTUserClassOrInterface<?>, ASTMethod> {
-
-        @SuppressWarnings("unchecked")
-        ApexMetricsProvider() {
-            // a wild double cast
-            super((Class<ASTUserClassOrInterface<?>>) (Object) ASTUserClassOrInterface.class, ASTMethod.class, ApexMetricsComputer.getInstance());
-        }
-
+        private final Set<Metric<?, ?>> metrics = setOf(
+            ApexMetrics.COGNITIVE_COMPLEXITY,
+            ApexMetrics.CYCLO,
+            ApexMetrics.WEIGHED_METHOD_COUNT
+        );
 
         @Override
-        public List<ApexClassMetricKey> getAvailableTypeMetrics() {
-            return Arrays.asList(ApexClassMetricKey.values());
-        }
-
-
-        @Override
-        public List<ApexOperationMetricKey> getAvailableOperationMetrics() {
-            return Arrays.asList(ApexOperationMetricKey.values());
+        public Set<Metric<?, ?>> getMetrics() {
+            return metrics;
         }
     }
 }

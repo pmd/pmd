@@ -3,115 +3,114 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-TEST1
-     ]]></description>
+        <description>TEST1</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-   for(;;) {
-       String a = new String();
-   }
- }
+    public void test1() {
+        for(;;) {
+            String a = new String();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST2
-     ]]></description>
+        <description>TEST2</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-   while(true) {
-       String a = new String();
-   }
- }
+    public void test1() {
+        while(true) {
+            String a = new String();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST3
-     ]]></description>
+        <description>TEST3</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-   do{
-       String a = new String();
-   }while(true) ;
- }
+    public void test1() {
+        do {
+            String a = new String();
+        } while(true);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST4
-     ]]></description>
+        <description>TEST4</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-   do{
-       String a = new String();
-       String b = new String();
-   }while(true) ;
- }
+    public void test1() {
+        do {
+            String a = new String();
+            String b = new String();
+        } while(true);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-throw new is OK
-     ]]></description>
+        <description>throw new is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-   for(;;) {
-       throw new Exception();
-   }
- }
+    public void test1() {
+        for(;;) {
+            throw new Exception();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-return new in loop is OK
-     ]]></description>
+        <description>return new in loop is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public String test1() {
-   for(;;) {
-       return new String();
-   }
- }
+    public String test1() {
+        for(;;) {
+            return new String();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    <!-- FIXME -->
-    <!--test-code>
+
+    <test-code>
         <description>#278 Semi-false positive for instantiating new object in loop</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-   while (true) {
-        try {
-       } catch (Exception e) {
-           url = new StringBuffer(); 
-           break; 
-       }
-  }
- }
+    public void test1() {
+        while (true) {
+            try {
+            } catch (Exception e) {
+                url = new StringBuffer();
+                break;
+            }
+        }
+    }
 }
-     ]]></code>
-    </test-code-->
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>#1215 AvoidInstantiatingObjectsInLoops matches the right side of a list iteration loop</description>
         <expected-problems>0</expected-problems>
@@ -128,6 +127,309 @@ public class TestInstantiationInLoop {
             System.out.println(filename);
         }
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] False positive: AvoidInstantiatingObjectsInLoops should not flag objects with different parameters or objects assigned or passed as parameters #2207</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.awt.Dimension;
+
+public class PMDDemo {
+    public static void main(final String[] args) {
+        final Dimension[] arr = new Dimension[10];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = new Dimension(i, i); // rule violation here
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when assigning to a list/array (see #2207 and #1043)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Collection;
+import java.util.ArrayList;
+
+public class PMDDemo {
+    public void checkArray() {
+        Car[] cars = new Car[3];
+        for(int i = 0; i < cars.length; ++i) {
+           cars[i] = new Car();
+        }
+    }
+    public void checkCollection() {
+        Collection<Car> cars = new ArrayList<>();
+        for(int i = 0; i < 3; ++i) {
+           cars.add(new Car());
+        }
+    }
+
+    private static class Car {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with break in other for-loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Function;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+public class Message {
+    private List<Function<Message, Boolean>> filters;
+
+    public Message(Message message) {}
+
+    private SortedSet<Message> getFilteredMessages() {
+        final SortedSet<Message> result = new TreeSet<>(messages);
+        for (Message element : messages) {
+            Message event = new Message(element);
+            for (Function<Message, Boolean> filter : filters) {
+                if (!filter.accept(event)) {
+                    result.remove(element);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Instantiation in loop condition</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        while(new String().length() > 0) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false negative in anonymous classes</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,14</expected-linenumbers>
+        <code><![CDATA[
+public class Sample {
+    private static class Inner {
+        private void baz() {
+            for(;;) {
+                String a = new String();
+            }
+        }
+    }
+
+    public void foo() {
+        Sample anonymousClass = new Sample() {
+            void bar() {
+                for(;;) {
+                    String a = new String();
+                }
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>false positive with list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Collection;
+import java.util.ArrayList;
+
+public class Sample {
+    public Collection<Car> checkCollection() {
+        Collection<Car> thisIsACar = new ArrayList<>();
+        for(int i = 0; i < 3; ++i) {
+            thisIsACar.add(new Car());
+        }
+        return thisIsACar;
+    }
+
+    private static class Car {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Collections with unresolved type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+// Types are unresolved
+//import java.util.Collection;
+//import java.util.ArrayList;
+
+public class Sample {
+    public Collection<Car> checkCollection() {
+        Collection<Car> thisIsACar = new ArrayList<>();
+        for(int i = 0; i < 3; ++i) {
+            thisIsACar.add(new Car());
+        }
+        return thisIsACar;
+    }
+
+    private static class Car {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with array allocations within loops</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class AvoidInstantiatingArraysInLoops {
+    public static void main(String[] args) {
+        for (String arg : args) {
+            String[] copy = new String[] { arg };
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with for-each loop over new array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidInstantiatingArrayInLoops {
+    public static void main(String[] args) {
+        for (String configName : new String[] {"config", "test"}) {
+            System.out.println(configName);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with adding to a collection/array field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class AvoidInstantiatingObjectsInLoops {
+    private List<String> field = new ArrayList<>();
+    private String[] arrayField = new String[10];
+
+    public static void main(String[] args) {
+        for (String arg : args) {
+            this.field.add(new String(arg));
+        }
+        for (int i = 0; i < args.length; i++) {
+            this.arrayField[i] = new String(args[i]);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with adding wrapped new arrays to collection</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+public class AvoidInstantiatingObjectsInLoops {
+    public void testBytes(String s) {
+        byte[] bytes = s.getBytes(StandardCharsets.UTF_8);
+        List<ByteBuffer> buffers = new ArrayList<>();
+        for (byte b : bytes) {
+            buffers.add(ByteBuffer.wrap(new byte[]{b}));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with temporary object assigned to an array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidInstantiatingObjectsInLoops {
+    public static void main(String[] args) {
+        String[] data = new String[10];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = new StringBuilder().append("foo").toString();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with array allocation and assignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidInstantiatingArraysInLoops {
+    public static void main(String[] args) {
+        int[][] arr = new int[10];
+        for (int i = 0; i < 10; i++) {
+            arr[i] = new int[] { i };
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when array is returned</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidInstantiatingArraysInLoops {
+    public int[] test() {
+        for (int i = 0; i < 10; i++) {
+            return new int[] { i };
+        }
+
+        for (int i = 0; i < 10; i++) {
+            int[] a = new int[] { i };
+            break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when converting collection to array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class AvoidInsantiatingArraysInLoops {
+    public void test() {
+        List<String> data = new ArrayList<>();
+
+        for (String arg : args) {
+            this.consume(data.toArray(new String[0]));
+        }
+    }
+
+    private void consume(String[] array) { }
 }
         ]]></code>
     </test-code>

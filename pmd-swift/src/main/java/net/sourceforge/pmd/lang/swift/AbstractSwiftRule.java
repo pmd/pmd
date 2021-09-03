@@ -4,11 +4,16 @@
 
 package net.sourceforge.pmd.lang.swift;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.swift.antlr4.SwiftBaseVisitor;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseRule;
 
-public abstract class AbstractSwiftRule<T> extends SwiftBaseVisitor<T> {
-    public AbstractSwiftRule() {
-        super.setLanguage(LanguageRegistry.getLanguage(SwiftLanguageModule.NAME));
+public abstract class AbstractSwiftRule extends AntlrBaseRule {
+
+    protected AbstractSwiftRule() {
+        // inheritance constructor
     }
+
+    @Override
+    public abstract AstVisitor<RuleContext, ?> buildVisitor();
 }

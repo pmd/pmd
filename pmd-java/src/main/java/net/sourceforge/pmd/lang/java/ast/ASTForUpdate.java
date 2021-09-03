@@ -4,42 +4,30 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-
 /**
  * Update clause of a {@linkplain ASTForStatement for statement}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ForUpdate ::= {@linkplain ASTStatementExpressionList StatementExpressionList}
  *
  * </pre>
  */
-public class ASTForUpdate extends AbstractJavaNode {
+public final class ASTForUpdate extends AbstractJavaNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTForUpdate(int id) {
+    ASTForUpdate(int id) {
         super(id);
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTForUpdate(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
 
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    /** Returns the expression list nested within this node. */
+    public ASTStatementExpressionList getExprList() {
+        return (ASTStatementExpressionList) getChild(0);
     }
 }

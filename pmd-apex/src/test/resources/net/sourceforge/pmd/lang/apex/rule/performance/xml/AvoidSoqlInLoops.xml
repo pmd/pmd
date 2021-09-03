@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,98 +9,111 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public void test1() {
-		for(Integer i : new List<Integer>{1,2}) {
-			List<Account> accounts = [SELECT Id FROM Account];
-		}
-	}
+    public void test1() {
+        for(Integer i : new List<Integer>{1,2}) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+    }
 }
-		]]></code>
-	</test-code>
-    
-	<test-code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Problematic Soql in for loop</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public void test1() {
-		for(;;) {
-			List<Account> accounts = [SELECT Id FROM Account];
-		}
-	}
+    public void test1() {
+        for(;;) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Problematic Soql in While loop</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public void test1() {
-		while(true) {
-			List<Account> accounts = [SELECT Id FROM Account];
-		}
-	}
+    public void test1() {
+        while(true) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Problematic Soql in do loop</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public void test1() {
-		do{
-			List<Account> accounts = [SELECT Id FROM Account];
-		}while(true) ;
-	}
+    public void test1() {
+        do {
+            List<Account> accounts = [SELECT Id FROM Account];
+        } while(true);
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Multiple problematic Soql expressions</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public void test1() {
-		do{
-			List<Account> accounts = [SELECT Id FROM Account];
-			List<Contact> accounts = [SELECT Id FROM Contact];
-		}while(true) ;
-	}
+    public void test1() {
+        do {
+            List<Account> accounts = [SELECT Id FROM Account];
+            List<Contact> accounts = [SELECT Id FROM Contact];
+        } while(true);
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Return Soql is even ok in loop</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public List<Account> test1() {
-		for(;;) {
-			return [SELECT Id FROM Account];
-		}
-	}
+    public List<Account> test1() {
+        for(;;) {
+            return [SELECT Id FROM Account];
+        }
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#29 SOQL For Loops should not throw an Avoid Soql queries inside loops issue</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	public void test1() {
-		for(Account a : [SELECT Id FROM Account]) {
-			
-		}
-	}
+    public void test1() {
+        for(Account a : [SELECT Id FROM Account]) {
+        }
+    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
+    <test-code>
+        <description>[apex] AvoidSoqlInLoops false positive for SOQL with in For-Loop #2598</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for(NAMESPACE__CustomObject__c customObject : DatabaseUtility.query([Select Id FROM NAMESPACE__CustomObject__c where id IN :setIds])) // <-- violation is reported here
+        {
+            // …
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

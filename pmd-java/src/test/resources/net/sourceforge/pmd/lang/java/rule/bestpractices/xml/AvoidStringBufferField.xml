@@ -3,19 +3,18 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Basic test case for AvoidStringBufferField
-     ]]></description>
+        <description>Basic test case for AvoidStringBufferField</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.lang.StringBuffer;
 import java.lang.StringBuilder;
 
 public class Foo {
-	private StringBuffer buffer;
-	private StringBuilder buffer2;
+    private StringBuffer buffer;
+    private StringBuilder buffer2;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

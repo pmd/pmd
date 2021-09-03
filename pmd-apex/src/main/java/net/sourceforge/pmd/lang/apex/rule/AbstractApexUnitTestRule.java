@@ -1,9 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.rule;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
@@ -12,9 +13,12 @@ import apex.jorje.services.Version;
 
 /**
  * Do special checks for apex unit test classes and methods
- * 
+ *
  * @author a.subramanian
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractApexUnitTestRule extends AbstractApexRule {
 
     /**
