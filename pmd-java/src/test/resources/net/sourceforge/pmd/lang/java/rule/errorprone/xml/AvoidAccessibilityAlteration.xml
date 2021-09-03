@@ -170,6 +170,7 @@ public class NoViolation { {
         <description>setAccessible(false) is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 
 public class Violation {
@@ -177,6 +178,10 @@ public class Violation {
         Constructor<?> constructor = this.getClass().getDeclaredConstructor(String.class);
         // call to setAccessible with false - that's ok
         constructor.setAccessible(false);
+
+        Constructor<?>[] constructors = this.getClass().getConstructors();
+        AccessibleObject.setAccessible(constructors, false);
+        Constructor.setAccessible(constructors, false);
     }
 }
         ]]></code>
