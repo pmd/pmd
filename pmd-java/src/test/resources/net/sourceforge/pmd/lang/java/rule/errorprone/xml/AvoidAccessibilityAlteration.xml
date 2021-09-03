@@ -165,4 +165,20 @@ public class NoViolation { {
 } }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>setAccessible(false) is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.reflect.Constructor;
+
+public class Violation {
+    private void invalidSetAccessCalls() throws NoSuchMethodException, SecurityException {
+        Constructor<?> constructor = this.getClass().getDeclaredConstructor(String.class);
+        // call to setAccessible with false - that's ok
+        constructor.setAccessible(false);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

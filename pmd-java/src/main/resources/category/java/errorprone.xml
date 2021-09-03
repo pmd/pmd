@@ -76,6 +76,7 @@ is assumed to be deliberate and is not reported.
 <![CDATA[
 //PrimaryPrefix
     [Name[ends-with(@Image, '.setAccessible')]]
+    [not(following-sibling::PrimarySuffix/Arguments//BooleanLiteral[@True = false()])]
     [pmd-java:typeIs('java.lang.reflect.AccessibleObject')]
     (: exclude anonymous privileged action classes :)
     [not(ancestor::AllocationExpression[pmd-java:typeIs('java.security.PrivilegedAction')])]
