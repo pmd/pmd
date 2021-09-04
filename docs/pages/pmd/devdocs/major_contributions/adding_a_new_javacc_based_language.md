@@ -5,7 +5,7 @@ tags: [devdocs, extending]
 summary: "How to add a new language to PMD using JAVACC grammar."
 last_updated: October 5, 2019
 sidebar: pmd_sidebar
-permalink: pmd_devdocs_major_adding_new_language.html
+permalink: pmd_devdocs_major_adding_new_language_javacc.html
 folder: pmd/devdocs
 ---
 
