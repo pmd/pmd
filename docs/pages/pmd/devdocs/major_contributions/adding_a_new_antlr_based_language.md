@@ -52,7 +52,7 @@ folder: pmd/devdocs
 ## 4.  Generate your parser
 *   Make sure, you have the property `<antlr4.visitor>true</antlr4.visitor>` in your `pom.xml` file.
 *   This is just a matter of building the language module. ANTLR is called via ant, and this step is added
-    to the phase `generate-sources`. So you can just call e.g. `./mvnw generate-source -pl pmd-swift` to
+    to the phase `generate-sources`. So you can just call e.g. `./mvnw generate-sources -pl pmd-swift` to
     have the parser generated.
 *   The generated code will be placed under `target/generated-sources/antlr4` and will not be committed to
     source control.
