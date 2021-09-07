@@ -54,32 +54,16 @@ public class ConstructorNode extends MemberNode<ConstructorNode, Constructor<?>>
     }
 
     @Override
+    protected Class<?>[] getMemberParameterTypes() {
+        return this.getMember().getParameterTypes();
+    }
+
+    @Override
     public String toStringLong() {
         if (ClassLoaderUtil.CLINIT.equals(name)) {
             return name;
         } else {
             return super.toStringLong();
         }
-    }
-
-    @Override
-    public int compareTo(ConstructorNode that) {
-        // Order by name
-        int cmp = this.getName().compareTo(that.getName());
-        if (cmp == 0) {
-            // Order by parameter list length
-            cmp = this.getMember().getParameterTypes().length - that.getMember().getParameterTypes().length;
-            if (cmp == 0) {
-                // Order by parameter class name
-                for (int i = 0; i < this.getMember().getParameterTypes().length; i++) {
-                    cmp = this.getMember().getParameterTypes()[i].getName()
-                            .compareTo(that.getMember().getParameterTypes()[i].getName());
-                    if (cmp != 0) {
-                        break;
-                    }
-                }
-            }
-        }
-        return cmp;
     }
 }

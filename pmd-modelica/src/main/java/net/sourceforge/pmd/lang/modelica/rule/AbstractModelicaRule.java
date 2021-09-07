@@ -178,6 +178,13 @@ public abstract class AbstractModelicaRule extends AbstractRule implements Model
         }
     }
 
+    //
+    // The following APIs are identical to those in ModelicaParserVisitorAdapter.
+    // Due to Java single inheritance, it is preferred to extend from the more
+    // complex Rule base class instead of from relatively simple Visitor.
+    //
+    // CPD-OFF
+
     @Override
     public Object visit(ModelicaNode node, Object data) {
         for (ModelicaNode child : node.children()) {
@@ -895,4 +902,6 @@ public abstract class AbstractModelicaRule extends AbstractRule implements Model
     public Object visit(ASTAnnotation node, Object data) {
         return visit((ModelicaNode) node, data);
     }
+
+    // CPD-ON
 }

@@ -266,6 +266,16 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
         return data;
     }
 
+    private void updateClassEntry(int methodDecisionPoints) {
+        Entry classEntry = entryStack.peek();
+        classEntry.methodCount++;
+        classEntry.bumpDecisionPoints(methodDecisionPoints);
+
+        if (methodDecisionPoints > classEntry.highestDecisionPoints) {
+            classEntry.highestDecisionPoints = methodDecisionPoints;
+        }
+    }
+    
     @Override
     public Object visit(ASTProgramUnit node, Object data) {
         LOGGER.entering(CLASS_NAME, "visit(ASTProgramUnit)");
@@ -294,24 +304,10 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
                  * ASTTypeMethod
                  *
                  */
-                Entry classEntry = entryStack.peek();
-                classEntry.methodCount++;
-                classEntry.bumpDecisionPoints(methodDecisionPoints);
-
-                if (methodDecisionPoints > classEntry.highestDecisionPoints) {
-                    classEntry.highestDecisionPoints = methodDecisionPoints;
-                }
+                updateClassEntry(methodDecisionPoints);
             }
 
-            ASTMethodDeclarator methodDeclarator = null;
-            for (int n = 0; n < node.getNumChildren(); n++) {
-                Node childNode = node.getChild(n);
-                if (childNode instanceof ASTMethodDeclarator) {
-                    methodDeclarator = (ASTMethodDeclarator) childNode;
-                    break;
-                }
-            }
-
+            ASTMethodDeclarator methodDeclarator = node.getFirstChildOfType(ASTMethodDeclarator.class);
             if (methodEntry.decisionPoints >= reportLevel) {
                 addViolation(data, node,
                         new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
@@ -341,24 +337,10 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
                  * TODO This does not cope with nested methods We need the
                  * outer most ASTPackageBody
                  */
-                Entry classEntry = entryStack.peek();
-                classEntry.methodCount++;
-                classEntry.bumpDecisionPoints(methodDecisionPoints);
-
-                if (methodDecisionPoints > classEntry.highestDecisionPoints) {
-                    classEntry.highestDecisionPoints = methodDecisionPoints;
-                }
+                updateClassEntry(methodDecisionPoints);
             }
 
-            ASTMethodDeclarator methodDeclarator = null;
-            for (int n = 0; n < node.getNumChildren(); n++) {
-                Node childNode = node.getChild(n);
-                if (childNode instanceof ASTMethodDeclarator) {
-                    methodDeclarator = (ASTMethodDeclarator) childNode;
-                    break;
-                }
-            }
-
+            ASTMethodDeclarator methodDeclarator = node.getFirstChildOfType(ASTMethodDeclarator.class);
             if (methodEntry.decisionPoints >= reportLevel) {
                 addViolation(data, node,
                         new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
@@ -389,15 +371,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
                 classEntry.highestDecisionPoints = methodDecisionPoints;
             }
 
-            ASTMethodDeclarator methodDeclarator = null;
-            for (int n = 0; n < node.getNumChildren(); n++) {
-                Node childNode = node.getChild(n);
-                if (childNode instanceof ASTMethodDeclarator) {
-                    methodDeclarator = (ASTMethodDeclarator) childNode;
-                    break;
-                }
-            }
-
+            ASTMethodDeclarator methodDeclarator = node.getFirstChildOfType(ASTMethodDeclarator.class);
             if (methodEntry.decisionPoints >= reportLevel) {
                 addViolation(data, node,
                         new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),

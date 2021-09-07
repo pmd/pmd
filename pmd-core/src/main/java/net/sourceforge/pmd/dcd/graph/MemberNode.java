@@ -55,6 +55,10 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member>
 
     public abstract T getMember();
 
+    protected Class<?>[] getMemberParameterTypes() {
+        return new Class<?>[0];
+    }
+
     public void addUse(MemberNode use) {
         if (uses == null) {
             uses = new ArrayList<>(1);
@@ -143,4 +147,26 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member>
         }
         return true;
     }
+
+    @Override
+    public int compareTo(S that) {
+        // Order by constructor/method name
+        int cmp = this.getName().compareTo(that.getName());
+        if (cmp == 0) {
+            // Order by parameter list length
+            cmp = this.getMemberParameterTypes().length - that.getMemberParameterTypes().length;
+            if (cmp == 0) {
+                // Order by parameter class name
+                for (int i = 0; i < this.getMemberParameterTypes().length; i++) {
+                    cmp = this.getMemberParameterTypes()[i].getName()
+                            .compareTo(that.getMemberParameterTypes()[i].getName());
+                    if (cmp != 0) {
+                        break;
+                    }
+                }
+            }
+        }
+        return cmp;
+    }
+
 }

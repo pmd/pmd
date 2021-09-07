@@ -81,6 +81,13 @@ public abstract class AbstractVmRule extends AbstractRule implements VmParserVis
         }
     }
 
+    //
+    // The following APIs are identical to those in VmParserVisitorAdapter.
+    // Due to Java single inheritance, it is preferred to extend from the more
+    // complex Rule base class instead of from relatively simple Visitor.
+    //
+    // CPD-OFF
+
     @Override
     public Object visit(final VmNode node, final Object data) {
         for (VmNode child : node.children()) {
@@ -333,4 +340,5 @@ public abstract class AbstractVmRule extends AbstractRule implements VmParserVis
         return visit((VmNode) node, data);
     }
 
+    // CPD-ON
 }
