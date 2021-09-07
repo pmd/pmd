@@ -11,6 +11,10 @@
         <relativePath>../</relativePath>
     </parent>
 
+    <properties>
+        <antlr4.visitor>true</antlr4.visitor>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -32,6 +36,8 @@
                                 <ant antfile="${antlr4.ant.wrapper}" target="cpd-language">
                                     <property name="lang-name" value="Kotlin" />
                                     <property name="lang-terse-name" value="kotlin" />
+                                    <property name="root-node-name" value="TopLevel" />
+                                    <property name="node-prefix" value="Kt" />
                                 </ant>
                             </target>
                         </configuration>
