@@ -24,7 +24,7 @@ folder: pmd/devdocs
 
 ## 3.  Create AST node classes
 *   The individual AST nodes are generated, but you need to define the common interface for them.
-*   You need a need to define the supertype interface for all nodes of the language. For that, we provide
+*   You need to define the supertype interface for all nodes of the language. For that, we provide
     [`AntlrNode`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrNode.java).
 *   See [`SwiftNode`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/SwiftNode.java)
     as an example.
