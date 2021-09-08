@@ -52,10 +52,17 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
         }
     }
 
+    //
+    // The following APIs are identical to those in EcmascriptParserVisitorAdapter.
+    // Due to Java single inheritance, it is preferred to extend from the more
+    // complex Rule base class instead of from relatively simple Visitor.
+    //
+    // CPD-OFF
+
     @Override
     public Object visit(VfNode node, Object data) {
         node.childrenAccept(this, data);
-        return null;
+        return data;
     }
 
     @Override
@@ -65,11 +72,6 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
 
     @Override
     public Object visit(ASTText node, Object data) {
-        return visit((VfNode) node, data);
-    }
-
-    @Override
-    public Object visit(ASTAttributeValue node, Object data) {
         return visit((VfNode) node, data);
     }
 
@@ -90,6 +92,11 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
 
     @Override
     public Object visit(ASTAttribute node, Object data) {
+        return visit((VfNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTAttributeValue node, Object data) {
         return visit((VfNode) node, data);
     }
 
@@ -148,4 +155,5 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
         return visit((VfNode) node, data);
     }
 
+    // CPD-ON
 }

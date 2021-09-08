@@ -155,6 +155,12 @@ public abstract class AbstractApexRule extends AbstractRule
         return null;
     }
 
+    //
+    // The following APIs are identical to those in ApexParserVisitorAdapter.
+    // Due to Java single inheritance, it is preferred to extend from the more
+    // complex Rule base class instead of from relatively simple Visitor.
+    //
+    // CPD-OFF
 
     @Override
     public Object visit(ApexNode<?> node, Object data) {
@@ -648,4 +654,6 @@ public abstract class AbstractApexRule extends AbstractRule
     public Object visit(ASTEmptyReferenceExpression node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
+
+    // CPD-ON
 }
