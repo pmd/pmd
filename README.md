@@ -66,7 +66,7 @@ The rule designer is developed over at [pmd/pmd-designer](https://github.com/pmd
 Please see [its README](https://github.com/pmd/pmd-designer#contributing) for
 developer documentation.
 
-## 🪙 Financial Contributors
+## 💵 Financial Contributors
 
 Become a financial contributor and help us sustain our community. [Contribute](https://opencollective.com/pmd/contribute)
 
