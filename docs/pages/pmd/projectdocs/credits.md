@@ -7,6 +7,8 @@ permalink: pmd_projectdocs_credits.html
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
+<div class="all-contributors-list">
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -922,7 +924,13 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-## Committers
+</div>
+
+## Previous Contributors
+
+These are collected contributors before we moved to github.
+
+### Committers
 
 *   David Dixon-Peugh - PMD core, much of the early work on the grammar, initial Emacs plugin
 *   Philippe Herlin - Eclipse plugin, fixed bugs in RuleSetFactory
@@ -953,7 +961,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     RemoteInterfaceNamingConvention, AvoidFinalLocalVariable, ClassWithOnlyPrivateConstructorsShouldBeFinal,
     TooManyStaticImports, DoNotCallSystemExit, StaticEJBFieldShouldBeFinal
 
-## Committers emeritus
+### Committers emeritus
 
 *   Gunnlaugur Thor Briem - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser's use
     of java.lang.Error
@@ -967,7 +975,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 *   Colin Wilson-Salt - NetBeans plugin team
 *   [Brant Gurganus](http://gurganus.name/brant/) - JCreator integration, Swing GUI work
 
-## Significant contributors
+### Significant contributors
 
 *   Pieter Vanraemdonck - JSP grammar/integration/documentation, DontNestJsfInJstlIteration, NoLongScripts,
     NoScriptlets, NoInlineStyleInformation, NoClassAttribute, NoJspForward
@@ -976,7 +984,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 *   Daniel Sheppard - XPath engine integration concept and implementation, advice on Jaxen extension function naming
 *   Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform, fixed DocumentNavigator bug
 
-## Contributors
+### Contributors
 
 *   Andy Throgmorton - New XPath getCommentOn function, new rule DontCallThreadRun, fix for rule UseArraysAsList
 *   Nicolas Dordet - Fixed an issue on CloseResource
