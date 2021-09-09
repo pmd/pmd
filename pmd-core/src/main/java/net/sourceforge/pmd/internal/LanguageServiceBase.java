@@ -64,5 +64,5 @@ public abstract class LanguageServiceBase<T> {
         }
         languagesByName = Collections.unmodifiableMap(byName);
         languagesByTerseName = Collections.unmodifiableMap(byTerseName);
-}
+    }
 }

@@ -8,7 +8,8 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
-import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
+import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
