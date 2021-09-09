@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -22,5 +22,4 @@ public abstract class AbstractApexRule extends AbstractRule
     public void apply(Node target, RuleContext ctx) {
         target.acceptVisitor(this, ctx);
     }
-
 }
