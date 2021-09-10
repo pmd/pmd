@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   plsql
+    *   [#3487](https://github.com/pmd/pmd/issues/3487): \[plsql] Parsing exception OPEN ref_cursor_name FOR statement
+
 ### API Changes
 
 ### External Contributions
