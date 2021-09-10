@@ -1447,14 +1447,19 @@ public class Foo {
         </description>
         <priority>3</priority>
         <example><![CDATA[
-            {
-                    // Instead of
-                    Integer integer = Integer.valueOf(2);
-                    // you may just write
-                    Integer integer = 2;
+{
+        // Instead of
+        Integer integer = Integer.valueOf(2);
+        // you may just write
+        Integer integer = 2;
 
-                    int i = integer.intValue(); // similarly for unboxing
-            }
+        int i = integer.intValue(); // similarly for unboxing
+
+        // Instead of
+        int x = Integer.valueOf("42");
+        // you may just write
+        int x = Integer.parseInt("42");
+}
             ]]>
         </example>
     </rule>
