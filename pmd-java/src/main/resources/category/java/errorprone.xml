@@ -67,6 +67,11 @@ This gives access to normally protected data which violates the principle of enc
 This rule detects calls to `setAccessible` and finds possible accessibility alterations.
 If the call to `setAccessible` is wrapped within a `PrivilegedAction`, then the access alteration
 is assumed to be deliberate and is not reported.
+
+Note that with Java 17 the Security Manager, which is used for `PrivilegedAction` execution,
+is deprecated: [JEP 411: Deprecate the Security Manager for Removal](https://openjdk.java.net/jeps/411).
+For future-proof code, deliberate access alteration should be suppressed using the usual
+suppression methods (e.g. by using `@SuppressWarnings` annotation).
         </description>
         <priority>3</priority>
         <properties>
