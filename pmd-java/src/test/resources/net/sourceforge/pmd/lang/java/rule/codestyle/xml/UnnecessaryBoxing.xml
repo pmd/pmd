@@ -313,4 +313,24 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Uses of Boolean.valueOf(someString) where an boolean is expected</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary implicit unboxing. Use Boolean.parseBoolean(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Boolean.parseBoolean(...) instead</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void test(String number) {
+        boolean b = Boolean.valueOf("42");
+        boolean x = Boolean.valueOf(number);
+        boolean y = Boolean.parseBoolean("42");
+        boolean z = Boolean.parseBoolean(number);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
