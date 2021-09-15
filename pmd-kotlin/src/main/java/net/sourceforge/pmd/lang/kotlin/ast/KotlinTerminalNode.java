@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrTerminalNode;
 import org.antlr.v4.runtime.Token;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrTerminalNode;
 
 public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> implements KotlinNode {
 
