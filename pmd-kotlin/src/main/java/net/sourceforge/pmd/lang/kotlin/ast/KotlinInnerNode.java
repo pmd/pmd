@@ -4,16 +4,13 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode;
-import org.antlr.v4.runtime.ParserRuleContext;
 
 public abstract class KotlinInnerNode
     extends BaseAntlrInnerNode<KotlinNode> implements KotlinNode {
-
-    KotlinInnerNode() {
-        super();
-    }
 
     KotlinInnerNode(ParserRuleContext parent, int invokingStateNumber) {
         super(parent, invokingStateNumber);
