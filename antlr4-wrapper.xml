@@ -31,8 +31,44 @@
     <property name="base-visitor-name" value="${lang-name}BaseVisitor"/>
     <property name="base-visitor-file" value="${target-package-dir}/${base-visitor-name}.java"/>
 
+    <property name="listener-name" value="${lang-name}Listener"/>
+    <property name="listener-file" value="${target-package-dir}/${visitor-name}.java"/>
+
+    <property name="base-listener-name" value="${lang-name}BaseListener"/>
+    <property name="base-listener-file" value="${target-package-dir}/${base-visitor-name}.java"/>
+
     <property name="node-itf-name" value="${lang-name}Node"/>
     <property name="base-class-name" value="Abstract${lang-name}Node"/>
+
+    <condition property="rename-parser">
+        <and>
+            <not>
+                <available file="${parser-file}"/>
+            </not>
+            <available file="${target-package-dir}/${lang-name}.java"/>
+        </and>
+    </condition>
+
+    <target name="rename-parser" description="Rename the parser to our conventional name if needed"
+            if="rename-parser">
+        <replace file="${target-package-dir}/${lang-name}.java">
+            <replacefilter token="class ${lang-name} "
+                           value="class ${parser-name} "/>
+            <replacefilter token="public ${lang-name}(TokenStream input)"
+                           value="public ${parser-name}(TokenStream input)"/>
+        </replace>
+        <replace dir="${target-package-dir}">
+            <include name="${lang-name}.java"/>
+            <include name="${visitor-name}.java"/>
+            <include name="${base-visitor-name}.java"/>
+            <include name="${listener-name}.java"/>
+            <include name="${base-listener-name}.java"/>
+            <replacefilter token="${lang-name}." value="${parser-name}."/>
+        </replace>
+
+        <move file="${target-package-dir}/${lang-name}.java"
+              tofile="${parser-file}"/>
+    </target>
 
     <target name="cpd-language" description="Adapt Antlr sources for CPD-only languages">
         <!-- We only need the Lexer file. -->
@@ -45,7 +81,7 @@
         </delete>
     </target>
 
-    <target name="pmd-language" description="Adapt Antlr sources for PMD languages">
+    <target name="pmd-language" description="Adapt Antlr sources for PMD languages" depends="rename-parser">
 
         <!-- Adapt parser. -->
         <replace file="${parser-file}">

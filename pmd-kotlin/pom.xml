@@ -36,7 +36,7 @@
                                 <ant antfile="${antlr4.ant.wrapper}" target="pmd-language">
                                     <property name="lang-name" value="Kotlin" />
                                     <property name="lang-terse-name" value="kotlin" />
-                                    <property name="root-node-name" value="TopLevel" />
+                                    <property name="root-node-name" value="File" />
                                     <property name="node-prefix" value="Kt" />
                                 </ant>
                             </target>
