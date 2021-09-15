@@ -22,4 +22,8 @@ public class KotlinHandler extends AbstractPmdLanguageVersionHandler {
     public Parser getParser() {
         return new PmdKotlinParser();
     }
+
+    public String getKotlinRelease() {
+        return kotlinRelease;
+    }
 }
