@@ -9,11 +9,30 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 }
 
-options { tokenVocab = KotlinLexer; }
+@parser::members {
+
+    static final AntlrNameDictionary DICO = new KotlinNameDictionary(VOCABULARY, ruleNames);
+
+    @Override
+    public KotlinTerminalNode createPmdTerminal(ParserRuleContext parent, Token t) {
+        return new KotlinTerminalNode(t);
+    }
+
+    @Override
+    public KotlinErrorNode createPmdError(ParserRuleContext parent, Token t) {
+        return new KotlinErrorNode(t);
+    }
+}
+
+options {
+    tokenVocab = KotlinLexer;
+    contextSuperClass = 'KotlinInnerNode';
+    superClass = 'AntlrGeneratedParserBase<KotlinNode>';
+}
 
 // SECTION: general
 
-kotlinFile
+file
     : shebangLine? NL* fileAnnotation* packageHeader importList topLevelObject* EOF
     ;
 
