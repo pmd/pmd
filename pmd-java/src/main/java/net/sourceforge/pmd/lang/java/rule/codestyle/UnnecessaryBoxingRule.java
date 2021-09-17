@@ -8,6 +8,8 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -19,6 +21,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 
 /**
@@ -71,6 +74,8 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
 
             if (isValueOf && isWrapperValueOf(m)) {
                 checkBox((RuleContext) data, "boxing", node, node.getArguments().get(0), m.getFormalParameters().get(0));
+            } else if (isValueOf && isStringValueOf(m) && qualifier != null) {
+                checkUnboxing((RuleContext) data, node, qualifier.getTypeMirror());
             } else if (!isValueOf && isUnboxingCall(m) && qualifier != null) {
                 checkBox((RuleContext) data, "unboxing", node, qualifier, qualifier.getTypeMirror());
             }
@@ -87,6 +92,13 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             && m.getArity() == 1
             && m.getDeclaringType().isBoxedPrimitive()
             && m.getFormalParameters().get(0).isPrimitive();
+    }
+
+    private boolean isStringValueOf(JMethodSig m) {
+        return m.isStatic()
+                && (m.getArity() == 1 || m.getArity() == 2)
+                && m.getDeclaringType().isBoxedPrimitive()
+                && TypeTestUtil.isA(String.class, m.getFormalParameters().get(0));
     }
 
     private void checkBox(
@@ -146,6 +158,28 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
                 }
 
                 addViolation(rctx, conversionExpr, reason);
+            }
+        }
+    }
+
+    private void checkUnboxing(
+            RuleContext rctx,
+            ASTMethodCall methodCall,
+            JTypeMirror conversionOutput
+    ) {
+        // methodCall is e.g. Integer.valueOf("42")
+        // this checks, whether the resulting type "Integer" is e.g. assigned to an "int"
+        // which triggers implicit unboxing.
+        ExprContext ctx = methodCall.getConversionContext();
+        JTypeMirror ctxType = ctx.getTargetType();
+
+        if (ctxType != null) {
+            if (isImplicitlyConvertible(conversionOutput, ctxType)) {
+                if (conversionOutput.unbox().equals(ctxType)) {
+                    addViolation(rctx, methodCall, "implicit unboxing. Use "
+                            + conversionOutput.getSymbol().getSimpleName() + ".parse"
+                            + StringUtils.capitalize(ctxType.getSymbol().getSimpleName()) + "(...) instead");
+                }
             }
         }
     }
