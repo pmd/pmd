@@ -1099,12 +1099,12 @@ public void foo() throws Exception {
     <rule name="SimplifiedTernary"
           language="java"
           since="5.4.0"
-          message="Ternary operators that can be simplified with || or &amp;&amp;"
+          message="This conditional expression can be simplified with || or &amp;&amp;"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifiedternary">
         <description>
 <![CDATA[
-Look for ternary operators with the form `condition ? literalBoolean : foo`
+Reports ternary expression with the form `condition ? literalBoolean : foo`
 or `condition ? foo : literalBoolean`.
 
 These expressions can be simplified respectively to
@@ -1120,9 +1120,7 @@ or
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConditionalExpression[not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
-|
-//ConditionalExpression[not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
+//ConditionalExpression[BooleanLiteral and not(NullLiteral)]
 ]]>
                 </value>
             </property>
@@ -1150,64 +1148,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="SimplifyBooleanAssertion"
-          language="java"
-          since="3.6"
-          message="assertTrue(!expr) can be replaced by assertFalse(expr)"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          deprecated="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanassertion">
-        <description>
-Avoid negation in an assertTrue or assertFalse test.
-
-For example, rephrase:
-
-    assertTrue(!expr);
-
-as:
-
-    assertFalse(expr);
-
-Deprecated since PMD 6.37.0, use {% rule java/bestpractices/SimplifiableTestAssertion %} instead.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[
-    pmd-java:typeIs('junit.framework.TestCase')
-    or .//MarkerAnnotation/Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        ]
-    ]
-//StatementExpression
-[
-    .//Name[@Image='assertTrue' or  @Image='assertFalse']
-    and
-    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/UnaryExpressionNotPlusMinus[@Image='!']
-        /PrimaryExpression/PrimaryPrefix
-]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class SimpleTest extends TestCase {
-    public void testX() {
-        assertTrue("not empty", !r.isEmpty());  // replace with assertFalse("not empty", r.isEmpty())
-        assertFalse(!r.isEmpty());              // replace with assertTrue(r.isEmpty())
-    }
-}
-]]>
-        </example>
-    </rule>
 
     <rule name="SimplifyBooleanExpressions"
           language="java"
@@ -1273,44 +1213,12 @@ public boolean isBarEqualTo(int x) {
           language="java"
           since="3.1"
           message="No need to check for null before an instanceof"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.SimplifyConditionalRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifyconditional">
         <description>
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//Expression
- [ConditionalOrExpression
- [EqualityExpression[@Image='==']
-  //NullLiteral
-  and
-  UnaryExpressionNotPlusMinus
-   [@Image='!']//InstanceOfExpression[PrimaryExpression
-     //Name/@Image = ancestor::ConditionalOrExpression/EqualityExpression
-      /PrimaryExpression/PrimaryPrefix/Name/@Image]
-  and
-  (count(UnaryExpressionNotPlusMinus) + 1 = count(*))
- ]
-or
-ConditionalAndExpression
- [EqualityExpression[@Image='!=']//NullLiteral
- and
-InstanceOfExpression
- [PrimaryExpression[not(PrimarySuffix[@ArrayDereference= true()])]
-  //Name[not(contains(@Image,'.'))]/@Image = ancestor::ConditionalAndExpression
-   /EqualityExpression/PrimaryExpression/PrimaryPrefix/Name/@Image]
- and
-(count(InstanceOfExpression) + 1 = count(*))
- ]
-]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 class Foo {
