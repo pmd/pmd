@@ -3188,20 +3188,19 @@ public String convert(int x) {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unusednullcheckinequals">
         <description>
-After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
+After checking an object reference for null, you should invoke equals() on that object rather than passing
+it to another object's equals() method.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-(//PrimaryPrefix[ends-with(Name/@Image, '.equals') and Name/@Image != 'Arrays.equals'] | //PrimarySuffix[@Image='equals' and not(../PrimaryPrefix/Literal)])
- /following-sibling::PrimarySuffix/Arguments/ArgumentList/Expression
- /PrimaryExpression[not(PrimarySuffix)]/PrimaryPrefix
- /Name[@Image = ./../../../../../../../../../../Expression/ConditionalAndExpression
- /EqualityExpression[@Image="!=" and not(./preceding-sibling::*) and
- ./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-  /PrimaryExpression/PrimaryPrefix/Name/@Image]
+//InfixExpression[@Operator = '&&']
+  /MethodCall[pmd-java:matchesSig("java.lang.Object#equals(java.lang.Object)")]
+             [not(StringLiteral)]
+             [not(VariableAccess[@CompileTimeConstant = true()])]
+             [ArgumentList/VariableAccess/@Name = ..//InfixExpression[@Operator = '!='][NullLiteral]/VariableAccess/@Name]
 ]]>
                 </value>
             </property>
