@@ -56,73 +56,72 @@ public class StaticField {
     <rule name="AvoidAccessibilityAlteration"
           language="java"
           since="4.1"
-          message="You should not modify visibility of class or methods using getDeclaredConstructors(), getDeclaredConstructor(Class[]), setAccessible() or PrivilegedAction."
+          message="You should not modify visibility of constructors, methods or fields using setAccessible()"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidaccessibilityalteration">
         <description>
-Methods such as getDeclaredConstructors(), getDeclaredConstructor(Class[]) and setAccessible(),
-as the interface PrivilegedAction, allow for the runtime alteration of variable, class, or
-method visibility, even if they are private. This violates the principle of encapsulation.
+Methods such as `getDeclaredConstructors()`, `getDeclaredMethods()`, and `getDeclaredFields()` also
+return private constructors, methods and fields. These can be made accessible by calling `setAccessible(true)`.
+This gives access to normally protected data which violates the principle of encapsulation.
+
+This rule detects calls to `setAccessible` and finds possible accessibility alterations.
+If the call to `setAccessible` is wrapped within a `PrivilegedAction`, then the access alteration
+is assumed to be deliberate and is not reported.
+
+Note that with Java 17 the Security Manager, which is used for `PrivilegedAction` execution,
+is deprecated: [JEP 411: Deprecate the Security Manager for Removal](https://openjdk.java.net/jeps/411).
+For future-proof code, deliberate access alteration should be suppressed using the usual
+suppression methods (e.g. by using `@SuppressWarnings` annotation).
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression[
-(
-(PrimarySuffix[
-        ends-with(@Image,'getDeclaredConstructors')
-                or
-        ends-with(@Image,'getDeclaredConstructor')
-                or
-        ends-with(@Image,'setAccessible')
-        ])
-or
-(PrimaryPrefix/Name[
-        ends-with(@Image,'getDeclaredConstructor')
-        or
-        ends-with(@Image,'getDeclaredConstructors')
-        or
-        starts-with(@Image,'AccessibleObject.setAccessible')
-        ])
-)
-and
-(//ImportDeclaration/Name[
-        contains(@Image,'java.security.PrivilegedAction')])
-]
+//PrimaryPrefix
+    [Name[ends-with(@Image, '.setAccessible')]]
+    [not(following-sibling::PrimarySuffix/Arguments//BooleanLiteral[@True = false()])]
+    [pmd-java:typeIs('java.lang.reflect.AccessibleObject')]
+    (: exclude anonymous privileged action classes :)
+    [not(ancestor::AllocationExpression[pmd-java:typeIs('java.security.PrivilegedAction')])]
+    (: exclude inner privileged action classes :)
+    [not(ancestor::ClassOrInterfaceDeclaration[1][pmd-java:typeIs('java.security.PrivilegedAction')])]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
 <![CDATA[
-import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 public class Violation {
-  public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-    // Possible call to forbidden getDeclaredConstructors
-    Class[] arrayOfClass = new Class[1];
-    this.getClass().getDeclaredConstructors();
-    this.getClass().getDeclaredConstructor(arrayOfClass);
-    Class clazz = this.getClass();
-    clazz.getDeclaredConstructor(arrayOfClass);
-    clazz.getDeclaredConstructors();
-      // Possible call to forbidden setAccessible
-    clazz.getMethod("", arrayOfClass).setAccessible(false);
-    AccessibleObject.setAccessible(null, false);
-    Method.setAccessible(null, false);
-    Method[] methodsArray = clazz.getMethods();
-    int nbMethod;
-    for ( nbMethod = 0; nbMethod < methodsArray.length; nbMethod++ ) {
-      methodsArray[nbMethod].setAccessible(false);
-    }
+    private void invalidSetAccessCalls() throws NoSuchMethodException, SecurityException {
+        Constructor<?> constructor = this.getClass().getDeclaredConstructor(String.class);
+        // call to forbidden setAccessible
+        constructor.setAccessible(true);
 
-      // Possible call to forbidden PrivilegedAction
-    PrivilegedAction priv = (PrivilegedAction) new Object(); priv.run();
-  }
+        Method privateMethod = this.getClass().getDeclaredMethod("aPrivateMethod");
+        // call to forbidden setAccessible
+        privateMethod.setAccessible(true);
+
+        // deliberate accessibility alteration
+        String privateField = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                try {
+                    Field field = Violation.class.getDeclaredField("aPrivateField");
+                    field.setAccessible(true);
+                    return (String) field.get(null);
+                } catch (ReflectiveOperationException | SecurityException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
 }
 ]]>
         </example>
@@ -637,8 +636,6 @@ k = i * j;      // set k with 80 not 120
         </example>
     </rule>
 
-    <rule name="BadComparison" ref="ComparisonWithNaN" deprecated="true" />
-
     <rule name="BeanMembersShouldSerialize"
           language="java"
           since="1.1"
@@ -964,53 +961,6 @@ public class Foo implements Cloneable {
 public class Foo implements Cloneable {
     @Override
     public Foo clone() { //Ok
-    }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="CloneThrowsCloneNotSupportedException"
-          deprecated="true"
-          language="java"
-          since="1.9"
-          message="clone() method should throw CloneNotSupportedException"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception">
-        <description>
-The method clone() should throw a CloneNotSupportedException.
-
-This rule is deprecated since PMD 6.35.0 without replacement. The rule has no real value as
-`CloneNotSupportedException` is a checked exception and therefore you need to deal with it while
-implementing the `clone()` method. You either need to declare the exception or catch it. If you catch it,
-then subclasses can't throw it themselves explicitly. However, `Object.clone()` will still throw this
-exception if the `Cloneable` interface is not implemented.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration
-[
-@Name = 'clone'
-and @Arity = 0
-and count(NameList/Name[contains
-(@Image,'CloneNotSupportedException')]) = 0
-]
-[
-../../../../ClassOrInterfaceDeclaration[@Final = false()]
-]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class MyClass implements Cloneable{
-    public Object clone() { // will cause an error
-         MyClass clone = (MyClass)super.clone();
-         return clone;
     }
 }
 ]]>
@@ -2127,10 +2077,6 @@ Class c = String.class;
         </example>
     </rule>
 
-    <rule name="InvalidSlf4jMessageFormat"
-          ref="category/java/errorprone.xml/InvalidLogMessageFormat"
-          deprecated="true" />
-
     <rule name="InvalidLogMessageFormat"
           language="java"
           since="5.5.0"
@@ -2326,8 +2272,6 @@ public class Foo {
 ]]>
         </example>
     </rule>
-
-    <rule name="MissingBreakInSwitch" ref="ImplicitSwitchFallThrough" deprecated="true"/>
 
     <rule name="MissingSerialVersionUID"
           language="java"
@@ -2683,54 +2627,6 @@ public class Foo {
     private static final Log LOG = LogFactory.getLog(Foo.class);    // proper way
 
     protected Log LOG = LogFactory.getLog(Testclass.class);         // wrong approach
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="ReturnEmptyArrayRatherThanNull"
-          language="java"
-          since="4.2"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          deprecated="true"
-          message="Return an empty array rather than 'null'."
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#returnemptyarrayratherthannull">
-        <description>
-For any method that returns an array, it is a better to return an empty array rather than a
-null reference. This removes the need for null checking all results and avoids inadvertent
-NullPointerExceptions.
-
-Deprecated since PMD 6.37.0, use {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} instead.
-        </description>
-        <priority>1</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration
-[
-(./ResultType/Type[@ArrayType= true()])
-and
-(./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
-]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class Example {
-    // Not a good idea...
-    public int[] badBehavior() {
-        // ...
-        return null;
-    }
-
-    // Good behavior
-    public String[] bonnePratique() {
-        //...
-        return new String[0];
-    }
 }
 ]]>
         </example>
@@ -3398,16 +3294,18 @@ public class Main {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#useequalstocomparestrings">
         <description>
-Using '==' or '!=' to compare strings only works if intern version is used on both sides.
-Use the equals() method instead.
+Using '==' or '!=' to compare strings is only reliable if the interned string (`String#intern()`)
+is used on both sides.
+
+Use the `equals()` method instead.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//EqualityExpression
-    [count(PrimaryExpression[pmd-java:typeIs('java.lang.String')]) = 2]
+//InfixExpression[@Operator = ('==', '!=')]
+                 [count(*[pmd-java:typeIsExactly('java.lang.String')]) = 2]
 ]]>
                 </value>
             </property>
@@ -3459,38 +3357,29 @@ class Test {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselocalewithcaseconversions">
         <description>
-            When doing `String::toLowerCase()/toUpperCase()` conversions, use an explicit locale argument to specify the case transformation rules.
+When doing `String::toLowerCase()/toUpperCase()` conversions, use an explicit locale argument to specify the case
+transformation rules.
 
-            Using `String::toLowerCase()` without arguments implicitly uses `Locale::getDefault()`.
-            The problem is that the default locale depends on the current JVM setup (and usually on the system in which it is running).
-            Using the system default may be exactly what you want (e.g. if you are manipulating strings you got through standard input),
-            but it may as well not be the case (e.g. if you are getting the string over the network or a file, and the encoding is well-defined
-            and independent of the environment). In the latter case, using the default locale makes the case transformation brittle, as
-            it may yield unexpected results on a machine whose locale has other case translation rules. For example, in Turkish, the
-            uppercase form of `i` is `İ` (U+0130, not ASCII) and not `I` (U+0049) as in English.
+Using `String::toLowerCase()` without arguments implicitly uses `Locale::getDefault()`.
+The problem is that the default locale depends on the current JVM setup (and usually on the system in which
+it is running). Using the system default may be exactly what you want (e.g. if you are manipulating strings
+you got through standard input), but it may as well not be the case (e.g. if you are getting the string over
+the network or a file, and the encoding is well-defined and independent of the environment). In the latter case,
+using the default locale makes the case transformation brittle, as it may yield unexpected results on a machine
+whose locale has other case translation rules. For example, in Turkish, the uppercase form of `i` is `İ` (U+0130,
+not ASCII) and not `I` (U+0049) as in English.
 
-            The rule is intended to *force* developers to think about locales when dealing with strings. By taking a conscious decision about
-            the choice of locale at the time of writing, you reduce the risk of surprising behaviour down the line, and communicate your intent
-            to future readers.
+The rule is intended to *force* developers to think about locales when dealing with strings. By taking a
+conscious decision about the choice of locale at the time of writing, you reduce the risk of surprising
+behaviour down the line, and communicate your intent to future readers.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
-[
-PrimaryPrefix
-[Name[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]]
-[following-sibling::PrimarySuffix[position() = 1]/Arguments[@Size=0]]
-
-or
-
-PrimarySuffix
-[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]
-[following-sibling::PrimarySuffix[position() = 1]/Arguments[@Size=0]]
-]
-[not(PrimaryPrefix/Name[ends-with(@Image, 'toHexString')])]
+//MethodCall[pmd-java:matchesSig("java.lang.String#toLowerCase()") or pmd-java:matchesSig("java.lang.String#toUpperCase()")]
+            [not(MethodCall[@MethodName = "toHexString"])]
 ]]>
                 </value>
             </property>
@@ -3528,7 +3417,7 @@ Thread.currentThread().getContextClassLoader() instead.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//PrimarySuffix[@Image='getClassLoader'] | //PrimaryPrefix[ends-with(Name/@Image, '.getClassLoader')]</value>
+                <value>//MethodCall[pmd-java:matchesSig("java.lang.Class#getClassLoader()")]</value>
             </property>
         </properties>
         <example>

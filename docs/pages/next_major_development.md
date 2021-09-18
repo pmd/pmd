@@ -246,6 +246,10 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.38.0
+
+No changes.
+
 #### 6.37.0
 
 ##### PMD CLI
@@ -1352,35 +1356,35 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
     is deprecated in favour of {% rule "java/bestpractices/UnusedAssignment" %} (`java-bestpractices`),
     which was introduced in PMD 6.26.0.
 
-*   The java rule {% rule "java/codestyle/DefaultPackage" %} has been deprecated in favor of
+*   The java rule `DefaultPackage` (java-codestyle) has been deprecated in favor of
     {% rule "java/codestyle/CommentDefaultAccessModifier" %}.
 
-*   The Java rule {% rule "java/errorprone/CloneThrowsCloneNotSupportedException" %} has been deprecated without
+*   The Java rule `CloneThrowsCloneNotSupportedException` (java-errorprone) has been deprecated without
     replacement.
 
 *   The following Java rules are deprecated and removed from the quickstart ruleset,
     as the new rule {% rule java/bestpractices/SimplifiableTestAssertion %} merges
     their functionality:
-    * {% rule java/bestpractices/UseAssertEqualsInsteadOfAssertTrue %}
-    * {% rule java/bestpractices/UseAssertNullInsteadOfAssertTrue %}
-    * {% rule java/bestpractices/UseAssertSameInsteadOfAssertTrue %}
-    * {% rule java/bestpractices/UseAssertTrueInsteadOfAssertEquals %}
-    * {% rule java/design/SimplifyBooleanAssertion %}
+    * `UseAssertEqualsInsteadOfAssertTrue` (java-bestpractices)
+    * `UseAssertNullInsteadOfAssertTrue` (java-bestpractices)
+    * `UseAssertSameInsteadOfAssertTrue` (java-bestpractices)
+    * `UseAssertTrueInsteadOfAssertEquals` (java-bestpractices)
+    * `SimplifyBooleanAssertion` (java-design)
 
-*   The Java rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
+*   The Java rule `ReturnEmptyArrayRatherThanNull` (java-errorprone) is deprecated and removed from
     the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
     supersedes it.
 
 *   The following Java rules are deprecated and removed from the quickstart ruleset,
     as the new rule {% rule java/bestpractices/PrimitiveWrapperInstantiation %} merges
     their functionality:
-    * {% rule java/performance/BooleanInstantiation %}
-    * {% rule java/performance/ByteInstantiation %}
-    * {% rule java/performance/IntegerInstantiation %}
-    * {% rule java/performance/LongInstantiation %}
-    * {% rule java/performance/ShortInstantiation %}
+    * java/performance/BooleanInstantiation
+    * java/performance/ByteInstantiation
+    * java/performance/IntegerInstantiation
+    * java/performance/LongInstantiation
+    * java/performance/ShortInstantiation
 
-*   The Java rule {% rule java/performance/UnnecessaryWrapperObjectCreation %} is deprecated
+*   The Java rule java/performance/UnnecessaryWrapperObjectCreation is deprecated
     with no planned replacement before PMD 7. In it's current state, the rule is not useful
     as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
     in the same expression. In PMD 7 this and more cases will be covered by a
