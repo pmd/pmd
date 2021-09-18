@@ -19,6 +19,7 @@ import net.sf.saxon.expr.LazyExpression;
 import net.sf.saxon.expr.PathExpression;
 import net.sf.saxon.expr.RootExpression;
 import net.sf.saxon.om.Axis;
+import net.sf.saxon.pattern.CombinedNodeTest;
 import net.sf.saxon.pattern.NameTest;
 import net.sf.saxon.sort.DocumentSorter;
 import net.sf.saxon.type.Type;
@@ -42,6 +43,7 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
     private boolean rootElementReplaced;
     private boolean insideLazyExpression;
     private boolean foundPathInsideLazy;
+    private boolean foundCombinedNodeTest;
 
     public RuleChainAnalyzer(Configuration currentConfiguration) {
         this.configuration = currentConfiguration;
@@ -105,13 +107,15 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
 
     @Override
     public Expression visit(AxisExpression e) {
-        if (rootElement == null && e.getNodeTest() instanceof NameTest) {
+        if (rootElement == null && e.getNodeTest() instanceof NameTest && !foundCombinedNodeTest) {
             NameTest test = (NameTest) e.getNodeTest();
             if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == Axis.DESCENDANT) {
                 rootElement = configuration.getNamePool().getClarkName(test.getFingerprint());
             } else if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == Axis.CHILD) {
                 rootElement = configuration.getNamePool().getClarkName(test.getFingerprint());
             }
+        } else if (e.getNodeTest() instanceof CombinedNodeTest) {
+            foundCombinedNodeTest = true;
         }
         return super.visit(e);
     }

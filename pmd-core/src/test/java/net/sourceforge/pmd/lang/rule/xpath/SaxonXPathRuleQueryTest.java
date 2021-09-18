@@ -266,4 +266,35 @@ public class SaxonXPathRuleQueryTest {
         List<String> ruleChainVisits = query.getRuleChainVisits();
         Assert.assertEquals(0, ruleChainVisits.size());
     }
+
+    @Test
+    public void ruleChainWithUnionsCustomFunctionsVariant1() {
+        SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//dummyNode[pmd-dummy:typeIs(@Image)]");
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(0, ruleChainVisits.size());
+    }
+
+    @Test
+    public void ruleChainWithUnionsCustomFunctionsVariant2() {
+        SaxonXPathRuleQuery query = createQuery("//(ForStatement | WhileStatement | DoStatement)//dummyNode[pmd-dummy:typeIs(@Image)]");
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(0, ruleChainVisits.size());
+    }
+
+    @Test
+    public void ruleChainWithUnionsCustomFunctionsVariant3() {
+        SaxonXPathRuleQuery query = createQuery("//ForStatement//dummyNode[pmd-dummy:typeIs(@Image)]"
+                + " | //WhileStatement//dummyNode[pmd-dummy:typeIs(@Image)]"
+                + " | //DoStatement//dummyNode[pmd-dummy:typeIs(@Image)]");
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(3, ruleChainVisits.size());
+        Assert.assertTrue(ruleChainVisits.contains("ForStatement"));
+        Assert.assertTrue(ruleChainVisits.contains("WhileStatement"));
+        Assert.assertTrue(ruleChainVisits.contains("DoStatement"));
+
+        final String expectedSubexpression = "((self::node()/descendant-or-self::node())/(child::element(dummyNode, xs:anyType)[pmd-dummy:typeIs(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer(attribute::attribute(Image, xs:anyAtomicType))))))]))";
+        assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("ForStatement").get(0));
+        assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("WhileStatement").get(0));
+        assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("DoStatement").get(0));
+    }
 }
