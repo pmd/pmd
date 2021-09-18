@@ -9,8 +9,8 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Deque;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -101,7 +101,7 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
                         Expression walker = filterExpression;
                         while (walker instanceof FilterExpression) {
                             filters.push(((FilterExpression) walker).getFilter());
-                            walker = ((FilterExpression) walker).getBaseExpression();
+                            walker = ((FilterExpression) walker).getBase();
                         }
                         result = new FilterExpression(new AxisExpression(AxisInfo.SELF, null), filters.pop());
                         while (!filters.isEmpty()) {

@@ -322,6 +322,38 @@ public class SaxonXPathRuleQueryTest {
         assertExpression("docOrder((((/)/descendant::element(Q{}dummyNode))[matches(convertUntyped(data(@SimpleName)), \"a\", \"\")])/child::element(Q{}foo))", query.getFallbackExpr());
     }
 
+
+    @Test
+    public void ruleChainWithUnionsCustomFunctionsVariant1() {
+        SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//dummyNode[@Image != '']");
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(0, ruleChainVisits.size());
+    }
+
+    @Test
+    public void ruleChainWithUnionsCustomFunctionsVariant2() {
+        SaxonXPathRuleQuery query = createQuery("//(ForStatement | WhileStatement | DoStatement)//dummyNode[@Image != '']");
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(0, ruleChainVisits.size());
+    }
+
+    @Test
+    public void ruleChainWithUnionsCustomFunctionsVariant3() {
+        SaxonXPathRuleQuery query = createQuery("//ForStatement//dummyNode[@Image != '']"
+                                                    + " | //WhileStatement//dummyNode[@Image != '']"
+                                                    + " | //DoStatement//dummyNode[@Image != '']");
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(3, ruleChainVisits.size());
+        Assert.assertTrue(ruleChainVisits.contains("ForStatement"));
+        Assert.assertTrue(ruleChainVisits.contains("WhileStatement"));
+        Assert.assertTrue(ruleChainVisits.contains("DoStatement"));
+
+        final String expectedSubexpression = "(self::node()/descendant::element(dummyNode))[(string(data(@Image))) ne \"\"]";
+        assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("ForStatement").get(0));
+        assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("WhileStatement").get(0));
+        assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("DoStatement").get(0));
+    }
+
     private static void assertExpression(String expected, Expression actual) {
         assertEquals(normalizeExprDump(expected),
                      normalizeExprDump(actual.toString()));
