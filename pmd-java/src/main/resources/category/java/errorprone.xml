@@ -3404,7 +3404,7 @@ public class Main {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#useequalstocomparestrings">
         <description>
-Using '==' or '!=' to compare strings only works if the internalized string (`String#intern()`)
+Using '==' or '!=' to compare strings is only reliable if the interned string (`String#intern()`)
 is used on both sides.
 
 Use the `equals()` method instead.
@@ -3414,7 +3414,7 @@ Use the `equals()` method instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//InfixExpression[@Operator='==' or @Operator='!=']
+//InfixExpression[@Operator = ('==', '!=')]
                  [count(*[pmd-java:typeIsExactly('java.lang.String')]) = 2]
 ]]>
                 </value>
