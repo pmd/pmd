@@ -54,10 +54,6 @@
     <rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod"/>
-    <rule ref="category/java/bestpractices.xml/UseAssertEqualsInsteadOfAssertTrue"/>
-    <rule ref="category/java/bestpractices.xml/UseAssertNullInsteadOfAssertTrue"/>
-    <rule ref="category/java/bestpractices.xml/UseAssertSameInsteadOfAssertTrue"/>
-    <rule ref="category/java/bestpractices.xml/UseAssertTrueInsteadOfAssertEquals"/>
     <rule ref="category/java/bestpractices.xml/UseCollectionIsEmpty"/>
     <rule ref="category/java/bestpractices.xml/UseStandardCharsets" />
     <rule ref="category/java/bestpractices.xml/UseTryWithResources"/>
@@ -77,7 +73,6 @@
     <rule ref="category/java/codestyle.xml/CommentDefaultAccessModifier"/>
     <rule ref="category/java/codestyle.xml/ConfusingTernary"/>
     <rule ref="category/java/codestyle.xml/ControlStatementBraces"/>
-    <rule ref="category/java/codestyle.xml/DefaultPackage"/>
     <rule ref="category/java/codestyle.xml/EmptyMethodInAbstractClassShouldBeAbstract"/>
     <rule ref="category/java/codestyle.xml/ExtendsObject"/>
     <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass"/>
@@ -153,17 +148,16 @@
     <rule ref="category/java/design.xml/NPathComplexity"/>
     <rule ref="category/java/design.xml/NcssCount"/>
     <!-- <rule ref="category/java/design.xml/SignatureDeclareThrowsException"/> -->
-    <!-- <rule ref="category/java/design.xml/SimplifiedTernary"/> -->
-    <!-- <rule ref="category/java/design.xml/SimplifyBooleanAssertion"/> -->
+    <rule ref="category/java/design.xml/SimplifiedTernary"/>
     <rule ref="category/java/design.xml/SimplifyBooleanExpressions"/>
     <rule ref="category/java/design.xml/SimplifyBooleanReturns"/>
-    <!-- <rule ref="category/java/design.xml/SimplifyConditional"/> -->
+    <rule ref="category/java/design.xml/SimplifyConditional"/>
     <rule ref="category/java/design.xml/SingularField"/>
-    <!-- <rule ref="category/java/design.xml/SwitchDensity"/> -->
+    <rule ref="category/java/design.xml/SwitchDensity"/>
     <!-- <rule ref="category/java/design.xml/TooManyFields"/> -->
     <!-- <rule ref="category/java/design.xml/TooManyMethods"/> -->
     <!-- <rule ref="category/java/design.xml/UseObjectForClearerAPI"/> -->
-    <!-- <rule ref="category/java/design.xml/UseUtilityClass"/> -->
+    <rule ref="category/java/design.xml/UseUtilityClass"/>
     <!-- <rule ref="category/java/design.xml/UselessOverridingMethod"/> -->
 
     <!-- documentation.xml -->
@@ -210,7 +204,6 @@
     <!-- <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DetachedTestCase"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DoNotCallGarbageCollectionExplicitly"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/DoNotCallSystemExit"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DoNotHardCodeSDCard"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally"/> -->
@@ -268,9 +261,9 @@
     <!-- <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary"/> -->
     <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals"/>
     <!-- <rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/UseProperClassLoader"/> -->
+    <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/>
+    <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/>
+    <rule ref="category/java/errorprone.xml/UseProperClassLoader"/>
     <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable"/>
 
     <!-- multithreading.xml -->
@@ -281,8 +274,8 @@
     <rule ref="category/java/multithreading.xml/DoNotUseThreads"/>
     <rule ref="category/java/multithreading.xml/DontCallThreadRun"/>
     <rule ref="category/java/multithreading.xml/DoubleCheckedLocking"/>
-    <!-- <rule ref="category/java/multithreading.xml/NonThreadSafeSingleton"/> -->
-    <!-- <rule ref="category/java/multithreading.xml/UnsynchronizedStaticFormatter"/> -->
+    <rule ref="category/java/multithreading.xml/NonThreadSafeSingleton"/>
+    <rule ref="category/java/multithreading.xml/UnsynchronizedStaticFormatter"/>
     <rule ref="category/java/multithreading.xml/UseConcurrentHashMap"/>
     <rule ref="category/java/multithreading.xml/UseNotifyAllInsteadOfNotify"/>
 
@@ -294,25 +287,17 @@
     <rule ref="category/java/performance.xml/AvoidCalendarDateCreation"/>
     <rule ref="category/java/performance.xml/AvoidFileStream"/>
     <rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops"/>
-    <rule ref="category/java/performance.xml/AvoidUsingShortType"/>
     <rule ref="category/java/performance.xml/BigIntegerInstantiation"/>
-    <!-- <rule ref="category/java/performance.xml/BooleanInstantiation"/> -->
-    <rule ref="category/java/performance.xml/ByteInstantiation"/>
     <rule ref="category/java/performance.xml/ConsecutiveAppendsShouldReuse"/>
     <rule ref="category/java/performance.xml/ConsecutiveLiteralAppends"/>
     <rule ref="category/java/performance.xml/InefficientEmptyStringCheck"/>
     <rule ref="category/java/performance.xml/InefficientStringBuffering"/>
     <rule ref="category/java/performance.xml/InsufficientStringBufferDeclaration"/>
-    <rule ref="category/java/performance.xml/IntegerInstantiation"/>
-    <rule ref="category/java/performance.xml/LongInstantiation"/>
     <rule ref="category/java/performance.xml/OptimizableToArrayCall"/>
     <rule ref="category/java/performance.xml/RedundantFieldInitializer"/>
-    <rule ref="category/java/performance.xml/ShortInstantiation"/>
-    <rule ref="category/java/performance.xml/SimplifyStartsWith"/>
     <rule ref="category/java/performance.xml/StringInstantiation"/>
     <rule ref="category/java/performance.xml/StringToString"/>
     <rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement"/>
-    <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation"/>
     <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector"/>
     <rule ref="category/java/performance.xml/UseArraysAsList"/>
     <rule ref="category/java/performance.xml/UseIOStreamsWithApacheCommonsFileItem"/>
