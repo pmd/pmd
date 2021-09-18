@@ -185,7 +185,8 @@ public class Foo {
 
     <test-code>
         <description>Exclude iterator and list elements</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>24</expected-linenumbers>
         <code><![CDATA[
 import java.util.List;
 import java.util.ArrayList;
@@ -210,7 +211,7 @@ public class Foo {
 
         List<String> anotherList = calcList();
         for (String s : anotherList) {
-            if (!s.isEmpty()) {
+            if (!s.isEmpty()) { // here
                 System.out.println(s);
             }
         }
@@ -411,6 +412,90 @@ public final class Util {
             }
         } catch (Exception e) { }
     }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP when iterating on iterator field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Iterator;
+import java.util.List;
+public final class ControlEvent {
+    List<ControlEvent> controlQueue;
+
+    // Process all events currently stored in the control queue.
+    private void processControlQueue() {
+        synchronized (controlQueue) {
+            Iterator<ControlEvent> iter = controlQueue.iterator();
+            while (iter.hasNext()) {
+                ControlEvent ev = iter.next();
+                pollsetCtl(ev.fd(), 0);
+                if (!ev.removeOnly()) {
+                    ev.setError(pollsetCtl(ev.fd(), ev.events()));
+                }
+                iter.remove();
+            }
+            controlQueue.notifyAll();
+        }
+    }
+    void setError(Object o) {}
+    boolean removeOnly() {return false;}
+    Object pollsetCtl(int a, int b) {return null;}
+    int fd() {return 0;}
+    int events() {return 0;}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP when iterating on collection field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Iterator;
+import java.util.List;
+public final class ControlEvent {
+    List<ControlEvent> controlQueue;
+
+    private void processControlQueue() {
+        synchronized (controlQueue) {
+            for (ControlEvent ev: controlQueue) {
+                pollsetCtl(ev.fd(), 0);
+                if (!ev.removeOnly()) {
+                    ev.setError(pollsetCtl(ev.fd(), ev.events()));
+                }
+            }
+            controlQueue.notifyAll();
+        }
+    }
+    void setError(Object o) {}
+    boolean removeOnly() {return false;}
+    Object pollsetCtl(int a, int b) {return null;}
+    int fd() {return 0;}
+    int events() {return 0;}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP when iterating on collection param</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Iterator;
+import java.util.List;
+public final class ControlEvent {
+
+    private void processControlQueue(List<ControlEvent> controlQueue) {
+        synchronized (controlQueue) {
+            for (ControlEvent ev: controlQueue) {
+                pollsetCtl(ev.fd(), 0);
+            }
+            controlQueue.notifyAll();
+        }
+    }
+    void setError(Object o) {}
+    boolean removeOnly() {return false;}
+    Object pollsetCtl(int a, int b) {return null;}
+    int fd() {return 0;}
+    int events() {return 0;}
 }
         ]]></code>
     </test-code>
