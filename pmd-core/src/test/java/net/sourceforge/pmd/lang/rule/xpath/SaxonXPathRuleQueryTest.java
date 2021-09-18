@@ -193,6 +193,16 @@ public class SaxonXPathRuleQueryTest {
         assertExpression("DocumentSorter((LetExpression(LazyExpression(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer($testClassPattern))))), (((/)/descendant::element(dummyNode, xs:anyType))[matches(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer(attribute::attribute(SimpleName, xs:anyAtomicType))))), $zz:zz952562199)]))/child::element(foo, xs:anyType)))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
 
+    @Test
+    public void ruleChainVisitWithTwoFunctions() {
+        SaxonXPathRuleQuery query = createQuery("//dummyNode[ends-with(@Image, 'foo')][pmd-dummy:typeIs('bar')]");
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(1, ruleChainVisits.size());
+        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        Assert.assertEquals(2, query.nodeNameToXPaths.size());
+        assertExpression("((self::node()[ends-with(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer(attribute::attribute(Image, xs:anyAtomicType))))), \"foo\")])[pmd-dummy:typeIs(\"bar\")])", query.nodeNameToXPaths.get("dummyNode").get(0));
+    }
+
     private static void assertExpression(String expected, Expression actual) {
         Assert.assertEquals(normalizeExprDump(expected),
                             normalizeExprDump(actual.toString()));
