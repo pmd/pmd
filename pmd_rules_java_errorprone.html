@@ -1535,63 +1535,62 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Methods such as getDeclaredConstructors(), getDeclaredConstructor(Class[]) and setAccessible(),
-as the interface PrivilegedAction, allow for the runtime alteration of variable, class, or
-method visibility, even if they are private. This violates the principle of encapsulation.</p>
+<p>Methods such as <code class="language-plaintext highlighter-rouge">getDeclaredConstructors()</code>, <code class="language-plaintext highlighter-rouge">getDeclaredMethods()</code>, and <code class="language-plaintext highlighter-rouge">getDeclaredFields()</code> also
+return private constructors, methods and fields. These can be made accessible by calling <code class="language-plaintext highlighter-rouge">setAccessible(true)</code>.
+This gives access to normally protected data which violates the principle of encapsulation.</p>
+
+<p>This rule detects calls to <code class="language-plaintext highlighter-rouge">setAccessible</code> and finds possible accessibility alterations.
+If the call to <code class="language-plaintext highlighter-rouge">setAccessible</code> is wrapped within a <code class="language-plaintext highlighter-rouge">PrivilegedAction</code>, then the access alteration
+is assumed to be deliberate and is not reported.</p>
+
+<p>Note that with Java 17 the Security Manager, which is used for <code class="language-plaintext highlighter-rouge">PrivilegedAction</code> execution,
+is deprecated: <a href="https://openjdk.java.net/jeps/411">JEP 411: Deprecate the Security Manager for Removal</a>.
+For future-proof code, deliberate access alteration should be suppressed using the usual
+suppression methods (e.g. by using <code class="language-plaintext highlighter-rouge">@SuppressWarnings</code> annotation).</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="w">
-</span><span class="p">(</span><span class="w">
-</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="w">
-        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'getDeclaredConstructors'</span><span class="p">)</span><span class="w">
-                </span><span class="ow">or</span><span class="w">
-        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'getDeclaredConstructor'</span><span class="p">)</span><span class="w">
-                </span><span class="ow">or</span><span class="w">
-        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'setAccessible'</span><span class="p">)</span><span class="w">
-        </span><span class="p">])</span><span class="w">
-</span><span class="ow">or</span><span class="w">
-</span><span class="p">(</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
-        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'getDeclaredConstructor'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w">
-        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'getDeclaredConstructors'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w">
-        </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'AccessibleObject.setAccessible'</span><span class="p">)</span><span class="w">
-        </span><span class="p">])</span><span class="w">
-</span><span class="p">)</span><span class="w">
-</span><span class="ow">and</span><span class="w">
-</span><span class="p">(</span><span class="o">//</span><span class="nt">ImportDeclaration</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
-        </span><span class="nf">contains</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'java.security.PrivilegedAction'</span><span class="p">)])</span><span class="w">
-</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="w">
+    </span><span class="p">[</span><span class="nt">Name</span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'.setAccessible'</span><span class="p">)]]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">following-sibling::</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="o">//</span><span class="nt">BooleanLiteral</span><span class="p">[</span><span class="na">@True</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()])]</span><span class="w">
+    </span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.reflect.AccessibleObject'</span><span class="p">)]</span><span class="w">
+    </span><span class="c">(: exclude anonymous privileged action classes :)</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">AllocationExpression</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.security.PrivilegedAction'</span><span class="p">)])]</span><span class="w">
+    </span><span class="c">(: exclude inner privileged action classes :)</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.security.PrivilegedAction'</span><span class="p">)])]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.lang.reflect.AccessibleObject</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.lang.reflect.Constructor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.security.AccessController</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.security.PrivilegedAction</span><span class="o">;</span>
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Violation</span> <span class="o">{</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">invalidCallsInMethod</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">SecurityException</span><span class="o">,</span> <span class="nc">NoSuchMethodException</span> <span class="o">{</span>
-    <span class="c1">// Possible call to forbidden getDeclaredConstructors</span>
-    <span class="nc">Class</span><span class="o">[]</span> <span class="n">arrayOfClass</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Class</span><span class="o">[</span><span class="mi">1</span><span class="o">];</span>
-    <span class="k">this</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredConstructors</span><span class="o">();</span>
-    <span class="k">this</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredConstructor</span><span class="o">(</span><span class="n">arrayOfClass</span><span class="o">);</span>
-    <span class="nc">Class</span> <span class="n">clazz</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
-    <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredConstructor</span><span class="o">(</span><span class="n">arrayOfClass</span><span class="o">);</span>
-    <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredConstructors</span><span class="o">();</span>
-      <span class="c1">// Possible call to forbidden setAccessible</span>
-    <span class="n">clazz</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">""</span><span class="o">,</span> <span class="n">arrayOfClass</span><span class="o">).</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
-    <span class="nc">AccessibleObject</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
-    <span class="nc">Method</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
-    <span class="nc">Method</span><span class="o">[]</span> <span class="n">methodsArray</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getMethods</span><span class="o">();</span>
-    <span class="kt">int</span> <span class="n">nbMethod</span><span class="o">;</span>
-    <span class="k">for</span> <span class="o">(</span> <span class="n">nbMethod</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">nbMethod</span> <span class="o">&lt;</span> <span class="n">methodsArray</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">nbMethod</span><span class="o">++</span> <span class="o">)</span> <span class="o">{</span>
-      <span class="n">methodsArray</span><span class="o">[</span><span class="n">nbMethod</span><span class="o">].</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
-    <span class="o">}</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">invalidSetAccessCalls</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">NoSuchMethodException</span><span class="o">,</span> <span class="nc">SecurityException</span> <span class="o">{</span>
+        <span class="nc">Constructor</span><span class="o">&lt;?&gt;</span> <span class="n">constructor</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredConstructor</span><span class="o">(</span><span class="nc">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="c1">// call to forbidden setAccessible</span>
+        <span class="n">constructor</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
 
-      <span class="c1">// Possible call to forbidden PrivilegedAction</span>
-    <span class="nc">PrivilegedAction</span> <span class="n">priv</span> <span class="o">=</span> <span class="o">(</span><span class="nc">PrivilegedAction</span><span class="o">)</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">();</span> <span class="n">priv</span><span class="o">.</span><span class="na">run</span><span class="o">();</span>
-  <span class="o">}</span>
+        <span class="nc">Method</span> <span class="n">privateMethod</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">"aPrivateMethod"</span><span class="o">);</span>
+        <span class="c1">// call to forbidden setAccessible</span>
+        <span class="n">privateMethod</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+        <span class="c1">// deliberate accessibility alteration</span>
+        <span class="nc">String</span> <span class="n">privateField</span> <span class="o">=</span> <span class="nc">AccessController</span><span class="o">.</span><span class="na">doPrivileged</span><span class="o">(</span><span class="k">new</span> <span class="nc">PrivilegedAction</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="nc">String</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="nc">Field</span> <span class="n">field</span> <span class="o">=</span> <span class="nc">Violation</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">"aPrivateField"</span><span class="o">);</span>
+                    <span class="n">field</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                    <span class="k">return</span> <span class="o">(</span><span class="nc">String</span><span class="o">)</span> <span class="n">field</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">ReflectiveOperationException</span> <span class="o">|</span> <span class="nc">SecurityException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">});</span>
+    <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -5513,7 +5512,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Sep 1, 2021 <br />
+ Site last generated: Sep 18, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
