@@ -4,13 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
-import java.util.Collections;
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
@@ -44,15 +40,15 @@ public final class ASTAnonymousClassDeclaration extends AbstractAnyTypeDeclarati
     }
 
     @Override
-    public @NonNull List<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
+    public @NonNull NodeStream<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
         if (getParent() instanceof ASTConstructorCall) {
             ASTConstructorCall ctor = (ASTConstructorCall) getParent();
             @NonNull JTypeMirror type = ctor.getTypeMirror();
             if (type.isInterface()) {
-                return listOf(ctor.getTypeNode());
+                return NodeStream.of(ctor.getTypeNode());
             }
         }
-        return Collections.emptyList();
+        return NodeStream.empty();
     }
 
     @Override

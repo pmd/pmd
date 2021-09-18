@@ -8,9 +8,9 @@
 This ruleset contains links to rules that are new in PMD v4.0rc1
   </description>
 
-  <rule ref="rulesets/java/migrating.xml/LongInstantiation"/>
-  <rule ref="rulesets/java/migrating.xml/ShortInstantiation"/>
-  <rule ref="rulesets/java/migrating.xml/ByteInstantiation"/>
+<!--  <rule ref="rulesets/java/migrating.xml/LongInstantiation"/>-->
+<!--  <rule ref="rulesets/java/migrating.xml/ShortInstantiation"/>-->
+<!--  <rule ref="rulesets/java/migrating.xml/ByteInstantiation"/>-->
   <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseBeforeAnnotation"/>
   <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseTestAnnotation"/>
   <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseAfterAnnotation"/>
@@ -26,4 +26,3 @@ This ruleset contains links to rules that are new in PMD v4.0rc1
   <rule ref="rulesets/java/naming.xml/BooleanGetMethodName"/>
 
 </ruleset>
-  

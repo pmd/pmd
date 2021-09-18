@@ -10,7 +10,7 @@ The Java Logging ruleset contains a collection of rules that find questionable u
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="category/java/errorprone.xml/InvalidSlf4jMessageFormat" deprecated="true" />
+<!--    <rule ref="category/java/errorprone.xml/InvalidSlf4jMessageFormat" deprecated="true" />-->
     <rule ref="category/java/errorprone.xml/MoreThanOneLogger" deprecated="true" />
 
     <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace" deprecated="true" />

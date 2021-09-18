@@ -95,7 +95,7 @@ public final class TypeTestUtil {
             return isExactlyA(clazz, type.getSymbol());
         }
 
-        return isA(type, otherType);
+        return isA(otherType, type);
     }
 
 
@@ -134,26 +134,35 @@ public final class TypeTestUtil {
         return isA(canonicalName, thisType, null);
     }
 
+    public static boolean isA(@NonNull JTypeMirror t1, @Nullable TypeNode t2) {
+        return t2 != null && isA(t1, t2.getTypeMirror());
+    }
+
     /**
-     * This is the subtyping routine we use, which prunes some behavior
-     * of isSubtypeOf that we don't want (eg, that unresolved types are
-     * subtypes of everything).
+     * Checks whether the first type is a subtype of the second. This
+     * removes some behavior of isSubtypeOf that we don't want (eg, that
+     * unresolved types are subtypes of everything).
+     *
+     * @param t1 A supertype
+     * @param t2 A type
+     *
+     * @return Whether t1 is a subtype of t2
      */
-    private static boolean isA(JTypeMirror t1, JTypeMirror t2) {
-        if (t1 == null || t2 == null) {
+    private static boolean isA(@Nullable JTypeMirror t1, @NonNull JTypeMirror t2) {
+        if (t1 == null) {
             return false;
-        } else if (t1.isPrimitive() || t2.isPrimitive()) {
-            return t1.equals(t2); // isSubtypeOf considers primitive widening like subtyping
-        } else if (TypeOps.isUnresolved(t1)) {
+        } else if (t2.isPrimitive() || t1.isPrimitive()) {
+            return t2.equals(t1); // isSubtypeOf considers primitive widening like subtyping
+        } else if (TypeOps.isUnresolved(t2)) {
             // we can't get any useful info from this, isSubtypeOf would return true
             return false;
-        } else if (t2.isClassOrInterface() && ((JClassType) t2).getSymbol().isAnonymousClass()) {
+        } else if (t1.isClassOrInterface() && ((JClassType) t1).getSymbol().isAnonymousClass()) {
             return false; // conventionally
-        } else if (t1 instanceof JTypeVar) {
-            return t2.isTop() || isA(((JTypeVar) t1).getUpperBound(), t2);
+        } else if (t2 instanceof JTypeVar) {
+            return t1.isTop() || isA(t1, ((JTypeVar) t2).getUpperBound());
         }
 
-        return t1.isSubtypeOf(t2);
+        return t2.isSubtypeOf(t1);
     }
 
     private static boolean isA(@NonNull String canonicalName, @NonNull JTypeMirror thisType, @Nullable UnresolvedClassStore unresolvedStore) {
@@ -173,7 +182,7 @@ public final class TypeTestUtil {
         TypeSystem ts = thisType.getTypeSystem();
         @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName, unresolvedStore);
 
-        return isA(thisType, otherType);
+        return isA(otherType, thisType);
     }
 
     /**

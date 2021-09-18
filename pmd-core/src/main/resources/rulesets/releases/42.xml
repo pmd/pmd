@@ -11,7 +11,7 @@ This ruleset contains links to rules that are new in PMD v4.2
   	<rule ref="rulesets/java/basic.xml/AvoidMultipleUnaryOperators"/>
   	<rule ref="rulesets/java/codesize.xml/TooManyMethods"/>
   	<rule ref="rulesets/java/controversial.xml/DoNotCallGarbageCollectionExplicitly"/>
-  	<rule ref="rulesets/java/design.xml/ReturnEmptyArrayRatherThanNull"/>
+<!--  	<rule ref="rulesets/java/design.xml/ReturnEmptyArrayRatherThanNull"/>-->
   	<rule ref="rulesets/java/design.xml/AbstractClassWithoutAnyMethod"/>
   	<rule ref="rulesets/java/design.xml/TooFewBranchesForASwitchStatement"/>
   	<rule ref="rulesets/java/strictexception.xml/DoNotThrowExceptionInFinally"/>
