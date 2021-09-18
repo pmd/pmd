@@ -56,13 +56,22 @@ public class StaticField {
     <rule name="AvoidAccessibilityAlteration"
           language="java"
           since="4.1"
-          message="You should not modify visibility of class or methods using getDeclaredConstructors(), getDeclaredConstructor(Class[]), setAccessible() or PrivilegedAction."
+          message="You should not modify visibility of constructors, methods or fields using setAccessible()"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidaccessibilityalteration">
         <description>
-Methods such as getDeclaredConstructors(), getDeclaredConstructor(Class[]) and setAccessible(),
-as the interface PrivilegedAction, allow for the runtime alteration of variable, class, or
-method visibility, even if they are private. This violates the principle of encapsulation.
+Methods such as `getDeclaredConstructors()`, `getDeclaredMethods()`, and `getDeclaredFields()` also
+return private constructors, methods and fields. These can be made accessible by calling `setAccessible(true)`.
+This gives access to normally protected data which violates the principle of encapsulation.
+
+This rule detects calls to `setAccessible` and finds possible accessibility alterations.
+If the call to `setAccessible` is wrapped within a `PrivilegedAction`, then the access alteration
+is assumed to be deliberate and is not reported.
+
+Note that with Java 17 the Security Manager, which is used for `PrivilegedAction` execution,
+is deprecated: [JEP 411: Deprecate the Security Manager for Removal](https://openjdk.java.net/jeps/411).
+For future-proof code, deliberate access alteration should be suppressed using the usual
+suppression methods (e.g. by using `@SuppressWarnings` annotation).
         </description>
         <priority>3</priority>
         <properties>
@@ -70,60 +79,50 @@ method visibility, even if they are private. This violates the principle of enca
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression[
-(
-(PrimarySuffix[
-        ends-with(@Image,'getDeclaredConstructors')
-                or
-        ends-with(@Image,'getDeclaredConstructor')
-                or
-        ends-with(@Image,'setAccessible')
-        ])
-or
-(PrimaryPrefix/Name[
-        ends-with(@Image,'getDeclaredConstructor')
-        or
-        ends-with(@Image,'getDeclaredConstructors')
-        or
-        starts-with(@Image,'AccessibleObject.setAccessible')
-        ])
-)
-and
-(//ImportDeclaration/Name[
-        contains(@Image,'java.security.PrivilegedAction')])
-]
+//PrimaryPrefix
+    [Name[ends-with(@Image, '.setAccessible')]]
+    [not(following-sibling::PrimarySuffix/Arguments//BooleanLiteral[@True = false()])]
+    [pmd-java:typeIs('java.lang.reflect.AccessibleObject')]
+    (: exclude anonymous privileged action classes :)
+    [not(ancestor::AllocationExpression[pmd-java:typeIs('java.security.PrivilegedAction')])]
+    (: exclude inner privileged action classes :)
+    [not(ancestor::ClassOrInterfaceDeclaration[1][pmd-java:typeIs('java.security.PrivilegedAction')])]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
 <![CDATA[
-import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 public class Violation {
-  public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-    // Possible call to forbidden getDeclaredConstructors
-    Class[] arrayOfClass = new Class[1];
-    this.getClass().getDeclaredConstructors();
-    this.getClass().getDeclaredConstructor(arrayOfClass);
-    Class clazz = this.getClass();
-    clazz.getDeclaredConstructor(arrayOfClass);
-    clazz.getDeclaredConstructors();
-      // Possible call to forbidden setAccessible
-    clazz.getMethod("", arrayOfClass).setAccessible(false);
-    AccessibleObject.setAccessible(null, false);
-    Method.setAccessible(null, false);
-    Method[] methodsArray = clazz.getMethods();
-    int nbMethod;
-    for ( nbMethod = 0; nbMethod < methodsArray.length; nbMethod++ ) {
-      methodsArray[nbMethod].setAccessible(false);
-    }
+    private void invalidSetAccessCalls() throws NoSuchMethodException, SecurityException {
+        Constructor<?> constructor = this.getClass().getDeclaredConstructor(String.class);
+        // call to forbidden setAccessible
+        constructor.setAccessible(true);
 
-      // Possible call to forbidden PrivilegedAction
-    PrivilegedAction priv = (PrivilegedAction) new Object(); priv.run();
-  }
+        Method privateMethod = this.getClass().getDeclaredMethod("aPrivateMethod");
+        // call to forbidden setAccessible
+        privateMethod.setAccessible(true);
+
+        // deliberate accessibility alteration
+        String privateField = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                try {
+                    Field field = Violation.class.getDeclaredField("aPrivateField");
+                    field.setAccessible(true);
+                    return (String) field.get(null);
+                } catch (ReflectiveOperationException | SecurityException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
 }
 ]]>
         </example>
