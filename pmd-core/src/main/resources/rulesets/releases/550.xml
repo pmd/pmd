@@ -9,7 +9,7 @@ This ruleset contains links to rules that are new in PMD v5.5.0
   </description>
 
     <rule ref="rulesets/java/design.xml/ConstantsInInterface" />
-    <rule ref="rulesets/java/logging-java.xml/InvalidSlf4jMessageFormat" />
+<!--    <rule ref="rulesets/java/logging-java.xml/InvalidSlf4jMessageFormat" />-->
 
     <rule ref="rulesets/apex/complexity.xml/AvoidDeeplyNestedIfStmts" />
     <rule ref="rulesets/apex/complexity.xml/ExcessiveParameterList" />

@@ -428,7 +428,7 @@ author: Tom Copeland <tom@infoether.org>
 *   Mat Booth - #1109 Patch to build with Javacc 5.0
 *   Stuart Turton - for PLSQL support. See also [pldoc](http://pldoc.sourceforge.net/)
 *   Andrey Utis - for adding Apache Velocity as a new language and writing up a
-    [howto for adding new languages](pmd_devdocs_major_adding_new_language.html).
+    [howto for adding new languages JavaCC](pmd_devdocs_major_adding_new_language_javacc.html).
 *   Alan Hohn - for adding Standard and modified cyclomatic complexity rules
 *   Jan van Nunen - for adding CPD support for Matlab, Objective-C, Python, Scala and various bug fixes
 *   Juan Martín Sotuyo Dodero - for many bugfixes/pull requests improving Java grammar and performance

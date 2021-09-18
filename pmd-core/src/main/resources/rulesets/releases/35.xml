@@ -16,9 +16,9 @@ This ruleset contains links to rules that are new in PMD v3.5
   <rule ref="rulesets/java/strings.xml/ConsecutiveLiteralAppends"/>
   <rule ref="rulesets/java/strings.xml/UseIndexOfChar"/>
 
-  <rule ref="rulesets/java/migrating.xml/IntegerInstantiation"/>
+<!--  <rule ref="rulesets/java/migrating.xml/IntegerInstantiation"/>-->
 
-  <rule ref="rulesets/java/junit.xml/UseAssertNullInsteadOfAssertTrue"/>
+<!--  <rule ref="rulesets/java/junit.xml/UseAssertNullInsteadOfAssertTrue"/>-->
 
   <rule ref="rulesets/java/design.xml/AvoidConstantsInterface"/>
 
