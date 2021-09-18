@@ -21,14 +21,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
-*   java-bestpractices
-    *   [#3403](https://github.com/pmd/pmd/issues/3403): \[java] MethodNamingConventions junit5TestPattern does not detect parameterized tests
+*   core
+    *   [#3499](https://github.com/pmd/pmd/pull/3499): \[core] Fix XPath rulechain with combined node tests
+*   java-errorprone
+    *   [#3493](https://github.com/pmd/pmd/pull/3493): \[java] AvoidAccessibilityAlteration: add tests and fix rule
 
 ### API Changes
 
 ### External Contributions
-
-*   [#3445](https://github.com/pmd/pmd/pull/3445): \[java] Fix #3403 about MethodNamingConventions and JUnit5 parameterized tests - [Cyril Sicard](https://github.com/CyrilSicard)
 
 {% endtocmaker %}
 

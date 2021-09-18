@@ -659,7 +659,7 @@ public final class JavaRuleUtil {
         return e instanceof ASTBooleanLiteral;
     }
 
-    public static boolean isBooleanNegation(ASTExpression e) {
+    public static boolean isBooleanNegation(JavaNode e) {
         return e instanceof ASTUnaryExpression && ((ASTUnaryExpression) e).getOperator() == UnaryOp.NEGATION;
     }
 
@@ -962,5 +962,25 @@ public final class JavaRuleUtil {
      */
     public static boolean hasLombokAnnotation(Annotatable node) {
         return LOMBOK_ANNOTATIONS.stream().anyMatch(node::isAnnotationPresent);
+    }
+
+    /**
+     * Returns true if the expression is a null check on the given variable.
+     */
+    public static boolean isNullCheck(ASTExpression expr, JVariableSymbol var) {
+        return isNullCheck(expr, StablePathMatcher.matching(var));
+    }
+
+    public static boolean isNullCheck(ASTExpression expr, StablePathMatcher matcher) {
+        if (expr instanceof ASTInfixExpression) {
+            ASTInfixExpression condition = (ASTInfixExpression) expr;
+            if (condition.getOperator().hasSamePrecedenceAs(BinaryOp.EQ)) {
+                ASTNullLiteral nullLit = condition.firstChild(ASTNullLiteral.class);
+                if (nullLit != null) {
+                    return matcher.matches(getOtherOperandIfInInfixExpr(nullLit));
+                }
+            }
+        }
+        return false;
     }
 }

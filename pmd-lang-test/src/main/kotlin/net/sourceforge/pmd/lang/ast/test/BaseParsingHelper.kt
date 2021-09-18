@@ -60,7 +60,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     fun getVersion(version: String?): LanguageVersion {
         val language = language
         return if (version == null) language.defaultVersion
-               else language.getVersion(version) ?: throw AssertionError("Unsupported version $version for language $language")
+        else language.getVersion(version)
+            ?: throw AssertionError("Unsupported version $version for language $language")
     }
 
     val language: Language
@@ -116,13 +117,17 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * so.
      */
     @JvmOverloads
-    fun parse(sourceCode: String, version: String? = null, filename: String = FileAnalysisException.NO_FILE_NAME): T {
+    open fun parse(
+        sourceCode: String,
+        version: String? = null,
+        fileName: String = "src/a/test-file-name.${language.extensions[0]}"
+    ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val handler = lversion.languageVersionHandler
         val parser = handler.parser
-        val source = DataSource.forString(sourceCode, filename)
+        val source = DataSource.forString(sourceCode, fileName)
         val toString = DataSource.readToString(source, StandardCharsets.UTF_8) // this removed the BOM
-        val task = Parser.ParserTask(lversion, filename, toString, SemanticErrorReporter.noop())
+        val task = Parser.ParserTask(lversion, fileName, toString, SemanticErrorReporter.noop())
         task.properties.also {
             handler.declareParserTaskProperties(it)
             it.setProperty(Parser.ParserTask.COMMENT_MARKER, params.suppressMarker)
@@ -165,14 +170,14 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      */
     @JvmOverloads
     open fun parseResource(resource: String, version: String? = null): T =
-            parse(readResource(resource), version)
+        parse(readResource(resource), version, fileName = resource)
 
     /**
      * Fetches and [parse]s the [path].
      */
     @JvmOverloads
     open fun parseFile(path: Path, version: String? = null): T =
-            parse(IOUtils.toString(Files.newBufferedReader(path)), version, filename = path.toAbsolutePath().toString())
+            parse(IOUtils.toString(Files.newBufferedReader(path)), version, fileName = path.toAbsolutePath().toString())
 
     /**
      * Fetches the source of the given [clazz].
@@ -220,7 +225,11 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * found by the rule. The language version of the piece of code is determined by the [params].
      */
     @JvmOverloads
-    fun executeRule(rule: Rule, code: String, filename: String = "testfile.${language.extensions[0]}"): Report {
+    fun executeRule(
+        rule: Rule,
+        code: String,
+        fileName: String = "testfile.${language.extensions[0]}"
+    ): Report {
         val config = PMDConfiguration().apply {
             suppressMarker = params.suppressMarker
         }
@@ -228,7 +237,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val ctx = RuleContext()
         val report = Report()
         ctx.report = report
-        ctx.sourceCodeFile = File(filename)
+        ctx.sourceCodeFile = File(fileName)
         ctx.isIgnoreExceptions = false
 
         val rules = RuleSet.forSingleRule(rule)
@@ -242,6 +251,4 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
     fun executeRuleOnResource(rule: Rule, resourcePath: String): Report =
             executeRule(rule, readResource(resourcePath))
-
-
 }

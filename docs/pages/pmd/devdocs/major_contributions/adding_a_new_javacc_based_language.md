@@ -1,11 +1,11 @@
 ---
-title: Adding PMD support for a new language
-short_title: Adding a new language
+title: Adding PMD support for a new JAVACC grammar based language
+short_title: Adding a new language with JAVACC
 tags: [devdocs, extending]
-summary: "How to add a new language to PMD."
+summary: "How to add a new language to PMD using JAVACC grammar."
 last_updated: October 5, 2019
 sidebar: pmd_sidebar
-permalink: pmd_devdocs_major_adding_new_language.html
+permalink: pmd_devdocs_major_adding_new_language_javacc.html
 folder: pmd/devdocs
 ---
 
@@ -47,10 +47,9 @@ folder: pmd/devdocs
 
 ## 8.  Create a version handler
 *   Extend `AbstractLanguageVersionHandler` *(see VmHandler for example)*
-*   This class is sort of a gateway between PMD and all parsing logic specific to your language. It has 3 purposes:
+*   This class is sort of a gateway between PMD and all parsing logic specific to your language. It has 2 purposes:
     *   `getRuleViolationFactory` method returns an instance of your rule violation factory *(see step #7)*
     *   `getParser` returns an instance of your parser adapter *(see step #6)*
-    *   `getDumpFacade` returns a `VisitorStarter` that allows to dump a text representation of the AST into a writer *(likely for debugging purposes)*
 
 ## 9.  Create a parser visitor adapter
 *   If you use JJT to generate your parser, it should also generate an interface for a parser visitor *(see VmParserVisitor for example)*

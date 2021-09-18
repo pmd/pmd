@@ -17,8 +17,8 @@ These rules deal with different optimizations that generally apply to best pract
     <rule ref="category/java/performance.xml/AvoidArrayLoops" deprecated="true" />
     <rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops" deprecated="true" />
     <rule ref="category/java/performance.xml/RedundantFieldInitializer" deprecated="true" />
-    <rule ref="category/java/performance.xml/SimplifyStartsWith" deprecated="true" />
-    <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation" deprecated="true" />
+<!--    <rule ref="category/java/performance.xml/SimplifyStartsWith" deprecated="true" />-->
+<!--    <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation" deprecated="true" />-->
     <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector" deprecated="true" />
     <rule ref="category/java/performance.xml/UseArraysAsList" deprecated="true" />
     <rule ref="category/java/performance.xml/UseStringBufferForStringAppends" deprecated="true" />
