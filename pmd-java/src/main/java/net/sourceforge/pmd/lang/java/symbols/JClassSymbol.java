@@ -166,6 +166,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * Returns a set with all enum constant names. If this symbol does
      * not represent an enum, returns null.
      */
+    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
     default @Nullable Set<String> getEnumConstantNames() {
         return null;
     }
