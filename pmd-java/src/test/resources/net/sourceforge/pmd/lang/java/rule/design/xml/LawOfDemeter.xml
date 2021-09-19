@@ -499,4 +499,38 @@ public final class ControlEvent {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Stackoverflow with cyclic data flow</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.nio.ByteBuffer;
+            import java.util.Iterator;
+            import java.util.List;
+            import java.io.*;
+
+            public final class Attribute {
+
+                void writeAttributes(int ctype, Attribute.Holder h) throws IOException {
+                    ByteBuffer buf, out, bufOut;
+                    for (Attribute a : h.attributes) {
+                        if (a.layout() == h.attributes) {
+                            DataOutputStream savedOut = out;
+                            out = savedOut;
+                        } else {
+                            out.write(a.bytes());
+                        }
+                    }
+                }
+
+                class Holder {
+
+                    Object attributes;
+                }
+
+                int fd() { return 0; }
+
+                int events() { return 0; }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
