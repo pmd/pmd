@@ -113,7 +113,8 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
                 // ie, pure data containers are "transparent"
                 return isForeign(((ASTMethodCall) expr).getQualifier());
             }
-            return true;
+            // static methods are taken to be construction methods.
+            return !((ASTMethodCall) expr).getMethodType().isStatic();
         } else if (expr instanceof ASTNamedReferenceExpr) {
             DataflowResult dataflow = DataflowPass.getDataflowResult(expr.getRoot());
             ReachingDefinitionSet reaching = dataflow.getReachingDefinitions((ASTNamedReferenceExpr) expr);
