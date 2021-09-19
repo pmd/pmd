@@ -260,7 +260,7 @@ public final class DataflowPass {
 
             ASTVariableDeclaratorId node = sym.tryGetNode();
             if (node == null) {
-                return null;// we don't care about non-local declarations
+                return null; // we don't care about non-local declarations
             }
             Set<AssignmentEntry> assignments = node.getLocalUsages()
                                                    .stream()
