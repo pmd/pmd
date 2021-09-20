@@ -3264,7 +3264,7 @@ This rule only applies to [Apache Commons Logging](https://commons.apache.org/pr
 <![CDATA[
 //CatchClause/Block//MethodCall
     [pmd-java:matchesSig('org.apache.commons.logging.Log#_(java.lang.Object)')]
-    [ArgumentList/VariableAccess/@Name = ancestor::CatchClause/CatchParameter/@Name]
+    [ArgumentList[not(MethodCall)]//VariableAccess/@Name = ancestor::CatchClause/CatchParameter/@Name]
 ]]>
                 </value>
             </property>
