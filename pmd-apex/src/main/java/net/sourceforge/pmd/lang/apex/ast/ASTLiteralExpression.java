@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.lang.reflect.Field;
 import java.util.Optional;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
@@ -72,29 +73,21 @@ public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
     public String getName() {
         if (getParent() instanceof ASTNewKeyValueObjectExpression) {
             ASTNewKeyValueObjectExpression parent = (ASTNewKeyValueObjectExpression) getParent();
-            try {
-                Field exprField = NameValueParameter.class.getDeclaredField("expression");
-                exprField.setAccessible(true);
-                Optional<NameValueParameter> parameter = parent.node.getParameters().stream().filter(p -> {
-                    try {
-                        return this.node.equals(exprField.get(p));
-                    } catch (IllegalArgumentException | IllegalAccessException e) {
-                        return false;
-                    }
-                }).findFirst();
+            Optional<NameValueParameter> parameter = parent.node.getParameters().stream().filter(p -> {
+                try {
+                    return this.node.equals(FieldUtils.readDeclaredField(p, "expression", true));
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    return false;
+                }
+            }).findFirst();
 
-                Field nameField = NameValueParameter.class.getDeclaredField("name");
-                nameField.setAccessible(true);
-                return parameter.map(p -> {
-                    try {
-                        return (Identifier) nameField.get(p);
-                    } catch (IllegalArgumentException | IllegalAccessException e) {
-                        return null;
-                    }
-                }).map(Identifier::getValue).orElse(null);
-            } catch (NoSuchFieldException | SecurityException e1) {
-                return null;
-            }
+            return parameter.map(p -> {
+                try {
+                    return (Identifier) FieldUtils.readDeclaredField(p, "name", true);
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    return null;
+                }
+            }).map(Identifier::getValue).orElse(null);
         }
         return null;
     }

@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
@@ -139,11 +139,8 @@ public class CompilerService {
                     "compilerContext", true);
 
             for (CodeUnit unit : allUnits) {
-                Method getOperation = CompilerStage.ADDITIONAL_VALIDATE.getDeclaringClass()
-                        .getDeclaredMethod("getOperation");
-                getOperation.setAccessible(true);
-                CompilerOperation operation = (CompilerOperation) getOperation
-                        .invoke(CompilerStage.ADDITIONAL_VALIDATE);
+                CompilerOperation operation = (CompilerOperation)
+                        MethodUtils.invokeMethod(CompilerStage.ADDITIONAL_VALIDATE, true, "getOperation");
                 operation.invoke(compilerContext, unit);
             }
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
