@@ -35,6 +35,6 @@ public final class EcmascriptRuleViolationFactory extends AbstractRuleViolationF
     @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
                                                 int beginLine, int endLine) {
-        return null; // FIXME
+        return new ParametricRuleViolation<>(rule, ruleContext, (EcmascriptNode) node, message, beginLine, endLine);
     }
 }
