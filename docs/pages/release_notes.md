@@ -14,6 +14,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### All Contributors
+
+PMD follows the [All Contributors](https://allcontributors.org/) specification.
+Contributions of any kind welcome!
+
+See [credits](https://pmd.github.io/latest/pmd_projectdocs_credits.html) for our complete contributors list.
+
 ### Fixed Issues
 
 *   java-bestpractices
