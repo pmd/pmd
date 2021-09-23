@@ -1,69 +1,7 @@
-+- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0, @Sourcecode = "--
--- See https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/OPEN-FOR-statement.html#GUID-EB7AF439-FDD3-4461-9E3F-B621E8ABFB96
--- https://github.com/pmd/pmd/issues/3487
---
-
-CREATE OR REPLACE PROCEDURE EXAMPLE_PROCEDURE IS
-   --
-   TYPE t_ref_cursor IS REF CURSOR;
-   --
-   l_ref_cursor t_ref_cursor;
-   --
-BEGIN
-   --
-   OPEN l_ref_cursor FOR
-      SELECT *
-        FROM DUAL;
-   --
-END EXAMPLE_PROCEDURE;
-
---
--- Example 6-26 Fetching Data with Cursor Variables
--- https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/static-sql.html#GUID-AA5A2016-1B76-4961-9AFB-EB052F0D0FB2
---
-DECLARE
-  cv SYS_REFCURSOR;  -- cursor variable
- 
-  v_lastname  employees.last_name%TYPE;  -- variable for last_name
-  v_jobid     employees.job_id%TYPE;     -- variable for job_id
- 
-  query_2 VARCHAR2(200) :=
-    'SELECT * FROM employees
-    WHERE REGEXP_LIKE (job_id, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY job_id';
- 
-  v_employees employees%ROWTYPE;  -- record variable row of table
- 
-BEGIN
-  OPEN cv FOR
-    SELECT last_name, job_id FROM employees
-    WHERE REGEXP_LIKE (job_id, 'S[HT]_CLERK')
-    ORDER BY last_name;
- 
-  LOOP  -- Fetches 2 columns into variables
-    FETCH cv INTO v_lastname, v_jobid;
-    EXIT WHEN cv%NOTFOUND;
-    DBMS_OUTPUT.PUT_LINE( RPAD(v_lastname, 25, ' ') || v_jobid );
-  END LOOP;
- 
-  DBMS_OUTPUT.PUT_LINE( '-------------------------------------' );
- 
-  OPEN cv FOR query_2;
- 
-  LOOP  -- Fetches entire row into the v_employees record
-    FETCH cv INTO v_employees;
-    EXIT WHEN cv%NOTFOUND;
-    DBMS_OUTPUT.PUT_LINE( RPAD(v_employees.last_name, 25, ' ') ||
-                               v_employees.job_id );
-  END LOOP;
- 
-  CLOSE cv;
-END;
-/
-"]
++- Input[@CanonicalImage = null, @ExcludedLinesCount = "0", @ExcludedRangesCount = "0", @Sourcecode = "--\n-- See https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/OPEN-FOR-statement.html#GUID-EB7AF439-FDD3-4461-9E3F-B621E8ABFB96\n-- https://github.com/pmd/pmd/issues/3487\n--\n\nCREATE OR REPLACE PROCEDURE EXAMPLE_PROCEDURE IS\n   --\n   TYPE t_ref_cursor IS REF CURSOR;\n   --\n   l_ref_cursor t_ref_cursor;\n   --\nBEGIN\n   --\n   OPEN l_ref_cursor FOR\n      SELECT *\n        FROM DUAL;\n   --\nEND EXAMPLE_PROCEDURE;\n\n--\n-- Example 6-26 Fetching Data with Cursor Variables\n-- https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/static-sql.html#GUID-AA5A2016-1B76-4961-9AFB-EB052F0D0FB2\n--\nDECLARE\n  cv SYS_REFCURSOR;  -- cursor variable\n \n  v_lastname  employees.last_name%TYPE;  -- variable for last_name\n  v_jobid     employees.job_id%TYPE;     -- variable for job_id\n \n  query_2 VARCHAR2(200) :=\n    \'SELECT * FROM employees\n    WHERE REGEXP_LIKE (job_id, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY job_id\';\n \n  v_employees employees%ROWTYPE;  -- record variable row of table\n \nBEGIN\n  OPEN cv FOR\n    SELECT last_name, job_id FROM employees\n    WHERE REGEXP_LIKE (job_id, \'S[HT]_CLERK\')\n    ORDER BY last_name;\n \n  LOOP  -- Fetches 2 columns into variables\n    FETCH cv INTO v_lastname, v_jobid;\n    EXIT WHEN cv%NOTFOUND;\n    DBMS_OUTPUT.PUT_LINE( RPAD(v_lastname, 25, \' \') || v_jobid );\n  END LOOP;\n \n  DBMS_OUTPUT.PUT_LINE( \'-------------------------------------\' );\n \n  OPEN cv FOR query_2;\n \n  LOOP  -- Fetches entire row into the v_employees record\n    FETCH cv INTO v_employees;\n    EXIT WHEN cv%NOTFOUND;\n    DBMS_OUTPUT.PUT_LINE( RPAD(v_employees.last_name, 25, \' \') ||\n                               v_employees.job_id );\n  END LOOP;\n \n  CLOSE cv;\nEND;\n/\n"]
    +- Global[@CanonicalImage = null]
    |  +- ProgramUnit[@CanonicalImage = null, @MethodName = "EXAMPLE_PROCEDURE", @Name = "EXAMPLE_PROCEDURE", @ObjectName = null]
-   |     +- MethodDeclarator[@CanonicalImage = "EXAMPLE_PROCEDURE", @Image = "EXAMPLE_PROCEDURE", @ParameterCount = 1]
+   |     +- MethodDeclarator[@CanonicalImage = "EXAMPLE_PROCEDURE", @Image = "EXAMPLE_PROCEDURE", @ParameterCount = "1"]
    |     |  +- ObjectNameDeclaration[@CanonicalImage = "EXAMPLE_PROCEDURE", @Image = "EXAMPLE_PROCEDURE"]
    |     |     +- ID[@CanonicalImage = "EXAMPLE_PROCEDURE", @Image = "EXAMPLE_PROCEDURE"]
    |     +- DeclarativeSection[@CanonicalImage = null]
@@ -73,7 +11,7 @@ END;
    |     |  +- DeclarativeUnit[@CanonicalImage = null]
    |     |     +- VariableOrConstantDeclaration[@CanonicalImage = null]
    |     |        +- VariableOrConstantDeclarator[@CanonicalImage = "L_REF_CURSOR T_REF_CURSOR", @Image = "l_ref_cursor t_ref_cursor"]
-   |     |           +- VariableOrConstantDeclaratorId[@Array = false, @ArrayDepth = 0, @CanonicalImage = "L_REF_CURSOR", @Image = "l_ref_cursor"]
+   |     |           +- VariableOrConstantDeclaratorId[@Array = "false", @ArrayDepth = "0", @CanonicalImage = "L_REF_CURSOR", @Image = "l_ref_cursor"]
    |     |           |  +- ID[@CanonicalImage = "L_REF_CURSOR", @Image = "l_ref_cursor"]
    |     |           +- Datatype[@CanonicalImage = "T_REF_CURSOR", @Image = "t_ref_cursor", @TypeImage = "t_ref_cursor"]
    |     |              +- QualifiedName[@CanonicalImage = "T_REF_CURSOR", @Image = "t_ref_cursor"]
@@ -82,11 +20,11 @@ END;
    |     |  +- UnlabelledStatement[@CanonicalImage = null]
    |     |     +- OpenStatement[@CanonicalImage = null]
    |     |        +- Expression[@CanonicalImage = "L_REF_CURSOR", @Image = "l_ref_cursor"]
-   |     |        |  +- PrimaryPrefix[@CanonicalImage = "L_REF_CURSOR", @Image = "l_ref_cursor", @SelfModifier = false]
+   |     |        |  +- PrimaryPrefix[@CanonicalImage = "L_REF_CURSOR", @Image = "l_ref_cursor", @SelfModifier = "false"]
    |     |        |     +- SimpleExpression[@CanonicalImage = "L_REF_CURSOR", @Image = "l_ref_cursor"]
    |     |        |        +- Column[@CanonicalImage = "L_REF_CURSOR", @Image = "l_ref_cursor"]
    |     |        |           +- ID[@CanonicalImage = "L_REF_CURSOR", @Image = "l_ref_cursor"]
-   |     |        +- SelectStatement[@All = false, @CanonicalImage = null, @Distinct = false, @Unique = false]
+   |     |        +- SelectStatement[@All = "false", @CanonicalImage = null, @Distinct = "false", @Unique = "false"]
    |     |           +- SelectList[@CanonicalImage = null]
    |     |           +- FromClause[@CanonicalImage = null]
    |     |              +- TableReference[@CanonicalImage = null]
@@ -99,14 +37,14 @@ END;
          |  +- DeclarativeUnit[@CanonicalImage = null]
          |  |  +- VariableOrConstantDeclaration[@CanonicalImage = null]
          |  |     +- VariableOrConstantDeclarator[@CanonicalImage = "CV SYS_REFCURSOR", @Image = "cv SYS_REFCURSOR"]
-         |  |        +- VariableOrConstantDeclaratorId[@Array = false, @ArrayDepth = 0, @CanonicalImage = "CV", @Image = "cv"]
+         |  |        +- VariableOrConstantDeclaratorId[@Array = "false", @ArrayDepth = "0", @CanonicalImage = "CV", @Image = "cv"]
          |  |        |  +- ID[@CanonicalImage = "CV", @Image = "cv"]
          |  |        +- Datatype[@CanonicalImage = "SYS_REFCURSOR", @Image = "SYS_REFCURSOR", @TypeImage = "SYS_REFCURSOR"]
          |  |           +- ScalarDataTypeName[@CanonicalImage = "SYS_REFCURSOR", @Image = "SYS_REFCURSOR"]
          |  +- DeclarativeUnit[@CanonicalImage = null]
          |  |  +- VariableOrConstantDeclaration[@CanonicalImage = null]
          |  |     +- VariableOrConstantDeclarator[@CanonicalImage = "V_LASTNAME EMPLOYEES.LAST_NAME%TYPE", @Image = "v_lastname employees.last_name%TYPE"]
-         |  |        +- VariableOrConstantDeclaratorId[@Array = false, @ArrayDepth = 0, @CanonicalImage = "V_LASTNAME", @Image = "v_lastname"]
+         |  |        +- VariableOrConstantDeclaratorId[@Array = "false", @ArrayDepth = "0", @CanonicalImage = "V_LASTNAME", @Image = "v_lastname"]
          |  |        |  +- ID[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname"]
          |  |        +- Datatype[@CanonicalImage = "EMPLOYEES.LAST_NAME%TYPE", @Image = "employees.last_name%TYPE", @TypeImage = "employees.last_name%TYPE"]
          |  |           +- QualifiedName[@CanonicalImage = "EMPLOYEES.LAST_NAME", @Image = "employees.last_name"]
@@ -115,7 +53,7 @@ END;
          |  +- DeclarativeUnit[@CanonicalImage = null]
          |  |  +- VariableOrConstantDeclaration[@CanonicalImage = null]
          |  |     +- VariableOrConstantDeclarator[@CanonicalImage = "V_JOBID EMPLOYEES.JOB_ID%TYPE", @Image = "v_jobid employees.job_id%TYPE"]
-         |  |        +- VariableOrConstantDeclaratorId[@Array = false, @ArrayDepth = 0, @CanonicalImage = "V_JOBID", @Image = "v_jobid"]
+         |  |        +- VariableOrConstantDeclaratorId[@Array = "false", @ArrayDepth = "0", @CanonicalImage = "V_JOBID", @Image = "v_jobid"]
          |  |        |  +- ID[@CanonicalImage = "V_JOBID", @Image = "v_jobid"]
          |  |        +- Datatype[@CanonicalImage = "EMPLOYEES.JOB_ID%TYPE", @Image = "employees.job_id%TYPE", @TypeImage = "employees.job_id%TYPE"]
          |  |           +- QualifiedName[@CanonicalImage = "EMPLOYEES.JOB_ID", @Image = "employees.job_id"]
@@ -123,47 +61,21 @@ END;
          |  |              +- QualifiedID[@CanonicalImage = "JOB_ID", @Image = "job_id"]
          |  +- DeclarativeUnit[@CanonicalImage = null]
          |  |  +- VariableOrConstantDeclaration[@CanonicalImage = null]
-         |  |     +- VariableOrConstantDeclarator[@CanonicalImage = "QUERY_2 VARCHAR2(200) := 'SELECT * FROM EMPLOYEES
-    WHERE REGEXP_LIKE (JOB_ID, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY JOB_ID'", @Image = "query_2 VARCHAR2(200) := 'SELECT * FROM employees
-    WHERE REGEXP_LIKE (job_id, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY job_id'"]
-         |  |        +- VariableOrConstantDeclaratorId[@Array = false, @ArrayDepth = 0, @CanonicalImage = "QUERY_2", @Image = "query_2"]
+         |  |     +- VariableOrConstantDeclarator[@CanonicalImage = "QUERY_2 VARCHAR2(200) := \'SELECT * FROM EMPLOYEES\n    WHERE REGEXP_LIKE (JOB_ID, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY JOB_ID\'", @Image = "query_2 VARCHAR2(200) := \'SELECT * FROM employees\n    WHERE REGEXP_LIKE (job_id, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY job_id\'"]
+         |  |        +- VariableOrConstantDeclaratorId[@Array = "false", @ArrayDepth = "0", @CanonicalImage = "QUERY_2", @Image = "query_2"]
          |  |        |  +- ID[@CanonicalImage = "QUERY_2", @Image = "query_2"]
          |  |        +- Datatype[@CanonicalImage = "VARCHAR2(200)", @Image = "VARCHAR2(200)", @TypeImage = "VARCHAR2(200)"]
          |  |        |  +- ScalarDataTypeName[@CanonicalImage = "VARCHAR2(200)", @Image = "VARCHAR2(200)"]
          |  |        |     +- NumericLiteral[@CanonicalImage = "200", @Image = "200"]
-         |  |        +- VariableOrConstantInitializer[@CanonicalImage = "'SELECT * FROM EMPLOYEES
-    WHERE REGEXP_LIKE (JOB_ID, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY JOB_ID'", @Image = "'SELECT * FROM employees
-    WHERE REGEXP_LIKE (job_id, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY job_id'"]
-         |  |           +- Expression[@CanonicalImage = "'SELECT * FROM EMPLOYEES
-    WHERE REGEXP_LIKE (JOB_ID, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY JOB_ID'", @Image = "'SELECT * FROM employees
-    WHERE REGEXP_LIKE (job_id, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY job_id'"]
-         |  |              +- PrimaryPrefix[@CanonicalImage = "'SELECT * FROM EMPLOYEES
-    WHERE REGEXP_LIKE (JOB_ID, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY JOB_ID'", @Image = "'SELECT * FROM employees
-    WHERE REGEXP_LIKE (job_id, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY job_id'", @SelfModifier = false]
-         |  |                 +- Literal[@CanonicalImage = "'SELECT * FROM EMPLOYEES
-    WHERE REGEXP_LIKE (JOB_ID, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY JOB_ID'", @Image = "'SELECT * FROM employees
-    WHERE REGEXP_LIKE (job_id, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY job_id'"]
-         |  |                    +- StringLiteral[@CanonicalImage = "'SELECT * FROM EMPLOYEES
-    WHERE REGEXP_LIKE (JOB_ID, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY JOB_ID'", @Image = "'SELECT * FROM employees
-    WHERE REGEXP_LIKE (job_id, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY job_id'", @String = "SELECT * FROM employees
-    WHERE REGEXP_LIKE (job_id, ''[ACADFIMKSA]_M[ANGR]'')
-    ORDER BY job_id"]
+         |  |        +- VariableOrConstantInitializer[@CanonicalImage = "\'SELECT * FROM EMPLOYEES\n    WHERE REGEXP_LIKE (JOB_ID, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY JOB_ID\'", @Image = "\'SELECT * FROM employees\n    WHERE REGEXP_LIKE (job_id, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY job_id\'"]
+         |  |           +- Expression[@CanonicalImage = "\'SELECT * FROM EMPLOYEES\n    WHERE REGEXP_LIKE (JOB_ID, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY JOB_ID\'", @Image = "\'SELECT * FROM employees\n    WHERE REGEXP_LIKE (job_id, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY job_id\'"]
+         |  |              +- PrimaryPrefix[@CanonicalImage = "\'SELECT * FROM EMPLOYEES\n    WHERE REGEXP_LIKE (JOB_ID, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY JOB_ID\'", @Image = "\'SELECT * FROM employees\n    WHERE REGEXP_LIKE (job_id, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY job_id\'", @SelfModifier = "false"]
+         |  |                 +- Literal[@CanonicalImage = "\'SELECT * FROM EMPLOYEES\n    WHERE REGEXP_LIKE (JOB_ID, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY JOB_ID\'", @Image = "\'SELECT * FROM employees\n    WHERE REGEXP_LIKE (job_id, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY job_id\'"]
+         |  |                    +- StringLiteral[@CanonicalImage = "\'SELECT * FROM EMPLOYEES\n    WHERE REGEXP_LIKE (JOB_ID, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY JOB_ID\'", @Image = "\'SELECT * FROM employees\n    WHERE REGEXP_LIKE (job_id, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY job_id\'", @String = "SELECT * FROM employees\n    WHERE REGEXP_LIKE (job_id, \'\'[ACADFIMKSA]_M[ANGR]\'\')\n    ORDER BY job_id"]
          |  +- DeclarativeUnit[@CanonicalImage = null]
          |     +- VariableOrConstantDeclaration[@CanonicalImage = null]
          |        +- VariableOrConstantDeclarator[@CanonicalImage = "V_EMPLOYEES EMPLOYEES%ROWTYPE", @Image = "v_employees employees%ROWTYPE"]
-         |           +- VariableOrConstantDeclaratorId[@Array = false, @ArrayDepth = 0, @CanonicalImage = "V_EMPLOYEES", @Image = "v_employees"]
+         |           +- VariableOrConstantDeclaratorId[@Array = "false", @ArrayDepth = "0", @CanonicalImage = "V_EMPLOYEES", @Image = "v_employees"]
          |           |  +- ID[@CanonicalImage = "V_EMPLOYEES", @Image = "v_employees"]
          |           +- Datatype[@CanonicalImage = "EMPLOYEES%ROWTYPE", @Image = "employees%ROWTYPE", @TypeImage = "employees%ROWTYPE"]
          |              +- QualifiedName[@CanonicalImage = "EMPLOYEES", @Image = "employees"]
@@ -172,19 +84,19 @@ END;
          |  +- UnlabelledStatement[@CanonicalImage = null]
          |     +- OpenStatement[@CanonicalImage = null]
          |        +- Expression[@CanonicalImage = "CV", @Image = "cv"]
-         |        |  +- PrimaryPrefix[@CanonicalImage = "CV", @Image = "cv", @SelfModifier = false]
+         |        |  +- PrimaryPrefix[@CanonicalImage = "CV", @Image = "cv", @SelfModifier = "false"]
          |        |     +- SimpleExpression[@CanonicalImage = "CV", @Image = "cv"]
          |        |        +- Column[@CanonicalImage = "CV", @Image = "cv"]
          |        |           +- ID[@CanonicalImage = "CV", @Image = "cv"]
-         |        +- SelectStatement[@All = false, @CanonicalImage = null, @Distinct = false, @Unique = false]
+         |        +- SelectStatement[@All = "false", @CanonicalImage = null, @Distinct = "false", @Unique = "false"]
          |           +- SelectList[@CanonicalImage = null]
          |           |  +- SqlExpression[@CanonicalImage = "LAST_NAME", @Image = "last_name"]
-         |           |  |  +- PrimaryPrefix[@CanonicalImage = "LAST_NAME", @Image = "last_name", @SelfModifier = false]
+         |           |  |  +- PrimaryPrefix[@CanonicalImage = "LAST_NAME", @Image = "last_name", @SelfModifier = "false"]
          |           |  |     +- SimpleExpression[@CanonicalImage = "LAST_NAME", @Image = "last_name"]
          |           |  |        +- Column[@CanonicalImage = "LAST_NAME", @Image = "last_name"]
          |           |  |           +- ID[@CanonicalImage = "LAST_NAME", @Image = "last_name"]
          |           |  +- SqlExpression[@CanonicalImage = "JOB_ID", @Image = "job_id"]
-         |           |     +- PrimaryPrefix[@CanonicalImage = "JOB_ID", @Image = "job_id", @SelfModifier = false]
+         |           |     +- PrimaryPrefix[@CanonicalImage = "JOB_ID", @Image = "job_id", @SelfModifier = "false"]
          |           |        +- SimpleExpression[@CanonicalImage = "JOB_ID", @Image = "job_id"]
          |           |           +- Column[@CanonicalImage = "JOB_ID", @Image = "job_id"]
          |           |              +- ID[@CanonicalImage = "JOB_ID", @Image = "job_id"]
@@ -197,17 +109,17 @@ END;
          |           |     +- CompoundCondition[@CanonicalImage = null, @Type = null]
          |           |        +- RegexpLikeCondition[@CanonicalImage = null, @MatchParam = null]
          |           |           +- SqlExpression[@CanonicalImage = "JOB_ID", @Image = "job_id"]
-         |           |           |  +- PrimaryPrefix[@CanonicalImage = "JOB_ID", @Image = "job_id", @SelfModifier = false]
+         |           |           |  +- PrimaryPrefix[@CanonicalImage = "JOB_ID", @Image = "job_id", @SelfModifier = "false"]
          |           |           |     +- SimpleExpression[@CanonicalImage = "JOB_ID", @Image = "job_id"]
          |           |           |        +- Column[@CanonicalImage = "JOB_ID", @Image = "job_id"]
          |           |           |           +- ID[@CanonicalImage = "JOB_ID", @Image = "job_id"]
-         |           |           +- SqlExpression[@CanonicalImage = "'S[HT]_CLERK'", @Image = "'S[HT]_CLERK'"]
-         |           |              +- PrimaryPrefix[@CanonicalImage = "'S[HT]_CLERK'", @Image = "'S[HT]_CLERK'", @SelfModifier = false]
-         |           |                 +- Literal[@CanonicalImage = "'S[HT]_CLERK'", @Image = "'S[HT]_CLERK'"]
-         |           |                    +- StringLiteral[@CanonicalImage = "'S[HT]_CLERK'", @Image = "'S[HT]_CLERK'", @String = "S[HT]_CLERK"]
+         |           |           +- SqlExpression[@CanonicalImage = "\'S[HT]_CLERK\'", @Image = "\'S[HT]_CLERK\'"]
+         |           |              +- PrimaryPrefix[@CanonicalImage = "\'S[HT]_CLERK\'", @Image = "\'S[HT]_CLERK\'", @SelfModifier = "false"]
+         |           |                 +- Literal[@CanonicalImage = "\'S[HT]_CLERK\'", @Image = "\'S[HT]_CLERK\'"]
+         |           |                    +- StringLiteral[@CanonicalImage = "\'S[HT]_CLERK\'", @Image = "\'S[HT]_CLERK\'", @String = "S[HT]_CLERK"]
          |           +- OrderByClause[@CanonicalImage = null]
          |              +- SqlExpression[@CanonicalImage = "LAST_NAME", @Image = "last_name"]
-         |                 +- PrimaryPrefix[@CanonicalImage = "LAST_NAME", @Image = "last_name", @SelfModifier = false]
+         |                 +- PrimaryPrefix[@CanonicalImage = "LAST_NAME", @Image = "last_name", @SelfModifier = "false"]
          |                    +- SimpleExpression[@CanonicalImage = "LAST_NAME", @Image = "last_name"]
          |                       +- Column[@CanonicalImage = "LAST_NAME", @Image = "last_name"]
          |                          +- ID[@CanonicalImage = "LAST_NAME", @Image = "last_name"]
@@ -216,16 +128,16 @@ END;
          |     +- LoopStatement[@CanonicalImage = null]
          |        +- Statement[@CanonicalImage = null]
          |        |  +- UnlabelledStatement[@CanonicalImage = null]
-         |        |     +- FetchStatement[@BulkCollect = false, @CanonicalImage = null, @Limit = false]
+         |        |     +- FetchStatement[@BulkCollect = "false", @CanonicalImage = null, @Limit = "false"]
          |        |        +- QualifiedName[@CanonicalImage = "CV", @Image = "cv"]
          |        |        |  +- UnqualifiedID[@CanonicalImage = "CV", @Image = "cv"]
          |        |        +- Expression[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname"]
-         |        |        |  +- PrimaryPrefix[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname", @SelfModifier = false]
+         |        |        |  +- PrimaryPrefix[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname", @SelfModifier = "false"]
          |        |        |     +- SimpleExpression[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname"]
          |        |        |        +- Column[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname"]
          |        |        |           +- ID[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname"]
          |        |        +- Expression[@CanonicalImage = "V_JOBID", @Image = "v_jobid"]
-         |        |           +- PrimaryPrefix[@CanonicalImage = "V_JOBID", @Image = "v_jobid", @SelfModifier = false]
+         |        |           +- PrimaryPrefix[@CanonicalImage = "V_JOBID", @Image = "v_jobid", @SelfModifier = "false"]
          |        |              +- SimpleExpression[@CanonicalImage = "V_JOBID", @Image = "v_jobid"]
          |        |                 +- Column[@CanonicalImage = "V_JOBID", @Image = "v_jobid"]
          |        |                    +- ID[@CanonicalImage = "V_JOBID", @Image = "v_jobid"]
@@ -233,73 +145,73 @@ END;
          |        |  +- UnlabelledStatement[@CanonicalImage = null]
          |        |     +- ExitStatement[@CanonicalImage = null]
          |        |        +- Expression[@CanonicalImage = "CV%NOTFOUND", @Image = "cv%NOTFOUND"]
-         |        |           +- PrimaryPrefix[@CanonicalImage = "CV%NOTFOUND", @Image = "cv%NOTFOUND", @SelfModifier = false]
+         |        |           +- PrimaryPrefix[@CanonicalImage = "CV%NOTFOUND", @Image = "cv%NOTFOUND", @SelfModifier = "false"]
          |        |              +- SimpleExpression[@CanonicalImage = "CV%NOTFOUND", @Image = "cv%NOTFOUND"]
          |        |                 +- Column[@CanonicalImage = "CV", @Image = "cv"]
          |        |                    +- ID[@CanonicalImage = "CV", @Image = "cv"]
          |        +- Statement[@CanonicalImage = null]
          |           +- UnlabelledStatement[@CanonicalImage = null]
          |              +- Expression[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE"]
-         |                 +- PrimaryPrefix[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE", @SelfModifier = false]
+         |                 +- PrimaryPrefix[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE", @SelfModifier = "false"]
          |                    +- FunctionCall[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE"]
          |                       +- FunctionName[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE"]
          |                       |  +- ID[@CanonicalImage = "DBMS_OUTPUT", @Image = "DBMS_OUTPUT"]
          |                       |  +- ID[@CanonicalImage = "PUT_LINE", @Image = "PUT_LINE"]
-         |                       +- Arguments[@ArgumentCount = 1, @CanonicalImage = null]
+         |                       +- Arguments[@ArgumentCount = "1", @CanonicalImage = null]
          |                          +- ArgumentList[@CanonicalImage = null]
          |                             +- Argument[@CanonicalImage = null]
          |                                +- Expression[@CanonicalImage = "RPAD || V_JOBID", @Image = "RPAD || v_jobid"]
          |                                   +- AdditiveExpression[@CanonicalImage = "RPAD || V_JOBID", @Image = "RPAD || v_jobid"]
-         |                                      +- PrimaryPrefix[@CanonicalImage = "RPAD", @Image = "RPAD", @SelfModifier = false]
+         |                                      +- PrimaryPrefix[@CanonicalImage = "RPAD", @Image = "RPAD", @SelfModifier = "false"]
          |                                      |  +- FunctionCall[@CanonicalImage = "RPAD", @Image = "RPAD"]
          |                                      |     +- FunctionName[@CanonicalImage = "RPAD", @Image = "RPAD"]
          |                                      |     |  +- ID[@CanonicalImage = "RPAD", @Image = "RPAD"]
-         |                                      |     +- Arguments[@ArgumentCount = 3, @CanonicalImage = null]
+         |                                      |     +- Arguments[@ArgumentCount = "3", @CanonicalImage = null]
          |                                      |        +- ArgumentList[@CanonicalImage = null]
          |                                      |           +- Argument[@CanonicalImage = null]
          |                                      |           |  +- Expression[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname"]
-         |                                      |           |     +- PrimaryPrefix[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname", @SelfModifier = false]
+         |                                      |           |     +- PrimaryPrefix[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname", @SelfModifier = "false"]
          |                                      |           |        +- SimpleExpression[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname"]
          |                                      |           |           +- Column[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname"]
          |                                      |           |              +- ID[@CanonicalImage = "V_LASTNAME", @Image = "v_lastname"]
          |                                      |           +- Argument[@CanonicalImage = null]
          |                                      |           |  +- Expression[@CanonicalImage = "25", @Image = "25"]
-         |                                      |           |     +- PrimaryPrefix[@CanonicalImage = "25", @Image = "25", @SelfModifier = false]
+         |                                      |           |     +- PrimaryPrefix[@CanonicalImage = "25", @Image = "25", @SelfModifier = "false"]
          |                                      |           |        +- Literal[@CanonicalImage = "25", @Image = "25"]
          |                                      |           |           +- NumericLiteral[@CanonicalImage = "25", @Image = "25"]
          |                                      |           +- Argument[@CanonicalImage = null]
-         |                                      |              +- Expression[@CanonicalImage = "' '", @Image = "' '"]
-         |                                      |                 +- PrimaryPrefix[@CanonicalImage = "' '", @Image = "' '", @SelfModifier = false]
-         |                                      |                    +- Literal[@CanonicalImage = "' '", @Image = "' '"]
-         |                                      +- PrimaryPrefix[@CanonicalImage = "V_JOBID", @Image = "v_jobid", @SelfModifier = false]
+         |                                      |              +- Expression[@CanonicalImage = "\' \'", @Image = "\' \'"]
+         |                                      |                 +- PrimaryPrefix[@CanonicalImage = "\' \'", @Image = "\' \'", @SelfModifier = "false"]
+         |                                      |                    +- Literal[@CanonicalImage = "\' \'", @Image = "\' \'"]
+         |                                      +- PrimaryPrefix[@CanonicalImage = "V_JOBID", @Image = "v_jobid", @SelfModifier = "false"]
          |                                         +- SimpleExpression[@CanonicalImage = "V_JOBID", @Image = "v_jobid"]
          |                                            +- Column[@CanonicalImage = "V_JOBID", @Image = "v_jobid"]
          |                                               +- ID[@CanonicalImage = "V_JOBID", @Image = "v_jobid"]
          +- Statement[@CanonicalImage = null]
          |  +- UnlabelledStatement[@CanonicalImage = null]
          |     +- Expression[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE"]
-         |        +- PrimaryPrefix[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE", @SelfModifier = false]
+         |        +- PrimaryPrefix[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE", @SelfModifier = "false"]
          |           +- FunctionCall[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE"]
          |              +- FunctionName[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE"]
          |              |  +- ID[@CanonicalImage = "DBMS_OUTPUT", @Image = "DBMS_OUTPUT"]
          |              |  +- ID[@CanonicalImage = "PUT_LINE", @Image = "PUT_LINE"]
-         |              +- Arguments[@ArgumentCount = 1, @CanonicalImage = null]
+         |              +- Arguments[@ArgumentCount = "1", @CanonicalImage = null]
          |                 +- ArgumentList[@CanonicalImage = null]
          |                    +- Argument[@CanonicalImage = null]
-         |                       +- Expression[@CanonicalImage = "'-------------------------------------'", @Image = "'-------------------------------------'"]
-         |                          +- PrimaryPrefix[@CanonicalImage = "'-------------------------------------'", @Image = "'-------------------------------------'", @SelfModifier = false]
-         |                             +- Literal[@CanonicalImage = "'-------------------------------------'", @Image = "'-------------------------------------'"]
-         |                                +- StringLiteral[@CanonicalImage = "'-------------------------------------'", @Image = "'-------------------------------------'", @String = "-------------------------------------"]
+         |                       +- Expression[@CanonicalImage = "\'-------------------------------------\'", @Image = "\'-------------------------------------\'"]
+         |                          +- PrimaryPrefix[@CanonicalImage = "\'-------------------------------------\'", @Image = "\'-------------------------------------\'", @SelfModifier = "false"]
+         |                             +- Literal[@CanonicalImage = "\'-------------------------------------\'", @Image = "\'-------------------------------------\'"]
+         |                                +- StringLiteral[@CanonicalImage = "\'-------------------------------------\'", @Image = "\'-------------------------------------\'", @String = "-------------------------------------"]
          +- Statement[@CanonicalImage = null]
          |  +- UnlabelledStatement[@CanonicalImage = null]
          |     +- OpenStatement[@CanonicalImage = null]
          |        +- Expression[@CanonicalImage = "CV", @Image = "cv"]
-         |        |  +- PrimaryPrefix[@CanonicalImage = "CV", @Image = "cv", @SelfModifier = false]
+         |        |  +- PrimaryPrefix[@CanonicalImage = "CV", @Image = "cv", @SelfModifier = "false"]
          |        |     +- SimpleExpression[@CanonicalImage = "CV", @Image = "cv"]
          |        |        +- Column[@CanonicalImage = "CV", @Image = "cv"]
          |        |           +- ID[@CanonicalImage = "CV", @Image = "cv"]
          |        +- Expression[@CanonicalImage = "QUERY_2", @Image = "query_2"]
-         |           +- PrimaryPrefix[@CanonicalImage = "QUERY_2", @Image = "query_2", @SelfModifier = false]
+         |           +- PrimaryPrefix[@CanonicalImage = "QUERY_2", @Image = "query_2", @SelfModifier = "false"]
          |              +- SimpleExpression[@CanonicalImage = "QUERY_2", @Image = "query_2"]
          |                 +- Column[@CanonicalImage = "QUERY_2", @Image = "query_2"]
          |                    +- ID[@CanonicalImage = "QUERY_2", @Image = "query_2"]
@@ -308,11 +220,11 @@ END;
          |     +- LoopStatement[@CanonicalImage = null]
          |        +- Statement[@CanonicalImage = null]
          |        |  +- UnlabelledStatement[@CanonicalImage = null]
-         |        |     +- FetchStatement[@BulkCollect = false, @CanonicalImage = null, @Limit = false]
+         |        |     +- FetchStatement[@BulkCollect = "false", @CanonicalImage = null, @Limit = "false"]
          |        |        +- QualifiedName[@CanonicalImage = "CV", @Image = "cv"]
          |        |        |  +- UnqualifiedID[@CanonicalImage = "CV", @Image = "cv"]
          |        |        +- Expression[@CanonicalImage = "V_EMPLOYEES", @Image = "v_employees"]
-         |        |           +- PrimaryPrefix[@CanonicalImage = "V_EMPLOYEES", @Image = "v_employees", @SelfModifier = false]
+         |        |           +- PrimaryPrefix[@CanonicalImage = "V_EMPLOYEES", @Image = "v_employees", @SelfModifier = "false"]
          |        |              +- SimpleExpression[@CanonicalImage = "V_EMPLOYEES", @Image = "v_employees"]
          |        |                 +- Column[@CanonicalImage = "V_EMPLOYEES", @Image = "v_employees"]
          |        |                    +- ID[@CanonicalImage = "V_EMPLOYEES", @Image = "v_employees"]
@@ -320,32 +232,32 @@ END;
          |        |  +- UnlabelledStatement[@CanonicalImage = null]
          |        |     +- ExitStatement[@CanonicalImage = null]
          |        |        +- Expression[@CanonicalImage = "CV%NOTFOUND", @Image = "cv%NOTFOUND"]
-         |        |           +- PrimaryPrefix[@CanonicalImage = "CV%NOTFOUND", @Image = "cv%NOTFOUND", @SelfModifier = false]
+         |        |           +- PrimaryPrefix[@CanonicalImage = "CV%NOTFOUND", @Image = "cv%NOTFOUND", @SelfModifier = "false"]
          |        |              +- SimpleExpression[@CanonicalImage = "CV%NOTFOUND", @Image = "cv%NOTFOUND"]
          |        |                 +- Column[@CanonicalImage = "CV", @Image = "cv"]
          |        |                    +- ID[@CanonicalImage = "CV", @Image = "cv"]
          |        +- Statement[@CanonicalImage = null]
          |           +- UnlabelledStatement[@CanonicalImage = null]
          |              +- Expression[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE"]
-         |                 +- PrimaryPrefix[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE", @SelfModifier = false]
+         |                 +- PrimaryPrefix[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE", @SelfModifier = "false"]
          |                    +- FunctionCall[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE"]
          |                       +- FunctionName[@CanonicalImage = "DBMS_OUTPUT.PUT_LINE", @Image = "DBMS_OUTPUT.PUT_LINE"]
          |                       |  +- ID[@CanonicalImage = "DBMS_OUTPUT", @Image = "DBMS_OUTPUT"]
          |                       |  +- ID[@CanonicalImage = "PUT_LINE", @Image = "PUT_LINE"]
-         |                       +- Arguments[@ArgumentCount = 1, @CanonicalImage = null]
+         |                       +- Arguments[@ArgumentCount = "1", @CanonicalImage = null]
          |                          +- ArgumentList[@CanonicalImage = null]
          |                             +- Argument[@CanonicalImage = null]
          |                                +- Expression[@CanonicalImage = "RPAD || V_EMPLOYEES.JOB_ID", @Image = "RPAD || v_employees.job_id"]
          |                                   +- AdditiveExpression[@CanonicalImage = "RPAD || V_EMPLOYEES.JOB_ID", @Image = "RPAD || v_employees.job_id"]
-         |                                      +- PrimaryPrefix[@CanonicalImage = "RPAD", @Image = "RPAD", @SelfModifier = false]
+         |                                      +- PrimaryPrefix[@CanonicalImage = "RPAD", @Image = "RPAD", @SelfModifier = "false"]
          |                                      |  +- FunctionCall[@CanonicalImage = "RPAD", @Image = "RPAD"]
          |                                      |     +- FunctionName[@CanonicalImage = "RPAD", @Image = "RPAD"]
          |                                      |     |  +- ID[@CanonicalImage = "RPAD", @Image = "RPAD"]
-         |                                      |     +- Arguments[@ArgumentCount = 3, @CanonicalImage = null]
+         |                                      |     +- Arguments[@ArgumentCount = "3", @CanonicalImage = null]
          |                                      |        +- ArgumentList[@CanonicalImage = null]
          |                                      |           +- Argument[@CanonicalImage = null]
          |                                      |           |  +- Expression[@CanonicalImage = "V_EMPLOYEES.LAST_NAME", @Image = "v_employees.last_name"]
-         |                                      |           |     +- PrimaryPrefix[@CanonicalImage = "V_EMPLOYEES.LAST_NAME", @Image = "v_employees.last_name", @SelfModifier = false]
+         |                                      |           |     +- PrimaryPrefix[@CanonicalImage = "V_EMPLOYEES.LAST_NAME", @Image = "v_employees.last_name", @SelfModifier = "false"]
          |                                      |           |        +- SimpleExpression[@CanonicalImage = "V_EMPLOYEES.LAST_NAME", @Image = "v_employees.last_name"]
          |                                      |           |           +- TableName[@CanonicalImage = "V_EMPLOYEES", @Image = "v_employees"]
          |                                      |           |           |  +- ID[@CanonicalImage = "V_EMPLOYEES", @Image = "v_employees"]
@@ -353,14 +265,14 @@ END;
          |                                      |           |              +- ID[@CanonicalImage = "LAST_NAME", @Image = "last_name"]
          |                                      |           +- Argument[@CanonicalImage = null]
          |                                      |           |  +- Expression[@CanonicalImage = "25", @Image = "25"]
-         |                                      |           |     +- PrimaryPrefix[@CanonicalImage = "25", @Image = "25", @SelfModifier = false]
+         |                                      |           |     +- PrimaryPrefix[@CanonicalImage = "25", @Image = "25", @SelfModifier = "false"]
          |                                      |           |        +- Literal[@CanonicalImage = "25", @Image = "25"]
          |                                      |           |           +- NumericLiteral[@CanonicalImage = "25", @Image = "25"]
          |                                      |           +- Argument[@CanonicalImage = null]
-         |                                      |              +- Expression[@CanonicalImage = "' '", @Image = "' '"]
-         |                                      |                 +- PrimaryPrefix[@CanonicalImage = "' '", @Image = "' '", @SelfModifier = false]
-         |                                      |                    +- Literal[@CanonicalImage = "' '", @Image = "' '"]
-         |                                      +- PrimaryPrefix[@CanonicalImage = "V_EMPLOYEES.JOB_ID", @Image = "v_employees.job_id", @SelfModifier = false]
+         |                                      |              +- Expression[@CanonicalImage = "\' \'", @Image = "\' \'"]
+         |                                      |                 +- PrimaryPrefix[@CanonicalImage = "\' \'", @Image = "\' \'", @SelfModifier = "false"]
+         |                                      |                    +- Literal[@CanonicalImage = "\' \'", @Image = "\' \'"]
+         |                                      +- PrimaryPrefix[@CanonicalImage = "V_EMPLOYEES.JOB_ID", @Image = "v_employees.job_id", @SelfModifier = "false"]
          |                                         +- SimpleExpression[@CanonicalImage = "V_EMPLOYEES.JOB_ID", @Image = "v_employees.job_id"]
          |                                            +- TableName[@CanonicalImage = "V_EMPLOYEES", @Image = "v_employees"]
          |                                            |  +- ID[@CanonicalImage = "V_EMPLOYEES", @Image = "v_employees"]
