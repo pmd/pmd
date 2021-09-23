@@ -36,4 +36,9 @@ public class PlsqlTreeDumpTest extends BaseTreeDumpTest {
     public void parseOpenForStatement() {
         doTest("OpenForStatement");
     }
+
+    @Test
+    public void parseSelectIntoAssociativeArrayType() {
+        doTest("SelectIntoArray");
+    }
 }

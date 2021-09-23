@@ -29,6 +29,7 @@ See [credits](https://pmd.github.io/latest/pmd_projectdocs_credits.html) for our
     *   [#3493](https://github.com/pmd/pmd/pull/3493): \[java] AvoidAccessibilityAlteration: add tests and fix rule
 *   plsql
     *   [#3487](https://github.com/pmd/pmd/issues/3487): \[plsql] Parsing exception OPEN ref_cursor_name FOR statement
+    *   [#3515](https://github.com/pmd/pmd/issues/3515): \[plsql] Parsing exception SELECT...INTO on Associative Arrays Types
 
 ### API Changes
 
