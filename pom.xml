@@ -94,7 +94,7 @@
         <surefire.version>3.0.0-M5</surefire.version>
         <checkstyle.version>8.42</checkstyle.version>
         <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
-        <pmd.plugin.version>3.14.0</pmd.plugin.version>
+        <pmd.plugin.version>3.15.0</pmd.plugin.version>
         <ant.version>1.10.11</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.8</antlr.version>
@@ -390,7 +390,7 @@
                             <phase>verify</phase>
                             <goals>
                                 <goal>check</goal>
-                                <goal>cpd</goal>
+                                <goal>cpd-check</goal>
                             </goals>
                         </execution>
                     </executions>

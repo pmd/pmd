@@ -322,33 +322,56 @@ public class SaxonXPathRuleQueryTest {
         assertExpression("docOrder((((/)/descendant::element(Q{}dummyNode))[matches(convertUntyped(data(@SimpleName)), \"a\", \"\")])/child::element(Q{}foo))", query.getFallbackExpr());
     }
 
+    @Test
+    public void ruleChainVisitWithTwoFunctions() {
+        SaxonXPathRuleQuery query = createQuery("//dummyNode[ends-with(@Image, 'foo')][pmd-dummy:imageIs('bar')]");
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(1, ruleChainVisits.size());
+        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        Assert.assertEquals(2, query.nodeNameToXPaths.size());
+        assertExpression("let $v0 := imageIs(\"bar\") return ((self::node()[ends-with(convertUntyped(data(@Image)), \"foo\")])[$v0])", query.nodeNameToXPaths.get("dummyNode").get(0));
+    }
+
+    @Test
+    public void ruleChainWithUnions() {
+        SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//AssignmentOperator");
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(0, ruleChainVisits.size());
+    }
+
+    @Test
+    public void ruleChainWithUnionsAndFilter() {
+        SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//AssignmentOperator[@Image='foo']");
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(0, ruleChainVisits.size());
+    }
 
     @Test
     public void ruleChainWithUnionsCustomFunctionsVariant1() {
-        SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//dummyNode[@Image != '']");
+        SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//dummyNode[pmd-dummy:imageIs(@Image)]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         Assert.assertEquals(0, ruleChainVisits.size());
     }
 
     @Test
     public void ruleChainWithUnionsCustomFunctionsVariant2() {
-        SaxonXPathRuleQuery query = createQuery("//(ForStatement | WhileStatement | DoStatement)//dummyNode[@Image != '']");
+        SaxonXPathRuleQuery query = createQuery("//(ForStatement | WhileStatement | DoStatement)//dummyNode[pmd-dummy:imageIs(@Image)]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         Assert.assertEquals(0, ruleChainVisits.size());
     }
 
     @Test
     public void ruleChainWithUnionsCustomFunctionsVariant3() {
-        SaxonXPathRuleQuery query = createQuery("//ForStatement//dummyNode[@Image != '']"
-                                                    + " | //WhileStatement//dummyNode[@Image != '']"
-                                                    + " | //DoStatement//dummyNode[@Image != '']");
+        SaxonXPathRuleQuery query = createQuery("//ForStatement//dummyNode[pmd-dummy:imageIs(@Image)]"
+                                                    + " | //WhileStatement//dummyNode[pmd-dummy:imageIs(@Image)]"
+                                                    + " | //DoStatement//dummyNode[pmd-dummy:imageIs(@Image)]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         Assert.assertEquals(3, ruleChainVisits.size());
         Assert.assertTrue(ruleChainVisits.contains("ForStatement"));
         Assert.assertTrue(ruleChainVisits.contains("WhileStatement"));
         Assert.assertTrue(ruleChainVisits.contains("DoStatement"));
 
-        final String expectedSubexpression = "(self::node()/descendant::element(dummyNode))[(string(data(@Image))) ne \"\"]";
+        final String expectedSubexpression = "(self::node()/descendant::element(dummyNode))[imageIs(exactly-one(convertUntyped(data(@Image))))]";
         assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("ForStatement").get(0));
         assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("WhileStatement").get(0));
         assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("DoStatement").get(0));

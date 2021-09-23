@@ -32,4 +32,8 @@ public class PlsqlTreeDumpTest extends BaseTreeDumpTest {
         doTest("ParsingExclusion");
     }
 
+    @Test
+    public void parseOpenForStatement() {
+        doTest("OpenForStatement");
+    }
 }

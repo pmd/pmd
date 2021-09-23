@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -22,6 +20,8 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Parameter;
 
@@ -193,14 +193,14 @@ public class Formatter {
         return writer;
     }
 
+    // Note: With Java17, there will be
+    // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Console.html#charset()
     private static String getConsoleEncoding() {
         Console console = System.console();
         // in case of pipe or redirect, no interactive console.
         if (console != null) {
             try {
-                Field f = Console.class.getDeclaredField("cs");
-                f.setAccessible(true);
-                Object res = f.get(console);
+                Object res = FieldUtils.readDeclaredField(console, "cs", true);
                 if (res instanceof Charset) {
                     return ((Charset) res).name();
                 }
@@ -214,9 +214,7 @@ public class Formatter {
 
     private static String getNativeConsoleEncoding() {
         try {
-            Method m = Console.class.getDeclaredMethod("encoding");
-            m.setAccessible(true);
-            Object res = m.invoke(null);
+            Object res = MethodUtils.invokeStaticMethod(Console.class, "encoding");
             if (res instanceof String) {
                 return (String) res;
             }
