@@ -7,9 +7,12 @@
     <test-code>
         <description>toLowerCase() with no args</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
-    String x = y.toLowerCase();
+    public void run(String y) {
+        String x = y.toLowerCase();
+    }
 }
         ]]></code>
     </test-code>
@@ -17,9 +20,12 @@ public class Foo {
     <test-code>
         <description>toUpperCase() with no args</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
-    String x = y.toUpperCase();
+    public void run(String y) {
+        String x = y.toUpperCase();
+    }
 }
         ]]></code>
     </test-code>
@@ -28,9 +34,13 @@ public class Foo {
         <description>both ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Locale;
+
 public class Foo {
-    String x = y.toUpperCase(Locale.EN);
-    String z = y.toLowerCase(Locale.EN);
+    public void run(String y) {
+        String x = y.toUpperCase(Locale.EN);
+        String z = y.toLowerCase(Locale.EN);
+    }
 }
         ]]></code>
     </test-code>
@@ -40,7 +50,9 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    String x = y.toHexString().toUpperCase();
+    public void run() {
+        String x = Integer.toHexString(42).toUpperCase();
+    }
 }
         ]]></code>
     </test-code>
@@ -49,6 +61,8 @@ public class Foo {
         <description>Compound method call</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Locale;
+
 public class Foo {
     public String getString(){
         String x = "hello world";
@@ -61,6 +75,7 @@ public class Foo {
     <test-code>
         <description>#1556 [java] UseLocaleWithCaseConversions does not works with `ResultSet` (false negative)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 import java.sql.*;
 

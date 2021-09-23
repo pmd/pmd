@@ -259,11 +259,11 @@
     <!-- <rule ref="category/java/errorprone.xml/UnnecessaryBooleanAssertion"/> -->
     <!-- <rule ref="category/java/errorprone.xml/UnnecessaryCaseChange"/> -->
     <!-- <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals"/> -->
+    <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals"/>
     <!-- <rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/UseProperClassLoader"/> -->
+    <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/>
+    <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/>
+    <rule ref="category/java/errorprone.xml/UseProperClassLoader"/>
     <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable"/>
 
     <!-- multithreading.xml -->
@@ -274,8 +274,8 @@
     <rule ref="category/java/multithreading.xml/DoNotUseThreads"/>
     <rule ref="category/java/multithreading.xml/DontCallThreadRun"/>
     <rule ref="category/java/multithreading.xml/DoubleCheckedLocking"/>
-    <!-- <rule ref="category/java/multithreading.xml/NonThreadSafeSingleton"/> -->
-    <!-- <rule ref="category/java/multithreading.xml/UnsynchronizedStaticFormatter"/> -->
+    <rule ref="category/java/multithreading.xml/NonThreadSafeSingleton"/>
+    <rule ref="category/java/multithreading.xml/UnsynchronizedStaticFormatter"/>
     <rule ref="category/java/multithreading.xml/UseConcurrentHashMap"/>
     <rule ref="category/java/multithreading.xml/UseNotifyAllInsteadOfNotify"/>
 

@@ -21,6 +21,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   core
+    *   [#3499](https://github.com/pmd/pmd/pull/3499): \[core] Fix XPath rulechain with combined node tests
+*   java-errorprone
+    *   [#3493](https://github.com/pmd/pmd/pull/3493): \[java] AvoidAccessibilityAlteration: add tests and fix rule
+
 ### API Changes
 
 ### External Contributions
