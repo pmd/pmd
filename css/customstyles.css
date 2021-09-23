@@ -1177,3 +1177,8 @@ h4.panel-title {
     padding-top: 0px;
     margin-top: 0px;
 }
+
+.post-content .all-contributors-list img {
+    width: 100px;
+    height: 100px;
+}
