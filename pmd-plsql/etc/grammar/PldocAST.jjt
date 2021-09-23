@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add support for Select statement within OPEN FOR Statements
+ *
+ * Andreas Dangel 09/2021
+ *====================================================================
  * Add support for XMLROOT, improve ExtractExpression to support xml
  *
  * Piotr Szymanski 03/2020
@@ -84,7 +88,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Andreas Dangel 07/2018
  *====================================================================
- * Added ASTIsOfTypeCondition node, added support for USING IN|OUT|IN_OUT
+ * Added ASTIsOfTypeCondition node, added support for USING IN|OUT|IN OUT
  * See PMD Bug #1520
  *
  * Andreas Dangel 11/2016
@@ -2741,13 +2745,17 @@ ASTCloseStatement CloseStatement()  :
       { jjtThis.setImage(cursor.getImage()) ; return jjtThis ; }
 }
 
+/*
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/OPEN-statement.html#GUID-FB5A9CC3-655F-4AF4-8105-14CB39F2FEA8
+ * and https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/OPEN-FOR-statement.html#GUID-EB7AF439-FDD3-4461-9E3F-B621E8ABFB96
+ */
 ASTOpenStatement OpenStatement()  :
 {}
 {
-	 <OPEN> [Expression()]
-		//[LOOKAHEAD(functionCall()) functionCall() | QualifiedName()]
-		[<FOR> Expression() [<USING> (<IN> | <OUT> | <IN_OUT>)? Expression() ("," (<IN> | <OUT> | <IN_OUT>)? Expression())*]]
-      { return jjtThis ; }
+    <OPEN> [Expression()]
+    [<FOR> ( SelectStatement() | Expression() ) [ UsingClause() ] ]
+
+    { return jjtThis ; }
 }
 
 /*
@@ -2768,10 +2776,16 @@ ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {
    <EXECUTE> <IMMEDIATE> StringExpression()
 	[ <INTO> Name() ("," Name())* ]
-	[ <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())* ]
+	[ UsingClause() ]
 	[ ( <RETURN> | <RETURNING> )  <INTO> Expression() ("," Expression())*] ";"
 	// PIPELINED FUNCTION OUTPUT
       { return jjtThis ; }
+}
+
+void UsingClause() #void :
+{}
+{
+    <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())*
 }
 
 ASTPipelineStatement PipelineStatement()  :
@@ -4900,7 +4914,6 @@ TOKEN [IGNORE_CASE]:
 <HOUR: "HOUR"> |
 <IMMEDIATE: "IMMEDIATE"> |
 <INNER: "INNER"> |
-<IN_OUT: "IN_OUT"> |
 <INDICES: "INDICES"> |
 <INCLUDING: "INCLUDING"> |
 <INDEXTYPE: "INDEXTYPE"> |
