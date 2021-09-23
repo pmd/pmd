@@ -8,7 +8,7 @@ import org.mozilla.javascript.ast.FunctionCall;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTFunctionCall extends AbstractEcmascriptNode<FunctionCall> {
+public class ASTFunctionCall extends AbstractFunctionCallNode<FunctionCall> {
     @Deprecated
     @InternalApi
     public ASTFunctionCall(FunctionCall functionCall) {
@@ -18,21 +18,5 @@ public class ASTFunctionCall extends AbstractEcmascriptNode<FunctionCall> {
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-    public EcmascriptNode<?> getTarget() {
-        return (EcmascriptNode<?>) getChild(0);
-    }
-
-    public int getNumArguments() {
-        return node.getArguments().size();
-    }
-
-    public EcmascriptNode<?> getArgument(int index) {
-        return (EcmascriptNode<?>) getChild(index + 1);
-    }
-
-    public boolean hasArguments() {
-        return getNumArguments() != 0;
     }
 }

@@ -103,11 +103,11 @@ public abstract class AbstractEcmascriptRule extends AbstractRule
     }
 
     //
-    // The following APIs are identical to those in
-    // EcmascriptParserVisitorAdapter.
-    // Due to Java single inheritance, it preferred to extend from the more
+    // The following APIs are identical to those in EcmascriptParserVisitorAdapter.
+    // Due to Java single inheritance, it is preferred to extend from the more
     // complex Rule base class instead of from relatively simple Visitor.
     //
+    // CPD-OFF
 
     @Override
     public Object visit(EcmascriptNode<?> node, Object data) {
@@ -359,4 +359,6 @@ public abstract class AbstractEcmascriptRule extends AbstractRule
     public Object visit(ASTXmlString node, Object data) {
         return visit((EcmascriptNode<?>) node, data);
     }
+
+    // CPD-ON
 }

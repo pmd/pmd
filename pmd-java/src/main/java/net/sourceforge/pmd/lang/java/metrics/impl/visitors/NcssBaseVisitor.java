@@ -51,6 +51,10 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
     /** Instance. */
     public static final NcssBaseVisitor INSTANCE = new NcssBaseVisitor();
 
+    // This is mostly the same as in net.sourceforge.pmd.lang.java.metrics.impl.internal.NcssVisitor
+    // Since this class is deprecated anyways and not used in PMD itself anymore
+    // we ignore this duplication
+    // CPD-OFF
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         ((MutableInt) data).increment();
@@ -235,4 +239,5 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
         return super.visit(node, data);
     }
 
+    // CPD-ON
 }

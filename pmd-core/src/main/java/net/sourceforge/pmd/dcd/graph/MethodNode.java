@@ -41,23 +41,7 @@ public class MethodNode extends MemberNode<MethodNode, Method> {
     }
 
     @Override
-    public int compareTo(MethodNode that) {
-        // Order by method name
-        int cmp = this.getName().compareTo(that.getName());
-        if (cmp == 0) {
-            // Order by parameter list length
-            cmp = this.getMember().getParameterTypes().length - that.getMember().getParameterTypes().length;
-            if (cmp == 0) {
-                // Order by parameter class name
-                for (int i = 0; i < this.getMember().getParameterTypes().length; i++) {
-                    cmp = this.getMember().getParameterTypes()[i].getName()
-                            .compareTo(that.getMember().getParameterTypes()[i].getName());
-                    if (cmp != 0) {
-                        break;
-                    }
-                }
-            }
-        }
-        return cmp;
+    protected Class<?>[] getMemberParameterTypes() {
+        return this.getMember().getParameterTypes();
     }
 }

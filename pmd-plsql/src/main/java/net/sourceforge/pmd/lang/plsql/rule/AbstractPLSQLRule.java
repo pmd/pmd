@@ -313,9 +313,13 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
         return false;
     }
 
-    /*
-     * Duplicate PLSQLParserVisitor API
-     */
+    //
+    // The following APIs are identical to those in PLSQLParserVisitorAdapter.
+    // Due to Java single inheritance, it is preferred to extend from the more
+    // complex Rule base class instead of from relatively simple Visitor.
+    //
+    // CPD-OFF
+
     @Override
     public Object visit(PLSQLNode node, Object data) {
         for (PLSQLNode child : node.children()) {
@@ -1435,6 +1439,8 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
     public Object visit(ASTCursorSpecification node, Object data) {
         return visit((PLSQLNode) node, data);
     }
+
+    // CPD-ON
 
     /*
      * Treat all Executable Code

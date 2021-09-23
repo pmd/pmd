@@ -212,9 +212,10 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     //
     // The following APIs are identical to those in JavaParserVisitorAdapter.
-    // Due to Java single inheritance, it preferred to extend from the more
+    // Due to Java single inheritance, it is preferred to extend from the more
     // complex Rule base class instead of from relatively simple Visitor.
     //
+    // CPD-OFF
     @Override
     public Object visit(JavaNode node, Object data) {
         for (JavaNode child : node.children()) {
@@ -878,4 +879,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     public Object visit(ASTGuardedPattern node, Object data) {
         return visit((JavaNode) node, data);
     }
+
+    // CPD-ON
 }
