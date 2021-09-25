@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.39.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.40.0-SNAPSHOT</li>
     
     
     
@@ -1441,8 +1441,8 @@ a numeric result. In the Java framework, metrics can be computed on operation de
 method declaration), and type declaration nodes (class, interface, enum, and annotation declarations). A metric
 object in the framework can only handle either types or operations, but not both.</p>
 
-<p>PMD ships with a library of already implemented metrics. These metrics are referenced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricKey.html#"><code>MetricKey</code></a> objects,
-which are listed in two public enums: <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/api/JavaClassMetricKey.html#"><code>JavaClassMetricKey</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/api/JavaOperationMetricKey.html#"><code>JavaOperationMetricKey</code></a>.
+<p>PMD ships with a library of already implemented metrics. These metrics are referenced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricKey.html#"><code>MetricKey</code></a> objects,
+which are listed in two public enums: <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/api/JavaClassMetricKey.html#"><code>JavaClassMetricKey</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/api/JavaOperationMetricKey.html#"><code>JavaOperationMetricKey</code></a>.
 Metric keys wrap a metric, and know which type of node their metric can be computed on. That way, you cannot compute an operation metric on a class
 declaration node. Metrics that can be computed on both operation and type declarations (e.g. NCSS) have one metric key in
 each enum.</p>
@@ -1455,9 +1455,9 @@ which is the name of the metric key as defined in  <code class="language-plainte
 
 <p>The function will throw an exception in the following cases:</p>
 <ul>
-  <li>The context node is neither an instance of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#"><code>ASTAnyTypeDeclaration</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code>MethodLikeNode</code></a>, that is,
-it’s not one of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#"><code>ASTClassOrInterfaceDeclaration</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#"><code>ASTEnumDeclaration</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTConstructorDeclaration.html#"><code>ASTConstructorDeclaration</code></a>, or <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#"><code>ASTLambdaExpression</code></a>.</li>
+  <li>The context node is neither an instance of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#"><code>ASTAnyTypeDeclaration</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code>MethodLikeNode</code></a>, that is,
+it’s not one of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#"><code>ASTClassOrInterfaceDeclaration</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#"><code>ASTEnumDeclaration</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>,
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTConstructorDeclaration.html#"><code>ASTConstructorDeclaration</code></a>, or <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#"><code>ASTLambdaExpression</code></a>.</li>
   <li>The metric key does not exist (the name is case insensitive) or is not defined for the type of the context node.</li>
 </ul>
 
@@ -1475,7 +1475,7 @@ CYCLO’s only defined for methods and constructors.</li>
 
 <h2 id="for-java-rules">For Java Rules</h2>
 
-<p>The static façade class <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a> is the single entry point to compute metrics in the Java framework.</p>
+<p>The static façade class <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a> is the single entry point to compute metrics in the Java framework.</p>
 
 <p>This class provides the method <code class="language-plaintext highlighter-rouge">get</code> and its overloads. The following sections describes the interface of this class.</p>
 
@@ -1503,7 +1503,7 @@ to <code class="language-plaintext highlighter-rouge">JavaMetrics.get</code>.</p
 <h3 id="capability-checking">Capability checking</h3>
 
 <p>Metrics are not necessarily computable on any node of the type they handle. For example, Cyclo cannot be computed on
-abstract methods. Metric keys provides a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricKey.html#supports(net.sourceforge.pmd.lang.ast.Node)"><code>supports(Node)</code></a> boolean method
+abstract methods. Metric keys provides a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricKey.html#supports(net.sourceforge.pmd.lang.ast.Node)"><code>supports(Node)</code></a> boolean method
 to find out if the metric can be computed on
 the specified node. <strong>If the metric cannot be computed on the given node, <code class="language-plaintext highlighter-rouge">JavaMetrics.get</code> will return <code class="language-plaintext highlighter-rouge">Double.NaN</code> .</strong>
 If you’re concerned about that, you can condition your call on whether the node is supported or not:</p>
@@ -1524,7 +1524,7 @@ If you’re concerned about that, you can condition your call on whether the nod
 gathered inside an enum in the implementation class of the metric, for example <code class="language-plaintext highlighter-rouge">CycloMetric.CycloOption</code>. They’re
 also documented on the <a href="pmd_java_metrics_index.html">index of metrics</a>.</p>
 
-<p>To use options with a metric, you must first bundle them into a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.39.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricOptions.html#"><code>MetricOptions</code></a> object. <code class="language-plaintext highlighter-rouge">MetricOptions</code> provides the
+<p>To use options with a metric, you must first bundle them into a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricOptions.html#"><code>MetricOptions</code></a> object. <code class="language-plaintext highlighter-rouge">MetricOptions</code> provides the
 utility method <code class="language-plaintext highlighter-rouge">ofOptions</code> to get a <code class="language-plaintext highlighter-rouge">MetricOptions</code> bundle from a collection or with varargs parameters. You can then
 pass this bundle as a parameter to <code class="language-plaintext highlighter-rouge">JavaMetrics.get</code>:</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
