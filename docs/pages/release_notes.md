@@ -27,6 +27,8 @@ See [credits](https://pmd.github.io/latest/pmd_projectdocs_credits.html) for our
     *   [#3499](https://github.com/pmd/pmd/pull/3499): \[core] Fix XPath rulechain with combined node tests
 *   java-errorprone
     *   [#3493](https://github.com/pmd/pmd/pull/3493): \[java] AvoidAccessibilityAlteration: add tests and fix rule
+*   javascript
+    *   [#3516](https://github.com/pmd/pmd/pull/3516): \[javascript] NPE while creating rule violation when specifying explicit line numbers
 *   plsql
     *   [#3487](https://github.com/pmd/pmd/issues/3487): \[plsql] Parsing exception OPEN ref_cursor_name FOR statement
     *   [#3515](https://github.com/pmd/pmd/issues/3515): \[plsql] Parsing exception SELECT...INTO on Associative Arrays Types
@@ -34,6 +36,8 @@ See [credits](https://pmd.github.io/latest/pmd_projectdocs_credits.html) for our
 ### API Changes
 
 ### External Contributions
+
+*   [#3516](https://github.com/pmd/pmd/pull/3516): \[javascript] NPE while creating rule violation when specifying explicit line numbers - [Kevin Guerra](https://github.com/kevingnet)
 
 {% endtocmaker %}
 
