@@ -35,9 +35,16 @@ See [credits](https://pmd.github.io/latest/pmd_projectdocs_credits.html) for our
 
 ### API Changes
 
+No changes.
+
 ### External Contributions
 
 *   [#3516](https://github.com/pmd/pmd/pull/3516): \[javascript] NPE while creating rule violation when specifying explicit line numbers - [Kevin Guerra](https://github.com/kevingnet)
+
+### Stats
+* 37 commits
+* 10 closed tickets & PRs
+* Days since last release: 27
 
 {% endtocmaker %}
 
