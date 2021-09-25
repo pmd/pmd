@@ -19,21 +19,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-#### All Contributors
-
-PMD follows the [All Contributors](https://allcontributors.org/) specification.
-Contributions of any kind welcome!
-
-See [credits](https://pmd.github.io/latest/pmd_projectdocs_credits.html) for our complete contributors list.
-
 ### Fixed Issues
-
-*   core
-    *   [#3499](https://github.com/pmd/pmd/pull/3499): \[core] Fix XPath rulechain with combined node tests
-*   java-errorprone
-    *   [#3493](https://github.com/pmd/pmd/pull/3493): \[java] AvoidAccessibilityAlteration: add tests and fix rule
-*   plsql
-    *   [#3487](https://github.com/pmd/pmd/issues/3487): \[plsql] Parsing exception OPEN ref_cursor_name FOR statement
 
 ### API Changes
 

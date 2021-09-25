@@ -2000,10 +2000,13 @@ ASTIntoClause IntoClause() :
     { return jjtThis; }
 }
 
+// This might also be a associative array dereference...
+// see https://github.com/pmd/pmd/issues/3515
 ASTVariableName VariableName() :
-{ ASTID id; StringBuilder name = new StringBuilder(); }
+{ ASTID id; ASTLiteral lit; StringBuilder name = new StringBuilder(); }
 {
     id = ID() { name.append(id.getImage()); }
+    [ "(" lit = Literal() ")" { name.append('(').append(lit.getImage()).append(')'); } ]
     [ "." id = ID() { name.append('.').append(id.getImage()); } ]
     [ "." id = ID() { name.append('.').append(id.getImage()); } ]
     {
