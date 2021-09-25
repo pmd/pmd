@@ -66,13 +66,6 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
 
     }
 
-    public ParametricRuleViolation(Rule theRule, RuleContext ctx, T node, String message,
-            int beginLine, int endLine) {
-        this(theRule, ctx, node, message);
-        this.beginLine = beginLine;
-        this.endLine = endLine;
-    }
-
     private void setSuppression(Rule rule, T node) {
 
         String regex = rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR); // Regex

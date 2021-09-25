@@ -26,15 +26,16 @@ public final class EcmascriptRuleViolationFactory extends AbstractRuleViolationF
     private EcmascriptRuleViolationFactory() {
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-        return new ParametricRuleViolation<>(rule, ruleContext, (EcmascriptNode) node, message);
+        return new ParametricRuleViolation<>(rule, ruleContext, (EcmascriptNode<?>) node, message);
     }
 
     @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
                                                 int beginLine, int endLine) {
-        return new ParametricRuleViolation<>(rule, ruleContext, (EcmascriptNode) node, message, beginLine, endLine);
+        ParametricRuleViolation<EcmascriptNode<?>> ruleViolation = new ParametricRuleViolation<>(rule, ruleContext, (EcmascriptNode<?>) node, message);
+        ruleViolation.setLines(beginLine, endLine);
+        return ruleViolation;
     }
 }
