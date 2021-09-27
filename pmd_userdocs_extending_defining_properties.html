@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.39.0</li>
+    <li class="sidebarTitle">PMD 6.40.0-SNAPSHOT</li>
     
     
     
@@ -1456,16 +1456,16 @@ page can help you squeeze that sweet flexibility out of your rule.</p>
 <p>The procedure to define a property is quite straightforward:</p>
 <ul>
   <li>Create a property descriptor of the type you want, by using a
-builder from <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.39.0/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a></li>
-  <li>Call <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.39.0/net/sourceforge/pmd/properties/PropertySource.html#definePropertyDescriptor(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>definePropertyDescriptor(PropertyDescriptor)</code></a>` in the rule’s noarg constructor.</li>
+builder from <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.40.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a></li>
+  <li>Call <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.40.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertySource.html#definePropertyDescriptor(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>definePropertyDescriptor(PropertyDescriptor)</code></a>` in the rule’s noarg constructor.</li>
 </ul>
 
-<p>You can then retrieve the value of the property at any time using <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.39.0/net/sourceforge/pmd/properties/PropertySource.html#getProperty(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>getProperty(PropertyDescriptor)</code></a>.</p>
+<p>You can then retrieve the value of the property at any time using <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.40.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertySource.html#getProperty(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>getProperty(PropertyDescriptor)</code></a>.</p>
 
 <h3 id="creating-a-descriptor">Creating a descriptor</h3>
 
 <p>Properties can be built using type-specific <strong>builders</strong>, which can be obtained
-from the factory methods of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.39.0/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a>. For example, to build a
+from the factory methods of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.40.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a>. For example, to build a
 string property, you’d call</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">PropertyFactory</span><span class="o">.</span><span class="na">stringProperty</span><span class="o">(</span><span class="s">"myProperty"</span><span class="o">)</span>
                <span class="o">.</span><span class="na">desc</span><span class="o">(</span><span class="s">"This is my property"</span><span class="o">)</span>
@@ -1488,8 +1488,8 @@ information about how to migrate.</div>
                <span class="o">.</span><span class="na">build</span><span class="o">();</span>
 </code></pre></div></div>
 
-<p>The <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.39.0/net/sourceforge/pmd/properties/constraints/NumericConstraints.html#positive()"><code>positive</code></a> method is part of
-the <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.39.0/net/sourceforge/pmd/properties/constraints/NumericConstraints.html#"><code>NumericConstraints</code></a> class, which provides some
+<p>The <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.40.0-SNAPSHOT/net/sourceforge/pmd/properties/constraints/NumericConstraints.html#positive()"><code>positive</code></a> method is part of
+the <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.40.0-SNAPSHOT/net/sourceforge/pmd/properties/constraints/NumericConstraints.html#"><code>NumericConstraints</code></a> class, which provides some
 other constraints. The constraint mechanism will be completely unlocked with 7.0.0,
 since we’ll be migrating our API to Java 8.</p>
 
@@ -1520,7 +1520,7 @@ There are several things to notice here:</p>
 <ul>
   <li>The property descriptors are declared <code class="language-plaintext highlighter-rouge">static final</code>, which should generally be
 the case, as descriptors are immutable and can be shared between instances of the same rule;</li>
-  <li>The property is declared using <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.39.0/net/sourceforge/pmd/properties/PropertySource.html#definePropertyDescriptor(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>definePropertyDescriptor</code></a>` <em>in the constructor</em>,
+  <li>The property is declared using <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.40.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertySource.html#definePropertyDescriptor(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>definePropertyDescriptor</code></a>` <em>in the constructor</em>,
 which ensures the property gets recognised by PMD at the time the properties
 are overridden (which happens before rule execution);</li>
   <li>The value of the property is <em>not retrieved in the constructor</em>, but in one of
@@ -1658,7 +1658,7 @@ are supported.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Sep 25, 2021 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Sep 27, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
