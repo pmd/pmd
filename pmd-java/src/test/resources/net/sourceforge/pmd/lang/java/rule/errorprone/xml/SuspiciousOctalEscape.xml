@@ -21,6 +21,7 @@ public class Foo {
     <test-code>
         <description>should be flagged</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {
