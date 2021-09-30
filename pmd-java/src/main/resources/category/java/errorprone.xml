@@ -78,12 +78,13 @@ suppression methods (e.g. by using `@SuppressWarnings` annotation).
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryPrefix
-    [Name[ends-with(@Image, '.setAccessible')]]
-    [not(following-sibling::PrimarySuffix/Arguments//BooleanLiteral[@True = false()])]
-    [pmd-java:typeIs('java.lang.reflect.AccessibleObject')]
+//MethodCall[
+          pmd-java:matchesSig("java.lang.reflect.AccessibleObject#setAccessible(boolean)")
+       or pmd-java:matchesSig("_#setAccessible(java.lang.reflect.AccessibleObject[],boolean)")
+    ]
+    [not(ArgumentList/BooleanLiteral[@True = false()])]
     (: exclude anonymous privileged action classes :)
-    [not(ancestor::AllocationExpression[pmd-java:typeIs('java.security.PrivilegedAction')])]
+    [not(ancestor::ConstructorCall[1][pmd-java:typeIs('java.security.PrivilegedAction')]/AnonymousClassDeclaration)]
     (: exclude inner privileged action classes :)
     [not(ancestor::ClassOrInterfaceDeclaration[1][pmd-java:typeIs('java.security.PrivilegedAction')])]
 ]]>
