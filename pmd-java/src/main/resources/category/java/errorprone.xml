@@ -2883,13 +2883,8 @@ new StringBuilder("A")   //  1 + 16 = 17
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression/ClassOrInterfaceType
-[@Image='StringBuffer' or @Image='StringBuilder']
-/../Arguments/ArgumentList/Expression/PrimaryExpression
-/PrimaryPrefix/
-Literal
-  [starts-with(@Image, "'")]
-  [ends-with(@Image, "'")]
+//ConstructorCall[ArgumentList/CharLiteral]
+    [pmd-java:typeIs('java.lang.StringBuilder') or pmd-java:typeIs('java.lang.StringBuffer')]
 ]]>
                 </value>
             </property>
