@@ -7,6 +7,7 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
@@ -20,6 +21,7 @@ public class Foo extends TestCase {
     <test-code>
         <description>variations</description>
         <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,5,6,7</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
@@ -49,10 +51,11 @@ public class Foo extends TestCase {
     <test-code>
         <description>asserting true a !</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
-    void bar() {
+    void bar(boolean foo) {
         assertTrue(!foo);
     }
 }
@@ -62,6 +65,7 @@ public class Foo extends TestCase {
     <test-code>
         <description>asserting false a !</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
@@ -78,8 +82,8 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
-    void bar() {
-        assertTrue(!s.contains(new NameOccurrence(node, node.getImage())));
+    void bar(String s) {
+        assertTrue(!s.contains(new Foo(s, s.toString())));
     }
 }
         ]]></code>
@@ -100,6 +104,7 @@ public class Foo {
     <test-code>
         <description>JUnit 4 - failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import org.junit.Test;
 public class Foo {
@@ -114,6 +119,7 @@ public class Foo {
     <test-code>
         <description>JUnit 5 - failure case - @Test</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
