@@ -3066,9 +3066,7 @@ Do not use "if" statements whose conditionals are always true or always false.
             <property name="xpath">
                 <value>
  <![CDATA[
-//IfStatement/Expression
- [count(PrimaryExpression)=1]
- /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+//IfStatement[BooleanLiteral[1]]
 ]]>
                 </value>
             </property>
