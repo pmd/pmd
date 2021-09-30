@@ -8,7 +8,10 @@
         <description>Good practice</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class SomeEJB extends EJBObject implements EJBLocalHome {
+import javax.ejb.EJBLocalHome;
+import javax.ejb.EJBObject;
+
+public class SomeEJB implements EJBLocalHome, EJBObject {
     private static final int GOOD_STATIC_FIELD;
 }
         ]]></code>
@@ -17,8 +20,12 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
     <test-code>
         <description>Bad example</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
-public class SomeEJB extends EJBObject implements EJBLocalHome {
+import javax.ejb.EJBLocalHome;
+import javax.ejb.EJBObject;
+
+public class SomeEJB implements EJBLocalHome, EJBObject {
     private static int BAD_STATIC_FIELD;
 
     private static final int GOOD_STATIC_FIELD;
