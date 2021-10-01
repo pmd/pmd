@@ -3254,23 +3254,17 @@ public class Test {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#usecorrectexceptionlogging">
         <description>
 To make sure the full stacktrace is printed out, use the logging statement with two arguments: a String and a Throwable.
+
+This rule only applies to [Apache Commons Logging](https://commons.apache.org/proper/commons-logging/).
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement/Block/BlockStatement/Statement/StatementExpression
-    /PrimaryExpression
-        [PrimaryPrefix/Name
-            [starts-with(@Image,
-             concat((ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
-                [Type//ClassOrInterfaceType[@Image='Log']]
-                /VariableDeclarator/VariableDeclaratorId/@Name)[1], '.'))
-            ]
-        ]
-        [PrimarySuffix/Arguments[@Size= 1]]
-        [PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Name]
+//CatchClause/Block//MethodCall
+    [pmd-java:matchesSig('org.apache.commons.logging.Log#_(java.lang.Object)')]
+    [ArgumentList[not(MethodCall)]//VariableAccess/@Name = ancestor::CatchClause/CatchParameter/@Name]
 ]]>
                 </value>
             </property>
