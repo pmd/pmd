@@ -2329,35 +2329,31 @@ See the property `annotations`.
 <![CDATA[
 //ClassOrInterfaceDeclaration[@Nested= false()]
 [
-  (
-    (: at least one constructor :)
-    ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration
+    (: at least one constructor :) ./ClassOrInterfaceBody/ConstructorDeclaration
     and
-    (: only private constructors :)count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private= true()])
+    (: only private constructors :) count(./ClassOrInterfaceBody/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ConstructorDeclaration[pmd-java:modifiers() = "private"])
     and
     (: all constructors must not be annotated :)
-    (every $x in $annotations satisfies
-      not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration/
-            ../Annotation/MarkerAnnotation/Name[pmd-java:typeIs($x)]))
-  )
-  and
-  (: no static methods :)not(.//MethodDeclaration[@Static= true()])
-  and
-  (: no (public, package-private, protected) static fields :)not(.//FieldDeclaration[@Private= false()][@Static= true()])
-  and
-  (: no nested classes, that are public and static, and have no constructors at all or a public constructor :)
-  (: and have a method returning the outer class type :)
-  (: or the inner class extends the outer class :)not(.//ClassOrInterfaceDeclaration[@Nested= true()]
-           [@Public= true()]
-           [@Static= true()]
-           [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) or ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public= true()]]
-           [(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
-                [@Public= true()]
-                [./ResultType/Type/ReferenceType/ClassOrInterfaceType
-                    [@Image = //ClassOrInterfaceDeclaration[@Nested= false()]/@SimpleName]
+        (every $x in $annotations satisfies
+          not(./ClassOrInterfaceBody/ConstructorDeclaration/ModifierList/Annotation[pmd-java:typeIs($x)]))
+]
+(: no static methods :)
+[not(.//MethodDeclaration[pmd-java:modifiers() = "static"])]
+(: no (public, package-private, protected) static fields :)
+[not(.//FieldDeclaration[not(pmd-java:modifiers() = "private")][pmd-java:modifiers() = "static"])]
+(: no nested classes, that are public and static, and have no constructors at all or a public constructor :)
+(: and have a method returning the outer class type :)
+(: or the inner class extends the outer class :)
+[not(.//ClassOrInterfaceDeclaration[@Nested = true()]
+           [pmd-java:modifiers() = ("public", "static")]
+           [not(./ClassOrInterfaceBody/ConstructorDeclaration) or ./ClassOrInterfaceBody/ConstructorDeclaration[pmd-java:modifiers() = "public"]]
+           [(./ClassOrInterfaceBody/MethodDeclaration
+                [pmd-java:modifiers() = "public"]
+                [./ClassOrInterfaceType
+                    [@SimpleName = //ClassOrInterfaceDeclaration[@Nested = false()]/@SimpleName]
                 ]
             ) or (
-                ./ExtendsList/ClassOrInterfaceType[@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@SimpleName]
+                ./ExtendsList/ClassOrInterfaceType[@SimpleName = //ClassOrInterfaceDeclaration[@Nested = false()]/@SimpleName]
             )]
         )
 ]
