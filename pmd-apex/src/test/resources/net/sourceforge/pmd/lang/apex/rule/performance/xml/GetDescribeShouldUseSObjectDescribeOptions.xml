@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>No describer options</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe().isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Correct describer option check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Default describer option check allowing default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe(SObjectDescribeOptions.DEFAULT).isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Default describer option check restricting default option</description>
+        <rule-property name="noDefault">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe(SObjectDescribeOptions.DEFAULT).isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

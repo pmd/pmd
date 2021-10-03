@@ -137,6 +137,42 @@ public class Something {
         </example>
     </rule>
 
+    <rule name="GetDescribeShouldUseSObjectDescribeOptions"
+          language="apex"
+          since="6.40.0"
+          message="getDescribe calls should supply valid SObjectDescribeOptions argument"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#getdescribeshouldusesobjectdescribeoptions">
+        <description>
+Explicitly supplying appropriate SObjectDescribeOptions to getDescribe calls to avoid default eager-loading possibly unnecesary
+describe information on API version earlier than v43 when may not be really required
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="noDefault" type="Boolean" value="false" description="Do not allow SObjectDescribeOptions.DEFAULT option to ensure consistent results no matter where getDescribe is called"/>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCallExpression[lower-case(@MethodName) = "getdescribe" and not(VariableExpression/ReferenceExpression[lower-case(@Image) = "sobjectdescribeoptions" ])] |
+//ReferenceExpression[$noDefault = true() and lower-case(@Image) = "sobjectdescribeoptions" and parent::VariableExpression[lower-case(@Image) = "default"]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    public static void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="OperationWithLimitsInLoop"
           language="apex"
           since="6.29.0"
