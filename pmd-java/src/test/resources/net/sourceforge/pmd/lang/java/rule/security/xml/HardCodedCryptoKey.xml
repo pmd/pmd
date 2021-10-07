@@ -110,6 +110,12 @@ public class Foo {
         var0 = "hard coded key here";
         SecretKeySpec keySpec =  new SecretKeySpec(var0.getBytes(), "AES");
     }
+
+    void encrypt2(String prefix, String key) {
+        final String var0 = prefix;
+        var0 = var0 + key;
+        SecretKeySpec keySpec =  new SecretKeySpec(var0.getBytes(), "AES");
+    }
 }
         ]]></code>
     </test-code>
