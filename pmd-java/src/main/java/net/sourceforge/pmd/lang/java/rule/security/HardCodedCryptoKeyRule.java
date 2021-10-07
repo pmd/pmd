@@ -4,19 +4,24 @@
 
 package net.sourceforge.pmd.lang.java.rule.security;
 
+import java.util.List;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * Finds hard coded encryption keys that are passed to
@@ -75,6 +80,14 @@ public class HardCodedCryptoKeyRule extends AbstractJavaRule {
                 if (initializer != null) {
                     validateProperKeyArgument(data, initializer.getFirstDescendantOfType(ASTPrimaryPrefix.class));
                 }
+                
+                List<NameOccurrence> usages = varDecl.getNode().getScope().getDeclarations().get(varDecl);
+                for (NameOccurrence occurrence : usages) {
+                    ASTStatementExpression parentExpr = occurrence.getLocation().getFirstParentOfType(ASTStatementExpression.class);
+                    if (isAssignment(parentExpr)) {
+                        validateProperKeyArgument(data, parentExpr.getChild(2).getFirstDescendantOfType(ASTPrimaryPrefix.class));
+                    }
+                }
             }
         }
 
@@ -89,5 +102,11 @@ public class HardCodedCryptoKeyRule extends AbstractJavaRule {
         if (literal != null && literal.isStringLiteral()) {
             addViolation(data, literal);
         }
+    }
+
+    private boolean isAssignment(ASTStatementExpression statement) {
+        return statement != null 
+                && statement.getNumChildren() >= 3
+                && statement.getChild(1) instanceof ASTAssignmentOperator;
     }
 }
