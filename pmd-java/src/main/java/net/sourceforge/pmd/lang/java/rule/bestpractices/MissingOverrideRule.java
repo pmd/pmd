@@ -86,15 +86,14 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTEnumConstant node, Object data) {
-        // FIXME, ASTEnumConstant needs typeres support!
-        //        if (node.isAnonymousClass()) {
-        //            currentExploredClass.push(node.getType());
-        //        }
+        if (node.isAnonymousClass()) {
+            currentLookup.push(getMethodLookup(node.getType()));
+        }
         super.visit(node, data);
 
-        //        if (node.isAnonymousClass()) {
-        //            currentExploredClass.pop();
-        //        }
+        if (node.isAnonymousClass()) {
+            currentLookup.pop();
+        }
 
         return data;
     }

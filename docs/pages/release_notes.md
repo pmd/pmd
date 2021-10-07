@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-bestpractices
+    *   [#3542](https://github.com/pmd/pmd/issues/3542): \[java] MissingOverride: False negative for enum method
+
 ### API Changes
 
 ### External Contributions
