@@ -2820,25 +2820,16 @@ behavior especially when instances are distributed by the container on several J
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[
-    (
-    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'SessionBean')])
-    or
-    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'EJBHome')])
-    or
-    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalObject')])
-    or
-    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalHome')])
-    or
-    (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBObject')])
-    )
-    and
-    (./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[
-         (./FieldDeclaration[@Static = true()])
-         and
-         (./FieldDeclaration[@Final = false()])
-    ])
-]
+//ClassOrInterfaceDeclaration[ImplementsList/ClassOrInterfaceType[
+        pmd-java:typeIs('javax.ejb.SessionBean')
+     or pmd-java:typeIs('javax.ejb.EJBHome')
+     or pmd-java:typeIs('javax.ejb.EJBLocalObject')
+     or pmd-java:typeIs('javax.ejb.EJBLocalHome')
+     or pmd-java:typeIs('javax.ejb.EJBObject')
+    ]]
+    /ClassOrInterfaceBody/FieldDeclaration
+        [pmd-java:modifiers() = 'static']
+        [not(pmd-java:modifiers() = 'final')]
 ]]>
                 </value>
             </property>
