@@ -1441,8 +1441,7 @@ performance need (space or time).
             <property name="xpath">
                 <value>
 <![CDATA[
-//ForStatement/ForInit/LocalVariableDeclaration
-/Type/PrimitiveType[@Image="float"]
+//ForStatement/ForInit//VariableDeclaratorId[pmd-java:typeIs('float')]
 ]]>
                 </value>
             </property>
