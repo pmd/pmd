@@ -254,7 +254,7 @@
     <rule ref="category/java/errorprone.xml/StringBufferInstantiationWithChar"/>
     <rule ref="category/java/errorprone.xml/SuspiciousEqualsMethodName"/>
     <rule ref="category/java/errorprone.xml/SuspiciousHashcodeMethodName"/>
-    <!-- <rule ref="category/java/errorprone.xml/SuspiciousOctalEscape"/> -->
+    <rule ref="category/java/errorprone.xml/SuspiciousOctalEscape"/>
     <rule ref="category/java/errorprone.xml/TestClassWithoutTestCases"/>
     <rule ref="category/java/errorprone.xml/UnconditionalIfStatement"/>
     <!-- <rule ref="category/java/errorprone.xml/UnnecessaryBooleanAssertion"/> -->
