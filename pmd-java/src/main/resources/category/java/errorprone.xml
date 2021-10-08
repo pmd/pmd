@@ -78,12 +78,13 @@ suppression methods (e.g. by using `@SuppressWarnings` annotation).
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryPrefix
-    [Name[ends-with(@Image, '.setAccessible')]]
-    [not(following-sibling::PrimarySuffix/Arguments//BooleanLiteral[@True = false()])]
-    [pmd-java:typeIs('java.lang.reflect.AccessibleObject')]
+//MethodCall[
+          pmd-java:matchesSig("java.lang.reflect.AccessibleObject#setAccessible(boolean)")
+       or pmd-java:matchesSig("_#setAccessible(java.lang.reflect.AccessibleObject[],boolean)")
+    ]
+    [not(ArgumentList/BooleanLiteral[@True = false()])]
     (: exclude anonymous privileged action classes :)
-    [not(ancestor::AllocationExpression[pmd-java:typeIs('java.security.PrivilegedAction')])]
+    [not(ancestor::ConstructorCall[1][pmd-java:typeIs('java.security.PrivilegedAction')]/AnonymousClassDeclaration)]
     (: exclude inner privileged action classes :)
     [not(ancestor::ClassOrInterfaceDeclaration[1][pmd-java:typeIs('java.security.PrivilegedAction')])]
 ]]>
@@ -2883,13 +2884,8 @@ new StringBuilder("A")   //  1 + 16 = 17
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression/ClassOrInterfaceType
-[@Image='StringBuffer' or @Image='StringBuilder']
-/../Arguments/ArgumentList/Expression/PrimaryExpression
-/PrimaryPrefix/
-Literal
-  [starts-with(@Image, "'")]
-  [ends-with(@Image, "'")]
+//ConstructorCall[ArgumentList/CharLiteral]
+    [pmd-java:typeIs('java.lang.StringBuilder') or pmd-java:typeIs('java.lang.StringBuffer')]
 ]]>
                 </value>
             </property>
@@ -3066,9 +3062,7 @@ Do not use "if" statements whose conditionals are always true or always false.
             <property name="xpath">
                 <value>
  <![CDATA[
-//IfStatement/Expression
- [count(PrimaryExpression)=1]
- /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+//IfStatement[BooleanLiteral[1]]
 ]]>
                 </value>
             </property>
@@ -3158,13 +3152,32 @@ boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");    // another unnec
           language="java"
           since="0.1"
           message="Avoid unnecessary temporaries when converting primitives to Strings"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.UnnecessaryConversionTemporaryRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unnecessaryconversiontemporary">
         <description>
 Avoid the use temporary objects when converting primitives to Strings. Use the static conversion methods
 on the wrapper classes instead.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[@MethodName = 'toString']
+    [ConstructorCall[position() = 1]
+        [
+            pmd-java:typeIs('java.lang.Integer')
+         or pmd-java:typeIs('java.lang.Long')
+         or pmd-java:typeIs('java.lang.Float')
+         or pmd-java:typeIs('java.lang.Byte')
+         or pmd-java:typeIs('java.lang.Double')
+         or pmd-java:typeIs('java.lang.Short')
+        ]
+    ]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public String convert(int x) {
@@ -3249,23 +3262,17 @@ public class Test {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#usecorrectexceptionlogging">
         <description>
 To make sure the full stacktrace is printed out, use the logging statement with two arguments: a String and a Throwable.
+
+This rule only applies to [Apache Commons Logging](https://commons.apache.org/proper/commons-logging/).
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement/Block/BlockStatement/Statement/StatementExpression
-    /PrimaryExpression
-        [PrimaryPrefix/Name
-            [starts-with(@Image,
-             concat((ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
-                [Type//ClassOrInterfaceType[@Image='Log']]
-                /VariableDeclarator/VariableDeclaratorId/@Name)[1], '.'))
-            ]
-        ]
-        [PrimarySuffix/Arguments[@Size= 1]]
-        [PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Name]
+//CatchClause/Block//MethodCall
+    [pmd-java:matchesSig('org.apache.commons.logging.Log#_(java.lang.Object)')]
+    [ArgumentList[not(MethodCall)]//VariableAccess/@Name = ancestor::CatchClause/CatchParameter/@Name]
 ]]>
                 </value>
             </property>

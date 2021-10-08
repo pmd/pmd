@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
@@ -980,6 +981,13 @@ public final class JavaRuleUtil {
                     return matcher.matches(getOtherOperandIfInInfixExpr(nullLit));
                 }
             }
+        }
+        return false;
+    }
+
+    public static boolean isArrayInitializer(ASTExpression expr) {
+        if (expr instanceof ASTArrayAllocation) {
+            return ((ASTArrayAllocation) expr).getArrayInitializer() != null;
         }
         return false;
     }
