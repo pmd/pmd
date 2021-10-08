@@ -249,7 +249,7 @@
     <rule ref="category/java/errorprone.xml/ReturnFromFinallyBlock"/>
     <!-- <rule ref="category/java/errorprone.xml/SimpleDateFormatNeedsLocale"/> -->
     <!-- <rule ref="category/java/errorprone.xml/SingleMethodSingleton"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/SingletonClassReturningNewInstance"/> -->
+    <rule ref="category/java/errorprone.xml/SingletonClassReturningNewInstance"/>
     <rule ref="category/java/errorprone.xml/StaticEJBFieldShouldBeFinal"/>
     <rule ref="category/java/errorprone.xml/StringBufferInstantiationWithChar"/>
     <rule ref="category/java/errorprone.xml/SuspiciousEqualsMethodName"/>
