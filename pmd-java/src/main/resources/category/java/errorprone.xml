@@ -1211,9 +1211,11 @@ public class MyTest {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly">
         <description>
-Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Code should have the
-same behavior whether the garbage collection is disabled using the option -Xdisableexplicitgc or not.
-Moreover, "modern" jvms do a very good job handling garbage collections. If memory usage issues unrelated to memory
+Calls to `System.gc()`, `Runtime.getRuntime().gc()`, and `System.runFinalization()` are not advised.
+Code should have the same behavior whether the garbage collection is disabled using the option
+`-Xdisableexplicitgc` or not.
+
+Moreover, "modern" JVMs do a very good job handling garbage collections. If memory usage issues unrelated to memory
 leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
         </description>
         <priority>2</priority>
@@ -1221,14 +1223,11 @@ leaks develop within an application, it should be dealt with JVM options rather 
             <property name="xpath">
                 <value>
 <![CDATA[
-//Name[
-(starts-with(@Image, 'System.') and
-(starts-with(@Image, 'System.gc') or
-starts-with(@Image, 'System.runFinalization'))) or
-(
-starts-with(@Image,'Runtime.getRuntime') and
-../../PrimarySuffix[ends-with(@Image,'gc')]
-)
+//MethodCall[
+       pmd-java:matchesSig("java.lang.System#gc()")
+    or pmd-java:matchesSig("java.lang.Runtime#gc()")
+    or pmd-java:matchesSig("java.lang.System#runFinalization()")
+    or pmd-java:matchesSig("java.lang.Runtime#runFinalization()")
 ]
 ]]>
                 </value>
