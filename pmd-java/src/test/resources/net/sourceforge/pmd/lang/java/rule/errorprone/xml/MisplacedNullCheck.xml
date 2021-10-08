@@ -16,7 +16,7 @@
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    void bar(Object a, Object baz) {
         if (a.equals(baz) && a != null) {} // a could be null, misplaced null check
         if (a.equals(baz) || a == null) {} // a could be null, misplaced null check
 
@@ -42,7 +42,7 @@ public class Foo {
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    void bar(Object a, Foo baz) {
         if (a.equals(baz.foo()) && baz != null) {} // baz could be null, misplaced null check
         if (a.equals(baz.foo()) || baz == null) {} // baz could be null, misplaced null check
 
@@ -52,6 +52,8 @@ public class Foo {
         if (baz != null && a.equals(baz.foo())) {} // correct null check
         if (baz == null || a.equals(baz.foo())) {} // correct null check
     }
+
+    public Object foo() { return null; }
 }
         ]]></code>
     </test-code>
@@ -61,9 +63,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    void bar(Object a) {
         if (a != null && a.equals(foo())) {}
     }
+
+    public Object foo() { return null; }
 }
         ]]></code>
     </test-code>
@@ -77,7 +81,7 @@ public class Foo {
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    void bar() {
+    void bar(Object a, Object baz) {
         if (a.equals(baz) || a == null) {}
     }
 }
@@ -88,7 +92,10 @@ public class Foo {
         <description>3372128: False positive: ArrayIsStoredDirectly</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Arrays;
+import java.util.List;
 public class Foo {
+    private List<String> excludeStatus;
     public final void setExcludeStatus(String[] excludeStatus) {
         if (excludeStatus != null) {
             this.excludeStatus = Arrays.asList(excludeStatus.clone());
@@ -155,12 +162,13 @@ public class Test {
     <test-code>
         <description>False-positive/negative with multiple conditions</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>7,8</expected-linenumbers>
+        <expected-linenumbers>8,9</expected-linenumbers>
         <expected-messages>
             <message>The null check here is misplaced; if the variable 'attributes' is null there will be a NullPointerException</message>
             <message>The null check here is misplaced; if the variable 'attributes' is null there will be a NullPointerException</message>
         </expected-messages>
         <code><![CDATA[
+import java.util.Map;
 public class Test {
     public void method(String annotationType, Map<String, Object> attributes) {
         boolean isStereotype = annotationType.equals("javax.inject.Named");
