@@ -2653,11 +2653,8 @@ See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays ins
                 <value>
 <![CDATA[
 //MethodDeclaration
-[
-(./ResultType/Type[pmd-java:typeIs('java.util.Collection') or pmd-java:typeIs('java.util.Map') or @ArrayType=true()])
-and
-(./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
-]
+    [ArrayType or ClassOrInterfaceType[pmd-java:typeIs('java.util.Collection') or pmd-java:typeIs('java.util.Map')]]
+    [Block/ReturnStatement/NullLiteral]
 ]]>
                 </value>
             </property>
