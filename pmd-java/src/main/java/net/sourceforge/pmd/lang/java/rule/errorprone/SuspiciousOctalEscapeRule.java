@@ -46,7 +46,7 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
                                     // escape followed by
                                     // an octal digit -- legal but very
                                     // confusing!
-                                    addViolation(data, node);
+                                    addViolation(data, node, "\\" + first + second + " + " + third);
                                 } else {
                                     // if there is a 4th decimal digit, it
                                     // could never be part of
@@ -55,7 +55,7 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
                                     if (escapeSequence.length() > 3) {
                                         char fourth = escapeSequence.charAt(3);
                                         if (isDecimal(fourth)) {
-                                            addViolation(data, node);
+                                            addViolation(data, node, "\\" + first + second + third + " + " + fourth);
                                         }
                                     }
                                 }
@@ -64,14 +64,14 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
                                 // this is a two-digit octal escape followed
                                 // by a decimal digit
                                 // legal but very confusing
-                                addViolation(data, node);
+                                addViolation(data, node, "\\" + first + second + " + " + third);
                             }
                         }
                     } else if (isDecimal(second)) {
                         // this is a one-digit octal escape followed by a
                         // decimal digit
                         // legal but very confusing
-                        addViolation(data, node);
+                        addViolation(data, node, "\\" + first + " + " + second);
                     }
                 }
             } else if (first == '\\') {

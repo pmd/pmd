@@ -3001,7 +3001,7 @@ public class Foo {
     <rule name="SuspiciousOctalEscape"
           language="java"
           since="1.5"
-          message="Suspicious decimal characters following octal escape in string literal"
+          message="Suspicious decimal characters following octal escape in string literal: {0}"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.SuspiciousOctalEscapeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#suspiciousoctalescape">
         <description>
