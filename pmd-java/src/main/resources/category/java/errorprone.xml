@@ -3079,37 +3079,32 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unnecessarybooleanassertion">
         <description>
 A JUnit test assertion with a boolean literal is unnecessary since it always will evaluate to the same thing.
-Consider using flow control (in case of assertTrue(false) or similar) or simply removing
-statements like assertTrue(true) and assertFalse(false).  If you just want a test to halt after finding
-an error, use the fail() method and provide an indication message of why it did.
+Consider using flow control (in case of `assertTrue(false)` or similar) or simply removing
+statements like `assertTrue(true)` and `assertFalse(false)`. If you just want a test to halt after finding
+an error, use the `fail()` method and provide an indication message of why it did.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[
-    pmd-java:typeIs('junit.framework.TestCase')
-    or .//MarkerAnnotation/Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+//ClassOrInterfaceDeclaration
+    [pmd-java:typeIs('junit.framework.TestCase')
+     or .//Annotation[pmd-java:typeIs('org.junit.Test')
+                   or pmd-java:typeIs('org.junit.jupiter.api.Test')
+                   or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+                   or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+                   or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+                   or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+     ]
+    ]
+    //MethodCall[@MethodName = ('assertTrue', 'assertFalse')]
+        [ArgumentList
+            [
+                BooleanLiteral or
+                UnaryExpression[@Operator = '!'][BooleanLiteral]
+            ]
         ]
-    ]
-//StatementExpression
-[
-    PrimaryExpression/PrimaryPrefix/Name[@Image='assertTrue' or  @Image='assertFalse']
-    and
-    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression[
-        PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
-        or
-        UnaryExpressionNotPlusMinus[@Image='!']
-            /PrimaryExpression/PrimaryPrefix[Literal/BooleanLiteral or Name[count(../../*)=1]]
-    ]
-]
 ]]>
                 </value>
             </property>
@@ -3118,7 +3113,7 @@ an error, use the fail() method and provide an indication message of why it did.
 <![CDATA[
 public class SimpleTest extends TestCase {
     public void testX() {
-        assertTrue(true);       // serves no real purpose
+        assertTrue(true);            // serves no real purpose - remove it
     }
 }
 ]]>
