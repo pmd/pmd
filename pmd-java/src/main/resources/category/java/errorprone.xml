@@ -2108,18 +2108,18 @@ LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The except
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#jumbledincrementer">
         <description>
-Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
+Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even if intentional.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
 //ForStatement
-  [
-    ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
-    =
-    ancestor::ForStatement/ForInit//VariableDeclaratorId/@Name
-  ]
+    [ForInit//VariableDeclaratorId/@Name != ForUpdate//VariableAccess/@Name]
+    [ForUpdate//VariableAccess[@AccessType = 'WRITE']/@Name
+     =
+     ancestor::ForStatement/ForInit//VariableDeclaratorId/@Name
+    ]
 ]]>
                 </value>
             </property>

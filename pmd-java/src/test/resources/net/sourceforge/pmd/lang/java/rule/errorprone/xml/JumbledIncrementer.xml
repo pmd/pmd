@@ -5,8 +5,9 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>1</description>
+        <description>nested loop, wrong incrementer</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void foo() {
@@ -21,7 +22,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>2</description>
+        <description>correct incrementer in nested loop</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -37,7 +38,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>3</description>
+        <description>loops with and without incrementer - all ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -63,7 +64,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>using outer loop incrementor as array index is OK</description>
+        <description>using outer loop incrementer as array index is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -78,8 +79,8 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <!--test-code>
-        <description>1424989, use of variable with same name in inner loop. Wontfix because this is smelly code.</description>
+    <test-code>
+        <description>1424989, use of variable with same name in inner loop</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
@@ -96,5 +97,5 @@ public class Foo {
     }
 }
         ]]></code>
-    </test-code-->
+    </test-code>
 </test-data>
