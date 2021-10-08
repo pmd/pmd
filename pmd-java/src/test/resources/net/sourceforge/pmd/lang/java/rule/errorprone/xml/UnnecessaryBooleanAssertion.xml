@@ -49,28 +49,48 @@ public class Foo extends TestCase {
     </test-code>
 
     <test-code>
-        <description>asserting true a !</description>
+        <description>asserting true a ! (see also #3087)</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>14</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
+    private boolean flag;
+    private Foo field;
     void bar(boolean foo) {
-        assertTrue(!foo);
+        assertTrue(!foo);   // not relevant for this rule, but SimplifiableTestAssertion
+        assertFalse(foo);   // that's ok
+
+        assertTrue(!this.flag); // not relevant for this rule, but SimplifiableTestAssertion
+        assertFalse(this.flag);
+        assertTrue(!field.flag);
+        assertFalse(field.flag); // not relevant for this rule, but SimplifiableTestAssertion
+
+        assertTrue(!false); // unnecessary
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>asserting false a !</description>
+        <description>asserting false a ! (see also #3087)</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>14</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
-    void bar() {
-        assertFalse(!foo);
+    private boolean flag;
+    private Foo field;
+    void bar(boolean foo) {
+        assertFalse(!foo);  // not relevant for this rule, but SimplifiableTestAssertion
+        assertTrue(foo);    // that's ok
+
+        assertFalse(!this.flag); // not relevant for this rule, but SimplifiableTestAssertion
+        assertTrue(this.flag);
+        assertFalse(!field.flag); // not relevant for this rule, but SimplifiableTestAssertion
+        assertTrue(field.flag);
+
+        assertFalse(!true); // unnecessary
     }
 }
         ]]></code>

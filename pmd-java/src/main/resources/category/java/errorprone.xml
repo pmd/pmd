@@ -3094,9 +3094,9 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unnecessarybooleanassertion">
         <description>
 A JUnit test assertion with a boolean literal is unnecessary since it always will evaluate to the same thing.
-Consider using flow control (in case of assertTrue(false) or similar) or simply removing
-statements like assertTrue(true) and assertFalse(false).  If you just want a test to halt after finding
-an error, use the fail() method and provide an indication message of why it did.
+Consider using flow control (in case of `assertTrue(false)` or similar) or simply removing
+statements like `assertTrue(true)` and `assertFalse(false)`. If you just want a test to halt after finding
+an error, use the `fail()` method and provide an indication message of why it did.
         </description>
         <priority>3</priority>
         <properties>
@@ -3117,7 +3117,7 @@ an error, use the fail() method and provide an indication message of why it did.
         [ArgumentList
             [
                 BooleanLiteral or
-                UnaryExpression[@Operator = '!'][BooleanLiteral or VariableAccess]
+                UnaryExpression[@Operator = '!'][BooleanLiteral]
             ]
         ]
 ]]>
@@ -3128,7 +3128,7 @@ an error, use the fail() method and provide an indication message of why it did.
 <![CDATA[
 public class SimpleTest extends TestCase {
     public void testX() {
-        assertTrue(true);       // serves no real purpose
+        assertTrue(true);            // serves no real purpose - remove it
     }
 }
 ]]>
