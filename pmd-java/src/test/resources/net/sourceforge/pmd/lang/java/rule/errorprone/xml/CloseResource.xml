@@ -10,9 +10,10 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         Connection c = pool.getConnection();
         try {
         } catch (Exception e) {
@@ -28,14 +29,16 @@ public class Foo {
         <description>connection not closed, should have failed</description>
         <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
             <message>Ensure that resources like this Connection object are closed after use</message>
         </expected-messages>
         <code><![CDATA[
 import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         Connection c = pool.getConnection();
         try {
         } catch (Exception e) {
@@ -51,8 +54,10 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         ResultSet c = pool.getRS();
         try {
         } catch (Exception e) {}
@@ -67,8 +72,10 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         Statement c = pool.getStmt();
         try {
         } catch (Exception e) {}
@@ -79,8 +86,11 @@ public class Foo {
 
     <code-fragment id="executeQuery"><![CDATA[
 import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.MyHelper;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         Statement c = pool.getStmt();
         Statement st = c.executeQuery("SELECT * FROM FOO");
         try {
@@ -89,6 +99,8 @@ public class Foo {
             cleanup(st);
         }
     }
+
+    private void cleanup(Statement st) { }
 }
     ]]></code-fragment>
 
@@ -132,8 +144,11 @@ public class BadClose {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.MyHelper;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         Statement c = pool.getStmt();
         try {
         } finally {
@@ -149,14 +164,16 @@ public class Foo {
         <rule-property name="closeTargets">commit,close</rule-property>
         <rule-property name="types">DAOTransaction,java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>10</expected-linenumbers>
         <code><![CDATA[
 import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.*;
+
 public class Foo {
-    public void bar() throws SQLException
+    public void bar(Pool pool, TransactionManager trxManager) throws SQLException
     {
         DAOTransaction trx = trxManager.open();
-        Connection cnx = pool.newConn();
+        Connection cnx = pool.getConnection();
         ResultSet rs = null;
         Statement stmt = null;
 
@@ -178,17 +195,19 @@ public class Foo {
 
     <test-code>
         <description>[1964798] 3 bugs in CloseResourceRule : Case failing with complete name</description>
-        <rule-property name="closeTargets">MyHelper.MyClose</rule-property>
+        <rule-property name="closeTargets">MyHelper.myClose</rule-property>
         <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.*;
+
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         Statement c = pool.getStmt();
         try {
         } finally {
-            MyHelper.MyClose(c);
+            MyHelper.myClose(c);
         }
     }
 }
@@ -202,8 +221,10 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.*;
+
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         Connection c;
         try {
             c = pool.getConnection();
@@ -211,6 +232,8 @@ public class Foo {
             this.closeConnection(null);
         }
     }
+
+    void closeConnection(Connection c) { }
 }
         ]]></code>
     </test-code>
@@ -222,8 +245,10 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.*;
+
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         Connection c = pool.getConnection();
         try {
             //...
@@ -231,16 +256,22 @@ public class Foo {
             this.closeConnection(null);
         }
     }
+
+    void closeConnection(Connection c) { }
 }
         ]]></code>
     </test-code>
 
     <test-code>
         <description>[1964798] 3 bugs in CloseResourceRule : If connection is returned, we should not log a violation.</description>
-        <rule-property name="types">Connection,Statement,ResultSet</rule-property>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
 public class Foo {
+    private Pool pool;
     public Connection getConnection() {
         Connection c = pool.getConnection();
         return c;
@@ -287,10 +318,11 @@ public class StructureFactory {
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
 public class StructureFactory {
 
-    public void searchList() {
+    public void searchList(Pool pool) {
 
         Connection _connexion = pool.getConn();
         ResultSet _rs = createResultSet(_connexion);
@@ -308,6 +340,8 @@ public class StructureFactory {
             getProviderInstance().closeStatement(_badOne); // not the right variable
         }
     }
+
+    public class Structure { }
 }
         ]]></code>
     </test-code>
@@ -317,9 +351,10 @@ public class StructureFactory {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
 public class Test {
-    public Test() {
+    public Test(Pool pool) {
         Connection c = pool.getConnection();
     }
 }
@@ -331,9 +366,10 @@ public class Test {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
 public class Test {
-    public Test() {
+    public Test(Pool pool) {
         Connection c;
         try {
             c = pool.getConnection();
@@ -350,9 +386,11 @@ public class Test {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
 public class Test {
     Connection c;
+    Pool pool;
     public Test() {
         c = pool.getConnection();
     }
@@ -365,9 +403,11 @@ public class Test {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
 public class Test {
     Connection c;
+    Pool pool;
     public void doIt() {
         c = pool.getConnection();
     }
@@ -379,15 +419,17 @@ public class Test {
         <description>#947 CloseResource rule fails if field is marked with annotation</description>
         <rule-property name="closeNotInFinally">true</rule-property>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>8,9</expected-linenumbers>
+        <expected-linenumbers>10,11</expected-linenumbers>
         <expected-messages>
             <message>Ensure that resources like this Connection object are closed after use</message>
             <message>Ensure that resources like this Statement object are closed after use</message>
         </expected-messages>
         <code><![CDATA[
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.SQLException;
 
 public class CloseResourceRuleBug {
     public void foo() {
@@ -412,13 +454,13 @@ public class CloseResourceRuleBug {
 import java.beans.Statement;
 
 public class Test {
-    public void foo() {
+    public void foo(String vector, String prop) {
         Statement stmt = new Statement(vo, "set" + prop, new Object[] { vector });
 
         try {
             stmt.execute();
         } catch (Exception e) {
-            throw new RuntimeException("Could not set property prop: " + prop + "of type:" + pd.getPropertyType(), e);
+            throw new RuntimeException("Could not set property prop: " + prop, e);
         }
     }
 }
@@ -431,6 +473,8 @@ public class Test {
         <rule-property name="types">MyClass</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.closeresource;
+
 public class Foo {
     void bar() {
         MyClass myClass = null;
@@ -451,9 +495,10 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         String test = "";
         Connection c = pool.getConnection();
         if (test != null) {
@@ -475,9 +520,10 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         String test = "";
         Connection c = null;
         if (test != null) {
@@ -503,9 +549,10 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         String test = "";
         if (test != null) {
             throw new RuntimeException("haha");
@@ -529,9 +576,11 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.Connection;
+import java.sql.SQLException;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
 public class Bar {
-    public void foo() {
+    public void foo(Pool pool) {
         Connection c = pool.getConnection();
         try {
             // do stuff
@@ -551,11 +600,12 @@ public class Bar {
         <description>#1375 CloseResource not detected properly - ok</description>
         <rule-property name="closeNotInFinally">true</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <expected-messages>
             <message>Ensure that resources like this ResultSet object are closed after use</message>
         </expected-messages>
         <code><![CDATA[
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -572,6 +622,8 @@ public class Foo {
             stmt.close();
         }
     }
+
+    Connection getConnection() { return null; }
 }
         ]]></code>
     </test-code>
@@ -579,11 +631,12 @@ public class Foo {
     <test-code>
         <description>#1375 CloseResource not detected properly - false negative</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <expected-messages>
             <message>Ensure that resources like this ResultSet object are closed after use</message>
         </expected-messages>
         <code><![CDATA[
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -600,6 +653,8 @@ public class Foo {
             stmt.close();
         }
     }
+
+    Connection getConnection() { return null; }
 }
         ]]></code>
     </test-code>
@@ -609,12 +664,13 @@ public class Foo {
         <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet,java.sql.PreparedStatement</rule-property>
         <rule-property name="closeTargets">closeLocalResources,closeResultSet</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>13</expected-linenumbers>
+        <expected-linenumbers>14</expected-linenumbers>
         <code><![CDATA[
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class CloseResourceTest {
     public Object selectOne(final int val, final int val2) {
@@ -638,6 +694,12 @@ public class CloseResourceTest {
                 }
             }
         });
+    }
+    public interface Work {
+        void execute(Connection connection) throws SQLException;
+    }
+    public static final class CONSTANTS {
+        public static final String QUERY_STRING = "select * from dual";
     }
 }
         ]]></code>
@@ -681,11 +743,12 @@ public class CloseResource {
         <rule-property name="closeAsDefaultTarget">false</rule-property>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class CloseResource {
-    public void doSomething() {
+    public void doSomething(Connection connection) {
         Statement stmt = connection.createStatement();
         ResultSet resultSet = stmt.executeQuery("select ...");
         try {
@@ -890,6 +953,7 @@ public class CloseResourceWithExceptions {
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class CloseResourceWithExceptions {
 
@@ -965,24 +1029,6 @@ public class CloseResourceWithExceptions {
     </test-code>
 
     <test-code>
-        <description>connection not closed, should have failed - missing import</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-// without the import
-//import java.sql.*;
-// type resolution doesn't work, so the rule falls back to simple names
-public class Foo {
-    void bar() {
-        Connection c = pool.getConnection();
-        try {
-        } catch (Exception e) {
-        }
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>closed with try-with-resources</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1008,20 +1054,22 @@ public class Foo {
     <test-code>
         <description>Correctly determine the type with method calls</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>6,7</expected-linenumbers>
+        <expected-linenumbers>8,9</expected-linenumbers>
         <expected-messages>
             <message>Ensure that resources like this Connection object are closed after use</message>
             <message>Ensure that resources like this PreparedStatement object are closed after use</message>
         </expected-messages>
         <code><![CDATA[
 import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.MyClass;
 
 public class CloseResourceSQL {
-    public void run() {
+    public void run(Pool pool) {
         try {
-            Connection con = DataSourceUtils.getConnection(ds);
+            Connection con = pool.getConnection();
             PreparedStatement ps = con.prepareStatement("some SQL statement");
-            DataSourceUtils.applyTransactionTimeout(ps, ds);
+            MyClass.applyTransactionTimeout(ps);
         } catch (SQLException ex) {
             throw new RuntimeException("", ex);
         }
@@ -1033,7 +1081,7 @@ public class CloseResourceSQL {
     <test-code>
         <description>JMS Connections without auxclasspath</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>10</expected-linenumbers>
+        <expected-linenumbers>11</expected-linenumbers>
         <expected-messages>
             <message>Ensure that resources like this Connection object are closed after use</message>
         </expected-messages>
@@ -1043,11 +1091,12 @@ import javax.jms.Connection;
 import javax.jms.Session;
 
 public class CloseResourceJMS {
+    private Factory resourceFactory = new Factory();
     public void run() {
-        Session session = resourceFactory.getSession(resourceHolder);
+        Session session = resourceFactory.getSession();
         if (session != null) {
             if (startConnection) {
-                Connection con = resourceFactory.getConnection(resourceHolder);
+                Connection con = resourceFactory.getConnection();
                 if (con != null) {
                     con.start();
                 }
@@ -1055,6 +1104,11 @@ public class CloseResourceJMS {
             return session;
         }
         return null;
+    }
+
+    public class Factory {
+        Session getSession() { return null; }
+        Connection getConnection() { return null; }
     }
 }
         ]]></code>
@@ -1135,8 +1189,7 @@ public class CloseResourcePrintWriter {
         <expected-linenumbers>7,8,10</expected-linenumbers>
         <expected-messages>
             <message>Ensure that resources like this FileInputStream object are closed after use</message>
-            <!-- Note: it picks up on System.in -->
-            <message>Ensure that resources like this InputStream object are closed after use</message>
+            <message>Ensure that resources like this Scanner object are closed after use</message>
             <message>Ensure that resources like this FileInputStream object are closed after use</message>
         </expected-messages>
         <code><![CDATA[
@@ -1170,7 +1223,7 @@ public class CloseResourceFP {
             FileInputStream fin = (FileInputStream) in;
             doCheck(fin);
         } else if (in instanceof ByteArrayInputStream) {
-            ByteArrayInputStream bin = (ByteArrayInputSream) in;
+            ByteArrayInputStream bin = (ByteArrayInputStream) in;
             doCheck(bin);
         } else {
             BufferedInputStream buf = new BufferedInputStream(in);
@@ -1191,6 +1244,7 @@ public class CloseResourceFP {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.*;
+import java.nio.file.Files;
 
 public class CloseResourceFP {
     public void check(File outputFile) {
@@ -1204,9 +1258,11 @@ public class CloseResourceFP {
         }
 
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))) {
-            renderer.render(cpd.getMatches(), writer);
+            render("...", writer);
         }
     }
+
+    private void render(String data, Writer writer) { }
 }
         ]]></code>
     </test-code>
@@ -1217,7 +1273,6 @@ public class CloseResourceFP {
         <code><![CDATA[
 import java.util.*;
 import java.util.function.*;
-import java.util.regex.*;
 import java.util.stream.*;
 
 public class CloseResourceStream {
@@ -1234,6 +1289,12 @@ public class CloseResourceStream {
                                                 });
         return limiter.selectBest(base);
     }
+
+    public interface MatchSelector<T> {
+        Stream<MatchResult<T>> selectBest(Stream<MatchResult<T>> raw);
+    }
+    public class MatchResult<T> implements Comparable<MatchResult<?>> { }
+    public class TextFlow { }
 }
         ]]></code>
     </test-code>
@@ -1279,12 +1340,13 @@ public class CloseResourceStatementFP {
 
     <test-code>
         <description>NullPointerException if type of method parameter is not known</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.*;
 public class CloseResourceNullPointer {
     public void check(UnknownType param) {
         InputStream in = param;
+        // note: in doesn't need to be closed here, because it from outside via method parameter.
     }
 }
         ]]></code>
@@ -1435,15 +1497,16 @@ public class CloseResourceWithVar {
         <description>#2764 false-negative when re-assigning connection</description>
         <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <expected-messages>
             <message>'c' is reassigned, but the original instance is not closed</message>
         </expected-messages>
         <code><![CDATA[
 import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         Connection c = pool.getConnection();
         try {
           c = pool.getConnection();
@@ -1462,9 +1525,10 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
 public class Foo {
-    void bar() {
+    void bar(Pool pool) {
         Connection c = pool.getConnection();
         try {
           c.close();
@@ -1508,7 +1572,7 @@ import java.util.stream.Stream;
 
 public class Foo {
     void bar() {
-        Stream<T> stream = Stream.of(2);
+        Stream<Integer> stream = Stream.of(2);
         if (condition) {
             stream = stream.skip(2);
         }
