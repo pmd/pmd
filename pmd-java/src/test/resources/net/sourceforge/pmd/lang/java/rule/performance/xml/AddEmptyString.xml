@@ -45,7 +45,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private static final String VERSION = "1";
+    private static final int VERSION = 1;
 
     @Deprecated(since = "" + VERSION)
     public void foo() {
