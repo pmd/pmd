@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<ruleset name="Best Practices"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules which enforce generally accepted best practices.
+    </description>
+
+    <rule name="FunctionNameTooShort"
+          since="7.0"
+          language="kotlin"
+          message="Function names should have non-cryptic and clear names."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="https://pmd.github.io/pmd/pmd_rules_kotlin_bestpractices.html#functionametooshort">
+        <description>
+            Function names should be easy to understand and describe the intention. Makes developers happy.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="3.1"/>
+            <property name="xpath">
+                <value><![CDATA[
+                    //FunctionDeclaration/SimpleIdentifier/T-Identifier[string-length(@Text) < 3]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+fun cl() {} // violation, no unavailable attribute added to the function declaration
+
+fun calculateLayout() // no violation
+]]>
+        </example>
+    </rule>
+</ruleset>
