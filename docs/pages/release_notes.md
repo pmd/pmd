@@ -23,6 +23,9 @@ This is a {{ site.pmd.release_type }} release.
     <rule ref="category/apex/performance.xml/EagerlyLoadedDescribeSObjectResult" />
 ```
 
+#### Updated Apex Support
+
+*   The Apex language support has been bumped to version 54.0 (Spring '22).
 
 ### Fixed Issues
 
