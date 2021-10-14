@@ -24,7 +24,7 @@ It is much better to use one of the type-specific toString() methods instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//InfixExpression[@Operator='+']/StringLiteral[@Empty=true()]
+//InfixExpression[@Operator='+']/StringLiteral[@Empty=true()][not(ancestor::Annotation)]
 ]]>
                 </value>
             </property>
