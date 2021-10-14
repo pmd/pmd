@@ -25,7 +25,7 @@ It is much better to use one of the type-specific toString() methods instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']
+//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""' and not(ancestor::Annotation)]
 ]]>
                 </value>
             </property>
