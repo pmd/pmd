@@ -141,7 +141,7 @@ public class Something {
           language="apex"
           since="6.40.0"
           message="DescribeSObjectResult could be being loaded eagerly with all child relationships."
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#eagerlyloadeddescribesobjectresult">
         <description>
 This rule finds `DescribeSObjectResult`s which could have been loaded eagerly via `SObjectType.getDescribe()`.
