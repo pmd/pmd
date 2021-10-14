@@ -1,16 +1,40 @@
 ---
-title: Adding PMD support for a new JAVACC grammar based language
-short_title: Adding a new language with JAVACC
+title: Adding PMD support for a new JavaCC grammar based language
+short_title: Adding a new language with JavaCC
 tags: [devdocs, extending]
-summary: "How to add a new language to PMD using JAVACC grammar."
-last_updated: October 5, 2019
+summary: "How to add a new language to PMD using JavaCC grammar."
+last_updated: October 2021
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_major_adding_new_language_javacc.html
 folder: pmd/devdocs
 ---
 
+{% include callout.html type="warning" content="
 
-## 1.  Start with a new sub-module.
+**Before you start...**<br><br>
+
+This is really a big contribution and can't be done with a drive by contribution. It requires dedicated passion
+and long commitment to implement support for a new language.<br><br>
+
+This step by step guide is just a small intro to get the basics started and it's also not necessarily up-to-date
+or complete and you have to be able to fill in the blanks.<br><br>
+
+After the basic support for a language is there, there are lots of missing features left. Typical features
+that can greatly improve rule writing are: symbol table, type resolution, call/data flow analysis.<br><br>
+
+Symbol table keeps track of variables and their usages. Type resolution tries to find the actual class type
+of each used type, following along method calls (including overloaded and overwritten methods), allowing
+to query sub types and type hierarchy. This requires additional configuration of an auxiliary classpath.
+Call and data flow analysis keep track of the data as it is moving through different execution paths
+a program has.<br><br>
+
+These features are out of scope of this guide. Type resolution and data flow are features that
+definitely don't come for free. It is much effort and requires perseverance to implement.<br><br>
+
+" %}
+
+
+## 1.  Start with a new sub-module
 *    See pmd-java or pmd-vm for examples.
 
 ## 2.  Implement an AST parser for your language
