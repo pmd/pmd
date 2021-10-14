@@ -369,8 +369,13 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private boolean nodeHasReferenceToResourceType(TypeNode refType) {
-        String simpleTypeName = refType.getTypeMirror().getSymbol().getSimpleName();
-        return isResourceTypeName(simpleTypeName);
+        @Nullable
+        JTypeDeclSymbol symbol = refType.getTypeMirror().getSymbol();
+        if (symbol != null) {
+            String simpleTypeName = symbol.getSimpleName();
+            return isResourceTypeName(simpleTypeName);
+        }
+        return false;
     }
 
     private boolean isResourceTypeName(String typeName) {

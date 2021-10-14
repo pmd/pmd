@@ -1744,4 +1744,24 @@ public class FalsePositive {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>NPE with null literal</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.BufferedReader;
+import java.io.IOException;
+
+class CloseResourceWithNull {
+    void test() throws IOException {
+        try (BufferedReader br1 = new BufferedReader(null)) {
+            ;
+        }
+        catch (IOException e) {
+            ;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
