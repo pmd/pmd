@@ -362,4 +362,9 @@ public class TestAccessEvaluator implements AccessEvaluator {
     public boolean isNamespaceGuardNamespace(Namespace arg0) {
         return false;
     }
+
+    @Override
+    public boolean doesLightningWebComponentExist(String var1) {
+        return false;
+    }
 }

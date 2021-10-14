@@ -85,4 +85,14 @@ public final class EmptySymbolProvider implements SymbolProvider {
     public TypeInfo getAggregateResultType(TypeInfo arg0) {
         return null;
     }
+
+    @Override
+    public boolean isDynamicTypeNamespace(String var1, String var2) {
+        return false;
+    }
+
+    @Override
+    public boolean isDynamicTypeNamespace(String var1) {
+        return false;
+    }
 }
