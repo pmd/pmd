@@ -823,19 +823,16 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#classcastexceptionwithtoarray">
         <description>
 When deriving an array of a specific class from your Collection, one should provide an array of
-the same class as the parameter of the toArray() method. Doing otherwise you will will result
-in a ClassCastException.
+the same class as the parameter of the `toArray()` method. Doing otherwise will result
+in a `ClassCastException`.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//CastExpression[Type/ReferenceType/ClassOrInterfaceType[@Image != "Object"]]
-    /PrimaryExpression
-    [PrimaryPrefix/Name[ends-with(@Image, '.toArray')]]
-    [PrimarySuffix/Arguments[not(*)]]
-    [count(PrimarySuffix) = 1]
+//CastExpression[ArrayType/ClassOrInterfaceType[not(pmd-java:typeIsExactly('java.lang.Object'))]]
+    /MethodCall[pmd-java:matchesSig("java.util.Collection#toArray()")]
 ]]>
                 </value>
             </property>
@@ -850,7 +847,7 @@ c.add(obj);
 Integer[] a = (Integer [])c.toArray();
 
    // this is fine and will not trigger the rule
-Integer[] b = (Integer [])c.toArray(new Integer[c.size()]);
+Integer[] b = (Integer [])c.toArray(new Integer[0]);
 ]]>
         </example>
     </rule>
