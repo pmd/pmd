@@ -86,9 +86,9 @@ This is a minor release.
 * 8 closed tickets & PRs
 * Days since last release: 27
 
-## 28-August-2021 - 6.38.0-SNAPSHOT
+## 31-July-2021 - 6.37.0
 
-The PMD team is pleased to announce PMD 6.38.0-SNAPSHOT.
+The PMD team is pleased to announce PMD 6.37.0.
 
 This is a minor release.
 
@@ -133,7 +133,7 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 
 This release ships with 3 new Java rules.
 
-*   [`PrimitiveWrapperInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#primitivewrapperinstantiation) reports usages of primitive wrapper
+*   [`PrimitiveWrapperInstantiation`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_bestpractices.html#primitivewrapperinstantiation) reports usages of primitive wrapper
     constructors. They are deprecated since Java 9 and should not be used.
 
 ```xml
@@ -142,7 +142,7 @@ This release ships with 3 new Java rules.
 
    The rule is part of the quickstart.xml ruleset.
 
-*   [`SimplifiableTestAssertion`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#simplifiabletestassertion) suggests rewriting
+*   [`SimplifiableTestAssertion`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_bestpractices.html#simplifiabletestassertion) suggests rewriting
     some test assertions to be more readable.
 
 ```xml
@@ -151,7 +151,7 @@ This release ships with 3 new Java rules.
 
    The rule is part of the quickstart.xml ruleset.
 
-*   [`ReturnEmptyCollectionRatherThanNull`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_errorprone.html#returnemptycollectionratherthannull) suggests returning empty collections / arrays
+*   [`ReturnEmptyCollectionRatherThanNull`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_errorprone.html#returnemptycollectionratherthannull) suggests returning empty collections / arrays
     instead of null.
 
 ```xml
@@ -162,8 +162,8 @@ This release ships with 3 new Java rules.
 
 #### Renamed rules
 
-*   The Java rule [`MissingBreakInSwitch`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_errorprone.html#missingbreakinswitch) has been renamed to
-    [`ImplicitSwitchFallThrough`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_errorprone.html#implicitswitchfallthrough) (category error prone) to better reflect the rule's
+*   The Java rule [`MissingBreakInSwitch`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_errorprone.html#missingbreakinswitch) has been renamed to
+    [`ImplicitSwitchFallThrough`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_errorprone.html#implicitswitchfallthrough) (category error prone) to better reflect the rule's
     purpose: The rule finds implicit fall-through cases in switch statements, which are most
     likely unexpected. The old rule name described only one way how to avoid a fall-through,
     namely using `break` but `continue`, `throw` and `return` avoid a fall-through
@@ -172,28 +172,28 @@ This release ships with 3 new Java rules.
 #### Deprecated rules
 
 *   The following Java rules are deprecated and removed from the quickstart ruleset,
-    as the new rule [`SimplifiableTestAssertion`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#simplifiabletestassertion) merges
+    as the new rule [`SimplifiableTestAssertion`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_bestpractices.html#simplifiabletestassertion) merges
     their functionality:
-    * [`UseAssertEqualsInsteadOfAssertTrue`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue)
-    * [`UseAssertNullInsteadOfAssertTrue`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue)
-    * [`UseAssertSameInsteadOfAssertTrue`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue)
-    * [`UseAssertTrueInsteadOfAssertEquals`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#useasserttrueinsteadofassertequals)
-    * [`SimplifyBooleanAssertion`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_design.html#simplifybooleanassertion)
+    * [`UseAssertEqualsInsteadOfAssertTrue`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue)
+    * [`UseAssertNullInsteadOfAssertTrue`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue)
+    * [`UseAssertSameInsteadOfAssertTrue`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue)
+    * [`UseAssertTrueInsteadOfAssertEquals`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_bestpractices.html#useasserttrueinsteadofassertequals)
+    * [`SimplifyBooleanAssertion`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_design.html#simplifybooleanassertion)
 
-*   The Java rule [`ReturnEmptyArrayRatherThanNull`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_errorprone.html#returnemptyarrayratherthannull) is deprecated and removed from
-    the quickstart ruleset, as the new rule [`ReturnEmptyCollectionRatherThanNull`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_errorprone.html#returnemptycollectionratherthannull)
+*   The Java rule [`ReturnEmptyArrayRatherThanNull`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_errorprone.html#returnemptyarrayratherthannull) is deprecated and removed from
+    the quickstart ruleset, as the new rule [`ReturnEmptyCollectionRatherThanNull`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_errorprone.html#returnemptycollectionratherthannull)
     supersedes it.
 
 *   The following Java rules are deprecated and removed from the quickstart ruleset,
-    as the new rule [`PrimitiveWrapperInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_bestpractices.html#primitivewrapperinstantiation) merges
+    as the new rule [`PrimitiveWrapperInstantiation`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_bestpractices.html#primitivewrapperinstantiation) merges
     their functionality:
-    * [`BooleanInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_performance.html#booleaninstantiation)
-    * [`ByteInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_performance.html#byteinstantiation)
-    * [`IntegerInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_performance.html#integerinstantiation)
-    * [`LongInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_performance.html#longinstantiation)
-    * [`ShortInstantiation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_performance.html#shortinstantiation)
+    * [`BooleanInstantiation`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_performance.html#booleaninstantiation)
+    * [`ByteInstantiation`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_performance.html#byteinstantiation)
+    * [`IntegerInstantiation`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_performance.html#integerinstantiation)
+    * [`LongInstantiation`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_performance.html#longinstantiation)
+    * [`ShortInstantiation`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_performance.html#shortinstantiation)
 
-*   The Java rule [`UnnecessaryWrapperObjectCreation`](https://pmd.github.io/pmd-6.38.0-SNAPSHOT/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation) is deprecated
+*   The Java rule [`UnnecessaryWrapperObjectCreation`](https://pmd.github.io/pmd-6.37.0/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation) is deprecated
     with no planned replacement before PMD 7. In it's current state, the rule is not useful
     as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
     in the same expression. In PMD 7 this and more cases will be covered by a
@@ -233,17 +233,17 @@ This release ships with 3 new Java rules.
 #### Experimental APIs
 
 *   The AST types and APIs around Sealed Classes are not experimental anymore:
-    *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.38.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isSealed()"><code>ASTClassOrInterfaceDeclaration#isSealed</code></a>,
-        <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.38.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isNonSealed()"><code>ASTClassOrInterfaceDeclaration#isNonSealed</code></a>,
-        <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.38.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getPermittedSubclasses()"><code>ASTClassOrInterfaceDeclaration#getPermittedSubclasses</code></a>
-    *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.38.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPermitsList.html#"><code>ASTPermitsList</code></a>
+    *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isSealed()"><code>ASTClassOrInterfaceDeclaration#isSealed</code></a>,
+        <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isNonSealed()"><code>ASTClassOrInterfaceDeclaration#isNonSealed</code></a>,
+        <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getPermittedSubclasses()"><code>ASTClassOrInterfaceDeclaration#getPermittedSubclasses</code></a>
+    *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.37.0/net/sourceforge/pmd/lang/java/ast/ASTPermitsList.html#"><code>ASTPermitsList</code></a>
 
 #### Internal API
 
 Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
 
-*   The inner class <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.38.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenEntry.State.html#"><code>net.sourceforge.pmd.cpd.TokenEntry.State</code></a> is considered to be internal API.
+*   The inner class <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.37.0/net/sourceforge/pmd/cpd/TokenEntry.State.html#"><code>net.sourceforge.pmd.cpd.TokenEntry.State</code></a> is considered to be internal API.
     It will probably be moved away with PMD 7.
 
 ### External Contributions
