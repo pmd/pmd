@@ -137,6 +137,61 @@ public class Something {
         </example>
     </rule>
 
+    <rule name="EagerlyLoadedDescribeSObjectResult"
+          language="apex"
+          since="6.40.0"
+          message="DescribeSObjectResult could be being loaded eagerly with all child relationships."
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#eagerlyloadeddescribesobjectresult">
+        <description>
+This rule finds `DescribeSObjectResult`s which could have been loaded eagerly via `SObjectType.getDescribe()`.
+
+When using `SObjectType.getDescribe()` or `Schema.describeSObjects()` without supplying a `SObjectDescribeOptions`, implicitely it will be using `SObjectDescribeOptions.DEFAULT` then all
+child relationships will be loaded eagerly regardless whether this information is needed or not.
+This has a potential negative performance impact. Instead [`SObjectType.getDescribe(options)`](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_class_Schema_SObjectType.htm#unique_346834793)
+or [`Schema.describeSObjects(SObjectTypes, options)`](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_schema.htm#apex_System_Schema_describeSObjects) should be used and a `SObjectDescribeOptions` should be supplied. By using
+`SObjectDescribeOptions.DEFERRED` the describe attributes will be lazily initialized at first use.
+
+Lazy loading `DescribeSObjectResult` on picklist fields is not recommended. The lazy loaded
+describe objects might not be 100% accurate. It might be safer to explicitly use
+`SObjectDescribeOptions.FULL` in such a case. The same applies when you need the same `DescribeSObjectResult` to be consistent
+accross different contexts and API versions.
+
+Properties:
+
+* `noDefault`: The behavior of `SObjectDescribeOptions.DEFAULT` changes from API Version 43 to 44:
+    With API Version 43, the attributes are loaded eagerly. With API Version 44, they are loaded lazily.
+    Simply using `SObjectDescribeOptions.DEFAULT` doesn't automatically make use of lazy loading.
+    (unless "Use Improved Schema Caching" critical update is applied, `SObjectDescribeOptions.DEFAULT` do fallback to lazy loading)
+    With this property enabled, such usages are found.
+    You might ignore this, if you can make sure, that you don't run a mix of API Versions.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="noDefault" type="Boolean" value="false" description="Do not allow SObjectDescribeOptions.DEFAULT option to ensure consistent results no matter where getDescribe is called"/>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCallExpression[(lower-case(@MethodName) = "getdescribe" or lower-case(@MethodName) = "describesobjects") and not(VariableExpression/ReferenceExpression[lower-case(@Image) = "sobjectdescribeoptions" ])] |
+//ReferenceExpression[$noDefault = true() and lower-case(@Image) = "sobjectdescribeoptions" and parent::VariableExpression[lower-case(@Image) = "default"]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    public static void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="OperationWithLimitsInLoop"
           language="apex"
           since="6.29.0"

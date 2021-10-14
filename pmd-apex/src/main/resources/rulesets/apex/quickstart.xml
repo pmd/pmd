@@ -162,6 +162,7 @@
       </properties>
    </rule>
 <!--    <rule ref="category/apex/performance.xml/AvoidDebugStatements" /> -->
+<!--    <rule ref="category/apex/performance.xml/EagerlyLoadedDescribeSObjectResult" /> -->
 
    <!-- NAMING -->
    <rule ref="category/apex/codestyle.xml/ClassNamingConventions" message="Class names should begin with an uppercase character">
