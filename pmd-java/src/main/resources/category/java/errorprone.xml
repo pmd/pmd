@@ -862,7 +862,7 @@ Integer[] b = (Integer [])c.toArray(new Integer[c.size()]);
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonemethodmustbepublic">
         <description>
-The java Manual says "By convention, classes that implement this interface should override
+The java manual says "By convention, classes that implement this interface should override
 Object.clone (which is protected) with a public method."
         </description>
         <priority>3</priority>
@@ -870,9 +870,9 @@ Object.clone (which is protected) with a public method."
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Public= false()]
-  [@Name = 'clone']
-  [@Arity = 0]
+//MethodDeclaration[not(pmd-java:modifiers() = "public")]
+    [@Name = 'clone']
+    [@Arity = 0]
 ]]>
                 </value>
             </property>
