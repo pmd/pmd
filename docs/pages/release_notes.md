@@ -14,11 +14,26 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New rules
+
+*   The new Apex rule {% rule apex/performance/EagerlyLoadedDescribeSObjectResult %} finds
+    `DescribeSObjectResult`s which could have been loaded eagerly via `SObjectType.getDescribe()`.
+
+```xml
+    <rule ref="category/apex/performance.xml/EagerlyLoadedDescribeSObjectResult" />
+```
+
+
 ### Fixed Issues
+
+*   apex
+    *   [#3532](https://github.com/pmd/pmd/issues/3532): \[apex] Promote usage of consistent getDescribe() info
 
 ### API Changes
 
 ### External Contributions
+
+*   [#3538](https://github.com/pmd/pmd/pull/3538): \[apex] New rule EagerlyLoadedDescribeSObjectResult - [Jonathan Wiesel](https://github.com/jonathanwiesel)
 
 {% endtocmaker %}
 
