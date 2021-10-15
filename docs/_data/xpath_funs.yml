@@ -172,3 +172,18 @@ langs:
             outcome: "Matches calls to any method with 2 `int` parameters (!= argument)"
           - code: '//ConstructorCall[pmd-java:matchesSig("java.util.ArrayList#new(int)")]'
             outcome: "Matches constructors calls of ArrayList with a single int parameter"
+
+  - name: "Kotlin"
+    ns: "pmd-kotlin"
+    funs:
+      - name: hasChildren
+        returnType: "xs:boolean"
+        shortDescription: "Tests if a node has children"
+        description: "Returns true if the Node has children. This is for test purposes only."
+        parameters:
+          - name: "count"
+            type: "xs:decimal"
+            description: "The number of children."
+        examples:
+          - code: '//Identifier[pmd-kotlin:hasChildren(3)]'
+            outcome: "true or false"
