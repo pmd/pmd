@@ -1,4 +1,6 @@
 +- File
+   +- T-NL
+   +- T-NL
    +- PackageHeader
    |  +- T-PACKAGE
    |  +- Identifier
@@ -264,5 +266,5 @@
    |  |           |     +- T-NL
    |  |           +- T-RCURL
    |  +- Semis
-   |     +- EOF
+   |     +- T-NL
    +- EOF

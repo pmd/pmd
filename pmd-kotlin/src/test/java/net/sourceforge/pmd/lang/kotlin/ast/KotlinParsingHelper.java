@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  *

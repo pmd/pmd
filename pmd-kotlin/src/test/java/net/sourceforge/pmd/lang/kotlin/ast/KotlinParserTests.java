@@ -16,9 +16,4 @@ public class KotlinParserTests extends BaseKotlinTreeDumpTest {
         doTest("Simple");
     }
 
-//    @Test
-//    public void testBtree() {
-//        doTest("BTree");
-//    }
-
 }
