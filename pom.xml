@@ -136,7 +136,6 @@
                         <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
                         <visitor>true</visitor>
                         <listener>true</listener>
-                        <libDirectory>src/main/antlr4/net/sourceforge/pmd/lang/kotlin/ast</libDirectory>
                     </configuration>
                     <executions>
                         <execution>

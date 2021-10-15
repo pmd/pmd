@@ -20,6 +20,9 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
+                <configuration combine.self="override">
+                    <libDirectory>src/main/antlr4/net/sourceforge/pmd/lang/kotlin/ast</libDirectory>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
