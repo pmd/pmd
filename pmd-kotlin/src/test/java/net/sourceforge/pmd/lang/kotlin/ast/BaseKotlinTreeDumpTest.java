@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.NodePrintersKt;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
