@@ -35,6 +35,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class InvalidLogMessageFormatRule extends AbstractJavaRule {
 
@@ -217,14 +218,17 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
                 varName = name.getImage();
             }
         }
-        for (NameDeclaration decl : prefix.getScope().getDeclarations().keySet()) {
-            if (decl.getName().equals(varName)) {
-                if (decl.getNode().getParent() instanceof ASTLambdaExpression) {
+        Scope scope = prefix == null ? null : prefix.getScope();
+        while (scope != null) {
+            // Try recursively to find the expected NameDeclaration
+            for (NameDeclaration decl : scope.getDeclarations().keySet()) {
+                if (decl.getName().equals(varName)) {
                     // If the last parameter is a lambda parameter, then we also ignore it - regardless of the type.
                     // This is actually a workaround, since type resolution doesn't resolve the types of lambda parameters.
-                    return true;
+                    return decl.getNode().getParent() instanceof ASTLambdaExpression;
                 }
             }
+            scope = scope.getParent();
         }
         return false;
     }
