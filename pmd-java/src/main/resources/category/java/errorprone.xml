@@ -931,10 +931,10 @@ public class MyClass {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonemethodreturntypemustmatchclassname">
         <description>
-If a class implements cloneable the return type of the method clone() must be the class name. That way, the caller
+If a class implements `Cloneable` the return type of the method `clone()` must be the class name. That way, the caller
 of the clone method doesn't need to cast the returned clone to the correct type.
 
-Note: This is only possible with Java 1.5 or higher.
+Note: Such a covariant return type is only possible with Java 1.5 or higher.
         </description>
         <priority>3</priority>
         <properties>
@@ -942,11 +942,9 @@ Note: This is only possible with Java 1.5 or higher.
                 <value>
 <![CDATA[
 //MethodDeclaration
-[
-@Name = 'clone'
-and @Arity = 0
-and not (ResultType//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName)
-]
+    [@Name = 'clone']
+    [@Arity = 0]
+    [ClassOrInterfaceType[1]/@SimpleName != ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]
 ]]>
                 </value>
             </property>
