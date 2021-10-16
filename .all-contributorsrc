@@ -6446,6 +6446,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "essobedo",
+      "name": "Nicolas Filotto",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1618116?v=4",
+      "profile": "https://stackoverflow.com/users/1997376/nicolas-filotto",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
