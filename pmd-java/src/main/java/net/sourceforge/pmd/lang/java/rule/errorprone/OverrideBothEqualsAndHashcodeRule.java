@@ -4,16 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import java.util.List;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRule {
 
@@ -46,51 +43,30 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImplementsList node, Object data) {
-        for (int ix = 0; ix < node.getNumChildren(); ix++) {
-            if (node.getChild(ix) instanceof ASTClassOrInterfaceType) {
-                ASTClassOrInterfaceType cit = (ASTClassOrInterfaceType) node.getChild(ix);
-                Class<?> clazz = cit.getType();
-                if (clazz != null && node.getChild(ix).hasImageEqualTo("Comparable")) {
-                    implementsComparable = true;
-                    return data;
-                }
-            }
-        }
+        implementsComparable = node.children().filter(child -> TypeTestUtil.isA(Comparable.class, child)).nonEmpty();
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(ASTMethodDeclarator node, Object data) {
+    public Object visit(ASTMethodDeclaration node, Object data) {
         if (implementsComparable) {
             return data;
         }
 
-        int iFormalParams = 0;
-        String paramName = null;
-        for (int ix = 0; ix < node.getNumChildren(); ix++) {
-            Node sn = node.getChild(ix);
-            if (sn instanceof ASTFormalParameters) {
-                List<ASTFormalParameter> allParams = ((ASTFormalParameters) sn)
-                        .findChildrenOfType(ASTFormalParameter.class);
-                for (ASTFormalParameter formalParam : allParams) {
-                    iFormalParams++;
-                    ASTClassOrInterfaceType param = formalParam.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-                    if (param != null) {
-                        paramName = param.getImage();
-                    }
-                }
-            }
+        int formalParamsCount = node.getFormalParameters().size();
+        ASTFormalParameter formalParam = null;
+        if (formalParamsCount > 0) {
+            formalParam = node.getFormalParameters().get(0);
         }
 
-        if (iFormalParams == 0 && node.hasImageEqualTo("hashCode")) {
+        if (formalParamsCount == 0 && "hashCode".equals(node.getName())) {
             containsHashCode = true;
             nodeFound = node;
-        } else if (iFormalParams == 1 && node.hasImageEqualTo("equals")
-                && ("Object".equals(paramName) || "java.lang.Object".equals(paramName))) {
+        } else if (formalParamsCount == 1 && "equals".equals(node.getName())
+                && TypeTestUtil.isExactlyA(Object.class, formalParam)) {
             containsEquals = true;
             nodeFound = node;
         }
         return super.visit(node, data);
     }
-
 }
