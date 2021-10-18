@@ -181,4 +181,25 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive with no dereferencing variable access</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object a, Object b, boolean aMustBePresent) {
+        if (a == b || a == null) { } // there is no NPE happening here
+        int aUndefined = (a == b || a == null) ? 1 : 0;
+        if (a != b && a != null) { }
+        if (a == this || a == null) { }
+        for (Object p = a; p != b && p != null; p = p.prev) {}
+        if (a != this &&
+            a != null && b.equals(a.toString())) { } // potential NPE for b.equals, but that's not the point here
+        if (a == b || a == null || (b == null && !aMustBePresent)) { }
+        if ((a instanceof Foo) || (a == null)) { }
+        while (Object.class != a && a != null) { }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
