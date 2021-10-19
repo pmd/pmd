@@ -284,8 +284,8 @@ public class DeadLinksChecker {
 
 
     private List<Path> listMdFiles(Path pagesDirectory) {
-        try {
-            return Files.walk(pagesDirectory)
+        try (Stream<Path> stream = Files.walk(pagesDirectory)) {
+            return stream
                  .filter(Files::isRegularFile)
                  .filter(path -> path.toString().endsWith(".md"))
                  .collect(Collectors.toList());
