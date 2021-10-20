@@ -34,4 +34,90 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3569 - Verify use of reportInTestMethod, negative test unspecified/default</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+@IsTest
+private class FunctionalityTest {
+    static testMethod void testWithModifier() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+            // Expected
+        }
+    }
+
+    @IsTest
+    static void testWithAnnotation() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+            // Expected
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3569 - Verify use of reportInTestMethod, negative test specified</description>
+        <rule-property name="reportInTestMethod">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+@IsTest
+private class FunctionalityTest {
+    static testMethod void testWithModifier() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+            // Expected
+        }
+    }
+
+    @IsTest
+    static void testWithAnnotation() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+            // Expected
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3569 - Verify use of reportInTestMethod, positive test</description>
+        <rule-property name="reportInTestMethod">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest
+private class FunctionalityTest {
+    static testMethod void testWithModifier() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+            // Expected
+        }
+    }
+
+    @IsTest
+    static void testWithAnnotation() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+            // Expected
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

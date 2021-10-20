@@ -149,10 +149,11 @@ or reported.
         <priority>3</priority>
         <properties>
             <property name="version" value="2.0"/>
+            <property name="reportInTestMethod" type="Boolean" value="true" description="If false, empty catch blocks in test methods are not flagged. This supports a common idiom used to verify that expected exceptions are thrown."/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchBlockStatement[./BlockStatement[count(*) = 0]]
+//CatchBlockStatement[./BlockStatement[count(*) = 0] and ($reportInTestMethod = true() or ancestor::Method[@Test != true()])]
 ]]>
                 </value>
             </property>
