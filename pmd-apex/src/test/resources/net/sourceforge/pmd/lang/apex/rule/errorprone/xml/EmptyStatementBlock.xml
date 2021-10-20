@@ -67,7 +67,7 @@ public class Singleton {
     private Singleton() {
     }
 }
-        ]]></code>
+]]></code>
     </test-code>
 
     <test-code>
@@ -79,7 +79,7 @@ public class Singleton {
     private Singleton() {
     }
 }
-        ]]></code>
+]]></code>
     </test-code>
 
     <test-code>
@@ -91,6 +91,41 @@ public class Singleton {
     private Singleton() {
     }
 }
-        ]]></code>
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3568 - Verify use of reportEmptyVirtualMethod, negative test unspecified/default</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class AbstractBaseClass {
+    public virtual void overrideMe() {
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3568 - Verify use of reportEmptyVirtualMethod, negative test specified</description>
+        <rule-property name="reportEmptyVirtualMethod">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class AbstractBaseClass {
+    public virtual void overrideMe() {
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3568 - Verify use of reportEmptyVirtualMethod, positive test</description>
+        <rule-property name="reportEmptyVirtualMethod">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class AbstractBaseClass {
+    public virtual void overrideMe() {
+    }
+}
+]]></code>
     </test-code>
 </test-data>
