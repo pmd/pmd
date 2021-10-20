@@ -58,4 +58,39 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3568 - Verify use of reportEmptyPrivateNoArgConstructor, negative test unspecified/default</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Singleton {
+    private Singleton() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3568 - Verify use of reportEmptyPrivateNoArgConstructor, negative test specified</description>
+        <rule-property name="reportEmptyPrivateNoArgConstructor">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Singleton {
+    private Singleton() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3568 - Verify use of reportEmptyPrivateNoArgConstructor, positive test</description>
+        <rule-property name="reportEmptyPrivateNoArgConstructor">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Singleton {
+    private Singleton() {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
