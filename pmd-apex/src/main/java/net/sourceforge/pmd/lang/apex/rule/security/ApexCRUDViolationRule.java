@@ -62,6 +62,7 @@ import org.apache.commons.lang3.StringUtils;
  * Finding missed CRUD checks for SOQL and DML operations.
  *
  * @author sergey.gorbaty
+ *
  */
 public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final Pattern SELECT_FROM_PATTERN = Pattern.compile("[\\S|\\s]+?FROM[\\s]+?(\\w+)",
@@ -79,14 +80,14 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     // ESAPI.accessController().isAuthorizedToView(Lead.sObject, fields)
     private static final String[] ESAPI_ISAUTHORIZED_TO_VIEW = new String[] { "ESAPI", "accessController",
-            "isAuthorizedToView", };
+        "isAuthorizedToView", };
     private static final String[] ESAPI_ISAUTHORIZED_TO_CREATE = new String[] { "ESAPI", "accessController",
-            "isAuthorizedToCreate", };
+        "isAuthorizedToCreate", };
     private static final String[] ESAPI_ISAUTHORIZED_TO_UPDATE = new String[] { "ESAPI", "accessController",
-            "isAuthorizedToUpdate", };
+        "isAuthorizedToUpdate", };
     private static final String[] ESAPI_ISAUTHORIZED_TO_DELETE = new String[] { "ESAPI", "accessController",
-            "isAuthorizedToDelete", };
-    // NOTE: ESAPI doesn't provide support for undelete or merge
+        "isAuthorizedToDelete", };
+    // ESAPI doesn't provide support for undelete or merge
 
     private static final String[] RESERVED_KEYS_FLS = new String[] { "Schema", S_OBJECT_TYPE, };
 
@@ -209,11 +210,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             default:
                 break;
             }
-
+             
         } else {
             collectCRUDMethodLevelChecks(node);
         }
-
+        
         return data;
     }
 
@@ -388,7 +389,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 extractObjectTypeFromESAPI(node, IS_DELETABLE);
             }
 
-            // NOTE: ESAPI doesn't provide support for undelete or merge
+            // ESAPI doesn't provide support for undelete or merge
 
             // see if getDescribe()
             final ASTMethodCallExpression nestedMethodCall = ref
@@ -501,7 +502,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void checkInlineNonArgsObject(final ApexNode<?> node, final Object data, final String crudMethod) {
-
+        
         final ASTNewObjectExpression newEmptyObj = node.getFirstChildOfType(ASTNewObjectExpression.class);
         if (newEmptyObj != null) {
             final String type = Helper.getFQVariableName(newEmptyObj);
@@ -617,8 +618,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                             .append(":").append(identifiers.get(0));
                     checkedTypeToDMLOperationViaESAPI.put(sb.toString(), dmlOperation);
                 }
+
             }
         }
+
     }
 
     private boolean validateCRUDCheckPresent(final ApexNode<?> node, final Object data, final String crudMethod,
@@ -670,7 +673,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
         if (wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass)
-                || wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod)) {
+            || wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod)) {
             return;
         }
 
@@ -753,7 +756,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
                     validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
                 }
-
+                
             } else {
                 for (String typeFromSOQL : typesFromSOQL) {
                     validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
