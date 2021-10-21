@@ -660,6 +660,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void checkForAccessibility(final ASTSoqlExpression node, Object data) {
+        // TODO: This includes sub-relation queries which are incorrectly flagged because you authorize the type
+        //  and not the sub-relation name. Should we (optionally) exclude sub-relations until/unless they can be
+        //  resolved to the proper SObject type?
         final Set<String> typesFromSOQL = getTypesFromSOQLQuery(node);
 
         final Set<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);

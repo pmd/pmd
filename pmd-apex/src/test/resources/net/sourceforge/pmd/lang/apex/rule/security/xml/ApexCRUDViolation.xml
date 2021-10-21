@@ -1492,4 +1492,32 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <!-- Demonstrate that authorization for sub-relation queries doesn't work properly; see checkForAccessibility() -->
+
+    <test-code>
+        <description>Demonstrate that authorization for sub-relation queries doesn't work properly</description>
+        <!-- This is what we should get if things were working properly -->
+        <!--<expected-problems>0</expected-problems>-->
+        <!-- But this is what we actually get -->
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (Account.SObjectType.getDescribe().isAccessible() &&
+            // This check isn't working because it's checking against "Contacts" due to the nested FROM clause
+            // instead of "Contact" given that "Contacts" is of type "List<Contact>"
+            Contact.SObjectType.getDescribe().isAccessible()) {
+            List<Account> accounts = [
+                SELECT Id, (
+                    SELECT Id
+                    FROM Contacts
+                )
+                FROM Account
+            ];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
