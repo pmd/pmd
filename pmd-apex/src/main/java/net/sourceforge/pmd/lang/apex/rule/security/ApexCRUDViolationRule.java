@@ -17,9 +17,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
@@ -56,7 +59,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.HashMultimap;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Finding missed CRUD checks for SOQL and DML operations.
@@ -130,6 +132,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             put(MERGE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_MERGEABLE);
         }
     };
+
+    // Compiled pattern cache for configured method name patterns
+    private static final Map<String, Pattern> COMPILED_AUTH_METHOD_PATTERN_CACHE = new HashMap<>();
 
     private Map<String, String> varToTypeMapping;
     private HashMultimap<String, String> typeToDMLOperationMapping;
@@ -566,10 +571,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             final ASTMethod methodBody = resolveMethodCalls(node);
             if (methodBody != null) {
                 innerMethodCalls.addAll(methodBody.findDescendantsOfType(ASTMethodCallExpression.class));
-            }
-            // If we couldn't resolve it locally, add any calls for configured authorization patterns
-            else if (isAuthMethodInvocation(node)) {
-                innerMethodCalls.add(node);
+            } else {
+                // If we couldn't resolve it locally, add any calls for configured authorization patterns
+                if (isAuthMethodInvocation(node)) {
+                    innerMethodCalls.add(node);
+                }
             }
         }
     }
@@ -627,8 +633,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private boolean validateCRUDCheckPresent(final ApexNode<?> node, final Object data, final String crudMethod,
             final String typeCheck) {
         boolean missingKey = !typeToDMLOperationMapping.containsKey(typeCheck);
-        boolean isImproperDMLCheck = !isProperESAPICheckForDML(typeCheck, crudMethod) &&
-                !isProperAuthPatternBasedCheckForDML(typeCheck, crudMethod);
+        boolean isImproperDMLCheck = !isProperESAPICheckForDML(typeCheck, crudMethod)
+                && !isProperAuthPatternBasedCheckForDML(typeCheck, crudMethod);
         boolean noSecurityEnforced = !isWithSecurityEnforced(node);
         if (missingKey) {
             //if condition returns true, add violation, otherwise return.
@@ -852,8 +858,13 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private boolean isAuthMethodInvocation(final ASTMethodCallExpression methodNode, final PropertyDescriptor<String> authMethodPatternDescriptor) {
         final String authMethodPattern = getProperty(authMethodPatternDescriptor);
         if (StringUtils.isNotBlank(authMethodPattern)) {
-            // TODO: Should(/can?) we cache these? What happens if the patterns in the PMD config file change?
-            final Pattern compiledAuthMethodPattern = Pattern.compile(authMethodPattern, Pattern.CASE_INSENSITIVE);
+            // Minimize compilation overhead for repeated pattern use
+            final Pattern compiledAuthMethodPattern = COMPILED_AUTH_METHOD_PATTERN_CACHE.computeIfAbsent(authMethodPattern, new Function<String, Pattern>() {
+                @Override
+                public Pattern apply(String authMethodPattern) {
+                    return Pattern.compile(authMethodPattern, Pattern.CASE_INSENSITIVE);
+                }
+            });
             final String fullMethodName = methodNode.getFullMethodName();
             final Matcher authMethodMatcher = compiledAuthMethodPattern.matcher(fullMethodName);
             if (authMethodMatcher.matches()) {
