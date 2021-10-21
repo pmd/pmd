@@ -55,8 +55,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
+import com.google.common.collect.HashMultimap;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -132,9 +131,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     };
 
     private Map<String, String> varToTypeMapping;
-    private ListMultimap<String, String> typeToDMLOperationMapping;
+    private HashMultimap<String, String> typeToDMLOperationMapping;
     private Map<String, String> checkedTypeToDMLOperationViaESAPI;
-    private ListMultimap<String, String> checkedTypeToDMLOperationsViaAuthPattern;
+    private HashMultimap<String, String> checkedTypeToDMLOperationsViaAuthPattern;
     private Map<String, ASTMethod> classMethods;
     private String className;
 
@@ -157,9 +156,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         // At the start of each rule execution, these member variables need to be fresh. So they're initialized in the
         // .start() method instead of the constructor, since .start() is called before every execution.
         varToTypeMapping = new HashMap<>();
-        typeToDMLOperationMapping = ArrayListMultimap.create();
+        typeToDMLOperationMapping = HashMultimap.create();
         checkedTypeToDMLOperationViaESAPI = new HashMap<>();
-        checkedTypeToDMLOperationsViaAuthPattern = ArrayListMultimap.create();
+        checkedTypeToDMLOperationsViaAuthPattern = HashMultimap.create();
         classMethods = new WeakHashMap<>();
         className = null;
         super.start(ctx);
@@ -637,7 +636,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         } else {
             boolean properChecksHappened = false;
 
-            List<String> dmlOperationsChecked = typeToDMLOperationMapping.get(typeCheck);
+            Set<String> dmlOperationsChecked = typeToDMLOperationMapping.get(typeCheck);
             for (String dmlOp : dmlOperationsChecked) {
                 if (dmlOp.equalsIgnoreCase(crudMethod)) {
                     properChecksHappened = true;
@@ -866,7 +865,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 return true;
             }
 
-            final List<String> dmlOperationsChecked = checkedTypeToDMLOperationsViaAuthPattern.get(typeToCheck);
+            final Set<String> dmlOperationsChecked = checkedTypeToDMLOperationsViaAuthPattern.get(typeToCheck);
             return dmlOperationsChecked.contains(dmlOperation);
         }
 

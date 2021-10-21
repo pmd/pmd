@@ -1227,6 +1227,43 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>>#3576 - Verify use of readAuthMethodPattern, negative test</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isAccessible(Account.SObjectType)) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+
+        AuthorizationUtil.assertAccessible(Account.SObjectType);
+        // TODO: Evidently this rule doesn't check Database.query() yet
+        List<Account> accounts = [SELECT Id FROM Account];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>>#3576 - Verify use of readAuthMethodPattern, positive test</description>
+        <rule-property name="readAuthMethodPattern">AuthorizationUtil\.(is|assert)Accessible</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isAccessible(Account.SObjectType)) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+
+        AuthorizationUtil.assertAccessible(Account.SObjectType);
+        // TODO: Evidently this rule doesn't check Database.query() yet
+        List<Account> accounts = [SELECT Id FROM Account];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>>#3576 - Verify use of updateAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
