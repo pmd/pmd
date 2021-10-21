@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDmlUndeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
@@ -86,6 +87,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             "isAuthorizedToUpdate", };
     private static final String[] ESAPI_ISAUTHORIZED_TO_DELETE = new String[] { "ESAPI", "accessController",
             "isAuthorizedToDelete", };
+    // NOTE: ESAPI doesn't provide support for undelete or merge
 
     private static final String[] RESERVED_KEYS_FLS = new String[] { "Schema", S_OBJECT_TYPE, };
 
@@ -195,6 +197,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             case "delete":
                 checkForCRUD(node, data, IS_DELETABLE);
                 break;
+            case "undelete":
+                checkForCRUD(node, data, IS_UNDELETABLE);
+                break;
             case "upsert":
                 checkForCRUD(node, data, IS_CREATEABLE);
                 checkForCRUD(node, data, IS_UPDATEABLE);
@@ -222,6 +227,12 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     @Override
     public Object visit(ASTDmlDeleteStatement node, Object data) {
         checkForCRUD(node, data, IS_DELETABLE);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTDmlUndeleteStatement node, Object data) {
+        checkForCRUD(node, data, IS_UNDELETABLE);
         return data;
     }
 
@@ -377,6 +388,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             if (Helper.isMethodCallChain(node, ESAPI_ISAUTHORIZED_TO_DELETE)) {
                 extractObjectTypeFromESAPI(node, IS_DELETABLE);
             }
+
+            // NOTE: ESAPI doesn't provide support for undelete or merge
 
             // see if getDescribe()
             final ASTMethodCallExpression nestedMethodCall = ref

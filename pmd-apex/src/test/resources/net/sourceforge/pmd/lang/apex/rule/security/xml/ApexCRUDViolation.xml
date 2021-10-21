@@ -1202,7 +1202,7 @@ public class Foo {
         }
 
         AuthorizationUtil.assertCreateable(Account.SObjectType);
-        insert new List<Account>(new Account(Name = 'X'));
+        Database.insert(new List<Account>(new Account(Name = 'X')));
     }
 }
         ]]></code>
@@ -1220,7 +1220,7 @@ public class Foo {
         }
 
         AuthorizationUtil.assertCreateable(Account.SObjectType);
-        insert new List<Account>(new Account(Name = 'X'));
+        Database.insert(new List<Account>(new Account(Name = 'X')));
     }
 }
         ]]></code>
@@ -1237,7 +1237,7 @@ public class Foo {
         }
 
         AuthorizationUtil.assertUpdateable(Account.SObjectType);
-        update new List<Account>(new Account(Name = 'X'));
+        Database.update(new List<Account>(new Account(Name = 'X')));
     }
 }
         ]]></code>
@@ -1255,7 +1255,7 @@ public class Foo {
         }
 
         AuthorizationUtil.assertUpdateable(Account.SObjectType);
-        update new List<Account>(new Account(Name = 'X'));
+        Database.update(new List<Account>(new Account(Name = 'X')));
     }
 }
         ]]></code>
@@ -1272,7 +1272,7 @@ public class Foo {
         }
 
         AuthorizationUtil.assertUpsertable(Account.SObjectType);
-        upsert new List<Account>(new Account(Name = 'X'));
+        Database.upsert(new List<Account>(new Account(Name = 'X')));
     }
 }
         ]]></code>
@@ -1291,7 +1291,7 @@ public class Foo {
         }
 
         AuthorizationUtil.assertUpsertable(Account.SObjectType);
-        upsert new List<Account>(new Account(Name = 'X'));
+        Database.upsert(new List<Account>(new Account(Name = 'X')));
     }
 }
         ]]></code>
@@ -1308,7 +1308,7 @@ public class Foo {
         }
 
         AuthorizationUtil.assertDeletable(Account.SObjectType);
-        delete new List<Account>(new Account(Name = 'X'));
+        Database.delete(new List<Account>(new Account(Name = 'X')));
     }
 }
         ]]></code>
@@ -1326,7 +1326,83 @@ public class Foo {
         }
 
         AuthorizationUtil.assertDeletable(Account.SObjectType);
-        delete new List<Account>(new Account(Name = 'X'));
+        Database.delete(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>>#3576 - Verify use of undeleteAuthMethodPattern, negative test</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isUndeletable(Account.SObjectType)) {
+            undelete new List<Account>(new Account(Name = 'X'));
+        }
+
+        AuthorizationUtil.assertUndeletable(Account.SObjectType);
+        Database.undelete(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>>#3576 - Verify use of undeleteAuthMethodPattern, positive test</description>
+        <rule-property name="undeleteAuthMethodPattern">AuthorizationUtil\.(is|assert)Undeletable</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isUndeletable(Account.SObjectType)) {
+            undelete new List<Account>(new Account(Name = 'X'));
+        }
+
+        AuthorizationUtil.assertUndeletable(Account.SObjectType);
+        Database.undelete(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>>#3576 - Verify use of mergeAuthMethodPattern, negative test</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Account masterAccount;
+        Account mergeAccount;
+
+        if (AuthorizationUtil.isMergeable(Account.SObjectType)) {
+            merge masterAccount mergeAccount;
+        }
+
+        AuthorizationUtil.assertMergeable(Account.SObjectType);
+        Database.merge(masterAccount, mergeAccount, false);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>>#3576 - Verify use of mergeAuthMethodPattern, positive test</description>
+        <rule-property name="mergeAuthMethodPattern">AuthorizationUtil\.(is|assert)Mergeable</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Account masterAccount;
+        Account mergeAccount;
+
+        if (AuthorizationUtil.isMergeable(Account.SObjectType)) {
+            merge masterAccount mergeAccount;
+        }
+
+        AuthorizationUtil.assertMergeable(Account.SObjectType);
+        Database.merge(masterAccount, mergeAccount, false);
     }
 }
         ]]></code>
