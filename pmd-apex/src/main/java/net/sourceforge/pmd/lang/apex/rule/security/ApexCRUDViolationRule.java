@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.intProperty;
+import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,16 +51,17 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Finding missed CRUD checks for SOQL and DML operations.
  *
  * @author sergey.gorbaty
- *
  */
 public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final Pattern SELECT_FROM_PATTERN = Pattern.compile("[\\S|\\s]+?FROM[\\s]+?(\\w+)",
@@ -65,6 +69,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private static final String IS_CREATEABLE = "isCreateable";
     private static final String IS_DELETABLE = "isDeletable";
+    private static final String IS_UNDELETABLE = "isUndeletable";
     private static final String IS_UPDATEABLE = "isUpdateable";
     private static final String IS_MERGEABLE = "isMergeable";
     private static final String IS_ACCESSIBLE = "isAccessible";
@@ -74,21 +79,60 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     // ESAPI.accessController().isAuthorizedToView(Lead.sObject, fields)
     private static final String[] ESAPI_ISAUTHORIZED_TO_VIEW = new String[] { "ESAPI", "accessController",
-        "isAuthorizedToView", };
+            "isAuthorizedToView", };
     private static final String[] ESAPI_ISAUTHORIZED_TO_CREATE = new String[] { "ESAPI", "accessController",
-        "isAuthorizedToCreate", };
+            "isAuthorizedToCreate", };
     private static final String[] ESAPI_ISAUTHORIZED_TO_UPDATE = new String[] { "ESAPI", "accessController",
-        "isAuthorizedToUpdate", };
+            "isAuthorizedToUpdate", };
     private static final String[] ESAPI_ISAUTHORIZED_TO_DELETE = new String[] { "ESAPI", "accessController",
-        "isAuthorizedToDelete", };
+            "isAuthorizedToDelete", };
 
     private static final String[] RESERVED_KEYS_FLS = new String[] { "Schema", S_OBJECT_TYPE, };
 
     private static final Pattern WITH_SECURITY_ENFORCED = Pattern.compile("(?is).*[^']\\s*WITH\\s+SECURITY_ENFORCED\\s*[^']*");
 
+    // <operation>AuthMethodPattern config properties
+    private static final PropertyDescriptor<String> CREATE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("create");
+    private static final PropertyDescriptor<String> READ_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("read");
+    private static final PropertyDescriptor<String> UPDATE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("update");
+    private static final PropertyDescriptor<String> DELETE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("delete");
+    private static final PropertyDescriptor<String> UNDELETE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("undelete");
+    private static final PropertyDescriptor<String> MERGE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("merge");
+
+    // <operation>AuthMethodTypeParamIndex config properties
+    private static final PropertyDescriptor<Integer> CREATE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR = authMethodTypeParamIndexProperty("create");
+    private static final PropertyDescriptor<Integer> READ_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR = authMethodTypeParamIndexProperty("read");
+    private static final PropertyDescriptor<Integer> UPDATE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR = authMethodTypeParamIndexProperty("update");
+    private static final PropertyDescriptor<Integer> DELETE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR = authMethodTypeParamIndexProperty("delete");
+    private static final PropertyDescriptor<Integer> UNDELETE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR = authMethodTypeParamIndexProperty("undelete");
+    private static final PropertyDescriptor<Integer> MERGE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR = authMethodTypeParamIndexProperty("merge");
+
+    // Auth method config property correlation information
+    private static final Map<PropertyDescriptor<String>, PropertyDescriptor<Integer>> AUTH_METHOD_TO_TYPE_PARAM_INDEX_MAP = new HashMap<PropertyDescriptor<String>, PropertyDescriptor<Integer>>() {
+        {
+            put(CREATE_AUTH_METHOD_PATTERN_DESCRIPTOR, CREATE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
+            put(READ_AUTH_METHOD_PATTERN_DESCRIPTOR, READ_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
+            put(UPDATE_AUTH_METHOD_PATTERN_DESCRIPTOR, UPDATE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
+            put(DELETE_AUTH_METHOD_PATTERN_DESCRIPTOR, DELETE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
+            put(UNDELETE_AUTH_METHOD_PATTERN_DESCRIPTOR, UNDELETE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
+            put(MERGE_AUTH_METHOD_PATTERN_DESCRIPTOR, MERGE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
+        }
+    };
+    private static final Map<PropertyDescriptor<String>, String> AUTH_METHOD_TO_DML_OPERATION_MAP = new HashMap<PropertyDescriptor<String>, String>() {
+        {
+            put(CREATE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_CREATEABLE);
+            put(READ_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_ACCESSIBLE);
+            put(UPDATE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_UPDATEABLE);
+            put(DELETE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_DELETABLE);
+            put(UNDELETE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_UNDELETABLE);
+            put(MERGE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_MERGEABLE);
+        }
+    };
+
     private Map<String, String> varToTypeMapping;
     private ListMultimap<String, String> typeToDMLOperationMapping;
     private Map<String, String> checkedTypeToDMLOperationViaESAPI;
+    private ListMultimap<String, String> checkedTypeToDMLOperationsViaAuthPattern;
     private Map<String, ASTMethod> classMethods;
     private String className;
 
@@ -96,6 +140,14 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+
+        // Register auth method config properties
+        for (Map.Entry<PropertyDescriptor<String>, PropertyDescriptor<Integer>> entry : AUTH_METHOD_TO_TYPE_PARAM_INDEX_MAP.entrySet()) {
+            PropertyDescriptor<String> authMethodPatternDescriptor = entry.getKey();
+            PropertyDescriptor<Integer> authMethodTypeParamIndexDescriptor = entry.getValue();
+            definePropertyDescriptor(authMethodPatternDescriptor);
+            definePropertyDescriptor(authMethodTypeParamIndexDescriptor);
+        }
     }
 
     @Override
@@ -105,11 +157,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         varToTypeMapping = new HashMap<>();
         typeToDMLOperationMapping = ArrayListMultimap.create();
         checkedTypeToDMLOperationViaESAPI = new HashMap<>();
+        checkedTypeToDMLOperationsViaAuthPattern = ArrayListMultimap.create();
         classMethods = new WeakHashMap<>();
         className = null;
         super.start(ctx);
     }
-
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -153,11 +205,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             default:
                 break;
             }
-             
+
         } else {
             collectCRUDMethodLevelChecks(node);
         }
-        
+
         return data;
     }
 
@@ -337,7 +389,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                     }
                 }
             }
+        }
 
+        // Check any configured authorization class library patterns
+        for (PropertyDescriptor<String> authMethodPatternDescriptor : AUTH_METHOD_TO_TYPE_PARAM_INDEX_MAP.keySet()) {
+            extractObjectTypeFromConfiguredMethodPatternInvocation(node, authMethodPatternDescriptor);
         }
     }
 
@@ -433,7 +489,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void checkInlineNonArgsObject(final ApexNode<?> node, final Object data, final String crudMethod) {
-        
+
         final ASTNewObjectExpression newEmptyObj = node.getFirstChildOfType(ASTNewObjectExpression.class);
         if (newEmptyObj != null) {
             final String type = Helper.getFQVariableName(newEmptyObj);
@@ -448,7 +504,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             final ASTBlockStatement blockStatement = outerMethod.getFirstChildOfType(ASTBlockStatement.class);
             recursivelyEvaluateCRUDMethodCalls(self, innerMethodCalls, blockStatement);
 
-            final List<ASTMethod> constructorMethods = findConstructorlMethods();
+            final List<ASTMethod> constructorMethods = findConstructorMethods();
             for (ASTMethod method : constructorMethods) {
                 innerMethodCalls.addAll(method.findDescendantsOfType(ASTMethodCallExpression.class));
             }
@@ -498,11 +554,14 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             if (methodBody != null) {
                 innerMethodCalls.addAll(methodBody.findDescendantsOfType(ASTMethodCallExpression.class));
             }
-
+            // If we couldn't resolve it locally, add any calls for configured authorization patterns
+            else if (isAuthMethodInvocation(node)) {
+                innerMethodCalls.add(node);
+            }
         }
     }
 
-    private List<ASTMethod> findConstructorlMethods() {
+    private List<ASTMethod> findConstructorMethods() {
         final ArrayList<ASTMethod> ret = new ArrayList<>();
         final Set<String> constructors = classMethods.keySet().stream()
                 .filter(p -> p.contains("<init>") || p.contains("<clinit>")
@@ -522,7 +581,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private boolean isProperESAPICheckForDML(final String typeToCheck, final String dmlOperation) {
-        final boolean hasMapping = checkedTypeToDMLOperationViaESAPI.containsKey(typeToCheck.toString());
+        final boolean hasMapping = checkedTypeToDMLOperationViaESAPI.containsKey(typeToCheck);
         if (hasMapping) {
             if (ANY.equals(dmlOperation)) {
                 return true;
@@ -546,17 +605,15 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                             .append(":").append(identifiers.get(0));
                     checkedTypeToDMLOperationViaESAPI.put(sb.toString(), dmlOperation);
                 }
-
             }
         }
-
     }
-
 
     private boolean validateCRUDCheckPresent(final ApexNode<?> node, final Object data, final String crudMethod,
             final String typeCheck) {
         boolean missingKey = !typeToDMLOperationMapping.containsKey(typeCheck);
-        boolean isImproperDMLCheck = !isProperESAPICheckForDML(typeCheck, crudMethod);
+        boolean isImproperDMLCheck = !isProperESAPICheckForDML(typeCheck, crudMethod) &&
+                !isProperAuthPatternBasedCheckForDML(typeCheck, crudMethod);
         boolean noSecurityEnforced = !isWithSecurityEnforced(node);
         if (missingKey) {
             //if condition returns true, add violation, otherwise return.
@@ -601,7 +658,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
         if (wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass)
-            || wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod)) {
+                || wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod)) {
             return;
         }
 
@@ -684,7 +741,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
                     validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
                 }
-                
+
             } else {
                 for (String typeFromSOQL : typesFromSOQL) {
                     validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
@@ -708,5 +765,98 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private String getReturnType(final ASTMethod method) {
         return new StringBuilder().append(method.getDefiningType()).append(":")
                 .append(method.getReturnType()).toString();
+    }
+
+    // Configured authorization method pattern support
+
+    private static PropertyDescriptor<String> authMethodPatternProperty(String operation) {
+        final String propertyName = operation + "AuthMethodPattern";
+        return stringProperty(propertyName)
+                .desc("A regular expression for one or more custom " + operation + " authorization method name patterns.")
+                .defaultValue("")
+                .build();
+    }
+
+    private static PropertyDescriptor<Integer> authMethodTypeParamIndexProperty(String operation) {
+        final String propertyName = operation + "AuthMethodTypeParamIndex";
+        return intProperty(propertyName)
+                .desc("The 0-based index of the " + S_OBJECT_TYPE + " parameter for the custom " + operation + " authorization method. Defaults to 0.")
+                .defaultValue(0)
+                .build();
+    }
+
+    private boolean isAuthMethodInvocation(final ASTMethodCallExpression methodNode) {
+        for (PropertyDescriptor<String> authMethodPatternDescriptor : AUTH_METHOD_TO_TYPE_PARAM_INDEX_MAP.keySet()) {
+            if (isAuthMethodInvocation(methodNode, authMethodPatternDescriptor)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void extractObjectTypeFromConfiguredMethodPatternInvocation(final ASTMethodCallExpression methodNode, final PropertyDescriptor<String> authMethodPatternDescriptor) {
+        if (isAuthMethodInvocation(methodNode, authMethodPatternDescriptor)) {
+            // See which parameter index contains the object type expression and try to find that invocation argument
+            final PropertyDescriptor<Integer> authMethodTypeParamIndexDescriptor = AUTH_METHOD_TO_TYPE_PARAM_INDEX_MAP.get(authMethodPatternDescriptor);
+            final Integer authMethodTypeParamIndex = authMethodTypeParamIndexDescriptor != null ? getProperty(authMethodTypeParamIndexDescriptor) : 0;
+            final int numParameters = methodNode.getInputParametersSize();
+            if (numParameters > authMethodTypeParamIndex) {
+                final List<ASTVariableExpression> parameters = new ArrayList<>(numParameters);
+                for (int parameterIndex = 0, numChildren = methodNode.getNumChildren(); parameterIndex < numChildren; parameterIndex++) {
+                    final ApexNode<?> childNode = methodNode.getChild(parameterIndex);
+                    if (childNode instanceof ASTVariableExpression) {
+                        parameters.add((ASTVariableExpression) childNode);
+                    }
+                }
+                // Make sure that it looks like "sObjectType.<objectTypeName>" as VariableExpression > ReferenceExpression
+                final ASTVariableExpression sobjectTypeParameterCandidate = parameters.size() > authMethodTypeParamIndex ? parameters.get(authMethodTypeParamIndex) : null;
+                if (sobjectTypeParameterCandidate != null && S_OBJECT_TYPE.equalsIgnoreCase(sobjectTypeParameterCandidate.getImage())) {
+                    final ASTReferenceExpression objectTypeCandidate = sobjectTypeParameterCandidate.getFirstChildOfType(ASTReferenceExpression.class);
+                    if (objectTypeCandidate != null) {
+                        final String objectType = objectTypeCandidate.getImage();
+                        if (StringUtils.isNotBlank(objectType)) {
+                            // Create a (relatively) unique key for this that is prefixed by the current invocation's containing type name
+                            final StringBuilder checkedTypeBuilder = new StringBuilder().append(methodNode.getDefiningType())
+                                    .append(":").append(objectType);
+                            final String checkedType = checkedTypeBuilder.toString();
+
+                            // And get the appropriate DML operation based on this method pattern
+                            final String dmlOperation = AUTH_METHOD_TO_DML_OPERATION_MAP.get(authMethodPatternDescriptor);
+                            if (StringUtils.isNotBlank(dmlOperation)) {
+                                checkedTypeToDMLOperationsViaAuthPattern.put(checkedType, dmlOperation);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isAuthMethodInvocation(final ASTMethodCallExpression methodNode, final PropertyDescriptor<String> authMethodPatternDescriptor) {
+        final String authMethodPattern = getProperty(authMethodPatternDescriptor);
+        if (StringUtils.isNotBlank(authMethodPattern)) {
+            // TODO: Should(/can?) we cache these? What happens if the patterns in the PMD config file change?
+            final Pattern compiledAuthMethodPattern = Pattern.compile(authMethodPattern, Pattern.CASE_INSENSITIVE);
+            final String fullMethodName = methodNode.getFullMethodName();
+            final Matcher authMethodMatcher = compiledAuthMethodPattern.matcher(fullMethodName);
+            if (authMethodMatcher.matches()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isProperAuthPatternBasedCheckForDML(final String typeToCheck, final String dmlOperation) {
+        final boolean hasMapping = checkedTypeToDMLOperationsViaAuthPattern.containsKey(typeToCheck);
+        if (hasMapping) {
+            if (ANY.equals(dmlOperation)) {
+                return true;
+            }
+
+            final List<String> dmlOperationsChecked = checkedTypeToDMLOperationsViaAuthPattern.get(typeToCheck);
+            return dmlOperationsChecked.contains(dmlOperation);
+        }
+
+        return false;
     }
 }
