@@ -1192,7 +1192,7 @@ public class Foo {
     <!-- Test cases for issue 3576 that allows configurable method name patterns for valid authorization checks -->
 
     <test-code>
-        <description>>#3576 - Verify use of createAuthMethodPattern, negative test</description>
+        <description>#3576 - Verify use of createAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -1209,7 +1209,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of createAuthMethodPattern, positive test</description>
+        <description>#3576 - Verify use of createAuthMethodPattern, positive test</description>
         <rule-property name="createAuthMethodPattern">AuthorizationUtil\.(is|assert)Createable</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1227,7 +1227,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of readAuthMethodPattern, negative test</description>
+        <description>#3576 - Verify use of readAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -1245,7 +1245,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of readAuthMethodPattern, positive test</description>
+        <description>#3576 - Verify use of readAuthMethodPattern, positive test</description>
         <rule-property name="readAuthMethodPattern">AuthorizationUtil\.(is|assert)Accessible</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1264,7 +1264,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of updateAuthMethodPattern, negative test</description>
+        <description>#3576 - Verify use of updateAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -1281,7 +1281,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of updateAuthMethodPattern, positive test</description>
+        <description>#3576 - Verify use of updateAuthMethodPattern, positive test</description>
         <rule-property name="updateAuthMethodPattern">AuthorizationUtil\.(is|assert)Updateable</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1299,7 +1299,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of createAuthMethodPattern and updateAuthMethodPattern for upsert, negative test</description>
+        <description>#3576 - Verify use of createAuthMethodPattern and updateAuthMethodPattern for upsert, negative test</description>
         <expected-problems>4</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -1316,7 +1316,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of createAuthMethodPattern and updateAuthMethodPattern for upsert, positive test</description>
+        <description>#3576 - Verify use of createAuthMethodPattern and updateAuthMethodPattern for upsert, positive test</description>
         <rule-property name="createAuthMethodPattern">AuthorizationUtil\.(is|assert)(Createable|Upsertable)</rule-property>
         <rule-property name="updateAuthMethodPattern">AuthorizationUtil\.(is|assert)(Updateable|Upsertable)</rule-property>
         <expected-problems>0</expected-problems>
@@ -1335,7 +1335,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of deleteAuthMethodPattern, negative test</description>
+        <description>#3576 - Verify use of deleteAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -1352,7 +1352,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of deleteAuthMethodPattern, positive test</description>
+        <description>#3576 - Verify use of deleteAuthMethodPattern, positive test</description>
         <rule-property name="deleteAuthMethodPattern">AuthorizationUtil\.(is|assert)Deletable</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1370,7 +1370,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of undeleteAuthMethodPattern, negative test</description>
+        <description>#3576 - Verify use of undeleteAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -1387,7 +1387,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of undeleteAuthMethodPattern, positive test</description>
+        <description>#3576 - Verify use of undeleteAuthMethodPattern, positive test</description>
         <rule-property name="undeleteAuthMethodPattern">AuthorizationUtil\.(is|assert)Undeletable</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1405,7 +1405,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of mergeAuthMethodPattern, negative test</description>
+        <description>#3576 - Verify use of mergeAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -1425,7 +1425,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of mergeAuthMethodPattern, positive test</description>
+        <description>#3576 - Verify use of mergeAuthMethodPattern, positive test</description>
         <rule-property name="mergeAuthMethodPattern">AuthorizationUtil\.(is|assert)Mergeable</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1446,7 +1446,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>>#3576 - Verify use of *AuthMethodTypeParamIndex</description>
+        <description>#3576 - Verify use of *AuthMethodTypeParamIndex</description>
         <rule-property name="createAuthMethodPattern">SomeAuthUtil\.canCreate\w+</rule-property>
         <rule-property name="createAuthMethodTypeParamIndex">1</rule-property>
         <rule-property name="readAuthMethodPattern">SomeAuthUtil\.canRead\w+</rule-property>

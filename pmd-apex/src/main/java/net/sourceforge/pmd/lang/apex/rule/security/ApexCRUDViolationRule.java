@@ -695,7 +695,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                     violationAdded |= validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
                 }
             }
-
         }
 
         // If the node's already in violation, we don't need to keep checking.
