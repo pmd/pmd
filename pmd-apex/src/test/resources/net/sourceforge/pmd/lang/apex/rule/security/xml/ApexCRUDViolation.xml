@@ -1444,4 +1444,52 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>>#3576 - Verify use of *AuthMethodTypeParamIndex</description>
+        <rule-property name="createAuthMethodPattern">SomeAuthUtil\.canCreate\w+</rule-property>
+        <rule-property name="createAuthMethodTypeParamIndex">1</rule-property>
+        <rule-property name="readAuthMethodPattern">SomeAuthUtil\.canRead\w+</rule-property>
+        <rule-property name="readAuthMethodTypeParamIndex">2</rule-property>
+        <rule-property name="updateAuthMethodPattern">SomeAuthUtil\.canUpdate\w+</rule-property>
+        <rule-property name="updateAuthMethodTypeParamIndex">3</rule-property>
+        <rule-property name="deleteAuthMethodPattern">SomeAuthUtil\.canDelete\w+</rule-property>
+        <rule-property name="deleteAuthMethodTypeParamIndex">4</rule-property>
+        <rule-property name="undeleteAuthMethodPattern">SomeAuthUtil\.canUndelete\w+</rule-property>
+        <rule-property name="undeleteAuthMethodTypeParamIndex">0</rule-property>
+        <rule-property name="mergeAuthMethodPattern">SomeAuthUtil\.canMerge\w+</rule-property>
+        <!--<rule-property name="mergeAuthMethodTypeParamIndex">0</rule-property>--><!-- Unspecified; should be 0 -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (SomeAuthUtil.canCreateWithTypeAsSecondParam(param1, Account.SObjectType)) {
+            insert new List<Account>(new Account(Name = 'X'));
+        }
+
+        if (SomeAuthUtil.canReadWithTypeAsThirdParam(param1, param2, Account.SObjectType)) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+
+        if (SomeAuthUtil.canUpdateWithTypeAsFourthParam(param1, param2, param3, Account.SObjectType)) {
+            update new List<Account>(new Account(Name = 'X'));
+        }
+
+        if (SomeAuthUtil.canDeleteWithTypeAsFifthParam(param1, param2, param3, param4, Account.SObjectType)) {
+            delete new List<Account>(new Account(Name = 'X'));
+        }
+
+        if (SomeAuthUtil.canUndeleteWithTypeAsFirstParamExplicit(Account.SObjectType)) {
+            undelete new List<Account>(new Account(Name = 'X'));
+        }
+
+        Account masterAccount;
+        Account mergeAccount;
+        if (SomeAuthUtil.canMergeWithTypeAsFirstParamImplicit(Account.SObjectType)) {
+            merge masterAccount mergeAccount;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
