@@ -574,4 +574,61 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3566 [apex] ApexDoc: Verify use of reportMissingDescription, negative test unspecified/default</description>
+        <!-- reportMissingDescription unspecified; should default to true -->
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+/**
+ * No at-description tag provided.
+ */
+public class Foo {
+
+    /**
+     * No at-description tag provided.
+     */
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3566 [apex] ApexDoc: Verify use of reportMissingDescription, negative test specified</description>
+        <rule-property name="reportMissingDescription">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+/**
+ * No at-description tag provided.
+ */
+public class Foo {
+
+    /**
+     * No at-description tag provided.
+     */
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3566 [apex] ApexDoc: Verify use of reportMissingDescription, positive test</description>
+        <rule-property name="reportMissingDescription">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * No at-description tag provided.
+ */
+public class Foo {
+
+    /**
+     * No at-description tag provided.
+     */
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
