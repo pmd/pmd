@@ -282,11 +282,12 @@ can lead to quite messy code. This rule looks for several declarations on the sa
         <priority>1</priority>
         <properties>
             <property name="version" value="2.0"/>
+            <property name="reportInForLoopInitializer" type="Boolean" value="true" description="If false, multiple declarations in a for loop initializer are not flagged."/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //VariableDeclarationStatements
-  [count(VariableDeclaration) > 1]
+  [count(VariableDeclaration) > 1 and ($reportInForLoopInitializer = true() or name(parent::*) != 'ForLoopStatement')]
   [$strictMode or count(distinct-values(VariableDeclaration/@BeginLine)) != count(VariableDeclaration)]
 |
 //FieldDeclarationStatements
