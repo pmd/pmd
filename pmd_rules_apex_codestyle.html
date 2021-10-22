@@ -2153,7 +2153,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclarationStatements</span><span class="w">
-  </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">VariableDeclaration</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
+  </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">VariableDeclaration</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">(</span><span class="nv">$reportInForLoopInitializer</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="kn">parent::</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="s1">'ForLoopStatement'</span><span class="p">)]</span><span class="w">
   </span><span class="p">[</span><span class="nv">$strictMode</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nf">distinct-values</span><span class="p">(</span><span class="nt">VariableDeclaration</span><span class="err">/</span><span class="na">@BeginLine</span><span class="p">))</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">VariableDeclaration</span><span class="p">)]</span><span class="w">
 </span><span class="p">|</span><span class="w">
 </span><span class="o">//</span><span class="nt">FieldDeclarationStatements</span><span class="w">
@@ -2203,6 +2203,12 @@ can lead to quite messy code. This rule looks for several declarations on the sa
       <td>no</td>
     </tr>
     <tr>
+      <td>reportInForLoopInitializer</td>
+      <td>true</td>
+      <td>If false, multiple declarations in a for loop initializer are not flagged.</td>
+      <td>no</td>
+    </tr>
+    <tr>
       <td>strictMode</td>
       <td>false</td>
       <td>If true, mark combined declaration even if the declarations are on separate lines.</td>
@@ -2218,6 +2224,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 <p><strong>Use this rule and customize it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/OneDeclarationPerLine"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportInForLoopInitializer"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"strictMode"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
