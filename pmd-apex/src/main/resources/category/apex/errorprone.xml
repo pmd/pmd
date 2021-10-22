@@ -149,11 +149,14 @@ or reported.
         <priority>3</priority>
         <properties>
             <property name="version" value="2.0"/>
-            <property name="reportInTestMethod" type="Boolean" value="true" description="If false, empty catch blocks in test methods are not flagged. This supports a common idiom used to verify that expected exceptions are thrown."/>
+            <property name="allowCommentedBlocks" type="Boolean" description="Empty blocks containing comments will be skipped" value="false"/>
+            <property name="allowExceptionNameRegex" type="Regex" description="Empty blocks catching exceptions with names matching this regular expression will be skipped" value="^(ignored|expected)$"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchBlockStatement[./BlockStatement[count(*) = 0] and ($reportInTestMethod = true() or ancestor::Method[@Test != true()])]
+//CatchBlockStatement[./BlockStatement[count(*) = 0] and
+    not(matches(@VariableName, $allowExceptionNameRegex)) and
+    ($allowCommentedBlocks = false() or @ContainsComment = false())]
 ]]>
                 </value>
             </property>
