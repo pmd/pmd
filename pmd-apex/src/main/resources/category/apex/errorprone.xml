@@ -217,10 +217,12 @@ Empty block statements serve no purpose and should be removed.
         <priority>3</priority>
         <properties>
             <property name="version" value="2.0"/>
+            <property name="reportEmptyPrivateNoArgConstructor" type="Boolean" value="true" description="If false, empty private no-arg constructors are not flagged. This supports a common idiom used by singleton pattern implementations, utility classes, etc."/>
+            <property name="reportEmptyVirtualMethod" type="Boolean" value="true" description="If false, empty virtual methods are not flagged. This supports abstract base classes with default no-op implementations."/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Method/ModifierNode[@Abstract!= true() and ../BlockStatement[count(*) = 0]]
+//Method[$reportEmptyPrivateNoArgConstructor = true() or (@Constructor != true() or ./ModifierNode[@Private != true()] or ./Parameter[count(*) > 0])]/ModifierNode[@Abstract != true() and ($reportEmptyVirtualMethod = true() or @Virtual != true()) and ../BlockStatement[count(*) = 0]]
 | //Method/BlockStatement//BlockStatement[count(*) = 0 and @Location != parent::*/@Location]
 ]]>
                 </value>
