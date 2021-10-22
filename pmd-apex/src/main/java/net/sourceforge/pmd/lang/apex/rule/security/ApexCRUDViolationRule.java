@@ -17,7 +17,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -95,7 +94,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private static final Pattern WITH_SECURITY_ENFORCED = Pattern.compile("(?is).*[^']\\s*WITH\\s+SECURITY_ENFORCED\\s*[^']*");
 
-    // <operation>AuthMethodPattern config properties
+    // <operation>AuthMethodPattern config properties; these are string properties instead of regex properties to help
+    // ensure that the compiled patterns are case-insensitive vs. requiring the pattern author to use "(?i)"
     private static final PropertyDescriptor<String> CREATE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("create");
     private static final PropertyDescriptor<String> READ_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("read");
     private static final PropertyDescriptor<String> UPDATE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("update");
@@ -134,7 +134,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     };
 
     // Compiled pattern cache for configured method name patterns
-    private static final Map<String, Pattern> COMPILED_AUTH_METHOD_PATTERN_CACHE = new HashMap<>();
+    private final Map<String, Pattern> compiledAuthMethodPatternCache = new HashMap<>();
 
     private Map<String, String> varToTypeMapping;
     private HashMultimap<String, String> typeToDMLOperationMapping;
@@ -215,11 +215,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             default:
                 break;
             }
-             
+
         } else {
             collectCRUDMethodLevelChecks(node);
         }
-        
+
         return data;
     }
 
@@ -507,7 +507,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void checkInlineNonArgsObject(final ApexNode<?> node, final Object data, final String crudMethod) {
-        
+
         final ASTNewObjectExpression newEmptyObj = node.getFirstChildOfType(ASTNewObjectExpression.class);
         if (newEmptyObj != null) {
             final String type = Helper.getFQVariableName(newEmptyObj);
@@ -764,7 +764,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
                     validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
                 }
-                
+
             } else {
                 for (String typeFromSOQL : typesFromSOQL) {
                     validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
@@ -857,14 +857,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private boolean isAuthMethodInvocation(final ASTMethodCallExpression methodNode, final PropertyDescriptor<String> authMethodPatternDescriptor) {
         final String authMethodPattern = getProperty(authMethodPatternDescriptor);
-        if (StringUtils.isNotBlank(authMethodPattern)) {
-            // Minimize compilation overhead for repeated pattern use
-            final Pattern compiledAuthMethodPattern = COMPILED_AUTH_METHOD_PATTERN_CACHE.computeIfAbsent(authMethodPattern, new Function<String, Pattern>() {
-                @Override
-                public Pattern apply(String authMethodPattern) {
-                    return Pattern.compile(authMethodPattern, Pattern.CASE_INSENSITIVE);
-                }
-            });
+        final Pattern compiledAuthMethodPattern = getCompiledAuthMethodPattern(authMethodPattern);
+        if (compiledAuthMethodPattern != null) {
             final String fullMethodName = methodNode.getFullMethodName();
             final Matcher authMethodMatcher = compiledAuthMethodPattern.matcher(fullMethodName);
             if (authMethodMatcher.matches()) {
@@ -872,6 +866,29 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             }
         }
         return false;
+    }
+
+    private Pattern getCompiledAuthMethodPattern(final String authMethodPattern) {
+        Pattern compiledAuthMethodPattern = null;
+
+        if (StringUtils.isNotBlank(authMethodPattern)) {
+            // If we haven't previously tried to to compile this pattern, do so now
+            if (!compiledAuthMethodPatternCache.containsKey(authMethodPattern)) {
+                try {
+                    compiledAuthMethodPattern = Pattern.compile(authMethodPattern, Pattern.CASE_INSENSITIVE);
+                    compiledAuthMethodPatternCache.put(authMethodPattern, compiledAuthMethodPattern);
+                } catch (IllegalArgumentException e) {
+                    // Cache a null value so we don't try to compile this particular pattern again
+                    compiledAuthMethodPatternCache.put(authMethodPattern, null);
+                    throw e;
+                }
+            } else {
+                // Otherwise use the cached value, either the successfully compiled pattern or null if pattern compilation failed
+                compiledAuthMethodPattern = compiledAuthMethodPatternCache.get(authMethodPattern);
+            }
+        }
+
+        return compiledAuthMethodPattern;
     }
 
     private boolean isProperAuthPatternBasedCheckForDML(final String typeToCheck, final String dmlOperation) {

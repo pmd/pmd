@@ -1194,6 +1194,7 @@ public class Foo {
     <test-code>
         <description>#3576 - Verify use of createAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1229,6 +1230,7 @@ public class Foo {
     <test-code>
         <description>#3576 - Verify use of readAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,9</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1266,6 +1268,7 @@ public class Foo {
     <test-code>
         <description>#3576 - Verify use of updateAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1301,6 +1304,7 @@ public class Foo {
     <test-code>
         <description>#3576 - Verify use of createAuthMethodPattern and updateAuthMethodPattern for upsert, negative test</description>
         <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,4,8,8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1337,6 +1341,7 @@ public class Foo {
     <test-code>
         <description>#3576 - Verify use of deleteAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1372,6 +1377,7 @@ public class Foo {
     <test-code>
         <description>#3576 - Verify use of undeleteAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1407,6 +1413,7 @@ public class Foo {
     <test-code>
         <description>#3576 - Verify use of mergeAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,11</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1501,6 +1508,7 @@ public class Foo {
         <!--<expected-problems>0</expected-problems>-->
         <!-- But this is what we actually get -->
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo() {
