@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -41,9 +43,13 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
         ASSERT_METHODS.add("system.system.assertnotequals");
     }
 
+    // Using a string property instead of a regex property to ensure that the compiled pattern can be case-insensitive
     private static final PropertyDescriptor<String> ADDITIONAL_ASSERT_METHOD_PATTERN_DESCRIPTOR =
-        stringProperty("additionalAssertMethodPattern")
-            .desc("A regular expression for one or more custom test assertion method patterns.").defaultValue("").build();
+            stringProperty("additionalAssertMethodPattern")
+                    .desc("A regular expression for one or more custom test assertion method patterns.").defaultValue("").build();
+
+    // A simple compiled pattern cache to ensure that we only ever try to compile the configured pattern once for a given run
+    private Optional<Pattern> compiledAdditionalAssertMethodPattern = null;
 
     public ApexUnitTestClassShouldHaveAssertsRule() {
         definePropertyDescriptor(ADDITIONAL_ASSERT_METHOD_PATTERN_DESCRIPTOR);
@@ -77,20 +83,15 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
 
         // If we didn't find assert method invocations the simple way and we have a configured pattern, try it
         if (!isAssertFound) {
-            final String additionalAssertPattern = getProperty(ADDITIONAL_ASSERT_METHOD_PATTERN_DESCRIPTOR);
-            if (additionalAssertPattern != null && !additionalAssertPattern.trim().isEmpty()) {
-                try {
-                    final Pattern compiledPattern = Pattern.compile(additionalAssertPattern, Pattern.CASE_INSENSITIVE);
-                    for (final ASTMethodCallExpression methodCallExpression : methodCalls) {
-                        final String fullMethodName = methodCallExpression.getFullMethodName();
-                        final Matcher assertMethodMatcher = compiledPattern.matcher(fullMethodName);
-                        if (assertMethodMatcher.matches()) {
-                            isAssertFound = true;
-                            break;
-                        }
+            final String additionalAssertMethodPattern = getProperty(ADDITIONAL_ASSERT_METHOD_PATTERN_DESCRIPTOR);
+            final Pattern compiledPattern = getCompiledAdditionalAssertMethodPattern(additionalAssertMethodPattern);
+            if (compiledPattern != null) {
+                for (final ASTMethodCallExpression methodCallExpression : methodCalls) {
+                    final String fullMethodName = methodCallExpression.getFullMethodName();
+                    if (compiledPattern.matcher(fullMethodName).matches()) {
+                        isAssertFound = true;
+                        break;
                     }
-                } catch (Exception e) {
-                    throw new IllegalArgumentException("Invalid assert method pattern '" + additionalAssertPattern + "' - " + e.getMessage());
                 }
             }
         }
@@ -100,5 +101,22 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
         }
 
         return data;
+    }
+
+    private Pattern getCompiledAdditionalAssertMethodPattern(String additionalAssertMethodPattern) {
+        if (StringUtils.isNotBlank(additionalAssertMethodPattern)) {
+            // Check for presence first since we will cache a null value for patterns that don't compile
+            if (compiledAdditionalAssertMethodPattern == null) {
+                try {
+                    compiledAdditionalAssertMethodPattern = Optional.of(Pattern.compile(additionalAssertMethodPattern, Pattern.CASE_INSENSITIVE));
+                } catch (IllegalArgumentException e) {
+                    // Cache a null compiled pattern so that we won't try to compile this one again during the run
+                    compiledAdditionalAssertMethodPattern = Optional.ofNullable(null);
+                    throw e;
+                }
+            }
+        }
+
+        return compiledAdditionalAssertMethodPattern != null ? compiledAdditionalAssertMethodPattern.get() : null;
     }
 }

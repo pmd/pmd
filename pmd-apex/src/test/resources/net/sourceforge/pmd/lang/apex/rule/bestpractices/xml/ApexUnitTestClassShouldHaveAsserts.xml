@@ -98,6 +98,7 @@ public class Foo {
     <test-code>
         <description>#1089 [apex] ApexUnitTestClassShouldHaveAsserts: Verify use of additionalAssertMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
         <code><![CDATA[
 @isTest
 public class Foo {
