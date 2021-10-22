@@ -1499,6 +1499,51 @@ Hard-wiring these values greatly compromises the security of encrypted data.</p>
 Since Apex runs in system mode not having proper permissions checks results in escalation of
 privilege and may produce runtime errors. This check forces you to handle such scenarios.</p>
 
+<p>By default, the rule allows access checks can be performed using system Apex provisions such as
+<code class="language-plaintext highlighter-rouge">DescribeSObjectResult.isAccessible/Createable/etc.</code>, the SOQL <code class="language-plaintext highlighter-rouge">WITH SECURITY_ENFORCED</code> clause,
+or using the open source <a href="https://github.com/forcedotcom/force-dot-com-esapi">Force.com ESAPI</a>
+class library. Because it is common to use authorization facades to assist with this task, the
+rule also allows configuration of regular expression-based patterns for the methods used to
+authorize each type of CRUD operation. These pattern are configured via the following properties:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">createAuthMethodPattern</code>/<code class="language-plaintext highlighter-rouge">createAuthMethodTypeParamIndex</code> - a pattern for the method used
+for create authorization and an optional 0-based index of the parameter passed to that method
+that denotes the <code class="language-plaintext highlighter-rouge">SObjectType</code> being authorized for create.</li>
+  <li><code class="language-plaintext highlighter-rouge">readAuthMethodPattern</code>/<code class="language-plaintext highlighter-rouge">readAuthMethodTypeParamIndex</code> - a pattern for the method used
+for read authorization and an optional 0-based index of the parameter passed to that method
+that denotes the <code class="language-plaintext highlighter-rouge">SObjectType</code> being authorized for read.</li>
+  <li><code class="language-plaintext highlighter-rouge">updateAuthMethodPattern</code>/<code class="language-plaintext highlighter-rouge">updateAuthMethodTypeParamIndex</code> - a pattern for the method used
+for update authorization and an optional 0-based index of the parameter passed to that method
+that denotes the <code class="language-plaintext highlighter-rouge">SObjectType</code> being authorized for update.</li>
+  <li><code class="language-plaintext highlighter-rouge">deleteAuthMethodPattern</code>/<code class="language-plaintext highlighter-rouge">deleteAuthMethodTypeParamIndex</code> - a pattern for the method used
+for delete authorization and an optional 0-based index of the parameter passed to that method
+that denotes the <code class="language-plaintext highlighter-rouge">SObjectType</code> being authorized for delete.</li>
+  <li><code class="language-plaintext highlighter-rouge">undeleteAuthMethodPattern</code>/<code class="language-plaintext highlighter-rouge">undeleteAuthMethodTypeParamIndex</code> - a pattern for the method used
+for undelete authorization and an optional 0-based index of the parameter passed to that method
+that denotes the <code class="language-plaintext highlighter-rouge">SObjectType</code> being authorized for undelete.</li>
+  <li><code class="language-plaintext highlighter-rouge">mergeAuthMethodPattern</code>/<code class="language-plaintext highlighter-rouge">mergeAuthMethodTypeParamIndex</code> - a pattern for the method used
+for merge authorization and an optional 0-based index of the parameter passed to that method
+that denotes the <code class="language-plaintext highlighter-rouge">SObjectType</code> being authorized for merge.</li>
+</ul>
+
+<p>The following example shows how the rule can be configured for the
+<a href="https://github.com/SCWells72/sirono-common">sirono-common</a>
+<a href="https://github.com/SCWells72/sirono-common#authorization-utilities"><code class="language-plaintext highlighter-rouge">AuthorizationUtil</code></a> class:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/security.xml/ApexCRUDViolation"</span> <span class="na">message=</span><span class="s">"Validate CRUD permission before SOQL/DML operation"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;priority&gt;</span>3<span class="nt">&lt;/priority&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"createAuthMethodPattern"</span> <span class="na">value=</span><span class="s">"AuthorizationUtil\.(is|assert)(Createable|Upsertable)"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"readAuthMethodPattern"</span> <span class="na">value=</span><span class="s">"AuthorizationUtil\.(is|assert)Accessible"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"updateAuthMethodPattern"</span> <span class="na">value=</span><span class="s">"AuthorizationUtil\.(is|assert)(Updateable|Upsertable)"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"deleteAuthMethodPattern"</span> <span class="na">value=</span><span class="s">"AuthorizationUtil\.(is|assert)Deletable"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"undeleteAuthMethodPattern"</span> <span class="na">value=</span><span class="s">"AuthorizationUtil\.(is|assert)Undeletable"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"mergeAuthMethodPattern"</span> <span class="na">value=</span><span class="s">"AuthorizationUtil\.(is|assert)Mergeable"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
 <p>Note: This rule will produce false positives for VF getter methods. In VF getters the access permission
 check happens automatically and is not needed explicitly. However, the rule can’t reliably determine
 whether a getter is a VF getter or not and reports a violation in any case. In such cases, the violation
